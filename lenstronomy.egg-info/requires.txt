@@ -1,0 +1,6 @@
+darkskysync
+configparser
+astropy
+PyCosmo
+numpy>=1.7
+scipy

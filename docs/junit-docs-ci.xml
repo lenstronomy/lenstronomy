@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="0" name="pytest" skips="0" tests="2" time="1.786"><testcase classname="check_sphinx" name="test_linkcheck" time="0.741436004639"><system-out>Making output directory...
+Running Sphinx v1.2.2
+loading pickled environment... not yet created
+building [linkcheck]: targets for 6 source files that are out of date
+updating environment: 6 added, 0 changed, 0 removed
+reading sources... [ 16%] authors
+reading sources... [ 33%] contributing
+reading sources... [ 50%] history
+reading sources... [ 66%] index
+reading sources... [ 83%] installation
+reading sources... [100%] usage
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 16%] authors
+
+writing output... [ 33%] contributing
+
+writing output... [ 50%] history
+
+writing output... [ 66%] index
+
+writing output... [ 83%] installation
+
+writing output... [100%] usage
+
+
+build succeeded, 1 warning.
+</system-out><system-err>/Users/sibirrer/Cosmology/Strong_Lensing/Code/lenstronomy/docs/index.rst:11: WARNING: toctree contains reference to nonexisting document u&apos;lenstronomy&apos;
+</system-err></testcase><testcase classname="check_sphinx" name="test_build_docs" time="0.996647119522"><system-out>Making output directory...
+Running Sphinx v1.2.2
+loading pickled environment... not yet created
+building [html]: targets for 6 source files that are out of date
+updating environment: 6 added, 0 changed, 0 removed
+reading sources... [ 16%] authors
+reading sources... [ 33%] contributing
+reading sources... [ 50%] history
+reading sources... [ 66%] index
+reading sources... [ 83%] installation
+reading sources... [100%] usage
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 16%] authors
+writing output... [ 33%] contributing
+writing output... [ 50%] history
+writing output... [ 66%] index
+writing output... [ 83%] installation
+writing output... [100%] usage
+
+writing additional files... (0 module code pages) genindex search
+copying static files... done
+copying extra files... done
+dumping search index... done
+dumping object inventory... done
+build succeeded, 2 warnings.
+</system-out><system-err>/Users/sibirrer/Cosmology/Strong_Lensing/Code/lenstronomy/docs/index.rst:11: WARNING: toctree contains reference to nonexisting document u&apos;lenstronomy&apos;
+WARNING: html_static_path entry u&apos;/Users/sibirrer/Cosmology/Strong_Lensing/Code/lenstronomy/docs/_static&apos; does not exist
+</system-err></testcase></testsuite>

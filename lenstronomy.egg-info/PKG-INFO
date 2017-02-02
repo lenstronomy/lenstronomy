@@ -1,0 +1,48 @@
+Metadata-Version: 1.1
+Name: lenstronomy
+Version: 0.1.0
+Summary: This package is designed to model strong lens systems.
+Home-page: http://www.astro.ethz.ch/refregier/research/index
+Author: Simon Birrer
+Author-email: simon.birrer@phys.ethz.ch
+License: Proprietary
+Description: =============================
+        lenstronomy
+        =============================
+        
+        This package is designed to model strong lens systems.
+        
+        
+        Features
+        --------
+        
+        * TODO
+        
+        
+        
+        Documentation
+        -------------
+        
+        The full documentation can be generated with Sphinx
+        
+        
+        
+        History
+        -------
+        
+        0.1.0 (2014-05-26)
+        ++++++++++++++++++
+        
+        * First release on PyPI.
+Keywords: lenstronomy
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3

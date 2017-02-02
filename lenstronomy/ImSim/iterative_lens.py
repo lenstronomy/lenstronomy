@@ -2,9 +2,9 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
-import lenstronomy.util as util
+import astrofunc.util as util
 from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.FunctionSet.shapelets import Shapelets
+
 
 class MakeImageIterLens(MakeImage):
     """

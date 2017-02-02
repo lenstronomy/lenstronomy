@@ -1,11 +1,11 @@
 __author__ = 'sibirrer'
 
 import scipy.optimize
-from scipy.optimize import newton_krylov
 import numpy as np
-from lenstronomy.FunctionSet.spep import SPEP
-from lenstronomy.FunctionSet.shapelet_pot_2 import CartShapelets
-import lenstronomy.util as util
+from astrofunc.LensingProfiles.spep import SPEP
+from astrofunc.LensingProfiles.spemd import SPEMD
+from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
+import astrofunc.util as util
 
 
 class SolverSPEP(object):
@@ -43,7 +43,6 @@ class SolverSPEMD(object):
     class to solve multidimensional non-linear equations
     """
     def __init__(self):
-        from lenstronomy.FunctionSet.spemd import SPEMD
         self.spemd = SPEMD()
 
     def F(self, x, x_cat, y_cat, a, gamma):

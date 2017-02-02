@@ -1,4 +1,3 @@
 numpy>=1.11.1
 mock
--e git://github.com/sibirrer/pyextractor.git#egg=pyextract
--e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
+-e git://github.com/sibirrer/astrofunc.git#egg=astrofunc

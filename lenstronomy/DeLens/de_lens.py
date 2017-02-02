@@ -3,8 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import sys
 
-import lenstronomy.util as util
-from lenstronomy.FunctionSet.shapelets import Shapelets
+import astrofunc.util as util
+from astrofunc.LensingProfiles.shapelets import Shapelets
 
 class DeLens(object):
     """

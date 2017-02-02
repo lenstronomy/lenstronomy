@@ -1,21 +1,19 @@
 __author__ = 'sibirrer'
 
-import lenstronomy.util as util
-from lenstronomy.util import Util_class
+import astrofunc.util as util
+from astrofunc.util import Util_class
+from astrofunc.LensingProfiles.shapelets import Shapelets
+from astrofunc.LensingProfiles.gaussian import Gaussian
+
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.source_model import SourceModel
 from lenstronomy.ImSim.lens_light_model import LensLightModel
 from lenstronomy.DeLens.de_lens import DeLens
-from lenstronomy.FunctionSet.shapelets import Shapelets
-from lenstronomy.FunctionSet.gaussian import Gaussian
-
 
 import scipy.ndimage as ndimage
 import scipy.signal as signal
 import numpy as np
 import copy
-#import scipy.signal.convolve2d as convolve2d
-
 
 
 class MakeImage(object):
@@ -44,10 +42,10 @@ class MakeImage(object):
             self.C_D = self.DeLens.get_covariance_matrix(util.image2array(data), sigma_b, f)
         self.shapelets = Shapelets()
         if kwargs_options['source_type'] == 'SERSIC':
-            from lenstronomy.FunctionSet.sersic import Sersic
+            from astrofunc.LightProfiles.sersic import Sersic
             self.sersic = Sersic()
         elif kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
-            from lenstronomy.FunctionSet.sersic import Sersic_elliptic
+            from astrofunc.LightProfiles.sersic import Sersic_elliptic
             self.sersic = Sersic_elliptic()
         try:
             self.ra_coords = kwargs_data.get('x_coords', None)

@@ -1,6 +1,6 @@
-darkskysync
+sympy
+mpmath
+numpy>=1.9.1
+scipy>=0.14.0
 configparser
 astropy
-PyCosmo
-numpy>=1.7
-scipy

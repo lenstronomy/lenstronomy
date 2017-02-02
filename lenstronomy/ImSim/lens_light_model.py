@@ -2,8 +2,9 @@ __author__ = 'sibirrer'
 
 #this file contains a class which describes the surface brightness of the lens light
 
-import lenstronomy.util as util
+import astrofunc.util as util
 import numpy as np
+
 
 class LensLightModel(object):
 
@@ -12,28 +13,28 @@ class LensLightModel(object):
             self.valid = True
             self.lens_light_type = kwargs_options['lens_light_type']
             if kwargs_options['lens_light_type'] == 'GAUSSIAN':
-                from lenstronomy.FunctionSet.gaussian import Gaussian
+                from astrofunc.LensingProfiles.gaussian import Gaussian
                 self.func = Gaussian()
             elif kwargs_options['lens_light_type'] == 'SERSIC':
-                from lenstronomy.FunctionSet.sersic import Sersic
+                from astrofunc.LightProfiles.sersic import Sersic
                 self.func = Sersic()
             elif kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE':
-                from lenstronomy.FunctionSet.sersic import Sersic_elliptic
+                from astrofunc.LightProfiles.sersic import Sersic_elliptic
                 self.func = Sersic_elliptic()
             elif kwargs_options['lens_light_type'] == 'SHAPELETS':
-                from lenstronomy.FunctionSet.shapelets import Shapelets
+                from astrofunc.LensingProfiles.shapelets import Shapelets
                 self.func = Shapelets()
             elif kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC':
-                from lenstronomy.FunctionSet.sersic import DoubleSersic
+                from astrofunc.LightProfiles.sersic import DoubleSersic
                 self.func = DoubleSersic()
             elif kwargs_options['lens_light_type'] == 'CORE_SERSIC':
-                from lenstronomy.FunctionSet.sersic import CoreSersic
+                from astrofunc.LightProfiles.sersic import CoreSersic
                 self.func = CoreSersic()
             elif kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
-                from lenstronomy.FunctionSet.sersic import DoubleCoreSersic
+                from astrofunc.LightProfiles.sersic import DoubleCoreSersic
                 self.func = DoubleCoreSersic()
             elif kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
-                from lenstronomy.FunctionSet.sersic import TripleSersic
+                from astrofunc.LightProfiles.sersic import TripleSersic
                 self.func = TripleSersic()
             elif kwargs_options['lens_light_type'] == 'fixed':
                 self.lens_light_model_fixed = data_kwargs['lens_light_model']

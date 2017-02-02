@@ -3,9 +3,9 @@ __author__ = 'sibirrer'
 
 from lenstronomy.MCMC.solver import SolverSPEP, Constraints, SolverShapelets
 from lenstronomy.ImSim.make_image import MakeImage
-import lenstronomy.util as util
 from lenstronomy.Trash.trash import Trash
 
+import astrofunc.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest

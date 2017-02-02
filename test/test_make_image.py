@@ -5,8 +5,8 @@ import pytest
 from mock import patch
 import numpy as np
 import numpy.testing as npt
+import astrofunc.util as util
 
-import lenstronomy.util as util
 from lenstronomy.ImSim.make_image import MakeImage
 
 class TestMakeImage(object):
@@ -46,21 +46,6 @@ class TestMakeImage(object):
         kwargs = {'sigma': 1}
         grid_convolved = self.makeImage.psf_convolution(self.grid, 1., **kwargs)
         assert (grid_convolved[0][0] > 8.447e-05 and grid_convolved[0][0] < 8.448e-05)
-
-    def test_findIterative(self):
-        from lenstronomy.Trash.trash import Trash
-        self.trash = Trash(self.makeImage)
-        x_min = [1,2,-1,0]
-        y_min = [1,0,1,-1]
-        sourcePos_x = 0.3
-        sourcePos_y = 0.1
-        deltapix = 0.1
-        num_iter = 100
-        x_mins, y_mins, values = self.trash.findIterative(x_min, y_min, sourcePos_x, sourcePos_y, deltapix, num_iter, **self.kwargs)
-        assert x_mins[0] > 0.29708087 and x_mins[0] < 0.29708089
-        assert x_mins[1] > 0.29708087 and x_mins[1] < 0.29708089
-        assert x_mins[2] > 0.29708087 and x_mins[2] < 0.29708089
-        assert x_mins[3] > 0.29708087 and x_mins[3] < 0.29708089
 
     def test_estimate_amp(self):
         data = np.ones((20, 20))

@@ -3,75 +3,74 @@ __author__ = 'sibirrer'
 #file which contains class for lens model routines
 
 
-
 class LensModel(object):
 
     def __init__(self, kwargs_options):
-        from lenstronomy.FunctionSet.external_shear import ExternalShear
+        from astrofunc.LensingProfiles.external_shear import ExternalShear
         ellipse_type = kwargs_options.get('ellipse_type', 'SPEP')
         self.shear = ExternalShear()
         if kwargs_options['lens_type'] == 'GAUSSIAN':
-            from lenstronomy.FunctionSet.gaussian import Gaussian
+            from astrofunc.LensingProfiles.gaussian import Gaussian
             self.func = Gaussian()
         elif kwargs_options['lens_type'] == 'SIS':
-            from lenstronomy.FunctionSet.sis import SIS
+            from astrofunc.LensingProfiles.sis import SIS
             self.func = SIS()
         elif kwargs_options['lens_type'] == 'SPP':
-            from lenstronomy.FunctionSet.spp import SPP
+            from astrofunc.LensingProfiles.spp import SPP
             self.func = SPP()
         elif kwargs_options['lens_type'] == 'SPEP':
-            from lenstronomy.FunctionSet.spep import SPEP
+            from astrofunc.LensingProfiles.spep import SPEP
             self.func = SPEP()
         elif kwargs_options['lens_type'] == 'SPEMD':
-            from lenstronomy.FunctionSet.spemd import SPEMD
+            from astrofunc.LensingProfiles.spemd import SPEMD
             self.func = SPEMD()
         elif kwargs_options['lens_type'] == 'ELLIPSE':
-            from lenstronomy.FunctionSet.ellipse import Ellipse
+            from astrofunc.LensingProfiles.ellipse import Ellipse
             self.func = Ellipse(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_SIS':
-            from lenstronomy.FunctionSet.spep_sis import SPEP_SIS
+            from astrofunc.LensingProfiles.spep_sis import SPEP_SIS
             self.func = SPEP_SIS(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_SPP':
-            from lenstronomy.FunctionSet.spep_spp import SPEP_SPP
+            from astrofunc.LensingProfiles.spep_spp import SPEP_SPP
             self.func = SPEP_SPP(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'INTERPOL':
-            from lenstronomy.FunctionSet.interpol import Interpol_func
+            from astrofunc.LensingProfiles.interpol import Interpol_func
             self.func = Interpol_func()
         elif kwargs_options['lens_type'] == 'SHAPELETS_POLAR':
-            from lenstronomy.FunctionSet.shapelet_pot import PolarShapelets
+            from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
             self.func = PolarShapelets()
         elif kwargs_options['lens_type'] == 'SHAPELETS_CART':
-            from lenstronomy.FunctionSet.shapelet_pot_2 import CartShapelets
+            from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
             self.func = CartShapelets()
         elif kwargs_options['lens_type'] == 'SPEP_SHAPELETS':
-            from lenstronomy.FunctionSet.spep_shapelets import SPEP_Shapelets
+            from astrofunc.LensingProfiles.spep_shapelets import SPEP_Shapelets
             self.func = SPEP_Shapelets(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS':
-            from lenstronomy.FunctionSet.spep_shapelets import SPEP_SPP_Shapelets
+            from astrofunc.LensingProfiles.spep_shapelets import SPEP_SPP_Shapelets
             self.func = SPEP_SPP_Shapelets(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE':
-            from lenstronomy.FunctionSet.spep_spp_dipole import SPEP_SPP_Dipole
+            from astrofunc.LensingProfiles.spep_spp_dipole import SPEP_SPP_Dipole
             self.func = SPEP_SPP_Dipole(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            from lenstronomy.FunctionSet.spep_spp_dipole import SPEP_SPP_Dipole_Shapelets
+            from astrofunc.LensingProfiles.spep_spp_dipole import SPEP_SPP_Dipole_Shapelets
             self.func = SPEP_SPP_Dipole_Shapelets(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'SPEP_NFW':
-            from lenstronomy.FunctionSet.spep_nfw import SPEP_NFW
+            from astrofunc.LensingProfiles.spep_nfw import SPEP_NFW
             self.func = SPEP_NFW(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'NFW':
-            from lenstronomy.FunctionSet.nfw import NFW
+            from astrofunc.LensingProfiles.nfw import NFW
             self.func = NFW()
         elif kwargs_options['lens_type'] == 'DIPOLE':
-            from lenstronomy.FunctionSet.dipole import Dipole
+            from astrofunc.LensingProfiles.dipole import Dipole
             self.func = Dipole()
         elif kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE':
-            from lenstronomy.FunctionSet.spep_spp_dipole import SPEP_SPP_Dipole
+            from astrofunc.LensingProfiles.spep_spp_dipole import SPEP_SPP_Dipole
             self.func = SPEP_SPP_Dipole(type=ellipse_type)
         elif kwargs_options['lens_type'] == 'EXTERNAL_SHEAR':
-            from lenstronomy.FunctionSet.external_shear import ExternalShear
+            from astrofunc.LensingProfiles.external_shear import ExternalShear
             self.func = ExternalShear()
         elif kwargs_options['lens_type'] == 'NONE':
-            from lenstronomy.FunctionSet.no_lens import NoLens
+            from astrofunc.LensingProfiles.no_lens import NoLens
             self.func = NoLens()
         else:
             raise ValueError('options do not include a valid lens model!', kwargs_options['lens_type'])
@@ -80,10 +79,10 @@ class LensModel(object):
         self.add_clump = kwargs_options.get('add_clump', False)
         self.clump_type = kwargs_options.get('clump_type', 'SIS_TRUNCATED')
         if self.clump_type == 'SIS_TRUNCATED':
-            from lenstronomy.FunctionSet.sis_truncate import SIS_truncate
+            from astrofunc.LensingProfiles.sis_truncate import SIS_truncate
             self.clump = SIS_truncate()
         elif self.clump_type == 'NFW':
-            from lenstronomy.FunctionSet.nfw import NFW, HaloParam
+            from astrofunc.LensingProfiles.nfw import NFW, HaloParam
             self.clump = NFW()
         else:
             raise ValueError('clump_type %s not valid!' % self.clump_type)

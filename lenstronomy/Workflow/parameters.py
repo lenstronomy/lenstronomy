@@ -2,10 +2,11 @@ __author__ = 'sibirrer'
 
 
 import numpy as np
-import lenstronomy.util as util
+import astrofunc.util as util
+from astrofunc.LensingProfiles.dipole import Dipole_util
+
 from lenstronomy.MCMC.solver import Constraints
 from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.FunctionSet.dipole import Dipole_util
 
 class Param(object):
     """

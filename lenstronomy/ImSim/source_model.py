@@ -6,16 +6,16 @@ class SourceModel(object):
 
     def __init__(self, kwargs_options):
         if kwargs_options['source_type'] == 'GAUSSIAN':
-            from lenstronomy.FunctionSet.gaussian import Gaussian
+            from astrofunc.LensingProfiles.gaussian import Gaussian
             self.func = Gaussian()
         elif kwargs_options['source_type'] == 'SERSIC':
-            from lenstronomy.FunctionSet.sersic import Sersic
+            from astrofunc.LightProfiles.sersic import Sersic
             self.func = Sersic()
         elif kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
-            from lenstronomy.FunctionSet.sersic import Sersic_elliptic
+            from astrofunc.LightProfiles.sersic import Sersic_elliptic
             self.func = Sersic_elliptic()
         elif kwargs_options['source_type'] == 'SHAPELETS':
-            from lenstronomy.FunctionSet.shapelets import Shapelets
+            from astrofunc.LensingProfiles.shapelets import Shapelets
             self.func = Shapelets()
         elif kwargs_options['source_type'] == 'NONE':
             pass

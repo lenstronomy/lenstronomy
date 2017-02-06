@@ -63,7 +63,7 @@ class MCMC_chain(object):
     """
     this class contains the routines to run a MCMC process with one single image
     """
-    def __init__(self, kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else):
+    def __init__(self, kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
         """
         initializes all the classes needed for the chain
         """
@@ -95,7 +95,7 @@ class MCMC_chain(object):
             f_yy = kwargs_fixed_lens['f_yy']
             self.makeImage.LensModel.func.do_interp(x_grid, y_grid, f_, f_x, f_y, f_xx, f_yy, f_xy)
             kwargs_fixed_lens = {}
-        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else)
+        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.x_grid, self.y_grid = self.util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], self.subgrid_res)
         self.compare = Compare(kwargs_options)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()
@@ -114,9 +114,9 @@ class MCMC_chain(object):
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
         #extract parameters
-        kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(self.x_grid, self.y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, self.numPix, self.deltaPix, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(self.x_grid, self.y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.numPix, self.deltaPix, self.subgrid_res, inv_bool=self.inv_bool)
         #im_sim = util.array2image(im_sim)
         #compute X^2
         logL = self.compare.get_log_likelihood(im_sim, self.data, self.sigma_b, self.exposure_map, mask=self.mask, model_error=model_error, cov_matrix=cov_matrix)
@@ -274,7 +274,7 @@ class MCMC_multiband_chain(object):
     """
     class for computing the likelihood of multiband fitting
     """
-    def __init__(self, kwargs_data_list, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else):
+    def __init__(self, kwargs_data_list, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
         """
         initializes all the classes needed for the chain
         """
@@ -285,7 +285,7 @@ class MCMC_multiband_chain(object):
         self.num_shapelets = kwargs_options.get('shapelet_order', -1)
         self.sampling_option = kwargs_options.get('X2_type', 'image')
 
-        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else)
+        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.compare = Compare(kwargs_options)
 
         self.lowerLimit, self.upperLimit = self.param.param_bounds()

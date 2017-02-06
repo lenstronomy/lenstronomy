@@ -22,15 +22,15 @@ class MCMC_sampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else):
+    def __init__(self, kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
         """
         initialise the classes of the chain and for parameter options
         """
         if kwargs_options.get('multiBand', False):
-            self.chain = MCMC_multiband_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else)
+            self.chain = MCMC_multiband_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         else:
-            self.chain = MCMC_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else)
-        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_psf, kwargs_fixed_lens_light, kwargs_fixed_else)
+            self.chain = MCMC_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
+        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi_monch=False, print_key='default'):
         """

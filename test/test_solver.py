@@ -17,13 +17,13 @@ class TestSolver(object):
     def setup(self):
         self.constraints = Constraints('SPEP')
         kwargs_options_spep = {'lens_type': 'SPEP', 'source_type': 'GAUSSIAN'}
-        self.makeImage_spep = MakeImage(kwargs_options_spep, 0)
+        self.makeImage_spep = MakeImage(kwargs_options_spep)
         self.trash_spep = Trash(self.makeImage_spep)
         kwargs_options_nfw = {'lens_type': 'SPEP_NFW', 'source_type': 'GAUSSIAN'}
-        self.makeImage_nfw = MakeImage(kwargs_options_nfw, 0)
+        self.makeImage_nfw = MakeImage(kwargs_options_nfw)
         self.trash_nfw = Trash(self.makeImage_nfw)
         kwargs_options_spp = {'lens_type': 'SPEP_SPP', 'source_type': 'GAUSSIAN'}
-        self.makeImage_spp = MakeImage(kwargs_options_spp, 0)
+        self.makeImage_spp = MakeImage(kwargs_options_spp)
         self.trash_spp = Trash(self.makeImage_spp)
         self.solver = SolverSPEP()
 
@@ -190,12 +190,12 @@ class TestSolverNew(object):
 
     def setup(self):
         kwargs_options_spep = {'lens_type': 'SPEP', 'source_type': 'GAUSSIAN'}
-        self.makeImage_spep = MakeImage(kwargs_options_spep, 0)
+        self.makeImage_spep = MakeImage(kwargs_options_spep)
         kwargs_options_spep_spp = {'lens_type': 'SPEP_SPP', 'source_type': 'GAUSSIAN'}
-        self.makeImage_spep_spp = MakeImage(kwargs_options_spep_spp, 0)
+        self.makeImage_spep_spp = MakeImage(kwargs_options_spep_spp)
         self.trash_spep_spp = Trash(self.makeImage_spep_spp)
         kwargs_options_spep_spp_shapelets = {'lens_type': 'SPEP_SPP_SHAPELETS', 'source_type': 'GAUSSIAN'}
-        self.makeImage_spep_spp_shapelets = MakeImage(kwargs_options_spep_spp_shapelets, 0)
+        self.makeImage_spep_spp_shapelets = MakeImage(kwargs_options_spep_spp_shapelets)
         self.trash_spep_spp_shapelets = Trash(self.makeImage_spep_spp_shapelets)
         self.solverShapelets = SolverShapelets()
         self.solver = SolverSPEP()

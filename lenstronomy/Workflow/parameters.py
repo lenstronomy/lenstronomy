@@ -21,14 +21,13 @@ class Param(object):
     SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)
     """
 
-    def __init__(self, kwargs_options, kwargs_fixed_lens={}, kwargs_fixed_source={}, kwargs_fixed_psf={}, kwargs_fixed_lens_light={}, kwargs_fixed_else={}):
+    def __init__(self, kwargs_options, kwargs_fixed_lens={}, kwargs_fixed_source={}, kwargs_fixed_lens_light={}, kwargs_fixed_else={}):
         """
 
         :return:
         """
         self.kwargs_fixed_lens = kwargs_fixed_lens
         self.kwargs_fixed_source = kwargs_fixed_source
-        self.kwargs_fixed_psf = kwargs_fixed_psf
         self.kwargs_fixed_lens_light = kwargs_fixed_lens_light
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
@@ -37,7 +36,7 @@ class Param(object):
             self.constraints = Constraints(self.solver_type)
         else:
             self.solver_type = None
-        self.makeImage = MakeImage(kwargs_options, 0)
+        self.makeImage = MakeImage(kwargs_options)
         if kwargs_options['lens_type'] == 'SPEP_SIS':
             self.clump_type = 'SIS'
         elif kwargs_options['lens_type'] == 'SPEP_NFW':
@@ -202,20 +201,6 @@ class Param(object):
                 kwargs_source['center_y'] = args[i]
                 i += 1
 
-        kwargs_psf = {}
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if not 'sigma' in self.kwargs_fixed_psf:
-                kwargs_psf['sigma'] = args[i]
-                i += 1
-        elif self.kwargs_options['psf_type'] == 'pixel':
-            if not self.kwargs_options.get("multiBand", False):
-                if 'kernel' not in self.kwargs_fixed_psf:
-                   raise ValueError('you must provide a psf kernel in the kwargs_fixed_psf')
-                if 'psf_type' not in self.kwargs_fixed_psf:
-                   raise ValueError('you must provide a psf type in the kwargs_fixed_psf')
-        else:
-            raise ValueError('not supported PSF type %s' %(self.kwargs_options['psf_type']))
-
         kwargs_lens_light = {}
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
@@ -325,17 +310,15 @@ class Param(object):
                 i += 3
         lens_dict = dict(kwargs_lens.items() + self.kwargs_fixed_lens.items())
         source_dict = dict(kwargs_source.items() + self.kwargs_fixed_source.items())
-        psf_dict = dict(kwargs_psf.items() + self.kwargs_fixed_psf.items())
         lens_light_dict = dict(kwargs_lens_light.items() + self.kwargs_fixed_lens_light.items())
         else_dict = dict(kwargs_else.items() + self.kwargs_fixed_else.items())
-        return lens_dict, source_dict, psf_dict, lens_light_dict, else_dict
+        return lens_dict, source_dict, lens_light_dict, else_dict
 
-    def setParams(self, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light={}, kwargs_else={}):
+    def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light={}, kwargs_else={}):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
         :param kwargs_source: keyword arguments depending on model options
-        :param kwargs_psf: keyword arguments depending on model options
         :return: tuple of parameters
         """
         args = []
@@ -437,10 +420,6 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_source:
                 args.append(kwargs_source['center_y'])
 
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if not 'sigma' in self.kwargs_fixed_psf:
-                args.append(kwargs_psf['sigma'])
-
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['I0_sersic'])
@@ -524,19 +503,17 @@ class Param(object):
                     args.append(i)
         return args
 
-    def add_to_fixed(self, lens_fixed, source_fixed, psf_fixed, lens_light_fixed, else_fixed):
+    def add_to_fixed(self, lens_fixed, source_fixed, lens_light_fixed, else_fixed):
         """
         changes the kwargs fixed with the inputs, if options are chosen such that it is modeled
         :param lens_fixed:
         :param source_fixed:
-        :param psf_fixed:
         :param lens_light_fixed:
         :param else_fixed:
         :return:
         """
         lens_fix = {}
         source_fix = {}
-        psf_fix = {}
         lens_light_fix = {}
         else_fix = {}
         if self.kwargs_options['lens_type'] == 'GAUSSIAN':
@@ -633,10 +610,6 @@ class Param(object):
             if 'center_y' in source_fixed:
                 source_fix['center_y'] = source_fixed['center_y']
 
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if 'sigma' in psf_fixed:
-                psf_fix['sigma'] = psf_fixed['sigma']
-
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if 'I0_sersic' in lens_light_fixed:
                 lens_light_fix['I0_sersic'] = lens_light_fixed['I0_sersic']
@@ -720,10 +693,10 @@ class Param(object):
             if 'point_amp' in else_fixed:
                 else_fix['point_amp'] = else_fixed['point_amp']
 
-        return lens_fix, source_fix, psf_fix, lens_light_fix, else_fix
+        return lens_fix, source_fix, lens_light_fix, else_fix
 
 
-    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_psf, kwarg_mean_lens_light={}, kwarg_mean_else={}):
+    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light={}, kwarg_mean_else={}):
         """
         returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting
         bounds are defined relative to the catalogue level image called in the class Data
@@ -875,11 +848,6 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_source:
                 mean.append(kwarg_mean_source['center_y'])
                 sigma.append(kwarg_mean_source['center_y_sigma'])
-
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if not 'sigma' in self.kwargs_fixed_psf:
-                mean.append(kwarg_mean_psf['sigma'])
-                sigma.append(kwarg_mean_psf['sigma_sigma'])
 
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
@@ -1144,11 +1112,6 @@ class Param(object):
                 low.append(-2)
                 high.append(2)
 
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if not 'sigma' in self.kwargs_fixed_psf:
-                low.append(0.)
-                high.append(5)
-
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 low.append(0)
@@ -1399,11 +1362,6 @@ class Param(object):
                 num += 1
                 list.append('center_y_source')
 
-        if self.kwargs_options['psf_type'] == 'GAUSSIAN':
-            if not 'sigma' in self.kwargs_fixed_psf:
-                num += 1
-                list.append('sigma_psf')
-
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 num += 1
@@ -1534,11 +1492,11 @@ class Param(object):
         return kwargs_lens
 
     def get_all_params(self, args):
-        kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else = self.getParams(args)
-        kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else)
-        return kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.getParams(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def update_kwargs(self, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else):
+    def update_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         if self.kwargs_options.get('solver', False):
             if self.foreground_shear:
                 f_x_shear1, f_y_shear1 = self.makeImage.LensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
@@ -1573,4 +1531,4 @@ class Param(object):
                 #kwargs_source['center_y'] = np.mean(y_mapped)
                 kwargs_source['center_x'] = x_mapped[0]
                 kwargs_source['center_y'] = y_mapped[0]
-        return kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else

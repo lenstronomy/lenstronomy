@@ -20,17 +20,18 @@ class MakeImage(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data):
+    def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
         self.LensModel = LensModel(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
         self.LensLightModel = LensLightModel(kwargs_options, kwargs_data)
-        self.kwargs_options = kwargs_options
         self.DeLens = DeLens()
+        self.kwargs_options = kwargs_options
         self.kwargs_data = kwargs_data
+        self.kwargs_psf = kwargs_psf
         self.util_class = Util_class()
         self.gaussian = Gaussian()
 
-        if kwargs_data != 0 and 'sigma_background' in kwargs_data and 'image_data' in kwargs_data and 'reduced_noise' in kwargs_data:
+        if kwargs_data is not None and 'sigma_background' in kwargs_data and 'image_data' in kwargs_data and 'reduced_noise' in kwargs_data:
             sigma_b = kwargs_data['sigma_background']
             exp_map = kwargs_data.get('exposure_map', None)
             if exp_map is not None:
@@ -90,22 +91,6 @@ class MakeImage(object):
         potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x, y, kwargs_else, **kwargs)
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
 
-    def re_size(self, grid, numPix):
-        """
-        smooths a given grid to larger pixels
-        """
-        #TODO astrofunc package has this routine -> replace
-        numGrid = len(grid)
-
-        if numGrid == numPix: #if the grid has the same size as the pixelized image
-            return grid
-        else:
-            numAverage = numGrid/numPix
-            if int(numAverage) == numAverage:
-                return util.averaging(grid, numGrid, numPix)
-            else:
-                raise ValueError("grid size = %f is not a integer factor of pixel size = %f " % (numGrid, numPix))
-
     def psf_convolution(self, grid, grid_scale, **kwargs):
         """
         convolves a given pixel grid with a PSF
@@ -124,28 +109,26 @@ class MakeImage(object):
                 kernel_fft = kwargs['kernel_fft']
                 img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
             else:
-                #img_conv0 = signal.convolve2d(grid, kernel, mode='same', boundary='fill', fillvalue=0)
                 img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
-                #img_conv2 = np.fft.irfft2(np.fft.rfft2(grid) * np.fft.rfft2(kernel, grid.shape))
             return img_conv1
         return grid
 
     def re_size_convolve(self, image, numPix, deltaPix, subgrid_res, kwargs_psf, unconvolved=False):
         gridScale = deltaPix/subgrid_res
         if self.kwargs_options['psf_type'] == 'pixel':
-            grid_re_sized = self.re_size(image, numPix)
+            grid_re_sized = self.util_class.re_size(image, numPix)
             if unconvolved:
                 grid_final = grid_re_sized
             else:
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
         elif self.kwargs_options['psf_type'] == 'NONE':
-            grid_final = self.re_size(image, numPix)
+            grid_final = self.util_class.re_size(image, numPix)
         else:
             if unconvolved:
                 grid_conv = image
             else:
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
-            grid_final = self.re_size(grid_conv, numPix)
+            grid_final = self.util_class.re_size(grid_conv, numPix)
         return grid_final
 
     def add_noise2image(self, image):
@@ -168,7 +151,7 @@ class MakeImage(object):
         residual = (model - self.kwargs_data["image_data"])/np.sqrt(util.array2image(self.C_D)+np.abs(error_map))*self.kwargs_data["mask"]
         return residual
 
-    def make_image_ideal(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
+    def make_image_ideal(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         if no_lens is True:
@@ -176,7 +159,7 @@ class MakeImage(object):
         else:
             x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
         mask = self.kwargs_data['mask']
-        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
         data = self.kwargs_data['image_data']
         d = util.image2array(data*mask)
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
@@ -196,7 +179,7 @@ class MakeImage(object):
             error_map = np.zeros_like(grid_final)
         return grid_final, error_map, cov_param, param
 
-    def make_image_ideal_noMask(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
+    def make_image_ideal_noMask(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
@@ -210,7 +193,7 @@ class MakeImage(object):
         grid_final = util.array2image(image_pure)
         return grid_final, param, util.array2image(error_map)
 
-    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param, num_order):
+    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param, num_order):
         """
         make a image with a realisation of linear parameter values "param"
         """
@@ -219,7 +202,7 @@ class MakeImage(object):
         A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
-        image_conv = self.psf_convolution(util.array2image(image_pure), deltaPix/subgrid_res, **kwargs_psf)
+        image_conv = self.psf_convolution(util.array2image(image_pure), deltaPix/subgrid_res, **self.kwargs_psf)
         image_ = util.array2image(image_)
         return image_conv + image_, util.array2image(error_map)
 
@@ -292,8 +275,8 @@ class MakeImage(object):
             num_param += 1
         return num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, num_enhance, num_subclump
 
-    def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
-
+    def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
+        kwargs_psf = self.kwargs_psf
         num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, num_enhance, num_subclump = self._matrix_configuration(x_grid, y_grid, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off)
         A = np.zeros((num_param, numPix**2))
         if map_error is True:
@@ -378,12 +361,12 @@ class MakeImage(object):
                 psf = psf_list[k]
                 grid2d = np.zeros((numPix, numPix))
                 for i in range(0, len(x_pos)):
-                    grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, amplitudes[i]*psf, key='log')
+                    grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, amplitudes[i]*psf)
                 A[k, :] = util.image2array(grid2d*mask)
         else:
             for i in range(num_param):
                 grid2d = np.zeros((numPix, numPix))
-                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, psf_large, key='log')
+                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, psf_large)
                 A[i, :] = util.image2array(point_source*mask)
         return A, error_map
 
@@ -558,7 +541,7 @@ class MakeImage(object):
         """
         if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
             a = 2
-        elif self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             a = 3
         elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE':
             a = 1

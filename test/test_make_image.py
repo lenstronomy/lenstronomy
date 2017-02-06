@@ -37,11 +37,6 @@ class TestMakeImage(object):
         I_xy = self.makeImage.get_surface_brightness(x=1., y=1., **self.kwargs)
         assert I_xy == 0.77880078307140488/(8*np.pi)
 
-    def test_re_size(self):
-        kwargs = {'numPix': 50}
-        grid_smoothed = self.makeImage.re_size(self.grid, **kwargs)
-        assert grid_smoothed[0][0] == 8.7238568540103458e-05
-
     def test_psf_convolution(self):
         kwargs = {'sigma': 1}
         grid_convolved = self.makeImage.psf_convolution(self.grid, 1., **kwargs)

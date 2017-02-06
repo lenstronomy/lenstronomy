@@ -96,10 +96,9 @@ class Fitting(object):
         kwargs_sigma_lens_light = {}
         kwargs_sigma_else = {}
         lens_result, source_result, psf_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations,
+            n_particles, n_iterations, kwargs_options, kwargs_data,
             kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,
             kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
-            kwargs_fixed_psf, kwargs_mean_psf, kwargs_sigma_psf,
             kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
             kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
             threadCount=1, mpi_monch=mpi_monch, print_key='Catalogue')
@@ -435,7 +434,7 @@ class Fitting(object):
             kwargs_data = self.kwargs_data
             kwargs_psf = self.kwargs_psf_init
         from lenstronomy.ImSim.make_image import MakeImage
-        from lenstronomy.util import Util_class
+        from astrofunc.util import Util_class
         util_class = Util_class()
         makeImage = MakeImage(self.kwargs_options, kwargs_data)
         x_grid, y_grid = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)

@@ -3,8 +3,6 @@ __author__ = 'sibirrer'
 # this file contains a class to manage the finder que.
 # The job of this class is to select a finder que and to return it in a standardised format
 
-import copy
-from lenstronomy.FunctionSet.dipole import Dipole_util
 
 class FinderQue(object):
 

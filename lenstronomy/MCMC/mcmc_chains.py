@@ -1,13 +1,11 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-
-import lenstronomy.util as util
-from lenstronomy.util import Util_class
-from lenstronomy.MCMC.compare import Compare
-from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
+from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.MCMC.compare import Compare
 from lenstronomy.Workflow.parameters import Param
+from lenstronomy.util import Util_class
 
 class MCMC_chain_test(object):
     """

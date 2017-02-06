@@ -4,7 +4,8 @@ __author__ = 'sibirrer'
 # The job of this class is to select a finder que and to return it in a standardised format
 
 import copy
-from lenstronomy.FunctionSet.dipole import Dipole_util
+
+# TODO: this can be replaced by smarter way in fitting.py
 
 class MCMCQue(object):
 
@@ -13,7 +14,6 @@ class MCMCQue(object):
         self.num_cpu = kwargs_finder['num_cpu']
         self.mpi_monch = kwargs_finder.get('mpi_monch', False)
         self.samples = samples
-        self.dipole_util = Dipole_util()
         self.dist = 0
 
     def sample_que(self, kwargs_finder, lens_result, source_result, psf_result, lens_light_result, else_result):

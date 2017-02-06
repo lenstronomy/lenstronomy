@@ -5,7 +5,7 @@ import numpy.testing as npt
 import pytest
 
 # from lenstronomy.ImSim.make_image import MakeImage
-# from lenstronomy.Workflow.position_finder import PositionFinder
+# from lenstronomy.Workflow_old.position_finder import PositionFinder
 #
 # class TestFind(object):
 #

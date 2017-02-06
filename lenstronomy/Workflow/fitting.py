@@ -1,17 +1,12 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import time
-import copy
-
 from lenstronomy.MCMC.mcmc import MCMC_sampler
-from lenstronomy.Workflow.parameters import Param
-from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.MCMC.solver import Constraints
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
+from lenstronomy.Workflow.parameters import Param
 
 
-class PositionFinder(object):
+class Fitting(object):
     """
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """

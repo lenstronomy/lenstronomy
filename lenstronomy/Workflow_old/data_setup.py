@@ -4,8 +4,8 @@ import numpy as np
 import astropy.io.fits as pyfits
 import scipy.ndimage.filters as filters
 
-import lenstronomy.util as util
-from lenstronomy.DataAnalysis.analysis import Analysis
+import astrofunc.util as util
+from astrofunc.DataAnalysis.analysis import Analysis
 from lenstronomy.FunctionSet.shapelets import Shapelets
 
 
@@ -15,6 +15,7 @@ class DataSetup(object):
     needed properties to deal in the MCMC and PSO process
     :param object: takes e.g. StrongLensSystem system
     """
+    #TODO has to be replaced/became part of astroObject project
     def __init__(self, system):
         self.system = system
         self.analysis = Analysis()

@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import astrofunc.util as util
-from astrofunc.LensingProfiles.dipole import Dipole_util
 
 from lenstronomy.MCMC.solver import Constraints
 from lenstronomy.ImSim.make_image import MakeImage
@@ -53,7 +52,6 @@ class Param(object):
             self.clump_type = 'NO_clump'
         else:
             self.clump_type = None
-        self.dipole_util = Dipole_util()
         self.foreground_shear = kwargs_options.get('foreground_shear', False) and kwargs_options['external_shear']
 
     def getParams(self, args):
@@ -1541,9 +1539,6 @@ class Param(object):
         return kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else
 
     def update_kwargs(self, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else):
-        if self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if self.kwargs_options.get('phi_dipole_decoupling', False) is False:
-                kwargs_lens['phi_dipole'] = self.dipole_util.angle(kwargs_lens['center_x'], kwargs_lens['center_y'], kwargs_lens['center_x_spp'], kwargs_lens['center_y_spp'])
         if self.kwargs_options.get('solver', False):
             if self.foreground_shear:
                 f_x_shear1, f_y_shear1 = self.makeImage.LensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])

@@ -1,14 +1,11 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import time
-import copy
-
 from lenstronomy.MCMC.mcmc import MCMC_sampler
-from lenstronomy.Workflow.parameters import Param
-from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.MCMC.solver import Constraints
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
+from lenstronomy.Workflow.parameters import Param
+
+#TODO: will be replaced by fitting.py
 
 
 class PositionFinder(object):

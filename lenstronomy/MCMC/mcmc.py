@@ -1,25 +1,21 @@
 __author__ = 'sibirrer'
 
-
-from cosmoHammer import ParticleSwarmOptimizer
-from cosmoHammer import MpiParticleSwarmOptimizer
-from cosmoHammer import LikelihoodComputationChain
-from cosmoHammer import CosmoHammerSampler
-from cosmoHammer import MpiCosmoHammerSampler
-from cosmoHammer.util import MpiUtil
-from cosmoHammer.util import InMemoryStorageUtil
+import os
+import shutil
+import tempfile
+import time
 
 import emcee
 import numpy as np
-import time
-import tempfile
-import os
-import shutil
-
-
-from lenstronomy.Workflow.parameters import Param
+from cosmoHammer import CosmoHammerSampler
+from cosmoHammer import LikelihoodComputationChain
+from cosmoHammer import MpiCosmoHammerSampler
+from cosmoHammer import MpiParticleSwarmOptimizer
+from cosmoHammer import ParticleSwarmOptimizer
+from cosmoHammer.util import InMemoryStorageUtil
+from cosmoHammer.util import MpiUtil
 from lenstronomy.MCMC.mcmc_chains import MCMC_chain, MCMC_multiband_chain
-
+from lenstronomy.Workflow.parameters import Param
 
 
 class MCMC_sampler(object):

@@ -51,7 +51,9 @@ class Param(object):
             self.clump_type = 'NO_clump'
         else:
             self.clump_type = None
-        self.foreground_shear = kwargs_options.get('foreground_shear', False) and kwargs_options['external_shear']
+        self.external_shear = kwargs_options.get('external_shear', False)
+        self.foreground_shear = kwargs_options.get('foreground_shear', False) \
+                                and kwargs_options.get('external_shear', False)
 
     def getParams(self, args):
         """
@@ -60,8 +62,6 @@ class Param(object):
         :return: keyword arguments sorted
         """
         i = 0
-        if 'numLens' in self.kwargs_options and self.kwargs_options['numLens'] > 1:
-            pass
         kwargs_lens = {}
         if self.kwargs_options['lens_type'] == 'GAUSSIAN':
             if not 'amp' in self.kwargs_fixed_lens:
@@ -273,7 +273,7 @@ class Param(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
                 kwargs_else['source_pos_image_dec'] = args[i]
                 i += 1
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 kwargs_else['gamma1'] = args[i]
                 kwargs_else['gamma2'] = args[i+1]
@@ -473,7 +473,7 @@ class Param(object):
                 args.append(kwargs_else['source_pos_image_ra'])
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
                 args.append(kwargs_else['source_pos_image_dec'])
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 args.append(kwargs_else['gamma1'])
                 args.append(kwargs_else['gamma2'])
@@ -660,7 +660,7 @@ class Param(object):
                 else_fix['source_pos_image_ra'] = else_fixed['source_pos_image_ra']
             if 'source_pos_image_dec' in else_fixed:
                 else_fix['source_pos_image_dec'] = else_fixed['source_pos_image_dec']
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if 'gamma1' in else_fixed:
                 else_fix['gamma1'] = else_fixed['gamma1']
             if 'gamma2' in else_fixed:
@@ -928,7 +928,7 @@ class Param(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
                 mean.append(kwarg_mean_else['source_pos_image_dec'])
                 sigma.append(kwarg_mean_else['source_pos_image_dec_sigma'])
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 mean.append(kwarg_mean_else['gamma1'])
                 mean.append(kwarg_mean_else['gamma2'])
@@ -1187,7 +1187,7 @@ class Param(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
                 low.append(-4)
                 high.append(4)
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 low.append(-0.8)
                 high.append(0.8)
@@ -1432,7 +1432,7 @@ class Param(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
                 num += 1
                 list.append('source_pos_image_dec')
-        if self.kwargs_options['external_shear']:
+        if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 num += 2
                 list.append('shear_1')

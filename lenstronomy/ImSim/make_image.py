@@ -170,7 +170,7 @@ class MakeImage(object):
         else:
             i = 0
         kwargs_lens_light['I0_sersic'] = param[i]
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             kwargs_lens_light['I0_3'] = param[i+1]
             kwargs_lens_light['I0_2'] = param[i+2]
         if map_error is True:
@@ -184,8 +184,8 @@ class MakeImage(object):
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
         mask = self.kwargs_data['mask']
-        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
-        A_pure, _, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
+        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A_pure, _, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
         data = self.kwargs_data['image_data']
         d = util.image2array(data*mask)
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
@@ -199,21 +199,21 @@ class MakeImage(object):
         """
         map_error = self.kwargs_options.get('error_map', False)
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
+        A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
         image_conv = self.psf_convolution(util.array2image(image_pure), deltaPix/subgrid_res, **self.kwargs_psf)
         image_ = util.array2image(image_)
         return image_conv + image_, util.array2image(error_map)
 
-    def make_image_surface_extended_source(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_else, numPix, deltaPix, subgrid_res):
+    def make_image_surface_extended_source(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_else, numPix, deltaPix, subgrid_res):
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
         I_xy = self.get_surface_brightness(x_source, y_source, **kwargs_source)
         grid = util.array2image(I_xy)
-        grid_final = self.re_size_convolve(grid, numPix, deltaPix, subgrid_res, kwargs_psf)
+        grid_final = self.re_size_convolve(grid, numPix, deltaPix, subgrid_res, self.kwargs_psf)
         return grid_final
 
-    def make_image_lens_light(self, x_grid, y_grid, kwargs_lens_light, kwargs_psf, numPix, deltaPix, subgrid_res):
+    def make_image_lens_light(self, x_grid, y_grid, kwargs_lens_light, numPix, deltaPix, subgrid_res):
         mask = self.kwargs_data['mask_lens_light']
         lens_light_response = self.get_lens_light_response(x_grid, y_grid, kwargs_lens_light)
         n_lens_light = len(lens_light_response)
@@ -221,7 +221,7 @@ class MakeImage(object):
         A = np.zeros((n_lens_light, numPix ** 2))
         for i in range(0, n_lens_light):
             image = util.array2image(lens_light_response[i])
-            image = self.re_size_convolve(image, numPix, deltaPix, subgrid_res, kwargs_psf)
+            image = self.re_size_convolve(image, numPix, deltaPix, subgrid_res, self.kwargs_psf)
             A[n, :] = util.image2array(image*mask)
             n += 1
         data = self.kwargs_data['image_data']
@@ -230,10 +230,10 @@ class MakeImage(object):
         grid_final = util.array2image(wls_model)
         return grid_final
 
-    def get_lens_surface_brightness(self, x_grid, y_grid, numPix, deltaPix, subgrid_res, kwargs_psf, kwargs_lens_light):
+    def get_lens_surface_brightness(self, x_grid, y_grid, numPix, deltaPix, subgrid_res, kwargs_lens_light):
         lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light)
         lens_light = util.array2image(lens_light)
-        lens_light_final = self.re_size_convolve(lens_light, numPix, deltaPix, subgrid_res, kwargs_psf)
+        lens_light_final = self.re_size_convolve(lens_light, numPix, deltaPix, subgrid_res, self.kwargs_psf)
         return lens_light_final
 
     def _matrix_configuration(self, x_grid, y_grid, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
@@ -448,7 +448,7 @@ class MakeImage(object):
             kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
             ellipse, spherical = self.LensLightModel.func.function_split(x_grid, y_grid, **kwargs_lens_light_new)
             response = [ellipse, spherical]
-        elif self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             new = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
             kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
             ellipse1, ellipse2, spherical = self.LensLightModel.func.function_split(x_grid, y_grid, **kwargs_lens_light_new)
@@ -597,7 +597,7 @@ class MakeImage(object):
         n = len(kwargs_else['ra_pos']) # number of point sources
         if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
             return param[3:3+n]
-        elif self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             return param[4:4+n]
         elif self.kwargs_options['lens_light_type'] == 'NONE':
             return param[1:1+n]

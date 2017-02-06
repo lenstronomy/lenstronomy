@@ -22,14 +22,14 @@ class MCMC_sampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
         """
         initialise the classes of the chain and for parameter options
         """
         if kwargs_options.get('multiBand', False):
-            self.chain = MCMC_multiband_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
+            self.chain = MCMC_multiband_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         else:
-            self.chain = MCMC_chain(kwargs_data, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
+            self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi_monch=False, print_key='default'):
@@ -66,7 +66,7 @@ class MCMC_sampler(object):
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
-        lens_dict, source_dict, psf_dict, lens_light_dict, else_dict = self.param.get_all_params(result)
+        lens_dict, source_dict, lens_light_dict, else_dict = self.param.get_all_params(result)
         if (pso.isMaster() and mpi_monch is True) or self.chain.sampling_option == 'X2_catalogue':
             print(pso.gbest.fitness*2/(self.chain.numData_points()), 'reduced X^2 of best position')
             print(lens_dict, 'lens result')
@@ -75,7 +75,7 @@ class MCMC_sampler(object):
             print(else_dict, 'else result')
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
-        return lens_dict, source_dict, psf_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
+        return lens_dict, source_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
 
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):

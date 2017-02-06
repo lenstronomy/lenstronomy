@@ -16,7 +16,7 @@ class TestMakeImage(object):
     @patch("darkskysync.DarkSkySync", autospec=False)
     def setup(self, dss_mock):
         self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_type': 'GAUSSIAN', 'source_type': 'GAUSSIAN', 'lens_light_type': 'TRIPLE_SERSIC'
+            , 'cosmo_file': '', 'lens_type': 'GAUSSIAN', 'source_type': 'GAUSSIAN', 'lens_light_type': 'TRIPPLE_SERSIC'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
         self.kwargs_data = {}
         

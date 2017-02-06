@@ -28,7 +28,7 @@ class TestCatalogueCompare(object):
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
         self.makeImage = MakeImage(self.kwargs_options, kwargs_data)
-        self.kwargs = {'phi_E': 1./0.8, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x':0., 'center_y': 0.} #for SPEP lens
+        self.kwargs = {'theta_E': 1./0.8, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x':0., 'center_y': 0.} #for SPEP lens
 
 
     def test_catalogue_compare(self):

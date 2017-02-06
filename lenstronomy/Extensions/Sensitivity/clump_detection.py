@@ -1,7 +1,8 @@
-import numpy as np
 import sys
 
-from lenstronomy.Sensitivity.sensitivity import Sensitivity
+import numpy as np
+from lenstronomy.Extensions.Sensitivity.sensitivity import Sensitivity
+
 
 class ClumpDetect(Sensitivity):
     """

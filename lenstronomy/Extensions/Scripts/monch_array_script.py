@@ -5,13 +5,13 @@ __author__ = 'sibirrer'
 # set up the scene
 
 
-import time
-import sys
 import pickle
-import numpy as np
+import sys
+import time
 
-from lenstronomy.Sensitivity.sensitivity_map import SensitivityMap
-from lenstronomy.Sensitivity.clump_detection import ClumpDetect
+import numpy as np
+from lenstronomy.Extensions.Sensitivity.clump_detection import ClumpDetect
+from lenstronomy.Extensions.Sensitivity.sensitivity_map import SensitivityMap
 
 start_time = time.time()
 

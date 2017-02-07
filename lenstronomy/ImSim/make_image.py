@@ -31,14 +31,14 @@ class MakeImage(object):
         self.util_class = Util_class()
         self.gaussian = Gaussian()
 
-        if kwargs_data is not None and 'sigma_background' in kwargs_data and 'image_data' in kwargs_data and 'reduced_noise' in kwargs_data:
+        if kwargs_data is not None and 'sigma_background' in kwargs_data and 'image_data' in kwargs_data and 'exp_time' in kwargs_data:
             sigma_b = kwargs_data['sigma_background']
             exp_map = kwargs_data.get('exposure_map', None)
             if exp_map is not None:
                 exp_map[exp_map <= 0] = 10**(-3)
                 f = util.image2array(exp_map)
             else:
-                f = kwargs_data['reduced_noise']
+                f = kwargs_data['exp_time']
             data = kwargs_data['image_data']
             self.C_D = self.DeLens.get_covariance_matrix(util.image2array(data), sigma_b, f)
         self.shapelets = Shapelets()
@@ -138,7 +138,7 @@ class MakeImage(object):
         :return:
         """
         gaussian = util.add_background(image, self.kwargs_data["sigma_background"])
-        poisson = util.add_poisson(image, self.kwargs_data.get("exposure_map", self.kwargs_data["reduced_noise"]))
+        poisson = util.add_poisson(image, self.kwargs_data.get("exposure_map", self.kwargs_data["exp_time"]))
         image_noisy = image + gaussian + poisson
         return image_noisy
 

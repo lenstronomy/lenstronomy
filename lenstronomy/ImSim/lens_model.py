@@ -100,7 +100,7 @@ class LensModel(object):
         potential = self.func.function(x, y, **kwargs)
         if self.add_clump:
             if self.clump_type == 'SIS_TRUNCATED':
-                pot_clump = self.clump.function(x, y, phi_E_trunc=kwargs_else['phi_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
+                pot_clump = self.clump.function(x, y, theta_E_trunc=kwargs_else['theta_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
             elif self.clump_type == 'NFW':
                 pot_clump = self.clump.function(x, y, Rs=kwargs_else['r_trunc'], rho0=kwargs_else['phi_E_clump'], center_x_nfw=kwargs_else['x_clump'], center_y_nfw=kwargs_else['y_clump'], angle=True)
             potential += pot_clump

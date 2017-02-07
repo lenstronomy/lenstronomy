@@ -110,7 +110,6 @@ class Compare(object):
         X2 = self.compare2D(model, data, sigma, reduce_frac, mask, model_error)
         X2 /= 2 # from chi^2 to log likelihood
         if cov_matrix is not None and self.kwargs_options.get('source_marg', False):
-            print('this should not happen!!!!')
             marg_const = self.get_marg_const(cov_matrix)
             if marg_const + X2 > 0:
                 X2 += marg_const

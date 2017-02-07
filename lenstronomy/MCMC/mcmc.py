@@ -43,7 +43,7 @@ class MCMC_sampler(object):
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
         else:
             pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=threadCount)
-        if not init_pos == None:
+        if not init_pos is None:
             pso.gbest.position = init_pos
             pso.gbest.velocity = [0]*len(init_pos)
             pso.gbest.fitness, _ = self.chain.likelihood(init_pos)

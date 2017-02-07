@@ -75,8 +75,8 @@ class Param(object):
                 i += 1
 
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E' in self.kwargs_fixed_lens:
-                kwargs_lens['phi_E'] = args[i]
+            if not 'theta_E' in self.kwargs_fixed_lens:
+                kwargs_lens['theta_E'] = args[i]
                 i += 1
             if not 'gamma' in self.kwargs_fixed_lens:
                 kwargs_lens['gamma'] = args[i]
@@ -105,8 +105,8 @@ class Param(object):
                 i += 1
 
         if self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if not 'phi_E_sis' in self.kwargs_fixed_lens:
-                kwargs_lens['phi_E_sis'] = np.exp(args[i])
+            if not 'theta_E_sis' in self.kwargs_fixed_lens:
+                kwargs_lens['theta_E_sis'] = np.exp(args[i])
                 i += 1
             if not 'center_x_sis' in self.kwargs_fixed_lens:
                 kwargs_lens['center_x_sis'] = args[i]
@@ -115,8 +115,8 @@ class Param(object):
                 kwargs_lens['center_y_sis'] = args[i]
                 i += 1
         if self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E_spp' in self.kwargs_fixed_lens:
-                kwargs_lens['phi_E_spp'] = np.exp(args[i])
+            if not 'theta_E_spp' in self.kwargs_fixed_lens:
+                kwargs_lens['theta_E_spp'] = np.exp(args[i])
                 i += 1
             if not 'gamma_spp' in self.kwargs_fixed_lens:
                 kwargs_lens['gamma_spp'] = args[i]
@@ -157,7 +157,7 @@ class Param(object):
                 kwargs_lens['phi_dipole'] = args[i]
                 i += 1
 
-        if self.kwargs_options['lens_type'] != 'INTERPOL' or not self.kwargs_options['lens_type'] == 'SIS' or not self.kwargs_options['lens_type'] == 'NFW' or not self.kwargs_options['lens_type'] == 'SPP':
+        if not (self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE'):
             if not 'center_x' in self.kwargs_fixed_lens:
                 kwargs_lens['center_x'] = args[i]
                 i += 1
@@ -202,7 +202,7 @@ class Param(object):
                 i += 1
 
         kwargs_lens_light = {}
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 kwargs_lens_light['I0_sersic'] = args[i]
                 i += 1
@@ -218,14 +218,14 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_lens_light:
                 kwargs_lens_light['center_y'] = args[i]
                 i += 1
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     phi, q = util.elliptisity2phi_q(args[i], args[i+1])
                     kwargs_lens_light['phi_G'] = phi
                     kwargs_lens_light['q'] = q
                     i += 2
 
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_2' in self.kwargs_fixed_lens_light:
                 kwargs_lens_light['I0_2'] = args[i]
                 i += 1
@@ -248,7 +248,7 @@ class Param(object):
             if not 'gamma' in self.kwargs_fixed_lens_light:
                 kwargs_lens_light['gamma'] = args[i]
                 i += 1
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_3' in self.kwargs_fixed_lens_light:
                 kwargs_lens_light['I0_3'] = args[i]
                 i += 1
@@ -291,8 +291,8 @@ class Param(object):
             kwargs_else['shapelet_beta'] = args[i]
             i += 1
         if self.kwargs_options.get('add_clump', False):
-            if not 'phi_E_clump' in self.kwargs_fixed_else:
-                kwargs_else['phi_E_clump'] = args[i]
+            if not 'theta_E_clump' in self.kwargs_fixed_else:
+                kwargs_else['theta_E_clump'] = args[i]
                 i += 1
             if not 'r_trunc' in self.kwargs_fixed_else:
                 kwargs_else['r_trunc'] = args[i]
@@ -331,8 +331,8 @@ class Param(object):
                 args.append(np.log(kwargs_lens['sigma_y']))
 
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E' in self.kwargs_fixed_lens:
-                args.append(kwargs_lens['phi_E'])
+            if not 'theta_E' in self.kwargs_fixed_lens:
+                args.append(kwargs_lens['theta_E'])
             if not 'gamma' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['gamma'])
             if not 'q' in self.kwargs_fixed_lens or not 'phi_G' in self.kwargs_fixed_lens:
@@ -353,15 +353,15 @@ class Param(object):
                 args.append(kwargs_lens['center_y_nfw'])
 
         if self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if not 'phi_E_sis' in self.kwargs_fixed_lens:
-                args.append(np.log(kwargs_lens['phi_E_sis']))
+            if not 'theta_E_sis' in self.kwargs_fixed_lens:
+                args.append(np.log(kwargs_lens['theta_E_sis']))
             if not 'center_x_sis' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['center_x_sis'])
             if not 'center_y_sis' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['center_y_sis'])
         if self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E_spp' in self.kwargs_fixed_lens:
-                args.append(np.log(kwargs_lens['phi_E_spp']))
+            if not 'theta_E_spp' in self.kwargs_fixed_lens:
+                args.append(np.log(kwargs_lens['theta_E_spp']))
             if not 'gamma_spp' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['gamma_spp'])
             if not 'center_x_spp' in self.kwargs_fixed_lens:
@@ -388,7 +388,7 @@ class Param(object):
             if not 'phi_dipole' in self.kwargs_fixed_else and self.kwargs_options['phi_dipole_decoupling'] is True:
                 args.append(kwargs_lens['phi_dipole'])
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP'):
+        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE'):
             if not 'center_x' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['center_x'])
             if not 'center_y' in self.kwargs_fixed_lens:
@@ -420,7 +420,7 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_source:
                 args.append(kwargs_source['center_y'])
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['I0_sersic'])
             if not 'n_sersic' in self.kwargs_fixed_lens_light:
@@ -431,12 +431,12 @@ class Param(object):
                 args.append(kwargs_lens_light['center_x'])
             if not 'center_y' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['center_y'])
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     e1, e2 = util.phi_q2_elliptisity(kwargs_lens_light['phi_G'], kwargs_lens_light['q'])
                     args.append(e1)
                     args.append(e2)
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_2' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['I0_2'])
             if not 'R_2' in self.kwargs_fixed_lens_light:
@@ -452,7 +452,7 @@ class Param(object):
                 args.append(kwargs_lens_light['Rb'])
             if not 'gamma' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['gamma'])
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_3' in self.kwargs_fixed_lens_light:
                 args.append(kwargs_lens_light['I0_3'])
             if not 'R_3' in self.kwargs_fixed_lens_light:
@@ -488,8 +488,8 @@ class Param(object):
             args.append(kwargs_else['shapelet_beta'])
 
         if self.kwargs_options.get('add_clump', False):
-            if not 'phi_E_clump' in self.kwargs_fixed_else:
-                args.append(kwargs_else['phi_E_clump'])
+            if not 'theta_E_clump' in self.kwargs_fixed_else:
+                args.append(kwargs_else['theta_E_clump'])
             if not 'r_trunc' in self.kwargs_fixed_else:
                 args.append(kwargs_else['r_trunc'])
             if not 'x_clump' in self.kwargs_fixed_else:
@@ -525,8 +525,8 @@ class Param(object):
                 lens_fix['sigma_y'] = lens_fixed['sigma_y']
 
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if 'phi_E' in lens_fixed:
-                lens_fix['phi_E'] = lens_fixed['phi_E']
+            if 'theta_E' in lens_fixed:
+                lens_fix['theta_E'] = lens_fixed['theta_E']
             if 'gamma' in lens_fixed:
                 lens_fix['gamma'] = lens_fixed['gamma']
             if 'q' in lens_fixed and 'phi_G' in lens_fixed:
@@ -546,16 +546,16 @@ class Param(object):
                 lens_fix['center_y_nfw'] = lens_fixed['center_y_nfw']
 
         elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if 'phi_E_sis' in lens_fixed:
-                lens_fix['phi_E_sis'] = lens_fixed['phi_E_sis']
+            if 'theta_E_sis' in lens_fixed:
+                lens_fix['theta_E_sis'] = lens_fixed['theta_E_sis']
             if 'center_x_sis' in lens_fixed:
                 lens_fix['center_x_sis'] = lens_fixed['center_x_sis']
             if 'center_y_sis' in lens_fixed:
                 lens_fix['center_y_sis'] = lens_fixed['center_y_sis']
 
         elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if 'phi_E_spp' in lens_fixed:
-                lens_fix['phi_E_spp'] = lens_fixed['phi_E_spp']
+            if 'theta_E_spp' in lens_fixed:
+                lens_fix['theta_E_spp'] = lens_fixed['theta_E_spp']
             if 'gamma_spp' in lens_fixed:
                 lens_fix['gamma_spp'] = lens_fixed['gamma_spp']
             if 'center_x_spp' in lens_fixed:
@@ -579,7 +579,7 @@ class Param(object):
             if 'phi_dipole' in lens_fixed:
                 lens_fix['phi_dipole'] = lens_fixed['phi_dipole']
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP'):
+        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE'):
             if 'center_x' in lens_fixed:
                 lens_fix['center_x'] = lens_fixed['center_x']
             if 'center_y' in lens_fixed:
@@ -610,7 +610,7 @@ class Param(object):
             if 'center_y' in source_fixed:
                 source_fix['center_y'] = source_fixed['center_y']
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if 'I0_sersic' in lens_light_fixed:
                 lens_light_fix['I0_sersic'] = lens_light_fixed['I0_sersic']
             if 'n_sersic' in lens_light_fixed:
@@ -622,12 +622,12 @@ class Param(object):
             if 'center_y' in lens_light_fixed:
                 lens_light_fix['center_y'] = lens_light_fixed['center_y']
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if 'phi_G' in lens_light_fixed or 'q' in lens_light_fixed:
                     lens_light_fix['phi_G'] = lens_light_fixed['phi_G']
                     lens_light_fix['q'] = lens_light_fixed['q']
 
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if 'I0_2' in lens_light_fixed:
                 lens_light_fix['I0_2'] = lens_light_fixed['I0_2']
             if 'R_2' in lens_light_fixed:
@@ -643,7 +643,7 @@ class Param(object):
                 lens_light_fix['Rb'] = lens_light_fixed['Rb']
             if 'gamma' in lens_light_fixed:
                 lens_light_fix['gamma'] = lens_light_fixed['gamma']
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if 'I0_3' in lens_light_fixed:
                 lens_light_fix['I0_3'] = lens_light_fixed['I0_3']
             if 'R_3' in lens_light_fixed:
@@ -681,8 +681,8 @@ class Param(object):
             else_fix['shapelet_beta'] = else_fixed['shapelet_beta']
 
         if self.kwargs_options.get('add_clump', False):
-            if 'phi_E_clump' in else_fixed:
-                else_fix['phi_E_clump'] = else_fixed['phi_E_clump']
+            if 'theta_E_clump' in else_fixed:
+                else_fix['theta_E_clump'] = else_fixed['theta_E_clump']
             if 'r_trunc' in else_fixed:
                 else_fix['r_trunc'] = else_fixed['r_trunc']
             if 'x_clump' in else_fixed:
@@ -718,9 +718,9 @@ class Param(object):
                 sigma.append(np.log(1 + kwarg_mean_lens['sigma_y_sigma']/kwarg_mean_lens['sigma_y']))
 
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E' in self.kwargs_fixed_lens:
-                mean.append(kwarg_mean_lens['phi_E'])
-                sigma.append(kwarg_mean_lens['phi_E_sigma'])
+            if not 'theta_E' in self.kwargs_fixed_lens:
+                mean.append(kwarg_mean_lens['theta_E'])
+                sigma.append(kwarg_mean_lens['theta_E_sigma'])
             if not 'gamma' in self.kwargs_fixed_lens:
                 mean.append(kwarg_mean_lens['gamma'])
                 sigma.append(kwarg_mean_lens['gamma_sigma'])
@@ -752,9 +752,9 @@ class Param(object):
                 sigma.append(kwarg_mean_lens['center_y_nfw_sigma'])
 
         elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if not 'phi_E_sis' in self.kwargs_fixed_lens:
-                mean.append(np.log(kwarg_mean_lens['phi_E_sis']))
-                sigma.append(kwarg_mean_lens['phi_E_sis_sigma'])
+            if not 'theta_E_sis' in self.kwargs_fixed_lens:
+                mean.append(np.log(kwarg_mean_lens['theta_E_sis']))
+                sigma.append(kwarg_mean_lens['theta_E_sis_sigma'])
             if not 'center_x_sis' in self.kwargs_fixed_lens:
                 mean.append(kwarg_mean_lens['center_x_sis'])
                 sigma.append(kwarg_mean_lens['center_x_sis_sigma'])
@@ -763,9 +763,9 @@ class Param(object):
                 sigma.append(kwarg_mean_lens['center_y_sis_sigma'])
 
         elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E_spp' in self.kwargs_fixed_lens:
-                mean.append(np.log(kwarg_mean_lens['phi_E_spp']))
-                sigma.append(kwarg_mean_lens['phi_E_spp_sigma'])
+            if not 'theta_E_spp' in self.kwargs_fixed_lens:
+                mean.append(np.log(kwarg_mean_lens['theta_E_spp']))
+                sigma.append(kwarg_mean_lens['theta_E_spp_sigma'])
             if not 'gamma_spp' in self.kwargs_fixed_lens:
                 mean.append(kwarg_mean_lens['gamma_spp'])
                 sigma.append(kwarg_mean_lens['gamma_spp_sigma'])
@@ -802,7 +802,7 @@ class Param(object):
                 mean.append(kwarg_mean_lens['phi_dipole'])
                 sigma.append(kwarg_mean_lens['phi_dipole_sigma'])
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP'):
+        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
             if not 'center_x' in self.kwargs_fixed_lens:
                 mean.append(kwarg_mean_lens['center_x'])
                 sigma.append(kwarg_mean_lens['center_x_sigma'])
@@ -849,7 +849,7 @@ class Param(object):
                 mean.append(kwarg_mean_source['center_y'])
                 sigma.append(kwarg_mean_source['center_y_sigma'])
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 mean.append(kwarg_mean_lens_light['I0_sersic'])
                 sigma.append(kwarg_mean_lens_light['I0_sersic_sigma'])
@@ -865,7 +865,7 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_lens_light:
                 mean.append(kwarg_mean_lens_light['center_y'])
                 sigma.append(kwarg_mean_lens_light['center_y_sigma'])
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     phi = kwarg_mean_lens_light['phi_G']
                     q = kwarg_mean_lens_light['q']
@@ -875,7 +875,7 @@ class Param(object):
                     ellipse_sigma = kwarg_mean_lens_light['ellipse_sigma']
                     sigma.append(ellipse_sigma)
                     sigma.append(ellipse_sigma)
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_2' in self.kwargs_fixed_lens_light:
                 mean.append(kwarg_mean_lens_light['I0_2'])
                 sigma.append(kwarg_mean_lens_light['I0_2_sigma'])
@@ -898,7 +898,7 @@ class Param(object):
             if not 'gamma' in self.kwargs_fixed_lens_light:
                 mean.append(kwarg_mean_lens_light['gamma'])
                 sigma.append(kwarg_mean_lens_light['gamma_sigma'])
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_3' in self.kwargs_fixed_lens_light:
                 mean.append(kwarg_mean_lens_light['I0_3'])
                 sigma.append(kwarg_mean_lens_light['I0_3_sigma'])
@@ -951,9 +951,9 @@ class Param(object):
             sigma.append(kwarg_mean_else['shapelet_beta_sigma'])
 
         if self.kwargs_options.get('add_clump', False):
-            if not 'phi_E_clump' in self.kwargs_fixed_else:
-                mean.append(kwarg_mean_else['phi_E_clump'])
-                sigma.append(kwarg_mean_else['phi_E_clump_sigma'])
+            if not 'theta_E_clump' in self.kwargs_fixed_else:
+                mean.append(kwarg_mean_else['theta_E_clump'])
+                sigma.append(kwarg_mean_else['theta_E_clump_sigma'])
             if not 'r_trunc' in self.kwargs_fixed_else:
                 mean.append(kwarg_mean_else['r_trunc'])
                 sigma.append(kwarg_mean_else['r_trunc_sigma'])
@@ -991,7 +991,7 @@ class Param(object):
                 high.append(10)
 
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS'  or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E' in self.kwargs_fixed_lens:
+            if not 'theta_E' in self.kwargs_fixed_lens:
                 low.append(0.001)
                 high.append(10)
             if not 'gamma' in self.kwargs_fixed_lens:
@@ -1021,7 +1021,7 @@ class Param(object):
                 high.append(3)
 
         elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if not 'phi_E_sis' in self.kwargs_fixed_lens:
+            if not 'theta_E_sis' in self.kwargs_fixed_lens:
                 low.append(-10)
                 high.append(1)
             if not 'center_x_sis' in self.kwargs_fixed_lens:
@@ -1031,7 +1031,7 @@ class Param(object):
                 low.append(-3)
                 high.append(3)
         elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E_spp' in self.kwargs_fixed_lens:
+            if not 'theta_E_spp' in self.kwargs_fixed_lens:
                 low.append(-10)
                 high.append(5)
             if not 'gamma_spp' in self.kwargs_fixed_lens:
@@ -1069,7 +1069,7 @@ class Param(object):
                 low.append(-np.pi)
                 high.append(+np.pi)
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP'):
+        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
             if not 'center_x' in self.kwargs_fixed_lens:
                 low.append(-20)
                 high.append(20)
@@ -1112,7 +1112,7 @@ class Param(object):
                 low.append(-2)
                 high.append(2)
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 low.append(0)
                 high.append(100)
@@ -1128,13 +1128,13 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_lens_light:
                 low.append(-2)
                 high.append(2)
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     low.append(-0.8)
                     high.append(0.8)
                     low.append(-0.8)
                     high.append(0.8)
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_2' in self.kwargs_fixed_lens_light:
                 low.append(0)
                 high.append(100)
@@ -1157,7 +1157,7 @@ class Param(object):
             if not 'gamma' in self.kwargs_fixed_lens_light:
                 low.append(-3)
                 high.append(3)
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_3' in self.kwargs_fixed_lens_light:
                 low.append(0)
                 high.append(100)
@@ -1207,7 +1207,7 @@ class Param(object):
             low.append(0.01)
             high.append(1)
         if self.kwargs_options.get('add_clump', False):
-            if not 'phi_E_clump' in self.kwargs_fixed_else:
+            if not 'theta_E_clump' in self.kwargs_fixed_else:
                 low.append(0)
                 high.append(1)
             if not 'r_trunc' in self.kwargs_fixed_else:
@@ -1245,9 +1245,9 @@ class Param(object):
                 num+=1
                 list.append('sigma_y_lens')
         elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E' in self.kwargs_fixed_lens:
+            if not 'theta_E' in self.kwargs_fixed_lens:
                 num+=1
-                list.append('phi_E_lens')
+                list.append('theta_E_lens')
             if not 'gamma' in self.kwargs_fixed_lens:
                 num+=1
                 list.append('gamma_lens')
@@ -1272,9 +1272,9 @@ class Param(object):
                 num+=1
                 list.append('center_y_nfw')
         elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
-            if not 'phi_E_sis' in self.kwargs_fixed_lens:
+            if not 'theta_E_sis' in self.kwargs_fixed_lens:
                 num+=1
-                list.append('phi_E_sis')
+                list.append('theta_E_sis')
             if not 'center_x_sis' in self.kwargs_fixed_lens:
                 num+=1
                 list.append('center_x_sis')
@@ -1282,9 +1282,9 @@ class Param(object):
                 num+=1
                 list.append('center_y_sis')
         elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
-            if not 'phi_E_spp' in self.kwargs_fixed_lens:
+            if not 'theta_E_spp' in self.kwargs_fixed_lens:
                 num+=1
-                list.append('phi_E_spp')
+                list.append('theta_E_spp')
             if not 'gamma_spp' in self.kwargs_fixed_lens:
                 num+=1
                 list.append('gamma_spp')
@@ -1320,7 +1320,7 @@ class Param(object):
                 num += 1
                 list.append('phi_dipole')
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP'):
+        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
             if not 'center_x' in self.kwargs_fixed_lens:
                 num+=1
                 list.append('center_x_lens')
@@ -1362,7 +1362,7 @@ class Param(object):
                 num += 1
                 list.append('center_y_source')
 
-        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
                 num += 1
                 list.append('I0_sersic_lens_light')
@@ -1378,12 +1378,12 @@ class Param(object):
             if not 'center_y' in self.kwargs_fixed_lens_light:
                 num+=1
                 list.append('center_y_lens_light')
-        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     num += 2
                     list.append('e1_lens_light')
                     list.append('e2_lens_light')
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_2' in self.kwargs_fixed_lens_light:
                 num += 1
                 list.append('I2_lens_light')
@@ -1406,7 +1406,7 @@ class Param(object):
             if not 'gamma' in self.kwargs_fixed_lens_light:
                 num += 1
                 list.append('gamma_lens_light')
-        if self.kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_3' in self.kwargs_fixed_lens_light:
                 num += 1
                 list.append('I0_3_lens_light')
@@ -1450,9 +1450,9 @@ class Param(object):
             num += 1
             list.append('shapelet_beta')
         if self.kwargs_options.get('add_clump', False):
-            if not 'phi_E_clump' in self.kwargs_fixed_else:
+            if not 'theta_E_clump' in self.kwargs_fixed_else:
                 num += 1
-                list.append('phi_E_clump')
+                list.append('theta_E_clump')
             if not 'r_trunc' in self.kwargs_fixed_else:
                 num += 1
                 list.append('r_trunc')
@@ -1475,9 +1475,9 @@ class Param(object):
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
         :return: updated kwargs of lens parameters
         """
-        [phi_E, e1, e2, center_x, center_y, non_sens_param] = x
+        [theta_E, e1, e2, center_x, center_y, non_sens_param] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        kwargs_lens['phi_E'] = phi_E
+        kwargs_lens['theta_E'] = theta_E
         kwargs_lens['phi_G'] = phi_G
         kwargs_lens['q'] = q
         kwargs_lens['center_x'] = center_x
@@ -1506,9 +1506,9 @@ class Param(object):
                 x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
             if self.solver_type == 'SPEP' or self.solver_type == 'SPEMD':
                 e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                init = np.array([kwargs_lens['phi_E'], e1, e2,
+                init = np.array([kwargs_lens['theta_E'], e1, e2,
                         kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
-                kwargs_lens['phi_E'] = 0
+                kwargs_lens['theta_E'] = 0
 
                 ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                 x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})

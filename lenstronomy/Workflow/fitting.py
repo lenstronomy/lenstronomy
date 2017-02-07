@@ -130,7 +130,7 @@ class Fitting(object):
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
             threadCount=1, mpi_monch=mpi_monch, print_key='lens light')
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list
+        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_param_arc(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, n_particles, n_iterations,
                        num_order, subgrid_res=2, numThreads=1, mpi_monch=False):

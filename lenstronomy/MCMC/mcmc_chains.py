@@ -87,7 +87,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        lens_light = self.makeImage.make_image_lens_light(self.x_grid, self.y_grid, kwargs_lens_light, self.numPix, self.deltaPix, self.subgrid_res)
+        lens_light, _, _ = self.makeImage.make_image_lens_light(self.x_grid, self.y_grid, kwargs_lens_light, self.numPix, self.deltaPix, self.subgrid_res)
         #compute X^2
         logL = self.compare.get_log_likelihood(lens_light, self.data, self.sigma_b, self.exposure_map, mask=self.mask_lens_light)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)

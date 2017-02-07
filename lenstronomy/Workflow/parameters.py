@@ -1106,11 +1106,11 @@ class Param(object):
                     high.append(0.8)
         if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed_source:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
             if not 'center_y' in self.kwargs_fixed_source:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
 
         if self.kwargs_options['lens_light_type'] == 'SERSIC' or self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             if not 'I0_sersic' in self.kwargs_fixed_lens_light:
@@ -1123,11 +1123,11 @@ class Param(object):
                 low.append(0.01)
                 high.append(30)
             if not 'center_x' in self.kwargs_fixed_lens_light:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
             if not 'center_y' in self.kwargs_fixed_lens_light:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
         if self.kwargs_options['lens_light_type'] == 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC' or self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
                 if not 'phi_G' in self.kwargs_fixed_lens_light or not 'q' in self.kwargs_fixed_lens_light:
                     low.append(-0.8)
@@ -1145,11 +1145,11 @@ class Param(object):
                 low.append(0.2)
                 high.append(30)
             if not 'center_x_2' in self.kwargs_fixed_lens_light:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
             if not 'center_y_2' in self.kwargs_fixed_lens_light:
-                low.append(-2)
-                high.append(2)
+                low.append(-10)
+                high.append(10)
         if self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
             if not 'Rb' in self.kwargs_fixed_lens_light:
                 low.append(0.01)
@@ -1169,24 +1169,24 @@ class Param(object):
                 high.append(30)
 
         if not 'ra_pos' in self.kwargs_fixed_else:
-            pos_low = -4
-            pos_high = 4
+            pos_low = -10
+            pos_high = 10
             for i in range(4):
                 low.append(pos_low)
                 high.append(pos_high)
         if not 'dec_pos' in self.kwargs_fixed_else:
-            pos_low = -4
-            pos_high = 4
+            pos_low = -10
+            pos_high = 10
             for i in range(4):
                 low.append(pos_low)
                 high.append(pos_high)
         if self.kwargs_options.get('image_plane_source', False):
             if not 'source_pos_image_ra' in self.kwargs_fixed_else:
-                low.append(-4)
-                high.append(4)
+                low.append(-10)
+                high.append(10)
             if not 'source_pos_image_dec' in self.kwargs_fixed_else:
-                low.append(-4)
-                high.append(4)
+                low.append(-10)
+                high.append(10)
         if self.external_shear:
             if not 'gamma1' in self.kwargs_fixed_else or not 'gamma2' in self.kwargs_fixed_else:
                 low.append(-0.8)

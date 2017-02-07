@@ -151,6 +151,23 @@ class MakeImage(object):
         residual = (model - self.kwargs_data["image_data"])/np.sqrt(util.array2image(self.C_D)+np.abs(error_map))*self.kwargs_data["mask"]
         return residual
 
+    def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light):
+        """
+        links linear parameters to kwargs arguments
+        :param param:
+        :return:
+        """
+        if not self.kwargs_options['source_type'] == 'NONE':
+            kwargs_source['I0_sersic'] = param[0]
+            i = 1
+        else:
+            i = 0
+        kwargs_lens_light['I0_sersic'] = param[i]
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+            kwargs_lens_light['I0_3'] = param[i+1]
+            kwargs_lens_light['I0_2'] = param[i+2]
+        return kwargs_source, kwargs_lens_light
+
     def make_image_ideal(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
@@ -164,15 +181,7 @@ class MakeImage(object):
         d = util.image2array(data*mask)
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
         grid_final = util.array2image(wls_model)
-        if not self.kwargs_options['source_type'] == 'NONE':
-            kwargs_source['I0_sersic'] = param[0]
-            i = 1
-        else:
-            i = 0
-        kwargs_lens_light['I0_sersic'] = param[i]
-        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
-            kwargs_lens_light['I0_3'] = param[i+1]
-            kwargs_lens_light['I0_2'] = param[i+2]
+        kwargs_source, kwargs_lens_light = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light)
         if map_error is True:
              error_map = util.array2image(error_map)
         else:
@@ -228,7 +237,7 @@ class MakeImage(object):
         d = util.image2array(data*mask)
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/self.C_D, d, inv_bool=False)
         grid_final = util.array2image(wls_model)
-        return grid_final
+        return grid_final, cov_param, param
 
     def get_lens_surface_brightness(self, x_grid, y_grid, numPix, deltaPix, subgrid_res, kwargs_lens_light):
         lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light)

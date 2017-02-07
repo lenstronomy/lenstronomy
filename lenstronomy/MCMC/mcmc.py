@@ -77,7 +77,6 @@ class MCMC_sampler(object):
             print(time_end - time_start, 'time used for PSO', print_key)
         return lens_dict, source_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
 
-
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):
         """
         returns the mcmc analysis of the parameter space
@@ -92,7 +91,6 @@ class MCMC_sampler(object):
             store.persistSamplingValues(pos, prob, None)
 
         return store.samples
-
 
     def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False):
         """

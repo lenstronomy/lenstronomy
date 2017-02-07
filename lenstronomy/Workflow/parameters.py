@@ -142,9 +142,14 @@ class Param(object):
             if not 'coeffs' in self.kwargs_fixed_lens:
                 num_coeffs = self.kwargs_options['num_shapelet_lens']
                 if self.solver_type == 'SHAPELETS':
-                    num_coeffs -= 6
-                    coeffs = args[i:i+num_coeffs]
-                    coeffs = [0,0,0,0,0,0] + list(coeffs[0:])
+                    if self.num_images == 4:
+                        num_coeffs -= 6
+                        coeffs = args[i:i+num_coeffs]
+                        coeffs = [0,0,0,0,0,0] + list(coeffs[0:])
+                    elif self.num_images == 2:
+                        num_coeffs -=3
+                        coeffs = args[i:i+num_coeffs]
+                        coeffs = [0, 0, 0] + list(coeffs[0:])
                     kwargs_lens['coeffs'] = coeffs
                 else:
                     kwargs_lens['coeffs'] = args[i:i+num_coeffs]
@@ -382,7 +387,10 @@ class Param(object):
             if not 'coeffs' in self.kwargs_fixed_lens:
                 coeffs = kwargs_lens['coeffs']
                 if self.solver_type == 'SHAPELETS':
-                    coeffs = coeffs[6:]
+                    if self.num_images == 4:
+                        coeffs = coeffs[6:]
+                    elif self.num_images == 2:
+                        coeffs = coeffs[3:]
                 args += list(coeffs)
             if not 'center_x_shape' in self.kwargs_fixed_lens:
                 args.append(kwargs_lens['center_x_shape'])
@@ -790,7 +798,10 @@ class Param(object):
             if not 'coeffs' in self.kwargs_fixed_lens:
                 coeffs = kwarg_mean_lens['coeffs']
                 if self.solver_type == 'SHAPELETS':
-                    coeffs = coeffs[6:]
+                    if self.num_images == 4:
+                        coeffs = coeffs[6:]
+                    elif self.num_images == 2:
+                        coeffs = coeffs[3:]
                 for i in range(0, len(coeffs)):
                     mean.append(coeffs[i])
                     sigma.append(kwarg_mean_lens['coeffs_sigma'])
@@ -1058,7 +1069,10 @@ class Param(object):
             if not 'coeffs' in self.kwargs_fixed_lens:
                 num_coeffs = self.kwargs_options['num_shapelet_lens']
                 if self.solver_type == 'SHAPELETS':
-                    num_coeffs -= 6
+                    if self.num_images == 4:
+                        num_coeffs -= 6
+                    elif self.num_images == 2:
+                        num_coeffs -= 3
                 low += [-5]*num_coeffs
                 high += [5]*num_coeffs
             if not 'center_x_shape' in self.kwargs_fixed_lens:
@@ -1309,7 +1323,10 @@ class Param(object):
             if not 'coeffs' in self.kwargs_fixed_lens:
                 num_coeffs = self.kwargs_options['num_shapelet_lens']
                 if self.solver_type == 'SHAPELETS':
-                    num_coeffs -= 6
+                    if self.num_images == 4:
+                        num_coeffs -= 6
+                    elif self.num_images == 2:
+                        num_coeffs -= 3
                 num += num_coeffs
                 list += ['coeff']*num_coeffs
             if not 'center_x_shape' in self.kwargs_fixed_lens:
@@ -1509,6 +1526,13 @@ class Param(object):
         kwargs_lens['coeffs'] = coeffs
         return kwargs_lens
 
+    def _update_coeffs2(self, kwargs_lens, x):
+        [c10, c01] = x
+        coeffs = list(kwargs_lens['coeffs'])
+        coeffs[1:3] = [c10, c01]
+        kwargs_lens['coeffs'] = coeffs
+        return kwargs_lens
+
     def get_all_params(self, args):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.getParams(args)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
@@ -1533,7 +1557,7 @@ class Param(object):
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.num_images == 2:
                     init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
-                    theta_E = kwargs_lens['theta_E'].copy()
+                    theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
@@ -1542,14 +1566,15 @@ class Param(object):
                 else:
                     raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
             elif self.kwargs_options.get('solver_type', 'SPEP') == 'SHAPELETS':
+                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                 if self.num_images == 4:
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                     init = [0, 0, 0, 0, 0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
                     kwargs_lens = self._update_coeffs(kwargs_lens, x)
                 elif self.num_images == 2:
-                    #TODO shapelet solver
-                    pass
+                    init = [0, 0]
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
+                    kwargs_lens = self._update_coeffs2(kwargs_lens, x)
             elif self.kwargs_options.get('solver_type', 'SPEP') == 'NONE':
                 pass
         if self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False) or self.kwargs_options.get('image_plane_source', False):

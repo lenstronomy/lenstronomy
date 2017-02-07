@@ -4,7 +4,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import astrofunc.util as util
 
-from lenstronomy.MCMC.solver import Constraints
+from lenstronomy.MCMC.solver4point import Constraints
+from lenstronomy.MCMC.solver2point import Constraints2
 from lenstronomy.ImSim.make_image import MakeImage
 
 class Param(object):
@@ -31,11 +32,6 @@ class Param(object):
         self.kwargs_fixed_lens_light = kwargs_fixed_lens_light
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
-        if kwargs_options.get('solver', False):
-            self.solver_type = kwargs_options.get('solver_type', 'SPEP')
-            self.constraints = Constraints(self.solver_type)
-        else:
-            self.solver_type = None
         self.makeImage = MakeImage(kwargs_options)
         if kwargs_options['lens_type'] == 'SPEP_SIS':
             self.clump_type = 'SIS'
@@ -54,6 +50,17 @@ class Param(object):
         self.external_shear = kwargs_options.get('external_shear', False)
         self.foreground_shear = kwargs_options.get('foreground_shear', False) \
                                 and kwargs_options.get('external_shear', False)
+        self.num_images = kwargs_options.get('num_images', 4)
+        if kwargs_options.get('solver', False):
+            self.solver_type = kwargs_options.get('solver_type', 'SPEP')
+            if self.num_images == 4:
+                self.constraints = Constraints(self.solver_type)
+            elif self. num_images == 2:
+                self.constraints = Constraints2(self.solver_type)
+            else:
+                raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
+        else:
+            self.solver_type = None
 
     def getParams(self, args):
         """
@@ -261,11 +268,11 @@ class Param(object):
 
         kwargs_else = {}
         if not 'ra_pos' in self.kwargs_fixed_else:
-            kwargs_else['ra_pos'] = np.array(args[i:i+4])
-            i += 4
+            kwargs_else['ra_pos'] = np.array(args[i:i+self.num_images])
+            i += self.num_images
         if not 'dec_pos' in self.kwargs_fixed_else:
-            kwargs_else['dec_pos'] = np.array(args[i:i+4])
-            i += 4
+            kwargs_else['dec_pos'] = np.array(args[i:i+self.num_images])
+            i += self.num_images
         if self.kwargs_options.get('image_plane_source', False):
             if not 'source_pos_image_ra' in self.kwargs_fixed_else:
                 kwargs_else['source_pos_image_ra'] = args[i]
@@ -1171,13 +1178,13 @@ class Param(object):
         if not 'ra_pos' in self.kwargs_fixed_else:
             pos_low = -10
             pos_high = 10
-            for i in range(4):
+            for i in range(self.num_images):
                 low.append(pos_low)
                 high.append(pos_high)
         if not 'dec_pos' in self.kwargs_fixed_else:
             pos_low = -10
             pos_high = 10
-            for i in range(4):
+            for i in range(self.num_images):
                 low.append(pos_low)
                 high.append(pos_high)
         if self.kwargs_options.get('image_plane_source', False):
@@ -1418,12 +1425,12 @@ class Param(object):
                 list.append('n_3_lens_light')
 
         if not 'ra_pos' in self.kwargs_fixed_else:
-            num += 4  # Warning: must be 4 point source positions!!!
-            for i in range(4):
+            num += self.num_images  # Warning: must be 4 point source positions!!!
+            for i in range(self.num_images):
                 list.append('ra_pos')
         if not 'dec_pos' in self.kwargs_fixed_else:
-            num += 4
-            for i in range(4):
+            num += self.num_images
+            for i in range(self.num_images):
                 list.append('dec_pos')
         if self.kwargs_options.get('image_plane_source', False):
             if not 'source_pos_image_ra' in self.kwargs_fixed_else:
@@ -1469,7 +1476,7 @@ class Param(object):
                     list.append('point_amp')
         return num, list
 
-    def update_spep(self, kwargs_lens, x):
+    def _update_spep(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
@@ -1484,7 +1491,18 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def update_coeffs(self, kwargs_lens, x):
+    def _update_spep2(self, kwargs_lens, x):
+        """
+
+        :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
+        :return: updated kwargs of lens parameters
+        """
+        [center_x, center_y] = x
+        kwargs_lens['center_x'] = center_x
+        kwargs_lens['center_y'] = center_y
+        return kwargs_lens
+
+    def _update_coeffs(self, kwargs_lens, x):
         [c00, c10, c01, c20, c11, c02] = x
         coeffs = list(kwargs_lens['coeffs'])
         coeffs[0: 6] = [0, c10, c01, c20, c11, c02]
@@ -1506,18 +1524,32 @@ class Param(object):
                 x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
             if self.solver_type == 'SPEP' or self.solver_type == 'SPEMD':
                 e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                init = np.array([kwargs_lens['theta_E'], e1, e2,
-                        kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
-                kwargs_lens['theta_E'] = 0
-
-                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
-                x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
-                kwargs_lens = self.update_spep(kwargs_lens, x)
+                if self.num_images == 4:
+                    init = np.array([kwargs_lens['theta_E'], e1, e2,
+                            kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
+                    kwargs_lens['theta_E'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
+                    kwargs_lens = self._update_spep(kwargs_lens, x)
+                elif self.num_images == 2:
+                    init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
+                    theta_E = kwargs_lens['theta_E'].copy()
+                    kwargs_lens['theta_E'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
+                                'theta_E': theta_E, 'e1': e1, 'e2': e2})
+                    kwargs_lens = self._update_spep2(kwargs_lens, x)
+                else:
+                    raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
             elif self.kwargs_options.get('solver_type', 'SPEP') == 'SHAPELETS':
-                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
-                init = [0, 0, 0, 0, 0, 0]
-                x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
-                kwargs_lens = self.update_coeffs(kwargs_lens, x)
+                if self.num_images == 4:
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                    init = [0, 0, 0, 0, 0, 0]
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
+                    kwargs_lens = self._update_coeffs(kwargs_lens, x)
+                elif self.num_images == 2:
+                    #TODO shapelet solver
+                    pass
             elif self.kwargs_options.get('solver_type', 'SPEP') == 'NONE':
                 pass
         if self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False) or self.kwargs_options.get('image_plane_source', False):

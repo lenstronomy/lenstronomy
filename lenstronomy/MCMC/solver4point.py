@@ -10,7 +10,7 @@ import astrofunc.util as util
 
 class SolverSPEP(object):
     """
-    class to solve multidimensional non-linear equations
+    class to solve multidimensional non-linear equations for 4 point image
     """
     def __init__(self):
         self.spep = SPEP()
@@ -40,7 +40,7 @@ class SolverSPEP(object):
 
 class SolverSPEMD(object):
     """
-    class to solve multidimensional non-linear equations
+    class to solve multidimensional non-linear equations for 4 point image
     """
     def __init__(self):
         self.spemd = SPEMD()

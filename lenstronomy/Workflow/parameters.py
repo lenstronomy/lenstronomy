@@ -1562,6 +1562,7 @@ class Param(object):
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                 'theta_E': theta_E, 'e1': e1, 'e2': e2})
+                    kwargs_lens['theta_E'] = theta_E
                     kwargs_lens = self._update_spep2(kwargs_lens, x)
                 else:
                     raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)

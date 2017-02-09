@@ -151,6 +151,17 @@ class MakeImage(object):
         residual = (model - self.kwargs_data["image_data"])/np.sqrt(util.array2image(self.C_D)+np.abs(error_map))*self.kwargs_data["mask"]
         return residual
 
+    def reduced_chi2(self, model, error_map=0):
+        """
+        returns reduced chi2
+        :param model:
+        :param error_map:
+        :return:
+        """
+        chi2 = (model - self.kwargs_data["image_data"])**2/(util.array2image(self.C_D)+np.abs(error_map))\
+               *self.kwargs_data["mask"]/np.sum(self.kwargs_data["mask"])
+        return np.sum(chi2)
+
     def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light):
         """
         links linear parameters to kwargs arguments
@@ -462,7 +473,7 @@ class MakeImage(object):
             kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
             ellipse1, ellipse2, spherical = self.LensLightModel.func.function_split(x_grid, y_grid, **kwargs_lens_light_new)
             response = [ellipse1, ellipse2, spherical]
-        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE':
+        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'CORE_SERSIC':
             new = {'I0_sersic': 1}
             kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
             ellipse = self.LensLightModel.func.function(x_grid, y_grid, **kwargs_lens_light_new)
@@ -478,7 +489,7 @@ class MakeImage(object):
             amp_estimated = amplitude
         else:
             amp_estimated = self.estimate_amp(data, x_pos, y_pos, psf_kernel)
-        error_map = util.add_layer2image(error_map, x_pos, y_pos, 1, psf_error_map*(amp_estimated*psf_kernel)**2, key='linear')
+        error_map = util.add_layer2image(error_map, x_pos, y_pos, 1, psf_error_map*(amp_estimated*psf_kernel)**2)
         return error_map
 
     def estimate_amp(self, data, x_pos, y_pos, psf_kernel):

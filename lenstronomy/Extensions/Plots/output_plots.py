@@ -59,7 +59,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
                                                    lens_light_result, else_result, numPix, deltaPix, subgrid_res)
 
     norm_residuals = makeImage.reduced_residuals(model, error_map=error_map)
-
+    reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
+    print("reduced chi2 = ", reduced_x2)
     numPix_source = 200
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
@@ -70,8 +71,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     kappa_result = util.array2image(makeImage.LensModel.kappa(x_grid, y_grid, else_result, **lens_result))
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
 
-
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+    d = deltaPix * numPix
     ax = axes[0,0]
     im = ax.matshow(image, origin='lower',
                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], vmin=0, vmax=2, cmap=cmap)
@@ -79,10 +80,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([1, 2], [1, 1], linewidth=2, color='k')
-    ax.plot([1, 1], [1, 2], linewidth=2, color='k')
-    ax.text(1.25, 0.5, '1"', fontsize=15)
-    ax.text(5.5, 7, 'Observed', fontsize=15)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "Observed", color="w", fontsize=15)
     divider = make_axes_locatable(axes[0][0])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
@@ -93,13 +94,23 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([1, 2], [1, 1], linewidth=2, color='k')
-    ax.plot([1, 1], [1, 2], linewidth=2, color='k')
-    ax.text(1.25, 0.5, '1"', fontsize=15)
-    ax.text(3.5, 7, 'Reconstructed image', fontsize=15)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "Reconstructed", color="w", fontsize=15)
     divider = make_axes_locatable(axes[0][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
+
+    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
+    paths = cs.collections[0].get_paths()
+
+    for p in paths:
+        v = p.vertices
+        ra_points = v[:, 0]
+        dec_points = v[:, 1]
+        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        ax.plot(x_points, y_points, 'b')
 
     ax = axes[0,2]
     im = ax.matshow(norm_residuals, origin='lower', vmin=-6, vmax=6,
@@ -107,10 +118,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([1, 2], [1, 1], linewidth=2, color='k')
-    ax.plot([1, 1], [1, 2], linewidth=2, color='k')
-    ax.text(1.25, 0.5, '1"', fontsize=15)
-    ax.text(3, 7, 'Normalized Residuals', fontsize=15)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "Normalized Residuals", color="w", fontsize=15)
     divider = make_axes_locatable(axes[0][2])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[-6, -4, -2, 0, 2, 4, 6])
@@ -121,13 +132,25 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([0.3, 1.3], [0.3, 0.3], linewidth=2, color='k')
-    ax.plot([0.3, 0.3], [0.3, 1.3], linewidth=2, color='k')
-    ax.text(1.1, 0.6, '1"', fontsize=15)
-    ax.text(1.6, 3.8, 'Reconstructed source', fontsize=15)
+    ax.plot([0.2, 1.2], [0.2, 0.2], linewidth=2, color='w')
+    ax.plot([0.2, 0.2], [0.2, 1.2], linewidth=2, color='w')
+    ax.plot(delta_source/2., delta_source/2., 'xr')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.2, delta_source-0.3, "Reconstructed source", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][0])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
+
+    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
+    paths = cs.collections[0].get_paths()
+
+    for p in paths:
+        v = p.vertices
+        x_points = v[:, 0]
+        y_points = v[:, 1]
+        x_caustics, y_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(x_caustics - source_result['center_x'] + delta_source / 2.,
+                y_caustics - source_result['center_y'] + delta_source / 2., 'b')
 
     ax = axes[1,1]
     im = ax.matshow(np.log10(kappa_result), origin='lower',
@@ -136,10 +159,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([1, 2], [1, 1], linewidth=2, color='k')
-    ax.plot([1, 1], [1, 2], linewidth=2, color='k')
-    ax.text(1.25, 0.5, '1"', fontsize=15)
-    ax.text(3.3, 7, 'Convergence Model', fontsize=15)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "Convergence model", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[-1, 0, 1, 2])
@@ -150,15 +173,15 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([1, 2], [1, 1], linewidth=2, color='k')
-    ax.plot([1, 1], [1, 2], linewidth=2, color='k')
-    ax.text(1.25, 0.5, '1"', fontsize=15)
-    ax.text(3.3, 7, 'Magnification Model', fontsize=15)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "Magnefication model", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][2])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[-20, -10, 0, 10, 20])
 
     f.tight_layout()
-    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
-    plt.show()
+    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
+    f.show()
     return f, axes

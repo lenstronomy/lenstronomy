@@ -76,8 +76,11 @@ class Fitting(object):
         if kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
         elif kwargs_options['lens_light_type'] == 'SERSIC' or kwargs_options[
-            'lens_light_type'] == 'SERSIC_ELLIPSE':
+            'lens_light_type'] == 'SERSIC_ELLIPSE' or kwargs_options['lens_light_type'] == 'CORE_SERSIC':
             kwargs_fixed_lens_light = {'I0_sersic': 1}
+        elif kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or \
+                        kwargs_options['lens_light_type'] == 'DOULBE_CORE_SERSIC':
+            kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_lens_light = {}
         return kwargs_fixed_lens_light

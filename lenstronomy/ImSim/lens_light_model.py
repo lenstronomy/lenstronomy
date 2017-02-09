@@ -33,9 +33,9 @@ class LensLightModel(object):
             elif kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleCoreSersic
                 self.func = DoubleCoreSersic()
-            elif kwargs_options['lens_light_type'] == 'TRIPLE_SERSIC':
-                from astrofunc.LightProfiles.sersic import TripleSersic
-                self.func = TripleSersic()
+            elif kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+                from astrofunc.LightProfiles.sersic import TrippleSersic
+                self.func = TrippleSersic()
             elif kwargs_options['lens_light_type'] == 'fixed':
                 self.lens_light_model_fixed = data_kwargs['lens_light_model']
             elif kwargs_options['lens_light_type'] == 'NONE':

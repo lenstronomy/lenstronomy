@@ -1,4 +1,3 @@
-import astrofunc.util as util
 import numpy as np
 
 
@@ -301,7 +300,8 @@ class ElseParam(object):
                 high.append(10)
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
-                for i in range(3):
+                n = self.num_images - 1
+                for i in range(n):
                     low.append(0)
                     high.append(10)
         return low, high
@@ -360,7 +360,8 @@ class ElseParam(object):
                 list.append('y_clump')
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
-                num += 3
-                for i in range(3):
+                n = self.num_images - 1
+                num += n
+                for i in range(n):
                     list.append('point_amp')
         return num, list

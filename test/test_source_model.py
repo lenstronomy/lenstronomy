@@ -4,7 +4,7 @@ import pytest
 from mock import patch
 import numpy as np
 
-from lenstronomy.ImSim.source_model import SourceModel
+from lenstronomy.ImSim.light_model import SourceModel
 
 class TestSourceModel(object):
     """

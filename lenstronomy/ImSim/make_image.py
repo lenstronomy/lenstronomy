@@ -6,8 +6,7 @@ from astrofunc.LensingProfiles.shapelets import Shapelets
 from astrofunc.LensingProfiles.gaussian import Gaussian
 
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.ImSim.source_model import SourceModel
-from lenstronomy.ImSim.lens_light_model import LensLightModel
+from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.DeLens.de_lens import DeLens
 
 import scipy.ndimage as ndimage
@@ -23,7 +22,7 @@ class MakeImage(object):
     def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
         self.LensModel = LensModel(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
-        self.LensLightModel = LensLightModel(kwargs_options, kwargs_data)
+        self.LensLightModel = LensLightModel(kwargs_options)
         self.DeLens = DeLens()
         self.kwargs_options = kwargs_options
         self.kwargs_data = kwargs_data
@@ -235,8 +234,7 @@ class MakeImage(object):
 
     def make_image_lens_light(self, x_grid, y_grid, kwargs_lens_light, numPix, deltaPix, subgrid_res):
         mask = self.kwargs_data['mask_lens_light']
-        lens_light_response = self.get_lens_light_response(x_grid, y_grid, kwargs_lens_light)
-        n_lens_light = len(lens_light_response)
+        lens_light_response, n_lens_light = self.get_sersic_response(x_grid, y_grid, kwargs_lens_light, object_type='lens_light_type')
         n = 0
         A = np.zeros((n_lens_light, numPix ** 2))
         for i in range(0, n_lens_light):
@@ -256,11 +254,9 @@ class MakeImage(object):
         lens_light_final = self.re_size_convolve(lens_light, numPix, deltaPix, subgrid_res, self.kwargs_psf)
         return lens_light_final
 
-    def _matrix_configuration(self, x_grid, y_grid, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
-        if self.kwargs_options['source_type'] == 'NONE':
-            n_source = 0
-        else:
-            n_source = 1
+    def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
+        source_light_response, n_source = self.get_sersic_response(x_source, y_source, kwargs_lens_light,
+                                                                     object_type='source_type')
         if self.kwargs_options.get('point_source', False):
             if self.kwargs_options.get('psf_iteration', False):
                 n_points = len(kwargs_psf['kernel_list'])
@@ -268,12 +264,7 @@ class MakeImage(object):
                 n_points = len(kwargs_else['ra_pos'])
         else:
             n_points = 0
-        if self.kwargs_options['lens_light_type'] == 'NONE':
-            n_lens_light = 0
-            lens_light_response = []
-        else:
-            lens_light_response = self.get_lens_light_response(x_grid, y_grid, kwargs_lens_light)
-            n_lens_light = len(lens_light_response)
+        lens_light_response, n_lens_light = self.get_sersic_response(x_grid, y_grid, kwargs_lens_light, object_type='lens_light_type')
         if shapelets_off:
             n_shapelets = 0
         else:
@@ -293,11 +284,11 @@ class MakeImage(object):
         num_param = n_shapelets + n_points + n_lens_light + n_source + num_enhance + num_subclump
         if not self.kwargs_options['source_type'] == 'NONE':
             num_param += 1
-        return num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, num_enhance, num_subclump
+        return num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, source_light_response, num_enhance, num_subclump
 
     def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
         kwargs_psf = self.kwargs_psf
-        num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, num_enhance, num_subclump = self._matrix_configuration(x_grid, y_grid, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off)
+        num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, source_light_response, num_enhance, num_subclump = self._matrix_configuration(x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off)
         A = np.zeros((num_param, numPix**2))
         if map_error is True:
             error_map = np.zeros((numPix, numPix))
@@ -306,13 +297,12 @@ class MakeImage(object):
         n = 0
         bool_string = np.ones(num_param)
         # response of sersic source profile
-        if not self.kwargs_options['source_type'] == 'NONE':
-            new = {'I0_sersic': 1}
-            kwargs_source_new = dict(kwargs_source.items() + new.items())
-            sersic_light = self.sersic.function(x_source, y_source, **kwargs_source_new)
-            image = self.re_size_convolve(util.array2image(sersic_light), numPix, deltaPix, subgrid_res, kwargs_psf, unconvolved)
-            A[n, :] = util.image2array(image*mask)
+        for i in range(0, n_source):
+            image = util.array2image(source_light_response[i])
+            image = self.re_size_convolve(image, numPix, deltaPix, subgrid_res, kwargs_psf, unconvolved)
+            A[n, :] = util.image2array(image * mask)
             n += 1
+            # response
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = util.array2image(lens_light_response[i])
@@ -455,7 +445,7 @@ class MakeImage(object):
                 k += 1
         return A
 
-    def get_lens_light_response(self, x_grid, y_grid, kwargs_lens_light):
+    def get_sersic_response(self, x_grid, y_grid, kwargs, object_type='lens_light_type'):
         """
         computes the responses to all linear parameters (normalisations) in the lens light models
         :param x_grid:
@@ -463,26 +453,30 @@ class MakeImage(object):
         :param kwargs_lens_light:
         :return:
         """
-        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
+        if self.kwargs_options[object_type] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
             new = {'I0_sersic': 1, 'I0_2': 1}
-            kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
-            ellipse, spherical = self.LensLightModel.func.function_split(x_grid, y_grid, **kwargs_lens_light_new)
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse, spherical = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
             response = [ellipse, spherical]
-        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+            n = 2
+        elif self.kwargs_options[object_type] == 'TRIPPLE_SERSIC':
             new = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
-            kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
-            ellipse1, ellipse2, spherical = self.LensLightModel.func.function_split(x_grid, y_grid, **kwargs_lens_light_new)
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse1, ellipse2, spherical = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
             response = [ellipse1, ellipse2, spherical]
-        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE' or self.kwargs_options['lens_light_type'] == 'CORE_SERSIC':
+            n = 3
+        elif self.kwargs_options[object_type] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             new = {'I0_sersic': 1}
-            kwargs_lens_light_new = dict(kwargs_lens_light.items() + new.items())
-            ellipse = self.LensLightModel.func.function(x_grid, y_grid, **kwargs_lens_light_new)
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse = self.LensLightModel.lightModel.func.function(x_grid, y_grid, **kwargs_new)
             response = [ellipse]
-        elif self.kwargs_options['lens_light_type'] == 'NONE':
+            n = 1
+        elif self.kwargs_options[object_type] == 'NONE':
             response = []
+            n = 0
         else:
-            raise ValueError('lens_light_type %s not specified well' %(self.kwargs_options['lens_light_type']))
-        return response
+            raise ValueError('type %s not specified well' %(self.kwargs_options[object_type]))
+        return response, n
 
     def get_error_map(self, data, x_pos, y_pos, psf_kernel, amplitude, error_map, psf_error_map):
         if self.kwargs_options.get('fix_error_map', False):

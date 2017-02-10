@@ -32,8 +32,9 @@ class LensParam(object):
             if not 'sigma_y' in self.kwargs_fixed:
                 kwargs['sigma_y'] = np.exp(args[i])
                 i += 1
-        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
-        #elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS',
+                                                      'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                      'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E' in self.kwargs_fixed:
                 kwargs['theta_E'] = args[i]
                 i += 1
@@ -73,7 +74,8 @@ class LensParam(object):
             if not 'center_y_sis' in self.kwargs_fixed:
                 kwargs['center_y_sis'] = args[i]
                 i += 1
-        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E_spp' in self.kwargs_fixed:
                 kwargs['theta_E_spp'] = np.exp(args[i])
                 i += 1
@@ -86,7 +88,8 @@ class LensParam(object):
             if not 'center_y_spp' in self.kwargs_fixed:
                 kwargs['center_y_spp'] = args[i]
                 i += 1
-        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE_SHAPELETS']:
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'beta' in self.kwargs_fixed:
                 kwargs['beta'] = args[i]
                 i += 1
@@ -101,6 +104,8 @@ class LensParam(object):
                         num_coeffs -=3
                         coeffs = args[i:i+num_coeffs]
                         coeffs = [0, 0, 0] + list(coeffs[0:])
+                    else:
+                        raise ValueError("Option for solver_type not valid!")
                     kwargs['coeffs'] = coeffs
                 else:
                     kwargs['coeffs'] = args[i:i+num_coeffs]
@@ -142,7 +147,9 @@ class LensParam(object):
             if not 'sigma_y' in self.kwargs_fixed:
                 args.append(np.log(kwargs['sigma_y']))
 
-        elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS',
+                                                      'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                      'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E' in self.kwargs_fixed:
                 args.append(kwargs['theta_E'])
             if not 'gamma' in self.kwargs_fixed:
@@ -152,7 +159,7 @@ class LensParam(object):
                 args.append(e1)
                 args.append(e2)
 
-        if self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPEP_NFW':
+        if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if not 'Rs' in self.kwargs_fixed:
                 args.append(np.log(kwargs['Rs']))
             if not 'rho0' in self.kwargs_fixed:
@@ -164,14 +171,16 @@ class LensParam(object):
             if not 'center_y_nfw' in self.kwargs_fixed:
                 args.append(kwargs['center_y_nfw'])
 
-        if self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
+        if self.kwargs_options['lens_type'] in ['SIS', 'SPEP_SIS']:
             if not 'theta_E_sis' in self.kwargs_fixed:
                 args.append(np.log(kwargs['theta_E_sis']))
             if not 'center_x_sis' in self.kwargs_fixed:
                 args.append(kwargs['center_x_sis'])
             if not 'center_y_sis' in self.kwargs_fixed:
                 args.append(kwargs['center_y_sis'])
-        if self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E_spp' in self.kwargs_fixed:
                 args.append(np.log(kwargs['theta_E_spp']))
             if not 'gamma_spp' in self.kwargs_fixed:
@@ -181,7 +190,8 @@ class LensParam(object):
             if not 'center_y_spp' in self.kwargs_fixed:
                 args.append(kwargs['center_y_spp'])
 
-        if self.kwargs_options['lens_type'] == 'SHAPELETS_POLAR' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'beta' in self.kwargs_fixed:
                 args.append(kwargs['beta'])
             if not 'coeffs' in self.kwargs_fixed:
@@ -197,13 +207,14 @@ class LensParam(object):
             if not 'center_y_shape' in self.kwargs_fixed:
                 args.append(kwargs['center_y_shape'])
 
-        if self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
+
             if not 'coupling' in self.kwargs_fixed:
                 args.append(kwargs['coupling'])
             if not 'phi_dipole' in self.kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
                 args.append(kwargs['phi_dipole'])
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE'):
+        if not self.kwargs_options['lens_type'] in ['INTERPOL', 'SIS', 'NFW', 'SPP', 'NONE']:
             if not 'center_x' in self.kwargs_fixed:
                 args.append(kwargs['center_x'])
             if not 'center_y' in self.kwargs_fixed:
@@ -226,7 +237,8 @@ class LensParam(object):
             if 'sigma_y' in kwargs_fixed:
                 fix_return['sigma_y'] = kwargs_fixed['sigma_y']
 
-        elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS', 'SPEP_SPP',
+                                          'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
             if 'theta_E' in kwargs_fixed:
                 fix_return['theta_E'] = kwargs_fixed['theta_E']
             if 'gamma' in kwargs_fixed:
@@ -235,7 +247,7 @@ class LensParam(object):
                 fix_return['phi_G'] = kwargs_fixed['phi_G']
                 fix_return['q'] = kwargs_fixed['q']
 
-        if self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPEP_NFW':
+        if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if 'Rs' in kwargs_fixed:
                 fix_return['Rs'] = kwargs_fixed['Rs']
             if 'rho0' in kwargs_fixed:
@@ -247,7 +259,7 @@ class LensParam(object):
             if 'center_y_nfw' in kwargs_fixed:
                 fix_return['center_y_nfw'] = kwargs_fixed['center_y_nfw']
 
-        elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
+        if self.kwargs_options['lens_type'] in ['SIS', 'SPEP_SIS']:
             if 'theta_E_sis' in kwargs_fixed:
                 fix_return['theta_E_sis'] = kwargs_fixed['theta_E_sis']
             if 'center_x_sis' in kwargs_fixed:
@@ -255,7 +267,8 @@ class LensParam(object):
             if 'center_y_sis' in kwargs_fixed:
                 fix_return['center_y_sis'] = kwargs_fixed['center_y_sis']
 
-        elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if 'theta_E_spp' in kwargs_fixed:
                 fix_return['theta_E_spp'] = kwargs_fixed['theta_E_spp']
             if 'gamma_spp' in kwargs_fixed:
@@ -265,7 +278,8 @@ class LensParam(object):
             if 'center_y_spp' in kwargs_fixed:
                 fix_return['center_y_spp'] = kwargs_fixed['center_y_spp']
 
-        if self.kwargs_options['lens_type'] == 'SHAPELETS_POLAR' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if 'beta' in kwargs_fixed:
                 fix_return['beta'] = kwargs_fixed['beta']
             if 'coeffs' in kwargs_fixed:
@@ -275,13 +289,14 @@ class LensParam(object):
             if 'center_y_shape' in kwargs_fixed:
                 fix_return['center_y_shape'] = kwargs_fixed['center_y_shape']
 
-        if self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
+
             if 'coupling' in kwargs_fixed:
                 fix_return['coupling'] = kwargs_fixed['coupling']
             if 'phi_dipole' in kwargs_fixed:
                 fix_return['phi_dipole'] = kwargs_fixed['phi_dipole']
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE'):
+        if not self.kwargs_options['lens_type'] in ['INTERPOL', 'SIS', 'NFW', 'SPP', 'NONE']:
             if 'center_x' in kwargs_fixed:
                 fix_return['center_x'] = kwargs_fixed['center_x']
             if 'center_y' in kwargs_fixed:
@@ -307,7 +322,9 @@ class LensParam(object):
                 mean.append(np.log(kwargs_mean['sigma_y']))
                 sigma.append(np.log(1 + kwargs_mean['sigma_y_sigma']/kwargs_mean['sigma_y']))
 
-        elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS',
+                                                      'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                      'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E' in self.kwargs_fixed:
                 mean.append(kwargs_mean['theta_E'])
                 sigma.append(kwargs_mean['theta_E_sigma'])
@@ -324,7 +341,7 @@ class LensParam(object):
                 sigma.append(ellipse_sigma)
                 sigma.append(ellipse_sigma)
 
-        if self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPEP_NFW':
+        if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if not 'Rs' in self.kwargs_fixed:
                 mean.append(np.log(kwargs_mean['Rs']))
                 sigma.append(np.log(1 + kwargs_mean['Rs_sigma']/kwargs_mean['Rs']))
@@ -341,7 +358,7 @@ class LensParam(object):
                 mean.append(kwargs_mean['center_y_nfw'])
                 sigma.append(kwargs_mean['center_y_nfw_sigma'])
 
-        elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
+        if self.kwargs_options['lens_type'] in ['SIS', 'SPEP_SIS']:
             if not 'theta_E_sis' in self.kwargs_fixed:
                 mean.append(np.log(kwargs_mean['theta_E_sis']))
                 sigma.append(kwargs_mean['theta_E_sis_sigma'])
@@ -352,7 +369,8 @@ class LensParam(object):
                 mean.append(kwargs_mean['center_y_sis'])
                 sigma.append(kwargs_mean['center_y_sis_sigma'])
 
-        elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E_spp' in self.kwargs_fixed:
                 mean.append(np.log(kwargs_mean['theta_E_spp']))
                 sigma.append(kwargs_mean['theta_E_spp_sigma'])
@@ -366,7 +384,8 @@ class LensParam(object):
                 mean.append(kwargs_mean['center_y_spp'])
                 sigma.append(kwargs_mean['center_y_spp_sigma'])
 
-        if self.kwargs_options['lens_type'] == 'SHAPELETS_POLAR' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'beta' in self.kwargs_fixed:
                 mean.append(kwargs_mean['beta'])
                 sigma.append(kwargs_mean['beta_sigma'])
@@ -387,7 +406,7 @@ class LensParam(object):
                 mean.append(kwargs_mean['center_y_shape'])
                 sigma.append(kwargs_mean['center_y_shape_sigma'])
 
-        if self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'coupling' in self.kwargs_fixed:
                 mean.append(kwargs_mean['coupling'])
                 sigma.append(kwargs_mean['coupling_sigma'])
@@ -395,7 +414,7 @@ class LensParam(object):
                 mean.append(kwargs_mean['phi_dipole'])
                 sigma.append(kwargs_mean['phi_dipole_sigma'])
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
+        if not self.kwargs_options['lens_type'] in ['INTERPOL', 'SIS', 'NFW', 'SPP', 'NONE']:
             if not 'center_x' in self.kwargs_fixed:
                 mean.append(kwargs_mean['center_x'])
                 sigma.append(kwargs_mean['center_x_sigma'])
@@ -422,7 +441,10 @@ class LensParam(object):
                 low.append(-10)
                 high.append(10)
 
-        elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS'  or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS',
+                                                      'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                      'SPEP_SPP_DIPOLE_SHAPELETS']:
+
             if not 'theta_E' in self.kwargs_fixed:
                 low.append(0.001)
                 high.append(10)
@@ -435,7 +457,7 @@ class LensParam(object):
                 low.append(-0.8)
                 high.append(0.8)
 
-        if self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPEP_NFW':
+        if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if not 'Rs' in self.kwargs_fixed:
                 low.append(-5)
                 high.append(5)
@@ -452,7 +474,7 @@ class LensParam(object):
                 low.append(-3)
                 high.append(3)
 
-        elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
+        if self.kwargs_options['lens_type'] in ['SIS', 'SPEP_SIS']:
             if not 'theta_E_sis' in self.kwargs_fixed:
                 low.append(-10)
                 high.append(1)
@@ -462,7 +484,8 @@ class LensParam(object):
             if not 'center_y_sis' in self.kwargs_fixed:
                 low.append(-3)
                 high.append(3)
-        elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E_spp' in self.kwargs_fixed:
                 low.append(-10)
                 high.append(5)
@@ -476,7 +499,8 @@ class LensParam(object):
                 low.append(-3)
                 high.append(3)
 
-        if self.kwargs_options['lens_type'] == 'SHAPELETS_POLAR' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'beta' in self.kwargs_fixed:
                 low.append(0.1)
                 high.append(3.)
@@ -496,7 +520,7 @@ class LensParam(object):
                 low.append(-2)
                 high.append(2)
 
-        if self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'coupling' in self.kwargs_fixed:
                 low.append(0)
                 high.append(10)
@@ -504,7 +528,7 @@ class LensParam(object):
                 low.append(-np.pi)
                 high.append(+np.pi)
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
+        if not self.kwargs_options['lens_type'] in ['INTERPOL', 'SIS', 'NFW', 'SPP', 'NONE']:
             if not 'center_x' in self.kwargs_fixed:
                 low.append(-20)
                 high.append(20)
@@ -530,7 +554,9 @@ class LensParam(object):
             if not 'sigma_y' in self.kwargs_fixed:
                 num+=1
                 list.append('sigma_y_lens')
-        elif self.kwargs_options['lens_type'] == 'SPEP' or self.kwargs_options['lens_type'] == 'ELLIPSE' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_NFW' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SIS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        elif self.kwargs_options['lens_type'] in ['SPEP', 'ELLIPSE', 'SPEP_SHAPELETS', 'SPEP_NFW', 'SPEP_SIS',
+                                                      'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                      'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E' in self.kwargs_fixed:
                 num+=1
                 list.append('theta_E_lens')
@@ -541,7 +567,7 @@ class LensParam(object):
                 num+=2
                 list.append('e1_lens')
                 list.append('e2_lens')
-        if self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SPEP_NFW':
+        if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if not 'Rs' in self.kwargs_fixed:
                 num+=1
                 list.append('Rs_nfw')
@@ -557,6 +583,7 @@ class LensParam(object):
             if not 'center_y_nfw' in self.kwargs_fixed:
                 num+=1
                 list.append('center_y_nfw')
+
         elif self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPEP_SIS':
             if not 'theta_E_sis' in self.kwargs_fixed:
                 num+=1
@@ -567,7 +594,9 @@ class LensParam(object):
             if not 'center_y_sis' in self.kwargs_fixed:
                 num+=1
                 list.append('center_y_sis')
-        elif self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+
+        if self.kwargs_options['lens_type'] in ['SPP', 'SPEP_SPP', 'SPEP_SPP_SHAPELETS', 'SPEP_SPP_DIPOLE',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'theta_E_spp' in self.kwargs_fixed:
                 num+=1
                 list.append('theta_E_spp')
@@ -581,7 +610,8 @@ class LensParam(object):
                 num+=1
                 list.append('center_y_spp')
 
-        if self.kwargs_options['lens_type'] == 'SHAPELETS_POLAR' or self.kwargs_options['lens_type'] == 'SPEP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SHAPELETS_POLAR', 'SPEP_SHAPELETS', 'SPEP_SPP_SHAPELETS',
+                                                    'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'beta' in self.kwargs_fixed:
                 num+=1
                 list.append('beta_lens')
@@ -601,7 +631,7 @@ class LensParam(object):
                 num += 1
                 list.append('center_y_lens_shape')
 
-        if self.kwargs_options['lens_type']  == 'SPEP_SPP_DIPOLE' or self.kwargs_options['lens_type'] == 'SPEP_SPP_DIPOLE_SHAPELETS':
+        if self.kwargs_options['lens_type'] in ['SPEP_SPP_DIPOLE', 'SPEP_SPP_DIPOLE_SHAPELETS']:
             if not 'coupling' in self.kwargs_fixed:
                 num += 1
                 list.append('coupling')
@@ -609,11 +639,11 @@ class LensParam(object):
                 num += 1
                 list.append('phi_dipole')
 
-        if not(self.kwargs_options['lens_type'] == 'INTERPOL' or self.kwargs_options['lens_type'] == 'NFW' or self.kwargs_options['lens_type'] == 'SIS' or self.kwargs_options['lens_type'] == 'SPP' or self.kwargs_options['lens_type'] == 'NONE' or self.kwargs_options['lens_type'] == 'NONE'):
+        if not self.kwargs_options['lens_type'] in ['INTERPOL', 'SIS', 'NFW', 'SPP', 'NONE']:
             if not 'center_x' in self.kwargs_fixed:
-                num+=1
+                num += 1
                 list.append('center_x_lens')
             if not 'center_y' in self.kwargs_fixed:
-                num+=1
+                num += 1
                 list.append('center_y_lens')
         return num, list

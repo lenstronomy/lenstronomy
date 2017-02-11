@@ -257,7 +257,7 @@ class Param(object):
                     kwargs_lens = self._update_coeffs2(kwargs_lens, x)
             elif self.kwargs_options.get('solver_type', 'SPEP') == 'NONE':
                 pass
-        if self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False) or self.kwargs_options.get('image_plane_source', False):
+        if self.kwargs_options.get('solver', False) or self.kwargs_options.get('image_plane_source', False):
             if self.kwargs_options.get('image_plane_source', False):
                 x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['source_pos_image_ra'], kwargs_else['source_pos_image_dec'], kwargs_else, **kwargs_lens)
                 kwargs_source['center_x'] = x_mapped

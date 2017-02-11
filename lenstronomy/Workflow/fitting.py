@@ -75,14 +75,29 @@ class Fitting(object):
         """
         if kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
-        elif kwargs_options['lens_light_type'] == 'SERSIC' or kwargs_options[
-            'lens_light_type'] == 'SERSIC_ELLIPSE' or kwargs_options['lens_light_type'] == 'CORE_SERSIC':
+        elif kwargs_options['lens_light_type'] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             kwargs_fixed_lens_light = {'I0_sersic': 1}
-        elif kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or kwargs_options['lens_light_type'] == 'DOULBE_CORE_SERSIC':
+        elif kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOULBE_CORE_SERSIC']:
             kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_lens_light = {}
         return kwargs_fixed_lens_light
+
+    def _set_fixed_source(self, kwargs_options):
+        """
+
+        :param kwargs_options:
+        :return: fixed linear parameters in lens light function
+        """
+        if kwargs_options['source_type'] == 'TRIPPLE_SERSIC':
+            kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
+        elif kwargs_options['source_type'] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
+            kwargs_fixed_source = {'I0_sersic': 1}
+        elif kwargs_options['source_type'] in ['DOUBLE_SERSIC', 'DOULBE_CORE_SERSIC']:
+            kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1}
+        else:
+            kwargs_fixed_source = {}
+        return kwargs_fixed_source
 
     def _fixed_lens(self, kwargs_options, kwargs_lens):
         """
@@ -117,7 +132,7 @@ class Fitting(object):
         :return: constraints of lens model
         """
         kwargs_options_special = {'lens_type': 'ELLIPSE', 'lens_light_type': 'NONE', 'source_type': 'NONE',
-                                  'X2_type': 'catalogue', 'solver': False, 'fix_source': True}
+                                  'X2_type': 'catalogue', 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
@@ -142,11 +157,11 @@ class Fitting(object):
         :return: constraints of lens model
         """
         kwargs_options_special = {'lens_type': 'NONE', 'source_type': 'NONE',
-                                  'X2_type': 'lens_light', 'solver': False, 'fix_source': True}
+                                  'X2_type': 'lens_light', 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = {}
-        kwargs_fixed_source = kwargs_source
+        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
@@ -166,15 +181,13 @@ class Fitting(object):
         finds lens model with fixed lens light model, type as specified in input kwargs_optinons
         :return: constraints of lens model
         """
-        kwargs_options_special = {'source_type': 'NONE',
-                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type'],
-                                  'fix_source': False, 'shatelets_off': False}
+        kwargs_options_special = {'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type']}
 
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = kwargs_source
+        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = {'shapelet_beta': kwargs_else['shapelet_beta']}
 
@@ -194,13 +207,12 @@ class Fitting(object):
         finds lens light with fixed lens model
         :return: constraints of lens model
         """
-        kwargs_options_special = {'source_type': 'NONE',
-                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type'],
-                                  'fix_source': False, 'shatelets_off': False}
+        kwargs_options_special = {
+                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type']}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = kwargs_source
+        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
@@ -220,13 +232,12 @@ class Fitting(object):
         finds lens light and lens model combined fit
         :return: constraints of lens model
         """
-        kwargs_options_special = {'source_type': 'NONE',
-                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type'],
-                                  'fix_source': False, 'shatelets_off': False}
+        kwargs_options_special = {
+                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type']}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = kwargs_source
+        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = {'shapelet_beta': kwargs_else['shapelet_beta']}
 

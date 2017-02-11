@@ -84,7 +84,7 @@ class SourceParam(object):
                 kwargs['n_3'] = args[i]
                 i += 1
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
+        if not (self.kwargs_options.get('solver', False)) and not self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed:
                 kwargs['center_x'] = args[i]
                 i += 1
@@ -149,7 +149,7 @@ class SourceParam(object):
             if not 'n_3' in self.kwargs_fixed:
                 args.append(kwargs['n_3'])
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not \
+        if not (self.kwargs_options.get('solver', False)) and not \
                 self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed:
                 args.append(kwargs['center_x'])
@@ -212,7 +212,7 @@ class SourceParam(object):
             if 'n_3' in kwargs_fixed:
                 fix_return['n_3'] = kwargs_fixed['n_3']
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
+        if not (self.kwargs_options.get('solver', False)) and not self.kwargs_options.get('image_plane_source', False):
             if 'center_x' in kwargs_fixed:
                 fix_return['center_x'] = kwargs_fixed['center_x']
             if 'center_y' in kwargs_fixed:
@@ -297,7 +297,7 @@ class SourceParam(object):
                 mean.append(kwargs_mean['n_3'])
                 sigma.append(kwargs_mean['n_3_sigma'])
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
+        if not (self.kwargs_options.get('solver', False)) and not self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed:
                 mean.append(kwargs_mean['center_x'])
                 sigma.append(kwargs_mean['center_x_sigma'])
@@ -379,7 +379,7 @@ class SourceParam(object):
                 low.append(0.5)
                 high.append(30)
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
+        if not (self.kwargs_options.get('solver', False)) and not self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed:
                 low.append(-10)
                 high.append(10)
@@ -405,7 +405,8 @@ class SourceParam(object):
             if not 'sigma_y' in self.kwargs_fixed:
                 num += 1
                 list.append('sigma_y_source')
-        elif self.kwargs_options['source_type'] == 'SERSIC' or self.kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
+        if self.kwargs_options[self.object_type] in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC',
+                                                             'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
             if not 'I0_sersic' in self.kwargs_fixed:
                 num += 1
                 list.append('I0_sersic_source')
@@ -415,13 +416,43 @@ class SourceParam(object):
             if not 'R_sersic' in self.kwargs_fixed:
                 num += 1
                 list.append('R_sersic_source')
-            if self.kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
+        if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
+                                                        'DOUBLE_CORE_SERSIC',
+                                                        'TRIPPLE_SERSIC']:
                 if not 'phi_G' in self.kwargs_fixed or not 'q' in self.kwargs_fixed:
                     num += 2
                     list.append('e1_source')
                     list.append('e2_source')
 
-        if not (self.kwargs_options.get('solver', False) or self.kwargs_options.get('fix_source', False)) and not self.kwargs_options.get('image_plane_source', False):
+        if self.kwargs_options[self.object_type] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
+            if not 'I0_2' in self.kwargs_fixed:
+                num += 1
+                list.append('I0_2_source')
+            if not 'R_2' in self.kwargs_fixed:
+                num += 1
+                list.append('R_2_source')
+            if not 'n_2' in self.kwargs_fixed:
+                num += 1
+                list.append('n_2_source')
+            if not 'center_x_2' in self.kwargs_fixed:
+                num += 1
+                list.append('center_x_source')
+            if not 'center_y_2' in self.kwargs_fixed:
+                num += 1
+                list.append('center_x_source')
+
+        if self.kwargs_options[self.object_type] == 'TRIPPLE_SERSIC':
+            if not 'I0_3' in self.kwargs_fixed:
+                num += 1
+                list.append('I0_3_source')
+            if not 'R_3' in self.kwargs_fixed:
+                num += 1
+                list.append('R_3_source')
+            if not 'n_3' in self.kwargs_fixed:
+                num += 1
+                list.append('n_3_source')
+
+        if not (self.kwargs_options.get('solver', False)) and not self.kwargs_options.get('image_plane_source', False):
             if not 'center_x' in self.kwargs_fixed:
                 num += 1
                 list.append('center_x_source')

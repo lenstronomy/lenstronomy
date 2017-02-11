@@ -167,15 +167,25 @@ class MakeImage(object):
         :param param:
         :return:
         """
+        i = 0
         if not self.kwargs_options['source_type'] == 'NONE':
-            kwargs_source['I0_sersic'] = param[0]
-            i = 1
-        else:
-            i = 0
-        kwargs_lens_light['I0_sersic'] = param[i]
-        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
-            kwargs_lens_light['I0_3'] = param[i+1]
-            kwargs_lens_light['I0_2'] = param[i+2]
+            kwargs_source['I0_sersic'] = param[i]
+            i += 1
+        if self.kwargs_options['source_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
+            kwargs_source['I0_2'] = param[i]
+            i += 1
+        if self.kwargs_options['source_type'] == 'TRIPPLE_SERSIC':
+            kwargs_source['I0_3'] = param[i]
+            i += 2
+        if not self.kwargs_options['lens_light_type'] == 'NONE':
+            kwargs_lens_light['I0_sersic'] = param[i]
+            i += 1
+        if self.kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
+            kwargs_source['I0_2'] = param[i]
+            i += 1
+        if self.kwargs_options['source_type'] == 'TRIPPLE_SERSIC':
+            kwargs_lens_light['I0_3'] = param[i]
+            i += 1
         return kwargs_source, kwargs_lens_light
 
     def make_image_ideal(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
@@ -282,8 +292,6 @@ class MakeImage(object):
         else:
             num_subclump = 0
         num_param = n_shapelets + n_points + n_lens_light + n_source + num_enhance + num_subclump
-        if not self.kwargs_options['source_type'] == 'NONE':
-            num_param += 1
         return num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, source_light_response, num_enhance, num_subclump
 
     def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
@@ -462,8 +470,8 @@ class MakeImage(object):
         elif self.kwargs_options[object_type] == 'TRIPPLE_SERSIC':
             new = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
             kwargs_new = dict(kwargs.items() + new.items())
-            ellipse1, ellipse2, spherical = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
-            response = [ellipse1, ellipse2, spherical]
+            ellipse1, spherical, ellipse2 = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
+            response = [ellipse1, spherical, ellipse2]
             n = 3
         elif self.kwargs_options[object_type] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             new = {'I0_sersic': 1}
@@ -518,27 +526,24 @@ class MakeImage(object):
 
         :return:
         """
-        if not self.kwargs_options['source_type'] == 'NONE':
-            new = {'I0_sersic': param[0], 'center_x': 0, 'center_y': 0}
-            kwargs_source_new = dict(kwargs_source.items() + new.items())
-            source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source_new)
-        else:
-            source = np.zeros_like(x_grid)
-        num_param_shapelets = (num_order+2)*(num_order+1)/2
-        shapelets = Shapelets(interpolation=False, precalc=False)
         error_map_source = np.zeros_like(x_grid)
-        n1 = 0
-        n2 = 0
-        basis_functions = np.zeros((len(param), len(x_grid)))
-        for i in range(len(param)-num_param_shapelets, len(param)):
-            source += shapelets.function(x_grid, y_grid, param[i], beta, n1, n2, center_x=0, center_y=0)
-            basis_functions[i, :] = shapelets.function(x_grid, y_grid, 1, beta, n1, n2, center_x=0, center_y=0)
-            if n1 == 0:
-                n1 = n2 + 1
-                n2 = 0
-            else:
-                n1 -= 1
-                n2 += 1
+        kwargs_source, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light={})
+        source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source)
+        if not self.kwargs_options.get("shapelets_off", False):
+            num_param_shapelets = (num_order+2)*(num_order+1)/2
+            shapelets = Shapelets(interpolation=False, precalc=False)
+            n1 = 0
+            n2 = 0
+            basis_functions = np.zeros((len(param), len(x_grid)))
+            for i in range(len(param)-num_param_shapelets, len(param)):
+                source += shapelets.function(x_grid, y_grid, param[i], beta, n1, n2, center_x=0, center_y=0)
+                basis_functions[i, :] = shapelets.function(x_grid, y_grid, 1, beta, n1, n2, center_x=0, center_y=0)
+                if n1 == 0:
+                    n1 = n2 + 1
+                    n2 = 0
+                else:
+                    n1 -= 1
+                    n2 += 1
         if cov_param is not None:
             error_map_source = np.zeros_like(x_grid)
             for i in range(len(error_map_source)):

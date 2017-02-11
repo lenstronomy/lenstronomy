@@ -57,7 +57,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
                                                                     deltaPix, subgrid_res)
     model_pure, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
                                                    lens_light_result, else_result, numPix, deltaPix, subgrid_res)
-
     norm_residuals = makeImage.reduced_residuals(model, error_map=error_map)
     reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)

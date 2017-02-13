@@ -66,7 +66,7 @@ class Param(object):
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
         else:
-            self.solver_type = None
+            self.solver_type = "NONE"
         self.lensParams = LensParam(kwargs_options, kwargs_fixed_lens)
         self.souceParams = SourceParam(kwargs_options, kwargs_fixed_source)
         self.lensLightParams = LensLightParam(kwargs_options, kwargs_fixed_lens_light)
@@ -225,7 +225,7 @@ class Param(object):
                 y_ = kwargs_else['dec_pos'] - f_y_shear1
             else:
                 x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
-            if self.solver_type == 'SPEP' or self.solver_type == 'SPEMD':
+            if self.solver_type in ['SPEP', 'SPEMD']:
                 e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
                 if self.num_images == 4:
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
@@ -245,7 +245,7 @@ class Param(object):
                     kwargs_lens = self._update_spep2(kwargs_lens, x)
                 else:
                     raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
-            elif self.kwargs_options.get('solver_type', 'SPEP') == 'SHAPELETS':
+            elif self.solver_type == 'SHAPELETS':
                 ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
                 if self.num_images == 4:
                     init = [0, 0, 0, 0, 0, 0]
@@ -255,7 +255,7 @@ class Param(object):
                     init = [0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
                     kwargs_lens = self._update_coeffs2(kwargs_lens, x)
-            elif self.kwargs_options.get('solver_type', 'SPEP') == 'NONE':
+            elif self.solver_type == 'NONE':
                 pass
         if self.kwargs_options.get('solver', False) or self.kwargs_options.get('image_plane_source', False):
             if self.kwargs_options.get('image_plane_source', False):

@@ -75,6 +75,18 @@ class MakeImage(object):
         M = self.kwargs_data['transform_angle2pix']
         return util.map_coord2pix(ra, dec, x_0, y_0, M)
 
+    def map_pix2coord(self, x_pos, y_pos):
+        """
+
+        :param x_pos:
+        :param y_pos:
+        :return:
+        """
+        ra_0 = self.kwargs_data['zero_point_ra']
+        dec_0 = self.kwargs_data['zero_point_dec']
+        M = self.kwargs_data['transform_pix2angle']
+        return util.map_coord2pix(x_pos, y_pos, ra_0, dec_0, M)
+
     def get_surface_brightness(self, x, y, **kwargs):
         """
         returns the surface brightness of the source at coordinate x, y
@@ -379,12 +391,12 @@ class MakeImage(object):
                 psf = psf_list[k]
                 grid2d = np.zeros((numPix, numPix))
                 for i in range(0, len(x_pos)):
-                    grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, amplitudes[i]*psf)
+                    grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], amplitudes[i]*psf)
                 A[k, :] = util.image2array(grid2d*mask)
         else:
             for i in range(num_param):
                 grid2d = np.zeros((numPix, numPix))
-                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], 1, psf_large)
+                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_large)
                 A[i, :] = util.image2array(point_source*mask)
         return A, error_map
 
@@ -491,7 +503,7 @@ class MakeImage(object):
             amp_estimated = amplitude
         else:
             amp_estimated = self.estimate_amp(data, x_pos, y_pos, psf_kernel)
-        error_map = util.add_layer2image(error_map, x_pos, y_pos, 1, psf_error_map*(amp_estimated*psf_kernel)**2)
+        error_map = util.add_layer2image(error_map, x_pos, y_pos, psf_error_map*(amp_estimated*psf_kernel)**2)
         return error_map
 
     def estimate_amp(self, data, x_pos, y_pos, psf_kernel):

@@ -67,7 +67,7 @@ class Fitting(object):
                                                                                                        print_key=print_key)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def _set_fixed_lens_light(self, kwargs_options):
+    def _fixed_lens_light(self, kwargs_options):
         """
 
         :param kwargs_options:
@@ -83,7 +83,7 @@ class Fitting(object):
             kwargs_fixed_lens_light = {}
         return kwargs_fixed_lens_light
 
-    def _set_fixed_source(self, kwargs_options):
+    def _fixed_source(self, kwargs_options):
         """
 
         :param kwargs_options:
@@ -107,7 +107,7 @@ class Fitting(object):
         :return:
         """
         if kwargs_options['solver'] is True:
-            if kwargs_options['solver_type'] == "SPEP" or kwargs_options['solver_type'] == "SPEMD":
+            if kwargs_options['solver_type'] in ['SPEP', 'SPEMD']:
                 if kwargs_options['num_images'] == 4:
                     kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
                                      'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
@@ -161,8 +161,8 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = {}
-        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
-        kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -187,7 +187,7 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = {'shapelet_beta': kwargs_else['shapelet_beta']}
 
@@ -207,13 +207,12 @@ class Fitting(object):
         finds lens light with fixed lens model
         :return: constraints of lens model
         """
-        kwargs_options_special = {
-                                  'X2_type': 'image', 'solver': True, 'solver_type': kwargs_options['ellipse_type']}
+        kwargs_options_special = {'X2_type': 'image', 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
-        kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -225,7 +224,31 @@ class Fitting(object):
             threadCount=threadCount, mpi_monch=mpi_monch, print_key='lens light')
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
-    def find_lens_light_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+    def find_source_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                             kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
+                             n_particles, n_iterations, mpi_monch=False, threadCount=1):
+        """
+        finds lens light with fixed lens model
+        :return: constraints of lens model
+        """
+        kwargs_options_special = {'X2_type': 'image', 'solver': False}
+        # this are the parameters which are held constant while sampling
+        kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
+        kwargs_fixed_lens = kwargs_lens
+        kwargs_fixed_source = self._fixed_source(kwargs_options_execute)
+        kwargs_fixed_lens_light = kwargs_lens_light
+        kwargs_fixed_else = kwargs_else
+
+        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
+            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
+            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
+            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
+            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
+            kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
+            threadCount=threadCount, mpi_monch=mpi_monch, print_key='lens light')
+        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
+
+    def find_lens_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
                              n_particles, n_iterations, mpi_monch=False, threadCount=1):
         """
@@ -237,8 +260,8 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._set_fixed_source(kwargs_options_execute).items())
-        kwargs_fixed_lens_light = self._set_fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = {'shapelet_beta': kwargs_else['shapelet_beta']}
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -247,7 +270,7 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi_monch=mpi_monch, print_key='lens light')
+            threadCount=threadCount, mpi_monch=mpi_monch, print_key='combined')
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_param_psf_iteration(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, n_particles,

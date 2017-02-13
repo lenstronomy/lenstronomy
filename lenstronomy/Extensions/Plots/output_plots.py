@@ -73,8 +73,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     d = deltaPix * numPix
     ax = axes[0,0]
-    im = ax.matshow(image, origin='lower',
-                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], vmin=0, vmax=2, cmap=cmap)
+    im = ax.matshow(np.log10(image), origin='lower',
+                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap) # , vmin=0, vmax=2
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -88,7 +88,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
 
     ax = axes[0,1]
-    im = ax.matshow(model_pure, origin='lower', vmin=v_min, vmax=v_max,
+    im = ax.matshow(np.log10(model_pure), origin='lower', vmin=v_min, vmax=v_max,
                                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)

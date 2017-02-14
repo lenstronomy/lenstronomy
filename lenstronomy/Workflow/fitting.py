@@ -156,11 +156,13 @@ class Fitting(object):
         finds lens light, type as specified in input kwargs_optinons
         :return: constraints of lens model
         """
+        if kwargs_options['lens_light_type'] is 'NONE':
+            return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, [0,0,0,0], 0, kwargs_options
         kwargs_options_special = {'lens_type': 'NONE', 'source_type': 'NONE',
                                   'X2_type': 'lens_light', 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
-        kwargs_fixed_lens = {}
+        kwargs_fixed_lens = kwargs_lens
         kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
         kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else

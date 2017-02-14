@@ -29,12 +29,13 @@ class LensLightParam(object):
             if not 'R_sersic' in self.kwargs_fixed:
                 kwargs['R_sersic'] = args[i]
                 i += 1
-            if not 'center_x' in self.kwargs_fixed:
-                kwargs['center_x'] = args[i]
-                i += 1
-            if not 'center_y' in self.kwargs_fixed:
-                kwargs['center_y'] = args[i]
-                i += 1
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if not 'center_x' in self.kwargs_fixed:
+                    kwargs['center_x'] = args[i]
+                    i += 1
+                if not 'center_y' in self.kwargs_fixed:
+                    kwargs['center_y'] = args[i]
+                    i += 1
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC',
                                                 'TRIPPLE_SERSIC']:
                 if not 'phi_G' in self.kwargs_fixed or not 'q' in self.kwargs_fixed:
@@ -92,10 +93,11 @@ class LensLightParam(object):
                 args.append(kwargs['n_sersic'])
             if not 'R_sersic' in self.kwargs_fixed:
                 args.append(kwargs['R_sersic'])
-            if not 'center_x' in self.kwargs_fixed:
-                args.append(kwargs['center_x'])
-            if not 'center_y' in self.kwargs_fixed:
-                args.append(kwargs['center_y'])
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if not 'center_x' in self.kwargs_fixed:
+                    args.append(kwargs['center_x'])
+                if not 'center_y' in self.kwargs_fixed:
+                    args.append(kwargs['center_y'])
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
                                                              'DOUBLE_CORE_SERSIC',
                                                              'TRIPPLE_SERSIC']:
@@ -145,10 +147,11 @@ class LensLightParam(object):
                 fix_return['n_sersic'] = kwargs_fixed['n_sersic']
             if 'R_sersic' in kwargs_fixed:
                 fix_return['R_sersic'] = kwargs_fixed['R_sersic']
-            if 'center_x' in kwargs_fixed:
-                fix_return['center_x'] = kwargs_fixed['center_x']
-            if 'center_y' in kwargs_fixed:
-                fix_return['center_y'] = kwargs_fixed['center_y']
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if 'center_x' in kwargs_fixed:
+                    fix_return['center_x'] = kwargs_fixed['center_x']
+                if 'center_y' in kwargs_fixed:
+                    fix_return['center_y'] = kwargs_fixed['center_y']
 
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
                                                              'DOUBLE_CORE_SERSIC',
@@ -202,12 +205,13 @@ class LensLightParam(object):
             if not 'R_sersic' in self.kwargs_fixed:
                 mean.append(kwargs_mean['R_sersic'])
                 sigma.append(kwargs_mean['R_sersic_sigma'])
-            if not 'center_x' in self.kwargs_fixed:
-                mean.append(kwargs_mean['center_x'])
-                sigma.append(kwargs_mean['center_x_sigma'])
-            if not 'center_y' in self.kwargs_fixed:
-                mean.append(kwargs_mean['center_y'])
-                sigma.append(kwargs_mean['center_y_sigma'])
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if not 'center_x' in self.kwargs_fixed:
+                    mean.append(kwargs_mean['center_x'])
+                    sigma.append(kwargs_mean['center_x_sigma'])
+                if not 'center_y' in self.kwargs_fixed:
+                    mean.append(kwargs_mean['center_y'])
+                    sigma.append(kwargs_mean['center_y_sigma'])
 
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
                                                              'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
@@ -274,12 +278,13 @@ class LensLightParam(object):
             if not 'R_sersic' in self.kwargs_fixed:
                 low.append(0.01)
                 high.append(30)
-            if not 'center_x' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
-            if not 'center_y' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if not 'center_x' in self.kwargs_fixed:
+                    low.append(-10)
+                    high.append(10)
+                if not 'center_y' in self.kwargs_fixed:
+                    low.append(-10)
+                    high.append(10)
 
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
                                                              'DOUBLE_CORE_SERSIC',
@@ -344,12 +349,13 @@ class LensLightParam(object):
             if not 'R_sersic' in self.kwargs_fixed:
                 num += 1
                 list.append('R_sersic_lens_light')
-            if not 'center_x' in self.kwargs_fixed:
-                num+=1
-                list.append('center_x_lens_light')
-            if not 'center_y' in self.kwargs_fixed:
-                num+=1
-                list.append('center_y_lens_light')
+            if not self.kwargs_options.get('fix_mass_light', False):
+                if not 'center_x' in self.kwargs_fixed:
+                    num+=1
+                    list.append('center_x_lens_light')
+                if not 'center_y' in self.kwargs_fixed:
+                    num+=1
+                    list.append('center_y_lens_light')
 
         if self.kwargs_options[self.object_type] in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC',
                                                              'DOUBLE_CORE_SERSIC',

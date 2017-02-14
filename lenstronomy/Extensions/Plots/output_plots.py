@@ -54,7 +54,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
                                                                     lens_light_result, else_result, numPix,
-                                                                    deltaPix, subgrid_res)
+                                                                    deltaPix, subgrid_res, inv_bool=True)
     model_pure, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
                                                    lens_light_result, else_result, numPix, deltaPix, subgrid_res)
     norm_residuals = makeImage.reduced_residuals(model, error_map=error_map)
@@ -70,9 +70,16 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     kappa_result = util.array2image(makeImage.LensModel.kappa(x_grid, y_grid, else_result, **lens_result))
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
 
+    lens_light_no_mask = makeImage.get_lens_surface_brightness(x_grid, y_grid, numPix, deltaPix, subgrid_res,
+                                                               lens_light_result)
+
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     d = deltaPix * numPix
     ax = axes[0,0]
+
+    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
+    paths = cs.collections[0].get_paths()
+
     im = ax.matshow(np.log10(image), origin='lower',
                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap) # , vmin=0, vmax=2
     v_min, v_max = im.get_clim()
@@ -87,6 +94,23 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
 
+    for p in paths:
+        v = p.vertices
+        ra_points = v[:, 0]
+        dec_points = v[:, 1]
+        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
+
+        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, else_result, **lens_result)
+        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
+
+    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    for i in range(len(x_image)):
+        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+    x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
+    ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
+
     ax = axes[0,1]
     im = ax.matshow(np.log10(model_pure), origin='lower', vmin=v_min, vmax=v_max,
                                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap)
@@ -100,16 +124,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     divider = make_axes_locatable(axes[0][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
-
-    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
-    paths = cs.collections[0].get_paths()
-
-    for p in paths:
-        v = p.vertices
-        ra_points = v[:, 0]
-        dec_points = v[:, 1]
-        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
-        ax.plot(x_points, y_points, 'b')
 
     ax = axes[0,2]
     im = ax.matshow(norm_residuals, origin='lower', vmin=-6, vmax=6,
@@ -126,8 +140,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     plt.colorbar(im, cax=cax, ticks=[-6, -4, -2, 0, 2, 4, 6])
 
     ax = axes[1,0]
-    im = ax.matshow(source, origin='lower', vmin=0, vmax=2, extent=[0, delta_source, 0, delta_source],
-                                cmap=cmap)
+    im = ax.matshow(source, origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=2)  # source
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -140,20 +154,18 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
 
-    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
-    paths = cs.collections[0].get_paths()
 
     for p in paths:
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        x_caustics, y_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
-        ax.plot(x_caustics - source_result['center_x'] + delta_source / 2.,
-                y_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
+                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
 
     ax = axes[1,1]
-    im = ax.matshow(np.log10(kappa_result), origin='lower',
-                                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], vmin=-1, vmax=2, cmap=cmap)
+    im = ax.matshow(np.log10(lens_light_no_mask), origin='lower',
+                                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap, vmin=v_min, vmax=v_max,)
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -161,13 +173,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d-0.5, "Convergence model", color="w", fontsize=15)
+    ax.text(0.5, d-0.5, "Lens light model", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[-1, 0, 1, 2])
+
     ax = axes[1,2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * numPix, 0, deltaPix * numPix],
-                                vmin=-30, vmax=30, cmap=cmap)
+                                vmin=-30, vmax=30, cmap=cmap, alpha=0.5)
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -175,10 +188,25 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d-0.5, "Magnefication model", color="w", fontsize=15)
+    ax.text(0.5, d-0.5, "Magnification model", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][2])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax, ticks=[-20, -10, 0, 10, 20])
+
+    for p in paths:
+        v = p.vertices
+        ra_points = v[:, 0]
+        dec_points = v[:, 1]
+        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
+
+        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, else_result, **lens_result)
+        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
+
+    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    for i in range(len(x_image)):
+        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
 
     f.tight_layout()
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)

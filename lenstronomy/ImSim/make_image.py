@@ -282,6 +282,8 @@ class MakeImage(object):
         if self.kwargs_options.get('point_source', False):
             if self.kwargs_options.get('psf_iteration', False):
                 n_points = len(kwargs_psf['kernel_list'])
+            elif self.kwargs_options.get('fix_magnification', False):
+                n_points = 1
             else:
                 n_points = len(kwargs_else['ra_pos'])
         else:
@@ -331,7 +333,7 @@ class MakeImage(object):
             n += 1
         # response of point sources
         if self.kwargs_options.get('point_source', False):
-            A_point, error_map = self.get_psf_response(n_points, kwargs_psf, kwargs_else, mask, map_error=map_error)
+            A_point, error_map = self.get_psf_response(n_points, kwargs_psf, kwargs_lens, kwargs_else, mask, map_error=map_error)
             A[n:n+n_points, :] = A_point
             bool_string[n:n+n_points] = 0
             n += n_points
@@ -361,7 +363,7 @@ class MakeImage(object):
             error_map = util.image2array(error_map)
         return A, error_map, bool_string
 
-    def get_psf_response(self, num_param, kwargs_psf, kwargs_else, mask, map_error=False):
+    def get_psf_response(self, num_param, kwargs_psf, kwargs_lens, kwargs_else, mask, map_error=False):
         """
 
         :param n_points:
@@ -390,9 +392,15 @@ class MakeImage(object):
             for k in range(num_param):
                 psf = psf_list[k]
                 grid2d = np.zeros((numPix, numPix))
-                for i in range(0, len(x_pos)):
+                for i in range(0, n_points):
                     grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], amplitudes[i]*psf)
                 A[k, :] = util.image2array(grid2d*mask)
+        elif self.kwargs_options.get('fix_magnification', False):
+            grid2d = np.zeros((numPix, numPix))
+            mag = self.LensModel.magnification(x_pos, y_pos, kwargs_else, **kwargs_lens)
+            for i in range(n_points):
+                grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], np.abs(mag[i]) * psf_large)
+            A[0, :] = util.image2array(grid2d*mask)
         else:
             for i in range(num_param):
                 grid2d = np.zeros((numPix, numPix))
@@ -540,13 +548,17 @@ class MakeImage(object):
         """
         error_map_source = np.zeros_like(x_grid)
         kwargs_source, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light={})
-        source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source)
+        kwargs_source_new = copy.deepcopy(kwargs_source)
+        kwargs_source_new['center_x'] = 0.
+        kwargs_source_new['center_y'] = 0.
+
+        source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source_new)
+        basis_functions = np.zeros((len(param), len(x_grid)))
         if not self.kwargs_options.get("shapelets_off", False):
             num_param_shapelets = (num_order+2)*(num_order+1)/2
             shapelets = Shapelets(interpolation=False, precalc=False)
             n1 = 0
             n2 = 0
-            basis_functions = np.zeros((len(param), len(x_grid)))
             for i in range(len(param)-num_param_shapelets, len(param)):
                 source += shapelets.function(x_grid, y_grid, param[i], beta, n1, n2, center_x=0, center_y=0)
                 basis_functions[i, :] = shapelets.function(x_grid, y_grid, 1, beta, n1, n2, center_x=0, center_y=0)
@@ -562,7 +574,7 @@ class MakeImage(object):
                 error_map_source[i] = basis_functions[:, i].T.dot(cov_param).dot(basis_functions[:,i])
         return util.array2image(source), util.array2image(error_map_source)
 
-    def get_psf(self, param, kwargs_psf, kwargs_else):
+    def get_psf(self, param, kwargs_psf, kwargs_lens, kwargs_else):
         """
         returns the psf estimates from the different basis sets
         only analysis function
@@ -582,7 +594,7 @@ class MakeImage(object):
             a += 1
         kernel_list = kwargs_psf['kernel_list']
         num_param = len(kernel_list)
-        A_psf, _ = self.get_psf_response(num_param, kwargs_psf, kwargs_else, mask=1, map_error=False)
+        A_psf, _ = self.get_psf_response(num_param, kwargs_psf, kwargs_lens, kwargs_else, mask=1, map_error=False)
         num_param = len(kernel_list)
         param_psf = param[a:a+num_param]
         psf = A_psf.T.dot(param_psf)

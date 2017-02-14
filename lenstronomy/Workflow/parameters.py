@@ -268,4 +268,7 @@ class Param(object):
                 #kwargs_source['center_y'] = np.mean(y_mapped)
                 kwargs_source['center_x'] = x_mapped[0]
                 kwargs_source['center_y'] = y_mapped[0]
+        if self.kwargs_options.get('fix_mass_light', False):
+            kwargs_lens_light['center_x'] = kwargs_lens['center_x']
+            kwargs_lens_light['center_y'] = kwargs_lens['center_y']
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else

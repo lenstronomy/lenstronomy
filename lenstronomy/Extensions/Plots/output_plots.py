@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
+
+import copy
 import numpy as np
 from astrofunc.util import Util_class
 import astrofunc.util as util
@@ -46,6 +48,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     util_class = Util_class()
     x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
@@ -69,6 +72,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     kappa_result = util.array2image(makeImage.LensModel.kappa(x_grid, y_grid, else_result, **lens_result))
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
+    mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))
 
     lens_light_no_mask = makeImage.get_lens_surface_brightness(x_grid, y_grid, numPix, deltaPix, subgrid_res,
                                                                lens_light_result)
@@ -77,7 +81,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     d = deltaPix * numPix
     ax = axes[0,0]
 
-    cs = ax.contour(util.array2image(x_grid), util.array2image(y_grid), mag_result, [0], alpha=0.0)
+    cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
     paths = cs.collections[0].get_paths()
 
     im = ax.matshow(np.log10(image), origin='lower',
@@ -90,9 +94,9 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
     ax.text(0.5, d-0.5, "Observed", color="w", fontsize=15)
-    divider = make_axes_locatable(axes[0][0])
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
+    plt.colorbar(im, cax=cax)
 
     for p in paths:
         v = p.vertices
@@ -121,9 +125,9 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
     ax.text(0.5, d-0.5, "Reconstructed", color="w", fontsize=15)
-    divider = make_axes_locatable(axes[0][1])
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
+    plt.colorbar(im, cax=cax)
 
     ax = axes[0,2]
     im = ax.matshow(norm_residuals, origin='lower', vmin=-6, vmax=6,
@@ -135,9 +139,9 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
     ax.text(0.5, d-0.5, "Normalized Residuals", color="w", fontsize=15)
-    divider = make_axes_locatable(axes[0][2])
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[-6, -4, -2, 0, 2, 4, 6])
+    plt.colorbar(im, cax=cax)
 
     ax = axes[1,0]
     im = ax.matshow(source, origin='lower', extent=[0, delta_source, 0, delta_source],
@@ -150,9 +154,9 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot(delta_source/2., delta_source/2., 'xr')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
     ax.text(0.2, delta_source-0.3, "Reconstructed source", color="w", fontsize=15)
-    divider = make_axes_locatable(axes[1][0])
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[0, 0.5, 1, 1.5, 2])
+    plt.colorbar(im, cax=cax)
 
 
     for p in paths:
@@ -176,7 +180,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.text(0.5, d-0.5, "Lens light model", color="w", fontsize=15)
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[-1, 0, 1, 2])
+    plt.colorbar(im, cax=cax)
 
     ax = axes[1,2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * numPix, 0, deltaPix * numPix],
@@ -189,9 +193,9 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
     ax.text(0.5, d-0.5, "Magnification model", color="w", fontsize=15)
-    divider = make_axes_locatable(axes[1][2])
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax, ticks=[-20, -10, 0, 10, 20])
+    plt.colorbar(im, cax=cax)
 
     for p in paths:
         v = p.vertices
@@ -207,6 +211,78 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
     for i in range(len(x_image)):
         ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+
+    f.tight_layout()
+    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
+    f.show()
+    return f, axes
+
+def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
+                        else_result, cmap):
+
+    deltaPix = kwargs_data['deltaPix']
+    image = kwargs_data['image_data']
+    numPix = len(image)
+    subgrid_res = kwargs_options['subgrid_res']
+    num_order = kwargs_options['shapelet_order']
+    beta = else_result['shapelet_beta']
+
+    kwargs_options_run = copy.deepcopy(kwargs_options)
+    kwargs_options_run['lens_light_type'] = "NONE"
+
+    util_class = Util_class()
+
+    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
+    x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
+    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+
+
+
+    model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
+                                                                    lens_light_result, else_result, numPix,
+                                                                    deltaPix, subgrid_res, inv_bool=True)
+    model_pure, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
+                                                   lens_light_result, else_result, numPix, deltaPix, subgrid_res)
+    mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
+    mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))
+    f, axes = plt.subplots(1, 1, figsize=(8, 8), sharex=False, sharey=False)
+    d = deltaPix * numPix
+    ax = axes
+
+    cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
+    paths = cs.collections[0].get_paths()
+
+    im = ax.matshow(image - model_pure, origin='lower',
+                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap) # , vmin=0, vmax=2
+    v_min, v_max = im.get_clim()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d-0.5, "image - model (without lens light)", color="w", fontsize=15)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    for p in paths:
+        v = p.vertices
+        ra_points = v[:, 0]
+        dec_points = v[:, 1]
+        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
+
+        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, else_result, **lens_result)
+        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
+
+    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    for i in range(len(x_image)):
+        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+    x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
+    ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     f.tight_layout()
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)

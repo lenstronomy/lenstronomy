@@ -1,3 +1,2 @@
-numpy>=1.11.1
 mock
 -e git://github.com/sibirrer/astrofunc.git#egg=astrofunc

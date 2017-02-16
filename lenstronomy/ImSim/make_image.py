@@ -118,7 +118,10 @@ class MakeImage(object):
             kernel = kwargs['kernel']
             if 'kernel_fft' in kwargs:
                 kernel_fft = kwargs['kernel_fft']
-                img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
+                try:
+                    img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
+                except:
+                    img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             else:
                 img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             return img_conv1

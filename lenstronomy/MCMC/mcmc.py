@@ -92,7 +92,7 @@ class MCMC_sampler(object):
 
         return store.samples
 
-    def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False):
+    def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
         """
         runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
         returns the chain
@@ -113,7 +113,7 @@ class MCMC_sampler(object):
 
         store = InMemoryStorageUtil()
         #store = None
-        if mpi_monch is True:
+        if mpi is True:
             sampler = MpiCosmoHammerSampler(
             params=params,
             likelihoodComputationChain=chain,

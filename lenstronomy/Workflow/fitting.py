@@ -72,7 +72,7 @@ class Fitting(object):
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
-                 threadCount=1, mpi_monch=False, init_positions=None):
+                 threadCount=1, mpi=False, init_samples=None):
 
 
         kwargs_prior_lens = dict(kwargs_mean_lens.items() + kwargs_sigma_lens.items())
@@ -99,13 +99,13 @@ class Fitting(object):
                                                          kwargs_prior_lens_light, kwargs_prior_else)
         num_param, param_list = param_class.num_param()
         # run MCMC
-        if not init_positions is None:
-            initpos = ReusePositionGenerator(init_positions)
+        if not init_samples is None:
+            initpos = ReusePositionGenerator(init_samples)
         else:
             initpos = None
 
         samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=threadCount,
-                                           mpi_monch=mpi_monch, init_pos=initpos)
+                                           mpi=mpi, init_pos=initpos)
         return samples, param_list, dist
 
     def _fixed_lens_light(self, kwargs_options):
@@ -317,7 +317,7 @@ class Fitting(object):
 
     def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                  kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                 n_burn, n_run, walkerRatio, threadCount=1, mpi_monch=False, init_positions=None):
+                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None):
         """
         MCMC
         """
@@ -335,5 +335,5 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi_monch=mpi_monch, init_positions=init_positions)
+            threadCount=threadCount, mpi=mpi, init_samples=init_samples)
         return samples, param_list, dist

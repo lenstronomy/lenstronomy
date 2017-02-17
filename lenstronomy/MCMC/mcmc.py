@@ -106,6 +106,7 @@ class MCMC_sampler(object):
 
         temp_dir = tempfile.mkdtemp("Hammer")
         file_prefix = os.path.join(temp_dir, "logs")
+        print('file %s created' % file_prefix)
         #file_prefix = "./lenstronomy_debug"
         # chain.addCoreModule(CambCoreModule())
         chain.addLikelihoodModule(self.chain)
@@ -139,8 +140,8 @@ class MCMC_sampler(object):
         if sampler.isMaster():
             print('Computing the MCMC...')
             print('Number of walkers = ', len(mean_start)*walkerRatio)
-            print('Burn-in itterations: ', n_burn)
-            print('Sampling itterations:', n_run)
+            print('Burn-in iterations: ', n_burn)
+            print('Sampling iterations:', n_run)
         sampler.startSampling()
         if sampler.isMaster():
             time_end = time.time()
@@ -150,7 +151,7 @@ class MCMC_sampler(object):
         try:
             shutil.rmtree(temp_dir)
         except Exception as ex:
-            print(ex)
+            print(ex, 'shutil.rmtree')
             pass
         #samples = np.loadtxt(file_prefix+".out")
         #prob = np.loadtxt(file_prefix+"prob.out")

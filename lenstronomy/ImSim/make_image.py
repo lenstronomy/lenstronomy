@@ -235,15 +235,17 @@ class MakeImage(object):
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
         image_pure = A_pure.T.dot(param)
         grid_final = util.array2image(image_pure)
-        return grid_final, param, util.array2image(error_map)
+        return grid_final, util.array2image(error_map), cov_param, param
 
-    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param, num_order):
+    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param):
         """
         make a image with a realisation of linear parameter values "param"
         """
         map_error = self.kwargs_options.get('error_map', False)
+        num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
+        mask = self.kwargs_data['mask']
+        A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
         image_conv = self.psf_convolution(util.array2image(image_pure), deltaPix/subgrid_res, **self.kwargs_psf)
@@ -640,16 +642,21 @@ class MakeImage(object):
         :return: the selected list
         """
         #i=0 source sersic
+        param_no_point = copy.deepcopy(param)
         n = len(kwargs_else['ra_pos']) # number of point sources
         if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
-            return param[3:3+n]
+            a = 2
         elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
-            return param[4:4+n]
-        elif self.kwargs_options['lens_light_type'] == 'NONE':
-            return param[1:1+n]
+            a = 3
+        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE':
+            a = 1
         else:
-            print('WARNING: no suited lens light type found. Return might be corrupted.')
-            return param[1:1+n]
+            a = 0
+        if not self.kwargs_options['source_type'] == 'NONE':
+            a += 1
+        param_no_point[a:a+n] = 0
+        return param[a:a+n], param_no_point
+
 
     def get_time_delay(self, kwargs_lens, kwargs_source, kwargs_else):
         """

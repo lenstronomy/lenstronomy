@@ -66,7 +66,7 @@ class LightModel(object):
         elif profile_type == 'NONE':
             self.valid = False
         else:
-            print 'Warning! No lens light model of type', profile_type, ' found!'
+            print('Warning! No lens light model of type', profile_type, ' found!')
             self.valid = False
 
     def surface_brightness(self, x=0, y=0, **kwargs):

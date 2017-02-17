@@ -52,7 +52,7 @@ class TestMakeImage(object):
 
         data[5, 5] = 0
         mag = self.makeImage.estimate_amp(data, x_pos, y_pos, psf_kernel)
-        npt.assert_almost_equal(mag,10, decimal=10)
+        npt.assert_almost_equal(mag, 10, decimal=10)
 
     def test_get_magnification_model(self):
         kwargs_else = {'ra_pos': np.array([1., 1., 2.]), 'dec_pos': np.array([-1., 0., 0.])}
@@ -62,7 +62,7 @@ class TestMakeImage(object):
     def test_get_image_amplitudes(self):
         param = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
         kwargs_else = {'ra_pos': np.array([1, 1, 2]), 'dec_pos': np.array([-1, 0, 0])}
-        mag = self.makeImage.get_image_amplitudes(param, kwargs_else)
+        mag, _ = self.makeImage.get_image_amplitudes(param, kwargs_else)
         assert mag[0] == 5
         assert mag[1] == 6
         assert mag[2] == 7

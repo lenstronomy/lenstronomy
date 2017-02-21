@@ -237,14 +237,17 @@ class MakeImage(object):
         grid_final = util.array2image(image_pure)
         return grid_final, util.array2image(error_map), cov_param, param
 
-    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param):
+    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, param, no_mask=False):
         """
         make a image with a realisation of linear parameter values "param"
         """
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        mask = self.kwargs_data['mask']
+        if no_mask:
+            mask = 1
+        else:
+            mask = self.kwargs_data['mask']
         A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
@@ -329,7 +332,6 @@ class MakeImage(object):
             image = self.re_size_convolve(image, numPix, deltaPix, subgrid_res, kwargs_psf, unconvolved)
             A[n, :] = util.image2array(image * mask)
             n += 1
-            # response
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = util.array2image(lens_light_response[i])
@@ -516,7 +518,7 @@ class MakeImage(object):
             amp_estimated = amplitude
         else:
             amp_estimated = self.estimate_amp(data, x_pos, y_pos, psf_kernel)
-        error_map = util.add_layer2image(error_map, x_pos, y_pos, psf_error_map*(amp_estimated*psf_kernel)**2)
+        error_map = util.add_layer2image(error_map, x_pos, y_pos, psf_error_map*(psf_kernel * amp_estimated)**2)
         return error_map
 
     def estimate_amp(self, data, x_pos, y_pos, psf_kernel):

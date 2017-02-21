@@ -106,7 +106,6 @@ class MCMC_sampler(object):
 
         temp_dir = tempfile.mkdtemp("Hammer")
         file_prefix = os.path.join(temp_dir, "logs")
-        print('file %s created' % file_prefix)
         #file_prefix = "./lenstronomy_debug"
         # chain.addCoreModule(CambCoreModule())
         chain.addLikelihoodModule(self.chain)
@@ -151,7 +150,7 @@ class MCMC_sampler(object):
         try:
             shutil.rmtree(temp_dir)
         except Exception as ex:
-            print(ex, 'shutil.rmtree')
+            print(ex, 'shutil.rmtree did not work')
             pass
         #samples = np.loadtxt(file_prefix+".out")
         #prob = np.loadtxt(file_prefix+"prob.out")

@@ -61,17 +61,6 @@ class DeLens(object):
         sigma = d_pos/f + sigma_b**2
         return sigma
 
-    def get_covariance_matrix_old(self, d, sigma_b, f):
-        """
-        returns a diagonal matrix for the covariance estimation
-        :param d: data array
-        :param sigma_b: background noise
-        :param f: reduced poissonian noise
-        :return: len(d) x len(d) matrix
-        """
-        sigma = np.abs(d-sigma_b)/f + sigma_b**2
-        return sigma
-
     def get_source(self, param, num_order, beta, center_x, center_y, x_grid, y_grid):
         """
 

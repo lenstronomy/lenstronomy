@@ -6,6 +6,7 @@ import astrofunc.util as util
 
 from lenstronomy.MCMC.solver4point import Constraints
 from lenstronomy.MCMC.solver2point import Constraints2
+from lenstronomy.MCMC.solver2point_new import Constraints2_new
 from lenstronomy.ImSim.make_image import MakeImage
 
 from lenstronomy.Workflow.lens_param import LensParam
@@ -39,6 +40,7 @@ class Param(object):
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
         self.makeImage = MakeImage(kwargs_options)
+
         if kwargs_options['lens_type'] == 'SPEP_SIS':
             self.clump_type = 'SIS'
         elif kwargs_options['lens_type'] == 'SPEP_NFW':
@@ -57,11 +59,14 @@ class Param(object):
         self.foreground_shear = kwargs_options.get('foreground_shear', False) \
                                 and kwargs_options.get('external_shear', False)
         self.num_images = kwargs_options.get('num_images', 4)
+        self.fix_center = kwargs_options.get('fix_center', False)
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'SPEP')
             if self.num_images == 4:
                 self.constraints = Constraints(self.solver_type)
             elif self. num_images == 2:
+                if self.fix_center is True:
+                    self.constraints = Constraints2_new()
                 self.constraints = Constraints2(self.solver_type)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
@@ -198,6 +203,17 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
+    def _update_spep2_new(self, kwargs_lens, x):
+        """
+
+        :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
+        :return: updated kwargs of lens parameters
+        """
+        [theta_E, gamma] = x
+        kwargs_lens['theta_E'] = theta_E
+        kwargs_lens['gamma'] = gamma
+        return kwargs_lens
+
     def _update_coeffs(self, kwargs_lens, x):
         [c00, c10, c01, c20, c11, c02] = x
         coeffs = list(kwargs_lens['coeffs'])
@@ -235,14 +251,24 @@ class Param(object):
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.num_images == 2:
-                    init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
-                    theta_E = kwargs_lens['theta_E']
-                    kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
-                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
-                                'theta_E': theta_E, 'e1': e1, 'e2': e2})
-                    kwargs_lens['theta_E'] = theta_E
-                    kwargs_lens = self._update_spep2(kwargs_lens, x)
+                    if self.fix_center is False:
+                        init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
+                        theta_E = kwargs_lens['theta_E']
+                        kwargs_lens['theta_E'] = 0
+                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
+                                    'theta_E': theta_E, 'e1': e1, 'e2': e2})
+                        kwargs_lens['theta_E'] = theta_E
+                        kwargs_lens = self._update_spep2(kwargs_lens, x)
+                    else:
+                        init = np.array([kwargs_lens['theta_E'], kwargs_lens['gamma']])
+                        theta_E = kwargs_lens['theta_E']
+                        kwargs_lens['theta_E'] = 0
+                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
+                                    'theta_E': theta_E, 'e1': e1, 'e2': e2})
+                        kwargs_lens['theta_E'] = theta_E
+                        kwargs_lens = self._update_spep2_new(kwargs_lens, x)
                 else:
                     raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
             elif self.solver_type == 'SHAPELETS':

@@ -14,7 +14,7 @@ class PSF_iterative(object):
     """
 
     def update_psf(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, factor=1):
+                   kwargs_else, factor=1, symmetry=1):
         """
 
         :param kwargs_data:
@@ -37,7 +37,7 @@ class PSF_iterative(object):
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
         data_point = image - model_no_point
-        point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size)
+        point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = util_class.cut_psf(kernel_new, psf_size=kernelsize_small)
@@ -46,7 +46,7 @@ class PSF_iterative(object):
         return kwargs_psf_new
 
     def update_iterative(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, factor=1, num_iter=10):
+                   kwargs_else, factor=1, num_iter=10, symmetry=1):
         """
 
         :param kwargs_data:
@@ -63,7 +63,7 @@ class PSF_iterative(object):
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         for i in range(num_iter):
             kwargs_psf_new = self.update_psf(kwargs_data, kwargs_psf_new, kwargs_options, kwargs_lens, kwargs_source,
-                                             kwargs_lens_light, kwargs_else, factor=factor)
+                                             kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry)
         return kwargs_psf_new
 
     def image_no_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
@@ -101,7 +101,7 @@ class PSF_iterative(object):
         model_no_point[model_no_point < 0] = 0
         return model_no_point
 
-    def cutout_psf(self, x_, y_, image, kernelsize):
+    def cutout_psf(self, x_, y_, image, kernelsize, symmetry=1):
         """
 
         :param x_:
@@ -114,6 +114,7 @@ class PSF_iterative(object):
         for i in range(len(x_)):
             kernel_shifted = util.cutout_source(x_[i], y_[i], image, kernelsize)
             kernel_shifted[kernel_shifted < 0] = 0
+            kernel_sym = util_class.symmetry_average(kernel_shifted, symmetry)
             kernel_norm = util.kernel_norm(kernel_shifted)
             kernel_list[i,:,:] = kernel_norm
         return kernel_list

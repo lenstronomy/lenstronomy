@@ -116,7 +116,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     ax = axes[0,1]
-    im = ax.matshow(np.log10(model_pure), origin='lower', vmin=v_min, vmax=v_max,
+    im = ax.matshow(np.log10(model), origin='lower', vmin=v_min, vmax=v_max,
                                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -131,7 +131,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     ax = axes[0,2]
     im = ax.matshow(norm_residuals, origin='lower', vmin=-6, vmax=6,
-                                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap)
+                                extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap='bwr')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -145,7 +145,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     ax = axes[1,0]
     im = ax.matshow(source, origin='lower', extent=[0, delta_source, 0, delta_source],
-                                cmap=cmap, vmin=0, vmax=2)  # source
+                                cmap=cmap, vmin=0, vmax=np.max(source))  # source
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

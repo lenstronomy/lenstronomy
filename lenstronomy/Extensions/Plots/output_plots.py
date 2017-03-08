@@ -4,10 +4,12 @@ from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
 import copy
 import numpy as np
+import scipy.ndimage as ndimage
 from astrofunc.util import Util_class
 import astrofunc.util as util
 
 from lenstronomy.ImSim.make_image import MakeImage
+from astrofunc.LensingProfiles.external_shear import ExternalShear
 
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
@@ -35,6 +37,50 @@ def plot_chain(chain, param_list):
     plt.show()
     return f, axes
 
+
+def ext_shear_direction(kwargs_data, kwargs_options,
+                        kwargs_else, strength_multiply=10):
+    """
+
+    :param kwargs_data:
+    :param kwargs_psf:
+    :param kwargs_options:
+    :param lens_result:
+    :param source_result:
+    :param lens_light_result:
+    :param else_result:
+    :return:
+    """
+    x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
+    shear = ExternalShear()
+    external_shear = kwargs_options.get('external_shear', False)
+    foreground_shear = kwargs_options.get('foreground_shear', False)
+    if external_shear:
+        f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs_else['gamma1']*strength_multiply, e2=kwargs_else['gamma2']*strength_multiply)
+    else:
+        f_x_shear, f_y_shear = 0, 0
+    x_shear = x_grid - f_x_shear
+    y_shear = y_grid - f_y_shear
+
+
+    if foreground_shear and external_shear:
+        f_x_shear1, f_y_shear1 = shear.derivatives(x_grid, y_grid, e1=kwargs_else['gamma1_foreground']*strength_multiply, e2=kwargs_else['gamma2_foreground']*strength_multiply)
+    else:
+        f_x_shear1, f_y_shear1 = 0, 0
+    x_foreground = x_grid - f_x_shear1
+    y_foreground = y_grid - f_y_shear1
+
+    center_x = np.mean(x_grid)
+    center_y = np.mean(y_grid)
+    radius = (np.max(x_grid) - np.min(x_grid))/4
+    circle_shear = util.circle(x_shear, y_shear, center_x, center_y, radius)
+    circle_foreground = util.circle(x_foreground, y_foreground, center_x, center_y, radius)
+    f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
+    im = ax.matshow(np.log10(kwargs_data['image_data']), origin='lower', alpha=0.5)
+    im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
+    im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
+    f.show()
+    return f, ax
 
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap):
@@ -124,7 +170,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d-0.5, "Reconstructed", color="w", fontsize=15)
+    ax.text(0.5, d-0.5, "Reconstructed", color="k", fontsize=15)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -138,14 +184,16 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d-0.5, "Normalized Residuals", color="w", fontsize=15)
+    ax.text(0.5, d-0.5, "Normalized Residuals", color="k", fontsize=15)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
 
+
+    source_conv = ndimage.filters.gaussian_filter(source, sigma=0.01, mode='nearest', truncate=20)
     ax = axes[1,0]
-    im = ax.matshow(source, origin='lower', extent=[0, delta_source, 0, delta_source],
-                                cmap=cmap, vmin=0, vmax=np.max(source))  # source
+    im = ax.matshow(source_conv, origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=np.max(source)/10)  # source
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

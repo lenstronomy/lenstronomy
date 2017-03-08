@@ -115,7 +115,7 @@ class PSF_iterative(object):
             kernel_shifted = util.cutout_source(x_[i], y_[i], image, kernelsize)
             kernel_shifted[kernel_shifted < 0] = 0
             kernel_sym = util_class.symmetry_average(kernel_shifted, symmetry)
-            kernel_norm = util.kernel_norm(kernel_shifted)
+            kernel_norm = util.kernel_norm(kernel_sym)
             kernel_list[i,:,:] = kernel_norm
         return kernel_list
 
@@ -127,7 +127,7 @@ class PSF_iterative(object):
         :return:
         """
         kernel_list = np.append(kernel_list, [kernel_old], axis=0)
-        kernel_new = np.median(kernel_list, axis=0)
+        kernel_new = np.mean(kernel_list, axis=0)
         kernel_new = util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1-factor)*kernel_old
 

@@ -274,10 +274,10 @@ class LensLightParam(object):
                 high.append(100)
             if not 'n_sersic' in self.kwargs_fixed:
                 low.append(0.2)
-                high.append(30)
+                high.append(10)
             if not 'R_sersic' in self.kwargs_fixed:
                 low.append(0.01)
-                high.append(30)
+                high.append(3)
             if not self.kwargs_options.get('fix_mass_light', False):
                 if not 'center_x' in self.kwargs_fixed:
                     low.append(-10)

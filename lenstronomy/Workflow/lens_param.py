@@ -452,10 +452,10 @@ class LensParam(object):
                 low.append(1.)
                 high.append(2.85)
             if not 'q' in self.kwargs_fixed or not 'phi_G' in self.kwargs_fixed:
-                low.append(-0.8)
-                high.append(0.8)
-                low.append(-0.8)
-                high.append(0.8)
+                low.append(-0.5)
+                high.append(0.5)
+                low.append(-0.5)
+                high.append(0.5)
 
         if self.kwargs_options['lens_type'] in ['NFW', 'SPEP_NFW']:
             if not 'Rs' in self.kwargs_fixed:

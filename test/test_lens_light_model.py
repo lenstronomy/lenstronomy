@@ -15,7 +15,7 @@ class TestLensLightModel(object):
             , 'cosmo_file': '', 'lens_light_type': 'GAUSSIAN',  'lens_type': 'SIS', 'source_type': 'GAUSSIAN'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
         self.lensLightModel = LensLightModel(self.kwargs_options)
-        self.kwargs = {'amp':1. ,'center_x':0., 'center_y':0., 'sigma_x': 2., 'sigma_y': 2. }
+        self.kwargs = {'amp':1./4,'center_x': 0., 'center_y': 0., 'sigma_x': 2., 'sigma_y': 2.}
 
     def test_surface_brightness(self):
         output = self.lensLightModel.surface_brightness(x=1,y=1,**self.kwargs)

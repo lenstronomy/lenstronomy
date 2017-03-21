@@ -232,7 +232,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     ax = axes[1,2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * numPix, 0, deltaPix * numPix],
-                                vmin=-30, vmax=30, cmap=cmap, alpha=0.5)
+                                vmin=-10, vmax=10, cmap=cmap, alpha=0.5)
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)

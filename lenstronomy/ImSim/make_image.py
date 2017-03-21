@@ -637,6 +637,30 @@ class MakeImage(object):
         mag = self.LensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
         return ra_pos, dec_pos, mag
 
+    def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.01, delta_pix=0.1, subgrid_res=100):
+        """
+        returns the magnification of an extended source with Gaussian light profile
+        :param kwargs_lens: lens model kwargs
+        :param kwargs_else: kwargs of image positions
+        :param source_sigma: Gaussian sigma in arc sec in source
+        :return: numerically computed brightness of the sources
+        """
+        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
+            ra_pos = kwargs_else['ra_pos']
+            dec_pos = kwargs_else['dec_pos']
+        else:
+            raise ValueError('No point source positions assigned')
+        mag = self.LensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
+        mag_finite = np.zeros_like(mag)
+        x_grid, y_grid = util.make_grid(numPix=1, deltapix=delta_pix, subgrid_res=subgrid_res)
+        for i in range(len(ra_pos)):
+            ra, dec = ra_pos[i], dec_pos[i]
+            center_x, center_y = self.mapping_IS(ra, dec, kwargs_else, **kwargs_lens)
+            x_source, y_source = self.mapping_IS(x_grid + ra, y_grid + dec, kwargs_else, **kwargs_lens)
+            I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
+            mag_finite[i] = np.sum(I_image)/subgrid_res**2*delta_pix**2
+        return mag_finite, mag
+
     def get_image_amplitudes(self, param, kwargs_else):
         """
         returns the amplitudes of the point source images

@@ -127,7 +127,8 @@ class PSF_iterative(object):
         :return:
         """
         kernel_list = np.append(kernel_list, [kernel_old], axis=0)
-        kernel_new = np.mean(kernel_list, axis=0)
+        kernel_new = np.median(kernel_list, axis=0)
+        kernel_new[kernel_new < 0] = 0
         kernel_new = util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1-factor)*kernel_old
 

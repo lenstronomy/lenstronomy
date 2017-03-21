@@ -21,7 +21,7 @@ class TestMakeImage(object):
         self.kwargs_data = {}
         
         self.makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
-        self.kwargs = {'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}
+        self.kwargs = {'amp': 1/4., 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}
         x_grid, y_grid = util.make_grid(numPix = 100,deltapix = 0.1)
         x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, **self.kwargs)
         I_xy = self.makeImage.get_surface_brightness(x_source, y_source, **self.kwargs)

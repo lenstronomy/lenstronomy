@@ -8,36 +8,37 @@ class NumericLens(LensModel):
     """
     this class computes numerical differentials of lens model quantities
     """
+    diff = 0.0000001
 
-    def kappa(self, y, x, kwargs_else=None, **kwargs):
+    def kappa(self, x, y, kwargs_else=None, diff=diff, **kwargs):
         """
         computes the convergence
         :return: kappa
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(y, x, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
-    def gamma(self, y, x, kwargs_else=None, **kwargs):
+    def gamma(self, x, y, kwargs_else=None, diff=diff, **kwargs):
         """
         computes the shear
         :return: gamma1, gamma2
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(y, x, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
         gamma1 = 1./2 * (f_yy - f_xx)
         gamma2 = f_xy
         return gamma1, gamma2
 
-    def magnification(self, y, x, kwargs_else=None, **kwargs):
+    def magnification(self, x, y, kwargs_else=None, diff=diff, **kwargs):
         """
         computes the magnification
         :return: potential
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(y, x, kwargs_else, **kwargs)
-        det_A = (1 + f_xx) * (1 + f_yy) - f_xy*f_yx
+        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
+        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1/det_A
 
-    def differentials(self, y, x, kwargs_else=None, diff=0.00001, **kwargs):
+    def differentials(self, x, y, kwargs_else=None, diff=0.00000001, **kwargs):
         """
         computes the differentials f_xx, f_yy, f_xy from f_x and f_y
         :return: f_xx, f_xy, f_yx, f_yy

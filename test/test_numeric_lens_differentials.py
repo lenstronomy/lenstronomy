@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 
 import pytest
-import numpy as np
 import numpy.testing as npt
 
 from lenstronomy.ImSim.lens_model import LensModel
@@ -34,8 +33,16 @@ class TestLensModel(object):
 
     def test_magnification(self):
         output = self.lensModel.magnification(x=1., y=1.,**self.kwargs)
-        output_num = self.lensModel.magnification(x=1., y=1., **self.kwargs)
+        output_num = self.lensModelNum.magnification(x=1., y=1., **self.kwargs)
         npt.assert_almost_equal(output_num, output, decimal=5)
+
+    def test_differentials(self):
+        f_xx, f_xy, f_yy = self.lensModel.hessian(x=1., y=1.,**self.kwargs)
+        f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModelNum.differentials(x=1., y=1.,**self.kwargs)
+        assert f_xy_num == f_yx_num
+        npt.assert_almost_equal(f_xx_num, f_xx, decimal=5)
+        npt.assert_almost_equal(f_xy_num, f_xy, decimal=5)
+        npt.assert_almost_equal(f_yy_num, f_yy, decimal=5)
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

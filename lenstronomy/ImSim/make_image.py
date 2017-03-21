@@ -652,7 +652,7 @@ class MakeImage(object):
             raise ValueError('No point source positions assigned')
         mag = self.LensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
         mag_finite = np.zeros_like(mag)
-        x_grid, y_grid = util.make_grid(numPix=1, deltapix=delta_pix, subgrid_res=subgrid_res)
+        x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
         print(np.sum(x_grid))
         for i in range(len(ra_pos)):
             ra, dec = ra_pos[i], dec_pos[i]

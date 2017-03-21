@@ -17,7 +17,7 @@ class TestLensModel(object):
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
         self.lensModel = LensModel(self.kwargs_options)
-        self.kwargs = {'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
+        self.kwargs = {'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
 
     def test_mass(self):
         output = self.lensModel.mass(x=1., y=1., sigma_crit=1.9e+15, **self.kwargs)

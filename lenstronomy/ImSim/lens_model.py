@@ -145,15 +145,7 @@ class LensModel(object):
         """
         k = 1/2 laplacian(phi)
         """
-        f_xx, f_yy, f_xy = self.func.hessian(x, y, **kwargs)
-        if self.add_clump and kwargs_else is not None:
-            if self.clump_type == 'SIS_TRUNCATED':
-                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x, y, phi_E_trunc=kwargs_else['phi_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
-            elif self.clump_type == 'NFW':
-                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x, y, Rs=kwargs_else['r_trunc'], rho0=kwargs_else['phi_E_clump'], center_x_nfw=kwargs_else['x_clump'], center_y_nfw=kwargs_else['y_clump'], angle=True)
-            f_xx += f_xx_clump
-            f_yy += f_yy_clump
-            f_xy += f_xy_clump
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         return kappa
 
@@ -162,35 +154,7 @@ class LensModel(object):
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
         g2 = d^2phi/dxdy
         """
-        if self.foreground_shear and self.external_shear:
-            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-            f_xx_shear1, f_yy_shear1, f_xy_shear1 = self.shear.hessian(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-        else:
-            f_xx_shear1, f_yy_shear1, f_xy_shear1 = 0, 0, 0
-            x_ = x
-            y_ = y
-
-        f_xx, f_yy, f_xy = self.func.hessian(x_, y_, **kwargs)
-        #f_xx += f_xx_shear1
-        #f_yy += f_yy_shear1
-        #f_xy += f_xy_shear1
-        if self.external_shear:
-            f_xx_shear, f_yy_shear, f_xy_shear = self.shear.hessian(x_, y_, e1=kwargs_else['gamma1'], e2=kwargs_else['gamma2'])
-            f_xx += f_xx_shear
-            f_yy += f_yy_shear
-            f_xy += f_xy_shear
-        if self.add_clump:
-            if self.clump_type == 'SIS_TRUNCATED':
-                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, phi_E_trunc=kwargs_else['phi_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
-            elif self.clump_type == 'NFW':
-                 f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, Rs=kwargs_else['r_trunc'], rho0=kwargs_else['phi_E_clump'], center_x_nfw=kwargs_else['x_clump'], center_y_nfw=kwargs_else['y_clump'], angle=True)
-            else:
-                raise ValueError("clump type not valid.")
-            f_xx += f_xx_clump
-            f_yy += f_yy_clump
-            f_xy += f_xy_clump
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
         return gamma1, gamma2
@@ -200,35 +164,7 @@ class LensModel(object):
         mag = 1/det(A)
         A = 1 - d^2phi/d_ij
         """
-        if self.foreground_shear and self.external_shear:
-            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-            f_xx_shear1, f_yy_shear1, f_xy_shear1 = self.shear.hessian(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-        else:
-            f_xx_shear1, f_yy_shear1, f_xy_shear1 = 0, 0, 0
-            x_ = x
-            y_ = y
-
-        f_xx, f_yy, f_xy = self.func.hessian(x_, y_, **kwargs)
-        #f_xx += f_xx_shear1
-        #f_yy += f_yy_shear1
-        #f_xy += f_xy_shear1
-        if self.external_shear:
-            f_xx_shear, f_yy_shear, f_xy_shear = self.shear.hessian(x, y, e1=kwargs_else['gamma1'], e2=kwargs_else['gamma2'])
-            f_xx += f_xx_shear
-            f_yy += f_yy_shear
-            f_xy += f_xy_shear
-        if self.add_clump:
-            if self.clump_type == 'SIS_TRUNCATED':
-                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, phi_E_trunc=kwargs_else['phi_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
-            elif self.clump_type == 'NFW':
-                 f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, Rs=kwargs_else['r_trunc'], rho0=kwargs_else['phi_E_clump'], center_x_nfw=kwargs_else['x_clump'], center_y_nfw=kwargs_else['y_clump'], angle=True)
-            else:
-                raise ValueError("clump type not valid.")
-            f_xx += f_xx_clump
-            f_yy += f_yy_clump
-            f_xy += f_xy_clump
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
         return 1./det_A  # attention, if dividing to zero
 
@@ -236,50 +172,54 @@ class LensModel(object):
         """
         specially build to reduce computational costs
         """
-        if self.foreground_shear and self.external_shear:
-            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-            f_xx_shear1, f_yy_shear1, f_xy_shear1 = self.shear.hessian(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-        else:
-            f_x_shear1, f_y_shear1, f_xx_shear1, f_yy_shear1, f_xy_shear1 = 0, 0, 0, 0, 0
-            x_ = x
-            y_ = y
-        f_, f_x, f_y, f_xx, f_yy, f_xy = self.func.all(x_, y_, **kwargs)
-        #f_x += f_x_shear1
-        #f_y += f_y_shear1
-        #f_xx += f_xx_shear1
-        #f_yy += f_yy_shear1
-        #f_xy += f_xy_shear1
-        if self.external_shear:
-            f_shear, f_x_shear, f_y_shear, f_xx_shear, f_yy_shear, f_xy_shear = self.shear.all(x, y, e1=kwargs_else['gamma1'], e2=kwargs_else['gamma2'])
-            f_x += f_x_shear
-            f_y += f_y_shear
-            f_xx += f_xx_shear
-            f_yy += f_yy_shear
-            f_xy += f_xy_shear
-        if self.add_clump:
-            if self.clump_type == 'SIS_TRUNCATED':
-                f_clump, f_x_clump, f_y_clump, f_xx_clump, f_yy_clump, f_xy_clump = self.clump.all(x_, y_, phi_E_trunc=kwargs_else['phi_E_clump'], r_trunc=kwargs_else['r_trunc'], center_x_trunc=kwargs_else['x_clump'], center_y_trunc=kwargs_else['y_clump'])
-            elif self.clump_type == 'NFW':
-                 f_clump, f_x_clump, f_y_clump, f_xx_clump, f_yy_clump, f_xy_clump = self.clump.all(x_, y_, Rs=kwargs_else['r_trunc'], rho0=kwargs_else['phi_E_clump'], center_x_nfw=kwargs_else['x_clump'], center_y_nfw=kwargs_else['y_clump'], angle=True)
-            else:
-                raise ValueError("clump type not valid.")
-            f_ += f_clump
-            f_x += f_x_clump
-            f_y += f_y_clump
-            f_xx += f_xx_clump
-            f_yy += f_yy_clump
-            f_xy += f_xy_clump
-        potential = f_
-        alpha1 = f_x  # attention on units
-        alpha2 = f_y  # attention on units
-        if self.perturb_alpha:
-            alpha1 += self.alpha_perturb_x
-            alpha2 += self.alpha_perturb_y
+        potential = self.potential(x, y, kwargs_else, **kwargs)
+        alpha1, alpha2 = self.alpha(x, y, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
         mag = 1./det_A
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
+
+    def hessian(self, x, y, kwargs_else=None, **kwargs):
+
+        if self.foreground_shear and self.external_shear:
+            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
+                                                            e2=kwargs_else['gamma2_foreground'])
+            x_ = x - f_x_shear1
+            y_ = y - f_y_shear1
+            f_xx_shear1, f_yy_shear1, f_xy_shear1 = self.shear.hessian(x, y, e1=kwargs_else['gamma1_foreground'],
+                                                                       e2=kwargs_else['gamma2_foreground'])
+        else:
+            f_xx_shear1, f_yy_shear1, f_xy_shear1 = 0, 0, 0
+            x_ = x
+            y_ = y
+
+        f_xx, f_yy, f_xy = self.func.hessian(x_, y_, **kwargs)
+        # f_xx += f_xx_shear1
+        # f_yy += f_yy_shear1
+        # f_xy += f_xy_shear1
+        if self.external_shear:
+            f_xx_shear, f_yy_shear, f_xy_shear = self.shear.hessian(x_, y_, e1=kwargs_else['gamma1'],
+                                                                    e2=kwargs_else['gamma2'])
+            f_xx += f_xx_shear
+            f_yy += f_yy_shear
+            f_xy += f_xy_shear
+        if self.add_clump:
+            if self.clump_type == 'SIS_TRUNCATED':
+                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, phi_E_trunc=kwargs_else['phi_E_clump'],
+                                                                        r_trunc=kwargs_else['r_trunc'],
+                                                                        center_x_trunc=kwargs_else['x_clump'],
+                                                                        center_y_trunc=kwargs_else['y_clump'])
+            elif self.clump_type == 'NFW':
+                f_xx_clump, f_yy_clump, f_xy_clump = self.clump.hessian(x_, y_, Rs=kwargs_else['r_trunc'],
+                                                                        rho0=kwargs_else['phi_E_clump'],
+                                                                        center_x_nfw=kwargs_else['x_clump'],
+                                                                        center_y_nfw=kwargs_else['y_clump'], angle=True)
+            else:
+                raise ValueError("clump type not valid.")
+            f_xx += f_xx_clump
+            f_yy += f_yy_clump
+            f_xy += f_xy_clump
+        return f_xx, f_xy, f_yy

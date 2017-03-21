@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 
 import pytest
-from mock import patch
 import numpy as np
 import numpy.testing as npt
 
@@ -12,14 +11,13 @@ class TestLensModel(object):
     """
     tests the source model routines
     """
-    @patch("darkskysync.DarkSkySync", autospec=False)
-    def setup(self, dss_mock):
+    def setup(self):
         self.kwargs_options = {'system_name': '', 'data_file': ''
             , 'cosmo_file': '', 'lens_type': 'GAUSSIAN', 'source_type': 'GAUSSIAN'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
         self.lensModel = LensModel(self.kwargs_options)
-        self.kwargs = {'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2. ,'center_x':0., 'center_y':0.}
+        self.kwargs = {'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
 
     def test_mass(self):
         output = self.lensModel.mass(x=1., y=1., sigma_crit=1.9e+15, **self.kwargs)
@@ -58,4 +56,4 @@ class TestLensModel(object):
         assert mag == 0.98848384784633392
 
 if __name__ == '__main__':
-    pytest.main("-k TestSourceModel")
+    pytest.main("-k TestLensModel")

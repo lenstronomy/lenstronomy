@@ -4,8 +4,10 @@ import astrofunc.util as util
 from astrofunc.util import Util_class
 from astrofunc.LensingProfiles.shapelets import Shapelets
 from astrofunc.LensingProfiles.gaussian import Gaussian
+import astrofunc.LightProfiles.torus as torus
 
 from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.DeLens.de_lens import DeLens
 
@@ -21,6 +23,7 @@ class MakeImage(object):
     """
     def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
         self.LensModel = LensModel(kwargs_options)
+        self.NumLensModel = NumericLens(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
         self.LensLightModel = LensLightModel(kwargs_options)
         self.DeLens = DeLens()
@@ -634,10 +637,11 @@ class MakeImage(object):
             dec_pos = kwargs_else['dec_pos']
         else:
             raise ValueError('No point source positions assigned')
-        mag = self.LensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
+        mag = self.NumLensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
         return ra_pos, dec_pos, mag
 
-    def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.01, delta_pix=0.1, subgrid_res=100):
+    def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
+                                 shape="GAUSSIAN"):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param kwargs_lens: lens model kwargs
@@ -650,17 +654,20 @@ class MakeImage(object):
             dec_pos = kwargs_else['dec_pos']
         else:
             raise ValueError('No point source positions assigned')
-        mag = self.LensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
-        mag_finite = np.zeros_like(mag)
+        mag_finite = np.zeros_like(ra_pos)
         x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
-        print(np.sum(x_grid))
         for i in range(len(ra_pos)):
             ra, dec = ra_pos[i], dec_pos[i]
             center_x, center_y = self.mapping_IS(ra, dec, kwargs_else, **kwargs_lens)
             x_source, y_source = self.mapping_IS(x_grid + ra, y_grid + dec, kwargs_else, **kwargs_lens)
-            I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
+            if shape == "GAUSSIAN":
+                I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
+            elif shape == "TORUS":
+                I_image = torus.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
+            else:
+                raise ValueError("shape %s not valid!" % shape)
             mag_finite[i] = np.sum(I_image)/subgrid_res**2*delta_pix**2
-        return mag_finite, mag
+        return mag_finite
 
     def get_image_amplitudes(self, param, kwargs_else):
         """
@@ -683,7 +690,6 @@ class MakeImage(object):
             a += 1
         param_no_point[a:a+n] = 0
         return param[a:a+n], param_no_point
-
 
     def get_time_delay(self, kwargs_lens, kwargs_source, kwargs_else):
         """

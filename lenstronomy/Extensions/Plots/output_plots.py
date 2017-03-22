@@ -82,6 +82,7 @@ def ext_shear_direction(kwargs_data, kwargs_options,
     f.show()
     return f, ax
 
+
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap):
 
@@ -264,6 +265,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
     f.show()
     return f, axes
+
 
 def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap):

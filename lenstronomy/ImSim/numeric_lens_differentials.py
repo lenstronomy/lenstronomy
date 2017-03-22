@@ -38,7 +38,7 @@ class NumericLens(LensModel):
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1/det_A
 
-    def differentials(self, x, y, kwargs_else=None, diff=0.00000001, **kwargs):
+    def differentials(self, x, y, kwargs_else=None, diff=diff, **kwargs):
         """
         computes the differentials f_xx, f_yy, f_xy from f_x and f_y
         :return: f_xx, f_xy, f_yx, f_yy

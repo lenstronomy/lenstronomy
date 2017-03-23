@@ -38,7 +38,7 @@ class TestLensModel(object):
 
     def test_differentials(self):
         f_xx, f_xy, f_yy = self.lensModel.hessian(x=1., y=1.,**self.kwargs)
-        f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModelNum.differentials(x=1., y=1.,**self.kwargs)
+        f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModelNum.hessian(x=1., y=1., **self.kwargs)
         assert f_xy_num == f_yx_num
         npt.assert_almost_equal(f_xx_num, f_xx, decimal=5)
         npt.assert_almost_equal(f_xy_num, f_xy, decimal=5)

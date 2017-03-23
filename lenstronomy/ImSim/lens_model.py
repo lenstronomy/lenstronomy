@@ -183,6 +183,7 @@ class LensModel(object):
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
 
     def hessian(self, x, y, kwargs_else=None, **kwargs):
+        # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
 
         if self.foreground_shear and self.external_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],

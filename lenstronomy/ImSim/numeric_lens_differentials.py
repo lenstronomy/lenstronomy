@@ -15,7 +15,7 @@ class NumericLens(LensModel):
         computes the convergence
         :return: kappa
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs_else, diff=diff, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
@@ -24,7 +24,7 @@ class NumericLens(LensModel):
         computes the shear
         :return: gamma1, gamma2
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs_else, diff=diff, **kwargs)
         gamma1 = 1./2 * (f_yy - f_xx)
         gamma2 = f_xy
         return gamma1, gamma2
@@ -34,11 +34,11 @@ class NumericLens(LensModel):
         computes the magnification
         :return: potential
         """
-        f_xx, f_xy, f_yx, f_yy = self.differentials(x, y, kwargs_else, diff=diff, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs_else, diff=diff, **kwargs)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1/det_A
 
-    def differentials(self, x, y, kwargs_else=None, diff=diff, **kwargs):
+    def hessian(self, x, y, kwargs_else=None, diff=diff, **kwargs):
         """
         computes the differentials f_xx, f_yy, f_xy from f_x and f_y
         :return: f_xx, f_xy, f_yx, f_yy

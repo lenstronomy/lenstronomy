@@ -1,8 +1,12 @@
 from lenstronomy.ImSim.make_image import MakeImage
 from astrofunc.util import Util_class
+import astrofunc.util as util
+
+import copy
+import numpy as np
 
 
-class FluxRatios(object):
+class LensAnalysis(object):
     """
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
@@ -11,7 +15,8 @@ class FluxRatios(object):
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
 
-    def flux_ratios(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_size=0.003):
+    def flux_ratios(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_size=0.003
+                    , shape="GAUSSIAN"):
 
         deltaPix = self.kwargs_data['deltaPix']
         image = self.kwargs_data['image_data']
@@ -30,5 +35,26 @@ class FluxRatios(object):
 
         ra_pos, dec_pos, mag = self.makeImage.get_magnification_model(kwargs_lens, kwargs_else)
         mag_finite = self.makeImage.get_magnification_finite(kwargs_lens, kwargs_else, source_sigma=source_size,
-                                                             delta_pix=source_size*100, subgrid_res=1000)
+                                                             delta_pix=source_size*100, subgrid_res=1000, shape=shape)
         return amp_list, mag, mag_finite
+
+    def lens_properties(self, kwargs_lens_light):
+        """
+        computes numerically the half-light-radius of the deflector light and the total photon flux
+        :param kwargs_lens_light:
+        :return:
+        """
+        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
+        kwargs_lens_light_copy['center_x'] = 0
+        kwargs_lens_light_copy['center_y'] = 0
+        data = self.kwargs_data['image_data']
+        numPix = len(data)*2
+        deltaPix = self.kwargs_data['deltaPix']
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light_copy)
+        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
+        flux = np.sum(lens_light)
+        return R_h, flux
+
+    def source_properties(self, kwargs_source):
+        pass

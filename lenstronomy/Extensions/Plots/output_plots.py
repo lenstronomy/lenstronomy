@@ -157,8 +157,12 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
     x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
-        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+        x_ = (x_image[i] + 0.5)*(deltaPix)
+        y_ = (y_image[i] + 0.5)*(deltaPix)
+        ax.plot(x_, y_, 'or')
+        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
     x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
@@ -258,8 +262,13 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
     x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+
+    abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
-        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+        x_ = (x_image[i] + 0.5)*(deltaPix)
+        y_ = (y_image[i] + 0.5)*(deltaPix)
+        ax.plot(x_, y_, 'or')
+        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
 
     f.tight_layout()
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
@@ -329,8 +338,13 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
     x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+
+    abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
-        ax.plot((x_image + 0.5)*(deltaPix), (y_image + 0.5)*(deltaPix), 'or')
+        x_ = (x_image[i] + 0.5)*(deltaPix)
+        y_ = (y_image[i] + 0.5)*(deltaPix)
+        ax.plot(x_, y_, 'or')
+        ax.text(x_, y_, abc_list[i], fontsize=20, color='w')
     x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 

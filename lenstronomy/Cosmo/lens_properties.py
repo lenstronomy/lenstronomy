@@ -49,23 +49,6 @@ class LensProp(object):
         mag_data = self.makeImage.get_image_amplitudes(param, kwargs_else)
         return mag_data, mag_model
 
-    def half_light_radius(self, kwargs_lens_light, n_grid=100, delta_grid=0.05):
-        kwargs_lens_light_new = kwargs_lens_light.copy()
-        kwargs_lens_light_new['I0_2'] = 0
-        kwargs_lens_light_new['center_x'] = 0
-        kwargs_lens_light_new['center_y'] = 0
-        x_grid, y_grid = util.make_grid(n_grid, delta_grid)
-        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light_new)
-        lens_light = util.array2image(lens_light)
-        total_flux = np.sum(lens_light)
-        for i in range(0, 1000):
-            r = i/100.
-            mask = 1 - util.get_mask(0, 0, r, x_grid, y_grid)
-            flux_enclosed = np.sum(lens_light*mask)
-            if flux_enclosed > total_flux/2.:
-                return r
-        return -1
-
     def effective_einstein_radius(self, kwargs_lens, n_grid=100, delta_grid=0.05):
         """
         computes the radius with mean convergence=1

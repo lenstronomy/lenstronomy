@@ -84,10 +84,11 @@ def ext_shear_direction(kwargs_data, kwargs_options,
 
 
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap):
+                        else_result, cmap, source_sigma=0.001):
 
     deltaPix = kwargs_data['deltaPix']
     image = kwargs_data['image_data']
+    image_raw = kwargs_data['data_raw']
     numPix = len(image)
     subgrid_res = kwargs_options['subgrid_res']
     num_order = kwargs_options['shapelet_order']
@@ -131,7 +132,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
     paths = cs.collections[0].get_paths()
 
-    im = ax.matshow(np.log10(image), origin='lower',
+    im = ax.matshow(np.log10(image_raw), origin='lower',
                 extent=[0, deltaPix * numPix, 0, deltaPix * numPix], cmap=cmap) # , vmin=0, vmax=2
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
@@ -195,8 +196,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     plt.colorbar(im, cax=cax)
 
 
-    source_conv = ndimage.filters.gaussian_filter(source, sigma=0.01, mode='nearest', truncate=20)
-    ax = axes[1,0]
+    source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma, mode='nearest', truncate=20)
+    ax = axes[1, 0]
     im = ax.matshow(source_conv, origin='lower', extent=[0, delta_source, 0, delta_source],
                                 cmap=cmap, vmin=0, vmax=np.max(source)/10)  # source
     ax.get_xaxis().set_visible(False)

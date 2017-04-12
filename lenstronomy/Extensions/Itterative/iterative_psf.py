@@ -110,13 +110,18 @@ class PSF_iterative(object):
         :param kernelsize:
         :return:
         """
-        kernel_list = np.zeros((len(x_), kernelsize, kernelsize))
-        for i in range(len(x_)):
-            kernel_shifted = util.cutout_source(x_[i], y_[i], image, kernelsize)
+        n = len(x_) * symmetry
+        angle = 360. / symmetry
+        kernel_list = np.zeros((n, kernelsize, kernelsize))
+        i = 0
+        for l in range(len(x_)):
+            kernel_shifted = util.cutout_source(x_[l], y_[l], image, kernelsize)
             kernel_shifted[kernel_shifted < 0] = 0
-            kernel_sym = util_class.symmetry_average(kernel_shifted, symmetry)
-            kernel_norm = util.kernel_norm(kernel_sym)
-            kernel_list[i,:,:] = kernel_norm
+            for k in range(symmetry):
+                kernel_rotated = util.rotateImage(kernel_shifted, angle*k)
+                kernel_norm = util.kernel_norm(kernel_rotated)
+                kernel_list[i, :, :] = kernel_norm
+                i += 1
         return kernel_list
 
     def combine_psf(self, kernel_list, kernel_old, sigma_bkg, factor=1):

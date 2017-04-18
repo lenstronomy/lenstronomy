@@ -5,7 +5,7 @@ lenstronomy
 This package is designed to model strong lens systems.
 
 
-Features
+Modelling Features
 --------
 
 * Extended source reconstruction with basis sets (shapelets)
@@ -15,7 +15,8 @@ Features
 * iterative point spread function
 
 
-
+Analysis tools
+-------
 * Standardized fitting procedures for some lens systems
 * Modular build up to designe plugins by users
 * Interactive jupyter notebooks
@@ -23,3 +24,7 @@ Features
 * Particle swarm optimization for parameter fitting
 * MCMC (emcee from CosmoHammer)
 * Cosmographic inference tools
+
+
+Requirements
+-------

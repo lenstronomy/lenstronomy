@@ -277,6 +277,148 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     return f, axes
 
 
+def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
+                        else_result, cmap, source_sigma=0.001):
+    deltaPix = kwargs_data['deltaPix']
+    image = kwargs_data['image_data']
+    image_raw = kwargs_data['data_raw']
+    numPix = len(image)
+    subgrid_res = kwargs_options['subgrid_res']
+    num_order = kwargs_options['shapelet_order']
+    beta = else_result['shapelet_beta']
+
+    util_class = Util_class()
+    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
+
+    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
+                                                                    lens_light_result, else_result, numPix,
+                                                                    deltaPix, subgrid_res, inv_bool=True)
+    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
+                                                   lens_light_result, else_result, numPix, deltaPix, subgrid_res)
+    mag_high_res = util.array2image(
+        makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))
+    reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
+    print("reduced chi2 = ", reduced_x2)
+    numPix_source = 200
+    deltaPix_source = 0.02
+    delta_source = numPix_source * deltaPix_source
+    x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
+    source, error_map_source = makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source, source_result,
+                                                    cov_param)
+
+    f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+    ax = axes[0,0]
+    cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
+    paths = cs.collections[0].get_paths()
+
+
+    source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma, mode='nearest', truncate=20)
+    ax = axes[0, 0]
+    im = ax.matshow(source, origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=np.max(source)/10)  # source
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.2, 1.2], [0.2, 0.2], linewidth=2, color='w')
+    ax.plot([0.2, 0.2], [0.2, 1.2], linewidth=2, color='w')
+    ax.plot(delta_source/2., delta_source/2., 'xr')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.2, delta_source-0.3, "Reconstructed source", color="w", fontsize=15)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+
+    for p in paths:
+        v = p.vertices
+        x_points = v[:, 0]
+        y_points = v[:, 1]
+        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
+                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+
+
+    ax = axes[0, 1]
+    im = ax.matshow(source_conv, origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=np.max(source)/10)  # source
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.2, 1.2], [0.2, 0.2], linewidth=2, color='w')
+    ax.plot([0.2, 0.2], [0.2, 1.2], linewidth=2, color='w')
+    ax.plot(delta_source/2., delta_source/2., 'xr')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.2, delta_source-0.3, "Reconstructed source convolved", color="w", fontsize=15)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+
+    for p in paths:
+        v = p.vertices
+        x_points = v[:, 0]
+        y_points = v[:, 1]
+        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
+                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+
+    ax = axes[1, 0]
+    im = ax.matshow(np.abs(source)/np.sqrt(error_map_source), origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=5)  # source
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.2, 1.2], [0.2, 0.2], linewidth=2, color='w')
+    ax.plot([0.2, 0.2], [0.2, 1.2], linewidth=2, color='w')
+    ax.plot(delta_source/2., delta_source/2., 'xr')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.2, delta_source-0.3, "error map", color="w", fontsize=15)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+
+    for p in paths:
+        v = p.vertices
+        x_points = v[:, 0]
+        y_points = v[:, 1]
+        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
+                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+
+
+    ax = axes[0, 2]
+    im = ax.matshow(error_map_source, origin='lower', extent=[0, delta_source, 0, delta_source],
+                                cmap=cmap, vmin=0, vmax=np.max(error_map_source)/10)  # source
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.2, 1.2], [0.2, 0.2], linewidth=2, color='w')
+    ax.plot([0.2, 0.2], [0.2, 1.2], linewidth=2, color='w')
+    ax.plot(delta_source/2., delta_source/2., 'xr')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.2, delta_source-0.3, "error map", color="w", fontsize=15)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+
+    for p in paths:
+        v = p.vertices
+        x_points = v[:, 0]
+        y_points = v[:, 1]
+        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, else_result, **lens_result)
+        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
+                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+
+    f.tight_layout()
+    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
+    f.show()
+    return f, axes
+
+
 def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap):
 

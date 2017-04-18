@@ -54,10 +54,12 @@ class DeLens(object):
             mean_exp_time = np.mean(f)
             f[f < mean_exp_time / 10] = mean_exp_time / 10
 
-        d_pos = np.empty_like(d)
-        threshold = 1.5*sigma_b
-        d_pos[d >= threshold] = d[d >= threshold] - sigma_b
-        d_pos[d < threshold] = 0
+        if sigma_b * np.max(f) < 1:
+            print("WARNING! sigma_b*f %s >1 may introduce unstable error estimates" % (sigma_b*np.max(f)))
+        d_pos = np.zeros_like(d)
+        #threshold = 1.5*sigma_b
+        d_pos[d >= 0] = d[d >= 0]
+        #d_pos[d < threshold] = 0
         sigma = d_pos/f + sigma_b**2
         return sigma
 

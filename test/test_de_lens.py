@@ -28,9 +28,9 @@ class TestDeLens(object):
         assert image[0] == 0.
 
     def test_get_covariance_matrix(self):
-        d = np.array([1,2,3])
+        d = np.array([1, 2, 3])
         sigma_b = 1
-        f = 0.1
+        f = 10.
         result = self.deLens.get_covariance_matrix(d, sigma_b, f)
-        assert result[0] == 1
-        assert result[1] == 11
+        assert result[0] == 1.1
+        assert result[1] == 1.2

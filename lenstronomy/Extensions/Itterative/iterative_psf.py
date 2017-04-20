@@ -14,7 +14,7 @@ class PSF_iterative(object):
     """
 
     def update_psf(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, factor=1, symmetry=1):
+                   kwargs_else, factor=1, symmetry=1, verbose=True):
         """
 
         :param kwargs_data:
@@ -46,7 +46,7 @@ class PSF_iterative(object):
         return kwargs_psf_new
 
     def update_iterative(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, factor=1, num_iter=10, symmetry=1):
+                   kwargs_else, factor=1, num_iter=10, symmetry=1, verbose=True):
         """
 
         :param kwargs_data:
@@ -63,11 +63,11 @@ class PSF_iterative(object):
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         for i in range(num_iter):
             kwargs_psf_new = self.update_psf(kwargs_data, kwargs_psf_new, kwargs_options, kwargs_lens, kwargs_source,
-                                             kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry)
+                                             kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry, verbose=verbose)
         return kwargs_psf_new
 
     def image_no_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else):
+                   kwargs_else, verbose=False):
         """
         return model without including the point source contributions
         :param kwargs_data:
@@ -92,7 +92,8 @@ class PSF_iterative(object):
         model, error_map, cov_param, param = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else,
                                    numPix, deltaPix, subgrid_res, inv_bool=False)
-        print(makeImage.reduced_chi2(model, error_map))
+        if verbose is True:
+            print(makeImage.reduced_chi2(model, error_map))
         param_point, param_no_point = makeImage.get_image_amplitudes(param, kwargs_else)
 
         model_no_point, _ = makeImage.make_image_with_params(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source,

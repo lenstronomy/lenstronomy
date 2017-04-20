@@ -32,14 +32,14 @@ class MCMC_sampler(object):
             self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
 
-    def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi_monch=False, print_key='default'):
+    def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
         if lowerLimit is None or upperLimit is None:
             lowerLimit, upperLimit = self.param.param_bounds()
             print("PSO initialises its particles with default values")
-        if mpi_monch is True:
+        if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
         else:
             pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=threadCount)
@@ -62,12 +62,12 @@ class MCMC_sampler(object):
             if pso.isMaster():
                 if num_iter % 10 == 0:
                     print(num_iter)
-        if not mpi_monch:
+        if not mpi:
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
         lens_dict, source_dict, lens_light_dict, else_dict = self.param.get_all_params(result)
-        if (pso.isMaster() and mpi_monch is True) or self.chain.sampling_option == 'X2_catalogue':
+        if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
             print(pso.gbest.fitness*2/(self.chain.numData_points()), 'reduced X^2 of best position')
             print(lens_dict, 'lens result')
             print(source_dict, 'source result')

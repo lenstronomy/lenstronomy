@@ -419,6 +419,48 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     return f, axes
 
 
+def plot_lens_light_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
+                        else_result, cmap):
+    deltaPix = kwargs_data['deltaPix']
+    image = kwargs_data['image_data']
+    mask_lens_light = kwargs_data['mask_lens_light']
+    numPix = len(image)
+    subgrid_res = kwargs_options['subgrid_res']
+
+    util_class = Util_class()
+    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
+    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    lens_light_model, cov, param = makeImage.make_image_lens_light(x_grid_sub, y_grid_sub, lens_light_result, numPix, deltaPix, subgrid_res)
+    lens_light_result['I0_sersic'] = param[0]
+    lens_light_no_mask = makeImage.get_lens_surface_brightness(x_grid_sub, y_grid_sub, numPix, deltaPix, subgrid_res, lens_light_result)
+
+    f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
+
+    ax = axes[0]
+    im=ax.matshow(np.log10(lens_light_model),origin='lower')
+    plt.axes(ax)
+    f.colorbar(im)
+    ax.set_title('lens_light_model')
+
+    ax = axes[1]
+    im=ax.matshow(np.log10(image-lens_light_no_mask), origin='lower')
+    plt.axes(ax)
+    f.colorbar(im)
+    ax.set_title('residuals')
+
+    residuals = (kwargs_data['image_data'] - lens_light_model)**2/(lens_light_model/kwargs_data['exposure_map'] + kwargs_data['sigma_background']**2)*mask_lens_light
+    norm_residuals = (kwargs_data['image_data'] - lens_light_model)/np.sqrt((lens_light_model/kwargs_data['exposure_map'] + kwargs_data['sigma_background']**2))*mask_lens_light
+    print(np.sum(residuals)/np.sum(mask_lens_light), 'sersic fit reduced X^2')
+
+    ax = axes[2]
+    im=ax.matshow((norm_residuals),origin='lower')
+    plt.axes(ax)
+    f.colorbar(im)
+    ax.set_title('central region residuals')
+    f.show()
+    return f, axes
+
+
 def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap):
 

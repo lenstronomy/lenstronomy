@@ -109,7 +109,9 @@ class MakeImage(object):
         """
         convolves a given pixel grid with a PSF
         """
-        if self.kwargs_options['psf_type'] == 'gaussian':
+        if self.kwargs_options.get('psf_type', 'NONE') == 'NONE':
+            return grid
+        elif self.kwargs_options['psf_type'] == 'gaussian':
             sigma = kwargs['sigma']/grid_scale
             if 'truncate' in kwargs:
                 sigma_truncate = kwargs['truncate']
@@ -128,7 +130,8 @@ class MakeImage(object):
             else:
                 img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             return img_conv1
-        return grid
+        else:
+            raise ValueError('PSF type %s not valid!' %self.kwargs_options['psf_type'])
 
     def re_size_convolve(self, image, numPix, deltaPix, subgrid_res, kwargs_psf, unconvolved=False):
         gridScale = deltaPix/subgrid_res

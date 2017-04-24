@@ -67,5 +67,32 @@ class TestMakeImage(object):
         assert mag[1] == 6
         assert mag[2] == 7
 
+    def test_add_mask(self):
+        mask = [0, 1, 0]
+        A = np.ones((10, 3))
+        A_masked = self.makeImage._add_mask(A, mask)
+        assert A[0, 1] == A_masked[0, 1]
+        assert A_masked[0, 2] == 0
+
+    def test_image2array(self):
+        self.makeImage._idex_mask = 0
+        image = np.ones((10, 10))
+        image_array = util.image2array(image)
+        idex_mask = np.zeros_like(image_array)
+        #idex_mask[0, 3, 8, 59, 66] = 1
+        #array = self.makeImage.image2array(image)
+
+    def test_idex_subgrid(self):
+        idex_mask = np.zeros(100)
+        n = 8
+        nx, ny = np.sqrt(len(idex_mask)), np.sqrt(len(idex_mask))
+        idex_mask[n] = 1
+        subgrid_res = 2
+        idex_mask_subgrid = self.makeImage._subgrid_idex(idex_mask, subgrid_res, nx, ny)
+        assert idex_mask_subgrid[(n+1)*subgrid_res-1] == 1
+        assert idex_mask_subgrid[(n+1)*subgrid_res-2] == 1
+        assert idex_mask_subgrid[nx*subgrid_res + (n+1)*subgrid_res-1] == 1
+
+
 if __name__ == '__main__':
     pytest.main()

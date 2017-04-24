@@ -36,7 +36,7 @@ class PSF_iterative(object):
                    kwargs_else)
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        data_point = image - model_no_point
+        data_point = makeImage.array2image(image - model_no_point)
         point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
@@ -91,14 +91,14 @@ class PSF_iterative(object):
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         model, error_map, cov_param, param = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else,
-                                   numPix, deltaPix, subgrid_res, inv_bool=False)
+                                   deltaPix, subgrid_res, inv_bool=False)
         if verbose is True:
             print(makeImage.reduced_chi2(model, error_map))
         param_point, param_no_point = makeImage.get_image_amplitudes(param, kwargs_else)
 
         model_no_point, _ = makeImage.make_image_with_params(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else,
-                                   numPix, deltaPix, subgrid_res, param_no_point, no_mask=True)
+                                   deltaPix, subgrid_res, param_no_point)
         model_no_point[model_no_point < 0] = 0
         return model_no_point
 

@@ -46,7 +46,6 @@ class MCMC_chain(object):
             self.makeImage.LensModel.func.do_interp(x_grid, y_grid, f_, f_x, f_y, f_xx, f_yy, f_xy)
             kwargs_fixed_lens = {}
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
-        self.x_grid, self.y_grid = self.util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], self.subgrid_res)
         self.compare = Compare(kwargs_options)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()
         self.timeDelay = TimeDelaySampling()
@@ -66,10 +65,10 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(self.x_grid, self.y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix, self.subgrid_res, inv_bool=self.inv_bool)
-        #im_sim = util.array2image(im_sim)
+        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix, self.subgrid_res, inv_bool=self.inv_bool)
         #compute X^2
-        logL = self.compare.get_log_likelihood(im_sim, self.data, self.sigma_b, self.exposure_map, mask=self.mask, model_error=model_error, cov_matrix=cov_matrix)
+        X = self.makeImage.reduced_residuals(im_sim, model_error)
+        logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
@@ -87,9 +86,10 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        lens_light, _, _ = self.makeImage.make_image_lens_light(self.x_grid, self.y_grid, kwargs_lens_light, self.deltaPix, self.subgrid_res)
+        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light, self.deltaPix, self.subgrid_res)
         #compute X^2
-        logL = self.compare.get_log_likelihood(lens_light, self.data, self.sigma_b, self.exposure_map, mask=self.mask_lens_light)
+        X = self.makeImage.reduced_residuals(lens_light, lens_light_mask=True)
+        logL = self.compare.get_log_likelihood(X)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         if self.priors_bool:
             logL += self.priors(kwargs_lens, self.kwargs_priors)
@@ -283,8 +283,8 @@ class MCMC_multiband_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim1, model_error1, cov_matrix1, param1 = self.makeImage1.make_image_ideal(self.x_grid1, self.y_grid1, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix1, self.subgrid_res, inv_bool=self.inv_bool)
-        im_sim2, model_error2, cov_matrix2, param2 = self.makeImage2.make_image_ideal(self.x_grid2, self.y_grid2, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix2, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim1, model_error1, cov_matrix1, param1 = self.makeImage1.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix1, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim2, model_error2, cov_matrix2, param2 = self.makeImage2.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix2, self.subgrid_res, inv_bool=self.inv_bool)
         #im_sim = util.array2image(im_sim)
         #compute X^2
         logL1 = self.compare.get_log_likelihood(im_sim1, self.data1, self.sigma_b1, self.exposure_map1, mask=self.mask1, model_error=model_error1, cov_matrix=cov_matrix1)
@@ -318,8 +318,8 @@ class MCMC_multiband_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        lens_light1 = self.makeImage1.make_image_lens_light(self.x_grid1, self.y_grid1, kwargs_lens_light, self.deltaPix1, self.subgrid_res)
-        lens_light2 = self.makeImage2.make_image_lens_light(self.x_grid2, self.y_grid2, kwargs_lens_light,
+        lens_light1 = self.makeImage1.make_image_lens_light(kwargs_lens_light, self.deltaPix1, self.subgrid_res)
+        lens_light2 = self.makeImage2.make_image_lens_light(kwargs_lens_light,
                                                              self.deltaPix2, self.subgrid_res)
         #compute X^2
         logL1 = self.compare.get_log_likelihood(lens_light1, self.data1, self.sigma_b1, self.exposure_map1, mask=self.mask_lens_light1)

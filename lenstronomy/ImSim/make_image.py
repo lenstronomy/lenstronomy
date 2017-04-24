@@ -28,21 +28,72 @@ class MakeImage(object):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.DeLens = DeLens()
         self.kwargs_options = kwargs_options
-        self.kwargs_data = kwargs_data
         self.kwargs_psf = kwargs_psf
         self.util_class = Util_class()
         self.gaussian = Gaussian()
 
-        if kwargs_data is not None and 'sigma_background' in kwargs_data and 'image_data' in kwargs_data and 'exp_time' in kwargs_data:
-            sigma_b = kwargs_data['sigma_background']
-            exp_map = kwargs_data.get('exposure_map', None)
-            if exp_map is not None:
-                exp_map[exp_map <= 0] = 10**(-3)
-                f = exp_map
+        if kwargs_data is not None:
+            if 'image_data' in kwargs_data:
+                data = kwargs_data['image_data']
             else:
+                print('Warning: image_data not specified in kwargs_data!')
+                data = np.zeros((4))
+            if 'idex_mask' in kwargs_data:
+                self._idex_mask = kwargs_data['idex_mask']
+            else:
+                self._idex_mask = np.ones_like(data)
+            if 'sigma_background' in kwargs_data:
+                self._sigma_b = kwargs_data['sigma_background']
+            else:
+                print('Warning: sigma_background not specified in kwargs_data. Default is set to 1!')
+                self._sigma_b = 1
+            if 'exposure_map' in kwargs_data:
+                exp_map = kwargs_data['exposure_map']
+                exp_map[exp_map <= 0] = 10**(-3)
+                f = exp_map[self._idex_mask == 1]
+            elif 'exp_time' in kwargs_data:
                 f = kwargs_data['exp_time']
-            data = kwargs_data['image_data']
-            self.C_D = self.DeLens.get_covariance_matrix(data, sigma_b, f)
+            else:
+                print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
+                f = 1
+            self._exp_map = f
+            self._data = data[self._idex_mask == 1]
+            self.C_D = self.DeLens.get_covariance_matrix(self._data, self._sigma_b, f)
+
+            if 'numPix_xy' in kwargs_data:
+                self._nx, self._ny = kwargs_data['numPix_xy']
+            else:
+                if 'numPix' in kwargs_data:
+                    self._nx, self._ny = kwargs_data['numPix'], kwargs_data['numPix']
+                else:
+                    self._nx, self._ny = np.sqrt(len(data)), np.sqrt(len(data))
+            if 'mask' in kwargs_data:
+                self._mask = kwargs_data['mask'][self._idex_mask == 1]
+            else:
+                self._mask = np.ones_like(self._data)
+            if 'mask_lens_light' in kwargs_data:
+                self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
+            else:
+                self._mask_lens_light = np.ones_like(self._data)
+            if 'zero_point_x' in kwargs_data and 'zero_point_y' in kwargs_data and 'transform_angle2pix' in kwargs_data and 'transform_pix2angle' in kwargs_data:
+                self._x_0 = kwargs_data['zero_point_x']
+                self._y_0 = kwargs_data['zero_point_y']
+                self._ra_0 = kwargs_data['zero_point_ra']
+                self._dec_0 = kwargs_data['zero_point_dec']
+                self._Ma2pix = kwargs_data['transform_angle2pix']
+                self._Mpix2a = kwargs_data['transform_pix2angle']
+            if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
+                x_grid = kwargs_data['x_coords']
+                y_grid = kwargs_data['y_coords']
+            else:
+                x_grid, y_grid = util.make_grid(self._nx*self._ny, 1, subgrid_res=1, left_lower=False)
+            self._x_grid = x_grid[self._idex_mask == 1]
+            self._y_grid = y_grid[self._idex_mask == 1]
+            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid,
+                                                                 self.kwargs_options.get('subgrid_res', 1))
+            idex_mask_sub = self._subgrid_idex(self._idex_mask, self.kwargs_options.get('subgrid_res', 1), self._nx, self._ny)
+            self._x_grid_sub = x_grid_sub[idex_mask_sub == 1]
+            self._y_grid_sub = y_grid_sub[idex_mask_sub == 1]
         self.shapelets = Shapelets()
         if kwargs_options['source_type'] == 'SERSIC':
             from astrofunc.LightProfiles.sersic import Sersic
@@ -50,23 +101,6 @@ class MakeImage(object):
         elif kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
             from astrofunc.LightProfiles.sersic import Sersic_elliptic
             self.sersic = Sersic_elliptic()
-        try:
-            self.ra_coords = kwargs_data.get('x_coords', None)
-            self.dec_coords = kwargs_data.get('y_coords', None)
-        except:
-            pass
-        if kwargs_data is not None:
-            if 'idex_mask' in kwargs_data:
-                self._idex_mask = kwargs_data['idex_mask']
-            else:
-                self._idex_mask = np.ones_like(self.ra_coords)
-            if 'numPix_xy' in kwargs_data:
-                self._nx, self._ny = kwargs_data['numPix_xy']
-            else:
-                try:
-                    self._nx, self._ny = kwargs_data['numPix'], kwargs_data['numPix']
-                except:
-                    self._nx, self._ny = 0, 0
 
     def mapping_IS(self, x, y, kwargs_else=None, **kwargs):
         """
@@ -85,10 +119,7 @@ class MakeImage(object):
         :param M:
         :return:
         """
-        x_0 = self.kwargs_data['zero_point_x']
-        y_0 = self.kwargs_data['zero_point_y']
-        M = self.kwargs_data['transform_angle2pix']
-        return util.map_coord2pix(ra, dec, x_0, y_0, M)
+        return util.map_coord2pix(ra, dec, self._x_0, self._y_0, self._Ma2pix)
 
     def map_pix2coord(self, x_pos, y_pos):
         """
@@ -97,10 +128,7 @@ class MakeImage(object):
         :param y_pos:
         :return:
         """
-        ra_0 = self.kwargs_data['zero_point_ra']
-        dec_0 = self.kwargs_data['zero_point_dec']
-        M = self.kwargs_data['transform_pix2angle']
-        return util.map_coord2pix(x_pos, y_pos, ra_0, dec_0, M)
+        return util.map_coord2pix(x_pos, y_pos, self._ra_0, self._dec_0, self._Mpix2a)
 
     def get_surface_brightness(self, x, y, **kwargs):
         """
@@ -214,18 +242,22 @@ class MakeImage(object):
         :param image:
         :return:
         """
-        gaussian = util.add_background(image, self.kwargs_data["sigma_background"])
-        poisson = util.add_poisson(image, self.kwargs_data.get("exposure_map", self.kwargs_data["exp_time"]))
+        gaussian = util.add_background(image, self._sigma_b)
+        poisson = util.add_poisson(image, self._exp_map)
         image_noisy = image + gaussian + poisson
         return image_noisy
 
-    def reduced_residuals(self, model, error_map=0):
+    def reduced_residuals(self, model, error_map=0, lens_light_mask=False):
         """
 
         :param model:
         :return:
         """
-        residual = (model - self.kwargs_data["image_data"])/np.sqrt(self.C_D+np.abs(error_map))*self.kwargs_data["mask"]
+        if lens_light_mask is True:
+            mask = self._mask_lens_light
+        else:
+            mask = self._mask
+        residual = (model - self._data)/np.sqrt(self.C_D+np.abs(error_map))*mask
         return residual
 
     def reduced_chi2(self, model, error_map=0):
@@ -235,8 +267,8 @@ class MakeImage(object):
         :param error_map:
         :return:
         """
-        chi2 = (model - self.kwargs_data["image_data"])**2/(self.C_D+np.abs(error_map))\
-               *self.kwargs_data["mask"]/np.sum(self.kwargs_data["mask"])
+        chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map))\
+               *self._mask/np.sum(self._mask)
         return np.sum(chi2)
 
     def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light):
@@ -266,73 +298,74 @@ class MakeImage(object):
             i += 1
         return kwargs_source, kwargs_lens_light
 
-    def make_image_ideal(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
+    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         if no_lens is True:
-            x_source, y_source = x_grid, y_grid
+            x_source, y_source = self._x_grid_sub, self._y_grid_sub
         else:
-            x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        mask = self.kwargs_data['mask']
-        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
-        data = self.kwargs_data['image_data']
+            x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+        mask = self._mask
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        data = self._data
         d = data*mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
-        kwargs_source, kwargs_lens_light = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light)
+        _, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light)
         if map_error is not True:
             error_map = np.zeros_like(wls_model)
         return wls_model, error_map, cov_param, param
 
-    def make_image_ideal_noMask(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
+    def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
-        x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        mask = self.kwargs_data['mask']
-        A, error_map, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
-        A_pure, _, _ = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
-        data = self.kwargs_data['image_data']
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+        mask = self._mask
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
+        data = self._data
         d = data * mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
         image_pure = A_pure.T.dot(param)
         return self.array2image(image_pure), error_map, cov_param, param
 
-    def make_image_with_params(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, param):
+    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, param):
         """
         make a image with a realisation of linear parameter values "param"
         """
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
-        x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
-        mask = self.kwargs_data['mask']
-        A, error_map, bool_string = self.get_response_matrix(x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+        mask = self._mask
+        A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
         image_conv = self.re_size_convolve(image_pure, deltaPix, 1, self.kwargs_psf)
         return image_conv + image_, error_map
 
-    def make_image_surface_extended_source(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_else, deltaPix, subgrid_res):
-        x_source, y_source = self.mapping_IS(x_grid, y_grid, kwargs_else, **kwargs_lens)
+    def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else, deltaPix, subgrid_res):
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
         I_xy = self.get_surface_brightness(x_source, y_source, **kwargs_source)
         grid_final = self.re_size_convolve(I_xy, deltaPix, subgrid_res, self.kwargs_psf)
         return grid_final
 
-    def make_image_lens_light(self, x_grid, y_grid, kwargs_lens_light, deltaPix, subgrid_res):
-        mask = self.kwargs_data['mask_lens_light']
-        lens_light_response, n_lens_light = self.get_sersic_response(x_grid, y_grid, kwargs_lens_light, object_type='lens_light_type')
+    def make_image_lens_light(self, kwargs_lens_light, deltaPix, subgrid_res):
+        mask = self._mask_lens_light
+        lens_light_response, n_lens_light = self.get_sersic_response(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light, object_type='lens_light_type')
         n = 0
-        numPix = len(x_grid)/subgrid_res**2
+        numPix = len(self._x_grid_sub)/subgrid_res**2
         A = np.zeros((n_lens_light, numPix))
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.re_size_convolve(image, deltaPix, subgrid_res, self.kwargs_psf)
-            A[n, :] = image * mask
+            A[n, :] = image
             n += 1
-        d = self.kwargs_data['image_data'] * mask
+        A = self._add_mask(A, mask)
+        d = self._data * mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/self.C_D, d, inv_bool=False)
         return wls_model, cov_param, param
 
-    def get_lens_surface_brightness(self, x_grid, y_grid, deltaPix, subgrid_res, kwargs_lens_light):
-        lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light)
+    def get_lens_surface_brightness(self, deltaPix, subgrid_res, kwargs_lens_light):
+        lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, **kwargs_lens_light)
         lens_light_final = self.re_size_convolve(lens_light, deltaPix, subgrid_res, self.kwargs_psf)
         return lens_light_final
 
@@ -444,7 +477,7 @@ class MakeImage(object):
         dec_pos = kwargs_else['dec_pos']
         x_pos, y_pos = self.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
-        data = self.kwargs_data['image_data']
+        data = self._data
         psf_large = kwargs_psf['kernel_large']
         amplitudes = kwargs_else.get('point_amp', np.ones_like(x_pos))
         numPix = len(data)

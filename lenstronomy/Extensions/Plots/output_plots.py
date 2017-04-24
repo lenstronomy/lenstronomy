@@ -87,7 +87,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
                         else_result, cmap, source_sigma=0.001):
 
     deltaPix = kwargs_data['deltaPix']
-    image = kwargs_data['image_data']
     image_raw = kwargs_data['data_raw']
     nx, ny = kwargs_data['numPix_xy']
     subgrid_res = kwargs_options['subgrid_res']
@@ -95,7 +94,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     beta = else_result['shapelet_beta']
 
     util_class = Util_class()
-    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
@@ -103,10 +101,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
 
 
-    model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result,
                                                                     deltaPix, subgrid_res, inv_bool=True)
-    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
                                                    lens_light_result, else_result, deltaPix, subgrid_res)
     norm_residuals = makeImage.reduced_residuals(model, error_map=error_map)
     reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
@@ -118,11 +116,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     source, error_map_source = makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source, source_result,
                                                     cov_param)
     source = util.array2image(source)
-    kappa_result = makeImage.array2image(makeImage.LensModel.kappa(x_grid, y_grid, else_result, **lens_result))
-    mag_result = makeImage.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
+    mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
     mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))
 
-    lens_light_no_mask = makeImage.get_lens_surface_brightness(x_grid_sub, y_grid_sub, deltaPix, subgrid_res,
+    lens_light_no_mask = makeImage.get_lens_surface_brightness(deltaPix, subgrid_res,
                                                                lens_light_result)
 
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
@@ -132,8 +129,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
     paths = cs.collections[0].get_paths()
 
-    im = ax.matshow(makeImage.array2image(np.log10(image_raw)), origin='lower',
-                extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap) # , vmin=0, vmax=2
+    im = ax.matshow(util.array2image(np.log10(image_raw)), origin='lower',
+                extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap)  # , vmin=0, vmax=2
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -280,21 +277,18 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap, source_sigma=0.001):
     deltaPix = kwargs_data['deltaPix']
-    image = kwargs_data['image_data']
-    image_raw = kwargs_data['data_raw']
     subgrid_res = kwargs_options['subgrid_res']
     num_order = kwargs_options['shapelet_order']
     beta = else_result['shapelet_beta']
 
     util_class = Util_class()
-    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-    model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result,
                                                                     deltaPix, subgrid_res, inv_bool=True)
-    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
                                                    lens_light_result, else_result, deltaPix, subgrid_res)
     mag_high_res = util.array2image(
         makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))
@@ -429,9 +423,9 @@ def plot_lens_light_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_re
     util_class = Util_class()
     x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-    lens_light_model, cov, param = makeImage.make_image_lens_light(x_grid_sub, y_grid_sub, lens_light_result, numPix, deltaPix, subgrid_res)
+    lens_light_model, cov, param = makeImage.make_image_lens_light(lens_light_result, deltaPix, subgrid_res)
     lens_light_result['I0_sersic'] = param[0]
-    lens_light_no_mask = makeImage.get_lens_surface_brightness(x_grid_sub, y_grid_sub, numPix, deltaPix, subgrid_res, lens_light_result)
+    lens_light_no_mask = makeImage.get_lens_surface_brightness(deltaPix, subgrid_res, lens_light_result)
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
 
@@ -467,25 +461,21 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     image = kwargs_data['image_data']
     numPix = len(image)
     subgrid_res = kwargs_options['subgrid_res']
-    num_order = kwargs_options['shapelet_order']
-    beta = else_result['shapelet_beta']
 
     kwargs_options_run = copy.deepcopy(kwargs_options)
     kwargs_options_run['lens_light_type'] = "NONE"
 
     util_class = Util_class()
-
-    x_grid_sub, y_grid_sub = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
 
 
-    model, error_map, cov_param, param = makeImage.make_image_ideal(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result,
                                                                     deltaPix, subgrid_res, inv_bool=True)
-    model_pure, _, _ = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, lens_result, source_result,
+    model_pure, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
                                                    lens_light_result, else_result, numPix, deltaPix, subgrid_res)
     mag_result = makeImage.array2image(makeImage.LensModel.magnification(x_grid, y_grid, else_result, **lens_result))
     mag_high_res = makeImage.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, else_result, **lens_result))

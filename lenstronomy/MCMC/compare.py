@@ -106,8 +106,10 @@ class Compare(object):
         sign, log_det = log_det_N_inv = np.linalg.slogdet(M_inv)
         return log_det/2
 
-    def get_log_likelihood(self, model, data, sigma, reduce_frac=1, mask=1, model_error=0, cov_matrix=None):
-        X2 = self.compare2D(model, data, sigma, reduce_frac, mask, model_error)
+    def get_log_likelihood(self, X, cov_matrix=None):
+        #X2 = self.compare2D(model, data, sigma, reduce_frac, mask, model_error)
+        X = np.array(X)
+        X2 = np.sum(X**2)
         X2 /= 2 # from chi^2 to log likelihood
         if cov_matrix is not None and self.kwargs_options.get('source_marg', False):
             marg_const = self.get_marg_const(cov_matrix)

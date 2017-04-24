@@ -26,11 +26,9 @@ class TestCompare(object):
         assert marg_const == 0
 
     def test_get_log_likelihood(self):
-        data = np.zeros((10,10))
-        sim = np.ones((10,10))
-        sigma = 1.
-        M_inv = np.array([[1,0],[0,1]])
-        logL = self.compare.get_log_likelihood(sim, data, sigma, reduce_frac=1, mask=1, model_error=0, cov_matrix=None)
+        X = np.ones(100)
+
+        logL = self.compare.get_log_likelihood(X, cov_matrix=None)
         assert logL == -50
 if __name__ == '__main__':
     pytest.main()

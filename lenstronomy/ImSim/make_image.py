@@ -28,6 +28,7 @@ class MakeImage(object):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.DeLens = DeLens()
         self.kwargs_options = kwargs_options
+        self.subgrid_res = kwargs_options.get('subgrid_res', 1)
         self.kwargs_psf = kwargs_psf
         self.util_class = Util_class()
         self.gaussian = Gaussian()
@@ -40,8 +41,10 @@ class MakeImage(object):
                 data = np.zeros((4))
             if 'idex_mask' in kwargs_data:
                 self._idex_mask = kwargs_data['idex_mask']
+                self._idex_mask_bool = True
             else:
                 self._idex_mask = np.ones_like(data)
+                self._idex_mask_bool = False
             if 'sigma_background' in kwargs_data:
                 self._sigma_b = kwargs_data['sigma_background']
             else:
@@ -89,11 +92,10 @@ class MakeImage(object):
                 x_grid, y_grid = util.make_grid(self._nx*self._ny, 1, subgrid_res=1, left_lower=False)
             self._x_grid = x_grid[self._idex_mask == 1]
             self._y_grid = y_grid[self._idex_mask == 1]
-            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid,
-                                                                 self.kwargs_options.get('subgrid_res', 1))
-            idex_mask_sub = self._subgrid_idex(self._idex_mask, self.kwargs_options.get('subgrid_res', 1), self._nx, self._ny)
-            self._x_grid_sub = x_grid_sub[idex_mask_sub == 1]
-            self._y_grid_sub = y_grid_sub[idex_mask_sub == 1]
+            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self.subgrid_res)
+            self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self.subgrid_res, self._nx, self._ny)
+            self._x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
+            self._y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
         self.shapelets = Shapelets()
         if kwargs_options['source_type'] == 'SERSIC':
             from astrofunc.LightProfiles.sersic import Sersic
@@ -214,14 +216,17 @@ class MakeImage(object):
         :param ny: y-axis of 2d grid
         :return:
         """
-        idex_mask = self._idex_mask
-        nx, ny = self._nx*subrid_res, self._ny*subrid_res
-        grid1d = np.zeros((nx * ny))
-        if subrid_res > 1:
-            idex_mask_subgrid = self._subgrid_idex(idex_mask, subrid_res, self._nx, self._ny)
+        nx, ny = self._nx * subrid_res, self._ny * subrid_res
+        if self._idex_mask_bool is True:
+            idex_mask = self._idex_mask
+            grid1d = np.zeros((nx * ny))
+            if subrid_res > 1:
+                idex_mask_subgrid = self._idex_mask_sub
+            else:
+                idex_mask_subgrid = idex_mask
+            grid1d[idex_mask_subgrid == 1] = array
         else:
-            idex_mask_subgrid = idex_mask
-        grid1d[idex_mask_subgrid == 1] = array
+            grid1d = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
 
@@ -234,7 +239,10 @@ class MakeImage(object):
         """
         idex_mask = self._idex_mask
         array = util.image2array(image)
-        return array[idex_mask == 1]
+        if self._idex_mask_bool is True:
+            return array[idex_mask == 1]
+        else:
+            return array
 
     def add_noise2image(self, image):
         """

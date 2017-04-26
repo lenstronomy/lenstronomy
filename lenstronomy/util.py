@@ -1,6 +1,9 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+from astrofunc.util import Util_class
+
+util_class = Util_class()
 
 
 def findOverlap(x_mins, y_mins, values, deltapix):
@@ -42,3 +45,24 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
     x_coord = np.delete(x_coord, idex, axis=0)
     y_coord = np.delete(y_coord, idex, axis=0)
     return x_coord, y_coord
+
+
+def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, psf, idex_mask):
+    """
+    rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
+    :param bin_size: number of pixels (per axis) to merge
+    :return:
+    """
+    numPix = int(len(image)/bin_size)
+    if not numPix ==  len(image)/bin_size:
+        raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
+    image_resized = util_class.re_size_grid(grid=image, numPix=numPix)
+    image_resized *= bin_size**2
+    wht_map_resized = util_class.re_size_grid(grid=wht_map, numPix=numPix)
+    sigma_bkg_resized = bin_size*sigma_bkg
+    ra_coords_resized = util_class.re_size_grid(grid=ra_coords, numPix=numPix)
+    dec_coords_resized = util_class.re_size_grid(grid=dec_coords, numPix=numPix)
+    psf_resized = util_class.re_size_grid(grid=psf, numPix=numPix)
+    idex_mask_resized = util_class.re_size_grid(grid=idex_mask, numPix=numPix)
+    idex_mask_resized[idex_mask_resized > 0] = 1
+    return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, psf_resized, idex_mask_resized

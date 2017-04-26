@@ -54,6 +54,7 @@ class MCMC_sampler(object):
         if pso.isMaster():
             print('Computing the ', print_key, '...')
         num_iter = 0
+        print(n_iterations, 'n_iterations')
         for swarm in pso.sample(n_iterations):
             X2_list.append(pso.gbest.fitness*2)
             vel_list.append(pso.gbest.velocity)

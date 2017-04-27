@@ -47,7 +47,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
     return x_coord, y_coord
 
 
-def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, psf, idex_mask):
+def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask):
     """
     rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
     :param bin_size: number of pixels (per axis) to merge
@@ -62,7 +62,25 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, psf,
     sigma_bkg_resized = bin_size*sigma_bkg
     ra_coords_resized = util_class.re_size_grid(grid=ra_coords, numPix=numPix)
     dec_coords_resized = util_class.re_size_grid(grid=dec_coords, numPix=numPix)
-    psf_resized = util_class.re_size_grid(grid=psf, numPix=numPix)
     idex_mask_resized = util_class.re_size_grid(grid=idex_mask, numPix=numPix)
     idex_mask_resized[idex_mask_resized > 0] = 1
-    return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, psf_resized, idex_mask_resized
+    return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
+
+
+def stack_images(image_list, wht_list, sigma_list):
+    """
+    stacks images and saves new image as a fits file
+    :param image_name_list: list of image_names to be stacked
+    :return:
+    """
+    image_stacked = np.zeros_like(image_list[0])
+    wht_stacked = np.zeros_like(image_stacked)
+    sigma_stacked = 0.
+    for i in range(len(image_list)):
+        image_stacked += image_list[i]*wht_list[i]
+        sigma_stacked += sigma_list[i]**2 * np.median(wht_list[i])
+        wht_stacked += wht_list[i]
+    image_stacked /= wht_stacked
+    sigma_stacked /= np.median(wht_stacked)
+    wht_stacked /= len(wht_list)
+    return image_stacked, wht_stacked, np.sqrt(sigma_stacked)

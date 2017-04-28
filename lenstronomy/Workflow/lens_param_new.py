@@ -30,41 +30,62 @@ class LensParam(object):
                 if not 'amp' in kwargs_fixed:
                     kwargs['amp'] = args[i]
                     i += 1
+                else:
+                    kwargs['amp'] = kwargs_fixed['amp']
                 if not 'sigma_x' in kwargs_fixed:
                     kwargs['sigma_x'] = np.exp(args[i])
                     i += 1
+                else:
+                    kwargs['sigma_x'] = kwargs_fixed['sigma_x']
                 if not 'sigma_y' in kwargs_fixed:
                     kwargs['sigma_y'] = np.exp(args[i])
                     i += 1
+                else:
+                    kwargs['sigma_y'] = kwargs_fixed['sigma_y']
             if model in ['SPEP', 'SPEMD', 'SIS', 'SIS_TRUNCATED', 'SPP']:
                 if not 'theta_E' in kwargs_fixed:
                     kwargs['theta_E'] = args[i]
                     i += 1
+                else:
+                    kwargs['theta_E'] = kwargs_fixed['theta_E']
             if model in ['SPEP', 'SPEMD', 'SPP']:
                 if not 'gamma' in kwargs_fixed:
                     kwargs['gamma'] = args[i]
                     i += 1
+                else:
+                    kwargs['gamma'] = kwargs_fixed['gamma']
             if model in ['SPEP', 'SPEMD']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     phi, q = util.elliptisity2phi_q(args[i], args[i+1])
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
+                else:
+                    kwargs['phi_G'] = kwargs_fixed['phi_G']
+                    kwargs['q'] = kwargs_fixed['q']
             if model in ['NFW']:
                 if not 'Rs' in kwargs_fixed:
                     kwargs['Rs'] = np.exp(args[i])
                     i += 1
+                else:
+                    kwargs_fixed['Rs'] = kwargs_fixed['Rs']
                 if not 'rho0' in kwargs_fixed:
                     kwargs['rho0'] = np.exp(args[i])
                     i += 1
+                else:
+                    kwargs['rho0'] = kwargs_fixed['rho0']
                 if not 'r200' in kwargs_fixed:
                     kwargs['r200'] = np.exp(args[i])
                     i += 1
+                else:
+                    kwargs['r200'] = kwargs_fixed['r200']
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
                     kwargs['beta'] = args[i]
                     i += 1
+                else:
+                    kwargs['beta'] = kwargs_fixed['beta']
                 if not 'coeffs' in kwargs_fixed:
                     num_coeffs = self.kwargs_options['num_shapelet_lens']
                     if self.solver_type == 'SHAPELETS':
@@ -82,21 +103,31 @@ class LensParam(object):
                     else:
                         kwargs['coeffs'] = args[i:i+num_coeffs]
                     i += num_coeffs
+                else:
+                    kwargs['coeffs'] = kwargs_fixed['coeffs']
 
             if model in ['DIPOLE']:
                 if not 'coupling' in kwargs_fixed:
                     kwargs['coupling'] = args[i]
                     i += 1
+                else:
+                    kwargs['coupling'] = kwargs_fixed['coupling']
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
                     kwargs['phi_dipole'] = args[i]
                     i += 1
+                else:
+                    kwargs['phi_dipole'] = kwargs_fixed['phi_dipole']
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
+                else:
+                    kwargs['center_x'] = kwargs_fixed['center_x']
                 if not 'center_y' in kwargs_fixed:
                     kwargs['center_y'] = args[i]
                     i += 1
+                else:
+                    kwargs['center_y'] = kwargs_fixed['center_y']
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -164,15 +195,15 @@ class LensParam(object):
                     args.append(kwargs['center_y'])
         return args
 
-    def add2fix(self, kwargs_fixed_list):
+    def add2fix(self, kwargs_fixed):
         """
 
         :param kwargs_fixed:
         :return:
         """
         fix_return_list = []
+        kwargs_fixed = kwargs_fixed
         for k, model in enumerate(self.model_list):
-            kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
             if model == 'GAUSSIAN':
                 if 'amp' in kwargs_fixed:
@@ -213,7 +244,8 @@ class LensParam(object):
                 if 'phi_dipole' in kwargs_fixed:
                     fix_return['phi_dipole'] = kwargs_fixed['phi_dipole']
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if 'center_x' in kwargs_fixed:
                     fix_return['center_x'] = kwargs_fixed['center_x']
                 if 'center_y' in kwargs_fixed:

@@ -91,12 +91,12 @@ class LensModel(object):
             self.alpha_perturb_x = kwargs_options["alpha_perturb_x"]
             self.alpha_perturb_y = kwargs_options["alpha_perturb_y"]
 
-    def mass(self, x, y, sigma_crit, **kwargs):
-        kappa = self.kappa(x, y, **kwargs)
+    def mass(self, x, y, sigma_crit, kwargs):
+        kappa = self.kappa(x, y, kwargs)
         mass = sigma_crit*kappa
         return mass
 
-    def potential(self, x, y, kwargs_else=None, **kwargs):
+    def potential(self, x, y, kwargs, kwargs_else=None):
         potential = self.func.function(x, y, **kwargs)
         if self.add_clump:
             if self.clump_type == 'SIS_TRUNCATED':
@@ -106,7 +106,7 @@ class LensModel(object):
             potential += pot_clump
         return potential
 
-    def alpha(self, x, y, kwargs_else=None, **kwargs):
+    def alpha(self, x, y, kwargs, kwargs_else=None):
         """
         a = grad(phi)
         """
@@ -141,40 +141,40 @@ class LensModel(object):
             alpha2 += self.alpha_perturb_y
         return alpha1, alpha2
 
-    def kappa(self, x, y, kwargs_else=None, **kwargs):
+    def kappa(self, x, y, kwargs, kwargs_else=None):
         """
         k = 1/2 laplacian(phi)
         """
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         return kappa
 
-    def gamma(self, x, y, kwargs_else=None, **kwargs):
+    def gamma(self, x, y, kwargs, kwargs_else=None):
         """
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
         g2 = d^2phi/dxdy
         """
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else)
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
         return gamma1, gamma2
 
-    def magnification(self, x, y, kwargs_else=None, **kwargs):
+    def magnification(self, x, y, kwargs, kwargs_else=None):
         """
         mag = 1/det(A)
         A = 1 - d^2phi/d_ij
         """
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
         return 1./det_A  # attention, if dividing to zero
 
-    def all(self, x, y, kwargs_else=None, **kwargs):
+    def all(self, x, y, kwargs, kwargs_else=None):
         """
         specially build to reduce computational costs
         """
-        potential = self.potential(x, y, kwargs_else, **kwargs)
-        alpha1, alpha2 = self.alpha(x, y, kwargs_else, **kwargs)
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs_else, **kwargs)
+        potential = self.potential(x, y, kwargs, kwargs_else)
+        alpha1, alpha2 = self.alpha(x, y, kwargs, kwargs_else)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
@@ -182,7 +182,7 @@ class LensModel(object):
         mag = 1./det_A
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
 
-    def hessian(self, x, y, kwargs_else=None, **kwargs):
+    def hessian(self, x, y, kwargs, kwargs_else=None):
         # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
 
         if self.foreground_shear and self.external_shear:

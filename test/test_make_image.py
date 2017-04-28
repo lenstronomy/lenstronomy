@@ -23,18 +23,18 @@ class TestMakeImage(object):
         self.makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
         self.kwargs = {'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}
         x_grid, y_grid = util.make_grid(numPix=101, deltapix=0.1)
-        x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, **self.kwargs)
-        I_xy = self.makeImage.get_surface_brightness(x_source, y_source, **self.kwargs)
+        x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, self.kwargs)
+        I_xy = self.makeImage.get_surface_brightness(x_source, y_source, self.kwargs)
         self.grid = util.array2image(I_xy)
         np.random.seed(seed=41)
 
     def test_mapping_IS(self):
-        delta_x, delta_y = self.makeImage.mapping_IS(x=1., y=1., **self.kwargs)
+        delta_x, delta_y = self.makeImage.mapping_IS(x=1., y=1., kwargs=self.kwargs)
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
     def test_get_surface_brightness(self):
-        I_xy = self.makeImage.get_surface_brightness(x=1., y=1., **self.kwargs)
+        I_xy = self.makeImage.get_surface_brightness(x=1., y=1., kwargs=self.kwargs)
         assert I_xy == 0.77880078307140488/(8*np.pi)
 
     def test_psf_convolution(self):

@@ -11,7 +11,7 @@ class LensLightModel(object):
         lens_light_type = kwargs_options.get('lens_light_type', 'NONE')
         self.lightModel = LightModel(lens_light_type)
 
-    def surface_brightness(self, x=0, y=0, **kwargs_lens_light):
+    def surface_brightness(self, x, y, kwargs_lens_light):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
@@ -25,7 +25,7 @@ class SourceModel(object):
         source_type = kwargs_options.get('source_type', 'NONE')
         self.lightModel = LightModel(source_type)
 
-    def surface_brightness(self, x=0, y=0, **kwargs_source):
+    def surface_brightness(self, x, y, kwargs_source):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
@@ -69,7 +69,7 @@ class LightModel(object):
             print('Warning! No lens light model of type', profile_type, ' found!')
             self.valid = False
 
-    def surface_brightness(self, x=0, y=0, **kwargs):
+    def surface_brightness(self, x, y, **kwargs):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array

@@ -41,20 +41,6 @@ class Param(object):
         self.kwargs_options = kwargs_options
         self.makeImage = MakeImage(kwargs_options)
 
-        if kwargs_options['lens_type'] == 'SPEP_SIS':
-            self.clump_type = 'SIS'
-        elif kwargs_options['lens_type'] == 'SPEP_NFW':
-            self.clump_type = 'NFW'
-        elif kwargs_options['lens_type'] == 'SPEP_SPP':
-            self.clump_type = 'SPP'
-        elif kwargs_options['lens_type'] == 'SPEP_SHAPELETS':
-            self.clump_type = 'SHAPELETS'
-        elif kwargs_options['lens_type'] == 'SPEP_SPP_SHAPELETS':
-            self.clump_type = 'SPP_SHAPELETS'
-        elif kwargs_options['lens_type'] == 'SPEP':
-            self.clump_type = 'NO_clump'
-        else:
-            self.clump_type = None
         self.external_shear = kwargs_options.get('external_shear', False)
         self.foreground_shear = kwargs_options.get('foreground_shear', False) \
                                 and kwargs_options.get('external_shear', False)
@@ -247,7 +233,7 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.num_images == 2:
@@ -255,7 +241,7 @@ class Param(object):
                         init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                         theta_E = kwargs_lens['theta_E']
                         kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens, kwargs_else)
                         x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                     'theta_E': theta_E, 'e1': e1, 'e2': e2})
                         kwargs_lens['theta_E'] = theta_E
@@ -264,7 +250,7 @@ class Param(object):
                         init = np.array([kwargs_lens['theta_E'], kwargs_lens['gamma']])
                         theta_E = kwargs_lens['theta_E']
                         kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens, kwargs_else)
                         x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                     'theta_E': theta_E, 'e1': e1, 'e2': e2})
                         kwargs_lens['theta_E'] = theta_E
@@ -272,7 +258,7 @@ class Param(object):
                 else:
                     raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
             elif self.solver_type == 'SHAPELETS':
-                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_else, **kwargs_lens)
+                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens, kwargs_else)
                 if self.num_images == 4:
                     init = [0, 0, 0, 0, 0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
@@ -285,11 +271,11 @@ class Param(object):
                 pass
         if self.kwargs_options.get('solver', False) or self.kwargs_options.get('image_plane_source', False):
             if self.kwargs_options.get('image_plane_source', False):
-                x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['source_pos_image_ra'], kwargs_else['source_pos_image_dec'], kwargs_else, **kwargs_lens)
+                x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['source_pos_image_ra'], kwargs_else['source_pos_image_dec'], kwargs_lens, kwargs_else)
                 kwargs_source['center_x'] = x_mapped
                 kwargs_source['center_y'] = y_mapped
             else:
-                x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_else, **kwargs_lens)
+                x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
                 #kwargs_source['center_x'] = np.mean(x_mapped)
                 #kwargs_source['center_y'] = np.mean(y_mapped)
                 kwargs_source['center_x'] = x_mapped[0]

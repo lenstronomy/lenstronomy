@@ -104,11 +104,11 @@ class MakeImage(object):
             from astrofunc.LightProfiles.sersic import Sersic_elliptic
             self.sersic = Sersic_elliptic()
 
-    def mapping_IS(self, x, y, kwargs_else=None, **kwargs):
+    def mapping_IS(self, x, y, kwargs, kwargs_else=None):
         """
         maps image to source position (inverse deflection)
         """
-        dx, dy = self.LensModel.alpha(x, y, kwargs_else, **kwargs)
+        dx, dy = self.LensModel.alpha(x, y, kwargs, kwargs_else)
         return x - dx, y - dy
 
     def map_coord2pix(self, ra, dec):
@@ -132,19 +132,19 @@ class MakeImage(object):
         """
         return util.map_coord2pix(x_pos, y_pos, self._ra_0, self._dec_0, self._Mpix2a)
 
-    def get_surface_brightness(self, x, y, **kwargs):
+    def get_surface_brightness(self, x, y, kwargs):
         """
         returns the surface brightness of the source at coordinate x, y
         """
-        I_xy = self.SourceModel.surface_brightness(x, y, **kwargs)
+        I_xy = self.SourceModel.surface_brightness(x, y, kwargs)
         return I_xy
 
-    def get_lens_all(self, x, y, kwargs_else=None, **kwargs):
+    def get_lens_all(self, x, y, kwargs, kwargs_else=None):
         """
         returns all the lens properties
         :return:
         """
-        potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x, y, kwargs_else, **kwargs)
+        potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x, y, kwargs, kwargs_else)
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
 
     def psf_convolution(self, grid, grid_scale, **kwargs):
@@ -312,7 +312,7 @@ class MakeImage(object):
         if no_lens is True:
             x_source, y_source = self._x_grid_sub, self._y_grid_sub
         else:
-            x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+            x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
         A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
         data = self._data
@@ -326,7 +326,7 @@ class MakeImage(object):
     def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
-        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
         A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
         A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
@@ -342,7 +342,7 @@ class MakeImage(object):
         """
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
-        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
         A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
@@ -351,8 +351,8 @@ class MakeImage(object):
         return image_conv + image_, error_map
 
     def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else, deltaPix, subgrid_res):
-        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_else, **kwargs_lens)
-        I_xy = self.get_surface_brightness(x_source, y_source, **kwargs_source)
+        x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
+        I_xy = self.get_surface_brightness(x_source, y_source, kwargs_source)
         grid_final = self.re_size_convolve(I_xy, deltaPix, subgrid_res, self.kwargs_psf)
         return grid_final
 
@@ -373,7 +373,7 @@ class MakeImage(object):
         return wls_model, cov_param, param
 
     def get_lens_surface_brightness(self, deltaPix, subgrid_res, kwargs_lens_light):
-        lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, **kwargs_lens_light)
+        lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light)
         lens_light_final = self.re_size_convolve(lens_light, deltaPix, subgrid_res, self.kwargs_psf)
         return lens_light_final
 
@@ -506,7 +506,7 @@ class MakeImage(object):
                 A[k, :] = self.image2array(grid2d)
         elif self.kwargs_options.get('fix_magnification', False):
             grid2d = np.zeros((self._nx, self._ny))
-            mag = self.LensModel.magnification(x_pos, y_pos, kwargs_else, **kwargs_lens)
+            mag = self.LensModel.magnification(x_pos, y_pos, kwargs_lens, kwargs_else)
             for i in range(n_points):
                 grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], np.abs(mag[i]) * psf_large)
             A[0, :] = self.image2array(grid2d)
@@ -661,7 +661,7 @@ class MakeImage(object):
         kwargs_source_new['center_x'] = 0.
         kwargs_source_new['center_y'] = 0.
 
-        source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source_new)
+        source = self.get_surface_brightness(x_grid, y_grid, kwargs_source_new)
         basis_functions = np.zeros((len(param), len(x_grid)))
         if not self.kwargs_options.get("shapelets_off", False):
             num_param_shapelets = (num_order+2)*(num_order+1)/2
@@ -736,7 +736,7 @@ class MakeImage(object):
             dec_pos = kwargs_else['dec_pos']
         else:
             raise ValueError('No point source positions assigned')
-        mag = self.NumLensModel.magnification(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
+        mag = self.NumLensModel.magnification(ra_pos, dec_pos, kwargs_lens, kwargs_else)
         return ra_pos, dec_pos, mag
 
     def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
@@ -757,8 +757,8 @@ class MakeImage(object):
         x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
         for i in range(len(ra_pos)):
             ra, dec = ra_pos[i], dec_pos[i]
-            center_x, center_y = self.mapping_IS(ra, dec, kwargs_else, **kwargs_lens)
-            x_source, y_source = self.mapping_IS(x_grid + ra, y_grid + dec, kwargs_else, **kwargs_lens)
+            center_x, center_y = self.mapping_IS(ra, dec, kwargs_lens, kwargs_else)
+            x_source, y_source = self.mapping_IS(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
             if shape == "GAUSSIAN":
                 I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             elif shape == "TORUS":
@@ -800,7 +800,7 @@ class MakeImage(object):
             dec_pos = kwargs_else['dec_pos']
         else:
             raise ValueError('No point source positions assigned')
-        potential = self.LensModel.potential(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
+        potential = self.LensModel.potential(ra_pos, dec_pos, kwargs_lens, kwargs_else)
         ra_source = kwargs_source['center_x']
         dec_source = kwargs_source['center_y']
         geometry = (ra_pos - ra_source)**2 + (dec_pos - dec_source)**2

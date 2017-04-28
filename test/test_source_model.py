@@ -19,7 +19,7 @@ class TestSourceModel(object):
         self.kwargs = {'amp': 1, 'center_x': 0, 'center_y': 0, 'sigma_x': 2, 'sigma_y': 2 }
 
     def test_surface_brightness(self):
-        output = self.sourceModel.surface_brightness(x=1., y=1., **self.kwargs)
+        output = self.sourceModel.surface_brightness(x=1., y=1., kwargs_source=self.kwargs)
         assert output == 0.77880078307140488/(8*np.pi)
 
 if __name__ == '__main__':

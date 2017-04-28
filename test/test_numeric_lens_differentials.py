@@ -13,12 +13,12 @@ class TestLensModel(object):
     """
     def setup(self):
         self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_type': 'GAUSSIAN', 'source_type': 'GAUSSIAN'
+            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_type': 'GAUSSIAN'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
         self.lensModel = LensModel(self.kwargs_options)
         self.lensModelNum = NumericLens(self.kwargs_options)
-        self.kwargs = {'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
+        self.kwargs = [{'amp': 1./4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
     def test_kappa(self):
         x, y = 1., 1.

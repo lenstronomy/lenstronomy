@@ -1,18 +1,15 @@
 __author__ = 'sibirrer'
 
-
-import numpy as np
 import astrofunc.util as util
-
-from lenstronomy.MCMC.solver4point import Constraints
+import numpy as np
+from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.MCMC.solver2point import Constraints2
 from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.ImSim.make_image import MakeImage
-
-from lenstronomy.Workflow.lens_param_new import LensParam
-from lenstronomy.Workflow.source_param import SourceParam
-from lenstronomy.Workflow.lens_light_param import LensLightParam
+from lenstronomy.MCMC.solver4point import Constraints
+from lenstronomy.Trash.lens_param import LensParam
 from lenstronomy.Workflow.else_param import ElseParam
+from lenstronomy.Workflow.lens_light_param import LensLightParam
+from lenstronomy.Workflow.source_param import SourceParam
 
 
 class Param(object):
@@ -41,7 +38,9 @@ class Param(object):
         self.kwargs_options = kwargs_options
         self.makeImage = MakeImage(kwargs_options)
 
-        self.foreground_shear = kwargs_options.get('foreground_shear', False)
+        self.external_shear = kwargs_options.get('external_shear', False)
+        self.foreground_shear = kwargs_options.get('foreground_shear', False) \
+                                and kwargs_options.get('external_shear', False)
         self.num_images = kwargs_options.get('num_images', 4)
         self.fix_center = kwargs_options.get('fix_center', False)
         if kwargs_options.get('solver', False):
@@ -72,7 +71,8 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_else, i = self.elseParams.getParams(args, i)
-        lens_dict = kwargs_lens
+
+        lens_dict = dict(kwargs_lens.items() + self.kwargs_fixed_lens.items())
         source_dict = dict(kwargs_source.items() + self.kwargs_fixed_source.items())
         lens_light_dict = dict(kwargs_lens_light.items() + self.kwargs_fixed_lens_light.items())
         else_dict = dict(kwargs_else.items() + self.kwargs_fixed_else.items())
@@ -100,10 +100,11 @@ class Param(object):
         :param else_fixed:
         :return:
         """
+        lens_fix = self.lensParams.add2fix(lens_fixed)
         source_fix = self.souceParams.add2fix(source_fixed)
         lens_light_fix = self.lensLightParams.add2fix(lens_light_fixed)
         else_fix = self.elseParams.add2fix(else_fixed)
-        return lens_fixed, source_fix, lens_light_fix, else_fix
+        return lens_fix, source_fix, lens_light_fix, else_fix
 
     def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light={}, kwarg_mean_else={}):
         """
@@ -159,13 +160,12 @@ class Param(object):
         list += _list
         return num, list
 
-    def _update_spep(self, kwargs_lens_list, x):
+    def _update_spep(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
         :return: updated kwargs of lens parameters
         """
-        kwargs_lens = kwargs_lens_list[0]
         [theta_E, e1, e2, center_x, center_y, non_sens_param] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
         kwargs_lens['theta_E'] = theta_E
@@ -175,40 +175,36 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2(self, kwargs_lens_list, x):
+    def _update_spep2(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
         :return: updated kwargs of lens parameters
         """
-        kwargs_lens = kwargs_lens_list[0]
         [center_x, center_y] = x
         kwargs_lens['center_x'] = center_x
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2_new(self, kwargs_lens_list, x):
+    def _update_spep2_new(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
         :return: updated kwargs of lens parameters
         """
-        kwargs_lens = kwargs_lens_list[0]
         [theta_E, gamma] = x
         kwargs_lens['theta_E'] = theta_E
         kwargs_lens['gamma'] = gamma
         return kwargs_lens
 
-    def _update_coeffs(self, kwargs_lens_list, x):
-        kwargs_lens = kwargs_lens_list[0]
+    def _update_coeffs(self, kwargs_lens, x):
         [c00, c10, c01, c20, c11, c02] = x
         coeffs = list(kwargs_lens['coeffs'])
         coeffs[0: 6] = [0, c10, c01, c20, c11, c02]
         kwargs_lens['coeffs'] = coeffs
         return kwargs_lens
 
-    def _update_coeffs2(self, kwargs_lens_list, x):
-        kwargs_lens = kwargs_lens_list[0]
+    def _update_coeffs2(self, kwargs_lens, x):
         [c10, c01] = x
         coeffs = list(kwargs_lens['coeffs'])
         coeffs[1:3] = [c10, c01]
@@ -220,8 +216,7 @@ class Param(object):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def update_kwargs(self, kwargs_lens_list, kwargs_source, kwargs_lens_light, kwargs_else):
-        kwargs_lens = kwargs_lens_list[0]
+    def update_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         if self.kwargs_options.get('solver', False):
             if self.foreground_shear:
                 f_x_shear1, f_y_shear1 = self.makeImage.LensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
@@ -285,4 +280,4 @@ class Param(object):
         if self.kwargs_options.get('fix_mass_light', False):
             kwargs_lens_light['center_x'] = kwargs_lens['center_x']
             kwargs_lens_light['center_y'] = kwargs_lens['center_y']
-        return kwargs_lens_list, kwargs_source, kwargs_lens_light, kwargs_else
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else

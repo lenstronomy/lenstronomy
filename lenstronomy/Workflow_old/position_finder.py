@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.MCMC.mcmc import MCMC_sampler
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Trash.parameters import Param
 
 #TODO: will be replaced by fitting.py
 

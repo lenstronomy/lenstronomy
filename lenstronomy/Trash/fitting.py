@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.MCMC.mcmc import MCMC_sampler
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters_new import Param
+from lenstronomy.Trash.parameters import Param
 
 
 class Fitting(object):
@@ -11,7 +11,7 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_lens_fixed=[], kwargs_source_fixed={}, kwargs_lens_light_fix={}, kwargs_else_fixed={}):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_lens_fixed={}, kwargs_source_fixed={}, kwargs_lens_light_fix={}, kwargs_else_fixed={}):
         """
 
         :return:
@@ -29,9 +29,7 @@ class Fitting(object):
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
                  threadCount=1, mpi=False, print_key='Default', sigma_factor=1):
-        kwargs_prior_lens = []
-        for k in range(len(kwargs_mean_lens)):
-            kwargs_prior_lens.append(dict(kwargs_mean_lens[k].items() + kwargs_sigma_lens[k].items()))
+        kwargs_prior_lens = dict(kwargs_mean_lens.items() + kwargs_sigma_lens.items())
         kwargs_prior_source = dict(kwargs_mean_source.items() + kwargs_sigma_source.items())
         kwargs_prior_lens_light = dict(kwargs_mean_lens_light.items() + kwargs_sigma_lens_light.items())
         kwargs_prior_else = dict(kwargs_mean_else.items() + kwargs_sigma_else.items())
@@ -43,13 +41,11 @@ class Fitting(object):
                                                                                            self.kwargs_source_fixed,
                                                                                            self.kwargs_lens_light_fixed,
                                                                                            self.kwargs_else_fixed)
-        kwargs_fixed_lens_updated = []
-        for k in range(len(kwargs_fixed_lens)):
-            kwargs_fixed_lens_updated.append(dict(kwargs_fixed_lens[k].items() + lens_fix[k].items()))
+        kwargs_fixed_lens = dict(kwargs_fixed_lens.items() + lens_fix.items())
         kwargs_fixed_source = dict(kwargs_fixed_source.items() + source_fix.items())
         kwargs_fixed_lens_light = dict(kwargs_fixed_lens_light.items() + lens_light_fix.items())
         kwargs_fixed_else = dict(kwargs_fixed_else.items() + else_fix.items())
-        param_class = Param(kwargs_options, kwargs_fixed_lens_updated, kwargs_fixed_source,
+        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_else)
@@ -78,9 +74,8 @@ class Fitting(object):
                  kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
                  threadCount=1, mpi=False, init_samples=None, sigma_factor=1):
 
-        kwargs_prior_lens = []
-        for k in range(len(kwargs_mean_lens)):
-            kwargs_prior_lens.append(dict(kwargs_mean_lens[k].items() + kwargs_sigma_lens[k].items()))
+
+        kwargs_prior_lens = dict(kwargs_mean_lens.items() + kwargs_sigma_lens.items())
         kwargs_prior_source = dict(kwargs_mean_source.items() + kwargs_sigma_source.items())
         kwargs_prior_lens_light = dict(kwargs_mean_lens_light.items() + kwargs_sigma_lens_light.items())
         kwargs_prior_else = dict(kwargs_mean_else.items() + kwargs_sigma_else.items())
@@ -92,9 +87,8 @@ class Fitting(object):
                                                                                            self.kwargs_source_fixed,
                                                                                            self.kwargs_lens_light_fixed,
                                                                                            self.kwargs_else_fixed)
-        kwargs_fixed_lens_updated = []
-        for k in range(len(kwargs_fixed_lens)):
-            kwargs_fixed_lens_updated.append(dict(kwargs_fixed_lens[k].items() + lens_fix[k].items()))
+        kwargs_fixed_lens = dict(kwargs_fixed_lens.items() + lens_fix.items())
+        kwargs_fixed_lens = dict(kwargs_fixed_lens.items() + lens_fix.items())
         kwargs_fixed_source = dict(kwargs_fixed_source.items() + source_fix.items())
         kwargs_fixed_lens_light = dict(kwargs_fixed_lens_light.items() + lens_light_fix.items())
         kwargs_fixed_else = dict(kwargs_fixed_else.items() + else_fix.items())
@@ -146,37 +140,30 @@ class Fitting(object):
             kwargs_fixed_source = {}
         return kwargs_fixed_source
 
-    def _fixed_lens(self, kwargs_options, kwargs_lens_list):
+    def _fixed_lens(self, kwargs_options, kwargs_lens):
         """
         returns kwargs that are kept fixed during run, depending on options
         :param kwargs_options:
         :param kwargs_lens:
         :return:
         """
-        kwargs_fixed_lens_list = []
-        for k in range(len(kwargs_lens_list)):
-            if k == 0:
-                kwargs_lens = kwargs_lens_list[0]
-                if kwargs_options['solver'] is True:
-                    if kwargs_options['solver_type'] in ['SPEP', 'SPEMD']:
-                        if kwargs_options['num_images'] == 4:
-                            kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
-                                             'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
-                                             'center_y': kwargs_lens['center_y']}
-                        elif kwargs_options['num_images'] == 2:
-                            kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y']}
-                        else:
-                            raise ValueError("%s is not a valid option" % kwargs_options['num_images'])
-                    elif kwargs_options['solver_type'] == "SHAPELETS":
-                        kwargs_fixed_lens = {}
-                    else:
-                        raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
+        if kwargs_options['solver'] is True:
+            if kwargs_options['solver_type'] in ['SPEP', 'SPEMD']:
+                if kwargs_options['num_images'] == 4:
+                    kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
+                                     'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
+                                     'center_y': kwargs_lens['center_y']}
+                elif kwargs_options['num_images'] == 2:
+                    kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y']}
                 else:
-                    kwargs_fixed_lens = {}
-            else:
+                    raise ValueError("%s is not a valid option" % kwargs_options['num_images'])
+            elif kwargs_options['solver_type'] == "SHAPELETS":
                 kwargs_fixed_lens = {}
-            kwargs_fixed_lens_list.append(kwargs_fixed_lens)
-        return kwargs_fixed_lens_list
+            else:
+                raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
+        else:
+            kwargs_fixed_lens = {}
+        return kwargs_fixed_lens
 
     def find_lens_catalogue(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
@@ -189,8 +176,7 @@ class Fitting(object):
                                   'X2_type': 'catalogue', 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
-        kwargs_fixed_lens = kwargs_lens.copy()
-        kwargs_fixed_lens[0] = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
+        kwargs_fixed_lens = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
         kwargs_fixed_source = kwargs_source
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = kwargs_else

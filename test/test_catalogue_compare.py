@@ -24,11 +24,11 @@ class TestCatalogueCompare(object):
         self.x_pos = np.array([-1.25,-0.5,-0.25,1.85])
         self.y_pos = np.array([0.9, 1.375, -1., 0.4])
         self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_type': 'SPEP', 'source_type': 'GAUSSIAN'
+            , 'cosmo_file': '', 'lens_model_list': ['SPEP'], 'source_type': 'GAUSSIAN'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
         self.makeImage = MakeImage(self.kwargs_options, kwargs_data)
-        self.kwargs = {'theta_E': 1./0.8, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x':0., 'center_y': 0.} #for SPEP lens
+        self.kwargs = [{'theta_E': 1./0.8, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x':0., 'center_y': 0.}] #for SPEP lens
 
 
     def test_catalogue_compare(self):

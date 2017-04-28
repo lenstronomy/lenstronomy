@@ -1,12 +1,11 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+from astrofunc.util import Util_class
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.MCMC.compare import Compare
 from lenstronomy.Workflow.parameters import Param
-from astrofunc.util import Util_class
-
 
 
 class MCMC_chain(object):
@@ -34,17 +33,6 @@ class MCMC_chain(object):
         self.mask_lens_light = kwargs_data.get('mask_lens_light', 1)
         self.sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf)
-        if kwargs_options['lens_type'] == 'INTERPOL':
-            x_grid = kwargs_fixed_lens['x_grid']
-            y_grid = kwargs_fixed_lens['y_grid']
-            f_ = kwargs_fixed_lens['f_']
-            f_x = kwargs_fixed_lens['f_x']
-            f_y = kwargs_fixed_lens['f_y']
-            f_xx = kwargs_fixed_lens['f_xx']
-            f_xy = kwargs_fixed_lens['f_xy']
-            f_yy = kwargs_fixed_lens['f_yy']
-            self.makeImage.LensModel.func.do_interp(x_grid, y_grid, f_, f_x, f_y, f_xx, f_yy, f_xy)
-            kwargs_fixed_lens = {}
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.compare = Compare(kwargs_options)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()

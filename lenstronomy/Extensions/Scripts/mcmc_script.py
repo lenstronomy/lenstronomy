@@ -3,13 +3,13 @@ __author__ = 'sibirrer'
 #this file is ment to be a shell script to be run with Monch cluster
 
 # set up the scene
-from cosmoHammer.util.MpiUtil import MpiPool
-import time
-import sys
-import pickle
 import os
+import pickle
+import sys
+import time
 
-from lenstronomy.Workflow.fitting import Fitting
+from cosmoHammer.util.MpiUtil import MpiPool
+from lenstronomy.Trash.fitting import Fitting
 
 start_time = time.time()
 

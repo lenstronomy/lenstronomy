@@ -16,25 +16,26 @@ class TestMakeImage(object):
     @patch("darkskysync.DarkSkySync", autospec=False)
     def setup(self, dss_mock):
         self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_type': 'GAUSSIAN', 'source_type': 'GAUSSIAN', 'lens_light_type': 'TRIPPLE_SERSIC'
+            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_type': 'GAUSSIAN', 'lens_light_type': 'TRIPPLE_SERSIC'
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
         self.kwargs_data = {}
         
         self.makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
-        self.kwargs = {'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}
+        self.kwargs_lens = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}]
+        self.kwargs_source = {'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}
         x_grid, y_grid = util.make_grid(numPix=101, deltapix=0.1)
-        x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, self.kwargs)
-        I_xy = self.makeImage.get_surface_brightness(x_source, y_source, self.kwargs)
+        x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, self.kwargs_lens)
+        I_xy = self.makeImage.get_surface_brightness(x_source, y_source, self.kwargs_source)
         self.grid = util.array2image(I_xy)
         np.random.seed(seed=41)
 
     def test_mapping_IS(self):
-        delta_x, delta_y = self.makeImage.mapping_IS(x=1., y=1., kwargs=self.kwargs)
+        delta_x, delta_y = self.makeImage.mapping_IS(x=1., y=1., kwargs=self.kwargs_lens)
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
     def test_get_surface_brightness(self):
-        I_xy = self.makeImage.get_surface_brightness(x=1., y=1., kwargs=self.kwargs)
+        I_xy = self.makeImage.get_surface_brightness(x=1., y=1., kwargs=self.kwargs_source)
         assert I_xy == 0.77880078307140488/(8*np.pi)
 
     def test_psf_convolution(self):
@@ -56,7 +57,7 @@ class TestMakeImage(object):
 
     def test_get_magnification_model(self):
         kwargs_else = {'ra_pos': np.array([1., 1., 2.]), 'dec_pos': np.array([-1., 0., 0.])}
-        x_pos, y_pos, mag = self.makeImage.get_magnification_model(self.kwargs, kwargs_else)
+        x_pos, y_pos, mag = self.makeImage.get_magnification_model(self.kwargs_lens, kwargs_else)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
     def test_get_image_amplitudes(self):

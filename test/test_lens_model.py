@@ -1,11 +1,10 @@
 __author__ = 'sibirrer'
 
-
-import pytest
 import numpy as np
 import numpy.testing as npt
+import pytest
+from lenstronomy.Trash.lens_model import LensModel
 
-from lenstronomy.ImSim.lens_model import LensModel
 
 class TestLensModel(object):
     """

@@ -10,9 +10,7 @@ class ElseParam(object):
         self.kwargs_options = kwargs_options
         self.kwargs_fixed = kwargs_fixed
         self.num_images = kwargs_options.get('num_images', 4)
-        self.external_shear = kwargs_options.get('external_shear', False)
-        self.foreground_shear = kwargs_options.get('foreground_shear', False) \
-                                and kwargs_options.get('external_shear', False)
+        self.foreground_shear = kwargs_options.get('foreground_shear', False)
 
     def getParams(self, args, i):
         """
@@ -35,11 +33,6 @@ class ElseParam(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed:
                 kwargs['source_pos_image_dec'] = args[i]
                 i += 1
-        if self.external_shear:
-            if not 'gamma1' in self.kwargs_fixed or not 'gamma2' in self.kwargs_fixed:
-                kwargs['gamma1'] = args[i]
-                kwargs['gamma2'] = args[i+1]
-                i += 2
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 kwargs['gamma1_foreground'] = args[i]
@@ -52,19 +45,6 @@ class ElseParam(object):
         if not 'shapelet_beta' in self.kwargs_fixed:
             kwargs['shapelet_beta'] = args[i]
             i += 1
-        if self.kwargs_options.get('add_clump', False):
-            if not 'theta_E_clump' in self.kwargs_fixed:
-                kwargs['theta_E_clump'] = args[i]
-                i += 1
-            if not 'r_trunc' in self.kwargs_fixed:
-                kwargs['r_trunc'] = args[i]
-                i += 1
-            if not 'x_clump' in self.kwargs_fixed:
-                kwargs['x_clump'] = args[i]
-                i += 1
-            if not 'y_clump' in self.kwargs_fixed:
-                kwargs['y_clump'] = args[i]
-                i += 1
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 n = self.num_images - 1
@@ -93,10 +73,6 @@ class ElseParam(object):
                 args.append(kwargs['source_pos_image_ra'])
             if not 'source_pos_image_dec' in self.kwargs_fixed:
                 args.append(kwargs['source_pos_image_dec'])
-        if self.external_shear:
-            if not 'gamma1' in self.kwargs_fixed or not 'gamma2' in self.kwargs_fixed:
-                args.append(kwargs['gamma1'])
-                args.append(kwargs['gamma2'])
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 args.append(kwargs['gamma1_foreground'])
@@ -107,15 +83,6 @@ class ElseParam(object):
         if not 'shapelet_beta' in self.kwargs_fixed:
             args.append(kwargs['shapelet_beta'])
 
-        if self.kwargs_options.get('add_clump', False):
-            if not 'theta_E_clump' in self.kwargs_fixed:
-                args.append(kwargs['theta_E_clump'])
-            if not 'r_trunc' in self.kwargs_fixed:
-                args.append(kwargs['r_trunc'])
-            if not 'x_clump' in self.kwargs_fixed:
-                args.append(kwargs['x_clump'])
-            if not 'y_clump' in self.kwargs_fixed:
-                args.append(kwargs['y_clump'])
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 point_amp = kwargs['point_amp']
@@ -139,11 +106,6 @@ class ElseParam(object):
                 fix_return['source_pos_image_ra'] = kwargs_fixed['source_pos_image_ra']
             if 'source_pos_image_dec' in kwargs_fixed:
                 fix_return['source_pos_image_dec'] = kwargs_fixed['source_pos_image_dec']
-        if self.external_shear:
-            if 'gamma1' in kwargs_fixed:
-                fix_return['gamma1'] = kwargs_fixed['gamma1']
-            if 'gamma2' in kwargs_fixed:
-                fix_return['gamma2'] = kwargs_fixed['gamma2']
 
         if self.foreground_shear:
             if 'gamma1_foreground' in kwargs_fixed:
@@ -159,15 +121,6 @@ class ElseParam(object):
         if 'shapelet_beta' in kwargs_fixed:
             fix_return['shapelet_beta'] = kwargs_fixed['shapelet_beta']
 
-        if self.kwargs_options.get('add_clump', False):
-            if 'theta_E_clump' in kwargs_fixed:
-                fix_return['theta_E_clump'] = kwargs_fixed['theta_E_clump']
-            if 'r_trunc' in kwargs_fixed:
-                fix_return['r_trunc'] = kwargs_fixed['r_trunc']
-            if 'x_clump' in kwargs_fixed:
-                fix_return['x_clump'] = kwargs_fixed['x_clump']
-            if 'y_clump' in kwargs_fixed:
-                fix_return['y_clump'] = kwargs_fixed['y_clump']
         if self.kwargs_options.get('psf_iteration', False):
             if 'point_amp' in kwargs_fixed:
                 fix_return['point_amp'] = kwargs_fixed['point_amp']
@@ -199,13 +152,7 @@ class ElseParam(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed:
                 mean.append(kwargs_mean['source_pos_image_dec'])
                 sigma.append(kwargs_mean['source_pos_image_dec_sigma'])
-        if self.external_shear:
-            if not 'gamma1' in self.kwargs_fixed or not 'gamma2' in self.kwargs_fixed:
-                mean.append(kwargs_mean['gamma1'])
-                mean.append(kwargs_mean['gamma2'])
-                shear_sigma = kwargs_mean['shear_sigma']
-                sigma.append(shear_sigma)
-                sigma.append(shear_sigma)
+
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 mean.append(kwargs_mean['gamma1_foreground'])
@@ -221,19 +168,6 @@ class ElseParam(object):
             mean.append(kwargs_mean['shapelet_beta'])
             sigma.append(kwargs_mean['shapelet_beta_sigma'])
 
-        if self.kwargs_options.get('add_clump', False):
-            if not 'theta_E_clump' in self.kwargs_fixed:
-                mean.append(kwargs_mean['theta_E_clump'])
-                sigma.append(kwargs_mean['theta_E_clump_sigma'])
-            if not 'r_trunc' in self.kwargs_fixed:
-                mean.append(kwargs_mean['r_trunc'])
-                sigma.append(kwargs_mean['r_trunc_sigma'])
-            if not 'x_clump' in self.kwargs_fixed:
-                mean.append(kwargs_mean['x_clump'])
-                sigma.append(kwargs_mean['x_clump_sigma'])
-            if not 'y_clump' in self.kwargs_fixed:
-                mean.append(kwargs_mean['y_clump'])
-                sigma.append(kwargs_mean['y_clump_sigma'])
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 for i in range(1, len(kwargs_mean['point_amp'])):
@@ -266,12 +200,7 @@ class ElseParam(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed:
                 low.append(-10)
                 high.append(10)
-        if self.external_shear:
-            if not 'gamma1' in self.kwargs_fixed or not 'gamma2' in self.kwargs_fixed:
-                low.append(-0.8)
-                high.append(0.8)
-                low.append(-0.8)
-                high.append(0.8)
+
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 low.append(-0.8)
@@ -285,19 +214,7 @@ class ElseParam(object):
         if not 'shapelet_beta' in self.kwargs_fixed:
             low.append(0.01)
             high.append(1)
-        if self.kwargs_options.get('add_clump', False):
-            if not 'theta_E_clump' in self.kwargs_fixed:
-                low.append(0)
-                high.append(1)
-            if not 'r_trunc' in self.kwargs_fixed:
-                low.append(0.001)
-                high.append(1)
-            if not 'x_clump' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
-            if not 'y_clump' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
+
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 n = self.num_images - 1
@@ -328,11 +245,7 @@ class ElseParam(object):
             if not 'source_pos_image_dec' in self.kwargs_fixed:
                 num += 1
                 list.append('source_pos_image_dec')
-        if self.external_shear:
-            if not 'gamma1' in self.kwargs_fixed or not 'gamma2' in self.kwargs_fixed:
-                num += 2
-                list.append('shear_1')
-                list.append('shear_2')
+
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 num += 2
@@ -345,19 +258,7 @@ class ElseParam(object):
         if not 'shapelet_beta' in self.kwargs_fixed:
             num += 1
             list.append('shapelet_beta')
-        if self.kwargs_options.get('add_clump', False):
-            if not 'theta_E_clump' in self.kwargs_fixed:
-                num += 1
-                list.append('theta_E_clump')
-            if not 'r_trunc' in self.kwargs_fixed:
-                num += 1
-                list.append('r_trunc')
-            if not 'x_clump' in self.kwargs_fixed:
-                num += 1
-                list.append('x_clump')
-            if not 'y_clump' in self.kwargs_fixed:
-                num += 1
-                list.append('y_clump')
+
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 n = self.num_images - 1

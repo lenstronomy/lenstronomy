@@ -38,7 +38,7 @@ def plot_chain(chain, param_list):
     return f, axes
 
 
-def ext_shear_direction(kwargs_data, kwargs_options,
+def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
                         kwargs_else, strength_multiply=10):
     """
 
@@ -51,19 +51,23 @@ def ext_shear_direction(kwargs_data, kwargs_options,
     :param else_result:
     :return:
     """
+    foreground_shear = kwargs_options.get('foreground_shear', False)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
     shear = ExternalShear()
-    external_shear = kwargs_options.get('external_shear', False)
-    foreground_shear = kwargs_options.get('foreground_shear', False)
-    if external_shear:
-        f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs_else['gamma1']*strength_multiply, e2=kwargs_else['gamma2']*strength_multiply)
-    else:
+
+    if not 'EXTERNAL_SHEAR' in kwargs_options['lens_model_list']:
         f_x_shear, f_y_shear = 0, 0
+    else:
+        for i, lens_model in enumerate(kwargs_options['lens_model_list']):
+            if lens_model == 'EXTERNAL_SHEAR':
+                kwargs = kwargs_lens[i]
+                f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
+                                                         e2=kwargs['e2'] * strength_multiply)
     x_shear = x_grid - f_x_shear
     y_shear = y_grid - f_y_shear
 
 
-    if foreground_shear and external_shear:
+    if foreground_shear:
         f_x_shear1, f_y_shear1 = shear.derivatives(x_grid, y_grid, e1=kwargs_else['gamma1_foreground']*strength_multiply, e2=kwargs_else['gamma2_foreground']*strength_multiply)
     else:
         f_x_shear1, f_y_shear1 = 0, 0
@@ -76,7 +80,7 @@ def ext_shear_direction(kwargs_data, kwargs_options,
     circle_shear = util.circle(x_shear, y_shear, center_x, center_y, radius)
     circle_foreground = util.circle(x_foreground, y_foreground, center_x, center_y, radius)
     f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
-    im = ax.matshow(np.log10(kwargs_data['image_data']), origin='lower', alpha=0.5)
+    im = ax.matshow(util.array2image(np.log10(kwargs_data['image_data'])), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
     f.show()
@@ -300,7 +304,8 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
     source, error_map_source = makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source, source_result,
                                                     cov_param)
-
+    source = util.array2image(source)
+    error_map_source = util.array2image(error_map_source)
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     ax = axes[0,0]
     cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)

@@ -20,16 +20,11 @@ class LensAnalysis(object):
 
         deltaPix = self.kwargs_data['deltaPix']
         image = self.kwargs_data['image_data']
-        numPix = len(image)
         subgrid_res = self.kwargs_options['subgrid_res']
 
-        util_class = Util_class()
-        x_grid_sub, y_grid_sub = util_class.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'],
-                                                         subgrid_res)
-
-        model, error_map, cov_param, param = self.makeImage.make_image_ideal(x_grid_sub, y_grid_sub, kwargs_lens,
+        model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
                                                                         kwargs_source,
-                                                                        kwargs_lens_light, kwargs_else, numPix,
+                                                                        kwargs_lens_light, kwargs_else,
                                                                         deltaPix, subgrid_res, inv_bool=True)
         amp_list, _ = self.makeImage.get_image_amplitudes(param, kwargs_else)
 
@@ -48,7 +43,7 @@ class LensAnalysis(object):
         kwargs_lens_light_copy['center_x'] = 0
         kwargs_lens_light_copy['center_y'] = 0
         data = self.kwargs_data['image_data']
-        numPix = len(data)*2
+        numPix = int(np.sqrt(len(data))*2)
         deltaPix = self.kwargs_data['deltaPix']
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light_copy)
@@ -58,18 +53,14 @@ class LensAnalysis(object):
 
     def source_properties(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix_source,
                           deltaPix_source, n_bins=20):
-        util_class = Util_class()
         deltaPix = self.kwargs_data['deltaPix']
         image = self.kwargs_data['image_data']
-        numPix = len(image)
         subgrid_res = self.kwargs_options['subgrid_res']
         num_order = self.kwargs_options['shapelet_order']
         beta = kwargs_else['shapelet_beta']
-        x_grid_sub, y_grid_sub = util_class.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'],
-                                                         subgrid_res)
-        model, error_map, cov_param, param = self.makeImage.make_image_ideal(x_grid_sub, y_grid_sub, kwargs_lens,
+        model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
                                                                         kwargs_source,
-                                                                        kwargs_lens_light, kwargs_else, numPix,
+                                                                        kwargs_lens_light, kwargs_else,
                                                                         deltaPix, subgrid_res, inv_bool=True)
 
         x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)

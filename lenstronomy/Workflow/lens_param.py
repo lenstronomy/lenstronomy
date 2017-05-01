@@ -51,14 +51,14 @@ class LensParam(object):
                 if not 'gamma' in kwargs_fixed:
                     kwargs['gamma'] = args[i]
                     i += 1
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     phi, q = util.elliptisity2phi_q(args[i], args[i+1])
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
 
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     kwargs['Rs'] = np.exp(args[i])
                     i += 1
@@ -98,7 +98,7 @@ class LensParam(object):
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
                     kwargs['phi_dipole'] = args[i]
                     i += 1
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
@@ -137,13 +137,13 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPP']:
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
                     args.append(e1)
                     args.append(e2)
 
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     args.append(np.log(kwargs['Rs']))
                 if not 'rho0' in kwargs_fixed:
@@ -169,7 +169,7 @@ class LensParam(object):
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
                     args.append(kwargs['phi_dipole'])
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                                  'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     args.append(kwargs['center_x'])
@@ -206,12 +206,12 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPP']:
                 if 'gamma' in kwargs_fixed:
                     fix_return['gamma'] = kwargs_fixed['gamma']
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if 'q' in kwargs_fixed and 'phi_G' in kwargs_fixed:
                     fix_return['phi_G'] = kwargs_fixed['phi_G']
                     fix_return['q'] = kwargs_fixed['q']
 
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if 'Rs' in kwargs_fixed:
                     fix_return['Rs'] = kwargs_fixed['Rs']
                 if 'rho0' in kwargs_fixed:
@@ -231,7 +231,7 @@ class LensParam(object):
                 if 'phi_dipole' in kwargs_fixed:
                     fix_return['phi_dipole'] = kwargs_fixed['phi_dipole']
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                                  'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if 'center_x' in kwargs_fixed:
                     fix_return['center_x'] = kwargs_fixed['center_x']
@@ -278,7 +278,7 @@ class LensParam(object):
                         kwargs_fixed:
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     phi = kwargs_mean['phi_G']
                     q = kwargs_mean['q']
@@ -289,7 +289,7 @@ class LensParam(object):
                     sigma.append(ellipse_sigma)
                     sigma.append(ellipse_sigma)
 
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     mean.append(np.log(kwargs_mean['Rs']))
                     sigma.append(np.log(1 + kwargs_mean['Rs_sigma']/kwargs_mean['Rs']))
@@ -323,7 +323,7 @@ class LensParam(object):
                     mean.append(kwargs_mean['phi_dipole'])
                     sigma.append(kwargs_mean['phi_dipole_sigma'])
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     mean.append(kwargs_mean['center_x'])
                     sigma.append(kwargs_mean['center_x_sigma'])
@@ -367,14 +367,14 @@ class LensParam(object):
                 if not 'gamma' in kwargs_fixed:
                     low.append(1.)
                     high.append(2.85)
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     low.append(-0.5)
                     high.append(0.5)
                     low.append(-0.5)
                     high.append(0.5)
 
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     low.append(-5)
                     high.append(5)
@@ -407,7 +407,7 @@ class LensParam(object):
                     low.append(-np.pi)
                     high.append(+np.pi)
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     low.append(-20)
                     high.append(20)
@@ -450,12 +450,12 @@ class LensParam(object):
                 if not 'gamma' in kwargs_fixed:
                     num += 1
                     list.append('gamma_lens')
-            if model in ['SPEP', 'SPEMD']:
+            if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     num += 2
                     list.append('e1_lens')
                     list.append('e2_lens')
-            if model in ['NFW']:
+            if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     num+=1
                     list.append('Rs_nfw')
@@ -488,7 +488,7 @@ class LensParam(object):
                     num += 1
                     list.append('phi_dipole')
 
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN']:
                 if not 'center_x' in kwargs_fixed:
                     num += 1
                     list.append('center_x_lens')

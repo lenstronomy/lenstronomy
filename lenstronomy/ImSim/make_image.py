@@ -6,7 +6,6 @@ from astrofunc.LensingProfiles.shapelets import Shapelets
 from astrofunc.LensingProfiles.gaussian import Gaussian
 import astrofunc.LightProfiles.torus as torus
 
-#from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel

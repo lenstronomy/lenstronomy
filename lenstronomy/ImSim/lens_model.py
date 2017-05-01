@@ -35,6 +35,9 @@ class LensModel(object):
             elif lens_type == 'NFW':
                 from astrofunc.LensingProfiles.nfw import NFW
                 self.func_list.append(NFW())
+            elif lens_type == 'NFW_ELLIPSE':
+                from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
+                self.func_list.append(NFW_ELLIPSE())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func())

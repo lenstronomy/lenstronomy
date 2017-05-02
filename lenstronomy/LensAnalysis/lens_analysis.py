@@ -46,7 +46,7 @@ class LensAnalysis(object):
         numPix = int(np.sqrt(len(data))*2)
         deltaPix = self.kwargs_data['deltaPix']
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, **kwargs_lens_light_copy)
+        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy)
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         flux = np.sum(lens_light)
         return R_h, flux
@@ -54,7 +54,6 @@ class LensAnalysis(object):
     def source_properties(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix_source,
                           deltaPix_source, n_bins=20):
         deltaPix = self.kwargs_data['deltaPix']
-        image = self.kwargs_data['image_data']
         subgrid_res = self.kwargs_options['subgrid_res']
         num_order = self.kwargs_options['shapelet_order']
         beta = kwargs_else['shapelet_beta']
@@ -67,7 +66,6 @@ class LensAnalysis(object):
         source, error_map_source = self.makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source,
                                                         kwargs_source,
                                                         cov_param)
-        source = util.image2array(source)
         R_h = util.half_light_radius(source, x_grid_source, y_grid_source)
         flux = np.sum(source)*(deltaPix_source/deltaPix)**2
         I_r, r = util.radial_profile(source, x_grid_source, y_grid_source, n=n_bins)

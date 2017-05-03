@@ -102,10 +102,11 @@ class Param(object):
         :param else_fixed:
         :return:
         """
+        lens_fix = self.lensParams.add2fix(lens_fixed)
         source_fix = self.souceParams.add2fix(source_fixed)
         lens_light_fix = self.lensLightParams.add2fix(lens_light_fixed)
         else_fix = self.elseParams.add2fix(else_fixed)
-        return lens_fixed, source_fix, lens_light_fix, else_fix
+        return lens_fix, source_fix, lens_light_fix, else_fix
 
     def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light={}, kwarg_mean_else={}):
         """
@@ -232,7 +233,7 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens, kwargs_else)
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.num_images == 2:
@@ -240,7 +241,7 @@ class Param(object):
                         init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                         theta_E = kwargs_lens['theta_E']
                         kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                         x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                     'theta_E': theta_E, 'e1': e1, 'e2': e2})
                         kwargs_lens['theta_E'] = theta_E

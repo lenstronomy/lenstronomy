@@ -15,7 +15,7 @@ class FittingSequence(object):
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
 
         self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_lens_fixed=self._lens_fixed,
-                          kwargs_source_fixed=self._source_fixed, kwargs_lens_light_fix=self._lens_light_fixed,
+                          kwargs_source_fixed=self._source_fixed, kwargs_lens_light_fixed=self._lens_light_fixed,
                           kwargs_else_fixed=self._else_fixed)
 
         self.psf_iter = PSF_iterative()

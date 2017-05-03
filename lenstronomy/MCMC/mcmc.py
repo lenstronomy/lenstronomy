@@ -52,7 +52,7 @@ class MCMC_sampler(object):
         pos_list = []
         time_start = time.time()
         if pso.isMaster():
-            print('Computing the ', print_key, '...')
+            print('Computing the %s ...' % print_key)
         num_iter = 0
         for swarm in pso.sample(n_iterations):
             X2_list.append(pso.gbest.fitness*2)

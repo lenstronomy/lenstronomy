@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import AxesGrid, make_axes_locatable
 
-
+import corner
 import copy
 import numpy as np
 import scipy.ndimage as ndimage
@@ -10,6 +10,7 @@ import astrofunc.util as util
 
 from lenstronomy.ImSim.make_image import MakeImage
 from astrofunc.LensingProfiles.external_shear import ExternalShear
+from lenstronomy.Workflow.parameters import Param
 
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
@@ -236,7 +237,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-
+    x_light, y_light = makeImage.map_coord2pix(lens_light_result['center_x'], lens_light_result['center_y'])
+    x_lens, y_lens = makeImage.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
+    ax.plot(x_light, y_light, 'og')
+    ax.plot(x_lens, y_lens, 'b', marker='+')
     ax = axes[1,2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * nx, 0, deltaPix * ny],
                                 vmin=-10, vmax=10, cmap=cmap, alpha=0.5)
@@ -531,3 +535,41 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
     f.show()
     return f, axes
+
+
+def mcmc_output(samples_mcmc, param_mcmc, fitting_kwargs_list, truths=None):
+    """
+
+    :param samples_mcmc:
+    :param param_mcmc:
+    :param kwargs_fitting_mcmc:
+    :return:
+    """
+    plot = corner.corner(samples_mcmc, labels=param_mcmc, truths=truths)
+
+    fitting_kwargs_mcmc = fitting_kwargs_list[-1]
+    n_run = fitting_kwargs_mcmc['n_run']
+    walkerRatio = fitting_kwargs_mcmc['walkerRatio']
+    numParam = len(param_mcmc)
+    numWalkers = numParam*walkerRatio
+    x_axis = np.linspace(1,n_run, n_run)
+    means = np.zeros((n_run, numParam))
+    for i in range(0, n_run):
+        means[i] = np.mean(samples_mcmc[:][numWalkers*i:numWalkers*(i+1)], axis=0)
+    f, axes = plt.subplots(1, 1, figsize=(8, 8), sharex=False, sharey=False)
+    ax = axes
+    for i in range(0,numParam):
+        ax.plot(x_axis, means.T[i]/means.T[i][-1], label=param_mcmc[i])
+    ax.legend()
+    return plot, f
+
+
+def param_list_from_kwargs(kwargs_data, kwargs_psf, kwargs_fixed, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+    from lenstronomy.Workflow.fitting import Fitting
+    kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fix, kwargs_else_fixed = kwargs_fixed
+    fitting = Fitting(kwargs_data, kwargs_psf, kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fix, kwargs_else_fixed)
+    kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = fitting._mcmc_run_fixed(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+    param = Param(kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
+    truths = param.setParams(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+    num_param, param_list = param.num_param()
+    return truths, num_param, param_list

@@ -2,11 +2,10 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import math
+import copy
 
 from lenstronomy.Cosmo.unit_manager import UnitManager
-from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.MCMC.compare import Compare
 
 import lenstronomy.Cosmo.constants as const
 import astrofunc.util as util
@@ -19,9 +18,9 @@ class LensProp(object):
 
     def __init__(self, z_lens, z_source, kwargs_options, kwargs_data):
         self.unitManager = UnitManager(z_lens, z_source)
-        self.timeDelaySampling = TimeDelaySampling()
+        #self.timeDelaySampling = TimeDelaySampling()
         self.makeImage = MakeImage(kwargs_options, kwargs_data)
-        self.compare = Compare(kwargs_options)
+        self.kwargs_data = kwargs_data
 
 #        self.kwargs_data = kwargs_data
 #        self.kwargs_options = kwargs_options
@@ -37,16 +36,17 @@ class LensProp(object):
         mag_data = self.makeImage.get_image_amplitudes(param, kwargs_else)
         return mag_data, mag_model
 
-    def effective_einstein_radius(self, kwargs_lens, n_grid=100, delta_grid=0.05):
+    def effective_einstein_radius(self, kwargs_lens_list, n_grid=200, delta_grid=0.05):
         """
         computes the radius with mean convergence=1
         :param kwargs_lens:
         :return:
         """
+        kwargs_lens = kwargs_lens_list[0]
         x_grid, y_grid = util.make_grid(n_grid, delta_grid)
-        kappa = self.makeImage.LensModel.kappa(x_grid, y_grid, **kwargs_lens)
+        kappa = self.makeImage.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, k=0)
         kappa = util.array2image(kappa)
-        r_array = np.linspace(0, 2*kwargs_lens['phi_E'], 1000)
+        r_array = np.linspace(0, 2*kwargs_lens['theta_E'], 1000)
         for r in r_array:
             mask = np.array(1 - util.get_mask(kwargs_lens['center_x'], kwargs_lens['center_x'], r, x_grid, y_grid))
             kappa_mean = np.sum(kappa*mask)/np.sum(mask)
@@ -54,9 +54,8 @@ class LensProp(object):
                 return r
         return -1
 
-    def rho0_r0_gamma(self, kwargs_lens, kappa_ext):
+    def rho0_r0_gamma(self, kwargs_lens, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
-        gamma = kwargs_lens['gamma']
         phi_E = self.effective_einstein_radius(kwargs_lens)
         return (kappa_ext - 1) * math.gamma(gamma/2)/(np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * phi_E**gamma/self.unitManager.arcsec2phys_lens(phi_E) * self.unitManager.cosmoProp.epsilon_crit * const.M_sun/const.Mpc**3  # units kg/m^3
 
@@ -75,32 +74,31 @@ class LensProp(object):
         return np.sqrt(sigma2_center) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_else, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
-        gamma = kwargs_lens['gamma']
+        gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
             r_eff = self.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else)
+        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, gamma)
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, rho0_r0_gamma, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
-    def velocity_dispersion_one(self, kwargs_lens, kwargs_lens_light, kwargs_else, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7):
-        gamma = kwargs_lens['gamma']
-        if r_eff is None:
-            r_eff = self.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else)
-        if self.dispersion.beta_const is False:
-            aniso_param *= r_eff
-        sigma2 = self.dispersion.vel_disp_one(gamma, rho0_r0_gamma, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm)
-        return sigma2 * (self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000)**2
-
     def half_light_radius(self, kwargs_lens_light):
         """
-
-        :param kwargs_lens_light: lens light kwargs
-        :return: half light radius in units of arc sec
+        computes numerically the half-light-radius of the deflector light and the total photon flux
+        :param kwargs_lens_light:
+        :return:
         """
-        return 0
+        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
+        kwargs_lens_light_copy['center_x'] = 0
+        kwargs_lens_light_copy['center_y'] = 0
+        data = self.kwargs_data['image_data']
+        numPix = int(np.sqrt(len(data))*2)
+        deltaPix = self.kwargs_data['deltaPix']
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy)
+        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
+        return R_h
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
         """

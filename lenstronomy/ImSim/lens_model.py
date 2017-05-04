@@ -101,11 +101,11 @@ class LensModel(object):
             f_y += self.alpha_perturb_y
         return f_x, f_y
 
-    def kappa(self, x, y, kwargs, kwargs_else=None):
+    def kappa(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         k = 1/2 laplacian(phi)
         """
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else)
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else, k=k)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         return kappa
 
@@ -159,7 +159,7 @@ class LensModel(object):
         mag = 1./det_A
         return potential, f_x, f_y, kappa, gamma1, gamma2, mag
 
-    def hessian(self, x, y, kwargs, kwargs_else=None):
+    def hessian(self, x, y, kwargs, kwargs_else=None, k=None):
 
         # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
 
@@ -171,10 +171,13 @@ class LensModel(object):
         else:
             x_ = x
             y_ = y
-        f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
-        for i, func in enumerate(self.func_list):
-            f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-            f_xx += f_xx_i
-            f_yy += f_yy_i
-            f_xy += f_xy_i
+        if k is not None:
+            f_xx, f_yy, f_xy= self.func_list[k].hessian(x_, y_, **kwargs[k])
+        else:
+            f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
+            for i, func in enumerate(self.func_list):
+                f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
+                f_xx += f_xx_i
+                f_yy += f_yy_i
+                f_xy += f_xy_i
         return f_xx, f_xy, f_yy

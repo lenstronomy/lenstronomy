@@ -377,9 +377,9 @@ class MakeImage(object):
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/self.C_D, d, inv_bool=False)
         return wls_model, cov_param, param
 
-    def get_lens_surface_brightness(self, kwargs_lens_light, subgrid_res=1, unconvolved=False):
+    def get_lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
         lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.re_size_convolve(lens_light, subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.re_size_convolve(lens_light, self.subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):

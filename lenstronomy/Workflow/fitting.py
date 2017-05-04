@@ -131,7 +131,7 @@ class Fitting(object):
             kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
         elif kwargs_options['lens_light_type'] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             kwargs_fixed_lens_light = {'I0_sersic': 1}
-        elif kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOULBE_CORE_SERSIC']:
+        elif kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
             kwargs_fixed_lens_light = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_lens_light = {}
@@ -147,7 +147,7 @@ class Fitting(object):
             kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
         elif kwargs_options['source_type'] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             kwargs_fixed_source = {'I0_sersic': 1}
-        elif kwargs_options['source_type'] in ['DOUBLE_SERSIC', 'DOULBE_CORE_SERSIC']:
+        elif kwargs_options['source_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
             kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_source = {}

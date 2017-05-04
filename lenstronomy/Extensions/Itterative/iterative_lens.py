@@ -20,8 +20,8 @@ class MakeImageIterLens(MakeImage):
     """
 
 
-    def get_source_model_base(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res):
-        im_sim, model_error, cov_matrix, param = self.make_image_ideal(x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, inv_bool=False)
+    def get_source_model_base(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res):
+        im_sim, model_error, cov_matrix, param = self.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, inv_bool=False)
         return im_sim, model_error, param
 
     def get_lens_perturb_matrix(self, param, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_else, numPix, deltaPix, subgrid_res, coeff_num, delta=0.01):

@@ -77,21 +77,20 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        deltaPix = kwargs_data['deltaPix']
         subgrid_res = kwargs_options['subgrid_res']
 
         # reconstructed model with given psf
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         model, error_map, cov_param, param = makeImage.make_image_ideal_noMask(kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else,
-                                   deltaPix, subgrid_res, inv_bool=False)
+                                   subgrid_res, inv_bool=False)
         if verbose is True:
             print(makeImage.reduced_chi2(model, error_map))
         param_point, param_no_point = makeImage.get_image_amplitudes(param, kwargs_else)
 
         model_no_point, _ = makeImage.make_image_with_params(kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else,
-                                   deltaPix, subgrid_res, param_no_point)
+                                   subgrid_res, param_no_point)
         model_no_point[model_no_point < 0] = 0
         return model_no_point
 

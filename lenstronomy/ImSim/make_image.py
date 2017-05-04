@@ -70,6 +70,11 @@ class MakeImage(object):
                     self._nx, self._ny = kwargs_data['numPix'], kwargs_data['numPix']
                 else:
                     self._nx, self._ny = np.sqrt(len(data)), np.sqrt(len(data))
+            if 'deltaPix' in kwargs_data:
+                self.deltaPix = kwargs_data['deltaPix']
+            else:
+                self.deltaPix = 1
+                print('Warning: deltaPix has not been found in kwargs_data, using =1!')
             if 'mask' in kwargs_data:
                 self._mask = kwargs_data['mask'][self._idex_mask == 1]
             else:
@@ -175,9 +180,9 @@ class MakeImage(object):
         else:
             raise ValueError('PSF type %s not valid!' %self.kwargs_options['psf_type'])
 
-    def re_size_convolve(self, image, deltaPix, subgrid_res, kwargs_psf, unconvolved=False):
+    def re_size_convolve(self, image, subgrid_res, kwargs_psf, unconvolved=False):
         image = self.array2image(image, subgrid_res)
-        gridScale = deltaPix/subgrid_res
+        gridScale = self.deltaPix/subgrid_res
         if self.kwargs_options['psf_type'] == 'pixel':
             grid_re_sized = self.util_class.re_size(image, subgrid_res)
             if unconvolved:
@@ -306,7 +311,7 @@ class MakeImage(object):
             i += 1
         return kwargs_source, kwargs_lens_light
 
-    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, no_lens=False):
+    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, inv_bool=False, no_lens=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         if no_lens is True:
@@ -314,7 +319,7 @@ class MakeImage(object):
         else:
             x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
         data = self._data
         d = data*mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
@@ -323,20 +328,20 @@ class MakeImage(object):
             error_map = np.zeros_like(wls_model)
         return wls_model, error_map, cov_param, param
 
-    def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, inv_bool=False, unconvolved=False):
+    def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, inv_bool=False, unconvolved=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
-        A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
         data = self._data
         d = data * mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
         image_pure = A_pure.T.dot(param)
         return self.array2image(image_pure), error_map, cov_param, param
 
-    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, param):
+    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, param):
         """
         make a image with a realisation of linear parameter values "param"
         """
@@ -344,19 +349,19 @@ class MakeImage(object):
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
+        A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
-        image_conv = self.re_size_convolve(image_pure, deltaPix, 1, self.kwargs_psf)
+        image_conv = self.re_size_convolve(image_pure, 1, self.kwargs_psf)
         return image_conv + image_, error_map
 
-    def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else, deltaPix, subgrid_res):
+    def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else, subgrid_res):
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         I_xy = self.get_surface_brightness(x_source, y_source, kwargs_source)
-        grid_final = self.re_size_convolve(I_xy, deltaPix, subgrid_res, self.kwargs_psf)
+        grid_final = self.re_size_convolve(I_xy, subgrid_res, self.kwargs_psf)
         return grid_final
 
-    def make_image_lens_light(self, kwargs_lens_light, deltaPix, subgrid_res):
+    def make_image_lens_light(self, kwargs_lens_light, subgrid_res):
         mask = self._mask_lens_light
         lens_light_response, n_lens_light = self.get_sersic_response(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light, object_type='lens_light_type')
         n = 0
@@ -364,7 +369,7 @@ class MakeImage(object):
         A = np.zeros((n_lens_light, numPix))
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.re_size_convolve(image, deltaPix, subgrid_res, self.kwargs_psf)
+            image = self.re_size_convolve(image, subgrid_res, self.kwargs_psf)
             A[n, :] = image
             n += 1
         A = self._add_mask(A, mask)
@@ -372,9 +377,9 @@ class MakeImage(object):
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/self.C_D, d, inv_bool=False)
         return wls_model, cov_param, param
 
-    def get_lens_surface_brightness(self, deltaPix, subgrid_res, kwargs_lens_light):
+    def get_lens_surface_brightness(self, kwargs_lens_light, subgrid_res=1, unconvolved=False):
         lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.re_size_convolve(lens_light, deltaPix, subgrid_res, self.kwargs_psf)
+        lens_light_final = self.re_size_convolve(lens_light, subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
@@ -409,7 +414,7 @@ class MakeImage(object):
         num_param = n_shapelets + n_points + n_lens_light + n_source + num_enhance + num_subclump
         return num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, source_light_response, num_enhance, num_subclump
 
-    def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, deltaPix, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
+    def get_response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask, map_error=False, shapelets_off=False, unconvolved=False):
         kwargs_psf = self.kwargs_psf
         num_param, n_source, n_lens_light, n_points, n_shapelets, lens_light_response, source_light_response, num_enhance, num_subclump = self._matrix_configuration(x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off)
         numPix = len(x_grid)/subgrid_res**2
@@ -423,13 +428,13 @@ class MakeImage(object):
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-            image = self.re_size_convolve(image, deltaPix, subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.re_size_convolve(image, subgrid_res, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.re_size_convolve(image, deltaPix, subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.re_size_convolve(image, subgrid_res, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of point sources
@@ -443,7 +448,7 @@ class MakeImage(object):
             center_x = kwargs_source['center_x']
             center_y = kwargs_source['center_y']
             beta = kwargs_else['shapelet_beta']
-            A_shapelets = self.get_shapelet_response(x_source, y_source, num_order, center_x, center_y, beta, kwargs_psf, deltaPix, subgrid_res, unconvolved)
+            A_shapelets = self.get_shapelet_response(x_source, y_source, num_order, center_x, center_y, beta, kwargs_psf, subgrid_res, unconvolved)
             A[n:n+n_shapelets, :] = A_shapelets
             n += n_shapelets
         if self.kwargs_options.get("clump_enhance", False):
@@ -454,11 +459,11 @@ class MakeImage(object):
             center_x, center_y, beta = self.position_size_estimate(kwargs_else['x_clump'], kwargs_else['y_clump'],
                                                               kwargs_lens, kwargs_else_enh, kwargs_else["r_trunc"], clump_scale)
             A_shapelets_enhance = self.get_shapelet_response(x_source, y_source, num_order_clump, center_x, center_y, beta,
-                                                     kwargs_psf, deltaPix, subgrid_res, unconvolved)
+                                                     kwargs_psf, subgrid_res, unconvolved)
             A[n:n + num_enhance, :] = A_shapelets_enhance
             n += num_enhance
         if self.kwargs_options.get("source_substructure", False):
-            A_subclump = self.subclump_shapelet_response(x_source, y_source, kwargs_source, kwargs_psf, deltaPix, subgrid_res, unconvolved)
+            A_subclump = self.subclump_shapelet_response(x_source, y_source, kwargs_source, kwargs_psf, subgrid_res, unconvolved)
             A[n:n + num_subclump, :] = A_subclump
         A = self._add_mask(A, mask)
         return A, error_map, bool_string
@@ -517,7 +522,7 @@ class MakeImage(object):
                 A[i, :] = self.image2array(point_source)
         return A, error_map
 
-    def get_shapelet_response(self, x_source, y_source, num_order, center_x, center_y, beta, kwargs_psf, deltaPix, subgrid_res, unconvolved=False):
+    def get_shapelet_response(self, x_source, y_source, num_order, center_x, center_y, beta, kwargs_psf, subgrid_res, unconvolved=False):
         num_param = (num_order+1)*(num_order+2)/2
         numPix = len(x_source)/subgrid_res**2
         A = np.zeros((num_param, numPix))
@@ -527,7 +532,7 @@ class MakeImage(object):
         for i in range(num_param):
             kwargs_source_shapelet = {'center_x': center_x, 'center_y': center_y, 'n1': n1, 'n2': n2, 'beta': beta, 'amp': 1}
             image = self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
-            image = self.re_size_convolve(image, deltaPix, subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.re_size_convolve(image, subgrid_res, kwargs_psf, unconvolved=unconvolved)
             response = image
             A[i, :] = response
             if n1 == 0:
@@ -538,7 +543,7 @@ class MakeImage(object):
                 n2 += 1
         return A
 
-    def subclump_shapelet_response(self, x_source, y_source, kwargs_source, kwargs_psf, deltaPix, subgrid_res, unconvolved=False):
+    def subclump_shapelet_response(self, x_source, y_source, kwargs_source, kwargs_psf, subgrid_res, unconvolved=False):
         """
         returns response matrix for general inputs
         :param x_grid:
@@ -569,7 +574,7 @@ class MakeImage(object):
             for i in range(0, numShapelets):
                 kwargs_source_shapelet = {'center_x': x_pos[j], 'center_y': y_pos[j], 'n1': n1, 'n2': n2, 'beta': sigma[j], 'amp': 1}
                 image = self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
-                image = self.re_size_convolve(image, deltaPix, subgrid_res, kwargs_psf, unconvolved=unconvolved)
+                image = self.re_size_convolve(image, subgrid_res, kwargs_psf, unconvolved=unconvolved)
                 response = image
                 A[k, :] = response
                 if n1 == 0:
@@ -790,7 +795,7 @@ class MakeImage(object):
         param_no_point[a:a+n] = 0
         return param[a:a+n], param_no_point
 
-    def get_time_delay(self, kwargs_lens, kwargs_source, kwargs_else):
+    def fermat_potential(self, kwargs_lens, kwargs_source, kwargs_else):
         """
 
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list

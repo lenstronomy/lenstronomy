@@ -152,7 +152,7 @@ class MCMC_chain(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.makeImage.get_time_delay(kwargs_lens, kwargs_source, kwargs_else)
+        delay_arcsec = self.makeImage.fermat_potential(kwargs_lens, kwargs_source, kwargs_else)
         D_dt_model = kwargs_else['delay_dist']
         delay_days = self.timeDelay.days_D_model(delay_arcsec, D_dt_model)
         logL = self.compare.delays(delay_days, self.delays_measured, self.delays_errors)
@@ -344,7 +344,7 @@ class MCMC_multiband_chain(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.makeImage1.get_time_delay(kwargs_lens, kwargs_source, kwargs_else)
+        delay_arcsec = self.makeImage1.fermat_potential(kwargs_lens, kwargs_source, kwargs_else)
         D_dt_model = kwargs_else['delay_dist']
         delay_days = self.timeDelay.days_D_model(delay_arcsec, D_dt_model)
         logL = self.compare.delays(delay_days, self.delays_measured, self.delays_errors)

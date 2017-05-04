@@ -25,7 +25,7 @@ class LensAnalysis(object):
         model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
                                                                         kwargs_source,
                                                                         kwargs_lens_light, kwargs_else,
-                                                                        deltaPix, subgrid_res, inv_bool=True)
+                                                                        subgrid_res, inv_bool=True)
         amp_list, _ = self.makeImage.get_image_amplitudes(param, kwargs_else)
 
         ra_pos, dec_pos, mag = self.makeImage.get_magnification_model(kwargs_lens, kwargs_else)
@@ -60,7 +60,7 @@ class LensAnalysis(object):
         model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
                                                                         kwargs_source,
                                                                         kwargs_lens_light, kwargs_else,
-                                                                        deltaPix, subgrid_res, inv_bool=True)
+                                                                        subgrid_res, inv_bool=True)
 
         x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
         source, error_map_source = self.makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source,

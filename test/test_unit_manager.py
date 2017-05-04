@@ -31,30 +31,5 @@ class TestUnitManager(object):
         mass = self.unitManager.mass_in_phi_E(phi_E)
         assert mass == 786148363450.92627
 
-    def test_force_between_clumps(self):
-        z_L = 0.2
-        z_S = .8
-        #initializing UnitManager
-        unitManager = UnitManager(z_L, z_S)
-
-        phi_E_1 = 1.5
-        phi_E_2 = 0.04
-        r_angle = 1.
-        F = unitManager.force_between_clumps(phi_E_1, phi_E_2, r_angle)
-        assert F == 1.2838058500370153e+30
-
-
-    def test_estimated_dipole(self):
-        z_L = 0.2
-        z_S = .8
-        #initializing UnitManager
-        unitManager = UnitManager(z_L, z_S)
-
-        phi_E_1 = 1.2
-        phi_E_2 = 0.2
-        r_angle = 0.1
-        alpha = unitManager.estimated_dipole(phi_E_1, phi_E_2, r_angle)
-        assert alpha == 0.38918918918918921
-
 if __name__ == '__main__':
     pytest.main()

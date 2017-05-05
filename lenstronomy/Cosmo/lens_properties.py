@@ -17,6 +17,8 @@ class LensProp(object):
     """
 
     def __init__(self, z_lens, z_source, kwargs_options, kwargs_data):
+        self.z_d = z_lens
+        self.z_s = z_source
         self.unitManager = UnitManager(z_lens, z_source)
         #self.timeDelaySampling = TimeDelaySampling()
         self.makeImage = MakeImage(kwargs_options, kwargs_data)
@@ -43,12 +45,15 @@ class LensProp(object):
         :return:
         """
         kwargs_lens = kwargs_lens_list[0]
+        kwargs_lens_copy = kwargs_lens.copy()
+        kwargs_lens_copy['center_x'] = 0
+        kwargs_lens_copy['center_y'] = 0
         x_grid, y_grid = util.make_grid(n_grid, delta_grid)
-        kappa = self.makeImage.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, k=0)
+        kappa = self.makeImage.LensModel.kappa(x_grid, y_grid, [kwargs_lens_copy], k=0)
         kappa = util.array2image(kappa)
-        r_array = np.linspace(0, 2*kwargs_lens['theta_E'], 1000)
+        r_array = np.linspace(0.0001, 2*kwargs_lens['theta_E'], 1000)
         for r in r_array:
-            mask = np.array(1 - util.get_mask(kwargs_lens['center_x'], kwargs_lens['center_x'], r, x_grid, y_grid))
+            mask = np.array(1 - util.get_mask(0, 0, r, x_grid, y_grid))
             kappa_mean = np.sum(kappa*mask)/np.sum(mask)
             if kappa_mean < 1:
                 return r
@@ -93,7 +98,7 @@ class LensProp(object):
         kwargs_lens_light_copy['center_x'] = 0
         kwargs_lens_light_copy['center_y'] = 0
         data = self.kwargs_data['image_data']
-        numPix = int(np.sqrt(len(data))*2)
+        numPix = int(np.sqrt(len(data))*10)
         deltaPix = self.kwargs_data['deltaPix']
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy)
@@ -120,3 +125,7 @@ class LensProp(object):
         :param fermat_pot: fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]
         :return: D_d and D_d*D_s/D_ds, units in Mpc physical
         """
+
+        Ds_Dds = (sigma_v_measured/sigma_v_modeled)**2/(self.unitManager.cosmoProp.dist_LS/self.unitManager.cosmoProp.dist_OS)/(1-kappa_ext)
+        DdDs_Dds = 1./(1+self.z_d)/(1-kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
+        return Ds_Dds, DdDs_Dds

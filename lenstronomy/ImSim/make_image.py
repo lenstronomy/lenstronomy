@@ -304,9 +304,9 @@ class MakeImage(object):
             kwargs_lens_light['I0_sersic'] = param[i]
             i += 1
         if self.kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
-            kwargs_source['I0_2'] = param[i]
+            kwargs_lens_light['I0_2'] = param[i]
             i += 1
-        if self.kwargs_options['source_type'] == 'TRIPPLE_SERSIC':
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
             kwargs_lens_light['I0_3'] = param[i]
             i += 1
         return kwargs_source, kwargs_lens_light

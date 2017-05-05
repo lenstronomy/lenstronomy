@@ -61,8 +61,8 @@ class LensLightParam(object):
                 kwargs['center_y_2'] = args[i]
                 i += 1
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if not 'Re' in self.kwargs_fixed:
-                kwargs['Re'] = args[i]
+            if not 'Rb' in self.kwargs_fixed:
+                kwargs['Rb'] = args[i]
                 i += 1
             if not 'gamma' in self.kwargs_fixed:
                 kwargs['gamma'] = args[i]
@@ -121,8 +121,8 @@ class LensLightParam(object):
                 args.append(kwargs['center_y_2'])
 
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if not 'Re' in self.kwargs_fixed:
-                args.append(kwargs['Re'])
+            if not 'Rb' in self.kwargs_fixed:
+                args.append(kwargs['Rb'])
             if not 'gamma' in self.kwargs_fixed:
                 args.append(kwargs['gamma'])
         if self.kwargs_options[self.object_type] == 'TRIPPLE_SERSIC':
@@ -176,8 +176,8 @@ class LensLightParam(object):
                 fix_return['center_y_2'] = kwargs_fixed['center_y_2']
 
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if 'Re' in kwargs_fixed:
-                fix_return['Re'] = kwargs_fixed['Re']
+            if 'Rb' in kwargs_fixed:
+                fix_return['Rb'] = kwargs_fixed['Rb']
             if 'gamma' in kwargs_fixed:
                 fix_return['gamma'] = kwargs_fixed['gamma']
         if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
@@ -247,9 +247,9 @@ class LensLightParam(object):
                 sigma.append(kwargs_mean['center_y_2_sigma'])
 
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if not 'Re' in self.kwargs_fixed:
-                mean.append(kwargs_mean['Re'])
-                sigma.append(kwargs_mean['Re_sigma'])
+            if not 'Rb' in self.kwargs_fixed:
+                mean.append(kwargs_mean['Rb'])
+                sigma.append(kwargs_mean['Rb_sigma'])
             if not 'gamma' in self.kwargs_fixed:
                 mean.append(kwargs_mean['gamma'])
                 sigma.append(kwargs_mean['gamma_sigma'])
@@ -318,7 +318,7 @@ class LensLightParam(object):
                 high.append(10)
 
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if not 'Re' in self.kwargs_fixed:
+            if not 'Rb' in self.kwargs_fixed:
                 low.append(0.01)
                 high.append(30)
             if not 'gamma' in self.kwargs_fixed:
@@ -389,9 +389,9 @@ class LensLightParam(object):
                 list.append('center_y_2_lens_light')
 
         if self.kwargs_options[self.object_type] in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-            if not 'Re' in self.kwargs_fixed:
+            if not 'Rb' in self.kwargs_fixed:
                 num += 1
-                list.append('Re_lens_light')
+                list.append('Rb_lens_light')
             if not 'gamma' in self.kwargs_fixed:
                 num += 1
                 list.append('gamma_lens_light')

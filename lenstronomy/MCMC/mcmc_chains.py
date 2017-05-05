@@ -53,7 +53,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.subgrid_res, inv_bool=self.inv_bool)
         #compute X^2
         X = self.makeImage.reduced_residuals(im_sim, model_error)
         logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
@@ -74,7 +74,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light, self.deltaPix, self.subgrid_res)
+        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light, self.subgrid_res)
         #compute X^2
         X = self.makeImage.reduced_residuals(lens_light, lens_light_mask=True)
         logL = self.compare.get_log_likelihood(X)
@@ -90,7 +90,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_else, **kwargs_lens)
+        x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
         #compute X^2
         X2 = self.compare.compare_distance(x_mapped, y_mapped)*1000
         X2 += self.check_bounds(args, self.lowerLimit, self.upperLimit)
@@ -121,7 +121,7 @@ class MCMC_chain(object):
         """
         return source position given lens model and catalogue image positions
         """
-        x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], **kwargs_lens)
+        x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
         return np.mean(x_mapped), np.mean(y_mapped)
 
     def check_bounds(self, args, lowerLimit, upperLimit):
@@ -140,7 +140,7 @@ class MCMC_chain(object):
         """
         bounds computed from kwargs
         """
-        convergence = self.makeImage.LensModel.kappa(self.x_grid, self.y_grid, **kwargs_lens)
+        convergence = self.makeImage.LensModel.kappa(kwargs_lens, kwargs_else=kwargs_else)
         if np.min(np.array(convergence)) < -0.1:
             return 10**10
         else:
@@ -271,8 +271,8 @@ class MCMC_multiband_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim1, model_error1, cov_matrix1, param1 = self.makeImage1.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix1, self.subgrid_res, inv_bool=self.inv_bool)
-        im_sim2, model_error2, cov_matrix2, param2 = self.makeImage2.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.deltaPix2, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim1, model_error1, cov_matrix1, param1 = self.makeImage1.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim2, model_error2, cov_matrix2, param2 = self.makeImage2.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.subgrid_res, inv_bool=self.inv_bool)
         #im_sim = util.array2image(im_sim)
         #compute X^2
         logL1 = self.compare.get_log_likelihood(im_sim1, self.data1, self.sigma_b1, self.exposure_map1, mask=self.mask1, model_error=model_error1, cov_matrix=cov_matrix1)

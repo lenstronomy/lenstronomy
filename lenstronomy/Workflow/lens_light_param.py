@@ -53,6 +53,7 @@ class LensLightParam(object):
             if not 'n_2' in self.kwargs_fixed:
                 kwargs['n_2'] = args[i]
                 i += 1
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if not 'center_x_2' in self.kwargs_fixed:
                 kwargs['center_x_2'] = args[i]
                 i += 1
@@ -113,6 +114,7 @@ class LensLightParam(object):
                 args.append(kwargs['R_2'])
             if not 'n_2' in self.kwargs_fixed:
                 args.append(kwargs['n_2'])
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if not 'center_x_2' in self.kwargs_fixed:
                 args.append(kwargs['center_x_2'])
             if not 'center_y_2' in self.kwargs_fixed:
@@ -167,6 +169,7 @@ class LensLightParam(object):
                 fix_return['R_2'] = kwargs_fixed['R_2']
             if 'n_2' in kwargs_fixed:
                 fix_return['n_2'] = kwargs_fixed['n_2']
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if 'center_x_2' in kwargs_fixed:
                 fix_return['center_x_2'] = kwargs_fixed['center_x_2']
             if 'center_y_2' in kwargs_fixed:
@@ -235,6 +238,7 @@ class LensLightParam(object):
             if not 'n_2' in self.kwargs_fixed:
                 mean.append(kwargs_mean['n_2'])
                 sigma.append(kwargs_mean['n_2_sigma'])
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if not 'center_x_2' in self.kwargs_fixed:
                 mean.append(kwargs_mean['center_x_2'])
                 sigma.append(kwargs_mean['center_x_2_sigma'])
@@ -305,6 +309,7 @@ class LensLightParam(object):
             if not 'n_2' in self.kwargs_fixed:
                 low.append(0.2)
                 high.append(30)
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if not 'center_x_2' in self.kwargs_fixed:
                 low.append(-10)
                 high.append(10)
@@ -375,6 +380,7 @@ class LensLightParam(object):
             if not 'n_2' in self.kwargs_fixed:
                 num += 1
                 list.append('n_2_lens_light')
+        if self.kwargs_options[self.object_type] in ['TRIPPLE_SERSIC']:
             if not 'center_x_2' in self.kwargs_fixed:
                 num+=1
                 list.append('center_x_2_lens_light')

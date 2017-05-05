@@ -109,3 +109,14 @@ class LensProp(object):
         Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model*self.unitManager.cosmoProp.dist_LS/self.unitManager.cosmoProp.dist_OS)
         D_d = D_dt_model/(1+z_d)/Ds_Dds/(1-kappa_ext)
         return D_d, Ds_Dds
+
+    def angular_distances(self, sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled, fermat_pot):
+        """
+
+        :param sigma_v_measured: velocity dispersion measured [km/s]
+        :param time_delay_measured: time delay measured [d]
+        :param kappa_ext: external convergence estimated []
+        :param sigma_v_modeled: lens model velocity dispersion with default cosmology and without external convergence [km/s]
+        :param fermat_pot: fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]
+        :return: D_d and D_d*D_s/D_ds, units in Mpc physical
+        """

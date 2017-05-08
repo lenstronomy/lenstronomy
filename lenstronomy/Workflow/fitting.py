@@ -37,19 +37,9 @@ class Fitting(object):
         kwargs_prior_else = dict(kwargs_mean_else.items() + kwargs_sigma_else.items())
         # initialise mcmc classes
 
-        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._update_fixed(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
-        lens_fix, source_fix, lens_light_fix, else_fix = param_class.add_to_fixed(self.kwargs_lens_fixed,
-                                                                                           self.kwargs_source_fixed,
-                                                                                           self.kwargs_lens_light_fixed,
-                                                                                           self.kwargs_else_fixed)
-        kwargs_fixed_lens_updated = []
-        for k in range(len(kwargs_fixed_lens)):
-            kwargs_fixed_lens_updated.append(dict(kwargs_fixed_lens[k].items() + lens_fix[k].items()))
-        kwargs_fixed_source = dict(kwargs_fixed_source.items() + source_fix.items())
-        kwargs_fixed_lens_light = dict(kwargs_fixed_lens_light.items() + lens_light_fix.items())
-        kwargs_fixed_else = dict(kwargs_fixed_else.items() + else_fix.items())
-        param_class = Param(kwargs_options, kwargs_fixed_lens_updated, kwargs_fixed_source,
+        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_else)

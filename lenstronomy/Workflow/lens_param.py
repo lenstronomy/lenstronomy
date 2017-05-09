@@ -177,15 +177,15 @@ class LensParam(object):
                     args.append(kwargs['center_y'])
         return args
 
-    def add2fix(self, kwargs_fixed):
+    def add2fix(self, kwargs_fixed_list):
         """
 
         :param kwargs_fixed:
         :return:
         """
         fix_return_list = []
-        kwargs_fixed = kwargs_fixed
         for k, model in enumerate(self.model_list):
+            kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
             if model == 'EXTERNAL_SHEAR':
                 if 'e1' in kwargs_fixed:

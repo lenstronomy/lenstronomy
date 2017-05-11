@@ -101,11 +101,6 @@ class ElseParam(object):
             fix_return['ra_pos'] = kwargs_fixed['ra_pos']
         if 'dec_pos' in kwargs_fixed:
             fix_return['dec_pos'] = kwargs_fixed['dec_pos']
-        if self.kwargs_options.get('image_plane_source', False):
-            if 'source_pos_image_ra' in kwargs_fixed:
-                fix_return['source_pos_image_ra'] = kwargs_fixed['source_pos_image_ra']
-            if 'source_pos_image_dec' in kwargs_fixed:
-                fix_return['source_pos_image_dec'] = kwargs_fixed['source_pos_image_dec']
 
         if self.foreground_shear:
             if 'gamma1_foreground' in kwargs_fixed:
@@ -145,13 +140,6 @@ class ElseParam(object):
             for i in y_pos_mean:
                 mean.append(i)
                 sigma.append(pos_sigma)
-        if self.kwargs_options.get('image_plane_source', False):
-            if not 'source_pos_image_ra' in self.kwargs_fixed:
-                mean.append(kwargs_mean['source_pos_image_ra'])
-                sigma.append(kwargs_mean['source_pos_image_ra_sigma'])
-            if not 'source_pos_image_dec' in self.kwargs_fixed:
-                mean.append(kwargs_mean['source_pos_image_dec'])
-                sigma.append(kwargs_mean['source_pos_image_dec_sigma'])
 
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
@@ -193,13 +181,6 @@ class ElseParam(object):
             for i in range(self.num_images):
                 low.append(pos_low)
                 high.append(pos_high)
-        if self.kwargs_options.get('image_plane_source', False):
-            if not 'source_pos_image_ra' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
-            if not 'source_pos_image_dec' in self.kwargs_fixed:
-                low.append(-10)
-                high.append(10)
 
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
@@ -238,13 +219,6 @@ class ElseParam(object):
             num += self.num_images
             for i in range(self.num_images):
                 list.append('dec_pos')
-        if self.kwargs_options.get('image_plane_source', False):
-            if not 'source_pos_image_ra' in self.kwargs_fixed:
-                num += 1
-                list.append('source_pos_image_ra')
-            if not 'source_pos_image_dec' in self.kwargs_fixed:
-                num += 1
-                list.append('source_pos_image_dec')
 
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:

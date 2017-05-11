@@ -141,8 +141,6 @@ class Fitting(object):
             kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_source = {}
-        if kwargs_options['solver'] == False:
-            kwargs_fixed_source = dict(kwargs_fixed_source.items() + {'center_x': kwargs_source['center_x'], 'center_y': kwargs_source['center_y']})
         return kwargs_fixed_source
 
     def _fixed_lens(self, kwargs_options, kwargs_lens_list):

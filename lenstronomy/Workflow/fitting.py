@@ -127,7 +127,7 @@ class Fitting(object):
             kwargs_fixed_lens_light = {}
         return kwargs_fixed_lens_light
 
-    def _fixed_source(self, kwargs_options):
+    def _fixed_source(self, kwargs_options, kwargs_source):
         """
 
         :param kwargs_options:
@@ -141,6 +141,8 @@ class Fitting(object):
             kwargs_fixed_source = {'I0_sersic': 1, 'I0_2': 1}
         else:
             kwargs_fixed_source = {}
+        if kwargs_options['solver'] == False:
+            kwargs_fixed_source = dict(kwargs_fixed_source.items() + {'center_x': kwargs_source['center_x'], 'center_y': kwargs_source['center_y']})
         return kwargs_fixed_source
 
     def _fixed_lens(self, kwargs_options, kwargs_lens_list):
@@ -215,7 +217,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute, kwargs_source).items())
         kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
@@ -265,7 +267,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute, kwargs_source).items())
         kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = kwargs_else
 
@@ -289,7 +291,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = self._fixed_source(kwargs_options_execute)
+        kwargs_fixed_source = self._fixed_source(kwargs_options_execute, kwargs_source)
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = kwargs_else
 
@@ -313,7 +315,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute, kwargs_source).items())
         kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = {}
 
@@ -356,7 +358,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
-        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_source = self._fixed_source(kwargs_options_execute, kwargs_source)
+        kwargs_fixed_lens_light = dict(kwargs_lens_light.items() + self._fixed_lens_light(kwargs_options_execute).items())
         kwargs_fixed_else = {}
         return kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else

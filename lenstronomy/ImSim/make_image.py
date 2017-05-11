@@ -688,6 +688,26 @@ class MakeImage(object):
                 error_map_source[i] = basis_functions[:, i].T.dot(cov_param).dot(basis_functions[:,i])
         return source, error_map_source
 
+    def source(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, numPix, deltaPix):
+        """
+        returns the reconstructed source
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :param subgrid_res:
+        :return:
+        """
+        model, error_map, cov_param, param = self.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                                                                         self.subgrid_res, inv_bool=True)
+
+        x_grid_source, y_grid_source = util.make_grid(numPix, deltaPix)
+        num_order = self.kwargs_options['shapelet_order']
+        beta = kwargs_else['shapelet_beta']
+        source, error_map_source = self.get_source(param, num_order, beta, x_grid_source, y_grid_source, kwargs_source,
+                                                        cov_param)
+        return source, error_map_source
+
     def get_psf(self, param, kwargs_psf, kwargs_lens, kwargs_else):
         """
         returns the psf estimates from the different basis sets

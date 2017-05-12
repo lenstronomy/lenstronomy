@@ -383,7 +383,7 @@ class MakeImage(object):
         return lens_light_final
 
     def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
-        source_light_response, n_source = self.get_sersic_response(x_source, y_source, kwargs_lens_light,
+        source_light_response, n_source = self.get_sersic_response(x_source, y_source, kwargs_source,
                                                                      object_type='source_type')
         if self.kwargs_options.get('point_source', False):
             if self.kwargs_options.get('psf_iteration', False):

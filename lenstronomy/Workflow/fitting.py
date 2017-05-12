@@ -313,7 +313,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute, kwargs_source).items())
+        kwargs_fixed_source = self._fixed_source(kwargs_options_execute, kwargs_source)
         kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
         kwargs_fixed_else = {}
 

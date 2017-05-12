@@ -26,13 +26,6 @@ class ElseParam(object):
         if not 'dec_pos' in self.kwargs_fixed:
             kwargs['dec_pos'] = np.array(args[i:i+self.num_images])
             i += self.num_images
-        if self.kwargs_options.get('image_plane_source', False):
-            if not 'source_pos_image_ra' in self.kwargs_fixed:
-                kwargs['source_pos_image_ra'] = args[i]
-                i += 1
-            if not 'source_pos_image_dec' in self.kwargs_fixed:
-                kwargs['source_pos_image_dec'] = args[i]
-                i += 1
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 kwargs['gamma1_foreground'] = args[i]
@@ -68,11 +61,6 @@ class ElseParam(object):
             y_pos = kwargs['dec_pos']
             for i in y_pos:
                 args.append(i)
-        if self.kwargs_options.get('image_plane_source', False):
-            if not 'source_pos_image_ra' in self.kwargs_fixed:
-                args.append(kwargs['source_pos_image_ra'])
-            if not 'source_pos_image_dec' in self.kwargs_fixed:
-                args.append(kwargs['source_pos_image_dec'])
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 args.append(kwargs['gamma1_foreground'])

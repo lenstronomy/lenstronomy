@@ -594,22 +594,28 @@ class MakeImage(object):
         :param kwargs_lens_light:
         :return:
         """
+        if object_type == 'lens_light_type':
+            func = self.LensLightModel.lightModel.func
+        elif object_type == 'source_type':
+            func = self.SourceModel.lightModel.func
+        else:
+            func = None
         if self.kwargs_options[object_type] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
             new = {'I0_sersic': 1, 'I0_2': 1}
             kwargs_new = dict(kwargs.items() + new.items())
-            ellipse, spherical = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
+            ellipse, spherical = func.function_split(x_grid, y_grid, **kwargs_new)
             response = [ellipse, spherical]
             n = 2
         elif self.kwargs_options[object_type] == 'TRIPPLE_SERSIC':
             new = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
             kwargs_new = dict(kwargs.items() + new.items())
-            ellipse1, spherical, ellipse2 = self.LensLightModel.lightModel.func.function_split(x_grid, y_grid, **kwargs_new)
+            ellipse1, spherical, ellipse2 = func.function_split(x_grid, y_grid, **kwargs_new)
             response = [ellipse1, spherical, ellipse2]
             n = 3
         elif self.kwargs_options[object_type] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
             new = {'I0_sersic': 1}
             kwargs_new = dict(kwargs.items() + new.items())
-            ellipse = self.LensLightModel.lightModel.func.function(x_grid, y_grid, **kwargs_new)
+            ellipse = func.function(x_grid, y_grid, **kwargs_new)
             response = [ellipse]
             n = 1
         elif self.kwargs_options[object_type] == 'NONE':

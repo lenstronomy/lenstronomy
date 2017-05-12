@@ -241,7 +241,7 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute).items())
+        kwargs_fixed_source = dict(kwargs_source.items() + self._fixed_source(kwargs_options_execute, kwargs_source).items())
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = {'shapelet_beta': kwargs_else['shapelet_beta']}
 

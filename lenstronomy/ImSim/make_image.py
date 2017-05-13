@@ -595,9 +595,15 @@ class MakeImage(object):
         :return:
         """
         if object_type == 'lens_light_type':
-            func = self.LensLightModel.lightModel.func
+            try:
+                func = self.LensLightModel.lightModel.func
+            except:
+                func = None
         elif object_type == 'source_type':
-            func = self.SourceModel.lightModel.func
+            try:
+                func = self.SourceModel.lightModel.func
+            except:
+                func = None
         else:
             func = None
         if self.kwargs_options[object_type] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:

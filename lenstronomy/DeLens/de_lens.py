@@ -32,7 +32,10 @@ class DeLens(object):
         else:
             if np.linalg.cond(M) < 10/sys.float_info.epsilon:
                 R = A.T.dot(np.multiply(C_D_inv, d))
-                B = np.linalg.solve(M, R).T
+                try:
+                    B = np.linalg.solve(M, R).T
+                except:
+                    B = np.zeros(len(A.T))
             else:
                 B = np.zeros(len(A.T))
             M_inv = None

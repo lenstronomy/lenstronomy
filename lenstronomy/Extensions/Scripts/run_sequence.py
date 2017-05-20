@@ -15,6 +15,8 @@ pool = MpiPool(None)
 start_time = time.time()
 
 job_name = str(sys.argv[1])
+if pool.isMaster():
+    print("job %s loaded" %job_name)
 # hoffman2 specifics
 dir_path_cluster = '/u/scratch/s/sibirrer/'
 path2load = os.path.join(dir_path_cluster, job_name)+".txt"

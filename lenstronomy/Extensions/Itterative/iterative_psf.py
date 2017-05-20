@@ -39,8 +39,12 @@ class PSF_iterative(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = util_class.cut_psf(kernel_new, psf_size=kernelsize_small)
-        kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
-                      "error_map": error_map}
+        kwargs_psf_new = kwargs_psf.copy()
+        kwargs_psf_new['kernel'] = kernel_new_small
+        kwargs_psf_new['kernel_large'] = kernel_new
+        kwargs_psf_new['error_map'] = error_map
+        #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
+        #              "error_map": error_map}
         return kwargs_psf_new
 
     def update_iterative(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,

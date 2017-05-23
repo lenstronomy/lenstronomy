@@ -365,8 +365,8 @@ class LensParam(object):
                     high.append(10)
             if model in ['SPEP', 'SPEMD', 'SPP']:
                 if not 'gamma' in kwargs_fixed:
-                    low.append(1.)
-                    high.append(2.85)
+                    low.append(1.7)
+                    high.append(2.3)
             if model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     low.append(-0.5)

@@ -61,8 +61,8 @@ class LensProp(object):
 
     def rho0_r0_gamma(self, kwargs_lens, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
-        phi_E = self.effective_einstein_radius(kwargs_lens)
-        return (kappa_ext - 1) * math.gamma(gamma/2)/(np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * phi_E**gamma/self.unitManager.arcsec2phys_lens(phi_E) * self.unitManager.cosmoProp.epsilon_crit * const.M_sun/const.Mpc**3  # units kg/m^3
+        theta_E = self.effective_einstein_radius(kwargs_lens)
+        return (kappa_ext - 1) * math.gamma(gamma/2)/(np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E**gamma/self.unitManager.arcsec2phys_lens(theta_E) * self.unitManager.cosmoProp.epsilon_crit * const.M_sun/const.Mpc**3  # units kg/m^3
 
     def v_sigma(self, kwargs_lens, kwargs_lens_light, kwargs_else, r_ani_scaling=1, r_eff=None, r=0.01):
         """

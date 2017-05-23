@@ -18,7 +18,7 @@ job_name = str(sys.argv[1])
 if pool.isMaster():
     print("job %s loaded" %job_name)
 # hoffman2 specifics
-dir_path_cluster = '/u/scratch/s/sibirrer/'
+dir_path_cluster = '/u/scratch2/s/sibirrer/'
 path2load = os.path.join(dir_path_cluster, job_name)+".txt"
 path2dump = os.path.join(dir_path_cluster, job_name)+"_out.txt"
 
@@ -29,11 +29,11 @@ f.close()
 fitting_seq = FittingSequence(kwargs_data, kwargs_psf, kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed)
 
 lens_result, source_result, lens_light_result, else_result, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fitting_seq.fit_sequence(fitting_kwargs_list)
-
+kwargs_psf = fitting_seq.kwargs_psf
 # save the output
 if pool.isMaster():
     f = open(path2dump, 'wb')
-    output = [lens_result, source_result, lens_light_result, else_result, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc]
+    output = [lens_result, source_result, lens_light_result, else_result, kwargs_psf, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc]
     pickle.dump([input, output], f)
     f.close()
     end_time = time.time()

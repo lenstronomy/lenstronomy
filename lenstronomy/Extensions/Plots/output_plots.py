@@ -565,10 +565,14 @@ def mcmc_output(samples_mcmc, param_mcmc, fitting_kwargs_list, truths=None):
 
 def param_list_from_kwargs(kwargs_data, kwargs_psf, kwargs_fixed, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
     from lenstronomy.Workflow.fitting import Fitting
-    kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fix, kwargs_else_fixed = kwargs_fixed
-    fitting = Fitting(kwargs_data, kwargs_psf, kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fix, kwargs_else_fixed)
+    kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_else_fixed = kwargs_fixed
+    fitting = Fitting(kwargs_data, kwargs_psf, kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_else_fixed)
     kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = fitting._mcmc_run_fixed(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+    kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = fitting._update_fixed(
+        kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source,
+        kwargs_fixed_lens_light, kwargs_fixed_else)
     param = Param(kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
     truths = param.setParams(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
     num_param, param_list = param.num_param()
+
     return truths, num_param, param_list

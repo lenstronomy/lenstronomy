@@ -292,6 +292,11 @@ class MakeImage(object):
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_source[k]['I0_2'] = param[i]
                 i += 1
+            if model in ['SHAPELETS']:
+                n_max = kwargs_source[k]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_source[k]['amp'] = param[i:i+num_param]
+                i += num_param
         for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
             if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_source[k]['I0_sersic'] = param[i]
@@ -299,6 +304,11 @@ class MakeImage(object):
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_source[k]['I0_2'] = param[i]
                 i += 1
+            if model in ['SHAPELETS']:
+                n_max = kwargs_source[k]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_source[k]['amp'] = param[i:i+num_param]
+                i += num_param
         return kwargs_source, kwargs_lens_light
 
     def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False, no_lens=False):

@@ -124,39 +124,29 @@ class Fitting(object):
                                            mpi=mpi, init_pos=initpos)
         return samples, param_list, dist
 
-    def _fixed_lens_light(self, kwargs_options):
+    def _fixed_light(self, kwargs_options, kwargs_light, type):
         """
 
         :param kwargs_options:
-        :return: fixed linear parameters in lens light function
+        :param kwargs_light:
+        :param type:
+        :return:
         """
-        kwargs_fixed_lens_light_list = []
-        for i, model in enumerate(kwargs_options['lens_light_model_list']):
+        model_list = kwargs_options[type]
+        kwargs_fixed_list = []
+        for i, model in enumerate(model_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_fixed = {'I0_sersic': 1}
             elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_fixed = {'I0_sersic': 1, 'I0_2': 1}
+            elif model in ['SHAPELETS']:
+                n_max = kwargs_light[i]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_fixed = {'amp': np.ones(num_param)}
             else:
                 kwargs_fixed = {}
-            kwargs_fixed_lens_light_list.append(kwargs_fixed)
-        return kwargs_fixed_lens_light_list
-
-    def _fixed_source(self, kwargs_options):
-        """
-
-        :param kwargs_options:
-        :return: fixed linear parameters in lens light function
-        """
-        kwargs_fixed_source_list = []
-        for i, model in enumerate(kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
-                kwargs_fixed = {'I0_sersic': 1}
-            elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_fixed = {'I0_sersic': 1, 'I0_2': 1}
-            else:
-                kwargs_fixed = {}
-            kwargs_fixed_source_list.append(kwargs_fixed)
-        return kwargs_fixed_source_list
+            kwargs_fixed_list.append(kwargs_fixed)
+        return kwargs_fixed_list
 
     def _fixed_lens(self, kwargs_options, kwargs_lens_list):
         """
@@ -231,7 +221,7 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
         kwargs_fixed_source = kwargs_source
-        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         kwargs_fixed_else = kwargs_else
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -257,8 +247,9 @@ class Fitting(object):
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
         kwargs_fixed_source = []
+        source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         for k in range(len(kwargs_source)):
-            kwargs_fixed_source.append(dict(kwargs_source[k].items() + self._fixed_source(kwargs_options_execute)[k].items()))
+            kwargs_fixed_source.append(dict(kwargs_source[k].items() + source_fixed[k].items()))
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = {}
 
@@ -283,10 +274,10 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
         kwargs_fixed_source = []
+        source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         for k in range(len(kwargs_source)):
-            kwargs_fixed_source.append(
-                dict(kwargs_source[k].items() + self._fixed_source(kwargs_options_execute)[k].items()))
-        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
+            kwargs_fixed_source.append(dict(kwargs_source[k].items() + source_fixed[k].items()))
+        kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         kwargs_fixed_else = kwargs_else
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -309,7 +300,7 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = self._fixed_source(kwargs_options_execute)
+        kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = kwargs_else
 
@@ -333,8 +324,8 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = self._fixed_source(kwargs_options_execute)
-        kwargs_fixed_lens_light = self._fixed_lens_light(kwargs_options_execute)
+        kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
+        kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         kwargs_fixed_else = {}
 
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
@@ -376,9 +367,10 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_source = self._fixed_source(kwargs_options_execute)
+        kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         kwargs_fixed_lens_light = []
+        lens_light_fixed = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         for k in range(len(kwargs_lens_light)):
-            kwargs_fixed_lens_light.append(dict(kwargs_lens_light[k].items() + self._fixed_lens_light(kwargs_options_execute)[k].items()))
+            kwargs_fixed_lens_light.append(dict(kwargs_lens_light[k].items() + lens_light_fixed[k].items()))
         kwargs_fixed_else = {}
         return kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else

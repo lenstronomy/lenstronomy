@@ -53,8 +53,8 @@ class LightModel(object):
                 from astrofunc.LightProfiles.sersic import Sersic_elliptic
                 self.func_list.append(Sersic_elliptic())
             elif profile_type == 'SHAPELETS':
-                from astrofunc.LensingProfiles.shapelets import Shapelets
-                self.func_list.append(Shapelets())
+                from astrofunc.LensingProfiles.shapelets import ShapeletSet
+                self.func_list.append(ShapeletSet())
             elif profile_type == 'DOUBLE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleSersic
                 self.func_list.append(DoubleSersic())
@@ -96,16 +96,21 @@ class LightModel(object):
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 new = {'I0_sersic': 1, 'I0_2': 1}
                 kwargs_new = dict(kwargs_list[k].items() + new.items())
-                a, b = self.func_list[k].function_split(x, y, **kwargs_new)
-                response.append(a)
-                response.append(b)
+                response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += 2
             elif model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 new = {'I0_sersic': 1}
                 kwargs_new = dict(kwargs_list[k].items() + new.items())
-                response.append(self.func_list[k].function(x, y, **kwargs_new))
+                response += self.func_list[k].function(x, y, **kwargs_new)
                 n += 1
-            elif model in ['NONE', 'SHAPELETS']:
+            elif model in ['SHAPELETS']:
+                kwargs = kwargs_list[k]
+                n_max = kwargs['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                new = {'amp': np.ones(num_param)}
+                kwargs_new = dict(kwargs.items() + new.items())
+                response += self.func_list[k].function_split(x, y, **kwargs_new)
+            elif model in ['NONE']:
                 pass
             else:
                 raise ValueError('model type %s not valid!' % model)

@@ -1,9 +1,11 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+
 from lenstronomy.MCMC.mcmc import MCMC_sampler
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
 from lenstronomy.Trash.parameters import Param
+
 
 #TODO: will be replaced by fitting.py
 
@@ -440,7 +442,7 @@ class PositionFinder(object):
         else:
             kwargs_data = self.kwargs_data
             kwargs_psf = self.kwargs_psf_init
-        from lenstronomy.ImSim.make_image import MakeImage
+        from lenstronomy.Trash.make_image import MakeImage
         from lenstronomy.util import Util_class
         util_class = Util_class()
         makeImage = MakeImage(self.kwargs_options, kwargs_data)

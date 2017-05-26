@@ -1,11 +1,10 @@
 __author__ = 'sibirrer'
 
-import numpy as np
-
 import astrofunc.util as util
+import numpy as np
 from astrofunc.LensingProfiles.shapelets import Shapelets
 
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.Trash.make_image import MakeImage
 
 
 class MakeImageIter(MakeImage):
@@ -96,7 +95,7 @@ class MakeImageIter(MakeImage):
         for i in range(num_param):
             image = self.gaussian.function(x_source, y_source, amp=1, sigma_x=sigma[i], sigma_y=sigma[i], center_x=x_pos[i], center_y=y_pos[i])
             image = util.array2image(image)
-            image = self.re_size_convolve(image, numPix, deltaPix, subgrid_res, kwargs_psf)
+            image = self.re_size_convolve(image, subgrid_res, kwargs_psf)
             response = util.image2array(image*mask)
             A[i, :] = response
         return A

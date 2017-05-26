@@ -1,10 +1,10 @@
 __author__ = 'sibirrer'
 
-import pytest
-from mock import patch
 import numpy as np
+import pytest
 
-from lenstronomy.ImSim.light_model import LensLightModel
+from lenstronomy.Trash.light_model import LensLightModel
+
 
 class TestLensLightModel(object):
     """

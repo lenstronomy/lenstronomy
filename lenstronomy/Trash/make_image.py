@@ -1,20 +1,20 @@
 __author__ = 'sibirrer'
 
-import astrofunc.util as util
-from astrofunc.util import Util_class
-from astrofunc.LensingProfiles.shapelets import Shapelets
-from astrofunc.LensingProfiles.gaussian import Gaussian
+import copy
+
 import astrofunc.LightProfiles.torus as torus
-
-from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
-from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
-from lenstronomy.DeLens.de_lens import DeLens
-
+import astrofunc.util as util
+import numpy as np
 import scipy.ndimage as ndimage
 import scipy.signal as signal
-import numpy as np
-import copy
+from astrofunc.LensingProfiles.gaussian import Gaussian
+from astrofunc.LensingProfiles.shapelets import Shapelets
+from astrofunc.util import Util_class
+
+from lenstronomy.DeLens.de_lens import DeLens
+from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
+from lenstronomy.Trash.light_model import LensLightModel, SourceModel
 
 
 class MakeImage(object):
@@ -28,7 +28,7 @@ class MakeImage(object):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.DeLens = DeLens()
         self.kwargs_options = kwargs_options
-        self._subgrid_res = kwargs_options.get('subgrid_res', 1)
+        self.subgrid_res = kwargs_options.get('subgrid_res', 1)
         self.kwargs_psf = kwargs_psf
         self.util_class = Util_class()
         self.gaussian = Gaussian()
@@ -97,11 +97,17 @@ class MakeImage(object):
                 x_grid, y_grid = util.make_grid(self._nx*self._ny, 1, subgrid_res=1, left_lower=False)
             self._x_grid = x_grid[self._idex_mask == 1]
             self._y_grid = y_grid[self._idex_mask == 1]
-            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self._subgrid_res)
-            self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self.subgrid_res)
+            self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self.subgrid_res, self._nx, self._ny)
             self._x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
             self._y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
         self.shapelets = Shapelets()
+        if kwargs_options['source_type'] == 'SERSIC':
+            from astrofunc.LightProfiles.sersic import Sersic
+            self.sersic = Sersic()
+        elif kwargs_options['source_type'] == 'SERSIC_ELLIPSE':
+            from astrofunc.LightProfiles.sersic import Sersic_elliptic
+            self.sersic = Sersic_elliptic()
 
     def mapping_IS(self, x, y, kwargs, kwargs_else=None):
         """
@@ -285,23 +291,27 @@ class MakeImage(object):
         :return:
         """
         i = 0
-        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_source[k]['I0_sersic'] = param[i]
-                i += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_source[k]['I0_2'] = param[i]
-                i += 1
-        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_source[k]['I0_sersic'] = param[i]
-                i += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_source[k]['I0_2'] = param[i]
-                i += 1
+        if not self.kwargs_options['source_type'] == 'NONE':
+            kwargs_source['I0_sersic'] = param[i]
+            i += 1
+        if self.kwargs_options['source_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
+            kwargs_source['I0_2'] = param[i]
+            i += 1
+        if self.kwargs_options['source_type'] == 'TRIPPLE_SERSIC':
+            kwargs_source['I0_3'] = param[i]
+            i += 2
+        if not self.kwargs_options['lens_light_type'] == 'NONE':
+            kwargs_lens_light['I0_sersic'] = param[i]
+            i += 1
+        if self.kwargs_options['lens_light_type'] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'TRIPPLE_SERSIC']:
+            kwargs_lens_light['I0_2'] = param[i]
+            i += 1
+        if self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+            kwargs_lens_light['I0_3'] = param[i]
+            i += 1
         return kwargs_source, kwargs_lens_light
 
-    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False, no_lens=False):
+    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, inv_bool=False, no_lens=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         if no_lens is True:
@@ -309,7 +319,7 @@ class MakeImage(object):
         else:
             x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self._subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
         data = self._data
         d = data*mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
@@ -318,20 +328,20 @@ class MakeImage(object):
             error_map = np.zeros_like(wls_model)
         return wls_model, error_map, cov_param, param
 
-    def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False, unconvolved=False):
+    def make_image_ideal_noMask(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, inv_bool=False, unconvolved=False):
         map_error = self.kwargs_options.get('error_map', False)
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self._subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
-        A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self._subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
+        A, error_map, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False))
+        A_pure, _, _ = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask=1, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=unconvolved)
         data = self._data
         d = data * mask
         param, cov_param, wls_model = self.DeLens.get_param_WLS(A.T, 1/(self.C_D+error_map), d, inv_bool=inv_bool)
         image_pure = A_pure.T.dot(param)
         return self.array2image(image_pure), error_map, cov_param, param
 
-    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, param):
+    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, param):
         """
         make a image with a realisation of linear parameter values "param"
         """
@@ -339,27 +349,27 @@ class MakeImage(object):
         num_order = self.kwargs_options.get('shapelet_order', 0)
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         mask = self._mask
-        A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self._subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
+        A, error_map, bool_string = self.get_response_matrix(self._x_grid_sub, self._y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, subgrid_res, num_order, mask=mask, map_error=map_error, shapelets_off=self.kwargs_options.get('shapelets_off', False), unconvolved=True)
         image_pure = A.T.dot(param*bool_string)
         image_ = A.T.dot(param*(1-bool_string))
         image_conv = self.re_size_convolve(image_pure, 1, self.kwargs_psf)
         return image_conv + image_, error_map
 
-    def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else):
+    def make_image_surface_extended_source(self, kwargs_lens, kwargs_source, kwargs_else, subgrid_res):
         x_source, y_source = self.mapping_IS(self._x_grid_sub, self._y_grid_sub, kwargs_lens, kwargs_else)
         I_xy = self.get_surface_brightness(x_source, y_source, kwargs_source)
-        grid_final = self.re_size_convolve(I_xy, self._subgrid_res, self.kwargs_psf)
+        grid_final = self.re_size_convolve(I_xy, subgrid_res, self.kwargs_psf)
         return grid_final
 
-    def make_image_lens_light(self, kwargs_lens_light):
+    def make_image_lens_light(self, kwargs_lens_light, subgrid_res):
         mask = self._mask_lens_light
-        lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light)
+        lens_light_response, n_lens_light = self.get_sersic_response(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light, object_type='lens_light_type')
         n = 0
-        numPix = len(self._x_grid_sub)/self._subgrid_res**2
+        numPix = len(self._x_grid_sub)/subgrid_res**2
         A = np.zeros((n_lens_light, numPix))
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.re_size_convolve(image, self._subgrid_res, self.kwargs_psf)
+            image = self.re_size_convolve(image, subgrid_res, self.kwargs_psf)
             A[n, :] = image
             n += 1
         A = self._add_mask(A, mask)
@@ -369,11 +379,12 @@ class MakeImage(object):
 
     def get_lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
         lens_light = self.LensLightModel.surface_brightness(self._x_grid_sub, self._y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.re_size_convolve(lens_light, self.subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, num_order, shapelets_off=False):
-        source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
+        source_light_response, n_source = self.get_sersic_response(x_source, y_source, kwargs_source,
+                                                                     object_type='source_type')
         if self.kwargs_options.get('point_source', False):
             if self.kwargs_options.get('psf_iteration', False):
                 n_points = len(kwargs_psf['kernel_list'])
@@ -383,7 +394,7 @@ class MakeImage(object):
                 n_points = len(kwargs_else['ra_pos'])
         else:
             n_points = 0
-        lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
+        lens_light_response, n_lens_light = self.get_sersic_response(x_grid, y_grid, kwargs_lens_light, object_type='lens_light_type')
         if shapelets_off:
             n_shapelets = 0
         else:
@@ -434,8 +445,8 @@ class MakeImage(object):
             n += n_points
         # response of source shapelet coefficients
         if not shapelets_off:
-            center_x = kwargs_source[0]['center_x']
-            center_y = kwargs_source[0]['center_y']
+            center_x = kwargs_source['center_x']
+            center_y = kwargs_source['center_y']
             beta = kwargs_else['shapelet_beta']
             A_shapelets = self.get_shapelet_response(x_source, y_source, num_order, center_x, center_y, beta, kwargs_psf, subgrid_res, unconvolved)
             A[n:n+n_shapelets, :] = A_shapelets
@@ -575,6 +586,51 @@ class MakeImage(object):
                 k += 1
         return A
 
+    def get_sersic_response(self, x_grid, y_grid, kwargs, object_type='lens_light_type'):
+        """
+        computes the responses to all linear parameters (normalisations) in the lens light models
+        :param x_grid:
+        :param y_grid:
+        :param kwargs_lens_light:
+        :return:
+        """
+        if object_type == 'lens_light_type':
+            try:
+                func = self.LensLightModel.lightModel.func
+            except:
+                func = None
+        elif object_type == 'source_type':
+            try:
+                func = self.SourceModel.lightModel.func
+            except:
+                func = None
+        else:
+            func = None
+        if self.kwargs_options[object_type] in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            new = {'I0_sersic': 1, 'I0_2': 1}
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse, spherical = func.function_split(x_grid, y_grid, **kwargs_new)
+            response = [ellipse, spherical]
+            n = 2
+        elif self.kwargs_options[object_type] == 'TRIPPLE_SERSIC':
+            new = {'I0_sersic': 1, 'I0_2': 1, 'I0_3': 1}
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse1, spherical, ellipse2 = func.function_split(x_grid, y_grid, **kwargs_new)
+            response = [ellipse1, spherical, ellipse2]
+            n = 3
+        elif self.kwargs_options[object_type] in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
+            new = {'I0_sersic': 1}
+            kwargs_new = dict(kwargs.items() + new.items())
+            ellipse = func.function(x_grid, y_grid, **kwargs_new)
+            response = [ellipse]
+            n = 1
+        elif self.kwargs_options[object_type] == 'NONE':
+            response = []
+            n = 0
+        else:
+            raise ValueError('type %s not specified well' %(self.kwargs_options[object_type]))
+        return response, n
+
     def get_error_map(self, data, x_pos, y_pos, psf_kernel, amplitude, error_map, psf_error_map):
         if self.kwargs_options.get('fix_error_map', False):
             amp_estimated = amplitude
@@ -619,8 +675,8 @@ class MakeImage(object):
         error_map_source = np.zeros_like(x_grid)
         kwargs_source, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light={})
         kwargs_source_new = copy.deepcopy(kwargs_source)
-        kwargs_source_new[0]['center_x'] = 0.
-        kwargs_source_new[0]['center_y'] = 0.
+        kwargs_source_new['center_x'] = 0.
+        kwargs_source_new['center_y'] = 0.
 
         source = self.get_surface_brightness(x_grid, y_grid, kwargs_source_new)
         basis_functions = np.zeros((len(param), len(x_grid)))
@@ -654,7 +710,9 @@ class MakeImage(object):
         :param subgrid_res:
         :return:
         """
-        model, error_map, cov_param, param = self.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=True)
+        model, error_map, cov_param, param = self.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                                                                         self.subgrid_res, inv_bool=True)
+
         x_grid_source, y_grid_source = util.make_grid(numPix, deltaPix)
         num_order = self.kwargs_options['shapelet_order']
         beta = kwargs_else['shapelet_beta']
@@ -670,17 +728,16 @@ class MakeImage(object):
         :param kwargs_psf:
         :return:
         """
-        a = 0
-        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
+            a = 2
+        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+            a = 3
+        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE':
+            a = 1
+        else:
+            a = 0
+        if not self.kwargs_options['source_type'] == 'NONE':
+            a += 1
         kernel_list = kwargs_psf['kernel_list']
         num_param = len(kernel_list)
         A_psf, _ = self.get_psf_response(num_param, kwargs_psf, kwargs_lens, kwargs_else, map_error=False)
@@ -757,17 +814,16 @@ class MakeImage(object):
         #i=0 source sersic
         param_no_point = copy.deepcopy(param)
         n = len(kwargs_else['ra_pos']) # number of point sources
-        a = 0
-        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                a += 1
+        if self.kwargs_options['lens_light_type'] == 'DOUBLE_SERSIC' or self.kwargs_options['lens_light_type'] == 'DOUBLE_CORE_SERSIC':
+            a = 2
+        elif self.kwargs_options['lens_light_type'] == 'TRIPPLE_SERSIC':
+            a = 3
+        elif self.kwargs_options['lens_light_type'] == 'SERSIC' or 'SERSIC_ELLIPSE':
+            a = 1
+        else:
+            a = 0
+        if not self.kwargs_options['source_type'] == 'NONE':
+            a += 1
         param_no_point[a:a+n] = 0
         return param[a:a+n], param_no_point
 

@@ -1,9 +1,9 @@
-from lenstronomy.ImSim.make_image import MakeImage
-from astrofunc.util import Util_class
-import astrofunc.util as util
-
 import copy
+
+import astrofunc.util as util
 import numpy as np
+
+from lenstronomy.Trash.make_image import MakeImage
 
 
 class LensAnalysis(object):

@@ -4,11 +4,13 @@ __author__ = 'sibirrer'
 
 
 #from lenstronomy.unit_manager import UnitManager
+import numpy as np
 import pytest
 from mock import patch
-import numpy as np
-from lenstronomy.ImSim.make_image import MakeImage
+
 from lenstronomy.MCMC.compare import Compare
+from lenstronomy.Trash.make_image import MakeImage
+
 
 class TestCatalogueCompare(object):
 

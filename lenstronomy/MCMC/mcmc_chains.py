@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from astrofunc.util import Util_class
+
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.MCMC.compare import Compare
@@ -53,7 +54,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.subgrid_res, inv_bool=self.inv_bool)
+        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=self.inv_bool)
         #compute X^2
         X = self.makeImage.reduced_residuals(im_sim, model_error)
         logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
@@ -74,7 +75,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light, self.subgrid_res)
+        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light)
         #compute X^2
         X = self.makeImage.reduced_residuals(lens_light, lens_light_mask=True)
         logL = self.compare.get_log_likelihood(X)

@@ -1,15 +1,16 @@
 __author__ = 'sibirrer'
 
-import numpy as np
-import math
 import copy
+import math
 
-from lenstronomy.Cosmo.unit_manager import UnitManager
-from lenstronomy.ImSim.make_image import MakeImage
+import astrofunc.util as util
+import numpy as np
+from galkin.LOS_dispersion import Velocity_dispersion
 
 import lenstronomy.Cosmo.constants as const
-import astrofunc.util as util
-from galkin.LOS_dispersion import Velocity_dispersion
+from lenstronomy.Cosmo.unit_manager import UnitManager
+from lenstronomy.Trash.make_image import MakeImage
+
 
 class LensProp(object):
     """

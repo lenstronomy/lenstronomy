@@ -1,13 +1,13 @@
 __author__ = 'sibirrer'
 
-
-import pytest
-from mock import patch
+import astrofunc.util as util
 import numpy as np
 import numpy.testing as npt
-import astrofunc.util as util
+import pytest
+from mock import patch
 
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.Trash.make_image import MakeImage
+
 
 class TestMakeImage(object):
     """

@@ -2,7 +2,9 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import pytest
-from lenstronomy.Workflow.parameters import Param
+
+from lenstronomy.Workflow_old.parameters import Param
+
 
 class TestParam(object):
 

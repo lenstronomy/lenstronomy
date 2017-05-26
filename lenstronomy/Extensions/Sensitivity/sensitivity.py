@@ -1,8 +1,9 @@
 __author__ = 'sibirrer'
 
 import astrofunc.util as util
-from lenstronomy.ImSim.make_image import MakeImage
 from astrofunc.util import Util_class
+
+from lenstronomy.Trash.make_image import MakeImage
 
 util_class = Util_class()
 

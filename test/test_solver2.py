@@ -1,17 +1,16 @@
 __author__ = 'sibirrer'
 
-
-from lenstronomy.MCMC.solver2point import SolverSPEP2, Constraints2, SolverShapelets2
-from lenstronomy.MCMC.solver2point_new import SolverSPEP2_new
-from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.Trash.trash import Trash
-
 import astrofunc.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
-import copy
+
+from lenstronomy.MCMC.solver2point import SolverSPEP2, Constraints2, SolverShapelets2
+from lenstronomy.MCMC.solver2point_new import Constraints2_new
+from lenstronomy.MCMC.solver2point_new import SolverSPEP2_new
+from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.Trash.trash import Trash
+
 
 class TestSolver(object):
     """

@@ -1,18 +1,15 @@
 __author__ = 'sibirrer'
 
-
-import numpy as np
 import astrofunc.util as util
+import numpy as np
 
-from lenstronomy.MCMC.solver4point import Constraints
+from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.MCMC.solver2point import Constraints2
 from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.ImSim.make_image import MakeImage
-
+from lenstronomy.MCMC.solver4point import Constraints
 from lenstronomy.Workflow.lens_param import LensParam
-from lenstronomy.Workflow.source_param import SourceParam
-from lenstronomy.Workflow.lens_light_param import LensLightParam
-from lenstronomy.Workflow.else_param import ElseParam
+from lenstronomy.Workflow.light_param import LightParam
+from lenstronomy.Workflow_old.else_param import ElseParam
 
 
 class Param(object):
@@ -57,8 +54,8 @@ class Param(object):
         else:
             self.solver_type = "NONE"
         self.lensParams = LensParam(kwargs_options, kwargs_fixed_lens)
-        self.souceParams = SourceParam(kwargs_options, kwargs_fixed_source)
-        self.lensLightParams = LensLightParam(kwargs_options, kwargs_fixed_lens_light)
+        self.souceParams = LightParam(kwargs_options, kwargs_fixed_source, type='source_light')
+        self.lensLightParams = LightParam(kwargs_options, kwargs_fixed_lens_light, type='lens_light')
         self.elseParams = ElseParam(kwargs_options, kwargs_fixed_else)
 
     def getParams(self, args):
@@ -75,10 +72,14 @@ class Param(object):
         lens_dict_list = []
         for k, kwargs in enumerate(kwargs_lens):
             lens_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_lens[k].items()))
-        source_dict = dict(kwargs_source.items() + self.kwargs_fixed_source.items())
-        lens_light_dict = dict(kwargs_lens_light.items() + self.kwargs_fixed_lens_light.items())
+        source_dict_list = []
+        for k, kwargs in enumerate(kwargs_source):
+            source_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_source[k].items()))
+        lens_light_dict_list = []
+        for k, kwargs in enumerate(kwargs_lens_light):
+            lens_light_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_lens_light[k].items()))
         else_dict = dict(kwargs_else.items() + self.kwargs_fixed_else.items())
-        return lens_dict_list, source_dict, lens_light_dict, else_dict
+        return lens_dict_list, source_dict_list, lens_light_dict_list, else_dict
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light={}, kwargs_else={}):
         """
@@ -218,7 +219,7 @@ class Param(object):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def update_kwargs(self, kwargs_lens_list, kwargs_source, kwargs_lens_light, kwargs_else):
+    def update_kwargs(self, kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else):
         kwargs_lens = kwargs_lens_list[0]
         if self.kwargs_options.get('solver', False):
             if self.foreground_shear:
@@ -269,13 +270,17 @@ class Param(object):
                     kwargs_lens = self._update_coeffs2(kwargs_lens, x)
             elif self.solver_type == 'NONE':
                 pass
-        if self.kwargs_options.get('solver', False) or self.kwargs_options.get('image_plane_source', False):
+
+        if self.kwargs_options.get('image_plane_source', False):
+            for i, kwargs_source in enumerate(kwargs_source_list):
+                x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_source['center_x'], kwargs_source['center_y'],
+                                                               kwargs_lens_list, kwargs_else)
+
+                kwargs_source_list[i]['center_x'] = x_mapped[0]
+                kwargs_source_list[i]['center_y'] = y_mapped[0]
+        if self.kwargs_options.get('solver', False):
             x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-            #kwargs_source['center_x'] = np.mean(x_mapped)
-            #kwargs_source['center_y'] = np.mean(y_mapped)
-            kwargs_source['center_x'] = x_mapped[0]
-            kwargs_source['center_y'] = y_mapped[0]
-        if self.kwargs_options.get('fix_mass_light', False):
-            kwargs_lens_light['center_x'] = kwargs_lens['center_x']
-            kwargs_lens_light['center_y'] = kwargs_lens['center_y']
-        return kwargs_lens_list, kwargs_source, kwargs_lens_light, kwargs_else
+            kwargs_source_list[0]['center_x'] = x_mapped[0]
+            kwargs_source_list[0]['center_y'] = y_mapped[0]
+        kwargs_lens_list[0] = kwargs_lens
+        return kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else

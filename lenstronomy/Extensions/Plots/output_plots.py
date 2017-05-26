@@ -95,16 +95,12 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     deltaPix = kwargs_data['deltaPix']
     image_raw = kwargs_data['data_raw']
     nx, ny = kwargs_data['numPix_xy']
-    num_order = kwargs_options['shapelet_order']
-    beta = else_result['shapelet_beta']
 
     util_class = Util_class()
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-
-
 
     model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result, inv_bool=True)
@@ -117,8 +113,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
-    source, error_map_source = makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source, source_result,
-                                                    cov_param)
+    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, source_result, cov_param)
     source = util.array2image(source)
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
     mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
@@ -301,8 +296,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
-    source, error_map_source = makeImage.get_source(param, num_order, beta, x_grid_source, y_grid_source, source_result,
-                                                    cov_param)
+    source, error_map_source = makeImage.get_source(param, x_grid_source, y_grid_source, source_result, cov_param)
     source = util.array2image(source)
     error_map_source = util.array2image(error_map_source)
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)

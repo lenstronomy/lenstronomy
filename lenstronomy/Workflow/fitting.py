@@ -140,7 +140,14 @@ class Fitting(object):
             elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_fixed = {'I0_sersic': 1, 'I0_2': 1}
             elif model in ['SHAPELETS']:
-                n_max = kwargs_light[i]['n_max']
+                if type == 'source_light_model_list':
+                    kwargs_fixed = self.kwargs_source_fixed
+                else:
+                    kwargs_fixed = self.kwargs_lens_light_fixed
+                if 'n_max' in kwargs_fixed[i]:
+                    n_max = kwargs_fixed[i]['n_max']
+                else:
+                    n_max = kwargs_light[i]['n_max']
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_fixed = {'amp': np.ones(num_param)}
             else:

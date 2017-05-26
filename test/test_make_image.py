@@ -6,7 +6,7 @@ import numpy.testing as npt
 import pytest
 from mock import patch
 
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.make_image import MakeImage
 
 
 class TestMakeImage(object):
@@ -16,13 +16,13 @@ class TestMakeImage(object):
     @patch("darkskysync.DarkSkySync", autospec=False)
     def setup(self, dss_mock):
         self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_type': 'GAUSSIAN', 'lens_light_type': 'TRIPPLE_SERSIC'
+            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'], 'lens_light_model_list': ['SERSIC']
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
         self.kwargs_data = {}
         
         self.makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
         self.kwargs_lens = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}]
-        self.kwargs_source = {'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}
+        self.kwargs_source = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
         x_grid, y_grid = util.make_grid(numPix=101, deltapix=0.1)
         x_source, y_source = self.makeImage.mapping_IS(x_grid, y_grid, self.kwargs_lens)
         I_xy = self.makeImage.get_surface_brightness(x_source, y_source, self.kwargs_source)
@@ -35,7 +35,7 @@ class TestMakeImage(object):
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
     def test_get_surface_brightness(self):
-        I_xy = self.makeImage.get_surface_brightness(x=1., y=1., kwargs=self.kwargs_source)
+        I_xy = self.makeImage.get_surface_brightness(x=np.array([1.]), y=np.array([1.]), kwargs=self.kwargs_source)
         assert I_xy == 0.77880078307140488/(8*np.pi)
 
     def test_psf_convolution(self):
@@ -64,9 +64,9 @@ class TestMakeImage(object):
         param = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
         kwargs_else = {'ra_pos': np.array([1, 1, 2]), 'dec_pos': np.array([-1, 0, 0])}
         mag, _ = self.makeImage.get_image_amplitudes(param, kwargs_else)
-        assert mag[0] == 5
-        assert mag[1] == 6
-        assert mag[2] == 7
+        assert mag[0] == 2
+        assert mag[1] == 3
+        assert mag[2] == 4
 
     def test_add_mask(self):
         mask = [0, 1, 0]

@@ -101,7 +101,7 @@ class LightModel(object):
             elif model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 new = {'I0_sersic': 1}
                 kwargs_new = dict(kwargs_list[k].items() + new.items())
-                response += self.func_list[k].function(x, y, **kwargs_new)
+                response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['SHAPELETS']:
                 kwargs = kwargs_list[k]
@@ -110,6 +110,7 @@ class LightModel(object):
                 new = {'amp': np.ones(num_param)}
                 kwargs_new = dict(kwargs.items() + new.items())
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
+                n += num_param
             elif model in ['NONE']:
                 pass
             else:

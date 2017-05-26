@@ -43,6 +43,14 @@ class LightParam(object):
                 if not 'beta' in kwargs_fixed:
                     kwargs['beta'] = args[i]
                     i += 1
+                if not 'n_max' in kwargs_fixed:
+                    kwargs['n_max'] = int(args[i])
+                    i += 1
+                if not 'amp' in kwargs_fixed:
+                    n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
+                    num_param = (n_max + 1) + (n_max + 2) / 2
+                    kwargs['amp'] = args[i:i+num_param]
+                    i += num_param
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     kwargs['I0_sersic'] = args[i]
@@ -71,8 +79,8 @@ class LightParam(object):
                     kwargs['n_2'] = args[i]
                     i += 1
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'Rb' in kwargs_fixed:
-                    kwargs['Rb'] = args[i]
+                if not 'Re' in kwargs_fixed:
+                    kwargs['Re'] = args[i]
                     i += 1
                 if not 'gamma' in kwargs_fixed:
                     kwargs['gamma'] = args[i]
@@ -98,6 +106,13 @@ class LightParam(object):
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     args.append(kwargs['beta'])
+                if not 'n_max' in kwargs_fixed:
+                    args.append(kwargs['n_max'])
+                if not 'amp' in kwargs_fixed:
+                    n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
+                    num_param = (n_max + 1) + (n_max + 2) / 2
+                    for i in range(num_param):
+                        args.append(kwargs['amp'][i])
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     args.append(kwargs['I0_sersic'])
@@ -119,8 +134,8 @@ class LightParam(object):
                 if not 'n_2' in kwargs_fixed:
                     args.append(kwargs['n_2'])
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'Rb' in kwargs_fixed:
-                    args.append(kwargs['Rb'])
+                if not 'Re' in kwargs_fixed:
+                    args.append(kwargs['Re'])
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
         return args
@@ -143,6 +158,10 @@ class LightParam(object):
             if model in ['SHAPELETS']:
                 if 'beta' in kwargs_fixed:
                     fix_return['beta'] = kwargs_fixed['beta']
+                if 'n_max' in kwargs_fixed:
+                    fix_return['n_max'] = kwargs_fixed['n_max']
+                if 'amp' in kwargs_fixed:
+                    fix_return['amp'] = kwargs_fixed['amp']
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if 'I0_sersic' in kwargs_fixed:
                     fix_return['I0_sersic'] = kwargs_fixed['I0_sersic']
@@ -165,8 +184,8 @@ class LightParam(object):
                     fix_return['n_2'] = kwargs_fixed['n_2']
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if 'Rb' in kwargs_fixed:
-                    fix_return['Rb'] = kwargs_fixed['Rb']
+                if 'Re' in kwargs_fixed:
+                    fix_return['Re'] = kwargs_fixed['Re']
                 if 'gamma' in kwargs_fixed:
                     fix_return['gamma'] = kwargs_fixed['gamma']
             fix_return_list.append(fix_return)
@@ -194,6 +213,12 @@ class LightParam(object):
                 if not 'beta' in kwargs_fixed:
                     mean.append(kwargs_mean['beta'])
                     sigma.append(kwargs_mean['beta_sigma'])
+                if not 'n_max' in kwargs_fixed:
+                    mean.append(kwargs_mean['n_max'])
+                    sigma.append(kwargs_mean['n_max_sigma'])
+                if not 'amp' in kwargs_fixed:
+                    mean.append(kwargs_mean['amp'])
+                    sigma.append(kwargs_mean['amp_sigma'])
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     mean.append(kwargs_mean['I0_sersic'])
@@ -228,9 +253,9 @@ class LightParam(object):
                     sigma.append(kwargs_mean['n_2_sigma'])
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'Rb' in kwargs_fixed:
-                    mean.append(kwargs_mean['Rb'])
-                    sigma.append(kwargs_mean['Rb_sigma'])
+                if not 'Re' in kwargs_fixed:
+                    mean.append(kwargs_mean['Re'])
+                    sigma.append(kwargs_mean['Re_sigma'])
                 if not 'gamma' in kwargs_fixed:
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
@@ -256,6 +281,13 @@ class LightParam(object):
                 if not 'beta' in kwargs_fixed:
                     low.append(0.000001)
                     high.append(60)
+                if not 'n_max' in kwargs_fixed:
+                    low.append(0)
+                    high.append(50)
+                if not 'amp' in kwargs_fixed:
+                    #TODO does not really work
+                    low.append(-10)
+                    high.append(10)
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     low.append(0)
@@ -286,7 +318,7 @@ class LightParam(object):
                     high.append(30)
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'Rb' in kwargs_fixed:
+                if not 'Re' in kwargs_fixed:
                     low.append(0.01)
                     high.append(30)
                 if not 'gamma' in kwargs_fixed:
@@ -314,6 +346,11 @@ class LightParam(object):
                 if not 'beta' in kwargs_fixed:
                     num += 1
                     list.append(str('beta_'+self.type))
+                if not 'n_max' in kwargs_fixed:
+                    num += 1
+                    list.append(str('n_max_'+self.type))
+                if not 'amp' in kwargs_fixed:
+                    raise ValueError('shapelets amplitude must be fixed in the parameter configuration!')
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     num += 1
@@ -343,9 +380,9 @@ class LightParam(object):
                     list.append(str('n_2_'+self.type))
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'Rb' in kwargs_fixed:
+                if not 'Re' in kwargs_fixed:
                     num += 1
-                    list.append(str('Rb_'+self.type))
+                    list.append(str('Re_'+self.type))
                 if not 'gamma' in kwargs_fixed:
                     num += 1
                     list.append(str('gamma_'+self.type))

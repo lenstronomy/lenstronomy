@@ -164,7 +164,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         y_ = (y_image[i] + 0.5)*(deltaPix)
         ax.plot(x_, y_, 'or')
         ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
-    x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
+    x_, y_ = makeImage.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     ax = axes[0,1]
@@ -218,8 +218,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
-                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
+                dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
     ax = axes[1,1]
     im = ax.matshow(makeImage.array2image(np.log10(lens_light_no_mask)), origin='lower',
@@ -235,7 +235,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    x_light, y_light = makeImage.map_coord2pix(lens_light_result['center_x'], lens_light_result['center_y'])
+    x_light, y_light = makeImage.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
     x_lens, y_lens = makeImage.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
     ax.plot(x_light, y_light, 'og')
     ax.plot(x_lens, y_lens, 'b', marker='+')
@@ -333,8 +333,8 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
-                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
+                dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
 
     ax = axes[0, 1]
@@ -358,8 +358,8 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
-                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
+                dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
     ax = axes[1, 0]
     im = ax.matshow(np.abs(source)/np.sqrt(error_map_source), origin='lower', extent=[0, delta_source, 0, delta_source],
@@ -382,8 +382,8 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
-                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
+                dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
 
     ax = axes[0, 2]
@@ -407,8 +407,8 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result['center_x'] + delta_source / 2.,
-                dec_caustics - source_result['center_y'] + delta_source / 2., 'b')
+        ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
+                dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
     f.tight_layout()
     f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
@@ -422,7 +422,7 @@ def plot_lens_light_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_re
     mask_lens_light = kwargs_data['mask_lens_light']
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     lens_light_model, cov, param = makeImage.make_image_lens_light(lens_light_result)
-    lens_light_result['I0_sersic'] = param[0]
+    lens_light_result[0]['I0_sersic'] = param[0]
     lens_light_no_mask = makeImage.get_lens_surface_brightness(lens_light_result)
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
@@ -515,7 +515,7 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         y_ = (y_image[i] + 0.5)*(deltaPix)
         ax.plot(x_, y_, 'or')
         ax.text(x_, y_, abc_list[i], fontsize=20, color='w')
-    x_, y_ = makeImage.map_coord2pix(source_result['center_x'], source_result['center_y'])
+    x_, y_ = makeImage.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     f.tight_layout()

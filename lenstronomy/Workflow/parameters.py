@@ -9,7 +9,7 @@ from lenstronomy.MCMC.solver2point_new import Constraints2_new
 from lenstronomy.MCMC.solver4point import Constraints
 from lenstronomy.Workflow.lens_param import LensParam
 from lenstronomy.Workflow.light_param import LightParam
-from lenstronomy.Workflow_old.else_param import ElseParam
+from lenstronomy.Workflow.else_param import ElseParam
 
 
 class Param(object):
@@ -109,7 +109,7 @@ class Param(object):
         else_fix = self.elseParams.add2fix(else_fixed)
         return lens_fix, source_fix, lens_light_fix, else_fix
 
-    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light={}, kwarg_mean_else={}):
+    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_else):
         """
         returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting
         bounds are defined relative to the catalogue level image called in the class Data

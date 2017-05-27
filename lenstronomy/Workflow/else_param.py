@@ -35,9 +35,6 @@ class ElseParam(object):
             if not 'delay_dist' in self.kwargs_fixed:
                 kwargs['delay_dist'] = args[i]
                 i += 1
-        if not 'shapelet_beta' in self.kwargs_fixed:
-            kwargs['shapelet_beta'] = args[i]
-            i += 1
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
                 n = self.num_images - 1
@@ -68,8 +65,6 @@ class ElseParam(object):
         if self.kwargs_options.get('time_delay', False) is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 args.append(kwargs['delay_dist'])
-        if not 'shapelet_beta' in self.kwargs_fixed:
-            args.append(kwargs['shapelet_beta'])
 
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
@@ -101,8 +96,6 @@ class ElseParam(object):
         if self.kwargs_options.get('time_delay', False) is True:
             if 'delay_dist' in kwargs_fixed:
                 fix_return['delay_dist'] = kwargs_fixed['delay_dist']
-        if 'shapelet_beta' in kwargs_fixed:
-            fix_return['shapelet_beta'] = kwargs_fixed['shapelet_beta']
 
         if self.kwargs_options.get('psf_iteration', False):
             if 'point_amp' in kwargs_fixed:
@@ -140,9 +133,6 @@ class ElseParam(object):
             if not 'delay_dist' in self.kwargs_fixed:
                 mean.append(kwargs_mean['delay_dist'])
                 sigma.append(kwargs_mean['delay_dist_sigma'])
-        if not 'shapelet_beta' in self.kwargs_fixed:
-            mean.append(kwargs_mean['shapelet_beta'])
-            sigma.append(kwargs_mean['shapelet_beta_sigma'])
 
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
@@ -180,9 +170,6 @@ class ElseParam(object):
             if not 'delay_dist' in self.kwargs_fixed:
                 low.append(0)
                 high.append(10000)
-        if not 'shapelet_beta' in self.kwargs_fixed:
-            low.append(0.01)
-            high.append(1)
 
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:
@@ -217,9 +204,6 @@ class ElseParam(object):
             if not 'delay_dist' in self.kwargs_fixed:
                 num += 1
                 list.append('delay_dist')
-        if not 'shapelet_beta' in self.kwargs_fixed:
-            num += 1
-            list.append('shapelet_beta')
 
         if self.kwargs_options.get('psf_iteration', False):
             if not 'point_amp' in self.kwargs_fixed:

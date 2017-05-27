@@ -259,7 +259,7 @@ class LightParam(object):
                 if not 'gamma' in kwargs_fixed:
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
-            return mean, sigma
+        return mean, sigma
 
     def param_bound(self):
         """

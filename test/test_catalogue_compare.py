@@ -9,7 +9,7 @@ import pytest
 from mock import patch
 
 from lenstronomy.MCMC.compare import Compare
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.make_image import MakeImage
 
 
 class TestCatalogueCompare(object):
@@ -34,7 +34,7 @@ class TestCatalogueCompare(object):
 
 
     def test_catalogue_compare(self):
-        x_source, y_source = self.makeImage.mapping_IS(self.x_pos, self.y_pos, self.kwargs)
+        x_source, y_source = self.makeImage.ray_shooting(self.x_pos, self.y_pos, self.kwargs)
         X2 = self.compare.compare_distance(x_source,y_source)
         assert X2 == 0.41726364831733859
 

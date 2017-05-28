@@ -61,7 +61,7 @@ class MakeImage(object):
                 f = 1
             self._exp_map = f
             self._data = data[self._idex_mask == 1]
-            self.C_D = self.DeLens.get_covariance_matrix(self._data, self._sigma_b, f)
+            self.C_D = self.DeLens.covariance_matrix(self._data, self._sigma_b, f)
 
             if 'numPix_xy' in kwargs_data:
                 self._nx, self._ny = kwargs_data['numPix_xy']

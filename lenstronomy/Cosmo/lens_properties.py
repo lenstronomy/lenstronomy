@@ -9,7 +9,7 @@ from galkin.LOS_dispersion import Velocity_dispersion
 
 import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.make_image import MakeImage
 
 
 class LensProp(object):
@@ -30,13 +30,13 @@ class LensProp(object):
         self.dispersion = Velocity_dispersion()
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
-        time_delay_arcsec = self.makeImage.fermat_potential(kwargs_lens, kwargs_source, kwargs_else)
+        time_delay_arcsec = self.makeImage.fermat_potential(kwargs_lens, kwargs_else)
         time_delay = self.unitManager.time_delay_units(time_delay_arcsec, kappa_ext)
         return time_delay
 
     def magnification_ratios(self, kwargs_lens, kwargs_else, param):
         x_pos, y_pos, mag_model = self.makeImage.get_magnification_model(kwargs_lens, kwargs_else)
-        mag_data = self.makeImage.get_image_amplitudes(param, kwargs_else)
+        mag_data = kwargs_else['point_amp']
         return mag_data, mag_model
 
     def effective_einstein_radius(self, kwargs_lens_list, n_grid=200, delta_grid=0.05):

@@ -15,7 +15,7 @@ from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
-from lenstronomy.MCMC.mcmc_chains import MCMC_chain, MCMC_multiband_chain
+from lenstronomy.MCMC.mcmc_chains import MCMC_chain
 from lenstronomy.Workflow.parameters import Param
 
 
@@ -27,10 +27,7 @@ class MCMC_sampler(object):
         """
         initialise the classes of the chain and for parameter options
         """
-        if kwargs_options.get('multiBand', False):
-            self.chain = MCMC_multiband_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
-        else:
-            self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
+        self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):

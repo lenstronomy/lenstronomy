@@ -3,7 +3,7 @@ import copy
 import astrofunc.util as util
 import numpy as np
 
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.make_image import MakeImage
 
 
 class LensAnalysis(object):
@@ -18,14 +18,9 @@ class LensAnalysis(object):
     def flux_ratios(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_size=0.003
                     , shape="GAUSSIAN"):
 
-        deltaPix = self.kwargs_data['deltaPix']
-        image = self.kwargs_data['image_data']
-        subgrid_res = self.kwargs_options['subgrid_res']
-
         model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
                                                                         kwargs_source,
-                                                                        kwargs_lens_light, kwargs_else,
-                                                                        subgrid_res, inv_bool=True)
+                                                                        kwargs_lens_light, kwargs_else, inv_bool=True)
         amp_list, _ = self.makeImage.get_image_amplitudes(param, kwargs_else)
 
         ra_pos, dec_pos, mag = self.makeImage.get_magnification_model(kwargs_lens, kwargs_else)
@@ -33,20 +28,20 @@ class LensAnalysis(object):
                                                              delta_pix=source_size*100, subgrid_res=1000, shape=shape)
         return amp_list, mag, mag_finite
 
-    def lens_properties(self, kwargs_lens_light):
+    def lens_properties(self, kwargs_lens_light_list):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
         :param kwargs_lens_light:
         :return:
         """
-        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
+        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light_list[0])
         kwargs_lens_light_copy['center_x'] = 0
         kwargs_lens_light_copy['center_y'] = 0
         data = self.kwargs_data['image_data']
         numPix = int(np.sqrt(len(data))*2)
         deltaPix = self.kwargs_data['deltaPix']
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy)
+        lens_light = self.makeImage.LensLightModel.surface_brightness(x_grid, y_grid, [kwargs_lens_light_copy])
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         flux = np.sum(lens_light)
         return R_h, flux

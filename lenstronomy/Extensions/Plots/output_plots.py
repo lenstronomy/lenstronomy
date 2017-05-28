@@ -104,10 +104,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result, inv_bool=True)
-    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
+    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
                                                    lens_light_result, else_result)
-    norm_residuals = makeImage.reduced_residuals(model, error_map=error_map)
-    reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
+    norm_residuals = makeImage.Data.reduced_residuals(model, error_map=error_map)
+    reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)
     numPix_source = 200
     deltaPix_source = 0.02
@@ -118,7 +118,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
     mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
 
-    lens_light_no_mask = makeImage.get_lens_surface_brightness(lens_light_result)
+    lens_light_no_mask = makeImage.lens_surface_brightness(lens_light_result)
 
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     d = deltaPix * nx
@@ -145,25 +145,25 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         v = p.vertices
         ra_points = v[:, 0]
         dec_points = v[:, 1]
-        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        x_points, y_points = makeImage.Data.map_coord2pix(ra_points, dec_points)
         ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
 
-        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, lens_result, else_result)
-        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(ra_points, dec_points, lens_result, else_result)
+        x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
-    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
     abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
         x_ = (x_image[i] + 0.5)*(deltaPix)
         y_ = (y_image[i] + 0.5)*(deltaPix)
         ax.plot(x_, y_, 'or')
         ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
-    x_, y_ = makeImage.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
+    x_, y_ = makeImage.Data.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     ax = axes[0,1]
-    im = ax.matshow(makeImage.array2image(np.log10(model)), origin='lower', vmin=v_min, vmax=v_max,
+    im = ax.matshow(makeImage.Data.array2image(np.log10(model)), origin='lower', vmin=v_min, vmax=v_max,
                                 extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -177,7 +177,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     plt.colorbar(im, cax=cax)
 
     ax = axes[0,2]
-    im = ax.matshow(makeImage.array2image(norm_residuals), origin='lower', vmin=-6, vmax=6,
+    im = ax.matshow(makeImage.Data.array2image(norm_residuals), origin='lower', vmin=-6, vmax=6,
                                 extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap='bwr')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -212,12 +212,12 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
                 dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
     ax = axes[1,1]
-    im = ax.matshow(makeImage.array2image(np.log10(lens_light_no_mask)), origin='lower',
+    im = ax.matshow(makeImage.Data.array2image(np.log10(lens_light_no_mask)), origin='lower',
                                 extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap, vmin=v_min, vmax=v_max,)
     v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
@@ -230,8 +230,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    x_light, y_light = makeImage.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
-    x_lens, y_lens = makeImage.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
+    x_light, y_light = makeImage.Data.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
+    x_lens, y_lens = makeImage.Data.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
     ax.plot(x_light, y_light, 'og')
     ax.plot(x_lens, y_lens, 'b', marker='+')
     ax = axes[1,2]
@@ -253,14 +253,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         v = p.vertices
         ra_points = v[:, 0]
         dec_points = v[:, 1]
-        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        x_points, y_points = makeImage.Data.map_coord2pix(ra_points, dec_points)
         ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
 
-        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, lens_result, else_result)
-        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(ra_points, dec_points, lens_result, else_result)
+        x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
-    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
 
     abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
@@ -277,8 +277,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
 def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap, source_sigma=0.001):
-    num_order = kwargs_options['shapelet_order']
-    beta = else_result['shapelet_beta']
 
     util_class = Util_class()
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
@@ -286,17 +284,17 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result, inv_bool=True)
-    model_pure, _, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
+    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
                                                    lens_light_result, else_result)
     mag_high_res = util.array2image(
         makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
-    reduced_x2 = makeImage.reduced_chi2(model, error_map=error_map)
+    reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)
     numPix_source = 200
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
-    source, error_map_source = makeImage.get_source(param, x_grid_source, y_grid_source, source_result, cov_param)
+    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, source_result, cov_param)
     source = util.array2image(source)
     error_map_source = util.array2image(error_map_source)
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
@@ -326,7 +324,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
                 dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
@@ -351,7 +349,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
                 dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
@@ -375,7 +373,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
                 dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
@@ -400,7 +398,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         v = p.vertices
         x_points = v[:, 0]
         y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.mapping_IS(x_points, y_points, lens_result, else_result)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - source_result[0]['center_x'] + delta_source / 2.,
                 dec_caustics - source_result[0]['center_y'] + delta_source / 2., 'b')
 
@@ -417,7 +415,7 @@ def plot_lens_light_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_re
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     lens_light_model, cov, param = makeImage.make_image_lens_light(lens_light_result)
     lens_light_result[0]['I0_sersic'] = param[0]
-    lens_light_no_mask = makeImage.get_lens_surface_brightness(lens_light_result)
+    lens_light_no_mask = makeImage.lens_surface_brightness(lens_light_result)
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
 
@@ -465,10 +463,10 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
 
     model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
                                                                     lens_light_result, else_result, inv_bool=True)
-    model_pure, _, _ = makeImage.make_image_ideal_noMask(lens_result, source_result,
+    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
                                                    lens_light_result, else_result)
-    mag_result = makeImage.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
-    mag_high_res = makeImage.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
+    mag_result = makeImage.Data.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
+    mag_high_res = makeImage.Data.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
     f, axes = plt.subplots(1, 1, figsize=(8, 8), sharex=False, sharey=False)
     d = deltaPix * numPix
     ax = axes
@@ -494,14 +492,14 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         v = p.vertices
         ra_points = v[:, 0]
         dec_points = v[:, 1]
-        x_points, y_points = makeImage.map_coord2pix(ra_points, dec_points)
+        x_points, y_points = makeImage.Data.map_coord2pix(ra_points, dec_points)
         ax.plot((x_points+0.5)*(deltaPix), (y_points+0.5)*(deltaPix), 'r')
 
-        ra_caustics, dec_caustics = makeImage.mapping_IS(ra_points, dec_points, lens_result, else_result)
-        x_c, y_c = makeImage.map_coord2pix(ra_caustics, dec_caustics)
+        ra_caustics, dec_caustics = makeImage.ray_shooting(ra_points, dec_points, lens_result, else_result)
+        x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
-    x_image, y_image = makeImage.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
 
     abc_list = ['A', 'B', 'C', 'D']
     for i in range(len(x_image)):
@@ -509,7 +507,7 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         y_ = (y_image[i] + 0.5)*(deltaPix)
         ax.plot(x_, y_, 'or')
         ax.text(x_, y_, abc_list[i], fontsize=20, color='w')
-    x_, y_ = makeImage.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
+    x_, y_ = makeImage.Data.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 
     f.tight_layout()
@@ -546,7 +544,7 @@ def mcmc_output(samples_mcmc, param_mcmc, fitting_kwargs_list, truths=None):
 
 
 def param_list_from_kwargs(kwargs_data, kwargs_psf, kwargs_fixed, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
-    from lenstronomy.Workflow_old.fitting import Fitting
+    from lenstronomy.Workflow.fitting import Fitting
     kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_else_fixed = kwargs_fixed
     fitting = Fitting(kwargs_data, kwargs_psf, kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_else_fixed)
     kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = fitting._mcmc_run_fixed(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)

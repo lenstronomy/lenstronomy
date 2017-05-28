@@ -25,18 +25,18 @@ class Trash(object):
         values = np.zeros(num_candidates)
         for i in range(len(x_min)):
             l=0
-            x_mapped, y_mapped = self.makeImage.mapping_IS(x_min[i], y_min[i], kwargs_lens, kwargs_else)
+            x_mapped, y_mapped = self.makeImage.ray_shooting(x_min[i], y_min[i], kwargs_lens, kwargs_else)
             delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-            potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.get_lens_all(x_min[i], y_min[i], kwargs_lens, kwargs_else)
+            potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.lensing_quantities(x_min[i], y_min[i], kwargs_lens, kwargs_else)
             DistMatrix = np.array([[1-kappa+gamma1, gamma2], [gamma2, 1-kappa-gamma1]])
             det = 1./mag
             posAngel = np.array([x_min[i], y_min[i]])
             while(delta > deltapix/100000 and l<num_iter):
                 deltaVec = np.array([x_mapped - sourcePos_x, y_mapped - sourcePos_y])
                 posAngel = posAngel - DistMatrix.dot(deltaVec)/det
-                x_mapped, y_mapped = self.makeImage.mapping_IS(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
+                x_mapped, y_mapped = self.makeImage.ray_shooting(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
                 delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-                potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.get_lens_all(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
+                potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.lensing_quantities(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
                 DistMatrix=np.array([[1-kappa+gamma1, gamma2], [gamma2, 1-kappa-gamma1]])
                 det=1./mag
                 l+=1
@@ -57,7 +57,7 @@ class Trash(object):
         :raises: AttributeError, KeyError
         """
         x_grid, y_grid = util.make_grid(numPix,deltapix)
-        x_mapped, y_mapped = self.makeImage.mapping_IS(x_grid, y_grid, kwargs_lens, kwargs_else)
+        x_mapped, y_mapped = self.makeImage.ray_shooting(x_grid, y_grid, kwargs_lens, kwargs_else)
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         x_mins, y_mins, values = util.neighborSelect(absmapped, x_grid, y_grid)
         if x_mins == []:
@@ -85,7 +85,7 @@ class Trash(object):
         x_mins, y_mins = self.findImage(sourcePos_x, sourcePos_y, deltapix, numPix, kwargs_lens, kwargs_else)
         mag_list = []
         for i in range(len(x_mins)):
-            potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.get_lens_all(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
+            potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.makeImage.lensing_quantities(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
             mag_list.append(abs(mag))
         mag_list = np.array(mag_list)
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImage)

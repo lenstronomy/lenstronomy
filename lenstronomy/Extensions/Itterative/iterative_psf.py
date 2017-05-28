@@ -33,8 +33,8 @@ class PSF_iterative(object):
         model_no_point = self.image_no_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
                    kwargs_else)
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        x_, y_ = makeImage.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        data_point = makeImage.array2image(makeImage._data - model_no_point)
+        x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
+        data_point = makeImage.Data.array2image(makeImage.Data.data - model_no_point)
         point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
@@ -81,19 +81,10 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        subgrid_res = kwargs_options['subgrid_res']
-
         # reconstructed model with given psf
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        model, error_map, cov_param, param = makeImage.make_image_ideal_noMask(kwargs_lens, kwargs_source,
-                                   kwargs_lens_light, kwargs_else, inv_bool=False)
-        if verbose is True:
-            print(makeImage.reduced_chi2(model, error_map))
-        param_point, param_no_point = makeImage.get_image_amplitudes(param, kwargs_else)
-
-        model_no_point, _ = makeImage.make_image_with_params(kwargs_lens, kwargs_source,
-                                   kwargs_lens_light, kwargs_else, param_no_point)
-        model_no_point[model_no_point < 0] = 0
+        model_no_point, error_map = makeImage.make_image_with_params(kwargs_lens, kwargs_source,
+                                   kwargs_lens_light, kwargs_else, point_source_add=False)
         return model_no_point
 
     def cutout_psf(self, x_, y_, image, kernelsize, symmetry=1):

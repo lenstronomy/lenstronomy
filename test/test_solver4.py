@@ -6,7 +6,7 @@ import numpy.testing as npt
 import pytest
 
 from lenstronomy.MCMC.solver4point import SolverSPEP, Constraints, SolverShapelets
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.Trash.trash import Trash
 
 
@@ -43,7 +43,7 @@ class TestSolver(object):
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1, 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
         x_pos, y_pos = self.trash_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
-        sourcePos_x, sourcePos_y = self.makeImage_spep.mapping_IS(x_pos, y_pos, kwargs_lens)
+        sourcePos_x, sourcePos_y = self.makeImage_spep.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x, sourcePos_y, 'source positions')
         e1, e2 = util.phi_q2_elliptisity(kwargs_lens[0]['phi_G'], kwargs_lens[0]['q'])
 
@@ -61,7 +61,7 @@ class TestSolver(object):
         [phi_E, e1_new, e2_new, center_x, center_y, no_sens_param] = x
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma, 'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y}]
-        sourcePos_x_new, sourcePos_y_new = self.makeImage_spep.mapping_IS(x_pos[0], y_pos[0], kwargs_lens_new)
+        sourcePos_x_new, sourcePos_y_new = self.makeImage_spep.ray_shooting(x_pos[0], y_pos[0], kwargs_lens_new)
         x_pos_new, y_pos_new = self.trash_spep.findImage(sourcePos_x_new, sourcePos_y_new, deltapix, numPix, kwargs_lens_new)
         print(x_pos_new, 'x_pos_new')
         print(x_pos, 'x_pos old')
@@ -87,7 +87,7 @@ class TestSolver(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'Rs': 0.1, 'rho0': 1., 'r200': 10., 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = self.trash_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
-        sourcePos_x_new, sourcePos_y_new = self.makeImage_nfw.mapping_IS(x_pos, y_pos, kwargs_lens)
+        sourcePos_x_new, sourcePos_y_new = self.makeImage_nfw.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x - sourcePos_x_new, 'sourcePos_x- sourcePos_x_new NFW')
         print(sourcePos_y - sourcePos_y_new, 'sourcePos_y- sourcePos_y_new NFW')
         e1, e2 = util.phi_q2_elliptisity(kwargs_lens[0]['phi_G'], kwargs_lens[0]['q'])
@@ -108,7 +108,7 @@ class TestSolver(object):
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma,'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y},
                            {'Rs': 0.1, 'rho0': 1., 'r200': 10., 'center_x': -0.5, 'center_y': 0.5}]
-        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_nfw.mapping_IS(x_pos, y_pos, kwargs_lens_new)
+        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_nfw.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         sourcePos_x_new = np.mean(sourcePos_x_new_array)
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')
@@ -140,7 +140,7 @@ class TestSolver(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = self.trash_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
-        x_mapped, y_mapped = self.makeImage_spp.mapping_IS(x_pos, y_pos, kwargs_lens)
+        x_mapped, y_mapped = self.makeImage_spp.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)
         npt.assert_almost_equal(center_y, sourcePos_y, decimal=5)
@@ -165,7 +165,7 @@ class TestSolver(object):
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma,'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y},
                            {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
-        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_spp.mapping_IS(x_pos, y_pos, kwargs_lens_new)
+        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_spp.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         sourcePos_x_new = np.mean(sourcePos_x_new_array)
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')
@@ -216,7 +216,7 @@ class TestSolverNew(object):
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5},
                        {'coeffs': [0.,-0.1,0.01,-0.03,0.04, 0.1], 'beta': beta, 'center_x': 0, 'center_y': 0}]
         x_pos, y_pos = self.trash_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
-        x_mapped, y_mapped = self.makeImage_spep_spp_shapelets.mapping_IS(x_pos, y_pos, kwargs_lens)
+        x_mapped, y_mapped = self.makeImage_spep_spp_shapelets.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)
         npt.assert_almost_equal(center_y, sourcePos_y, decimal=5)
@@ -238,7 +238,7 @@ class TestSolverNew(object):
         kwargs_lens_new = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                            {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5},
                            {'coeffs': x, 'beta': beta, 'center_x': 0, 'center_y': 0}]
-        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_spep_spp_shapelets.mapping_IS(x_pos, y_pos, kwargs_lens_new)
+        sourcePos_x_new_array, sourcePos_y_new_array = self.makeImage_spep_spp_shapelets.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         sourcePos_x_new = np.mean(sourcePos_x_new_array)
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')

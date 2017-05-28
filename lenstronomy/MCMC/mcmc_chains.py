@@ -187,12 +187,11 @@ class MCMC_chain(object):
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value
         """
         if type(self.mask) == int:
-            n = self.numPix**2
+            n = self.makeImage.Data._nx * self.makeImage.Data._ny
         else:
             if self.sampling_option == 'lens_light':
                 n = np.sum(self.mask_lens_light)
             else:
                 n = np.sum(self.mask)
         num_param, _ = self.param.num_param()
-        num_shapelets = (self.num_shapelets + 1)*(self.num_shapelets + 2)/2
-        return n - num_param - num_shapelets - 1
+        return n - num_param - 1

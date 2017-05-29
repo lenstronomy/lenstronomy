@@ -113,7 +113,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
-    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, source_result, cov_param)
+    kwargs_source_new = copy.deepcopy(source_result)
+    kwargs_source_new[0]['center_x'] = 0
+    kwargs_source_new[0]['center_y'] = 0
+    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, kwargs_source_new, cov_param)
     source = util.array2image(source)
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
     mag_high_res = util.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
@@ -294,7 +297,10 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     deltaPix_source = 0.02
     delta_source = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
-    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, source_result, cov_param)
+    kwargs_source_new = copy.deepcopy(source_result)
+    kwargs_source_new[0]['center_x'] = 0
+    kwargs_source_new[0]['center_y'] = 0
+    source, error_map_source = makeImage.get_source(x_grid_source, y_grid_source, kwargs_source_new, cov_param)
     source = util.array2image(source)
     error_map_source = util.array2image(error_map_source)
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)

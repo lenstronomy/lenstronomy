@@ -83,6 +83,8 @@ class PSF_iterative(object):
         """
         # reconstructed model with given psf
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        wls_model, error_map, cov_param, param = makeImage.make_image_ideal(kwargs_lens, kwargs_source,
+                                                                     kwargs_lens_light, kwargs_else)
         model_no_point, error_map = makeImage.make_image_with_params(kwargs_lens, kwargs_source,
                                    kwargs_lens_light, kwargs_else, point_source_add=False)
         return model_no_point

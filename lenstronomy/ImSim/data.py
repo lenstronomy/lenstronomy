@@ -1,4 +1,6 @@
 import numpy as np
+import scipy.ndimage as ndimage
+import scipy.signal as signal
 
 import astrofunc.util as util
 from astrofunc.util import Util_class
@@ -93,11 +95,10 @@ class Data(object):
 
     @property
     def mask(self):
-        return self._mask
-
-    @property
-    def mask_lens_light(self):
-        return self._mask_lens_light
+        if self.kwargs_options.get('lens_light_mask', False):
+            return self._mask_lens_light
+        else:
+            return self._mask
 
     def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
         """
@@ -228,3 +229,50 @@ class Data(object):
         chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map))\
                *self._mask/np.sum(self._mask)
         return np.sum(chi2)
+
+    def psf_convolution(self, grid, grid_scale, **kwargs):
+        """
+        convolves a given pixel grid with a PSF
+        """
+        if self.kwargs_options.get('psf_type', 'NONE') == 'NONE':
+            return grid
+        elif self.kwargs_options['psf_type'] == 'gaussian':
+            sigma = kwargs['sigma']/grid_scale
+            if 'truncate' in kwargs:
+                sigma_truncate = kwargs['truncate']
+            else:
+                sigma_truncate = 3.
+            img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate)
+            return img_conv
+        elif self.kwargs_options['psf_type'] == 'pixel':
+            kernel = kwargs['kernel']
+            if 'kernel_fft' in kwargs:
+                kernel_fft = kwargs['kernel_fft']
+                try:
+                    img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
+                except:
+                    img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
+            else:
+                img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
+            return img_conv1
+        else:
+            raise ValueError('PSF type %s not valid!' %self.kwargs_options['psf_type'])
+
+    def re_size_convolve(self, image, subgrid_res, kwargs_psf, unconvolved=False):
+        image = self.array2image(image, subgrid_res)
+        gridScale = self.deltaPix/subgrid_res
+        if self.kwargs_options['psf_type'] == 'pixel':
+            grid_re_sized = self.util_class.re_size(image, subgrid_res)
+            if unconvolved:
+                grid_final = grid_re_sized
+            else:
+                grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
+        elif self.kwargs_options['psf_type'] == 'NONE':
+            grid_final = self.util_class.re_size(image, subgrid_res)
+        else:
+            if unconvolved:
+                grid_conv = image
+            else:
+                grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
+            grid_final = self.util_class.re_size(grid_conv, subgrid_res)
+        return self.image2array(grid_final)

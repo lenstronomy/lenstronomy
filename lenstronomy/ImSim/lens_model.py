@@ -56,7 +56,7 @@ class LensModel(object):
             else:
                 raise ValueError('options do not include a valid lens model!', kwargs_options['lens_type'])
         self.foreground_shear = kwargs_options.get('foreground_shear', False)
-
+        self.model_list = model_list
         self.perturb_alpha = kwargs_options.get("perturb_alpha", False)
         if self.perturb_alpha:
             self.alpha_perturb_x = kwargs_options["alpha_perturb_x"]
@@ -77,7 +77,8 @@ class LensModel(object):
             y_ = y
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
-            potential += func.function(x_, y_, **kwargs[i])
+            if not self.model_list[i] == 'NONE':
+                potential += func.function(x_, y_, **kwargs[i])
         return potential
 
     def alpha(self, x, y, kwargs, kwargs_else=None):
@@ -93,9 +94,10 @@ class LensModel(object):
             y_ = y
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
         for i, func in enumerate(self.func_list):
-            f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
-            f_x += f_x_i
-            f_y += f_y_i
+            if not self.model_list[i] == 'NONE':
+                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                f_x += f_x_i
+                f_y += f_y_i
         if self.perturb_alpha:
             f_x += self.alpha_perturb_x
             f_y += self.alpha_perturb_y
@@ -144,14 +146,15 @@ class LensModel(object):
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
         f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
         for i, func in enumerate(self.func_list):
-            potential += func.function(x_, y_, **kwargs[i])
-            f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
-            f_x += f_x_i
-            f_y += f_y_i
-            f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-            f_xx += f_xx_i
-            f_yy += f_yy_i
-            f_xy += f_xy_i
+            if not self.model_list[i] == 'NONE':
+                potential += func.function(x_, y_, **kwargs[i])
+                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                f_x += f_x_i
+                f_y += f_y_i
+                f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
+                f_xx += f_xx_i
+                f_yy += f_yy_i
+                f_xy += f_xy_i
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
@@ -176,8 +179,9 @@ class LensModel(object):
         else:
             f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
             for i, func in enumerate(self.func_list):
-                f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-                f_xx += f_xx_i
-                f_yy += f_yy_i
-                f_xy += f_xy_i
+                if not self.model_list[i] == 'NONE':
+                    f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
+                    f_xx += f_xx_i
+                    f_yy += f_yy_i
+                    f_xy += f_xy_i
         return f_xx, f_xy, f_yy

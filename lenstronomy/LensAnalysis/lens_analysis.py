@@ -18,9 +18,9 @@ class LensAnalysis(object):
     def flux_ratios(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_size=0.003
                     , shape="GAUSSIAN"):
 
-        model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
-                                                                        kwargs_source,
-                                                                        kwargs_lens_light, kwargs_else, inv_bool=True)
+        model, error_map, cov_param, param = self.makeImage.image_linear_solve(kwargs_lens,
+                                                                               kwargs_source,
+                                                                               kwargs_lens_light, kwargs_else, inv_bool=True)
         amp_list = kwargs_else['point_amp']
         ra_pos, dec_pos, mag = self.makeImage.get_magnification_model(kwargs_lens, kwargs_else)
         mag_finite = self.makeImage.get_magnification_finite(kwargs_lens, kwargs_else, source_sigma=source_size,
@@ -53,9 +53,9 @@ class LensAnalysis(object):
                           deltaPix_source, n_bins=20):
         deltaPix = self.kwargs_data['deltaPix']
 
-        model, error_map, cov_param, param = self.makeImage.make_image_ideal(kwargs_lens,
-                                                                        kwargs_source,
-                                                                        kwargs_lens_light, kwargs_else, inv_bool=True)
+        model, error_map, cov_param, param = self.makeImage.image_linear_solve(kwargs_lens,
+                                                                               kwargs_source,
+                                                                               kwargs_lens_light, kwargs_else, inv_bool=True)
         x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
         kwargs_source_new = copy.deepcopy(kwargs_source)
         kwargs_source_new[0]['center_x'] = 0

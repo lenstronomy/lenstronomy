@@ -102,10 +102,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
-    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
-                                                                    lens_light_result, else_result, inv_bool=True)
-    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
-                                                   lens_light_result, else_result)
+    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
+                                                                      lens_light_result, else_result, inv_bool=True)
+    model_pure, _ = makeImage.image_with_params(lens_result, source_result,
+                                                lens_light_result, else_result)
     norm_residuals = makeImage.Data.reduced_residuals(model, error_map=error_map)
     reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)
@@ -285,10 +285,10 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
-                                                                    lens_light_result, else_result, inv_bool=True)
-    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
-                                                   lens_light_result, else_result)
+    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
+                                                                      lens_light_result, else_result, inv_bool=True)
+    model_pure, _ = makeImage.image_with_params(lens_result, source_result,
+                                                lens_light_result, else_result)
     mag_high_res = util.array2image(
         makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
     reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
@@ -467,10 +467,10 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
 
 
 
-    model, error_map, cov_param, param = makeImage.make_image_ideal(lens_result, source_result,
-                                                                    lens_light_result, else_result, inv_bool=True)
-    model_pure, _ = makeImage.make_image_with_params(lens_result, source_result,
-                                                   lens_light_result, else_result)
+    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
+                                                                      lens_light_result, else_result, inv_bool=True)
+    model_pure, _ = makeImage.image_with_params(lens_result, source_result,
+                                                lens_light_result, else_result)
     mag_result = makeImage.Data.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
     mag_high_res = makeImage.Data.array2image(makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
     f, axes = plt.subplots(1, 1, figsize=(8, 8), sharex=False, sharey=False)

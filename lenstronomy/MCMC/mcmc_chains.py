@@ -48,7 +48,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        im_sim, model_error, cov_matrix, param = self.makeImage.make_image_ideal(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=self.inv_bool)
+        im_sim, model_error, cov_matrix, param = self.makeImage.image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=self.inv_bool)
         #compute X^2
         X = self.makeImage.Data.reduced_residuals(im_sim, model_error)
         logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)

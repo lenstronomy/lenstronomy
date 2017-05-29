@@ -14,8 +14,6 @@ from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.data import Data
 import lenstronomy.DeLens.de_lens as de_lens
 
-import scipy.ndimage as ndimage
-import scipy.signal as signal
 import numpy as np
 
 
@@ -54,12 +52,12 @@ class MakeImage(object):
         else:
             x_source, y_source = self.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source)
-        source_light_final = self.re_size_convolve(source_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        source_light_final = self.Data.re_size_convolve(source_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.Data.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def lensing_quantities(self, x, y, kwargs, kwargs_else=None):
@@ -69,53 +67,6 @@ class MakeImage(object):
         """
         potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x, y, kwargs, kwargs_else)
         return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
-
-    def psf_convolution(self, grid, grid_scale, **kwargs):
-        """
-        convolves a given pixel grid with a PSF
-        """
-        if self.kwargs_options.get('psf_type', 'NONE') == 'NONE':
-            return grid
-        elif self.kwargs_options['psf_type'] == 'gaussian':
-            sigma = kwargs['sigma']/grid_scale
-            if 'truncate' in kwargs:
-                sigma_truncate = kwargs['truncate']
-            else:
-                sigma_truncate = 3.
-            img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate)
-            return img_conv
-        elif self.kwargs_options['psf_type'] == 'pixel':
-            kernel = kwargs['kernel']
-            if 'kernel_fft' in kwargs:
-                kernel_fft = kwargs['kernel_fft']
-                try:
-                    img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
-                except:
-                    img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
-            else:
-                img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
-            return img_conv1
-        else:
-            raise ValueError('PSF type %s not valid!' %self.kwargs_options['psf_type'])
-
-    def re_size_convolve(self, image, subgrid_res, kwargs_psf, unconvolved=False):
-        image = self.Data.array2image(image, subgrid_res)
-        gridScale = self.Data.deltaPix/subgrid_res
-        if self.kwargs_options['psf_type'] == 'pixel':
-            grid_re_sized = self.util_class.re_size(image, subgrid_res)
-            if unconvolved:
-                grid_final = grid_re_sized
-            else:
-                grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
-        elif self.kwargs_options['psf_type'] == 'NONE':
-            grid_final = self.util_class.re_size(image, subgrid_res)
-        else:
-            if unconvolved:
-                grid_conv = image
-            else:
-                grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
-            grid_final = self.util_class.re_size(grid_conv, subgrid_res)
-        return self.Data.image2array(grid_final)
 
     def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light, kwargs_else):
         """
@@ -154,12 +105,9 @@ class MakeImage(object):
             i += num_images
         return kwargs_source, kwargs_lens_light, kwargs_else
 
-    def make_image_ideal(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False, no_lens=False):
+    def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
         map_error = self.kwargs_options.get('error_map', False)
-        if no_lens is True:
-            x_source, y_source = self.Data.x_grid_sub, self.Data.y_grid_sub
-        else:
-            x_source, y_source = self.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
+        x_source, y_source = self.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
         A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
         data = self.Data.data
@@ -168,7 +116,7 @@ class MakeImage(object):
         _, _, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light, kwargs_else)
         return wls_model, error_map, cov_param, param
 
-    def make_image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
         """
@@ -186,22 +134,6 @@ class MakeImage(object):
             point_source = np.zeros_like(self.Data.data)
             error_map = np.zeros_like(self.Data.data)
         return source_light + lens_light + point_source, error_map
-
-    def make_image_lens_light(self, kwargs_lens_light):
-        mask = self.Data.mask_lens_light
-        lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
-        n = 0
-        numPix = len(self.Data.x_grid_sub)/self._subgrid_res**2
-        A = np.zeros((n_lens_light, numPix))
-        for i in range(0, n_lens_light):
-            image = lens_light_response[i]
-            image = self.re_size_convolve(image, self._subgrid_res, self.kwargs_psf)
-            A[n, :] = image
-            n += 1
-        A = self._add_mask(A, mask)
-        d = self.Data.data * mask
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1/self.Data.C_D, d, inv_bool=False)
-        return wls_model, cov_param, param
 
     def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else):
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
@@ -224,13 +156,13 @@ class MakeImage(object):
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-            image = self.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of point sources

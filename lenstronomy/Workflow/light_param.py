@@ -36,31 +36,47 @@ class LightParam(object):
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
+                else:
+                    kwargs['center_x'] = kwargs_fixed['center_x']
                 if not 'center_y' in kwargs_fixed:
                     kwargs['center_y'] = args[i]
                     i += 1
+                else:
+                    kwargs['center_y'] = kwargs_fixed['center_y']
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     kwargs['beta'] = args[i]
                     i += 1
+                else:
+                    kwargs['beta'] = kwargs_fixed['beta']
                 if not 'n_max' in kwargs_fixed:
                     kwargs['n_max'] = int(args[i])
                     i += 1
+                else:
+                    kwargs['n_max'] = int(kwargs_fixed['n_max'])
                 if not 'amp' in kwargs_fixed:
                     n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
                     num_param = (n_max + 1) + (n_max + 2) / 2
                     kwargs['amp'] = args[i:i+num_param]
                     i += num_param
+                else:
+                    kwargs['amp'] = kwargs_fixed['amp']
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     kwargs['I0_sersic'] = args[i]
                     i += 1
+                else:
+                    kwargs['I0_sersic'] = kwargs_fixed['I0_sersic']
                 if not 'n_sersic' in kwargs_fixed:
                     kwargs['n_sersic'] = args[i]
                     i += 1
+                else:
+                    kwargs['n_sersic'] = kwargs_fixed['n_sersic']
                 if not 'R_sersic' in kwargs_fixed:
                     kwargs['R_sersic'] = args[i]
                     i += 1
+                else:
+                    kwargs['R_sersic'] = kwargs_fixed['R_sersic']
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
@@ -68,23 +84,36 @@ class LightParam(object):
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
+                else:
+                    kwargs['phi_G'] = kwargs_fixed['phi_G']
+                    kwargs['q'] = kwargs_fixed['q']
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
                     kwargs['I0_2'] = args[i]
                     i += 1
+                else:
+                    kwargs['I0_2'] = kwargs_fixed['I0_2']
                 if not 'R_2' in kwargs_fixed:
                     kwargs['R_2'] = args[i]
                     i += 1
+                else:
+                    kwargs['R_2'] = kwargs_fixed['R_2']
                 if not 'n_2' in kwargs_fixed:
                     kwargs['n_2'] = args[i]
                     i += 1
+                else:
+                    kwargs['n_2'] = kwargs_fixed['n_2']
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     kwargs['Re'] = args[i]
                     i += 1
+                else:
+                    kwargs['Re'] = kwargs_fixed['Re']
                 if not 'gamma' in kwargs_fixed:
                     kwargs['gamma'] = args[i]
                     i += 1
+                else:
+                    kwargs['gamma'] = kwargs_fixed['gamma']
             kwargs_list.append(kwargs)
         return kwargs_list, i
 

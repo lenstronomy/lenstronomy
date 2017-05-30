@@ -24,21 +24,32 @@ class ElseParam(object):
             if not 'ra_pos' in self.kwargs_fixed:
                 kwargs['ra_pos'] = np.array(args[i:i+self._num_images])
                 i += self._num_images
+            else:
+                kwargs['ra_pos'] = self.kwargs_fixed['ra_pos']
             if not 'dec_pos' in self.kwargs_fixed:
                 kwargs['dec_pos'] = np.array(args[i:i+self._num_images])
                 i += self._num_images
+            else:
+                kwargs['dec_pos'] = self.kwargs_fixed['dec_pos']
             if not 'point_amp' in self.kwargs_fixed:
                 kwargs['point_amp'] = np.array(args[i:i+self._num_images])
                 i += self._num_images
+            else:
+                kwargs['point_amp'] = self.kwargs_fixed['point_amp']
         if self.foreground_shear:
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 kwargs['gamma1_foreground'] = args[i]
                 kwargs['gamma2_foreground'] = args[i+1]
                 i += 2
+            else:
+                kwargs['gamma1_foreground'] = self.kwargs_fixed['gamma1_foreground']
+                kwargs['gamma2_foreground'] = self.kwargs_fixed['gamma2_foreground']
         if self.kwargs_options.get('time_delay', False) is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 kwargs['delay_dist'] = args[i]
                 i += 1
+            else:
+                kwargs['delay_dist'] = self.kwargs_fixed['delay_dist']
         return kwargs, i
 
     def setParams(self, kwargs):

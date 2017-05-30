@@ -26,7 +26,7 @@ class Param(object):
     SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)
     """
 
-    def __init__(self, kwargs_options, kwargs_fixed_lens=[], kwargs_fixed_source={}, kwargs_fixed_lens_light={}, kwargs_fixed_else={}):
+    def __init__(self, kwargs_options, kwargs_fixed_lens=[], kwargs_fixed_source=[], kwargs_fixed_lens_light=[], kwargs_fixed_else={}):
         """
 
         :return:
@@ -69,17 +69,7 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_else, i = self.elseParams.getParams(args, i)
-        lens_dict_list = []
-        for k, kwargs in enumerate(kwargs_lens):
-            lens_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_lens[k].items()))
-        source_dict_list = []
-        for k, kwargs in enumerate(kwargs_source):
-            source_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_source[k].items()))
-        lens_light_dict_list = []
-        for k, kwargs in enumerate(kwargs_lens_light):
-            lens_light_dict_list.append(dict(kwargs.items() + self.kwargs_fixed_lens_light[k].items()))
-        else_dict = dict(kwargs_else.items() + self.kwargs_fixed_else.items())
-        return lens_dict_list, source_dict_list, lens_light_dict_list, else_dict
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light={}, kwargs_else={}):
         """

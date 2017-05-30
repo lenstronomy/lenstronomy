@@ -38,19 +38,20 @@ class Param(object):
         self.kwargs_options = kwargs_options
         self.makeImage = MakeImage(kwargs_options)
 
-        self.foreground_shear = kwargs_options.get('foreground_shear', False)
-        self.num_images = kwargs_options.get('num_images', 4)
-        self.fix_center = kwargs_options.get('fix_center', False)
+        self._foreground_shear = kwargs_options.get('foreground_shear', False)
+        self._num_images = kwargs_options.get('num_images', 4)
+        self._fix_center = kwargs_options.get('fix_center', False)
+        self._fix_mass2light = kwargs_options.get('mass2light_fixed', False)
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'SPEP')
-            if self.num_images == 4:
+            if self._num_images == 4:
                 self.constraints = Constraints(self.solver_type)
-            elif self. num_images == 2:
-                if self.fix_center is True:
+            elif self. _num_images == 2:
+                if self._fix_center is True:
                     self.constraints = Constraints2_new()
                 self.constraints = Constraints2(self.solver_type)
             else:
-                raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
+                raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
         else:
             self.solver_type = "NONE"
         self.lensParams = LensParam(kwargs_options, kwargs_fixed_lens)
@@ -204,15 +205,32 @@ class Param(object):
         kwargs_lens['coeffs'] = coeffs
         return kwargs_lens
 
+    def _updated_mass2light(self, kwargs_else, kwargs_lens_list):
+        """
+        updates theta_E for those lens models with fixed mass to light ratio (actually Einstein radius to light ratio)
+        :param kwargs_else:
+        :param kwargs_lens_list:
+        :return:
+        """
+        M2L = kwargs_else['mass2light']
+        m2l_list = self.kwargs_options['mass2light_fixed_list']
+        for i, kwargs_lens in enumerate(kwargs_lens_list):
+            if m2l_list[i]:
+                if 'theta_E' in kwargs_lens:
+                    kwargs_lens['theta_E'] *= M2L
+        return kwargs_lens_list
+
     def get_all_params(self, args):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.getParams(args)
+        if self._fix_mass2light:
+            kwargs_lens = self._updated_mass2light(kwargs_else, kwargs_lens)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def update_kwargs(self, kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else):
         kwargs_lens = kwargs_lens_list[0]
         if self.kwargs_options.get('solver', False):
-            if self.foreground_shear:
+            if self._foreground_shear:
                 f_x_shear1, f_y_shear1 = self.makeImage.LensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
                 x_ = kwargs_else['ra_pos'] - f_x_shear1
                 y_ = kwargs_else['dec_pos'] - f_y_shear1
@@ -220,15 +238,15 @@ class Param(object):
                 x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
             if self.solver_type in ['SPEP', 'SPEMD']:
                 e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                if self.num_images == 4:
+                if self._num_images == 4:
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
-                elif self.num_images == 2:
-                    if self.fix_center is False:
+                elif self._num_images == 2:
+                    if self._fix_center is False:
                         init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                         theta_E = kwargs_lens['theta_E']
                         kwargs_lens['theta_E'] = 0
@@ -247,14 +265,14 @@ class Param(object):
                         kwargs_lens['theta_E'] = theta_E
                         kwargs_lens = self._update_spep2_new(kwargs_lens, x)
                 else:
-                    raise ValueError("%s number of images is not valid. Use 2 or 4!" % self.num_images)
+                    raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
             elif self.solver_type == 'SHAPELETS':
                 ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                if self.num_images == 4:
+                if self._num_images == 4:
                     init = [0, 0, 0, 0, 0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
                     kwargs_lens = self._update_coeffs(kwargs_lens, x)
-                elif self.num_images == 2:
+                elif self._num_images == 2:
                     init = [0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
                     kwargs_lens = self._update_coeffs2(kwargs_lens, x)

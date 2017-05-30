@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 import astrofunc.util as util
 import numpy as np
-import numpy.testing as npt
 import pytest
 from mock import patch
 
@@ -33,11 +32,6 @@ class TestMakeImage(object):
         kwargs = {'sigma': 1}
         grid_convolved = self.makeImage.Data.psf_convolution(self.grid, 1., **kwargs)
         assert (grid_convolved[0][0] > 8.447e-05 and grid_convolved[0][0] < 8.448e-05)
-
-    def test_get_magnification_model(self):
-        kwargs_else = {'ra_pos': np.array([1., 1., 2.]), 'dec_pos': np.array([-1., 0., 0.])}
-        x_pos, y_pos, mag = self.makeImage.get_magnification_model(self.kwargs_lens, kwargs_else)
-        npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
     def test_add_mask(self):
         mask = [0, 1, 0]

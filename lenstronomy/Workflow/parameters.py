@@ -273,13 +273,13 @@ class Param(object):
 
         if self.kwargs_options.get('image_plane_source', False):
             for i, kwargs_source in enumerate(kwargs_source_list):
-                x_mapped, y_mapped = self.makeImage.ray_shooting(kwargs_source['center_x'], kwargs_source['center_y'],
+                x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_source['center_x'], kwargs_source['center_y'],
                                                                  kwargs_lens_list, kwargs_else)
 
                 kwargs_source_list[i]['center_x'] = x_mapped[0]
                 kwargs_source_list[i]['center_y'] = y_mapped[0]
         if self.kwargs_options.get('solver', False):
-            x_mapped, y_mapped = self.makeImage.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+            x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             kwargs_source_list[0]['center_x'] = x_mapped[0]
             kwargs_source_list[0]['center_y'] = y_mapped[0]
         kwargs_lens_list[0] = kwargs_lens

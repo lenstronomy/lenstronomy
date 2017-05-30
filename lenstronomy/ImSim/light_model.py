@@ -11,12 +11,12 @@ class LensLightModel(object):
         lens_light_model_list = kwargs_options.get('lens_light_model_list', ['NONE'])
         self.lightModel = LightModel(lens_light_model_list)
 
-    def surface_brightness(self, x, y, kwargs_lens_light_list):
+    def surface_brightness(self, x, y, kwargs_lens_light_list, k=None):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
         """
-        return self.lightModel.surface_brightness(x, y, kwargs_lens_light_list)
+        return self.lightModel.surface_brightness(x, y, kwargs_lens_light_list, k=k)
 
 
 class SourceModel(object):
@@ -71,7 +71,7 @@ class LightModel(object):
                 valid = False
             self.valid_list.append(valid)
 
-    def surface_brightness(self, x, y, kwargs_list):
+    def surface_brightness(self, x, y, kwargs_list, k=None):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
@@ -79,7 +79,8 @@ class LightModel(object):
         flux = np.zeros(len(x))
         for i, func in enumerate(self.func_list):
             if self.valid_list[i]:
-                flux += func.function(x, y, **kwargs_list[i])
+                if k == None or k == i:
+                    flux += func.function(x, y, **kwargs_list[i])
         return flux
 
     def functions_split(self, x, y, kwargs_list):

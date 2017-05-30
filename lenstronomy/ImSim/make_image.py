@@ -1,15 +1,8 @@
 __author__ = 'sibirrer'
 
-import astrofunc.util as util
-from astrofunc.util import Util_class
-from astrofunc.LensingProfiles.shapelets import Shapelets
-from astrofunc.LensingProfiles.gaussian import Gaussian
-import astrofunc.LightProfiles.torus as torus
-
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
-from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 
 from lenstronomy.ImSim.data import Data
 import lenstronomy.DeLens.de_lens as de_lens
@@ -24,7 +17,6 @@ class MakeImage(object):
     def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
         self.Data = Data(kwargs_options, kwargs_data)
         self.LensModel = LensModel(kwargs_options)
-        self.NumLensModel = NumericLens(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
         self.LensLightModel = LensLightModel(kwargs_options)
         self.PointSource = PointSource(kwargs_options, self.Data)
@@ -32,9 +24,6 @@ class MakeImage(object):
 
         self._subgrid_res = kwargs_options.get('subgrid_res', 1)
         self.kwargs_psf = kwargs_psf
-        self.util_class = Util_class()
-        self.gaussian = Gaussian()
-        self.shapelets = Shapelets()
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
@@ -52,14 +41,6 @@ class MakeImage(object):
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
         lens_light_final = self.Data.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
-
-    def lensing_quantities(self, x, y, kwargs, kwargs_else=None):
-        """
-        returns all the lens properties
-        :return:
-        """
-        potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x, y, kwargs, kwargs_else)
-        return potential, alpha1, alpha2, kappa, gamma1, gamma2, mag
 
     def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light, kwargs_else):
         """
@@ -175,102 +156,4 @@ class MakeImage(object):
         """
         return A[:] * mask
 
-    def get_source(self, x_grid, y_grid, kwargs_source, cov_param=None):
-        """
-
-        :param param:
-        :param num_order:
-        :param beta:
-
-        :return:
-        """
-        error_map_source = np.zeros_like(x_grid)
-        source = self.SourceModel.lightModel.surface_brightness(x_grid, y_grid, kwargs_source)
-        basis_functions, n_source = self.SourceModel.lightModel.functions_split(x_grid, y_grid, kwargs_source)
-        basis_functions = np.array(basis_functions)
-
-        if cov_param is not None:
-            error_map_source = np.zeros_like(x_grid)
-            for i in range(len(error_map_source)):
-                error_map_source[i] = basis_functions[:, i].T.dot(cov_param[:n_source,:n_source]).dot(basis_functions[:, i])
-        return source, error_map_source
-
-    def get_magnification_model(self, kwargs_lens, kwargs_else):
-        """
-        computes the point source magnification at the position of the point source images
-        :param kwargs_lens:
-        :param kwargs_else:
-        :return: list of magnifications
-        """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        mag = self.NumLensModel.magnification(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        return ra_pos, dec_pos, mag
-
-    def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
-                                 shape="GAUSSIAN"):
-        """
-        returns the magnification of an extended source with Gaussian light profile
-        :param kwargs_lens: lens model kwargs
-        :param kwargs_else: kwargs of image positions
-        :param source_sigma: Gaussian sigma in arc sec in source
-        :return: numerically computed brightness of the sources
-        """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        mag_finite = np.zeros_like(ra_pos)
-        x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
-        for i in range(len(ra_pos)):
-            ra, dec = ra_pos[i], dec_pos[i]
-            center_x, center_y = self.LensModel.ray_shooting(ra, dec, kwargs_lens, kwargs_else)
-            x_source, y_source = self.LensModel.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
-            if shape == "GAUSSIAN":
-                I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
-            elif shape == "TORUS":
-                I_image = torus.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
-            else:
-                raise ValueError("shape %s not valid!" % shape)
-            mag_finite[i] = np.sum(I_image)/subgrid_res**2*delta_pix**2
-        return mag_finite
-
-    def fermat_potential(self, kwargs_lens, kwargs_else):
-        """
-
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
-        """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        potential = self.LensModel.potential(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source = np.mean(ra_source)
-        dec_source = np.mean(dec_source)
-        geometry = (ra_pos - ra_source)**2 + (dec_pos - dec_source)**2
-        return geometry/2 - potential
-
-    def position_size_estimate(self, ra_pos, dec_pos, kwargs_lens, kwargs_else, delta, scale=1):
-        """
-        estimate the magnification at the positions and define resolution limit
-        :param ra_pos:
-        :param dec_pos:
-        :param kwargs_lens:
-        :param kwargs_else:
-        :return:
-        """
-        x, y = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
-        d_x, d_y = util.points_on_circle(delta*2, 10)
-        x_s, y_s = self.LensModel.ray_shooting(ra_pos + d_x, dec_pos + d_y, kwargs_else, **kwargs_lens)
-        x_m = np.mean(x_s)
-        y_m = np.mean(y_s)
-        r_m = np.sqrt((x_s - x_m) ** 2 + (y_s - y_m) ** 2)
-        r_min = np.sqrt(r_m.min(axis=0)*r_m.max(axis=0))/2 * scale
-        return x, y, r_min
 

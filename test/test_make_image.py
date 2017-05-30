@@ -24,19 +24,14 @@ class TestMakeImage(object):
         self.kwargs_lens = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}]
         self.kwargs_source = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
         x_grid, y_grid = util.make_grid(numPix=101, deltapix=0.1)
-        x_source, y_source = self.makeImage.ray_shooting(x_grid, y_grid, self.kwargs_lens)
+        x_source, y_source = self.makeImage.LensModel.ray_shooting(x_grid, y_grid, self.kwargs_lens)
         I_xy = self.makeImage.SourceModel.surface_brightness(x_source, y_source, self.kwargs_source)
         self.grid = util.array2image(I_xy)
         np.random.seed(seed=41)
 
-    def test_ray_shooting(self):
-        delta_x, delta_y = self.makeImage.ray_shooting(x=1., y=1., kwargs=self.kwargs_lens)
-        assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
-        assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
-
     def test_psf_convolution(self):
         kwargs = {'sigma': 1}
-        grid_convolved = self.makeImage.psf_convolution(self.grid, 1., **kwargs)
+        grid_convolved = self.makeImage.Data.psf_convolution(self.grid, 1., **kwargs)
         assert (grid_convolved[0][0] > 8.447e-05 and grid_convolved[0][0] < 8.448e-05)
 
     def test_get_magnification_model(self):

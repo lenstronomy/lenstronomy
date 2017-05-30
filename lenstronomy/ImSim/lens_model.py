@@ -62,6 +62,13 @@ class LensModel(object):
             self.alpha_perturb_x = kwargs_options["alpha_perturb_x"]
             self.alpha_perturb_y = kwargs_options["alpha_perturb_y"]
 
+    def ray_shooting(self, x, y, kwargs, kwargs_else=None):
+        """
+        maps image to source position (inverse deflection)
+        """
+        dx, dy = self.alpha(x, y, kwargs, kwargs_else)
+        return x - dx, y - dy
+
     def mass(self, x, y, sigma_crit, kwargs):
         kappa = self.kappa(x, y, kwargs)
         mass = sigma_crit*kappa

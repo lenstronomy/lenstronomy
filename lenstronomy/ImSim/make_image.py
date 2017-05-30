@@ -36,13 +36,6 @@ class MakeImage(object):
         self.gaussian = Gaussian()
         self.shapelets = Shapelets()
 
-    def ray_shooting(self, x, y, kwargs, kwargs_else=None):
-        """
-        maps image to source position (inverse deflection)
-        """
-        dx, dy = self.LensModel.alpha(x, y, kwargs, kwargs_else)
-        return x - dx, y - dy
-
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
         returns the surface brightness of the source at coordinate x, y
@@ -50,7 +43,7 @@ class MakeImage(object):
         if de_lensed is True:
             x_source, y_source = self.Data.x_grid_sub, self.Data.y_grid_sub
         else:
-            x_source, y_source = self.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
+            x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source)
         source_light_final = self.Data.re_size_convolve(source_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return source_light_final
@@ -107,7 +100,7 @@ class MakeImage(object):
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
         map_error = self.kwargs_options.get('error_map', False)
-        x_source, y_source = self.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
+        x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
         A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
         data = self.Data.data
@@ -235,8 +228,8 @@ class MakeImage(object):
         x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
         for i in range(len(ra_pos)):
             ra, dec = ra_pos[i], dec_pos[i]
-            center_x, center_y = self.ray_shooting(ra, dec, kwargs_lens, kwargs_else)
-            x_source, y_source = self.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
+            center_x, center_y = self.LensModel.ray_shooting(ra, dec, kwargs_lens, kwargs_else)
+            x_source, y_source = self.LensModel.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
             if shape == "GAUSSIAN":
                 I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             elif shape == "TORUS":
@@ -257,7 +250,7 @@ class MakeImage(object):
         else:
             raise ValueError('No point source positions assigned')
         potential = self.LensModel.potential(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source, dec_source = self.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
+        ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
         geometry = (ra_pos - ra_source)**2 + (dec_pos - dec_source)**2
@@ -272,9 +265,9 @@ class MakeImage(object):
         :param kwargs_else:
         :return:
         """
-        x, y = self.ray_shooting(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
+        x, y = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_else, **kwargs_lens)
         d_x, d_y = util.points_on_circle(delta*2, 10)
-        x_s, y_s = self.ray_shooting(ra_pos + d_x, dec_pos + d_y, kwargs_else, **kwargs_lens)
+        x_s, y_s = self.LensModel.ray_shooting(ra_pos + d_x, dec_pos + d_y, kwargs_else, **kwargs_lens)
         x_m = np.mean(x_s)
         y_m = np.mean(y_s)
         r_m = np.sqrt((x_s - x_m) ** 2 + (y_s - y_m) ** 2)

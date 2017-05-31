@@ -479,7 +479,7 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     d = deltaPix * numPix
     ax = axes
 
-    cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
+    cs = ax.contour(makeImage.Data.array2image(x_grid_high_res), makeImage.Data.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
     paths = cs.collections[0].get_paths()
 
     im = ax.matshow(image - model_pure, origin='lower',

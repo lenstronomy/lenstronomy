@@ -81,11 +81,7 @@ class LensAnalysis(object):
         numPix = int(np.sqrt(len(data))*2)
         deltaPix = self.kwargs_data['deltaPix']
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        valid_list = self.LensLightModel.lightModel.valid_list
-        valid_list_new = [False] * len(valid_list)
-        valid_list_new[0] = True
-        self.LensLightModel.lightModel.valid_list = valid_list_new
-        lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy)
+        lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=k)
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         flux = np.sum(lens_light)
         return R_h, flux

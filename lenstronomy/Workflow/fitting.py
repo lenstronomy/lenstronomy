@@ -296,7 +296,7 @@ class Fitting(object):
         finds lens light with fixed lens model
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': False}
+        kwargs_options_special = {'X2_type': 'image', 'solver': True}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens

@@ -55,10 +55,10 @@ class LensModel(object):
                 self.func_list.append(NoLens())
             else:
                 raise ValueError('options do not include a valid lens model!', kwargs_options['lens_type'])
-        self.foreground_shear = kwargs_options.get('foreground_shear', False)
+        self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self.model_list = model_list
-        self.perturb_alpha = kwargs_options.get("perturb_alpha", False)
-        if self.perturb_alpha:
+        self._perturb_alpha = kwargs_options.get("perturb_alpha", False)
+        if self._perturb_alpha:
             self.alpha_perturb_x = kwargs_options["alpha_perturb_x"]
             self.alpha_perturb_y = kwargs_options["alpha_perturb_y"]
 
@@ -75,7 +75,7 @@ class LensModel(object):
         return mass
 
     def potential(self, x, y, kwargs, kwargs_else=None):
-        if self.foreground_shear:
+        if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1
             y_ = y - f_y_shear1
@@ -92,7 +92,7 @@ class LensModel(object):
         """
         a = grad(phi)
         """
-        if self.foreground_shear:
+        if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1
             y_ = y - f_y_shear1
@@ -105,7 +105,7 @@ class LensModel(object):
                 f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
-        if self.perturb_alpha:
+        if self._perturb_alpha:
             f_x += self.alpha_perturb_x
             f_y += self.alpha_perturb_y
         return f_x, f_y
@@ -141,7 +141,7 @@ class LensModel(object):
         """
         specially build to reduce computational costs
         """
-        if self.foreground_shear:
+        if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
                                                             e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1
@@ -173,7 +173,7 @@ class LensModel(object):
 
         # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
 
-        if self.foreground_shear:
+        if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
                                                             e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1

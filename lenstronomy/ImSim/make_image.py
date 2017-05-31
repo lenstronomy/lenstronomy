@@ -27,8 +27,15 @@ class MakeImage(object):
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
-        returns the surface brightness of the source at coordinate x, y
+        computes the source surface brightness distribution
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :return: 1d array of surface brightness pixels
         """
+
         if de_lensed is True:
             x_source, y_source = self.Data.x_grid_sub, self.Data.y_grid_sub
         else:
@@ -38,48 +45,27 @@ class MakeImage(object):
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
+        """
+        computes the lens surface brightness distribution
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
+        :return: 1d array of surface brightness pixels
+        """
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
         lens_light_final = self.Data.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
-    def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light, kwargs_else):
-        """
-        links linear parameters to kwargs arguments
-        :param param:
-        :return:
-        """
-        i = 0
-        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
-                kwargs_source[k]['I0_sersic'] = param[i]
-                i += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_source[k]['I0_2'] = param[i]
-                i += 1
-            if model in ['SHAPELETS']:
-                n_max = kwargs_source[k]['n_max']
-                num_param = (n_max + 1) * (n_max + 2) / 2
-                kwargs_source[k]['amp'] = param[i:i+num_param]
-                i += num_param
-        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
-                kwargs_lens_light[k]['I0_sersic'] = param[i]
-                i += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_lens_light[k]['I0_2'] = param[i]
-                i += 1
-            if model in ['SHAPELETS']:
-                n_max = kwargs_source[k]['n_max']
-                num_param = (n_max + 1) * (n_max + 2) / 2
-                kwargs_lens_light[k]['amp'] = param[i:i+num_param]
-                i += num_param
-        num_images = self.kwargs_options.get('num_images', 0)
-        if num_images > 0 and self.kwargs_options['point_source']:
-            kwargs_else['point_amp'] = param[i:i+num_images]
-            i += num_images
-        return kwargs_source, kwargs_lens_light, kwargs_else
-
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
+        """
+        computes the image (lens and source surface brightness with a given lens model).
+        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
+        :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        """
         map_error = self.kwargs_options.get('error_map', False)
         x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
@@ -93,6 +79,15 @@ class MakeImage(object):
     def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param source_add: if True, compute source, otherwise without
+        :param lens_light_add: if True, compute lens light, otherwise without
+        :param point_source_add: if True, add point sources, otherwise without
+        :return: 1d array of surface brightness pixels of the simulation
         """
         if source_add:
             source_light = self.source_surface_brightness(kwargs_lens, kwargs_source, kwargs_else, unconvolved=unconvolved)
@@ -156,4 +151,39 @@ class MakeImage(object):
         """
         return A[:] * mask
 
-
+    def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light, kwargs_else):
+        """
+        links linear parameters to kwargs arguments
+        :param param:
+        :return:
+        """
+        i = 0
+        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+                kwargs_source[k]['I0_sersic'] = param[i]
+                i += 1
+            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+                kwargs_source[k]['I0_2'] = param[i]
+                i += 1
+            if model in ['SHAPELETS']:
+                n_max = kwargs_source[k]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_source[k]['amp'] = param[i:i+num_param]
+                i += num_param
+        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+                kwargs_lens_light[k]['I0_sersic'] = param[i]
+                i += 1
+            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+                kwargs_lens_light[k]['I0_2'] = param[i]
+                i += 1
+            if model in ['SHAPELETS']:
+                n_max = kwargs_source[k]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_lens_light[k]['amp'] = param[i:i+num_param]
+                i += num_param
+        num_images = self.kwargs_options.get('num_images', 0)
+        if num_images > 0 and self.kwargs_options['point_source']:
+            kwargs_else['point_amp'] = param[i:i+num_images]
+            i += num_images
+        return kwargs_source, kwargs_lens_light, kwargs_else

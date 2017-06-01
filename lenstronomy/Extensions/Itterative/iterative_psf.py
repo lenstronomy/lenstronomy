@@ -119,13 +119,13 @@ class PSF_iterative(object):
         :param kernel_old:
         :return:
         """
-        kernel_list = np.append(kernel_list, [kernel_old], axis=0)
-        kernel_new = np.median(kernel_list, axis=0)
+        kernel_list_new = np.append(kernel_list, [kernel_old], axis=0)
+        kernel_new = np.median(kernel_list_new, axis=0)
         kernel_new[kernel_new < 0] = 0
         kernel_new = util.kernel_norm(kernel_new)
-        kernel_return = factor * kernel_new + (1-factor)*kernel_old
+        kernel_return = factor * kernel_new + (1.-factor)*kernel_old
 
         kernel_bkg = copy.deepcopy(kernel_return)
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
-        error_map = np.var(kernel_list, axis=0)/(kernel_bkg)**2
+        error_map = np.var(kernel_list_new, axis=0)/(kernel_bkg)**2
         return kernel_return, error_map

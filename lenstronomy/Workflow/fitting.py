@@ -264,7 +264,7 @@ class Fitting(object):
         finds lens model with fixed lens light model, type as specified in input kwargs_optinons
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': True}
+        kwargs_options_special = {'X2_type': 'image'}
 
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
@@ -296,7 +296,7 @@ class Fitting(object):
         finds lens light with fixed lens model
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': True}
+        kwargs_options_special = {'X2_type': 'image'}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
@@ -323,7 +323,7 @@ class Fitting(object):
         finds lens light with fixed lens model
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': False}
+        kwargs_options_special = {'X2_type': 'image'}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
@@ -350,7 +350,7 @@ class Fitting(object):
         finds lens light and lens model combined fit
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': True}
+        kwargs_options_special = {'X2_type': 'image'}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
@@ -393,7 +393,7 @@ class Fitting(object):
         :param kwargs_else:
         :return:
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': True}
+        kwargs_options_special = {'X2_type': 'image'}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)

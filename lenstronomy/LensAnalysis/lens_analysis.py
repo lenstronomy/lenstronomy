@@ -41,7 +41,7 @@ class LensAnalysis(object):
         kwargs_lens_light_copy[k]['center_y'] = 0
         data = self.kwargs_data['image_data']
         numPix = int(np.sqrt(len(data))*10)
-        deltaPix = self.kwargs_data['deltaPix']
+        deltaPix = self.kwargs_data['deltaPix']/10.
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=k)
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
@@ -63,9 +63,11 @@ class LensAnalysis(object):
         r_array = np.linspace(0.0001, 2*kwargs_lens['theta_E'], 1000)
         for r in r_array:
             mask = np.array(1 - util.get_mask(0, 0, r, x_grid, y_grid))
-            kappa_mean = np.sum(kappa*mask)/np.sum(mask)
-            if kappa_mean < 1:
-                return r
+            sum_mask = np.sum(mask)
+            if sum_mask > 0:
+                kappa_mean = np.sum(kappa*mask)/np.sum(mask)
+                if kappa_mean < 1:
+                    return r
         return -1
 
     def lens_properties(self, kwargs_lens_light, k=0):

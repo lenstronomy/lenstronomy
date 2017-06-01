@@ -54,7 +54,7 @@ class LensProp(object):
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, rho0_r0_gamma, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
-        return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/100
+        return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
         """

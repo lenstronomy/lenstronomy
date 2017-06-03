@@ -28,14 +28,13 @@ class MCMC_sampler(object):
         initialise the classes of the chain and for parameter options
         """
         self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
-        self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
         if lowerLimit is None or upperLimit is None:
-            lowerLimit, upperLimit = self.param.param_bounds()
+            lowerLimit, upperLimit = self.chain.param.param_bounds()
             print("PSO initialises its particles with default values")
         if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
@@ -64,8 +63,11 @@ class MCMC_sampler(object):
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
-        lens_dict, source_dict, lens_light_dict, else_dict = self.param.get_all_params(result)
-        if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
+        lens_dict, source_dict, lens_light_dict, else_dict = self.chain.param.get_all_params(result)
+        #if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
+        if mpi is True and not pso.isMaster():
+            pass
+        else:
             print(pso.gbest.fitness*2/(self.chain.numData_points()), 'reduced X^2 of best position')
             print(lens_dict, 'lens result')
             print(source_dict, 'source result')
@@ -79,7 +81,7 @@ class MCMC_sampler(object):
         """
         returns the mcmc analysis of the parameter space
         """
-        sampler = emcee.EnsembleSampler(n_walkers, self.param.num_param(), self.chain.X2_chain_image)
+        sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain_image)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
         sampler.reset()
@@ -95,7 +97,7 @@ class MCMC_sampler(object):
         runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
         returns the chain
         """
-        lowerLimit, upperLimit = self.param.param_bounds()
+        lowerLimit, upperLimit = self.chain.param.param_bounds()
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
         chain = LikelihoodComputationChain(

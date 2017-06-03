@@ -206,16 +206,13 @@ class Data(object):
         image_noisy = image + gaussian + poisson
         return image_noisy
 
-    def reduced_residuals(self, model, error_map=0, lens_light_mask=False):
+    def reduced_residuals(self, model, error_map=0):
         """
 
         :param model:
         :return:
         """
-        if lens_light_mask is True:
-            mask = self._mask_lens_light
-        else:
-            mask = self._mask
+        mask = self.mask
         residual = (model - self._data)/np.sqrt(self.C_D+np.abs(error_map))*mask
         return residual
 

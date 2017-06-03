@@ -19,13 +19,7 @@ class MCMC_chain(object):
         """
         # print('initialized on cpu', threading.current_thread())
         self.util_class = Util_class()
-        exposure_map = kwargs_data.get('exposure_map', None)
-        if exposure_map is None:
-            self.exposure_map = kwargs_data.get('reduced_noise', 1)
-        else:
-            self.exposure_map = exposure_map
-        self.mask = kwargs_data.get('mask', 1)
-        self.mask_lens_light = kwargs_data.get('mask_lens_light', 1)
+
         self.sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
@@ -60,24 +54,6 @@ class MCMC_chain(object):
             logL += self.priors(kwargs_lens, self.kwargs_priors)
         return logL, None
 
-    def X2_chain_lens_light(self, args):
-        """
-        routine to compute X^2 value of lens light profile
-        :param args:
-        :return:
-        """
-        #extract parameters
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
-        #generate image
-        lens_light, _, _ = self.makeImage.make_image_lens_light(kwargs_lens_light)
-        #compute X^2
-        X = self.makeImage.Data.reduced_residuals(lens_light, lens_light_mask=True)
-        logL = self.compare.get_log_likelihood(X)
-        logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
-        if self.priors_bool:
-            logL += self.priors(kwargs_lens, self.kwargs_priors)
-        return logL, None
-
     def X2_chain_catalogue(self, args):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chain
@@ -85,7 +61,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        x_mapped, y_mapped = self.makeImage.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+        x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
         #compute X^2
         X2 = self.compare.compare_distance(x_mapped, y_mapped)*1000
         X2 += self.check_bounds(args, self.lowerLimit, self.upperLimit)
@@ -106,13 +82,6 @@ class MCMC_chain(object):
         if 'psi_ext' in kwargs_lens and 'psi_ext' in kwargs_priors and 'psi_ext_sigma' in kwargs_priors:
             prior -= (kwargs_lens['psi_ext']-kwargs_priors['psi_ext'])**2/(2*kwargs_priors['psi_ext_sigma'])**2
         return prior
-
-    def get_source_position(self, kwargs_lens, kwargs_else):
-        """
-        return source position given lens model and catalogue image positions
-        """
-        x_mapped, y_mapped = self.makeImage.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
-        return np.mean(x_mapped), np.mean(y_mapped)
 
     def check_bounds(self, args, lowerLimit, upperLimit):
         """
@@ -153,8 +122,6 @@ class MCMC_chain(object):
             return self.X2_chain_image(a)
         elif self.sampling_option == 'catalogue':
             return self.X2_chain_catalogue(a)
-        elif self.sampling_option == 'lens_light':
-            return self.X2_chain_lens_light(a)
         else:
             raise ValueError('option %s not valid!' % self.sampling_option)
 
@@ -163,8 +130,6 @@ class MCMC_chain(object):
             return self.X2_chain_image(a)
         elif self.sampling_option == 'catalogue':
             return self.X2_chain_catalogue(a)
-        elif self.sampling_option == 'lens_light':
-            return self.X2_chain_lens_light(a)
         else:
             raise ValueError('option %s not valid!' % self.sampling_option)
 
@@ -173,8 +138,6 @@ class MCMC_chain(object):
             likelihood, _ = self.X2_chain_image(ctx.getParams())
         elif self.sampling_option == 'catalogue':
             likelihood, _ = self.X2_chain_catalogue(ctx.getParams())
-        elif self.sampling_option == 'lens_light':
-            likelihood, _ = self.X2_chain_lens_light(ctx.getParams())
         else:
             raise ValueError('option %s not valid!' % self.sampling_option)
         return likelihood
@@ -186,12 +149,9 @@ class MCMC_chain(object):
         """
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value
         """
-        if type(self.mask) == int:
+        if type(self.makeImage.Data.mask) == int:
             n = self.makeImage.Data._nx * self.makeImage.Data._ny
         else:
-            if self.sampling_option == 'lens_light':
-                n = np.sum(self.mask_lens_light)
-            else:
-                n = np.sum(self.mask)
+            n = np.sum(self.makeImage.Data.mask)
         num_param, _ = self.param.num_param()
         return n - num_param - 1

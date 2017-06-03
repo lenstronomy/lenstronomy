@@ -90,6 +90,127 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     return f, ax
 
 
+def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
+                        else_result, cmap_string):
+    cmap = plt.get_cmap(cmap_string)
+    cmap.set_bad(color='k', alpha=1.)
+    cmap.set_under('k')
+    deltaPix = kwargs_data['deltaPix']
+    nx, ny = kwargs_data['numPix_xy']
+    d = deltaPix * nx
+    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
+                                                                      lens_light_result, else_result, inv_bool=True)
+    lens_light, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=True, source_add=False,
+                                                lens_light_add=True, point_source_add=False)
+    source_light, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=True, source_add=True,
+                                                lens_light_add=False, point_source_add=False)
+    point_source, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=True, source_add=False,
+                                                lens_light_add=False, point_source_add=True)
+
+    lens_light_conv, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=False, source_add=False,
+                                                lens_light_add=True, point_source_add=False)
+    source_light_conv, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=False, source_add=True,
+                                                lens_light_add=False, point_source_add=False)
+    point_source_conv, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=False, source_add=False,
+                                                lens_light_add=False, point_source_add=True)
+
+    f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+    ax = axes[0, 0]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap)  # , vmin=0, vmax=2
+
+    v_min, v_max = im.get_clim()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Lens light", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    ax = axes[0, 1]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(source_light)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Source light", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    ax = axes[0, 2]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(point_source)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Observed", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    ax = axes[1, 0]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap)  # , vmin=0, vmax=2
+
+    v_min, v_max = im.get_clim()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Lens light", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    ax = axes[1, 1]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(source_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Source light", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    ax = axes[1, 2]
+    im = ax.matshow(np.log10(makeImage.Data.array2image(point_source_conv+lens_light_conv+source_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Observed", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+    f.tight_layout()
+    return f, axes
+
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap_string, source_sigma=0.001, v_min=None, v_max=None):
     cmap = plt.get_cmap(cmap_string)
@@ -105,7 +226,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
-
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
     model_pure, _ = makeImage.image_with_params(lens_result, source_result,

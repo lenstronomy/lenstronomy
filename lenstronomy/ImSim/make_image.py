@@ -69,7 +69,7 @@ class MakeImage(object):
         map_error = self.kwargs_options.get('error_map', False)
         x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
-        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
+        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
         data = self.Data.data
         d = data*mask
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1/(self.Data.C_D + error_map), d, inv_bool=inv_bool)
@@ -104,17 +104,14 @@ class MakeImage(object):
             error_map = np.zeros_like(self.Data.data)
         return source_light + lens_light + point_source, error_map
 
-    def _matrix_configuration(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else):
+    def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
+        kwargs_psf = self.kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
         lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(x_grid, y_grid,
                                                                                            kwargs_lens_light)
         n_points = self.PointSource.num_basis(kwargs_psf, kwargs_else)
         num_param = n_points + n_lens_light + n_source
-        return num_param, n_source, n_lens_light, n_points, lens_light_response, source_light_response
 
-    def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
-        kwargs_psf = self.kwargs_psf
-        num_param, n_source, n_lens_light, n_points, lens_light_response, source_light_response = self._matrix_configuration(x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else)
         numPix = len(x_grid)/self._subgrid_res**2
         A = np.zeros((num_param, numPix))
         if map_error is True:

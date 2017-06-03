@@ -39,6 +39,7 @@ class FittingSequence(object):
                 chain_list.append(chain)
                 param_list.append(param)
             # print statement, parameters ect
+        #TODO update fixed parameters as in fitting class
         return lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, else_input):
@@ -107,6 +108,7 @@ class FittingSequence(object):
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
         else:
             raise ValueError("%s is not a valid fitting routine" %fitting_routine)
+
 
         if psf_iteration is True:
             psf_iter_factor = fitting_kwargs['psf_iter_factor']

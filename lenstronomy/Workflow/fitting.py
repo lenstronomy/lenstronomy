@@ -12,7 +12,7 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_lens_fixed=[], kwargs_source_fixed={}, kwargs_lens_light_fixed={}, kwargs_else_fixed={}):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_lens_fixed=[], kwargs_source_fixed=[], kwargs_lens_light_fixed=[], kwargs_else_fixed={}):
         """
 
         :return:
@@ -241,10 +241,10 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = []
-        source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
-        for k in range(len(kwargs_source)):
-            kwargs_fixed_source.append(dict(kwargs_source[k].items() + source_fixed[k].items()))
+        kwargs_fixed_source = kwargs_source
+        #source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
+        #for k in range(len(kwargs_source)):
+        #    kwargs_fixed_source.append(dict(kwargs_source[k].items() + source_fixed[k].items()))
         kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         kwargs_fixed_else = dict(kwargs_else.items() + self._fixed_else(kwargs_options, kwargs_else).items())
 

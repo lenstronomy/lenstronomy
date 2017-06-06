@@ -239,7 +239,7 @@ class Data(object):
                 sigma_truncate = kwargs['truncate']
             else:
                 sigma_truncate = 3.
-            img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate)
+            img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate*sigma)
             return img_conv
         elif self.kwargs_options['psf_type'] == 'pixel':
             kernel = kwargs['kernel']

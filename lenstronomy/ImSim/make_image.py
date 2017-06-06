@@ -97,7 +97,7 @@ class MakeImage(object):
             lens_light = self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         else:
             lens_light = np.zeros_like(self.Data.data)
-        if point_source_add:
+        if point_source_add and self.kwargs_options.get('point_source', False):
             point_source, error_map = self.PointSource.point_source(self.kwargs_psf, kwargs_else)
         else:
             point_source = np.zeros_like(self.Data.data)

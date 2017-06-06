@@ -25,7 +25,7 @@ class ImagePosition(object):
         :returns:  (exact) angular position of (multiple) images [[posAngel,delta,mag]] (in pixel image , including outside)
         :raises: AttributeError, KeyError
         """
-        x_grid, y_grid = util.make_grid(numPix,deltapix)
+        x_grid, y_grid = util.make_grid(numPix, deltapix)
         x_mapped, y_mapped = self.LensModel.ray_shooting(x_grid, y_grid, kwargs_lens, kwargs_else)
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         x_mins, y_mins, values = util.neighborSelect(absmapped, x_grid, y_grid)
@@ -53,7 +53,7 @@ class ImagePosition(object):
         y_mins = np.zeros(num_candidates)
         values = np.zeros(num_candidates)
         for i in range(len(x_min)):
-            l=0
+            l = 0
             x_mapped, y_mapped = self.LensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens, kwargs_else)
             delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
             potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x_min[i], y_min[i], kwargs_lens, kwargs_else)

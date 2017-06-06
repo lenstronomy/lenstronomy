@@ -1,4 +1,6 @@
 from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.Solver.image_positions import ImagePosition
 import astrofunc.util as util
 from astrofunc.util import Util_class
 from astrofunc.LensingProfiles.gaussian import Gaussian
@@ -36,8 +38,8 @@ class Simulation(object):
             , 'deltaPix': deltaPix, 'numPix_xy': (numPix, numPix)
             , 'exp_time': exposure_time, 'exposure_map': exposure_map
             , 'x_coords': x_grid, 'y_coords': y_grid
-            , 'zero_point_x': x_0, 'zero_point_y': y_0, 'transform_angle2pix': Matrix
-            , 'zero_point_ra': ra_0, 'zero_point_dec': dec_0, 'transform_pix2angle': Matrix_inv
+            , 'zero_point_x': ra_0, 'zero_point_y': dec_0, 'transform_angle2pix': Matrix_inv
+            , 'zero_point_ra': x_0, 'zero_point_dec': y_0, 'transform_pix2angle': Matrix
             , 'mask': mask
             , 'image_data': np.zeros_like(x_grid)
             }
@@ -59,6 +61,7 @@ class Simulation(object):
             sigma_axis = sigma/np.sqrt(2)
             x_grid, y_grid = util.make_grid(kernelsize, deltaPix)
             kernel_large = self.gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
+            kernel_large = util.array2image(kernel_large)
             kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_large': kernel_large}
         elif psf_type == 'pixel':
             kernel_large = copy.deepcopy(kernel)
@@ -78,3 +81,41 @@ class Simulation(object):
         kwargs_lens_light = [{}]
         kwargs_else = {}
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
+
+    def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+        """
+
+        :param kwargs_options:
+        :param kwargs_data:
+        :param kwargs_psf:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :return:
+        """
+        lensModel = LensModel(kwargs_options)
+        imPos = ImagePosition(lensModel=lensModel)
+        if kwargs_options.get('point_source', False):
+            deltaPix = kwargs_data['deltaPix']/10.
+            numPix = kwargs_data['numPix_xy'][0]*10
+            sourcePos_x = kwargs_else['sourcePos_x']
+            sourcePos_y = kwargs_else['sourcePos_y']
+            x_mins, y_mins = imPos.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+            n = len(x_mins)
+            mag_list = np.zeros(n)
+            for i in range(n):
+                potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = lensModel.all(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
+                mag_list[i] = abs(mag)
+            kwargs_else['ra_pos'] = x_mins
+            kwargs_else['dec_pos'] = y_mins
+            kwargs_else['point_amp'] = mag_list*kwargs_else['quasar_amp']
+
+        # update kwargs_else
+        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        image = makeImage.Data.array2image(image)
+        # add noise
+        poisson = util.add_poisson(image, exp_time=util.array2image(kwargs_data['exposure_map']))
+        bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
+        return image + bkg + poisson

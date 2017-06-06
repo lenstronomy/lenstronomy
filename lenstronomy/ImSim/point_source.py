@@ -84,7 +84,7 @@ class PointSource(object):
         point_amp = kwargs_else['point_amp']
         numPix = len(data)
         error_map = np.zeros(numPix)
-        if self.kwargs_options['error_map'] is True:
+        if self.kwargs_options.get('error_map', False) is True:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_large, point_amp[i], error_map, kwargs_psf['error_map'])
         grid2d = np.zeros((self.Data._nx, self.Data._ny))

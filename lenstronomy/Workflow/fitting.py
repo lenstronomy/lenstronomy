@@ -153,6 +153,8 @@ class Fitting(object):
                 kwargs_fixed = {'I0_sersic': 1}
             elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_fixed = {'I0_sersic': 1, 'I0_2': 1}
+            elif model in ['BULDGE_DISK']:
+                kwargs_fixed = {'I0_b': 1, 'I0_d': 1}
             elif model in ['SHAPELETS']:
                 if type == 'source_light_model_list':
                     kwargs_fixed_global = self.kwargs_source_fixed
@@ -365,6 +367,37 @@ class Fitting(object):
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
             threadCount=threadCount, mpi=mpi, print_key='combined', sigma_factor=sigma_factor)
+        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
+
+    def find_buldge_disk(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                             kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+        """
+        fits a buldge-to-disk decomposition to the source galaxy
+        :return: constraints of lens model
+        """
+        kwargs_options_special = {'X2_type': 'image', 'source_light_model_list': ['BULDGE_DISC']}
+        # this are the parameters which are held constant while sampling
+        kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
+        kwargs_fixed_lens = kwargs_lens
+        kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
+        kwargs_source_new = [{'center_x': kwargs_source[0]['center_x'], 'center_y': kwargs_source[0]['center_y']
+                                 , 'R_b': 0.1, 'phi_G_b':0, 'q_b':1., 'R_d': 0.2, 'phi_G_d':0, 'q_d':1.}]
+        kwargs_source_sigma_new = [{'center_x_sigma': 0.001, 'center_y_sigma': 0.001, 'R_b_sigma': 0.05
+                                       , 'ellipse_sigma': 0.1, 'R_d_sigma': 0.05}]
+        kwargs_fixed_lens_light = []
+        lens_light_fixed = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
+        for k in range(len(kwargs_lens_light)):
+            kwargs_fixed_lens_light.append(dict(kwargs_lens_light[k].items() + lens_light_fixed[k].items()))
+        kwargs_fixed_else = dict(kwargs_else.items() + self._fixed_else(kwargs_options, kwargs_else).items())
+
+        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
+            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
+            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
+            kwargs_fixed_source, kwargs_source_new, kwargs_source_sigma_new,
+            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
+            kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
+            threadCount=threadCount, mpi=mpi, print_key='source light', sigma_factor=sigma_factor)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,

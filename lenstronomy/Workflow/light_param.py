@@ -114,6 +114,29 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['gamma'] = kwargs_fixed['gamma']
+            if model in ['BULDGE_DISK']:
+                if not 'I0_b' in kwargs_fixed:
+                    kwargs['I0_b'] = args[i]
+                    i += 1
+                if not 'R_b' in kwargs_fixed:
+                    kwargs['R_b'] = args[i]
+                    i += 1
+                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    kwargs['phi_G_b'] = phi
+                    kwargs['q_b'] = q
+                    i += 2
+                if not 'I0_d' in kwargs_fixed:
+                    kwargs['I0_d'] = args[i]
+                    i += 1
+                if not 'R_d' in kwargs_fixed:
+                    kwargs['R_d'] = args[i]
+                    i += 1
+                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
+                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    kwargs['phi_G_d'] = phi
+                    kwargs['q_d'] = q
+                    i += 2
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -167,6 +190,23 @@ class LightParam(object):
                     args.append(kwargs['Re'])
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
+            if model in ['BULDGE_DISK']:
+                if not 'I0_b' in kwargs_fixed:
+                    args.append(kwargs['I0_b'])
+                if not 'R_b' in kwargs_fixed:
+                    args.append(kwargs['R_b'])
+                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G_b'], kwargs['q_b'])
+                    args.append(e1)
+                    args.append(e2)
+                if not 'I0_d' in kwargs_fixed:
+                    args.append(kwargs['I0_d'])
+                if not 'R_d' in kwargs_fixed:
+                    args.append(kwargs['R_b'])
+                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
+                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G_d'], kwargs['q_d'])
+                    args.append(e1)
+                    args.append(e2)
         return args
 
     def add2fix(self, kwargs_fixed_list):
@@ -217,6 +257,21 @@ class LightParam(object):
                     fix_return['Re'] = kwargs_fixed['Re']
                 if 'gamma' in kwargs_fixed:
                     fix_return['gamma'] = kwargs_fixed['gamma']
+            if model in ['BULDGE_DISK']:
+                if 'I0_b' in kwargs_fixed:
+                    fix_return['I0_b'] = kwargs_fixed['I0_b']
+                if 'R_b' in kwargs_fixed:
+                    fix_return['R_b'] = kwargs_fixed['R_b']
+                if 'phi_G_b' in kwargs_fixed or 'q_b' in kwargs_fixed:
+                    fix_return['phi_G_b'] = kwargs_fixed['phi_G_b']
+                    fix_return['q_b'] = kwargs_fixed['q_b']
+                if 'I0_d' in kwargs_fixed:
+                    fix_return['I0_d'] = kwargs_fixed['I0_d']
+                if 'R_d' in kwargs_fixed:
+                    fix_return['R_d'] = kwargs_fixed['R_d']
+                if 'phi_G_d' in kwargs_fixed or 'q_b' in kwargs_fixed:
+                    fix_return['phi_G_d'] = kwargs_fixed['phi_G_d']
+                    fix_return['q_d'] = kwargs_fixed['q_d']
             fix_return_list.append(fix_return)
         return fix_return_list
 
@@ -288,6 +343,37 @@ class LightParam(object):
                 if not 'gamma' in kwargs_fixed:
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
+            if model in ['BULDGE_DISK']:
+                if not 'I0_b' in kwargs_fixed:
+                    mean.append(kwargs_mean['I0_b'])
+                    sigma.append(kwargs_mean['I0_b_sigma'])
+                if not 'R_b' in kwargs_fixed:
+                    mean.append(kwargs_mean['R_b'])
+                    sigma.append(kwargs_mean['R_b_sigma'])
+                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    phi = kwargs_mean['phi_G_b']
+                    q = kwargs_mean['q_b']
+                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    mean.append(e1)
+                    mean.append(e2)
+                    ellipse_sigma = kwargs_mean['ellipse_sigma']
+                    sigma.append(ellipse_sigma)
+                    sigma.append(ellipse_sigma)
+                if not 'I0_d' in kwargs_fixed:
+                    mean.append(kwargs_mean['I0_d'])
+                    sigma.append(kwargs_mean['I0_d_sigma'])
+                if not 'R_d' in kwargs_fixed:
+                    mean.append(kwargs_mean['R_d'])
+                    sigma.append(kwargs_mean['R_d_sigma'])
+                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
+                    phi = kwargs_mean['phi_G_d']
+                    q = kwargs_mean['q_d']
+                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    mean.append(e1)
+                    mean.append(e2)
+                    ellipse_sigma = kwargs_mean['ellipse_sigma']
+                    sigma.append(ellipse_sigma)
+                    sigma.append(ellipse_sigma)
         return mean, sigma
 
     def param_bound(self):
@@ -353,6 +439,29 @@ class LightParam(object):
                 if not 'gamma' in kwargs_fixed:
                     low.append(-3)
                     high.append(3)
+            if model in ['BULDGE_DISK']:
+                if not 'I0_b' in kwargs_fixed:
+                    low.append(0)
+                    high.append(100)
+                if not 'R_b' in kwargs_fixed:
+                    low.append(0.0001)
+                    high.append(100)
+                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    low.append(-0.8)
+                    high.append(0.8)
+                    low.append(-0.8)
+                    high.append(0.8)
+                if not 'I0_d' in kwargs_fixed:
+                    low.append(0)
+                    high.append(100)
+                if not 'R_d' in kwargs_fixed:
+                    low.append(0.0001)
+                    high.append(100)
+                if not 'phi_G_d' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    low.append(-0.8)
+                    high.append(0.8)
+                    low.append(-0.8)
+                    high.append(0.8)
         return low, high
 
     def num_param(self):
@@ -415,4 +524,25 @@ class LightParam(object):
                 if not 'gamma' in kwargs_fixed:
                     num += 1
                     list.append(str('gamma_'+self.type))
+            if model in ['BULDGE_DISK']:
+                if not 'I0_b' in kwargs_fixed:
+                    num += 1
+                    list.append(str('I0_b_'+self.type))
+                if not 'R_b' in kwargs_fixed:
+                    num += 1
+                    list.append(str('R_b_'+self.type))
+                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
+                    num += 2
+                    list.append(str('e1_b_' + self.type))
+                    list.append(str('e2_b_' + self.type))
+                if not 'I0_d' in kwargs_fixed:
+                    num += 1
+                    list.append(str('I0_d_'+self.type))
+                if not 'R_d' in kwargs_fixed:
+                    num += 1
+                    list.append(str('R_d_'+self.type))
+                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
+                    num += 2
+                    list.append(str('e1_d_' + self.type))
+                    list.append(str('e2_d_' + self.type))
         return num, list

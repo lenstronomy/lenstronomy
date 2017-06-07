@@ -64,6 +64,9 @@ class LightModel(object):
             elif profile_type == 'DOUBLE_CORE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleCoreSersic
                 self.func_list.append(DoubleCoreSersic())
+            elif profile_type == 'BULDGE_DISK':
+                from astrofunc.LightProfiles.sersic import BuldgeDisk
+                self.func_list.append(BuldgeDisk())
             elif profile_type == 'NONE':
                 valid = False
             else:

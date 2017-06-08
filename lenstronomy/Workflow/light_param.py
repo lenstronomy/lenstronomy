@@ -32,17 +32,18 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
-            if not self._fix_center or k > 0:
-                if not 'center_x' in kwargs_fixed:
-                    kwargs['center_x'] = args[i]
-                    i += 1
-                else:
-                    kwargs['center_x'] = kwargs_fixed['center_x']
-                if not 'center_y' in kwargs_fixed:
-                    kwargs['center_y'] = args[i]
-                    i += 1
-                else:
-                    kwargs['center_y'] = kwargs_fixed['center_y']
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if not 'center_x' in kwargs_fixed:
+                        kwargs['center_x'] = args[i]
+                        i += 1
+                    else:
+                        kwargs['center_x'] = kwargs_fixed['center_x']
+                    if not 'center_y' in kwargs_fixed:
+                        kwargs['center_y'] = args[i]
+                        i += 1
+                    else:
+                        kwargs['center_y'] = kwargs_fixed['center_y']
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     kwargs['beta'] = args[i]
@@ -150,11 +151,12 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if not self._fix_center or k > 0:
-                if not 'center_x' in kwargs_fixed:
-                    args.append(kwargs['center_x'])
-                if not 'center_y' in kwargs_fixed:
-                    args.append(kwargs['center_y'])
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if not 'center_x' in kwargs_fixed:
+                        args.append(kwargs['center_x'])
+                    if not 'center_y' in kwargs_fixed:
+                        args.append(kwargs['center_y'])
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     args.append(kwargs['beta'])
@@ -219,11 +221,12 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
-            if not self._fix_center or k > 0:
-                if 'center_x' in kwargs_fixed:
-                    fix_return['center_x'] = kwargs_fixed['center_x']
-                if 'center_y' in kwargs_fixed:
-                    fix_return['center_y'] = kwargs_fixed['center_y']
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if 'center_x' in kwargs_fixed:
+                        fix_return['center_x'] = kwargs_fixed['center_x']
+                    if 'center_y' in kwargs_fixed:
+                        fix_return['center_y'] = kwargs_fixed['center_y']
             if model in ['SHAPELETS']:
                 if 'beta' in kwargs_fixed:
                     fix_return['beta'] = kwargs_fixed['beta']
@@ -286,13 +289,14 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if not self._fix_center or k > 0:
-                if not 'center_x' in kwargs_fixed:
-                    mean.append(kwargs_mean['center_x'])
-                    sigma.append(kwargs_mean['center_x_sigma'])
-                if not 'center_y' in kwargs_fixed:
-                    mean.append(kwargs_mean['center_y'])
-                    sigma.append(kwargs_mean['center_y_sigma'])
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if not 'center_x' in kwargs_fixed:
+                        mean.append(kwargs_mean['center_x'])
+                        sigma.append(kwargs_mean['center_x_sigma'])
+                    if not 'center_y' in kwargs_fixed:
+                        mean.append(kwargs_mean['center_y'])
+                        sigma.append(kwargs_mean['center_y_sigma'])
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     mean.append(kwargs_mean['beta'])
@@ -385,13 +389,14 @@ class LightParam(object):
         high = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if not self._fix_center or k > 0:
-                if not 'center_x' in kwargs_fixed:
-                    low.append(-60)
-                    high.append(60)
-                if not 'center_y' in kwargs_fixed:
-                    low.append(-60)
-                    high.append(60)
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if not 'center_x' in kwargs_fixed:
+                        low.append(-60)
+                        high.append(60)
+                    if not 'center_y' in kwargs_fixed:
+                        low.append(-60)
+                        high.append(60)
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     low.append(0.000001)
@@ -473,13 +478,14 @@ class LightParam(object):
         list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if not self._fix_center or k > 0:
-                if not 'center_x' in kwargs_fixed:
-                    num+=1
-                    list.append(str('center_x_'+self.type))
-                if not 'center_y' in kwargs_fixed:
-                    num+=1
-                    list.append(str('center_y_'+self.type))
+            if not model == 'NONE':
+                if not self._fix_center or k > 0:
+                    if not 'center_x' in kwargs_fixed:
+                        num+=1
+                        list.append(str('center_x_'+self.type))
+                    if not 'center_y' in kwargs_fixed:
+                        num+=1
+                        list.append(str('center_y_'+self.type))
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     num += 1

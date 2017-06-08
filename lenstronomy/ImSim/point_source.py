@@ -39,8 +39,8 @@ class PointSource(object):
         n_points = len(x_pos)
         data = self.Data.data
         psf_large = kwargs_psf['kernel_large']
-        #point_amp = kwargs_else.get('point_amp', np.ones_like(n_points))
-        point_amp = np.ones(num_param)
+        point_amp = kwargs_else.get('point_amp', np.ones_like(n_points))
+        #point_amp = kwargs_else['point_amp']
         numPix = len(data)
         error_map = np.zeros(numPix)
         if map_error is True:

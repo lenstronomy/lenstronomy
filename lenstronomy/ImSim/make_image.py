@@ -73,7 +73,7 @@ class MakeImage(object):
         data = self.Data.data
         d = data*mask
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1/(self.Data.C_D + error_map), d, inv_bool=inv_bool)
-        _, _, _ = self._update_linear_kwargs(param, kwargs_source, kwargs_lens_light, kwargs_else)
+        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return wls_model, error_map, cov_param, param
 
     def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
@@ -148,7 +148,7 @@ class MakeImage(object):
         """
         return A[:] * mask
 
-    def _update_linear_kwargs(self, param, kwargs_source, kwargs_lens_light, kwargs_else):
+    def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """
         links linear parameters to kwargs arguments
         :param param:
@@ -181,6 +181,12 @@ class MakeImage(object):
                 i += num_param
         num_images = self.kwargs_options.get('num_images', 0)
         if num_images > 0 and self.kwargs_options['point_source']:
-            kwargs_else['point_amp'] = param[i:i+num_images]
-            i += num_images
-        return kwargs_source, kwargs_lens_light, kwargs_else
+            if self.kwargs_options.get('fix_magnification', False):
+                mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens,
+                                                             kwargs_else)
+                kwargs_else['point_amp'] = np.abs(mag) * param[i]
+                i += 1
+            else:
+                kwargs_else['point_amp'] = param[i:i+num_images]
+                i += num_images
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else

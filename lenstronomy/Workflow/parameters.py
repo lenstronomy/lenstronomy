@@ -42,6 +42,7 @@ class Param(object):
         self._num_images = kwargs_options.get('num_images', 4)
         self._fix_center = kwargs_options.get('fix_center', False)
         self._fix_mass2light = kwargs_options.get('mass2light_fixed', False)
+        self._fix_magnification = kwargs_options.get('fix_magnification', False)
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'SPEP')
             if self._num_images == 4:
@@ -220,11 +221,24 @@ class Param(object):
                     kwargs_lens['theta_E'] *= M2L
         return kwargs_lens_list
 
+    def _update_magnification(self, kwargs_lens, kwargs_else):
+        """
+        updates point source amplitude to relative magnifications
+        :param kwargs_lens:
+        :param kwargs_else:
+        :return:
+        """
+        mag = self.makeImage.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+        kwargs_else['point_amp'] = np.abs(mag)
+        return kwargs_else
+
     def get_all_params(self, args):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.getParams(args)
         if self._fix_mass2light:
             kwargs_lens = self._updated_mass2light(kwargs_else, kwargs_lens)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        if self._fix_magnification:
+            kwargs_else = self._update_magnification(kwargs_lens, kwargs_else)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def update_kwargs(self, kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else):
@@ -242,7 +256,7 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self._num_images == 2:

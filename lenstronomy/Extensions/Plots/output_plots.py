@@ -217,7 +217,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
     deltaPix = kwargs_data['deltaPix']
-    image_raw = kwargs_data['data_raw']
+    image_raw = kwargs_data['image_data']
     nx, ny = kwargs_data['numPix_xy']
 
     util_class = Util_class()
@@ -358,7 +358,10 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
-    x_light, y_light = makeImage.Data.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
+    try:
+        x_light, y_light = makeImage.Data.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
+    except:
+        x_light, y_light = 0, 0
     x_lens, y_lens = makeImage.Data.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
     ax.plot(x_light, y_light, 'og')
     ax.plot(x_lens, y_lens, 'b', marker='+')

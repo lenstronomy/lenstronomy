@@ -244,7 +244,7 @@ class Fitting(object):
         if kwargs_options['lens_light_model_list'] is []:
             return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, [None]*4, None, kwargs_options
         kwargs_options_special = {'lens_model_list': ['NONE'], 'source_light_model_list': ['NONE'],
-                                  'X2_type': 'image', 'solver': False, 'lens_light_mask': True}
+                                  'X2_type': 'image', 'solver': False, 'lens_light_mask': True, 'point_source': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens
@@ -261,7 +261,7 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens light', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='lens light mask', sigma_factor=sigma_factor)
         return kwargs_lens, kwargs_source, lens_light_result, kwargs_else, chain, param_list, kwargs_options_execute
 
     def find_lens_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,

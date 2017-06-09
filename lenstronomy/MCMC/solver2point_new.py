@@ -5,6 +5,7 @@ import numpy as np
 from astrofunc.LensingProfiles.spep import SPEP
 from astrofunc.LensingProfiles.spemd import SPEMD
 from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
+from astrofunc.LensingProfiles.external_shear import ExternalShear
 import astrofunc.util as util
 
 
@@ -41,13 +42,13 @@ class SolverSPEMD2_new(object):
     def __init__(self):
         self.spemd = SPEMD()
 
-    def F(self, x, x_cat, y_cat, a, center_x, center_y, e1, e2):
+    def F(self, x, x_cat, y_cat, a, center_x, center_y, theta_E, gamma):
         """
 
         :param x: array of parameters
         :return:
         """
-        [theta_E, gamma] = x
+        [e1, e2] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
         alpha1, alpha2 = self.spemd.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
         y = np.zeros(2)
@@ -55,8 +56,8 @@ class SolverSPEMD2_new(object):
         y[1] = alpha2[0] - alpha2[1]
         return y - a
 
-    def solve(self, init, x_cat, y_cat, a, theta_E, gamma, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, e1, e2), xtol=1.49012e-08, factor=0.1)
+    def solve(self, init, x_cat, y_cat, a, center_x, center_y, theta_E, gamma):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, center_x, center_y, theta_E, gamma), xtol=1.49012e-08, factor=0.1)
         return x
 
 
@@ -79,6 +80,24 @@ class SolverShapelets2_new(object):
         return x
 
 
+class SolverShear(object):
+
+    def __init__(self):
+        self.shear = ExternalShear()
+
+    def F(self, x, x_cat, y_cat, a):
+        [e1, e2] = x
+        alpha1, alpha2 = self.shear.derivatives(x_cat, y_cat, e1=e1, e2=e2)
+        y = np.zeros(2)
+        y[0] = alpha1[0] - alpha1[1]
+        y[1] = alpha2[0] - alpha2[1]
+        return y - a
+
+    def solve(self, init, x_cat, y_cat, a, **kwargs):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a), xtol=1.49012e-10)#, factor=0.1)
+        return x
+
+
 class Constraints2_new(object):
     """
     class to make the constraints for the solver
@@ -90,6 +109,8 @@ class Constraints2_new(object):
             self.solver = SolverSPEMD2_new()
         elif solver_type == 'SHAPELETS':
             self.solver = SolverShapelets2_new()
+        elif solver_type == 'SHEAR':
+            self.solver = SolverShear()
         elif solver_type == 'NONE':
             pass
         else:

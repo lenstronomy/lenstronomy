@@ -189,11 +189,16 @@ class Fitting(object):
                                              'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
                                              'center_y': kwargs_lens['center_y']}
                         elif kwargs_options['num_images'] == 2:
-                            kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y']}
+                            if kwargs_options.get('fix_center', False):
+                                kwargs_fixed_lens = {'phi_G': kwargs_lens['phi_G'], 'q': kwargs_lens['q']}
+                            else:
+                                kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y']}
                         else:
                             raise ValueError("%s is not a valid option" % kwargs_options['num_images'])
                     elif kwargs_options['solver_type'] == "SHAPELETS":
                         kwargs_fixed_lens = {}
+                    elif kwargs_options['solver_type'] == 'SHEAR':
+                        kwargs_fixed_lens = {'e1': kwargs_lens['e1'], 'e2': kwargs_lens['e2']}
                     else:
                         raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
                 else:

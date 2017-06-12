@@ -70,6 +70,15 @@ class LensAnalysis(object):
                     return r
         return -1
 
+    def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01):
+        """
+        computes the total flux in each component of the model
+        :param kwargs_light:
+        :param n_grid:
+        :param delta_grid:
+        :return:
+        """
+
     def lens_properties(self, kwargs_lens_light, k=0):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
@@ -101,6 +110,27 @@ class LensAnalysis(object):
         flux = np.sum(source)*(deltaPix_source/deltaPix)**2
         I_r, r = util.radial_profile(source, x_grid_source, y_grid_source, n=n_bins)
         return flux, R_h, I_r, r, source, error_map_source
+
+    def buldge_disk_ratio(self, kwargs_buldge_disk):
+        """
+        computes the buldge-to-disk ratio of the luminosity
+        :param kwargs_buldge_disk: kwargs of the buldge2disk function
+        :return:
+        """
+        kwargs_bd = copy.deepcopy(kwargs_buldge_disk)
+        kwargs_bd['center_x'] = 0
+        kwargs_bd['center_y'] = 0
+        deltaPix = 0.005
+        numPix = 200
+        x_grid, y_grid = util.make_grid(numPix, deltaPix)
+        from astrofunc.LightProfiles.sersic import BuldgeDisk
+        bd_class = BuldgeDisk()
+        light_grid = bd_class.function(x_grid, y_grid, **kwargs_bd)
+        light_tot = np.sum(light_grid)
+        kwargs_bd['I0_d'] = 0
+        light_grid = bd_class.function(x_grid, y_grid, **kwargs_bd)
+        light_buldge = np.sum(light_grid)
+        return light_tot, light_buldge
 
     def get_source(self, x_grid, y_grid, kwargs_source, cov_param=None, k=None):
         """

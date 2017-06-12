@@ -387,9 +387,9 @@ class Fitting(object):
         kwargs_fixed_lens = kwargs_lens
         kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         kwargs_source_new = [{'center_x': kwargs_source[0]['center_x'], 'center_y': kwargs_source[0]['center_y']
-                                 , 'R_b': 0.1, 'phi_G_b':0, 'q_b':1., 'R_d': 0.2, 'phi_G_d':0, 'q_d':1.}]
-        kwargs_source_sigma_new = [{'center_x_sigma': 0.001, 'center_y_sigma': 0.001, 'R_b_sigma': 0.05
-                                       , 'ellipse_sigma': 0.1, 'R_d_sigma': 0.05}]
+                                 , 'R_b': 0.5, 'phi_G_b':0, 'q_b':1., 'R_d': 0.5, 'phi_G_d':0, 'q_d':1.}]
+        kwargs_source_sigma_new = [{'center_x_sigma': 0.001, 'center_y_sigma': 0.001, 'R_b_sigma': 0.2
+                                       , 'ellipse_sigma': 0.1, 'R_d_sigma': 0.2}]
         kwargs_fixed_lens_light = []
         lens_light_fixed = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         for k in range(len(kwargs_lens_light)):

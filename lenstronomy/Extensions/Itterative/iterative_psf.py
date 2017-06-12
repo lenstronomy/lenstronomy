@@ -40,6 +40,7 @@ class PSF_iterative(object):
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
         kernel_new_small = util_class.cut_psf(kernel_new_small, psf_size=kernelsize_small)
+        kernel_new = util_class.cut_psf(kernel_new, psf_size=kernel_size)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         kwargs_psf_new['kernel'] = kernel_new_small
         kwargs_psf_new['kernel_large'] = kernel_new

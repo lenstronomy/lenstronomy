@@ -31,7 +31,7 @@ class FittingSequence(object):
         samples_mcmc, param_mcmc, dist_mcmc = [], [], []
         lens_temp, source_temp, lens_light_temp, else_temp = self._init_kwargs()
         for fitting_kwargs in fitting_kwargs_list:
-            if fitting_kwargs['fitting_routine'] == 'MCMC':
+            if fitting_kwargs['fitting_routine'] in ['MCMC', 'MCMC_buldge_disk']:
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, else_temp)
             else:
                 lens_temp, source_temp, lens_light_temp, else_temp, chain, param = self.fit_single(fitting_kwargs,
@@ -58,10 +58,18 @@ class FittingSequence(object):
         mpi = fitting_kwargs['mpi']
         sigma_scale = fitting_kwargs['sigma_scale']
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
-        samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
-                              lens_input, source_input, lens_light_input, else_input,
-                              lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                              n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
+        if fitting_kwargs['fitting_routine'] == 'MCMC':
+            samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
+                                  lens_input, source_input, lens_light_input, else_input,
+                                  lens_sigma, source_sigma, lens_light_sigma, else_sigma,
+                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
+        elif fitting_kwargs['fitting_routine'] == 'MCMC_buldge_disk':
+            samples, param, dist = self.fitting.mcmc_buldge_disk(self.kwargs_options,
+                                  lens_input, source_input, lens_light_input, else_input,
+                                  lens_sigma, source_sigma, lens_light_sigma, else_sigma,
+                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
+        else:
+            raise ValueError("%s is not supported as a mcmc routine" % fitting_kwargs['fitting_routine'])
         return samples, param, dist
 
     def fit_single(self, fitting_kwargs, lens_input, source_input, lens_light_input, else_input):

@@ -162,6 +162,11 @@ class MakeImage(object):
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_source[k]['I0_2'] = param[i]
                 i += 1
+            if model in ['BULDGE_DISK']:
+                kwargs_source[k]['I0_b'] = param[i]
+                i += 1
+                kwargs_source[k]['I0_d'] = param[i]
+                i += 1
             if model in ['SHAPELETS']:
                 n_max = kwargs_source[k]['n_max']
                 num_param = (n_max + 1) * (n_max + 2) / 2
@@ -173,6 +178,11 @@ class MakeImage(object):
                 i += 1
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 kwargs_lens_light[k]['I0_2'] = param[i]
+                i += 1
+            if model in ['BULDGE_DISK']:
+                kwargs_source[k]['I0_b'] = param[i]
+                i += 1
+                kwargs_source[k]['I0_d'] = param[i]
                 i += 1
             if model in ['SHAPELETS']:
                 n_max = kwargs_lens_light[k]['n_max']

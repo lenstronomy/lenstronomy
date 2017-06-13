@@ -8,6 +8,7 @@ import pytest
 from lenstronomy.MCMC.solver4point import SolverSPEP, Constraints, SolverShapelets
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.Solver.image_positions import ImagePosition
+from astrofunc.LensingProfiles.nfw import NFW
 
 
 class TestSolver(object):
@@ -26,6 +27,7 @@ class TestSolver(object):
         self.lens_spp = LensModel(kwargs_options_spp)
         self.Image_spp = ImagePosition(self.lens_spp)
         self.solver = SolverSPEP()
+        self.nfw = NFW()
 
     def test_subtract(self):
         x_cat = np.array([0, 0, 1, 2])
@@ -84,8 +86,10 @@ class TestSolver(object):
         deltapix = 0.05
         numPix = 100
         gamma = 1.9
+        Rs = 0.1
+        theta_Rs = self.nfw.rho02alpha(1., Rs)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
-                       {'Rs': 0.1, 'rho0': 1., 'r200': 10., 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = self.Image_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
         sourcePos_x_new, sourcePos_y_new = self.lens_nfw.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x - sourcePos_x_new, 'sourcePos_x- sourcePos_x_new NFW')
@@ -107,7 +111,7 @@ class TestSolver(object):
         [phi_E, e1_new, e2_new, center_x, center_y, no_sens_param] = x
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma,'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y},
-                           {'Rs': 0.1, 'rho0': 1., 'r200': 10., 'center_x': -0.5, 'center_y': 0.5}]
+                           {'Rs': 0.1, 'theta_Rs': 1., 'center_x': -0.5, 'center_y': 0.5}]
         sourcePos_x_new_array, sourcePos_y_new_array = self.lens_nfw.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         sourcePos_x_new = np.mean(sourcePos_x_new_array)
         sourcePos_y_new = np.mean(sourcePos_y_new_array)

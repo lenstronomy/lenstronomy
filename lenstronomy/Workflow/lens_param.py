@@ -81,16 +81,11 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['Rs'] = kwargs_fixed['Rs']
-                if not 'rho0' in kwargs_fixed:
-                    kwargs['rho0'] = np.exp(args[i])
+                if not 'theta_Rs' in kwargs_fixed:
+                    kwargs['theta_Rs'] = args[i]
                     i += 1
                 else:
-                    kwargs['rho0'] = kwargs_fixed['rho_0']
-                if not 'r200' in kwargs_fixed:
-                    kwargs['r200'] = np.exp(args[i])
-                    i += 1
-                else:
-                    kwargs['r200'] = kwargs_fixed['r200']
+                    kwargs['theta_Rs'] = kwargs_fixed['rho_0']
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -181,10 +176,8 @@ class LensParam(object):
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
                     args.append(np.log(kwargs['Rs']))
-                if not 'rho0' in kwargs_fixed:
-                    args.append(np.log(kwargs['rho0']))
-                if not 'r200' in kwargs_fixed:
-                    args.append(np.log(kwargs['r200']))
+                if not 'theta_Rs' in kwargs_fixed:
+                    args.append(kwargs['theta_Rs'])
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -249,10 +242,8 @@ class LensParam(object):
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if 'Rs' in kwargs_fixed:
                     fix_return['Rs'] = kwargs_fixed['Rs']
-                if 'rho0' in kwargs_fixed:
-                    fix_return['rho0'] = kwargs_fixed['rho0']
-                if 'r200' in kwargs_fixed:
-                    fix_return['r200'] = kwargs_fixed['r200']
+                if 'theta_Rs' in kwargs_fixed:
+                    fix_return['theta_Rs'] = kwargs_fixed['theta_Rs']
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if 'beta' in kwargs_fixed:
@@ -328,12 +319,9 @@ class LensParam(object):
                 if not 'Rs' in kwargs_fixed:
                     mean.append(np.log(kwargs_mean['Rs']))
                     sigma.append(np.log(1 + kwargs_mean['Rs_sigma']/kwargs_mean['Rs']))
-                if not 'rho0' in kwargs_fixed:
-                    mean.append(np.log(kwargs_mean['rho0']))
-                    sigma.append(np.log(1 + kwargs_mean['rho0_sigma']/kwargs_mean['rho0']))
-                if not 'r200' in kwargs_fixed:
-                    mean.append(np.log(kwargs_mean['r200']))
-                    sigma.append(np.log(1 + kwargs_mean['r200_sigma']/kwargs_mean['r200']))
+                if not 'theta_Rs' in kwargs_fixed:
+                    mean.append(kwargs_mean['theta_Rs'])
+                    sigma.append(kwargs_mean['theta_Rs_sigma'])
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -413,12 +401,9 @@ class LensParam(object):
                 if not 'Rs' in kwargs_fixed:
                     low.append(-5)
                     high.append(5)
-                if not 'rho0' in kwargs_fixed:
-                    low.append(-5)
-                    high.append(5)
-                if not 'r200' in kwargs_fixed:
-                    low.append(-5)
-                    high.append(5)
+                if not 'theta_Rs' in kwargs_fixed:
+                    low.append(0)
+                    high.append(100)
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -494,12 +479,9 @@ class LensParam(object):
                 if not 'Rs' in kwargs_fixed:
                     num+=1
                     list.append('Rs_nfw')
-                if not 'rho0' in kwargs_fixed:
+                if not 'theta_Rs' in kwargs_fixed:
                     num+=1
-                    list.append('rho0_nfw')
-                if not 'r200' in kwargs_fixed:
-                    num+=1
-                    list.append('r200_nfw')
+                    list.append('theta_Rs_nfw')
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:

@@ -47,7 +47,7 @@ class LensAnalysis(object):
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
-    def effective_einstein_radius(self, kwargs_lens_list, n_grid=200, delta_grid=0.05, k=0):
+    def effective_einstein_radius(self, kwargs_lens_list, n_grid=400, k=0):
         """
         computes the radius with mean convergence=1
         :param kwargs_lens:
@@ -57,6 +57,7 @@ class LensAnalysis(object):
         kwargs_lens_copy = kwargs_lens.copy()
         kwargs_lens_copy['center_x'] = 0
         kwargs_lens_copy['center_y'] = 0
+        delta_grid = 2*kwargs_lens['theta_E']/float(n_grid)
         x_grid, y_grid = util.make_grid(n_grid, delta_grid)
         kappa = self.LensModel.kappa(x_grid, y_grid, [kwargs_lens_copy], k=0)
         kappa = util.array2image(kappa)
@@ -70,7 +71,7 @@ class LensAnalysis(object):
                     return r
         return -1
 
-    def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01):
+    def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01, type="lens"):
         """
         computes the total flux in each component of the model
         :param kwargs_light:
@@ -78,6 +79,24 @@ class LensAnalysis(object):
         :param delta_grid:
         :return:
         """
+        flux_list = []
+        R_h_list = []
+        x_grid, y_grid = util.make_grid(numPix=n_grid, deltapix=delta_grid)
+        kwargs_copy = copy.deepcopy(kwargs_light)
+        for k, kwargs in enumerate(kwargs_light):
+            kwargs_copy[k]['center_x'] = 0
+            kwargs_copy[k]['center_y'] = 0
+            if type == 'lens':
+                light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
+            elif type == 'source':
+                light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
+            else:
+                raise ValueError("type %s not supported!" % type)
+            flux = np.sum(light)*delta_grid**2
+            R_h = util.half_light_radius(light, x_grid, y_grid)
+            flux_list.append(flux)
+            R_h_list.append(R_h)
+        return flux_list, R_h_list
 
     def lens_properties(self, kwargs_lens_light, k=0):
         """

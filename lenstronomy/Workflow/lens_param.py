@@ -16,10 +16,7 @@ class LensParam(object):
         self.model_list = kwargs_options['lens_model_list']
         self.kwargs_fixed = kwargs_fixed
         self.num_images = kwargs_options.get('num_images', 4)
-        if kwargs_options.get('solver', False):
-            self.solver_type = kwargs_options.get('solver_type', 'SPEP')
-        else:
-            self.solver_type = None
+        self.solver_type = kwargs_options.get('solver_type', 'NONE')
 
     def getParams(self, args, i):
         kwargs_list = []

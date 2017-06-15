@@ -8,12 +8,16 @@ from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
 import astrofunc.util as util
 
 
-class SolverSPEP(object):
+class SolverProfile(object):
     """
     class to solve multidimensional non-linear equations for 4 point image
     """
-    def __init__(self):
-        self.spep = SPEP()
+    def __init__(self, lens_model='SPEP'):
+        if lens_model == 'SPEP':
+            self.lens = SPEP()
+        elif lens_model == 'SPEMD':
+            self.lens = SPEMD()
+
 
     def F(self, x, x_cat, y_cat, a, gamma):
         """
@@ -23,37 +27,7 @@ class SolverSPEP(object):
         """
         [phi_E, e1, e2, center_x, center_y, no_sens_param] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.spep.derivatives(x_cat, y_cat, phi_E, gamma, q, phi_G, center_x, center_y)
-        y = np.zeros(6)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha1[0] - alpha1[2]
-        y[2] = alpha1[0] - alpha1[3]
-        y[3] = alpha2[0] - alpha2[1]
-        y[4] = alpha2[0] - alpha2[2]
-        y[5] = alpha2[0] - alpha2[3]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, gamma):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, gamma), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverSPEMD(object):
-    """
-    class to solve multidimensional non-linear equations for 4 point image
-    """
-    def __init__(self):
-        self.spemd = SPEMD()
-
-    def F(self, x, x_cat, y_cat, a, gamma):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [phi_E, e1, e2, center_x, center_y, no_sens_param] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.spemd.derivatives(x_cat, y_cat, phi_E, gamma, q, phi_G, center_x, center_y)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, phi_E, gamma, q, phi_G, center_x, center_y)
         y = np.zeros(6)
         y[0] = alpha1[0] - alpha1[1]
         y[1] = alpha1[0] - alpha1[2]
@@ -95,11 +69,9 @@ class Constraints(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, solver_type='SPEP'):
-        if solver_type == 'SPEP':
-            self.solver = SolverSPEP()
-        elif solver_type == 'SPEMD':
-            self.solver = SolverSPEMD()
+    def __init__(self, solver_type='PROFILE', lens_model='SPEP'):
+        if solver_type == 'PROFILE':
+            self.solver = SolverProfile(lens_model)
         elif solver_type == 'SHAPELETS':
             self.solver = SolverShapelets()
         elif solver_type == 'NONE':

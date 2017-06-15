@@ -2,14 +2,12 @@ __author__ = 'sibirrer'
 
 import astrofunc.util as util
 import numpy as np
-
 from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.MCMC.solver2point import Constraints2
-from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.MCMC.solver4point import Constraints
+from lenstronomy.Solver.solver2point import Constraints2
+from lenstronomy.Solver.solver4point import Constraints
+from lenstronomy.Workflow.else_param import ElseParam
 from lenstronomy.Workflow.lens_param import LensParam
 from lenstronomy.Workflow.light_param import LightParam
-from lenstronomy.Workflow.else_param import ElseParam
 
 
 class Param(object):
@@ -40,18 +38,15 @@ class Param(object):
 
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._num_images = kwargs_options.get('num_images', 4)
-        self._fix_center = kwargs_options.get('fix_center', False)
+
         self._fix_mass2light = kwargs_options.get('mass2light_fixed', False)
         self._fix_magnification = kwargs_options.get('fix_magnification', False)
         if kwargs_options.get('solver', False):
-            self.solver_type = kwargs_options.get('solver_type', 'SPEP')
+            self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
-                self.constraints = Constraints(self.solver_type)
+                self.constraints = Constraints(self.solver_type, lens_model=self.kwargs_options['lens_model_list'][0])
             elif self. _num_images == 2:
-                if self._fix_center is True:
-                    self.constraints = Constraints2_new(self.solver_type)
-                else:
-                    self.constraints = Constraints2(self.solver_type)
+                self.constraints = Constraints2(self.solver_type, lens_model=self.kwargs_options['lens_model_list'][0])
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
         else:
@@ -171,7 +166,7 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2(self, kwargs_lens, x):
+    def _update_spep2_center(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
@@ -182,7 +177,7 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2_new(self, kwargs_lens, x):
+    def _update_spep2_ellipse(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
@@ -252,56 +247,76 @@ class Param(object):
                 y_ = kwargs_else['dec_pos'] - f_y_shear1
             else:
                 x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
-            if self.solver_type in ['SPEP', 'SPEMD']:
-                e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                if self._num_images == 4:
+            if self._num_images == 4:
+                if self.solver_type in ['PROFILE']:
+                    e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
-                elif self._num_images == 2:
-                    if self._fix_center is False:
-                        init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
-                                    'theta_E': theta_E, 'e1': e1, 'e2': e2})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_spep2(kwargs_lens, x)
-                    else:
-                        init = np.array([0, 0])
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'gamma': kwargs_lens['gamma']})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_spep2_new(kwargs_lens, x)
+                elif self.solver_type == 'SHAPELETS':
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    if self._num_images == 4:
+                        init = [0, 0, 0, 0, 0, 0]
+                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'],
+                                                                                       'center_x': kwargs_lens[
+                                                                                           'center_x_shape'],
+                                                                                       'center_y': kwargs_lens[
+                                                                                           'center_y_shape']})
+                        kwargs_lens = self._update_coeffs(kwargs_lens, x)
+                elif self.solver_type == 'NONE':
+                    pass
                 else:
-                    raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
-            elif self.solver_type == 'SHAPELETS':
-                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                if self._num_images == 4:
-                    init = [0, 0, 0, 0, 0, 0]
-                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
-                    kwargs_lens = self._update_coeffs(kwargs_lens, x)
-                elif self._num_images == 2:
+                    raise ValueError('solver type %s not supported for four image lenses!' % self.solver_type)
+
+            elif self._num_images == 2:
+                if self.solver_type == 'CENTER':
+                #if self._fix_center is False:
+                    e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
+                    init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
+                    theta_E = kwargs_lens['theta_E']
+                    kwargs_lens['theta_E'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
+                                'theta_E': theta_E, 'e1': e1, 'e2': e2})
+                    kwargs_lens['theta_E'] = theta_E
+                    kwargs_lens = self._update_spep2_center(kwargs_lens, x)
+                elif self.solver_type == 'ELLIPSE':
+                    #else:
+                    init = np.array([0, 0])
+                    theta_E = kwargs_lens['theta_E']
+                    kwargs_lens['theta_E'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'gamma': kwargs_lens['gamma']})
+                    kwargs_lens['theta_E'] = theta_E
+                    kwargs_lens = self._update_spep2_ellipse(kwargs_lens, x)
+                elif self.solver_type == 'SHAPELETS':
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     init = [0, 0]
-                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'], 'center_x': kwargs_lens['center_x_shape'], 'center_y': kwargs_lens['center_y_shape']})
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'],
+                                                                                   'center_x': kwargs_lens[
+                                                                                       'center_x_shape'],
+                                                                                   'center_y': kwargs_lens[
+                                                                                       'center_y_shape']})
                     kwargs_lens = self._update_coeffs2(kwargs_lens, x)
-            elif self.solver_type == 'SHEAR':
-                kwargs_lens['e1'] = 0
-                kwargs_lens['e2'] = 0
-                ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                init = [0, 0]
-                kwargs = {}
-                x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, kwargs)
-                kwargs_lens['e1'] = x[0]
-                kwargs_lens['e2'] = x[1]
-            elif self.solver_type == 'NONE':
-                pass
+                elif self.solver_type == 'SHEAR':
+                    kwargs_lens['e1'] = 0
+                    kwargs_lens['e2'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    init = [0, 0]
+                    kwargs = {}
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, kwargs)
+                    kwargs_lens['e1'] = x[0]
+                    kwargs_lens['e2'] = x[1]
+                elif self.solver_type == 'NONE':
+                    pass
+                else:
+                    raise ValueError('solver type %s not supported for two image lenses!' % self.solver_type)
+
+            else:
+                raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
 
         kwargs_lens_list[0] = kwargs_lens
         if self.kwargs_options.get('image_plane_source', False):

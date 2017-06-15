@@ -2,11 +2,10 @@ __author__ = 'sibirrer'
 
 import astrofunc.util as util
 import numpy as np
-
-from lenstronomy.MCMC.solver2point import Constraints2
-from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.MCMC.solver4point import Constraints
+from lenstronomy.Solver.solver2point import Constraints2
+from lenstronomy.Solver.solver4point import Constraints
 from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.Trash.solver2point_new import Constraints2_new
 from lenstronomy.Workflow.lens_param import LensParam
 from lenstronomy.Workflow.source_param import SourceParam
 from lenstronomy.Workflow_old.else_param import ElseParam

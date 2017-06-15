@@ -181,26 +181,33 @@ class Fitting(object):
         kwargs_fixed_lens_list = []
         for k in range(len(kwargs_lens_list)):
             if k == 0:
-                kwargs_lens = kwargs_lens_list[0]
                 if kwargs_options['solver'] is True:
-                    if kwargs_options['solver_type'] in ['SPEP', 'SPEMD']:
-                        if kwargs_options['num_images'] == 4:
+                    kwargs_lens = kwargs_lens_list[0]
+                    if kwargs_options['num_images'] == 4:
+                        if kwargs_options['solver_type'] in ['PROFILE']:
                             kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
                                              'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
                                              'center_y': kwargs_lens['center_y']}
-                        elif kwargs_options['num_images'] == 2:
-                            if kwargs_options.get('fix_center', False):
-                                kwargs_fixed_lens = {'phi_G': kwargs_lens['phi_G'], 'q': kwargs_lens['q']}
-                            else:
-                                kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y']}
+                        elif kwargs_options['solver_type'] in ['SHAPELETS']:
+                            kwargs_fixed_lens = {}
+                        elif kwargs_options['solver_type'] in ['NONE']:
+                            kwargs_fixed_lens = {}
+                        else:
+                            raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
+                    elif kwargs_options['num_images'] == 2:
+                        if kwargs_options['solver_type'] in ['CENTER']:
+                            kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'],
+                                                 'center_y': kwargs_lens['center_y']}
+                        elif kwargs_options['solver_type'] in ['ELLIPSE']:
+                            kwargs_fixed_lens = {'phi_G': kwargs_lens['phi_G'], 'q': kwargs_lens['q']}
+                        elif kwargs_options['solver_type'] == "SHAPELETS":
+                            kwargs_fixed_lens = {}
+                        elif kwargs_options['solver_type'] == 'SHEAR':
+                            kwargs_fixed_lens = {'e1': kwargs_lens['e1'], 'e2': kwargs_lens['e2']}
                         else:
                             raise ValueError("%s is not a valid option" % kwargs_options['num_images'])
-                    elif kwargs_options['solver_type'] == "SHAPELETS":
-                        kwargs_fixed_lens = {}
-                    elif kwargs_options['solver_type'] == 'SHEAR':
-                        kwargs_fixed_lens = {'e1': kwargs_lens['e1'], 'e2': kwargs_lens['e2']}
                     else:
-                        raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
+                        raise ValueError("%s is not a valid number of points" % kwargs_options['num_images'])
                 else:
                     kwargs_fixed_lens = {}
             else:
@@ -277,6 +284,7 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
+        kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
         kwargs_fixed_source = []
         source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         for k in range(len(kwargs_source)):

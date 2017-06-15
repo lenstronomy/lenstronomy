@@ -9,7 +9,7 @@ from astrofunc.LensingProfiles.external_shear import ExternalShear
 import astrofunc.util as util
 
 
-class SolverSPEP2_new(object):
+class SolverSPEP2_ellipse(object):
     """
     class to solve multidimensional non-linear equations for 2 point image
     """
@@ -35,7 +35,7 @@ class SolverSPEP2_new(object):
         return x
 
 
-class SolverSPEMD2_new(object):
+class SolverSPEMD2_ellipse(object):
     """
     class to solve multidimensional non-linear equations for 4 point image
     """
@@ -104,9 +104,9 @@ class Constraints2_new(object):
     """
     def __init__(self, solver_type='SPEP'):
         if solver_type == 'SPEP':
-            self.solver = SolverSPEP2_new()
+            self.solver = SolverSPEP2_ellipse()
         elif solver_type == 'SPEMD':
-            self.solver = SolverSPEMD2_new()
+            self.solver = SolverSPEMD2_ellipse()
         elif solver_type == 'SHAPELETS':
             self.solver = SolverShapelets2_new()
         elif solver_type == 'SHEAR':

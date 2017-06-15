@@ -4,11 +4,10 @@ import astrofunc.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
-
-from lenstronomy.MCMC.solver4point import SolverSPEP, Constraints, SolverShapelets
+from astrofunc.LensingProfiles.nfw import NFW
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.Solver.image_positions import ImagePosition
-from astrofunc.LensingProfiles.nfw import NFW
+from lenstronomy.Solver.solver4point import SolverProfile, Constraints, SolverShapelets
 
 
 class TestSolver(object):
@@ -16,7 +15,7 @@ class TestSolver(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.constraints = Constraints('SPEP')
+        self.constraints = Constraints(solver_type='PROFILE', lens_model='SPEP')
         kwargs_options_spep = {'lens_model_list': ['SPEP']}
         self.lens_spep = LensModel(kwargs_options_spep)
         self.Image_spep = ImagePosition(self.lens_spep)
@@ -26,7 +25,7 @@ class TestSolver(object):
         kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP']}
         self.lens_spp = LensModel(kwargs_options_spp)
         self.Image_spp = ImagePosition(self.lens_spp)
-        self.solver = SolverSPEP()
+        self.solver = SolverProfile()
         self.nfw = NFW()
 
     def test_subtract(self):
@@ -87,7 +86,7 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         Rs = 0.1
-        theta_Rs = self.nfw.rho02alpha(1., Rs)
+        theta_Rs = self.nfw._rho02alpha(1., Rs)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = self.Image_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
@@ -206,7 +205,7 @@ class TestSolverNew(object):
         self.lens_spep_spp_shapelets = LensModel(kwargs_options_spep_spp_shapelets)
         self.image_position_spep_spp_shapelets = ImagePosition(self.lens_spep_spp_shapelets)
         self.solverShapelets = SolverShapelets()
-        self.solver = SolverSPEP()
+        self.solver = SolverProfile()
         self.constraints = Constraints('SHAPELETS')
 
     def test_all_spp(self):

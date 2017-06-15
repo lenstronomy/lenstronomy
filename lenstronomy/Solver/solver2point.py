@@ -5,15 +5,20 @@ import numpy as np
 from astrofunc.LensingProfiles.spep import SPEP
 from astrofunc.LensingProfiles.spemd import SPEMD
 from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
+from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
+from astrofunc.LensingProfiles.external_shear import ExternalShear
 import astrofunc.util as util
 
 
-class SolverSPEP2(object):
+class SolverCenter2(object):
     """
     class to solve multidimensional non-linear equations for 2 point image
     """
-    def __init__(self):
-        self.spep = SPEP()
+    def __init__(self, lens_model='SPEP'):
+        if lens_model == 'SPEP':
+            self.lens = SPEP()
+        elif lens_model == 'SPEMD':
+            self.lens = SPEMD()
 
     def F(self, x, x_cat, y_cat, a, theta_E, gamma, e1, e2):
         """
@@ -23,7 +28,7 @@ class SolverSPEP2(object):
         """
         [center_x, center_y] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.spep.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
         y = np.zeros(2)
         y[0] = alpha1[0] - alpha1[1]
         y[1] = alpha2[0] - alpha2[1]
@@ -34,36 +39,44 @@ class SolverSPEP2(object):
         return x
 
 
-class SolverSPEMD2(object):
+class SolverEllipse2(object):
     """
-    class to solve multidimensional non-linear equations for 4 point image
+    class to solve multidimensional non-linear equations for 2 point image
     """
-    def __init__(self):
-        self.spemd = SPEMD()
+    def __init__(self, lens_model='SPEP'):
+        if lens_model == 'SPEP':
+            self.lens = SPEP()
+        elif lens_model == 'SPEMD':
+            self.lens = SPEMD()
 
-    def F(self, x, x_cat, y_cat, a, theta_E, gamma, e1, e2):
+    def F(self, x, x_cat, y_cat, a, center_x, center_y, e1, e2):
         """
 
         :param x: array of parameters
         :return:
         """
-        [center_x, center_y] = x
+        [theta_E, gamma] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.spemd.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
         y = np.zeros(2)
         y[0] = alpha1[0] - alpha1[1]
         y[1] = alpha2[0] - alpha2[1]
         return y - a
 
-    def solve(self, init, x_cat, y_cat, a, theta_E, gamma, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, e1, e2), xtol=1.49012e-08, factor=0.1)
+    def solve(self, init, x_cat, y_cat, a, center_x, center_y, e1, e2):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, center_x, center_y, e1, e2), xtol=1.49012e-08, factor=0.1)
         return x
 
 
 class SolverShapelets2(object):
 
-    def __init__(self):
-        self.shapelets = CartShapelets()
+    def __init__(self, lens_model='SHAPELETS_CART'):
+        if lens_model == 'SHAPELETS_CART':
+            self.shapelets = CartShapelets()
+        elif lens_model == 'SHAPELETS_POLAR':
+            self.shapelets = PolarShapelets()
+        else:
+            raise ValueError('lens model %s not valid for solver type "SHAPELETS" ' % lens_model)
 
     def F(self, x, x_cat, y_cat, a, beta, center_x, center_y):
         [c10, c01] = x
@@ -79,17 +92,40 @@ class SolverShapelets2(object):
         return x
 
 
+class SolverShear2(object):
+
+    def __init__(self, lens_model='EXTERNAL_SHEAR'):
+        if lens_model == 'EXTERNAL_SHEAR':
+            self.shear = ExternalShear()
+        else:
+            raise ValueError('lens model %s not valid for solver type SHAPELET!' % lens_model)
+
+    def F(self, x, x_cat, y_cat, a):
+        [e1, e2] = x
+        alpha1, alpha2 = self.shear.derivatives(x_cat, y_cat, e1=e1, e2=e2)
+        y = np.zeros(2)
+        y[0] = alpha1[0] - alpha1[1]
+        y[1] = alpha2[0] - alpha2[1]
+        return y - a
+
+    def solve(self, init, x_cat, y_cat, a, **kwargs):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a), xtol=1.49012e-10)#, factor=0.1)
+        return x
+
+
 class Constraints2(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, solver_type='SPEP'):
-        if solver_type == 'SPEP':
-            self.solver = SolverSPEP2()
-        elif solver_type == 'SPEMD':
-            self.solver = SolverSPEMD2()
+    def __init__(self, solver_type='CENTER', lens_model='SPEP'):
+        if solver_type == 'CENTER':
+            self.solver = SolverCenter2(lens_model)
+        elif solver_type == 'ELLIPSE':
+            self.solver = SolverEllipse2(lens_model)
         elif solver_type == 'SHAPELETS':
-            self.solver = SolverShapelets2()
+            self.solver = SolverShapelets2(lens_model)
+        elif solver_type == 'SHEAR':
+            self.solver = SolverShear2(lens_model)
         elif solver_type == 'NONE':
             pass
         else:

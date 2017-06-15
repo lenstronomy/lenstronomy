@@ -4,13 +4,12 @@ import astrofunc.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
-
-from lenstronomy.MCMC.solver2point import SolverSPEP2, Constraints2, SolverShapelets2
-from lenstronomy.MCMC.solver2point_new import Constraints2_new
-from lenstronomy.MCMC.solver2point_new import SolverSPEP2_new
+from astrofunc.LensingProfiles.nfw import NFW
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.Solver.image_positions import ImagePosition
-from astrofunc.LensingProfiles.nfw import NFW
+from lenstronomy.Solver.solver2point import SolverCenter2, Constraints2, SolverShapelets2
+from lenstronomy.Trash.solver2point_new import Constraints2_new
+from lenstronomy.Trash.solver2point_new import SolverSPEP2_ellipse
 
 
 class TestSolver(object):
@@ -18,7 +17,7 @@ class TestSolver(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.constraints = Constraints2('SPEP')
+        self.constraints = Constraints2(solver_type='CENTER', lens_model='SPEP')
         kwargs_options_spep = {'lens_model_list': ['SPEP']}
         self.lens_spep = LensModel(kwargs_options_spep)
         self.image_position_spep = ImagePosition(self.lens_spep)
@@ -28,7 +27,7 @@ class TestSolver(object):
         kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP']}
         self.lens_spp = LensModel(kwargs_options_spp)
         self.image_position_spp = ImagePosition(self.lens_spp)
-        self.solver = SolverSPEP2()
+        self.solver = SolverCenter2()
         self.nfw = NFW()
 
     def test_subtract(self):
@@ -90,7 +89,7 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         Rs = 0.1
-        theta_Rs = self.nfw.rho02alpha(1., Rs)
+        theta_Rs = self.nfw._rho02alpha(1., Rs)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = self.image_position_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
@@ -116,7 +115,7 @@ class TestSolver(object):
         [center_x, center_y] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
         Rs = 0.1
-        theta_Rs = self.nfw.rho02alpha(1., Rs)
+        theta_Rs = self.nfw._rho02alpha(1., Rs)
         kwargs_lens_new = [{'theta_E': theta_E, 'gamma': gamma,'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y},
                            {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         sourcePos_x_new_array, sourcePos_y_new_array = self.lens_nfw.ray_shooting(x_pos, y_pos, kwargs_lens_new)
@@ -196,8 +195,8 @@ class TestSolverNew(object):
         self.lens_spep_spp_shapelets = LensModel(kwargs_options_spep_spp_shapelets)
         self.image_position_spep_spp_shapelets = ImagePosition(self.lens_spep_spp_shapelets)
         self.solverShapelets = SolverShapelets2()
-        self.solver = SolverSPEP2()
-        self.constraints = Constraints2('SHAPELETS')
+        self.solver = SolverCenter2()
+        self.constraints = Constraints2(solver_type='SHAPELETS', lens_model='SHAPELETS_CART')
 
     def test_all_spp(self):
         sourcePos_x = 0.1
@@ -261,7 +260,7 @@ class TestSolver_new(object):
         kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP'], 'fix_center': True}
         self.lens_spp = LensModel(kwargs_options_spp)
         self.image_position_spp = ImagePosition(self.lens_spp)
-        self.solver = SolverSPEP2_new()
+        self.solver = SolverSPEP2_ellipse()
 
     def test_subtract(self):
         x_cat = np.array([0, 0])

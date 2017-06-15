@@ -411,7 +411,7 @@ class Fitting(object):
         """
         MCMC
         """
-        kwargs_options_special = {'X2_type': 'image', 'source_light_model_list': ['BULDGE_DISK']}
+        kwargs_options_special = {'X2_type': 'image', 'source_light_model_list': ['BULDGE_DISK'], 'solver': False}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens

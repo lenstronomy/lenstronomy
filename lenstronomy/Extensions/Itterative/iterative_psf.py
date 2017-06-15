@@ -36,7 +36,10 @@ class PSF_iterative(object):
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
         data_point = makeImage.Data.array2image(makeImage.Data.data - model_no_point)
         point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
-        kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
+        kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
+        for i in range(symmetry):
+            kernel_old_array[i, :, :] = kernel_old
+        kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
         kernel_new_small = util_class.cut_psf(kernel_new_small, psf_size=kernelsize_small)
@@ -121,11 +124,11 @@ class PSF_iterative(object):
         :param kernel_old:
         :return:
         """
-        kernel_list_new = np.append(kernel_list, [kernel_old], axis=0)
+        kernel_list_new = np.append(kernel_list, kernel_old, axis=0)
         kernel_new = np.median(kernel_list_new, axis=0)
         kernel_new[kernel_new < 0] = 0
         kernel_new = util.kernel_norm(kernel_new)
-        kernel_return = factor * kernel_new + (1.-factor)*kernel_old
+        kernel_return = factor * kernel_new + (1.-factor)*np.mean(kernel_old, axis=0)
 
         kernel_bkg = copy.deepcopy(kernel_return)
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg

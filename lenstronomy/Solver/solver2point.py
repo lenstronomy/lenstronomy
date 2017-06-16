@@ -49,13 +49,13 @@ class SolverEllipse2(object):
         elif lens_model == 'SPEMD':
             self.lens = SPEMD()
 
-    def F(self, x, x_cat, y_cat, a, center_x, center_y, e1, e2):
+    def F(self, x, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
         """
 
         :param x: array of parameters
         :return:
         """
-        [theta_E, gamma] = x
+        [e1, e2] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
         alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
         y = np.zeros(2)
@@ -63,8 +63,8 @@ class SolverEllipse2(object):
         y[1] = alpha2[0] - alpha2[1]
         return y - a
 
-    def solve(self, init, x_cat, y_cat, a, center_x, center_y, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, center_x, center_y, e1, e2), xtol=1.49012e-08, factor=0.1)
+    def solve(self, init, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, center_x, center_y), xtol=1.49012e-08, factor=0.1)
         return x
 
 

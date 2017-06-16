@@ -329,8 +329,8 @@ class Param(object):
         if self.kwargs_options.get('solver', False):
             x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             if self.kwargs_options.get('joint_center', False):
-                for i, kwargs_source in enumerate(kwargs_source_list):
-                    if 'center_x' in kwargs_source:
+                for i in range(len(kwargs_source_list)):
+                    if 'center_x' in kwargs_source_list[i]:
                         kwargs_source_list[i]['center_x'] = x_mapped[0]
                         kwargs_source_list[i]['center_y'] = y_mapped[0]
             else:

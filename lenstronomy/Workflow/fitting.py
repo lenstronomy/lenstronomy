@@ -148,6 +148,10 @@ class Fitting(object):
         """
         model_list = kwargs_options[type]
         kwargs_fixed_list = []
+        if type == 'source_light_model_list':
+            kwargs_fixed_global = self.kwargs_source_fixed
+        else:
+            kwargs_fixed_global = self.kwargs_lens_light_fixed
         for i, model in enumerate(model_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_fixed = {'I0_sersic': 1}
@@ -156,10 +160,6 @@ class Fitting(object):
             elif model in ['BULDGE_DISK']:
                 kwargs_fixed = {'I0_b': 1, 'I0_d': 1}
             elif model in ['SHAPELETS']:
-                if type == 'source_light_model_list':
-                    kwargs_fixed_global = self.kwargs_source_fixed
-                else:
-                    kwargs_fixed_global = self.kwargs_lens_light_fixed
                 if 'n_max' in kwargs_fixed_global[i]:
                     n_max = kwargs_fixed_global[i]['n_max']
                 else:
@@ -168,6 +168,11 @@ class Fitting(object):
                 kwargs_fixed = {'amp': np.ones(num_param)}
             else:
                 kwargs_fixed = {}
+            if type == 'source_light_model_list':
+                if kwargs_options.get('solver', False):
+                    if kwargs_options.get('joint_center', False) or i == 0:
+                        kwargs_fixed['center_x'] = 0
+                        kwargs_fixed['center_y'] = 0
             kwargs_fixed_list.append(kwargs_fixed)
         return kwargs_fixed_list
 
@@ -205,7 +210,7 @@ class Fitting(object):
                         elif kwargs_options['solver_type'] == 'SHEAR':
                             kwargs_fixed_lens = {'e1': kwargs_lens['e1'], 'e2': kwargs_lens['e2']}
                         else:
-                            raise ValueError("%s is not a valid option" % kwargs_options['num_images'])
+                            raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
                     else:
                         raise ValueError("%s is not a valid number of points" % kwargs_options['num_images'])
                 else:

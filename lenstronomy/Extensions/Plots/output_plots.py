@@ -238,8 +238,11 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     d_s = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
     kwargs_source_new = copy.deepcopy(source_result)
-    kwargs_source_new[0]['center_x'] = 0
-    kwargs_source_new[0]['center_y'] = 0
+    x_center = copy.deepcopy(kwargs_source_new[0]['center_x'])
+    y_center = copy.deepcopy(kwargs_source_new[0]['center_y'])
+    for i in range(len(kwargs_source_new)):
+        kwargs_source_new[i]['center_x'] -= x_center
+        kwargs_source_new[i]['center_y'] -= y_center
     source, error_map_source = lensAnalysis.get_source(x_grid_source, y_grid_source, kwargs_source_new, cov_param)
     source = util.array2image(source)
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
@@ -356,8 +359,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         x_points = v[:, 0]
         y_points = v[:, 1]
         ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(x_points, y_points, lens_result, else_result)
-        ax.plot(ra_caustics - source_result[0]['center_x'] + d_s / 2.,
-                dec_caustics - source_result[0]['center_y'] + d_s / 2., 'b')
+        ax.plot(ra_caustics - x_center + d_s / 2.,
+                dec_caustics - y_center + d_s / 2., 'b')
     ax.arrow(d_s/10, d_s/10, 0, d_s/10, head_width=0.05,
              head_length=0.05, fc='w', ec='w', linewidth=2)
     #ax.plot([d_s/10, (d_s/10 + 0.5)], [d_s/10, d_s/10], linewidth=2, color='w')

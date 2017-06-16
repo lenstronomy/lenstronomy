@@ -82,7 +82,7 @@ class LensParam(object):
                     kwargs['theta_Rs'] = args[i]
                     i += 1
                 else:
-                    kwargs['theta_Rs'] = kwargs_fixed['rho_0']
+                    kwargs['theta_Rs'] = kwargs_fixed['theta_Rs']
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:

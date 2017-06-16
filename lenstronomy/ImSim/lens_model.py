@@ -54,7 +54,7 @@ class LensModel(object):
                 from astrofunc.LensingProfiles.no_lens import NoLens
                 self.func_list.append(NoLens())
             else:
-                raise ValueError('options do not include a valid lens model!', kwargs_options['lens_type'])
+                raise ValueError('%s is not a valid lens model' % lens_type)
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self.model_list = model_list
         self._perturb_alpha = kwargs_options.get("perturb_alpha", False)

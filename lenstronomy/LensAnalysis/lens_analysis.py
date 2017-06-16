@@ -7,6 +7,7 @@ from astrofunc.LensingProfiles.gaussian import Gaussian
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
+from lenstronomy.ImSim.make_image import MakeImage
 
 
 class LensAnalysis(object):
@@ -184,6 +185,19 @@ class LensAnalysis(object):
             raise ValueError('No point source positions assigned')
         mag = self.NumLensModel.magnification(ra_pos, dec_pos, kwargs_lens, kwargs_else)
         return ra_pos, dec_pos, mag
+
+    def deflection_field(self, kwargs_lens, kwargs_else):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_else:
+        :return:
+        """
+        makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
+        alpha1, alpha2 = self.LensModel.alpha(makeImage.Data.x_grid, makeImage.Data.y_grid, kwargs_lens, kwargs_else)
+        alpha1 = makeImage.Data.array2image(alpha1)
+        alpha2 = makeImage.Data.array2image(alpha2)
+        return alpha1, alpha2
 
     def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
                                  shape="GAUSSIAN"):

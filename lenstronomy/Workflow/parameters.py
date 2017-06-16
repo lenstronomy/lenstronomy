@@ -314,7 +314,6 @@ class Param(object):
                     pass
                 else:
                     raise ValueError('solver type %s not supported for two image lenses!' % self.solver_type)
-
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
 
@@ -334,6 +333,7 @@ class Param(object):
                         kwargs_source_list[i]['center_x'] = x_mapped[0]
                         kwargs_source_list[i]['center_y'] = y_mapped[0]
             else:
-                kwargs_source_list[0]['center_x'] = x_mapped[0]
-                kwargs_source_list[0]['center_y'] = y_mapped[0]
+                if 'center_x' in kwargs_source_list[0]:
+                    kwargs_source_list[0]['center_x'] = x_mapped[0]
+                    kwargs_source_list[0]['center_y'] = y_mapped[0]
         return kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else

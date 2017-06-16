@@ -418,7 +418,7 @@ class LightParam(object):
                     high.append(100)
                 if not 'n_sersic' in kwargs_fixed:
                     low.append(0.2)
-                    high.append(10)
+                    high.append(8)
                 if not 'R_sersic' in kwargs_fixed:
                     low.append(0.01)
                     high.append(3)
@@ -439,7 +439,7 @@ class LightParam(object):
                     high.append(30)
                 if not 'n_2' in kwargs_fixed:
                     low.append(0.2)
-                    high.append(30)
+                    high.append(8)
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:

@@ -119,25 +119,39 @@ class LightParam(object):
                 if not 'I0_b' in kwargs_fixed:
                     kwargs['I0_b'] = args[i]
                     i += 1
+                else:
+                    kwargs['I0_b'] = kwargs_fixed['I0_b']
                 if not 'R_b' in kwargs_fixed:
                     kwargs['R_b'] = args[i]
                     i += 1
+                else:
+                    kwargs['R_b'] = kwargs_fixed['R_b']
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     phi, q = util.elliptisity2phi_q(args[i], args[i+1])
                     kwargs['phi_G_b'] = phi
                     kwargs['q_b'] = q
                     i += 2
+                else:
+                    kwargs['phi_G_b'] = kwargs_fixed['phi_G_b']
+                    kwargs['q_b'] = kwargs_fixed['q_b']
                 if not 'I0_d' in kwargs_fixed:
                     kwargs['I0_d'] = args[i]
                     i += 1
+                else:
+                    kwargs['I0_d'] = kwargs_fixed['I0_d']
                 if not 'R_d' in kwargs_fixed:
                     kwargs['R_d'] = args[i]
                     i += 1
+                else:
+                    kwargs['R_d'] = kwargs_fixed['R_d']
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
                     phi, q = util.elliptisity2phi_q(args[i], args[i+1])
                     kwargs['phi_G_d'] = phi
                     kwargs['q_d'] = q
                     i += 2
+                else:
+                    kwargs['phi_G_d'] = kwargs_fixed['phi_G_d']
+                    kwargs['q_d'] = kwargs_fixed['q_d']
             kwargs_list.append(kwargs)
         return kwargs_list, i
 

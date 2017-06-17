@@ -34,7 +34,7 @@ class PSF_iterative(object):
                    kwargs_else)
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        data_point = makeImage.Data.array2image(makeImage.Data.data - model_no_point)
+        data_point = util.array2image(makeImage.Data.data_pure) - makeImage.Data.array2image(model_no_point)
         point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):

@@ -44,6 +44,7 @@ class Data(object):
                 f = 1
             self._exp_map = f
             self._data = data[self._idex_mask == 1]
+            self._data_pure = data
             self.C_D = self.covariance_matrix(self._data, self._sigma_b, f)
 
             if 'numPix_xy' in kwargs_data:
@@ -88,6 +89,10 @@ class Data(object):
     @property
     def data(self):
         return self._data
+
+    @property
+    def data_pure(self):
+        return self._data_pure
 
     @property
     def deltaPix(self):

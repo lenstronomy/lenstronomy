@@ -45,7 +45,8 @@ class PSF_iterative(object):
         kernel_new_small = util_class.cut_psf(kernel_new_small, psf_size=kernelsize_small)
         kernel_new = util_class.cut_psf(kernel_new, psf_size=kernel_size)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
-        kwargs_psf_new['kernel'] = kernel_new_small
+        if not kwargs_options.get('psf_keep_small', False):
+            kwargs_psf_new['kernel'] = kernel_new_small
         kwargs_psf_new['kernel_large'] = kernel_new
         kwargs_psf_new['error_map'] = error_map
         #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,

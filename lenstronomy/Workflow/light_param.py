@@ -278,7 +278,7 @@ class LightParam(object):
                     fix_return['I0_d'] = kwargs_fixed['I0_d']
                 if 'R_d' in kwargs_fixed:
                     fix_return['R_d'] = kwargs_fixed['R_d']
-                if 'phi_G_d' in kwargs_fixed or 'q_b' in kwargs_fixed:
+                if 'phi_G_d' in kwargs_fixed or 'q_d' in kwargs_fixed:
                     fix_return['phi_G_d'] = kwargs_fixed['phi_G_d']
                     fix_return['q_d'] = kwargs_fixed['q_d']
             fix_return_list.append(fix_return)

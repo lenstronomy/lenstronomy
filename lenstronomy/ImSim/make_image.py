@@ -21,8 +21,6 @@ class MakeImage(object):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.PointSource = PointSource(kwargs_options, self.Data)
         self.kwargs_options = kwargs_options
-
-        self._subgrid_res = kwargs_options.get('subgrid_res', 1)
         self.kwargs_psf = kwargs_psf
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
@@ -41,7 +39,7 @@ class MakeImage(object):
         else:
             x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source)
-        source_light_final = self.Data.re_size_convolve(source_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        source_light_final = self.Data.re_size_convolve(source_light, self.kwargs_psf, unconvolved=unconvolved)
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
@@ -52,7 +50,7 @@ class MakeImage(object):
         :return: 1d array of surface brightness pixels
         """
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.Data.re_size_convolve(lens_light, self._subgrid_res, self.kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.Data.re_size_convolve(lens_light, self.kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
@@ -112,7 +110,7 @@ class MakeImage(object):
         n_points = self.PointSource.num_basis(kwargs_psf, kwargs_else)
         num_param = n_points + n_lens_light + n_source
 
-        numPix = len(x_grid)/self._subgrid_res**2
+        numPix = self.Data.numData
         A = np.zeros((num_param, numPix))
         if map_error is True:
             error_map = np.zeros(numPix)
@@ -122,13 +120,13 @@ class MakeImage(object):
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-            image = self.Data.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.Data.re_size_convolve(image, self._subgrid_res, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
             A[n, :] = image
             n += 1
         # response of point sources

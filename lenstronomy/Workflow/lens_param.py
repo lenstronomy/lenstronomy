@@ -34,6 +34,27 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['e2'] = kwargs_fixed['e2']
+            if model == 'FLEXION':
+                if not 'g1' in kwargs_fixed:
+                    kwargs['g1'] = args[i]
+                    i += 1
+                else:
+                    kwargs['g1'] = kwargs_fixed['g1']
+                if not 'g2' in kwargs_fixed:
+                    kwargs['g2'] = args[i]
+                    i += 1
+                else:
+                    kwargs['g2'] = kwargs_fixed['g2']
+                if not 'g3' in kwargs_fixed:
+                    kwargs['g3'] = args[i]
+                    i += 1
+                else:
+                    kwargs['g3'] = kwargs_fixed['g3']
+                if not 'g4' in kwargs_fixed:
+                    kwargs['g4'] = args[i]
+                    i += 1
+                else:
+                    kwargs['g4'] = kwargs_fixed['g4']
             if model == 'GAUSSIAN':
                 if not 'amp' in kwargs_fixed:
                     kwargs['amp'] = args[i]
@@ -150,6 +171,15 @@ class LensParam(object):
                     args.append(kwargs['e1'])
                 if not 'e2' in kwargs_fixed:
                     args.append(kwargs['e2'])
+            if model == 'FLEXION':
+                if not 'g1' in kwargs_fixed:
+                    args.append(kwargs['g1'])
+                if not 'g2' in kwargs_fixed:
+                    args.append(kwargs['g2'])
+                if not 'g3' in kwargs_fixed:
+                    args.append(kwargs['g3'])
+                if not 'g4' in kwargs_fixed:
+                    args.append(kwargs['g4'])
             if model == 'GAUSSIAN':
                 if not 'amp' in kwargs_fixed:
                     args.append(kwargs['amp'])
@@ -217,6 +247,15 @@ class LensParam(object):
                     fix_return['e1'] = kwargs_fixed['e1']
                 if 'e2' in kwargs_fixed:
                     fix_return['e2'] = kwargs_fixed['e2']
+            if model == 'FLEXION':
+                if 'g1' in kwargs_fixed:
+                    fix_return['g1'] = kwargs_fixed['g1']
+                if 'g2' in kwargs_fixed:
+                    fix_return['g2'] = kwargs_fixed['g2']
+                if 'g3' in kwargs_fixed:
+                    fix_return['g3'] = kwargs_fixed['g3']
+                if 'g4' in kwargs_fixed:
+                    fix_return['g4'] = kwargs_fixed['g4']
             if model == 'GAUSSIAN':
                 if 'amp' in kwargs_fixed:
                     fix_return['amp'] = kwargs_fixed['amp']
@@ -281,6 +320,19 @@ class LensParam(object):
                 if not 'e2' in kwargs_fixed:
                     mean.append(kwargs_mean['e2'])
                     sigma.append(kwargs_mean['shear_sigma'])
+            if model == 'FLEXION':
+                if not 'g1' in kwargs_fixed:
+                    mean.append(kwargs_mean['g1'])
+                    sigma.append(kwargs_mean['flexion_sigma'])
+                if not 'g2' in kwargs_fixed:
+                    mean.append(kwargs_mean['g2'])
+                    sigma.append(kwargs_mean['flexion_sigma'])
+                if not 'g3' in kwargs_fixed:
+                    mean.append(kwargs_mean['g3'])
+                    sigma.append(kwargs_mean['flexion_sigma'])
+                if not 'g4' in kwargs_fixed:
+                    mean.append(kwargs_mean['g4'])
+                    sigma.append(kwargs_mean['flexion_sigma'])
             if model == 'GAUSSIAN':
                 if not 'amp' in kwargs_fixed:
                     mean.append(kwargs_mean['amp'])
@@ -368,6 +420,19 @@ class LensParam(object):
                 if not 'e2' in kwargs_fixed:
                     low.append(-0.5)
                     high.append(0.5)
+            if model == 'FLEXION':
+                if not 'g1' in kwargs_fixed:
+                    low.append(-0.1)
+                    high.append(0.1)
+                if not 'g2' in kwargs_fixed:
+                    low.append(-0.1)
+                    high.append(0.1)
+                if not 'g3' in kwargs_fixed:
+                    low.append(-0.1)
+                    high.append(0.1)
+                if not 'g4' in kwargs_fixed:
+                    low.append(-0.1)
+                    high.append(0.1)
             if model == 'GAUSSIAN':
                 if not 'amp' in kwargs_fixed:
                     low.append(0)
@@ -449,6 +514,19 @@ class LensParam(object):
                 if not 'e2' in kwargs_fixed:
                     num += 1
                     list.append('e2')
+            if model == 'FLEXION':
+                if not 'g1' in kwargs_fixed:
+                    num += 1
+                    list.append('g1')
+                if not 'g2' in kwargs_fixed:
+                    num += 1
+                    list.append('g2')
+                if not 'g3' in kwargs_fixed:
+                    num += 1
+                    list.append('g3')
+                if not 'g4' in kwargs_fixed:
+                    num += 1
+                    list.append('g4')
             if model == 'GAUSSIAN':
                 if not 'amp' in kwargs_fixed:
                     num += 1

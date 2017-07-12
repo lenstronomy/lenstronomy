@@ -85,6 +85,7 @@ class Data(object):
             self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
             self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
             self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
+            self._psf_subgrid = kwargs_options.get('psf_subgrid', False)
 
     @property
     def data(self):
@@ -251,7 +252,10 @@ class Data(object):
             img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate*sigma)
             return img_conv
         elif self.kwargs_options['psf_type'] == 'pixel':
-            kernel = kwargs['kernel']
+            if self._psf_subgrid:
+                kernel = self._subgrid_kernel(kwargs['kernel'], self._subgrid_res)
+            else:
+                kernel = kwargs['kernel']
             if 'kernel_fft' in kwargs:
                 kernel_fft = kwargs['kernel_fft']
                 try:
@@ -278,10 +282,27 @@ class Data(object):
             grid_final = grid_re_sized
         else:
             gridScale = self.deltaPix/self._subgrid_res
-            if self.kwargs_options['psf_type'] == 'pixel':
+            #if self.kwargs_options['psf_type'] == 'pixel':
+            if self.kwargs_options['psf_type'] == 'pixel' and not self._psf_subgrid:
                 grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
             else:
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
                 grid_final = self.util_class.re_size(grid_conv, self._subgrid_res)
+
         return self.image2array(grid_final)
+
+    def _subgrid_kernel(self, kernel, subgrid_res):
+        """
+        creates a higher resolution kernel with subgrid resolution
+        :param kernel: initial kernel
+        :param subgrid_res: subgrid resolution required
+        :return: kernel with higher resolution (larger)
+        """
+        numPix = len(kernel)
+        x_in = np.linspace(0, 1, numPix)
+        x_out = np.linspace(0, 1, numPix * subgrid_res)
+        out_values = util.re_size_array(x_in, x_in, kernel, x_out, x_out)
+        kernel_subgrid = out_values
+        kernel_subgrid = util.kernel_norm(kernel_subgrid)
+        return kernel_subgrid

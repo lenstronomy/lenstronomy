@@ -272,11 +272,11 @@ class Data(object):
         :param unconvolved: bool, if True, no convlolution performed, only re-binning
         :return: array with convolved and re-binned data/model
         """
+        image = self.array2image(image, self._subgrid_res)
         if unconvolved is True or self.kwargs_options['psf_type'] == 'NONE':
             grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
         else:
-            image = self.array2image(image, self._subgrid_res)
             gridScale = self.deltaPix/self._subgrid_res
             if self.kwargs_options['psf_type'] == 'pixel':
                 grid_re_sized = self.util_class.re_size(image, self._subgrid_res)

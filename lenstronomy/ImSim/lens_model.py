@@ -14,7 +14,7 @@ class LensModel(object):
             if lens_type == 'EXTERNAL_SHEAR':
                 from astrofunc.LensingProfiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
-            if lens_type == 'FLEXION':
+            elif lens_type == 'FLEXION':
                 from astrofunc.LensingProfiles.flexion import Flexion
                 self.func_list.append(Flexion())
             elif lens_type == 'GAUSSIAN':

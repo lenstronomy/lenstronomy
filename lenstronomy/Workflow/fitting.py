@@ -363,6 +363,30 @@ class Fitting(object):
             threadCount=threadCount, mpi=mpi, print_key='source light', sigma_factor=sigma_factor)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
+    def find_fixed_lens(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                             kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+        """
+        finds lens light and source light combined with fixed lens model
+        :return: constraints of lens model
+        """
+        kwargs_options_special = {'X2_type': 'image'}
+        # this are the parameters which are held constant while sampling
+        kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
+        kwargs_fixed_lens = kwargs_lens
+        kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
+        kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
+        kwargs_fixed_else = self._fixed_else(kwargs_options, kwargs_else)
+
+        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
+            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
+            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
+            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
+            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
+            kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
+            threadCount=threadCount, mpi=mpi, print_key='lens fixed', sigma_factor=sigma_factor)
+        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
+
     def find_lens_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
                              n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):

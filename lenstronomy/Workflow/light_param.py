@@ -10,8 +10,10 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if type == 'lens_light':
             self.model_list = kwargs_options['lens_light_model_list']
+            self._smoothing = 0.05
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
+            self._smoothing = 0.01
         else:
             raise ValueError("type %s not supported." % type)
         self.type = type
@@ -72,6 +74,7 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['R_sersic'] = kwargs_fixed['R_sersic']
+                kwargs['smoothing'] = self._smoothing
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:

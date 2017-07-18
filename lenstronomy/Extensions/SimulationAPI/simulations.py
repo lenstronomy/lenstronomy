@@ -82,7 +82,7 @@ class Simulation(object):
         kwargs_else = {}
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+    def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
         """
 
         :param kwargs_options:
@@ -116,6 +116,9 @@ class Simulation(object):
         image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         image = makeImage.Data.array2image(image)
         # add noise
-        poisson = util.add_poisson(image, exp_time=util.array2image(kwargs_data['exposure_map']))
-        bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
-        return image + bkg + poisson
+        if no_noise:
+            return image
+        else:
+            poisson = util.add_poisson(image, exp_time=util.array2image(kwargs_data['exposure_map']))
+            bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
+            return image + bkg + poisson

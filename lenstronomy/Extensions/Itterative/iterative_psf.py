@@ -48,7 +48,8 @@ class PSF_iterative(object):
         if not kwargs_options.get('psf_keep_small', False):
             kwargs_psf_new['kernel'] = kernel_new_small
         kwargs_psf_new['kernel_large'] = kernel_new
-        kwargs_psf_new['error_map'] = error_map
+        if not kwargs_options.get('psf_keep_error_map', False):
+            kwargs_psf_new['error_map'] = error_map
         #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
         #              "error_map": error_map}
         return kwargs_psf_new

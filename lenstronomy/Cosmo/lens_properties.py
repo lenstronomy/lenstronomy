@@ -27,9 +27,9 @@ class LensProp(object):
         time_delay = self.unitManager.time_delay_units(time_delay_arcsec, kappa_ext)
         return time_delay
 
-    def rho0_r0_gamma(self, kwargs_lens, gamma, kappa_ext=0):
+    def rho0_r0_gamma(self, kwargs_lens, kwargs_else, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
-        theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens)
+        theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
         return (kappa_ext - 1) * math.gamma(gamma/2)/(np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E**gamma/self.unitManager.arcsec2phys_lens(theta_E) * self.unitManager.cosmoProp.epsilon_crit * const.M_sun/const.Mpc**3  # units kg/m^3
 
     def v_sigma(self, kwargs_lens, kwargs_lens_light, kwargs_else, r_ani_scaling=1, r_eff=None, r=0.01):
@@ -41,7 +41,7 @@ class LensProp(object):
         # equation (14) in Suyu+ 2010
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else)
+        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         r_ani = r_ani_scaling * r_eff
         sigma2_center = self.dispersion.sigma_r2(r, 0.551*r_eff, gamma, rho0_r0_gamma, r_ani)
         return np.sqrt(sigma2_center) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
@@ -50,7 +50,7 @@ class LensProp(object):
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, gamma)
+        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, rho0_r0_gamma, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)

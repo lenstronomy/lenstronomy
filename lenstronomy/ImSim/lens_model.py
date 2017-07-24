@@ -41,6 +41,9 @@ class LensModel(object):
             elif lens_type == 'NFW_ELLIPSE':
                 from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
                 self.func_list.append(NFW_ELLIPSE())
+            elif lens_type == 'SERSIC':
+                from astrofunc.LensingProfiles.sersic import Sersic
+                self.func_list.append(Sersic())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func())

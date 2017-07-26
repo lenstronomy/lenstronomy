@@ -7,6 +7,7 @@ from astrofunc.LensingProfiles.spemd import SPEMD
 from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
 from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
 from astrofunc.LensingProfiles.external_shear import ExternalShear
+from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
 import astrofunc.util as util
 
 
@@ -19,6 +20,8 @@ class SolverCenter2(object):
             self.lens = SPEP()
         elif lens_model == 'SPEMD':
             self.lens = SPEMD()
+        else:
+            raise ValueError('lens model %s not valid for solver type CENTER!' % lens_model)
 
     def F(self, x, x_cat, y_cat, a, theta_E, gamma, e1, e2):
         """
@@ -48,6 +51,8 @@ class SolverEllipse2(object):
             self.lens = SPEP()
         elif lens_model == 'SPEMD':
             self.lens = SPEMD()
+        else:
+            raise ValueError('lens model %s not valid for solver type ELLIPSE!' % lens_model)
 
     def F(self, x, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
         """
@@ -65,6 +70,64 @@ class SolverEllipse2(object):
 
     def solve(self, init, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
         x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, center_x, center_y), xtol=1.49012e-08, factor=0.1)
+        return x
+
+
+class SolverNFWCenter2(object):
+    """
+    class to solve multidimensional non-linear equations for 2 point image
+    """
+    def __init__(self, lens_model='NFW_ELLIPSE'):
+        if lens_model == 'NFW_ELLIPSE':
+            self.lens = NFW_ELLIPSE()
+        else:
+            raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
+
+    def F(self, x, x_cat, y_cat, a, theta_Rs, Rs, e1, e2):
+        """
+
+        :param x: array of parameters
+        :return:
+        """
+        [center_x, center_y] = x
+        phi_G, q = util.elliptisity2phi_q(e1, e2)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_Rs, Rs, q, phi_G, center_x, center_y)
+        y = np.zeros(2)
+        y[0] = alpha1[0] - alpha1[1]
+        y[1] = alpha2[0] - alpha2[1]
+        return y - a
+
+    def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, e1, e2):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_Rs, Rs, e1, e2), xtol=1.49012e-08, factor=0.1)
+        return x
+
+
+class SolverNFWEllipse2(object):
+    """
+    class to solve multidimensional non-linear equations for 2 point image
+    """
+    def __init__(self, lens_model='NFW_ELLIPSE'):
+        if lens_model == 'NFW_ELLIPSE':
+            self.lens = NFW_ELLIPSE()
+        else:
+            raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
+
+    def F(self, x, x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y):
+        """
+
+        :param x: array of parameters
+        :return:
+        """
+        [e1, e2] = x
+        phi_G, q = util.elliptisity2phi_q(e1, e2)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_Rs, Rs, q, phi_G, center_x, center_y)
+        y = np.zeros(2)
+        y[0] = alpha1[0] - alpha1[1]
+        y[1] = alpha2[0] - alpha2[1]
+        return y - a
+
+    def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y), xtol=1.49012e-08, factor=0.1)
         return x
 
 
@@ -122,6 +185,10 @@ class Constraints2(object):
             self.solver = SolverCenter2(lens_model)
         elif solver_type == 'ELLIPSE':
             self.solver = SolverEllipse2(lens_model)
+        elif solver_type == 'NFW_CENTER':
+            self.solver = SolverNFWCenter2(lens_model)
+        elif solver_type == 'NFW_ELLIPSE':
+            self.solver = SolverNFWEllipse2(lens_model)
         elif solver_type == 'SHAPELETS':
             self.solver = SolverShapelets2(lens_model)
         elif solver_type == 'SHEAR':
@@ -129,7 +196,7 @@ class Constraints2(object):
         elif solver_type == 'NONE':
             pass
         else:
-            raise ValueError('invalid solver type!')
+            raise ValueError('invalid solver type: %s !' % solver_type)
 
     def _subtract_constraint(self, x_cat, y_cat, x_sub, y_sub):
         """

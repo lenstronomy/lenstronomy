@@ -193,6 +193,10 @@ class Fitting(object):
                             kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
                                              'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
                                              'center_y': kwargs_lens['center_y']}
+                        elif kwargs_options['solver_type'] in ['NFW_PROFILE']:
+                            kwargs_fixed_lens = {'theta_Rs': kwargs_lens['theta_Rs'], 'q': kwargs_lens['q'],
+                                             'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
+                                             'center_y': kwargs_lens['center_y']}
                         elif kwargs_options['solver_type'] in ['SHAPELETS']:
                             kwargs_fixed_lens = {}
                         elif kwargs_options['solver_type'] in ['NONE']:
@@ -200,10 +204,10 @@ class Fitting(object):
                         else:
                             raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
                     elif kwargs_options['num_images'] == 2:
-                        if kwargs_options['solver_type'] in ['CENTER']:
+                        if kwargs_options['solver_type'] in ['CENTER', 'NFW_CENTER']:
                             kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'],
                                                  'center_y': kwargs_lens['center_y']}
-                        elif kwargs_options['solver_type'] in ['ELLIPSE']:
+                        elif kwargs_options['solver_type'] in ['ELLIPSE', 'NFW_ELLIPSE']:
                             kwargs_fixed_lens = {'phi_G': kwargs_lens['phi_G'], 'q': kwargs_lens['q']}
                         elif kwargs_options['solver_type'] == "SHAPELETS":
                             kwargs_fixed_lens = {}
@@ -232,7 +236,8 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = kwargs_lens.copy()
-        kwargs_fixed_lens[0] = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
+        if 'gamma' in kwargs_lens:
+            kwargs_fixed_lens[0] = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
         kwargs_fixed_source = kwargs_source
         kwargs_fixed_lens_light = kwargs_lens_light
         kwargs_fixed_else = dict(kwargs_else.items() + self._fixed_else(kwargs_options, kwargs_else).items())
@@ -289,7 +294,8 @@ class Fitting(object):
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
 
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
-        kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
+        if 'gamma' in kwargs_lens[0]:
+            kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
         kwargs_fixed_source = []
         source_fixed = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         for k in range(len(kwargs_source)):

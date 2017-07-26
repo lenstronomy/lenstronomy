@@ -428,10 +428,10 @@ class LensParam(object):
                     mean.append(kwargs_mean['n_sersic'])
                     sigma.append(kwargs_mean['n_sersic_sigma'])
                 if not 'r_eff' in kwargs_fixed:
-                    mean.append(kwargs_mean['r_reff'])
+                    mean.append(kwargs_mean['r_eff'])
                     sigma.append(kwargs_mean['r_eff_sigma'])
                 if not 'k_eff' in kwargs_fixed:
-                    mean.append(kwargs_mean['k_reff'])
+                    mean.append(kwargs_mean['k_eff'])
                     sigma.append(kwargs_mean['k_eff_sigma'])
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC']:
                 if not 'center_x' in kwargs_fixed:

@@ -166,7 +166,22 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2_center(self, kwargs_lens, x):
+    def _update_nfw(self, kwargs_lens, x):
+        """
+
+        :param x: 1d array with spep parameters [theta_Rs, Rs, q, phi_G, center_x, center_y]
+        :return: updated kwargs of lens parameters
+        """
+        [theta_Rs, e1, e2, center_x, center_y, non_sens_param] = x
+        phi_G, q = util.elliptisity2phi_q(e1, e2)
+        kwargs_lens['theta_Rs'] = theta_Rs
+        kwargs_lens['phi_G'] = phi_G
+        kwargs_lens['q'] = q
+        kwargs_lens['center_x'] = center_x
+        kwargs_lens['center_y'] = center_y
+        return kwargs_lens
+
+    def _update_2_center(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
@@ -177,7 +192,7 @@ class Param(object):
         kwargs_lens['center_y'] = center_y
         return kwargs_lens
 
-    def _update_spep2_ellipse(self, kwargs_lens, x):
+    def _update_2_ellipse(self, kwargs_lens, x):
         """
 
         :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
@@ -256,6 +271,14 @@ class Param(object):
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
+                if self.solver_type in ['NFW_PROFILE']:
+                    e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
+                    init = np.array([kwargs_lens['theta_Rs'], e1, e2,
+                            kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
+                    kwargs_lens['theta_Rs'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs']})
+                    kwargs_lens = self._update_nfw(kwargs_lens, x)
                 elif self.solver_type == 'SHAPELETS':
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     if self._num_images == 4:
@@ -273,7 +296,6 @@ class Param(object):
 
             elif self._num_images == 2:
                 if self.solver_type == 'CENTER':
-                #if self._fix_center is False:
                     e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
                     init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                     theta_E = kwargs_lens['theta_E']
@@ -282,16 +304,15 @@ class Param(object):
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                 'theta_E': theta_E, 'e1': e1, 'e2': e2})
                     kwargs_lens['theta_E'] = theta_E
-                    kwargs_lens = self._update_spep2_center(kwargs_lens, x)
+                    kwargs_lens = self._update_2_center(kwargs_lens, x)
                 elif self.solver_type == 'ELLIPSE':
-                    #else:
                     init = np.array([0, 0])
                     theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'gamma': kwargs_lens['gamma']})
                     kwargs_lens['theta_E'] = theta_E
-                    kwargs_lens = self._update_spep2_ellipse(kwargs_lens, x)
+                    kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
                 elif self.solver_type == 'SHAPELETS':
                     ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     init = [0, 0]
@@ -310,6 +331,25 @@ class Param(object):
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, kwargs)
                     kwargs_lens['e1'] = x[0]
                     kwargs_lens['e2'] = x[1]
+                elif self.solver_type == 'NFW_CENTER':
+                    e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
+                    init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
+                    theta_Rs = kwargs_lens['theta_Rs']
+                    kwargs_lens['theta_Rs'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs'],
+                                'theta_Rs': theta_Rs, 'e1': e1, 'e2': e2})
+                    kwargs_lens['theta_Rs'] = theta_Rs
+                    kwargs_lens = self._update_2_center(kwargs_lens, x)
+                elif self.solver_type == 'NFW_ELLIPSE':
+                    init = np.array([0, 0])
+                    theta_Rs = kwargs_lens['theta_Rs']
+                    kwargs_lens['theta_Rs'] = 0
+                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_Rs': theta_Rs, 'Rs': kwargs_lens['Rs']})
+                    kwargs_lens['theta_Rs'] = theta_Rs
+                    kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
+
                 elif self.solver_type == 'NONE':
                     pass
                 else:

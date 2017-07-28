@@ -62,12 +62,12 @@ class LensParam(object):
                 else:
                     kwargs['amp'] = kwargs_fixed['amp']
                 if not 'sigma_x' in kwargs_fixed:
-                    kwargs['sigma_x'] = np.exp(args[i])
+                    kwargs['sigma_x'] = args[i]
                     i += 1
                 else:
                     kwargs['sigma_x'] = kwargs_fixed['sigma_x']
                 if not 'sigma_y' in kwargs_fixed:
-                    kwargs['sigma_y'] = np.exp(args[i])
+                    kwargs['sigma_y'] = args[i]
                     i += 1
                 else:
                     kwargs['sigma_y'] = kwargs_fixed['sigma_y']
@@ -95,7 +95,7 @@ class LensParam(object):
 
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
-                    kwargs['Rs'] = np.exp(args[i])
+                    kwargs['Rs'] = args[i]
                     i += 1
                 else:
                     kwargs['Rs'] = kwargs_fixed['Rs']
@@ -200,9 +200,9 @@ class LensParam(object):
                 if not 'amp' in kwargs_fixed:
                     args.append(kwargs['amp'])
                 if not 'sigma_x' in kwargs_fixed:
-                    args.append(np.log(kwargs['sigma_x']))
+                    args.append(kwargs['sigma_x'])
                 if not 'sigma_y' in kwargs_fixed:
-                    args.append(np.log(kwargs['sigma_y']))
+                    args.append(kwargs['sigma_y'])
 
             if model in ['SPEP', 'SPEMD', 'SIS', 'SIS_TRUNCATED', 'SPP']:
                 if not 'theta_E' in kwargs_fixed:
@@ -218,7 +218,7 @@ class LensParam(object):
 
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
-                    args.append(np.log(kwargs['Rs']))
+                    args.append(kwargs['Rs'])
                 if not 'theta_Rs' in kwargs_fixed:
                     args.append(kwargs['theta_Rs'])
 
@@ -367,11 +367,11 @@ class LensParam(object):
                     mean.append(kwargs_mean['amp'])
                     sigma.append(kwargs_mean['amp_sigma'])
                 if not 'sigma_x' in kwargs_fixed:
-                    mean.append(np.log(kwargs_mean['sigma_x']))
-                    sigma.append(np.log(1 + kwargs_mean['sigma_x_sigma']/kwargs_mean['sigma_x']))
+                    mean.append(kwargs_mean['sigma_x'])
+                    sigma.append(kwargs_mean['sigma_x_sigma'])
                 if not 'sigma_y' in kwargs_fixed:
-                    mean.append(np.log(kwargs_mean['sigma_y']))
-                    sigma.append(np.log(1 + kwargs_mean['sigma_y_sigma']/kwargs_mean['sigma_y']))
+                    mean.append(kwargs_mean['sigma_y'])
+                    sigma.append(kwargs_mean['sigma_y_sigma'])
 
             if model in ['SPEP', 'SPEMD', 'SIS', 'SIS_TRUNCATED', 'SPP']:
                 if not 'theta_E' in kwargs_fixed:
@@ -395,8 +395,8 @@ class LensParam(object):
 
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
-                    mean.append(np.log(kwargs_mean['Rs']))
-                    sigma.append(np.log(1 + kwargs_mean['Rs_sigma']/kwargs_mean['Rs']))
+                    mean.append(kwargs_mean['Rs'])
+                    sigma.append(kwargs_mean['Rs_sigma'])
                 if not 'theta_Rs' in kwargs_fixed:
                     mean.append(kwargs_mean['theta_Rs'])
                     sigma.append(kwargs_mean['theta_Rs_sigma'])
@@ -499,8 +499,8 @@ class LensParam(object):
 
             if model in ['NFW', 'NFW_ELLIPSE']:
                 if not 'Rs' in kwargs_fixed:
-                    low.append(-5)
-                    high.append(5)
+                    low.append(0.1)
+                    high.append(100)
                 if not 'theta_Rs' in kwargs_fixed:
                     low.append(0)
                     high.append(100)

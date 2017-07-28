@@ -246,6 +246,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     source, error_map_source = lensAnalysis.get_source(x_grid_source, y_grid_source, kwargs_source_new, cov_param)
     source = util.array2image(source)
     mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
+    kappa_result = util.array2image(makeImage.LensModel.kappa(x_grid, y_grid, lens_result, else_result))
     mag_high_res = util.array2image(
         makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
 
@@ -374,6 +375,26 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.text(d_s - d_s/10., 0.9*d_s, "Reconstructed source", color="w", fontsize=15, backgroundcolor='k')
     ax.set_xlim(ax.get_ylim()[::-1])
 
+
+    ax = axes[1, 1]
+    im = ax.matshow(np.log10(kappa_result), origin='lower',
+                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='w')
+    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='w', ha='center')
+    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
+    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="w", fontsize=15, ha='center')
+    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
+    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="w", fontsize=15, ha='center')
+    ax.text(d/10., 0.9*d, "Convergence", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(axes[1][1])
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+
+
+    """
     ax = axes[1, 1]
     im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_no_mask)), origin='lower',
                     extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap, vmin=v_min, vmax=v_max, )
@@ -403,6 +424,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         x_lens, y_lens = 0, 0
     ax.plot(x_light, y_light, 'og')
     ax.plot(x_lens, y_lens, 'b', marker='+')
+    """
     ax = axes[1, 2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * nx, 0, deltaPix * ny],
                     vmin=-10, vmax=10, cmap=cmap, alpha=0.5)

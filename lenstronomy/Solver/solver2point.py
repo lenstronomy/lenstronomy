@@ -83,7 +83,7 @@ class SolverNFWCenter2(object):
         else:
             raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
 
-    def F(self, x, x_cat, y_cat, a, theta_Rs, Rs, e1, e2):
+    def F(self, x, x_cat, y_cat, a, Rs, theta_Rs, e1, e2):
         """
 
         :param x: array of parameters
@@ -91,14 +91,14 @@ class SolverNFWCenter2(object):
         """
         [center_x, center_y] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_Rs, Rs, q, phi_G, center_x, center_y)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, Rs, theta_Rs, q, phi_G, center_x, center_y)
         y = np.zeros(2)
         y[0] = alpha1[0] - alpha1[1]
         y[1] = alpha2[0] - alpha2[1]
         return y - a
 
     def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_Rs, Rs, e1, e2), xtol=1.49012e-08, factor=0.1)
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, Rs, theta_Rs, e1, e2), xtol=1.49012e-08, factor=0.1)
         return x
 
 
@@ -112,7 +112,7 @@ class SolverNFWEllipse2(object):
         else:
             raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
 
-    def F(self, x, x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y):
+    def F(self, x, x_cat, y_cat, a, Rs, theta_Rs, center_x, center_y):
         """
 
         :param x: array of parameters
@@ -120,14 +120,14 @@ class SolverNFWEllipse2(object):
         """
         [e1, e2] = x
         phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_Rs, Rs, q, phi_G, center_x, center_y)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, Rs, theta_Rs, q, phi_G, center_x, center_y)
         y = np.zeros(2)
         y[0] = alpha1[0] - alpha1[1]
         y[1] = alpha2[0] - alpha2[1]
         return y - a
 
     def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y), xtol=1.49012e-08, factor=0.1)
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, Rs, theta_Rs, center_x, center_y), xtol=1.49012e-08, factor=0.1)
         return x
 
 

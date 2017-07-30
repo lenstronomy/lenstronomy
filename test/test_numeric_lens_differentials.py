@@ -1,20 +1,18 @@
 __author__ = 'sibirrer'
 
-
 import pytest
 import numpy.testing as npt
 
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 
-class TestLensModel(object):
+
+class TestNumerics(object):
     """
     tests the source model routines
     """
     def setup(self):
-        self.kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_type': 'GAUSSIAN'
-            , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
+        self.kwargs_options = {'lens_model_list': ['GAUSSIAN']}
 
         self.lensModel = LensModel(self.kwargs_options)
         self.lensModelNum = NumericLens(self.kwargs_options)

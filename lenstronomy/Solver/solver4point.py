@@ -6,6 +6,7 @@ from astrofunc.LensingProfiles.spep import SPEP
 from astrofunc.LensingProfiles.spemd import SPEMD
 from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
 from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
+from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
 import astrofunc.util as util
 
 
@@ -77,6 +78,39 @@ class SolverNFWProfile(object):
         return x
 
 
+class SolverComposite(object):
+    """
+    class to solve multidimensional non-linear equations for 4 point image
+    """
+    def __init__(self, lens_model='COMPOSITE'):
+        if lens_model == 'COMPOSITE':
+            self.lens = CompositeSersicNFW()
+        else:
+            raise ValueError('lens model %s not valid for solver type "COMPOSITE" ' % lens_model)
+
+    def F(self, x, x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s):
+        """
+
+        :param x: array of parameters
+        :return:
+        """
+        [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
+        phi_G, q = util.elliptisity2phi_q(e1, e2)
+        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, mass_light, Rs, q, phi_G, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y)
+        y = np.zeros(6)
+        y[0] = alpha1[0] - alpha1[1]
+        y[1] = alpha1[0] - alpha1[2]
+        y[2] = alpha1[0] - alpha1[3]
+        y[3] = alpha2[0] - alpha2[1]
+        y[4] = alpha2[0] - alpha2[2]
+        y[5] = alpha2[0] - alpha2[3]
+        return y - a
+
+    def solve(self, init, x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s):
+        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s), xtol=1.49012e-08, factor=0.1)
+        return x
+
+
 class SolverShapelets(object):
 
     def __init__(self):
@@ -109,6 +143,8 @@ class Constraints(object):
             self.solver = SolverProfile(lens_model)
         elif solver_type == 'NFW_PROFILE':
             self.solver = SolverNFWProfile(lens_model)
+        elif solver_type == 'COMPOSITE':
+            self.solver = SolverComposite(lens_model)
         elif solver_type == 'SHAPELETS':
             self.solver = SolverShapelets()
         elif solver_type == 'NONE':

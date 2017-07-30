@@ -189,7 +189,7 @@ class Fitting(object):
                 if kwargs_options['solver'] is True:
                     kwargs_lens = kwargs_lens_list[0]
                     if kwargs_options['num_images'] == 4:
-                        if kwargs_options['solver_type'] in ['PROFILE']:
+                        if kwargs_options['solver_type'] in ['PROFILE', 'COMPOSITE']:
                             kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
                                              'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
                                              'center_y': kwargs_lens['center_y']}
@@ -204,10 +204,10 @@ class Fitting(object):
                         else:
                             raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
                     elif kwargs_options['num_images'] == 2:
-                        if kwargs_options['solver_type'] in ['CENTER', 'NFW_CENTER']:
+                        if kwargs_options['solver_type'] in ['CENTER', 'NFW_CENTER', 'COMPOSITE_CENTER']:
                             kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'],
                                                  'center_y': kwargs_lens['center_y']}
-                        elif kwargs_options['solver_type'] in ['ELLIPSE', 'NFW_ELLIPSE']:
+                        elif kwargs_options['solver_type'] in ['ELLIPSE', 'NFW_ELLIPSE', 'COMPOSITE_ELLIPSE']:
                             kwargs_fixed_lens = {'phi_G': kwargs_lens['phi_G'], 'q': kwargs_lens['q']}
                         elif kwargs_options['solver_type'] == "SHAPELETS":
                             kwargs_fixed_lens = {}

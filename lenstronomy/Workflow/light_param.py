@@ -10,10 +10,10 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if type == 'lens_light':
             self.model_list = kwargs_options['lens_light_model_list']
-            self._smoothing = 0.05
+            self._smoothing = 0.02
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
-            self._smoothing = 0.01
+            self._smoothing = 0.005
         else:
             raise ValueError("type %s not supported." % type)
         self.type = type

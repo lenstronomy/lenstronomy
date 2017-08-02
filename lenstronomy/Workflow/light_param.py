@@ -423,7 +423,7 @@ class LightParam(object):
                     low.append(0.2)
                     high.append(8)
                 if not 'R_sersic' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(0.01)
                     high.append(3)
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
@@ -438,7 +438,7 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'R_2' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(0.01)
                     high.append(30)
                 if not 'n_2' in kwargs_fixed:
                     low.append(0.2)
@@ -446,7 +446,7 @@ class LightParam(object):
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(0.01)
                     high.append(30)
                 if not 'gamma' in kwargs_fixed:
                     low.append(-3)
@@ -456,13 +456,13 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'R_b' in kwargs_fixed:
-                    low.append(0.0001)
+                    low.append(0.01)
                     high.append(100)
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    low.append(-0.8)
-                    high.append(0.8)
-                    low.append(-0.8)
-                    high.append(0.8)
+                    low.append(-0.5)
+                    high.append(0.5)
+                    low.append(-0.5)
+                    high.append(0.5)
                 if not 'I0_d' in kwargs_fixed:
                     low.append(0)
                     high.append(100)

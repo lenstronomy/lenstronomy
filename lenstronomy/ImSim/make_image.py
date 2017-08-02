@@ -154,7 +154,7 @@ class MakeImage(object):
         """
         i = 0
         for k, model in enumerate(self.kwargs_options['source_light_model_list']):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE','DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
                 kwargs_source[k]['I0_sersic'] = param[i]
                 i += 1
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
@@ -164,6 +164,9 @@ class MakeImage(object):
                 kwargs_source[k]['I0_b'] = param[i]
                 i += 1
                 kwargs_source[k]['I0_d'] = param[i]
+                i += 1
+            if model in ['HERNQUIST', 'P_JAFFE', 'P_JAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_source[k]['sigma0'] = param[i]
                 i += 1
             if model in ['SHAPELETS']:
                 n_max = kwargs_source[k]['n_max']
@@ -181,6 +184,9 @@ class MakeImage(object):
                 kwargs_source[k]['I0_b'] = param[i]
                 i += 1
                 kwargs_source[k]['I0_d'] = param[i]
+                i += 1
+            if model in ['HERNQUIST', 'P_JAFFE', 'P_JAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_source[k]['sigma0'] = param[i]
                 i += 1
             if model in ['SHAPELETS']:
                 n_max = kwargs_lens_light[k]['n_max']

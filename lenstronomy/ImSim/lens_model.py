@@ -50,9 +50,18 @@ class LensModel(object):
             elif lens_type == 'COMPOSITE':
                 from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
                 self.func_list.append(CompositeSersicNFW())
-            elif lens_type == 'dPIE':
-                from astrofunc.LensingProfiles.d_PIE import D_PIE
-                self.func_list.append(D_PIE())
+            elif lens_type == 'P_JAFFE':
+                from astrofunc.LensingProfiles.p_jaffe import PJaffe
+                self.func_list.append(PJaffe())
+            elif lens_type == 'P_JAFFE_ELLIPSE':
+                from astrofunc.LensingProfiles.p_jaffe_ellipse import PJaffe_Ellipse
+                self.func_list.append(PJaffe_Ellipse())
+            elif lens_type == 'HERNQUIST':
+                from astrofunc.LensingProfiles.hernquist import Hernquist
+                self.func_list.append(Hernquist())
+            elif lens_type == 'HERNQUIST_ELLIPSE':
+                from astrofunc.LensingProfiles.hernquist_ellipse import Hernquist_Ellipse
+                self.func_list.append(Hernquist_Ellipse())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func())

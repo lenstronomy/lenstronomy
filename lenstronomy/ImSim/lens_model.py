@@ -50,6 +50,9 @@ class LensModel(object):
             elif lens_type == 'COMPOSITE':
                 from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
                 self.func_list.append(CompositeSersicNFW())
+            elif lens_type == 'dPIE':
+                from astrofunc.LensingProfiles.d_PIE import D_PIE
+                self.func_list.append(D_PIE())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func())

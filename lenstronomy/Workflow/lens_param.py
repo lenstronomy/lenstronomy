@@ -174,7 +174,24 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['mass_light'] = kwargs_fixed['mass_light']
-            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+            if model in ['dPIE']:
+                if not 'sigma0' in kwargs_fixed:
+                    kwargs['sigma0'] = args[i]
+                    i += 1
+                else:
+                    kwargs['sigma0'] = kwargs_fixed['sigma0']
+                if not 'a' in kwargs_fixed:
+                    kwargs['a'] = args[i]
+                    i += 1
+                else:
+                    kwargs['a'] = kwargs_fixed['a']
+                if not 's' in kwargs_fixed:
+                    kwargs['s'] = args[i]
+                    i += 1
+                else:
+                    kwargs['s'] = kwargs_fixed['s']
+            if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+                         'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
@@ -271,8 +288,15 @@ class LensParam(object):
                     args.append(e2)
                 if not 'mass_light' in kwargs_fixed:
                     args.append(kwargs['mass_light'])
+            if model in ['dPIE']:
+                if not 'sigma0' in kwargs_fixed:
+                    args.append(kwargs['sigma0'])
+                if not 'a' in kwargs_fixed:
+                    args.append(kwargs['a'])
+                if not 's' in kwargs_fixed:
+                    args.append(kwargs['s'])
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
-                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if not 'center_x' in kwargs_fixed:
                     args.append(kwargs['center_x'])
                 if not 'center_y' in kwargs_fixed:
@@ -354,8 +378,15 @@ class LensParam(object):
                     fix_return['q_s'] = kwargs_fixed['q_s']
                 if 'mass_light' in kwargs_fixed:
                     fix_return['mass_light'] = kwargs_fixed['mass_light']
+            if model in ['dPIE']:
+                if 'sigma0' in kwargs_fixed:
+                    fix_return['sigma0'] = kwargs_fixed['sigma0']
+                if 'a' in kwargs_fixed:
+                    fix_return['a'] = kwargs_fixed['a']
+                if 's' in kwargs_fixed:
+                    fix_return['s'] = kwargs_fixed['s']
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
-                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if 'center_x' in kwargs_fixed:
                     fix_return['center_x'] = kwargs_fixed['center_x']
                 if 'center_y' in kwargs_fixed:
@@ -479,8 +510,18 @@ class LensParam(object):
                 if not 'mass_light' in kwargs_fixed:
                     mean.append(kwargs_mean['mass_light'])
                     sigma.append(kwargs_mean['mass_light_sigma'])
+            if model in ['dPIE']:
+                if not 'sigma0' in kwargs_fixed:
+                    mean.append(kwargs_mean['sigma0'])
+                    sigma.append(kwargs_mean['sigma0_sigma'])
+                if not 'a' in kwargs_fixed:
+                    mean.append(kwargs_mean['a'])
+                    sigma.append(kwargs_mean['a_sigma'])
+                if not 's' in kwargs_fixed:
+                    mean.append(kwargs_mean['s'])
+                    sigma.append(kwargs_mean['s_sigma'])
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
-                , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+                , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if not 'center_x' in kwargs_fixed:
                     mean.append(kwargs_mean['center_x'])
                     sigma.append(kwargs_mean['center_x_sigma'])
@@ -594,8 +635,18 @@ class LensParam(object):
                 if not 'mass_light' in kwargs_fixed:
                     low.append(0)
                     high.append(100)
+            if model in ['dPIE']:
+                if not 'sigma0' in kwargs_fixed:
+                    low.append(0)
+                    high.append(100)
+                if not 'a' in kwargs_fixed:
+                    low.append(0.001)
+                    high.append(100)
+                if not 's' in kwargs_fixed:
+                    low.append(0.001)
+                    high.append(100)
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
-                , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+                , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if not 'center_x' in kwargs_fixed:
                     low.append(-20)
                     high.append(20)
@@ -705,8 +756,18 @@ class LensParam(object):
                 if not 'mass_light' in kwargs_fixed:
                     num += 1
                     list.append('mass_light')
+            if model in ['dPIE']:
+                if not 'sigma0' in kwargs_fixed:
+                    num += 1
+                    list.append('sigma0')
+                if not 'a' in kwargs_fixed:
+                    num += 1
+                    list.append('a')
+                if not 's' in kwargs_fixed:
+                    num += 1
+                    list.append('ssigma0')
             if model in ['SIS', 'SPP', 'SPEP', 'SPEMD', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
-                         'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
+                         'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'dPIE']:
                 if not 'center_x' in kwargs_fixed:
                     num += 1
                     list.append('center_x_lens')

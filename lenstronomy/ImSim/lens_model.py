@@ -50,10 +50,10 @@ class LensModel(object):
             elif lens_type == 'COMPOSITE':
                 from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
                 self.func_list.append(CompositeSersicNFW())
-            elif lens_type == 'P_JAFFE':
+            elif lens_type == 'PJAFFE':
                 from astrofunc.LensingProfiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())
-            elif lens_type == 'P_JAFFE_ELLIPSE':
+            elif lens_type == 'PJAFFE_ELLIPSE':
                 from astrofunc.LensingProfiles.p_jaffe_ellipse import PJaffe_Ellipse
                 self.func_list.append(PJaffe_Ellipse())
             elif lens_type == 'HERNQUIST':

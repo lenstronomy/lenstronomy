@@ -159,7 +159,7 @@ class Fitting(object):
                 kwargs_fixed = {'I0_sersic': 1, 'I0_2': 1}
             elif model in ['BULDGE_DISK']:
                 kwargs_fixed = {'I0_b': 1, 'I0_d': 1}
-            elif model in ['HERNQUIST', 'P_JAFFE', 'P_JAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_fixed = {'sigma0': 1.}
             elif model in ['SHAPELETS']:
                 if 'n_max' in kwargs_fixed_global[i]:

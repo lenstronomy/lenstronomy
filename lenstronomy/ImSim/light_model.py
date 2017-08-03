@@ -73,10 +73,10 @@ class LightModel(object):
             elif profile_type == 'HERNQUIST_ELLIPSE':
                 from astrofunc.LightProfiles.hernquist import Hernquist_Ellipse
                 self.func_list.append(Hernquist_Ellipse())
-            elif profile_type == 'P_JAFFE':
+            elif profile_type == 'PJAFFE':
                 from astrofunc.LightProfiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())
-            elif profile_type == 'P_JAFFE_ELLIPSE':
+            elif profile_type == 'PJAFFE_ELLIPSE':
                 from astrofunc.LightProfiles.p_jaffe import PJaffe_Ellipse
                 self.func_list.append(PJaffe_Ellipse())
             elif profile_type == 'NONE':
@@ -124,6 +124,11 @@ class LightModel(object):
                 kwargs_new = dict(kwargs_list[k].items() + new.items())
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += 2
+            elif model in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
+                new = {'sigma0': 1}
+                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                response += [self.func_list[k].function(x, y, **kwargs_new)]
+                n += 1
             elif model in ['SHAPELETS']:
                 kwargs = kwargs_list[k]
                 n_max = kwargs['n_max']

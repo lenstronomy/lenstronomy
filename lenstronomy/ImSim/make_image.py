@@ -165,7 +165,7 @@ class MakeImage(object):
                 i += 1
                 kwargs_source[k]['I0_d'] = param[i]
                 i += 1
-            if model in ['HERNQUIST', 'P_JAFFE', 'P_JAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_source[k]['sigma0'] = param[i]
                 i += 1
             if model in ['SHAPELETS']:
@@ -181,12 +181,12 @@ class MakeImage(object):
                 kwargs_lens_light[k]['I0_2'] = param[i]
                 i += 1
             if model in ['BULDGE_DISK']:
-                kwargs_source[k]['I0_b'] = param[i]
+                kwargs_lens_light[k]['I0_b'] = param[i]
                 i += 1
-                kwargs_source[k]['I0_d'] = param[i]
+                kwargs_lens_light[k]['I0_d'] = param[i]
                 i += 1
-            if model in ['HERNQUIST', 'P_JAFFE', 'P_JAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
-                kwargs_source[k]['sigma0'] = param[i]
+            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_lens_light[k]['sigma0'] = param[i]
                 i += 1
             if model in ['SHAPELETS']:
                 n_max = kwargs_lens_light[k]['n_max']

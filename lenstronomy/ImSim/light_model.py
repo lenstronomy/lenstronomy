@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 #this file contains a class which describes the surface brightness of the lens light
 
 import numpy as np
+import copy
 
 
 class LensLightModel(object):
@@ -53,7 +54,7 @@ class LightModel(object):
                 from astrofunc.LightProfiles.sersic import Sersic_elliptic
                 self.func_list.append(Sersic_elliptic())
             elif profile_type == 'SHAPELETS':
-                from astrofunc.LensingProfiles.shapelets import ShapeletSet
+                from astrofunc.LightProfiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
             elif profile_type == 'DOUBLE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleSersic
@@ -96,6 +97,29 @@ class LightModel(object):
             if self.valid_list[i]:
                 if k == None or k == i:
                     flux += func.function(x, y, **kwargs_list[i])
+        return flux
+
+    def light_3d(self, r, kwargs_list, k=None):
+        """
+        computes 3d density at radius r
+        :param x: coordinate in units of arcsec relative to the center of the image
+        :type x: set or single 1d numpy array
+        """
+        flux = np.zeros(len(r))
+        for i, func in enumerate(self.func_list):
+            if self.valid_list[i]:
+                if k == None or k == i:
+                    kwargs = copy.deepcopy(kwargs_list[i])
+                    try:
+                        del kwargs['center_x']
+                        del kwargs['center_y']
+                    except:
+                        pass
+                    try:
+                        flux += func.light_3d(r, **kwargs_list[i])
+                    except:
+                        raise ValueError('Light model %s does not support a 3d light distribution!'
+                                         % self.profile_type_list[i])
         return flux
 
     def functions_split(self, x, y, kwargs_list):

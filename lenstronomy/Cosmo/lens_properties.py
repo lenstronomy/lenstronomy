@@ -50,10 +50,12 @@ class LensProp(object):
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
+        theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
+
+        #rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
-        sigma2 = self.dispersion.vel_disp(gamma, rho0_r0_gamma, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
+        sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):

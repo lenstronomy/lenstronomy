@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 #file which contains class for lens model routines
 import numpy as np
+import copy
 
 class LensModel(object):
 
@@ -216,3 +217,53 @@ class LensModel(object):
                     f_yy += f_yy_i
                     f_xy += f_xy_i
         return f_xx, f_xy, f_yy
+
+    def mass_3d(self, r, kwargs, bool_list=None):
+        """
+        computes the mass within a 3d sphere of radius r
+        :param r:
+        :param kwargs:
+        :return:
+        """
+        if bool_list is None:
+            bool_list = [True]*len(self.func_list)
+        mass_3d = 0
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                kwargs_i = copy.deepcopy(kwargs[i])
+                try:
+                    del kwargs_i['center_x']
+                    del kwargs_i['center_y']
+                except:
+                    pass
+                try:
+                    mass_3d_i = func.mass_3d(r, kwargs[i])
+                    mass_3d += mass_3d_i
+                except:
+                    raise ValueError('Lens profile %s does not support a 3d mass function!' % self.model_list[i])
+        return
+
+    def mass_2d(self, r, kwargs, bool_list=None):
+        """
+        computes the mass enclosed a projected (2d) radius r
+        :param r:
+        :param kwargs:
+        :return:
+        """
+        if bool_list is None:
+            bool_list = [True]*len(self.func_list)
+        mass_2d = 0
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                kwargs_i = copy.deepcopy(kwargs[i])
+                try:
+                    del kwargs_i['center_x']
+                    del kwargs_i['center_y']
+                except:
+                    pass
+                try:
+                    mass_2d_i = func.mass_2d(r, kwargs[i])
+                    mass_2d += mass_2d_i
+                except:
+                    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
+        return mass_2d

@@ -92,7 +92,11 @@ class LightModel(object):
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
         """
-        flux = np.zeros(len(x))
+        if isinstance(x, int) or isinstance(x, float):
+            n = 1
+        else:
+            n = len(x)
+        flux = np.zeros(n)
         for i, func in enumerate(self.func_list):
             if self.valid_list[i]:
                 if k == None or k == i:
@@ -105,7 +109,11 @@ class LightModel(object):
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
         """
-        flux = np.zeros(len(r))
+        if isinstance(r, int) or isinstance(r, float):
+            n = 1
+        else:
+            n = len(r)
+        flux = np.zeros(n)
         for i, func in enumerate(self.func_list):
             if self.valid_list[i]:
                 if k == None or k == i:

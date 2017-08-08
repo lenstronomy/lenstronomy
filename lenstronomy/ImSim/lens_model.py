@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import copy
 
+
 class LensModel(object):
 
     def __init__(self, kwargs_options):

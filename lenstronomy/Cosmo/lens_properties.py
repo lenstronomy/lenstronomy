@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import math
 import numpy as np
 from galkin.LOS_dispersion import Velocity_dispersion
+from galkin.galkin import Galkin
 
 import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
@@ -20,6 +21,7 @@ class LensProp(object):
         self.unitManager = UnitManager(z_lens, z_source)
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
         self.kwargs_data = kwargs_data
+        self.kwargs_options = kwargs_options
         self.dispersion = Velocity_dispersion()
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
@@ -57,6 +59,35 @@ class LensProp(object):
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
+
+    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, lens_model_bool, light_model_bool, psf_fwhm):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_lens_light:
+        :param kwargs_anisotropy:
+        :param kwargs_aperature:
+        :return:
+        """
+        kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
+        mass_profile_list = []
+        kwargs_profile = []
+        for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
+            if lens_model_bool[i]:
+                mass_profile_list.append(lens_model)
+                kwargs_profile.append(kwargs_lens[i])
+
+        light_profile_list = []
+        kwargs_light = []
+        for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
+            if light_model_bool[i]:
+                light_profile_list.append(light_model)
+                kwargs_light.append(kwargs_lens_light[i])
+
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=kwargs_aperture['aperture_type'],
+                        anisotropy_model=kwargs_anisotropy['anisotropy_type'], fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, num=1000)
+        return sigma_v
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
         """

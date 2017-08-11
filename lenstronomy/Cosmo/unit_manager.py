@@ -31,6 +31,17 @@ class UnitManager(object):
         if not center is None:
             input = input - center #translation
         return input*converting_const
+    @property
+    def D_d(self):
+        return self.cosmoProp.dist_OL
+
+    @property
+    def D_s(self):
+        return self.cosmoProp.dist_OS
+
+    @property
+    def D_ds(self):
+        return self.cosmoProp.dist_LS
 
     def phys2arcsec_lens(self, phys):
         # convert comoving Mpc/h into arc seconds

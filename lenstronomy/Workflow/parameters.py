@@ -151,6 +151,24 @@ class Param(object):
         list += _list
         return num, list
 
+    def _update_mass2ligth(self, kwargs_lens, kwargs_else):
+        """
+        updates the lens models with an additional multiplicative factor to convert light profiles into mass profiles
+        ATTENTION: this makes only sense when the original parameters of the LENS model were derived from a LIGHTMODEL
+        :param kwargs_lens:
+        :param mass2light:
+        :return:
+        """
+        if not self._fix_mass2light:
+            return kwargs_lens
+        mass2light = kwargs_else['mass2light']
+        lens_model_list = self.kwargs_options['lens_model_list']
+        for i, lens_model in enumerate(lens_model_list):
+            if lens_model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                if 'sigma0' in self.kwargs_fixed_lens[i]:
+                    kwargs_lens[i]['sigma0'] = self.kwargs_fixed_lens[i]['sigma0'] * mass2light
+        return kwargs_lens
+
     def _update_spep(self, kwargs_lens, x):
         """
 
@@ -218,21 +236,6 @@ class Param(object):
         kwargs_lens['coeffs'] = coeffs
         return kwargs_lens
 
-    def _updated_mass2light(self, kwargs_else, kwargs_lens_list):
-        """
-        updates theta_E for those lens models with fixed mass to light ratio (actually Einstein radius to light ratio)
-        :param kwargs_else:
-        :param kwargs_lens_list:
-        :return:
-        """
-        M2L = kwargs_else['mass2light']
-        m2l_list = self.kwargs_options['mass2light_fixed_list']
-        for i, kwargs_lens in enumerate(kwargs_lens_list):
-            if m2l_list[i]:
-                if 'theta_E' in kwargs_lens:
-                    kwargs_lens['theta_E'] *= M2L
-        return kwargs_lens_list
-
     def _update_magnification(self, kwargs_lens, kwargs_else):
         """
         updates point source amplitude to relative magnifications
@@ -247,7 +250,7 @@ class Param(object):
     def get_all_params(self, args):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.getParams(args)
         if self._fix_mass2light:
-            kwargs_lens = self._updated_mass2light(kwargs_else, kwargs_lens)
+            kwargs_lens = self._update_mass2ligth(kwargs_lens, kwargs_else)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         if self._fix_magnification:
             kwargs_else = self._update_magnification(kwargs_lens, kwargs_else)

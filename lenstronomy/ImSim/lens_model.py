@@ -237,12 +237,12 @@ class LensModel(object):
                     del kwargs_i['center_y']
                 except:
                     pass
-                try:
-                    mass_3d_i = func.mass_3d(r, kwargs[i])
-                    mass_3d += mass_3d_i
-                except:
-                    raise ValueError('Lens profile %s does not support a 3d mass function!' % self.model_list[i])
-        return
+                #try:
+                mass_3d_i = func.mass_3d_lens(r, **kwargs[i])
+                mass_3d += mass_3d_i
+                #except:
+                #    raise ValueError('Lens profile %s does not support a 3d mass function!' % self.model_list[i])
+        return mass_3d
 
     def mass_2d(self, r, kwargs, bool_list=None):
         """
@@ -262,9 +262,9 @@ class LensModel(object):
                     del kwargs_i['center_y']
                 except:
                     pass
-                try:
-                    mass_2d_i = func.mass_2d(r, kwargs[i])
-                    mass_2d += mass_2d_i
-                except:
-                    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
+                #try:
+                mass_2d_i = func.mass_2d_lens(r, **kwargs[i])
+                mass_2d += mass_2d_i
+                #except:
+                #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d

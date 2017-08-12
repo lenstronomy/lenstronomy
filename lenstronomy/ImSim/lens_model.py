@@ -114,7 +114,7 @@ class LensModel(object):
                 potential += func.function(x_, y_, **kwargs[i])
         return potential
 
-    def alpha(self, x, y, kwargs, kwargs_else=None):
+    def alpha(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         a = grad(phi)
         """
@@ -125,12 +125,15 @@ class LensModel(object):
         else:
             x_ = x
             y_ = y
-        f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
-        for i, func in enumerate(self.func_list):
-            if not self.model_list[i] == 'NONE':
-                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
-                f_x += f_x_i
-                f_y += f_y_i
+        if k is not None:
+            f_x, f_y = self.func_list[k].derivatives(x_, y_, **kwargs[k])
+        else:
+            f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
+            for i, func in enumerate(self.func_list):
+                if not self.model_list[i] == 'NONE':
+                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                    f_x += f_x_i
+                    f_y += f_y_i
         if self._perturb_alpha:
             f_x += self.alpha_perturb_x
             f_y += self.alpha_perturb_y

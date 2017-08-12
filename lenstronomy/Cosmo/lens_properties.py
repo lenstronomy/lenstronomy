@@ -60,7 +60,7 @@ class LensProp(object):
         sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
-    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, lens_model_bool, light_model_bool, psf_fwhm):
+    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm):
         """
 
         :param kwargs_lens:
@@ -72,15 +72,17 @@ class LensProp(object):
         kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
         mass_profile_list = []
         kwargs_profile = []
+        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
-            if lens_model_bool[i]:
+            if lens_model_internal_bool[i]:
                 mass_profile_list.append(lens_model)
                 kwargs_profile.append(kwargs_lens[i])
 
         light_profile_list = []
         kwargs_light = []
+        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if light_model_bool[i]:
+            if lens_light_model_internal_bool[i]:
                 light_profile_list.append(light_model)
                 kwargs_light.append(kwargs_lens_light[i])
 

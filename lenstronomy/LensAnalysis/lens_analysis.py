@@ -26,9 +26,9 @@ class LensAnalysis(object):
     def flux_ratios(self, kwargs_lens, kwargs_else, source_size=0.003
                     , shape="GAUSSIAN"):
         amp_list = kwargs_else['point_amp']
-        ra_pos, dec_pos, mag = self.get_magnification_model(kwargs_lens, kwargs_else)
-        mag_finite = self.get_magnification_finite(kwargs_lens, kwargs_else, source_sigma=source_size,
-                                                             delta_pix=source_size*100, subgrid_res=1000, shape=shape)
+        ra_pos, dec_pos, mag = self.magnification_model(kwargs_lens, kwargs_else)
+        mag_finite = self.magnification_finite(kwargs_lens, kwargs_else, source_sigma=source_size,
+                                               delta_pix=source_size*100, subgrid_res=1000, shape=shape)
         return amp_list, mag, mag_finite
 
     def half_light_radius(self, kwargs_lens_light, k=0):
@@ -48,29 +48,59 @@ class LensAnalysis(object):
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
-    def effective_einstein_radius(self, kwargs_lens_list, kwargs_else, n_grid=400, k=0):
+    def effective_einstein_radius(self, kwargs_lens_list, kwargs_else):
         """
         computes the radius with mean convergence=1
         :param kwargs_lens:
         :return:
         """
-        kwargs_lens = kwargs_lens_list[k]
-        kwargs_lens_copy = kwargs_lens.copy()
-        kwargs_lens_copy['center_x'] = 0
-        kwargs_lens_copy['center_y'] = 0
-        delta_grid = 2*kwargs_lens['theta_E']/float(n_grid)
-        x_grid, y_grid = util.make_grid(n_grid, delta_grid)
-        kappa = self.LensModel.kappa(x_grid, y_grid, [kwargs_lens_copy], kwargs_else, k=0)
+        center_x = kwargs_lens_list[0]['center_x']
+        center_y = kwargs_lens_list[0]['center_y']
+        numPix = 100
+        deltaPix = 0.05
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        kappa = self.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, kwargs_else)
         kappa = util.array2image(kappa)
-        r_array = np.linspace(0.0001, 2*kwargs_lens['theta_E'], 1000)
+        r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:
-            mask = np.array(1 - util.get_mask(0, 0, r, x_grid, y_grid))
+            mask = np.array(1 - util.get_mask(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
                 if kappa_mean < 1:
                     return r
         return -1
+
+    def external_shear(self, kwargs_lens_list):
+        """
+
+        :param kwargs_lens_list:
+        :return:
+        """
+        phi_ext, gamma_ext = 0, 0
+        for i, model in enumerate(self.kwargs_options['lens_model_list']):
+            if model == 'EXTERNAL_SHEAR':
+                phi_ext, gamma_ext = util.ellipticity2phi_gamma(kwargs_lens_list[i]['e1'], kwargs_lens_list[i]['e2'])
+        return phi_ext, gamma_ext
+
+    def profile_slope(self, kwargs_lens_list, kwargs_else):
+        theta_E = self.effective_einstein_radius(kwargs_lens_list, kwargs_else)
+        x0 = kwargs_lens_list[0]['center_x']
+        y0 = kwargs_lens_list[0]['center_y']
+        dr = 0.01
+        alpha_E_x, alpha_E_y, alpha_E_dr_x, alpha_E_dr_y = 0, 0, 0, 0
+        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True]*len(kwargs_lens_list))
+        for i in range(len(kwargs_lens_list)):
+            if lens_model_internal_bool[i]:
+                alpha_E_x_i, alpha_E_y_i = self.LensModel.alpha(x0 + theta_E, y0, kwargs_lens_list, kwargs_else)
+                alpha_E_dr_x_i, alpha_E_dr_y_i = self.LensModel.alpha(x0 + theta_E + dr, y0, kwargs_lens_list, kwargs_else)
+                alpha_E_dr_x += alpha_E_dr_x_i
+                alpha_E_dr_y += alpha_E_dr_y_i
+                alpha_E_x += alpha_E_x_i
+                alpha_E_y += alpha_E_y_i
+        slope = np.log(alpha_E_dr_x / alpha_E_x) / np.log((theta_E + dr) / theta_E)
+        gamma = -slope + 2
+        return gamma
 
     def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01, type="lens"):
         """
@@ -99,7 +129,7 @@ class LensAnalysis(object):
             R_h_list.append(R_h)
         return flux_list, R_h_list
 
-    def lens_properties(self, kwargs_lens_light, k=0):
+    def lens_light_properties(self, kwargs_lens_light, k=0):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
         :param kwargs_lens_light:
@@ -171,7 +201,7 @@ class LensAnalysis(object):
                 error_map_source[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return source, error_map_source
 
-    def get_magnification_model(self, kwargs_lens, kwargs_else):
+    def magnification_model(self, kwargs_lens, kwargs_else):
         """
         computes the point source magnification at the position of the point source images
         :param kwargs_lens:
@@ -199,8 +229,8 @@ class LensAnalysis(object):
         alpha2 = makeImage.Data.array2image(alpha2)
         return alpha1, alpha2
 
-    def get_magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
-                                 shape="GAUSSIAN"):
+    def magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
+                             shape="GAUSSIAN"):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param kwargs_lens: lens model kwargs
@@ -262,3 +292,24 @@ class LensAnalysis(object):
         r_m = np.sqrt((x_s - x_m) ** 2 + (y_s - y_m) ** 2)
         r_min = np.sqrt(r_m.min(axis=0)*r_m.max(axis=0))/2 * scale
         return x, y, r_min
+
+    def external_lensing_effect(self, kwargs_lens, kwargs_else):
+        """
+        computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
+        :param kwargs_lens:
+        :return:
+        """
+        alpha0_x, alpha0_y = 0, 0
+        kappa_ext = 0
+        shear1, shear2 = 0, 0
+        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
+        for i, kwargs in enumerate(kwargs_lens):
+            if not lens_model_internal_bool:
+                f_x, f_y = self.LensModel.alpha(0, 0, kwargs, kwargs_else, k=i)
+                f_xx, f_yy, f_xy = self.LensModel.hessian(0, 0, kwargs, kwargs_else, k=i)
+                alpha0_x += f_x
+                alpha0_y += f_y
+                kappa_ext += (f_xx + f_yy)/2.
+                shear1 += 1./2 * (f_xx - f_yy)
+                shear2 += f_xy
+        return alpha0_x, alpha0_y, kappa_ext, shear1, shear2

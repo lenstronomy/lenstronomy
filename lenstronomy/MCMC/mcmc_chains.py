@@ -34,6 +34,13 @@ class MCMC_chain(object):
         self.priors_bool = kwargs_options.get('priors', False)
         if self.priors_bool:
             self.kwargs_priors = kwargs_options['kwargs_priors']
+        check_solver = kwargs_options.get('check_solver', False)
+        if kwargs_options.get('solver', False):
+            self._check_solver = check_solver
+        else:
+            self._check_solver = False
+        if self._check_solver:
+            self._solver_tolerance = kwargs_options.get('solver_tolerance', 0.001)
 
     def X2_chain_image(self, args):
         """
@@ -49,9 +56,11 @@ class MCMC_chain(object):
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
-            logL += self.logL_delay(kwargs_lens, kwargs_source, kwargs_else)
+            logL += self.logL_delay(kwargs_lens, kwargs_else)
         if self.priors_bool:
             logL += self.priors(kwargs_lens, self.kwargs_priors)
+        if self._check_solver is True:
+            logL -= self.check_solver(kwargs_lens, kwargs_else, self._solver_tolerance)
         return logL, None
 
     def X2_chain_catalogue(self, args):
@@ -68,6 +77,21 @@ class MCMC_chain(object):
         if self.priors_bool:
             X2 -= self.priors(kwargs_lens, self.kwargs_priors)
         return -X2, None
+
+    def check_solver(self, kwargs_lens, kwargs_else, tolerance):
+        """
+        test whether the image positions map back to the same source position
+        :param kwargs_lens:
+        :param kwargs_else:
+        :return:
+        """
+        if 'ra_pos' in kwargs_else:
+            source_x, source_y = self.makeImage.LensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'],
+                                                                       kwargs_lens, kwargs_else)
+            dist = np.sqrt((source_x - source_x[0])**2 + (source_y - source_y[0])**2)
+            if np.max(dist) > tolerance:
+                return 10**10
+        return 0
 
     def priors(self, kwargs_lens, kwargs_priors):
         """
@@ -105,7 +129,7 @@ class MCMC_chain(object):
         else:
             return 0
 
-    def logL_delay(self, kwargs_lens, kwargs_source, kwargs_else):
+    def logL_delay(self, kwargs_lens, kwargs_else):
         """
         routine to compute the log likelihood of the time delay distance
         :param args:

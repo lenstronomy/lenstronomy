@@ -28,6 +28,9 @@ class LensModel(object):
             elif lens_type == 'SIS_TRUNCATED':
                 from astrofunc.LensingProfiles.sis_truncate import SIS_truncate
                 self.func_list.append(SIS_truncate())
+            elif lens_type == 'SIE':
+                from astrofunc.LensingProfiles.sie import SIE
+                self.func_list.append(SIE())
             elif lens_type == 'SPP':
                 from astrofunc.LensingProfiles.spp import SPP
                 self.func_list.append(SPP())
@@ -234,14 +237,17 @@ class LensModel(object):
         mass_3d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = copy.deepcopy(kwargs[i])
+                kwargs_i = {k:v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                """
+
                 try:
                     del kwargs_i['center_x']
                     del kwargs_i['center_y']
                 except:
                     pass
                 #try:
-                mass_3d_i = func.mass_3d_lens(r, **kwargs[i])
+                """
+                mass_3d_i = func.mass_3d_lens(r, **kwargs_i)
                 mass_3d += mass_3d_i
                 #except:
                 #    raise ValueError('Lens profile %s does not support a 3d mass function!' % self.model_list[i])

@@ -117,15 +117,19 @@ class LightModel(object):
         for i, func in enumerate(self.func_list):
             if self.valid_list[i]:
                 if k == None or k == i:
-                    kwargs = copy.deepcopy(kwargs_list[i])
+                    kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
+                    #kwargs = copy.deepcopy(kwargs_list[i])
+                    """
+
                     try:
                         del kwargs['center_x']
                         del kwargs['center_y']
                     except:
                         pass
-                    try:
-                        flux += func.light_3d(r, **kwargs_list[i])
-                    except:
+                    """
+                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
+                        flux += func.light_3d(r, **kwargs)
+                    else:
                         raise ValueError('Light model %s does not support a 3d light distribution!'
                                          % self.profile_type_list[i])
         return flux

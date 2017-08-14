@@ -22,7 +22,8 @@ class LensProp(object):
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
-        self.dispersion = Velocity_dispersion()
+        kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
+        self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
         time_delay_arcsec = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_else)
@@ -58,9 +59,11 @@ class LensProp(object):
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
-        return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
+        return sigma2
+        #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
-    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm):
+    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+                               aperture_type, anisotropy_model):
         """
 
         :param kwargs_lens:
@@ -86,8 +89,8 @@ class LensProp(object):
                 light_profile_list.append(light_model)
                 kwargs_light.append(kwargs_lens_light[i])
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=kwargs_aperture['aperture_type'],
-                        anisotropy_model=kwargs_anisotropy['anisotropy_type'], fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, num=1000)
         return sigma_v
 

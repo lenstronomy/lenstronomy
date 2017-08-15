@@ -15,12 +15,14 @@ class TestData(object):
     def test_idex_subgrid(self):
         idex_mask = np.zeros(100)
         n = 8
-        nx, ny = np.sqrt(len(idex_mask)), np.sqrt(len(idex_mask))
+        nx, ny = int(np.sqrt(len(idex_mask))), int(np.sqrt(len(idex_mask)))
         idex_mask[n] = 1
         subgrid_res = 2
         idex_mask_subgrid = self.Data._subgrid_idex(idex_mask, subgrid_res, nx, ny)
         assert idex_mask_subgrid[(n + 1) * subgrid_res - 1] == 1
         assert idex_mask_subgrid[(n + 1) * subgrid_res - 2] == 1
+        print(type(nx * subgrid_res + (n + 1) * subgrid_res - 1))
+        print(type((n + 1) * subgrid_res - 2))
         assert idex_mask_subgrid[nx * subgrid_res + (n + 1) * subgrid_res - 1] == 1
 
     def test_get_covariance_matrix(self):

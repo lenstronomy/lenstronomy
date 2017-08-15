@@ -78,7 +78,7 @@ class Data(object):
                 x_grid = kwargs_data['x_coords']
                 y_grid = kwargs_data['y_coords']
             else:
-                x_grid, y_grid = util.make_grid(self._nx*self._ny, 1, subgrid_res=1, left_lower=False)
+                x_grid, y_grid = util.make_grid(np.sqrt(self._nx*self._ny), 1, subgrid_res=1, left_lower=False)
             self.x_grid = x_grid[self._idex_mask == 1]
             self.y_grid = y_grid[self._idex_mask == 1]
             x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self._subgrid_res)

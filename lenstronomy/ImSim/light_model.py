@@ -118,15 +118,6 @@ class LightModel(object):
             if self.valid_list[i]:
                 if k == None or k == i:
                     kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
-                    #kwargs = copy.deepcopy(kwargs_list[i])
-                    """
-
-                    try:
-                        del kwargs['center_x']
-                        del kwargs['center_y']
-                    except:
-                        pass
-                    """
                     if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
                         flux += func.light_3d(r, **kwargs)
                     else:

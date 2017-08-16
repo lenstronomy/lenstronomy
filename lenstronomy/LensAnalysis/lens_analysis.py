@@ -31,20 +31,25 @@ class LensAnalysis(object):
                                                delta_pix=source_size*100, subgrid_res=1000, shape=shape)
         return amp_list, mag, mag_finite
 
-    def half_light_radius(self, kwargs_lens_light, k=0):
+    def half_light_radius(self, kwargs_lens_light):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
         :param kwargs_lens_light:
         :return:
         """
         kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        kwargs_lens_light_copy[k]['center_x'] = 0
-        kwargs_lens_light_copy[k]['center_y'] = 0
+        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
         data = self.kwargs_data['image_data']
         numPix = int(np.sqrt(len(data))*10)
         deltaPix = self.kwargs_data['deltaPix']/10.
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=k)
+        lens_light = np.zeros_like(x_grid)
+        for i, bool in enumerate(lens_light_model_internal_bool):
+            if bool is True:
+                kwargs_lens_light_copy[i]['center_x'] = 0
+                kwargs_lens_light_copy[i]['center_y'] = 0
+                lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
+                lens_light += lens_light_i
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
@@ -128,24 +133,6 @@ class LensAnalysis(object):
             flux_list.append(flux)
             R_h_list.append(R_h)
         return flux_list, R_h_list
-
-    def lens_light_properties(self, kwargs_lens_light, k=0):
-        """
-        computes numerically the half-light-radius of the deflector light and the total photon flux
-        :param kwargs_lens_light:
-        :return:
-        """
-        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        kwargs_lens_light_copy[k]['center_x'] = 0
-        kwargs_lens_light_copy[k]['center_y'] = 0
-        data = self.kwargs_data['image_data']
-        numPix = int(np.sqrt(len(data))*2)
-        deltaPix = self.kwargs_data['deltaPix']
-        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=k)
-        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
-        flux = np.sum(lens_light)
-        return R_h, flux
 
     def source_properties(self, kwargs_source, numPix_source,
                           deltaPix_source, cov_param=None, k=0, n_bins=20):
@@ -304,9 +291,9 @@ class LensAnalysis(object):
         shear1, shear2 = 0, 0
         lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         for i, kwargs in enumerate(kwargs_lens):
-            if not lens_model_internal_bool:
-                f_x, f_y = self.LensModel.alpha(0, 0, kwargs, kwargs_else, k=i)
-                f_xx, f_yy, f_xy = self.LensModel.hessian(0, 0, kwargs, kwargs_else, k=i)
+            if not lens_model_internal_bool[i]:
+                f_x, f_y = self.LensModel.alpha(0, 0, kwargs_lens, kwargs_else, k=i)
+                f_xx, f_yy, f_xy = self.LensModel.hessian(0, 0, kwargs_lens, kwargs_else, k=i)
                 alpha0_x += f_x
                 alpha0_y += f_y
                 kappa_ext += (f_xx + f_yy)/2.

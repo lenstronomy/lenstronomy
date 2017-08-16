@@ -10,10 +10,10 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if type == 'lens_light':
             self.model_list = kwargs_options['lens_light_model_list']
-            self._smoothing = 0.02
+            self._smoothing = 0.01
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
-            self._smoothing = 0.005
+            self._smoothing = 0.001
         else:
             raise ValueError("type %s not supported." % type)
         self.type = type
@@ -468,7 +468,7 @@ class LightParam(object):
                     low.append(0.2)
                     high.append(8)
                 if not 'R_sersic' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(self._smoothing*2)
                     high.append(3)
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
@@ -483,7 +483,7 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'R_2' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(self._smoothing*2)
                     high.append(30)
                 if not 'n_2' in kwargs_fixed:
                     low.append(0.2)
@@ -491,7 +491,7 @@ class LightParam(object):
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(self._smoothing*2)
                     high.append(30)
                 if not 'gamma' in kwargs_fixed:
                     low.append(-3)
@@ -501,7 +501,7 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'R_b' in kwargs_fixed:
-                    low.append(0.001)
+                    low.append(self._smoothing*2)
                     high.append(100)
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     low.append(-0.5)
@@ -512,7 +512,7 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'R_d' in kwargs_fixed:
-                    low.append(0.0001)
+                    low.append(self._smoothing*2)
                     high.append(100)
                 if not 'phi_G_d' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     low.append(-0.5)
@@ -524,12 +524,12 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'Rs' in kwargs_fixed:
-                    low.append(0.001)
-                    high.append(60)
+                    low.append(self._smoothing*2)
+                    high.append(10)
             if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
                 if not 'Ra' in kwargs_fixed:
-                    low.append(0.001)
-                    high.append(60)
+                    low.append(self._smoothing*2)
+                    high.append(10)
         return low, high
 
     def num_param(self):

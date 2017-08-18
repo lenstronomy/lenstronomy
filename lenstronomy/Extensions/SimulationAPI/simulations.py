@@ -75,13 +75,6 @@ class Simulation(object):
             raise ValueError("psf type %s not supported!" % psf_type)
         return kwargs_psf
 
-    def param_configure(self):
-        kwargs_lens = [{}]
-        kwargs_source = [{}]
-        kwargs_lens_light = [{}]
-        kwargs_else = {}
-        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
-
     def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
         """
 

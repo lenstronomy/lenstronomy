@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Simon Birrer <simon.birrer@phys.ethz.ch>
+* Simon Birrer <sibirrer@gmail.com>
 
 Contributors
 ------------

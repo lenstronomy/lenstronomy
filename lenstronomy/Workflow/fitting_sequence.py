@@ -114,6 +114,11 @@ class FittingSequence(object):
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+        elif fitting_routine == 'lens_combined_gamma_fixed':
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
+                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+                lens_sigma, source_sigma, lens_light_sigma, else_sigma,
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, gamma_fixed=True)
         elif fitting_routine == 'lens_combined':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,

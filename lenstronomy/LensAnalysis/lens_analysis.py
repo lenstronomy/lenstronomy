@@ -53,7 +53,7 @@ class LensAnalysis(object):
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
-    def effective_einstein_radius(self, kwargs_lens_list, kwargs_else):
+    def effective_einstein_radius(self, kwargs_lens_list, kwargs_else, k=None):
         """
         computes the radius with mean convergence=1
         :param kwargs_lens:
@@ -64,7 +64,7 @@ class LensAnalysis(object):
         numPix = 100
         deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        kappa = self.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, kwargs_else)
+        kappa = self.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, kwargs_else, k=k)
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:

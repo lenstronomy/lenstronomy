@@ -397,7 +397,7 @@ class Fitting(object):
 
     def find_lens_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False):
         """
         finds lens light and lens model combined fit
         :return: constraints of lens model
@@ -406,6 +406,9 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = dict(kwargs_options.items() + kwargs_options_special.items())
         kwargs_fixed_lens = self._fixed_lens(kwargs_options_execute, kwargs_lens)
+        if gamma_fixed:
+            if 'gamma' in kwargs_lens[0]:
+                kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
         kwargs_fixed_source = self._fixed_light(kwargs_options_execute, kwargs_source, 'source_light_model_list')
         kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
         kwargs_fixed_else = self._fixed_else(kwargs_options, kwargs_else)

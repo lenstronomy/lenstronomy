@@ -4,6 +4,7 @@ from lenstronomy.Solver.image_positions import ImagePosition
 import astrofunc.util as util
 from astrofunc.util import Util_class
 from astrofunc.LensingProfiles.gaussian import Gaussian
+from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
 
 import numpy as np
 import copy
@@ -115,3 +116,17 @@ class Simulation(object):
             poisson = util.add_poisson(image, exp_time=util.array2image(kwargs_data['exposure_map']))
             bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
             return image + bkg + poisson
+
+    def fermat_potential(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_else, no_noise=False):
+        """
+        computes the Fermat potential
+        :param kwargs_options:
+        :param kwargs_data:
+        :param kwargs_lens:
+        :param kwargs_else:
+        :param no_noise:
+        :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
+        """
+        lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
+        fermat_pot = lensAnalysis.fermat_potential(kwargs_lens, kwargs_else)
+        return fermat_pot

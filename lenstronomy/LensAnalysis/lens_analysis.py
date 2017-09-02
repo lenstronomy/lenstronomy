@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import astrofunc.util as util
+from astrofunc.util import Util_class
 import astrofunc.LightProfiles.torus as torus
 from astrofunc.LensingProfiles.gaussian import Gaussian
 
@@ -8,6 +9,7 @@ from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.data import Data
 
 
 class LensAnalysis(object):
@@ -19,6 +21,7 @@ class LensAnalysis(object):
         self.SourceModel = SourceModel(kwargs_options)
         self.LensModel = LensModel(kwargs_options)
         self.kwargs_data = kwargs_data
+        self.Data = Data(kwargs_options, kwargs_data)
         self.kwargs_options = kwargs_options
         self.NumLensModel = NumericLens(kwargs_options)
         self.gaussian = Gaussian()
@@ -300,3 +303,46 @@ class LensAnalysis(object):
                 shear1 += 1./2 * (f_xx - f_yy)
                 shear2 += f_xy
         return alpha0_x, alpha0_y, kappa_ext, shear1, shear2
+
+    def critical_curve(self, kwargs_lens, kwargs_else):
+        """
+
+        :return:
+        """
+        util_class = Util_class()
+        x_grid_high_res, y_grid_high_res = util_class.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'], 10)
+        mag_high_res = util.array2image(
+            self.LensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
+
+        import matplotlib._cntr as cntr
+        #import numpy.ma as ma
+        #z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.
+
+        # Non-filled contours (lines only).
+        level = 0.5
+        c = cntr.Cntr(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res)
+        nlist = c.trace(level, level, 0)
+        segs = nlist[:len(nlist) // 2]
+        # print segs  # x,y coords of contour points.
+
+        #cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
+        #                alpha=0.0)
+        #paths = cs.collections[0].get_paths()
+        paths = segs
+        ra_crit_list = []
+        dec_crit_list = []
+        ra_caustic_list = []
+        dec_caustic_list = []
+        for p in paths:
+            #v = p.vertices
+            v = p
+            ra_points = v[:, 0]
+            dec_points = v[:, 1]
+            ra_crit_list.append(ra_points)
+            dec_crit_list.append(dec_points)
+
+            ra_caustics, dec_caustics = self.LensModel.ray_shooting(ra_points, dec_points, kwargs_lens,
+                                                                         kwargs_else)
+            ra_caustic_list.append(ra_caustics)
+            dec_caustic_list.append(dec_caustics)
+        return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list

@@ -117,7 +117,7 @@ class Simulation(object):
             bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
             return image + bkg + poisson
 
-    def fermat_potential(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_else, no_noise=False):
+    def fermat_potential(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_else):
         """
         computes the Fermat potential
         :param kwargs_options:

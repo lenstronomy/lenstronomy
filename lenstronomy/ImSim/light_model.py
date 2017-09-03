@@ -169,3 +169,23 @@ class LightModel(object):
             else:
                 raise ValueError('model type %s not valid!' % model)
         return response, n
+
+    def re_normalize_flux(self, kwargs_list, norm_factor=1):
+        """
+
+        :param kwargs:
+        :return:
+        """
+        for k, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+                kwargs_list[k]['I0_sersic'] *= norm_factor
+            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+                kwargs_list[k]['I0_2'] *= norm_factor
+            if model in ['BULDGE_DISK']:
+                kwargs_list[k]['I0_b'] *= norm_factor
+                kwargs_list[k]['I0_d'] *= norm_factor
+            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_list[k]['sigma0'] *= norm_factor
+            if model in ['SHAPELETS']:
+                kwargs_list[k]['amp'] *= norm_factor
+        return kwargs_list

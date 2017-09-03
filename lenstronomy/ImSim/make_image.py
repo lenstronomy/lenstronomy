@@ -204,3 +204,22 @@ class MakeImage(object):
                 kwargs_else['point_amp'] = param[i:i+num_images]
                 i += num_images
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
+
+    def _normalize_flux(self, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor=1):
+        """
+        multiplies the surface brightness amplitudes with a norm_factor
+        aim: mimic different telescopes photon collection area or colours for different imaging bands
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param norm_factor:
+        :return:
+        """
+        kwargs_source = self.SourceModel.lightModel.re_normalize_flux(kwargs_source, norm_factor)
+        kwargs_lens_light = self.LensLightModel.lightModel.re_normalize_flux(kwargs_lens_light, norm_factor)
+        num_images = self.kwargs_options.get('num_images', 0)
+        if num_images > 0 and self.kwargs_options['point_source']:
+            if self.kwargs_options.get('fix_magnification', False):
+                kwargs_else['point_amp'] *= norm_factor
+            else:
+                kwargs_else['point_amp'] *= norm_factor
+        return kwargs_source, kwargs_lens_light, kwargs_else

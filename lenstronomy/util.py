@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from astrofunc.util import Util_class
+import astrofunc.util as util_astrofunc
 
 util_class = Util_class()
 
@@ -54,7 +55,7 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :return:
     """
     numPix = int(len(image)/bin_size)
-    if not numPix ==  len(image)/bin_size:
+    if not numPix == len(image)/bin_size:
         raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
     image_resized = util_class.re_size_grid(grid=image, numPix=numPix)
     image_resized *= bin_size**2
@@ -65,6 +66,27 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     idex_mask_resized = util_class.re_size_grid(grid=idex_mask, numPix=numPix)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
+
+
+def rebin_coord_transform(factor, ra_0, dec_0, x_0, y_0, Mpix2coord, Mcoord2pix):
+    """
+    adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
+    :param bin_size:
+    :param ra_0:
+    :param dec_0:
+    :param x_0:
+    :param y_0:
+    :param Matrix:
+    :param Matrix_inv:
+    :return:
+    """
+    factor = int(factor)
+    Mcoord2pix_resized = Mcoord2pix / factor
+    Mpix2coord_resized = Mpix2coord * factor
+    ra_0_resized = (ra_0 + 0.5) / factor - 0.5
+    dec_0_resized = (dec_0 + 0.5) / factor - 0.5
+    x_0_resized, y_0_resized = util_astrofunc.map_coord2pix(-ra_0_resized, -dec_0_resized, 0, 0, Mpix2coord_resized)
+    return ra_0_resized, dec_0_resized, x_0_resized, y_0_resized, Mpix2coord_resized, Mcoord2pix_resized
 
 
 def stack_images(image_list, wht_list, sigma_list):

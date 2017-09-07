@@ -268,9 +268,9 @@ class Param(object):
                 pass
         if self.kwargs_options.get('solver', False) or self.kwargs_options.get('image_plane_source', False):
             x_mapped, y_mapped = self.makeImage.mapping_IS(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-            #kwargs_source['center_x'] = np.mean(x_mapped)
-            #kwargs_source['center_y'] = np.mean(y_mapped)
-            kwargs_source['center_x'] = x_mapped[0]
-            kwargs_source['center_y'] = y_mapped[0]
+            kwargs_source['center_x'] = np.mean(x_mapped)
+            kwargs_source['center_y'] = np.mean(y_mapped)
+            #kwargs_source['center_x'] = x_mapped[0]
+            #kwargs_source['center_y'] = y_mapped[0]
         kwargs_lens_list[0] = kwargs_lens
         return kwargs_lens_list, kwargs_source, kwargs_lens_light, kwargs_else

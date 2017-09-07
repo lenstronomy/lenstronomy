@@ -2,7 +2,8 @@ __author__ = 'sibirrer'
 
 import astrofunc.util as util
 import numpy as np
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.Solver.image_positions import ImagePosition
 from lenstronomy.Solver.solver2point import Constraints2
 from lenstronomy.Solver.solver4point import Constraints
 from lenstronomy.Workflow.else_param import ElseParam
@@ -34,13 +35,15 @@ class Param(object):
         self.kwargs_fixed_lens_light = kwargs_fixed_lens_light
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
-        self.makeImage = MakeImage(kwargs_options)
+        self.lensModel = LensModel(kwargs_options)
+        self.ImagePosition = ImagePosition(self.lensModel)
 
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._num_images = kwargs_options.get('num_images', 4)
 
         self._fix_mass2light = kwargs_options.get('mass2light_fixed', False)
         self._fix_magnification = kwargs_options.get('fix_magnification', False)
+        self._additional_images = kwargs_options.get('additional_images', False)
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
@@ -243,7 +246,7 @@ class Param(object):
         :param kwargs_else:
         :return:
         """
-        mag = self.makeImage.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+        mag = self.lensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
         kwargs_else['point_amp'] = np.abs(mag)
         return kwargs_else
 
@@ -252,15 +255,37 @@ class Param(object):
         if self._fix_mass2light:
             kwargs_lens = self._update_mass2ligth(kwargs_lens, kwargs_else)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.update_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        if self._additional_images:
+            kwargs_else = self.update_image_positions(kwargs_lens, kwargs_source, kwargs_else)
         if self._fix_magnification:
             kwargs_else = self._update_magnification(kwargs_lens, kwargs_else)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
+
+    def update_image_positions(self, kwargs_lens, kwargs_source, kwargs_else):
+        """
+
+        :param kwargs_else:
+        :return:
+        """
+        if 'center_x' in kwargs_source[0]:
+            sourcePos_x = kwargs_source[0]['center_x']
+            sourcePos_y = kwargs_source[0]['center_y']
+            deltaPix = 0.1
+            numPix = 100
+            #TODO make deltaPix and numPix more generic
+            x_pos, y_pos = self.ImagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens,
+                                                               kwargs_else)
+            kwargs_else['ra_pos'] = x_pos
+            kwargs_else['dec_pos'] = y_pos
+        else:
+            raise ValueError('To compute the image positions, the kwargs_source requires positional information!')
+        return kwargs_else
 
     def update_kwargs(self, kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else):
         kwargs_lens = kwargs_lens_list[0]
         if self.kwargs_options.get('solver', False):
             if self._foreground_shear:
-                f_x_shear1, f_y_shear1 = self.makeImage.LensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
+                f_x_shear1, f_y_shear1 = self.lensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
                 x_ = kwargs_else['ra_pos'] - f_x_shear1
                 y_ = kwargs_else['dec_pos'] - f_y_shear1
             else:
@@ -271,7 +296,7 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.solver_type in ['NFW_PROFILE']:
@@ -279,7 +304,7 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_Rs'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_Rs'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs']})
                     kwargs_lens = self._update_nfw(kwargs_lens, x)
                 elif self.solver_type in ['COMPOSITE']:
@@ -287,11 +312,11 @@ class Param(object):
                     init = np.array([kwargs_lens['theta_E'], e1, e2,
                             kwargs_lens['center_x'], kwargs_lens['center_y'], 0])  # sub-clump parameters to solve for
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs'], 'mass_light': kwargs_lens['mass_light'], 'r_eff': kwargs_lens['r_eff'], 'n_sersic': kwargs_lens['n_sersic'], 'q_s': kwargs_lens['q_s'], 'phi_G_s': kwargs_lens['phi_G_s']})
                     kwargs_lens = self._update_spep(kwargs_lens, x)
                 elif self.solver_type == 'SHAPELETS':
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     if self._num_images == 4:
                         init = [0, 0, 0, 0, 0, 0]
                         x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'],
@@ -311,7 +336,7 @@ class Param(object):
                     init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                     theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
                                 'theta_E': theta_E, 'e1': e1, 'e2': e2})
                     kwargs_lens['theta_E'] = theta_E
@@ -320,12 +345,12 @@ class Param(object):
                     init = np.array([0, 0])
                     theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'gamma': kwargs_lens['gamma']})
                     kwargs_lens['theta_E'] = theta_E
                     kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
                 elif self.solver_type == 'SHAPELETS':
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     init = [0, 0]
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'],
                                                                                    'center_x': kwargs_lens[
@@ -336,7 +361,7 @@ class Param(object):
                 elif self.solver_type == 'SHEAR':
                     kwargs_lens['e1'] = 0
                     kwargs_lens['e2'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     init = [0, 0]
                     kwargs = {}
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, kwargs)
@@ -347,7 +372,7 @@ class Param(object):
                     init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
                     theta_Rs = kwargs_lens['theta_Rs']
                     kwargs_lens['theta_Rs'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs'],
                                 'theta_Rs': theta_Rs, 'e1': e1, 'e2': e2})
                     kwargs_lens['theta_Rs'] = theta_Rs
@@ -356,7 +381,7 @@ class Param(object):
                     init = np.array([0, 0])
                     theta_Rs = kwargs_lens['theta_Rs']
                     kwargs_lens['theta_Rs'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_Rs': theta_Rs, 'Rs': kwargs_lens['Rs']})
                     kwargs_lens['theta_Rs'] = theta_Rs
                     kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
@@ -364,7 +389,7 @@ class Param(object):
                     init = np.array([0, 0])
                     theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'],
                             'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'Rs': kwargs_lens['Rs'],
                             'mass_light': kwargs_lens['mass_light'], 'r_eff': kwargs_lens['r_eff'], 'n_sersic': kwargs_lens['n_sersic'], 'q_s': kwargs_lens['q_s'], 'phi_G_s': kwargs_lens['phi_G_s']})
@@ -375,7 +400,7 @@ class Param(object):
                     init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])
                     theta_E = kwargs_lens['theta_E']
                     kwargs_lens['theta_E'] = 0
-                    ra_sub, dec_sub = self.makeImage.LensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
+                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
                     x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'e1': e1, 'e2': e2, 'theta_E': theta_E, 'Rs': kwargs_lens['Rs'],
                             'mass_light': kwargs_lens['mass_light'], 'r_eff': kwargs_lens['r_eff'], 'n_sersic': kwargs_lens['n_sersic'], 'q_s': kwargs_lens['q_s'], 'phi_G_s': kwargs_lens['phi_G_s']})
                     kwargs_lens['theta_E'] = theta_E
@@ -391,19 +416,19 @@ class Param(object):
         if self.kwargs_options.get('image_plane_source', False):
             for i, kwargs_source in enumerate(kwargs_source_list):
                 if 'center_x' in kwargs_source:
-                    x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_source['center_x'], kwargs_source['center_y'],
+                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_source['center_x'], kwargs_source['center_y'],
                                                                  kwargs_lens_list, kwargs_else)
-                    kwargs_source_list[i]['center_x'] = x_mapped[0]
-                    kwargs_source_list[i]['center_y'] = y_mapped[0]
+                    kwargs_source_list[i]['center_x'] = np.mean(x_mapped)
+                    kwargs_source_list[i]['center_y'] = np.mean(y_mapped)
         if self.kwargs_options.get('solver', False):
-            x_mapped, y_mapped = self.makeImage.LensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             if self.kwargs_options.get('joint_center', False):
                 for i in range(len(kwargs_source_list)):
                     if 'center_x' in kwargs_source_list[i]:
-                        kwargs_source_list[i]['center_x'] = x_mapped[0]
-                        kwargs_source_list[i]['center_y'] = y_mapped[0]
+                        kwargs_source_list[i]['center_x'] = np.mean(x_mapped)
+                        kwargs_source_list[i]['center_y'] = np.mean(y_mapped)
             else:
                 if 'center_x' in kwargs_source_list[0]:
-                    kwargs_source_list[0]['center_x'] = x_mapped[0]
-                    kwargs_source_list[0]['center_y'] = y_mapped[0]
+                    kwargs_source_list[0]['center_x'] = np.mean(x_mapped)
+                    kwargs_source_list[0]['center_y'] = np.mean(y_mapped)
         return kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else

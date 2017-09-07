@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
+from lenstronomy.Solver.image_positions import ImagePosition
 
 from lenstronomy.ImSim.data import Data
 import lenstronomy.DeLens.de_lens as de_lens
@@ -22,6 +23,7 @@ class MakeImage(object):
         self.PointSource = PointSource(kwargs_options, self.Data)
         self.kwargs_options = kwargs_options
         self.kwargs_psf = kwargs_psf
+        self.imagePosition = ImagePosition(self.LensModel)
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
@@ -67,7 +69,7 @@ class MakeImage(object):
         map_error = self.kwargs_options.get('error_map', False)
         x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
-        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
+        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
         data = self.Data.data
         d = data*mask
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1/(self.Data.C_D + error_map), d, inv_bool=inv_bool)
@@ -102,7 +104,21 @@ class MakeImage(object):
             error_map = np.zeros_like(self.Data.data)
         return source_light + lens_light + point_source, error_map
 
-    def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
+    def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_else:
+        :param sourcePos_x: source position in relative arc sec
+        :param sourcePos_y: source position in relative arc sec
+        :return:
+        """
+        deltaPix = self.Data.deltaPix / 10.
+        numPix = self.Data.numPix
+        x_mins, y_mins = self.imagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+        return x_mins, y_mins
+
+    def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
         kwargs_psf = self.kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
         lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(x_grid, y_grid,
@@ -131,7 +147,12 @@ class MakeImage(object):
             n += 1
         # response of point sources
         if self.kwargs_options.get('point_source', False):
-            A_point, error_map = self.PointSource.point_source_response(kwargs_psf, kwargs_else, map_error=map_error)
+            if self.kwargs_options.get('fix_magnification', False):
+                mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens,
+                                                kwargs_else)
+            else:
+                mag = np.ones_like(kwargs_else['ra_pos'])
+            A_point, error_map = self.PointSource.point_source_response(kwargs_psf, kwargs_else, point_amp=mag, map_error=map_error)
             A[n:n+n_points, :] = A_point
             n += n_points
         A = self._add_mask(A, mask)

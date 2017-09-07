@@ -67,11 +67,11 @@ class Data(object):
                 self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
             else:
                 self._mask_lens_light = np.ones_like(self._data)
-            if 'zero_point_x' in kwargs_data and 'zero_point_y' in kwargs_data and 'transform_angle2pix' in kwargs_data and 'transform_pix2angle' in kwargs_data:
-                self._x_0 = kwargs_data['zero_point_x']
-                self._y_0 = kwargs_data['zero_point_y']
-                self._ra_0 = kwargs_data['zero_point_ra']
-                self._dec_0 = kwargs_data['zero_point_dec']
+            if 'x_at_radec_0' in kwargs_data and 'y_at_radec_0' in kwargs_data and 'transform_angle2pix' in kwargs_data and 'transform_pix2angle' in kwargs_data:
+                self._x_at_radec_0 = kwargs_data['x_at_radec_0']
+                self._y_at_radec_0 = kwargs_data['y_at_radec_0']
+                self._ra_at_xy_0 = kwargs_data['ra_at_xy_0']
+                self._dec_at_xy_0 = kwargs_data['dec_at_xy_0']
                 self._Ma2pix = kwargs_data['transform_angle2pix']
                 self._Mpix2a = kwargs_data['transform_pix2angle']
             if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
@@ -109,6 +109,14 @@ class Data(object):
             return self._mask_lens_light
         else:
             return self._mask
+
+    @property
+    def numPix(self):
+        """
+
+        :return:
+        """
+        return np.sqrt(self._nx * self._ny)
 
     def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
         """
@@ -194,7 +202,7 @@ class Data(object):
         :param M:
         :return:
         """
-        return util.map_coord2pix(ra, dec, self._x_0, self._y_0, self._Ma2pix)
+        return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
 
     def map_pix2coord(self, x_pos, y_pos):
         """
@@ -203,7 +211,7 @@ class Data(object):
         :param y_pos:
         :return:
         """
-        return util.map_coord2pix(x_pos, y_pos, self._ra_0, self._dec_0, self._Mpix2a)
+        return util.map_coord2pix(x_pos, y_pos, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
 
     def add_noise2image(self, image):
         """

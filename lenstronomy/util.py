@@ -86,6 +86,7 @@ def rebin_coord_transform(factor, ra_0, dec_0, x_0, y_0, Mpix2coord, Mcoord2pix)
     ra_0_resized = (ra_0 + 0.5) / factor - 0.5
     dec_0_resized = (dec_0 + 0.5) / factor - 0.5
     x_0_resized, y_0_resized = util_astrofunc.map_coord2pix(-ra_0_resized, -dec_0_resized, 0, 0, Mpix2coord_resized)
+    x_0_resized, y_0_resized = util_astrofunc.map_coord2pix(-ra_0_resized, -dec_0_resized, 0, 0, Mpix2coord_resized)
     return ra_0_resized, dec_0_resized, x_0_resized, y_0_resized, Mpix2coord_resized, Mcoord2pix_resized
 
 

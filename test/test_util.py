@@ -55,16 +55,29 @@ def test_rebin_coord_transform():
 
     x_grid, y_grid, x_0, y_0, ra_0, dec_0, Mpix2coord, Mcoord2pix = Util_astrofunc.make_grid_with_coordtransform(numPix=99, deltapix=0.1, subgrid_res=1)
     x_grid, y_grid, x_0_re, y_0_re, ra_0_re, dec_0_re, Mpix2coord_re, Mcoord2pix_re = Util_astrofunc.make_grid_with_coordtransform(numPix=33, deltapix=0.3, subgrid_res=1)
-
+    assert ra_0 == 49
     ra_0_resized, dec_0_resized, x_0_resized, y_0_resized, Mpix2coord_resized, Mcoord2pix_resized = Util.rebin_coord_transform(3, ra_0, dec_0, x_0, y_0, Mpix2coord, Mcoord2pix)
     print(ra_0_re, dec_0_re, x_0_re, y_0_re, Mpix2coord_re, Mcoord2pix_re)
     print(ra_0_resized, dec_0_resized, x_0_resized, y_0_resized, Mpix2coord_resized, Mcoord2pix_resized)
     assert ra_0_resized == ra_0_re
     assert dec_0_resized == dec_0_re
+    assert ra_0_resized == 16
     npt.assert_almost_equal(x_0_resized, x_0_re, decimal=8)
     npt.assert_almost_equal(y_0_resized, y_0_re, decimal=8)
     npt.assert_almost_equal(Mcoord2pix_resized[0][0], Mcoord2pix_re[0][0], decimal=8)
     npt.assert_almost_equal(Mpix2coord_re[0][0], Mpix2coord_resized[0][0], decimal=8)
+
+    x_in, y_in = 10., 10.
+    ra, dec = Util_astrofunc.map_coord2pix(x_in, y_in, x_0, y_0, Mpix2coord)
+    x_out, y_out = Util_astrofunc.map_coord2pix(ra, dec, ra_0, dec_0, Mcoord2pix)
+    assert x_in == x_out
+    assert y_in == y_out
+
+    x_in, y_in = 10., 10.
+    ra, dec = Util_astrofunc.map_coord2pix(x_in, y_in, x_0_resized, y_0_resized, Mpix2coord_resized)
+    x_out, y_out = Util_astrofunc.map_coord2pix(ra, dec, ra_0_resized, dec_0_resized, Mcoord2pix_resized)
+    assert x_in == x_out
+    assert y_in == y_out
 
 if __name__ == '__main__':
     pytest.main()

@@ -23,7 +23,7 @@ class PointSource(object):
             n_points = 0
         return n_points
 
-    def point_source_response(self, kwargs_psf, kwargs_else, map_error=False):
+    def point_source_response(self, kwargs_psf, kwargs_else, point_amp=None, map_error=False):
         """
 
         :param n_points:
@@ -39,7 +39,8 @@ class PointSource(object):
         n_points = len(x_pos)
         data = self.Data.data
         psf_large = kwargs_psf['kernel_large']
-        point_amp = kwargs_else.get('point_amp', np.ones_like(n_points))
+        if point_amp is None:
+            point_amp = np.ones_like(n_points)
         #point_amp = kwargs_else['point_amp']
         numPix = len(data)
         error_map = np.zeros(numPix)
@@ -47,15 +48,8 @@ class PointSource(object):
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_large, point_amp[i], error_map, kwargs_psf['error_map'])
         A = np.zeros((num_param, numPix))
-        if self.kwargs_options.get('psf_iteration', False):
-            psf_list = kwargs_psf['kernel_list']
-            for k in range(num_param):
-                psf = psf_list[k]
-                grid2d = np.zeros((self.Data._nx, self.Data._ny))
-                for i in range(0, n_points):
-                    grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i]*psf)
-                A[k, :] = self.Data.image2array(grid2d)
-        elif self.kwargs_options.get('fix_magnification', False):
+
+        if self.kwargs_options.get('fix_magnification', False):
             grid2d = np.zeros((self.Data._nx, self.Data._ny))
             for i in range(n_points):
                 grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_large)

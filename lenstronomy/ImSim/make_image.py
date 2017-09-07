@@ -222,8 +222,9 @@ class MakeImage(object):
                 kwargs_else['point_amp'] = np.abs(mag) * param[i]
                 i += 1
             else:
-                kwargs_else['point_amp'] = param[i:i+num_images]
-                i += num_images
+                n_points = len(kwargs_else['ra_pos'])
+                kwargs_else['point_amp'] = param[i:i+n_points]
+                i += n_points
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def _normalize_flux(self, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor=1):

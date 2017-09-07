@@ -98,12 +98,11 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     deltaPix = kwargs_data['deltaPix']
     nx, ny = kwargs_data['numPix_xy']
     d = deltaPix * nx
-    print(else_result, 'plot_decomposition')
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
-    print(else_result, 'plot_decomposition')
+
     lens_light, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
                                                 else_result, unconvolved=True, source_add=False,
                                                 lens_light_add=True, point_source_add=False)
@@ -231,7 +230,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
-    print(else_result, 'else_result in plot_reconstruction')
+
     model_pure, _ = makeImage.image_with_params(lens_result, source_result,
                                                 lens_light_result, else_result)
     norm_residuals = makeImage.Data.reduced_residuals(model, error_map=error_map)

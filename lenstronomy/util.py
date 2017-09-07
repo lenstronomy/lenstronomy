@@ -68,7 +68,7 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
 
 
-def rebin_coord_transform(factor, ra_0, dec_0, x_0, y_0, Mpix2coord, Mcoord2pix):
+def rebin_coord_transform(factor, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
     """
     adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
     :param bin_size:
@@ -83,11 +83,10 @@ def rebin_coord_transform(factor, ra_0, dec_0, x_0, y_0, Mpix2coord, Mcoord2pix)
     factor = int(factor)
     Mcoord2pix_resized = Mcoord2pix / factor
     Mpix2coord_resized = Mpix2coord * factor
-    ra_0_resized = (ra_0 + 0.5) / factor - 0.5
-    dec_0_resized = (dec_0 + 0.5) / factor - 0.5
-    x_0_resized, y_0_resized = util_astrofunc.map_coord2pix(-ra_0_resized, -dec_0_resized, 0, 0, Mpix2coord_resized)
-    x_0_resized, y_0_resized = util_astrofunc.map_coord2pix(-ra_0_resized, -dec_0_resized, 0, 0, Mpix2coord_resized)
-    return ra_0_resized, dec_0_resized, x_0_resized, y_0_resized, Mpix2coord_resized, Mcoord2pix_resized
+    x_at_radec_0_resized = (x_at_radec_0 + 0.5) / factor - 0.5
+    y_at_radec_0_resized = (y_at_radec_0 + 0.5) / factor - 0.5
+    ra_at_xy_0_resized, dec_at_xy_0_resized = util_astrofunc.map_coord2pix(-x_at_radec_0_resized, -y_at_radec_0_resized, 0, 0, Mpix2coord_resized)
+    return ra_at_xy_0_resized, dec_at_xy_0_resized, x_at_radec_0_resized, y_at_radec_0_resized, Mpix2coord_resized, Mcoord2pix_resized
 
 
 def stack_images(image_list, wht_list, sigma_list):

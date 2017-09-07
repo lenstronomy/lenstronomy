@@ -68,11 +68,11 @@ class ElseParam(object):
         args = []
         if self._num_images > 0:
             if not 'ra_pos' in self.kwargs_fixed:
-                x_pos = kwargs['ra_pos']
+                x_pos = kwargs['ra_pos'][0:self._num_images]
                 for i in x_pos:
                     args.append(i)
             if not 'dec_pos' in self.kwargs_fixed:
-                y_pos = kwargs['dec_pos']
+                y_pos = kwargs['dec_pos'][0:self._num_images]
                 for i in y_pos:
                     args.append(i)
             if not 'point_amp' in self.kwargs_fixed:
@@ -130,13 +130,13 @@ class ElseParam(object):
         mean, sigma = [], []
         if self._num_images > 0:
             if not 'ra_pos' in self.kwargs_fixed:
-                x_pos_mean = kwargs_mean['ra_pos']
+                x_pos_mean = kwargs_mean['ra_pos'][0:self._num_images]
                 pos_sigma = kwargs_mean['pos_sigma']
                 for i in x_pos_mean:
                     mean.append(i)
                     sigma.append(pos_sigma)
             if not 'dec_pos' in self.kwargs_fixed:
-                y_pos_mean = kwargs_mean['dec_pos']
+                y_pos_mean = kwargs_mean['dec_pos'][0:self._num_images]
                 pos_sigma = kwargs_mean['pos_sigma']
                 for i in y_pos_mean:
                     mean.append(i)

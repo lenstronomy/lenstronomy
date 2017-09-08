@@ -1,5 +1,6 @@
 from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.Solver.image_positions import ImagePosition
 import astrofunc.util as util
 from astrofunc.util import Util_class
@@ -71,14 +72,35 @@ class Simulation(object):
             kernel_small = self.util_class.cut_psf(kernel_small, psf_size=kernelsize)
             kwargs_psf = {'psf_type': "pixel", 'kernel': kernel_small, 'kernel_large': kernel_large}
         elif psf_type == 'NONE':
-            kwargs_psf = {}
+            kwargs_psf = {'psf_type': 'NONE'}
         else:
             raise ValueError("psf type %s not supported!" % psf_type)
         return kwargs_psf
 
+    def normalize_flux(self, kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source=1, norm_factor_lens_light=1, norm_factor_point_source=1.):
+        """
+        multiplies the surface brightness amplitudes with a norm_factor
+        aim: mimic different telescopes photon collection area or colours for different imaging bands
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param norm_factor:
+        :return:
+        """
+        lensLightModel = LensLightModel(kwargs_options)
+        sourceModel = SourceModel(kwargs_options)
+        kwargs_source_updated = copy.deepcopy(kwargs_source)
+        kwargs_lens_light_updated = copy.deepcopy(kwargs_lens_light)
+        kwargs_else_updated = copy.deepcopy(kwargs_else)
+        kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
+        kwargs_lens_light_updated = lensLightModel.lightModel.re_normalize_flux(kwargs_lens_light_updated, norm_factor_lens_light)
+        num_images = kwargs_options.get('num_images', 0)
+        if num_images > 0 and kwargs_options.get('point_source', False):
+                kwargs_else_updated['point_amp'] *= norm_factor_point_source
+        return kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated
+
     def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
         """
-
+        simulate image with solving for the point sources, if option choosen
         :param kwargs_options:
         :param kwargs_data:
         :param kwargs_psf:
@@ -103,9 +125,25 @@ class Simulation(object):
                 mag_list[i] = abs(mag)
             kwargs_else['ra_pos'] = x_mins
             kwargs_else['dec_pos'] = y_mins
-            kwargs_else['point_amp'] = mag_list*kwargs_else['quasar_amp']
+            kwargs_else['point_amp'] = mag_list * kwargs_else['quasar_amp']
 
         # update kwargs_else
+        image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)
+        return image
+
+    def simulate(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
+        """
+        simulate image
+        :param kwargs_options:
+        :param kwargs_data:
+        :param kwargs_psf:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :param no_noise:
+        :return:
+        """
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         image = makeImage.Data.array2image(image)
@@ -117,16 +155,15 @@ class Simulation(object):
             bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
             return image + bkg + poisson
 
-    def fermat_potential(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_else):
+    def fermat_potential(self, kwargs_options, kwargs_lens, kwargs_else):
         """
         computes the Fermat potential
         :param kwargs_options:
-        :param kwargs_data:
         :param kwargs_lens:
         :param kwargs_else:
         :param no_noise:
         :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
         """
-        lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
-        fermat_pot = lensAnalysis.fermat_potential(kwargs_lens, kwargs_else)
+        lensModel = LensModel(kwargs_options)
+        fermat_pot = lensModel.fermat_potential(kwargs_lens, kwargs_else)
         return fermat_pot

@@ -227,7 +227,7 @@ class MakeImage(object):
                 i += n_points
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def _normalize_flux(self, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor=1):
+    def normalize_flux(self, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor=1):
         """
         multiplies the surface brightness amplitudes with a norm_factor
         aim: mimic different telescopes photon collection area or colours for different imaging bands

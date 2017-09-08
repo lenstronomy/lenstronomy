@@ -29,7 +29,7 @@ class TestMakeImage(object):
         np.random.seed(seed=41)
 
     def test_psf_convolution(self):
-        kwargs = {'sigma': 1}
+        kwargs = {'sigma': 1, 'psf_type': 'gaussian'}
         grid_convolved = self.makeImage.Data.psf_convolution(self.grid, 1., **kwargs)
         assert (grid_convolved[0][0] > 8.447e-05 and grid_convolved[0][0] < 8.448e-05)
 

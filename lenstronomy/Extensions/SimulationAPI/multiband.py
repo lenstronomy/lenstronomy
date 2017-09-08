@@ -1,3 +1,7 @@
+import numpy as np
+from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
+from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.Solver.image_positions import ImagePosition
 
 
 class MultiBand(object):
@@ -7,3 +11,144 @@ class MultiBand(object):
     and different ones (e.g. colour, image qualities)
     """
 
+    def __init__(self):
+        """
+
+        """
+        self.num_bands = 0
+        self._exposure_list = []
+        self._name_list = []
+
+    def add_band(self, name, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type="gaussian", fwhm=1., *args, **kwargs):
+        """
+
+        :param name: string, name of exposure e.g. DES-Y_band
+        :param numPix: number of pixels to simulate
+        :param deltaPix: pixel size
+        :param exposure_time: exposure time
+        :param sigma_bkg: background noise, assumed to be independent of exposure time
+        :param flux_calibration_factor: factor to scale the flux in the image based on relative throughput and efficiency of the telescope and instrument
+        :param psf_type: type of point-spread function
+        :param fwhm: full width at half maximum of PSF
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.num_bands += 1
+        exposure = SingleBand(collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type, fwhm)
+        self._exposure_list.append(exposure)
+        self._name_list.append(name)
+        print("Exposure %s added. There are currently %s exposures available." % (name, self.num_bands))
+
+    def del_band(self, name):
+        """
+        delete exposure with the name indicated
+        :param name: string, name of exposure
+        :return:
+        """
+        bool_del = False
+        i_del = 0
+        for i, name_exist in enumerate(self._name_list):
+            if name == name_exist:
+                bool_del = True
+                i_del = i
+                pass
+        if bool_del is True:
+            del self._exposure_list[i_del]
+            del self._name_list[i_del]
+            self.num_bands -= 1
+            print("Exposure %s with index %s deleted" % (name, i_del))
+
+    def image_name(self, idex):
+        """
+
+        :param idex: index of band
+        :return: string, image name
+        """
+        return self._name_list[idex]
+
+    def simulate_bands(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False):
+        """
+
+        :param kwargs_options:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :param no_noise:
+        :return:
+        """
+        kwargs_else = self._find_point_sources(kwargs_options, kwargs_lens, kwargs_else)
+        image_list = []
+        for i, exposure in enumerate(self._exposure_list):
+            image = exposure.simulate(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour[i], source_colour[i], quasar_colour[i], no_noise=no_noise)
+            image_list.append(image)
+        return image_list
+
+    def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
+        lensModel = LensModel(kwargs_options)
+        imPos = ImagePosition(lensModel=lensModel)
+        if kwargs_options.get('point_source', False):
+            deltaPix = 0.05
+            numPix = 100
+            sourcePos_x = kwargs_else['sourcePos_x']
+            sourcePos_y = kwargs_else['sourcePos_y']
+            x_mins, y_mins = imPos.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+            n = len(x_mins)
+            mag_list = np.zeros(n)
+            for i in range(n):
+                potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = lensModel.all(x_mins[i], y_mins[i], kwargs_lens,
+                                                                                      kwargs_else)
+                mag_list[i] = abs(mag)
+            kwargs_else['ra_pos'] = x_mins
+            kwargs_else['dec_pos'] = y_mins
+            kwargs_else['point_amp'] = mag_list * kwargs_else['quasar_amp']
+        return kwargs_else
+
+
+class SingleBand(object):
+    """
+    class to operate on single exposure
+    """
+    def __init__(self, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type, fwhm, *args, **kwargs):
+        """
+        :param collector_area: area of collector in m^2
+        :param numPix: number of pixels
+        :param deltaPix: FoV per pixel in units of arcsec
+        :param readout_noise: rms value of readout per pixel in units of photons
+        :param sky_brightness: number of photons of sky per area (arcsec) per time (second) for a collector area (1 m^2)
+        :param extinction: exctinction (galactic and atmosphere combined).
+        Only use this if magnitude calibration is done without it.
+        :param exposure_time: exposure time (seconds)
+        :param psf_type:
+        :param fwhm:
+        :param args:
+        :param kwargs:
+        """
+        self.simulation = Simulation()
+        sky_per_pixel = sky_brightness*collector_area*deltaPix**2  # time independent noise term per pixel per second
+        sigma_bkg = np.sqrt(readout_noise**2 + exposure_time*sky_per_pixel**2) / exposure_time  # total Gaussian noise term per pixel in full exposure (in units of counts per second)
+        kwargs_data = self.simulation.data_configure(numPix, deltaPix, exposure_time, sigma_bkg)
+        self._kwargs_data = kwargs_data
+        kwargs_psf = self.simulation.psf_configure(psf_type, fwhm)
+        self._kwargs_psf = kwargs_psf
+        self._flux_calibration_factor = collector_area / extinction * deltaPix**2  # transforms intrinsic surface brightness per angular area into the flux normalizations per pixel
+
+    def simulate(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False):
+        """
+
+        :param kwargs_options:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :param no_noise:
+        :return:
+        """
+        norm_factor_source = self._flux_calibration_factor * source_colour
+        norm_factor_lens_light = self._flux_calibration_factor * lens_colour
+        norm_factor_point_source = self._flux_calibration_factor * quasar_colour
+        self.simulation.normalize_flux(kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source,
+                       norm_factor_lens_light, norm_factor_point_source)
+        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=no_noise)
+        return image

@@ -248,23 +248,6 @@ class LensAnalysis(object):
             mag_finite[i] = np.sum(I_image)/subgrid_res**2*delta_pix**2
         return mag_finite
 
-    def fermat_potential(self, kwargs_lens, kwargs_else):
-        """
-
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
-        """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        potential = self.LensModel.potential(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source = np.mean(ra_source)
-        dec_source = np.mean(dec_source)
-        geometry = (ra_pos - ra_source)**2 + (dec_pos - dec_source)**2
-        return geometry/2 - potential
-
     def position_size_estimate(self, ra_pos, dec_pos, kwargs_lens, kwargs_else, delta, scale=1):
         """
         estimate the magnification at the positions and define resolution limit
@@ -320,6 +303,7 @@ class LensAnalysis(object):
 
         # Non-filled contours (lines only).
         level = 0.5
+        import matplotlib._cntr as cntr
         c = cntr.Cntr(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res)
         nlist = c.trace(level, level, 0)
         segs = nlist[:len(nlist) // 2]

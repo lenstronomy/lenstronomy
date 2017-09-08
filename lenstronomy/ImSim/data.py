@@ -249,9 +249,10 @@ class Data(object):
         """
         convolves a given pixel grid with a PSF
         """
-        if self.kwargs_options.get('psf_type', 'NONE') == 'NONE':
+        psf_type = kwargs.get('psf_type', 'NONE')
+        if psf_type == 'NONE':
             return grid
-        elif self.kwargs_options['psf_type'] == 'gaussian':
+        elif psf_type == 'gaussian':
             sigma = kwargs['sigma']/grid_scale
             if 'truncate' in kwargs:
                 sigma_truncate = kwargs['truncate']
@@ -259,7 +260,7 @@ class Data(object):
                 sigma_truncate = 3.
             img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate*sigma)
             return img_conv
-        elif self.kwargs_options['psf_type'] == 'pixel':
+        elif psf_type == 'pixel':
             if self._psf_subgrid:
                 kernel = self._subgrid_kernel(kwargs['kernel'], self._subgrid_res)
             else:
@@ -274,7 +275,7 @@ class Data(object):
                 img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             return img_conv1
         else:
-            raise ValueError('PSF type %s not valid!' %self.kwargs_options['psf_type'])
+            raise ValueError('PSF type %s not valid!' % psf_type)
 
     def re_size_convolve(self, image, kwargs_psf, unconvolved=False):
         """
@@ -285,13 +286,12 @@ class Data(object):
         :return: array with convolved and re-binned data/model
         """
         image = self.array2image(image, self._subgrid_res)
-        if unconvolved is True or self.kwargs_options['psf_type'] == 'NONE':
+        if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
             grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
         else:
             gridScale = self.deltaPix/self._subgrid_res
-            #if self.kwargs_options['psf_type'] == 'pixel':
-            if self.kwargs_options['psf_type'] == 'pixel' and not self._psf_subgrid:
+            if kwargs_psf == 'pixel' and not self._psf_subgrid:
                 grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
             else:

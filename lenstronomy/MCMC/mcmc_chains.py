@@ -41,6 +41,11 @@ class MCMC_chain(object):
             self._check_solver = False
         if self._check_solver:
             self._solver_tolerance = kwargs_options.get('solver_tolerance', 0.001)
+        if kwargs_options.get('additional_images', False):
+            self._force_no_add_image = kwargs_options.get('force_no_add_image', False)
+        else:
+            self._force_no_add_image = False
+        self._num_images = kwargs_options.get('num_images', 0)
 
     def X2_chain_image(self, args):
         """
@@ -61,6 +66,10 @@ class MCMC_chain(object):
             logL += self.priors(kwargs_lens, self.kwargs_priors)
         if self._check_solver is True:
             logL -= self.check_solver(kwargs_lens, kwargs_else, self._solver_tolerance)
+        if self._force_no_add_image:
+            bool = self.check_additional_images(kwargs_else)
+            if bool:
+                logL -= 10**10
         return logL, None
 
     def X2_chain_catalogue(self, args):
@@ -92,6 +101,17 @@ class MCMC_chain(object):
             if np.max(dist) > tolerance:
                 return 10**10
         return 0
+
+    def check_additional_images(self, kwargs_else):
+        """
+        checks whether additional images have been found and placed in kwargs_else
+        :param kwargs_else:
+        :return:
+        """
+        if len(kwargs_else['ra_pos']) > self._num_images:
+            return True
+        else:
+            return False
 
     def priors(self, kwargs_lens, kwargs_priors):
         """

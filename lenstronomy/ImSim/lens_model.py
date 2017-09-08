@@ -104,6 +104,8 @@ class LensModel(object):
         return mass
 
     def potential(self, x, y, kwargs, kwargs_else=None):
+        x = np.array(x, dtype=float)
+        y = np.array(y, dtype=float)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1
@@ -121,6 +123,8 @@ class LensModel(object):
         """
         a = grad(phi)
         """
+        x = np.array(x, dtype=float)
+        y = np.array(y, dtype=float)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
             x_ = x - f_x_shear1
@@ -173,6 +177,8 @@ class LensModel(object):
         """
         specially build to reduce computational costs
         """
+        x = np.array(x, dtype=float)
+        y = np.array(y, dtype=float)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
                                                             e2=kwargs_else['gamma2_foreground'])
@@ -181,7 +187,7 @@ class LensModel(object):
         else:
             x_ = x
             y_ = y
-        potential = np.zeros_like(x)
+        potential = np.zeros_like(x_)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
         f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
         for i, func in enumerate(self.func_list):
@@ -204,7 +210,8 @@ class LensModel(object):
     def hessian(self, x, y, kwargs, kwargs_else=None, k=None):
 
         # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
-
+        x = np.array(x, dtype=float)
+        y = np.array(y, dtype=float)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
                                                             e2=kwargs_else['gamma2_foreground'])

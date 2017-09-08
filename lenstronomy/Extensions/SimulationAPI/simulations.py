@@ -29,7 +29,7 @@ class Simulation(object):
         """
         mean = 0.  # background mean flux (default zero)
         # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
-        x_grid, y_grid, x_0, y_0, ra_0, dec_0, Matrix, Matrix_inv = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
+        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
         # mask (1= model this pixel, 0= leave blanck)
         mask = np.ones_like(x_grid)  # default is model all pixels
         exposure_map = np.ones_like(x_grid) * exposure_time  # individual exposure time/weight per pixel
@@ -39,8 +39,8 @@ class Simulation(object):
             , 'deltaPix': deltaPix, 'numPix_xy': (numPix, numPix)
             , 'exp_time': exposure_time, 'exposure_map': exposure_map
             , 'x_coords': x_grid, 'y_coords': y_grid
-            , 'zero_point_x': ra_0, 'zero_point_y': dec_0, 'transform_angle2pix': Matrix_inv
-            , 'zero_point_ra': x_0, 'zero_point_dec': y_0, 'transform_pix2angle': Matrix
+            , 'x_at_radec_0': x_at_radec_0, 'y_at_radec_0': y_at_radec_0, 'transform_angle2pix': Mcoord2pix
+            , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
             , 'mask': mask
             , 'image_data': np.zeros_like(x_grid)
             }

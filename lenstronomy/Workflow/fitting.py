@@ -204,7 +204,7 @@ class Fitting(object):
                         elif kwargs_options['solver_type'] in ['NONE']:
                             kwargs_fixed_lens = {}
                         else:
-                            raise ValueError("%s is not a valid option" % kwargs_options['solver_type'])
+                            raise ValueError("%s is not a valid option. Choose from 'PROFILE', 'COMPOSITE', 'NFW_PROFILE', 'SHAPELETS'" % kwargs_options['solver_type'])
                     elif kwargs_options['num_images'] == 2:
                         if kwargs_options['solver_type'] in ['CENTER', 'NFW_CENTER', 'COMPOSITE_CENTER']:
                             kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'],

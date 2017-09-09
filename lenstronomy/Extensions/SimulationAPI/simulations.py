@@ -5,7 +5,6 @@ from lenstronomy.Solver.image_positions import ImagePosition
 import astrofunc.util as util
 from astrofunc.util import Util_class
 from astrofunc.LensingProfiles.gaussian import Gaussian
-from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
 
 import numpy as np
 import copy
@@ -131,7 +130,7 @@ class Simulation(object):
         image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)
         return image
 
-    def simulate(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
+    def simulate(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         simulate image
         :param kwargs_options:
@@ -145,7 +144,7 @@ class Simulation(object):
         :return:
         """
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         image = makeImage.Data.array2image(image)
         # add noise
         if no_noise:

@@ -67,7 +67,7 @@ class MultiBand(object):
         """
         return self._name_list[idex]
 
-    def simulate_bands(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False):
+    def simulate_bands(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         :param kwargs_options:
@@ -81,7 +81,7 @@ class MultiBand(object):
         kwargs_else = self._find_point_sources(kwargs_options, kwargs_lens, kwargs_else)
         image_list = []
         for i, exposure in enumerate(self._exposure_list):
-            image = exposure.simulate(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour[i], source_colour[i], quasar_colour[i], no_noise=no_noise)
+            image = exposure.simulate(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour[i], source_colour[i], quasar_colour[i], no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
             image_list.append(image)
         return image_list
 
@@ -134,7 +134,7 @@ class SingleBand(object):
         self._kwargs_psf = kwargs_psf
         self._flux_calibration_factor = collector_area / extinction * deltaPix**2  # transforms intrinsic surface brightness per angular area into the flux normalizations per pixel
 
-    def simulate(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False):
+    def simulate(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         :param kwargs_options:
@@ -150,5 +150,5 @@ class SingleBand(object):
         norm_factor_point_source = self._flux_calibration_factor * quasar_colour
         self.simulation.normalize_flux(kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source,
                        norm_factor_lens_light, norm_factor_point_source)
-        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=no_noise)
+        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         return image

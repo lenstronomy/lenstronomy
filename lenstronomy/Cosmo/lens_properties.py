@@ -8,6 +8,7 @@ from galkin.galkin import Galkin
 import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
 from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
+from lenstronomy.ImSim.lens_model import LensModel
 
 
 class LensProp(object):
@@ -20,13 +21,14 @@ class LensProp(object):
         self.z_s = z_source
         self.unitManager = UnitManager(z_lens, z_source)
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
+        self.lens_model = LensModel(kwargs_options)
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
-        time_delay_arcsec = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_else)
+        time_delay_arcsec = self.lens_model.fermat_potential(kwargs_lens, kwargs_else)
         time_delay = self.unitManager.time_delay_units(time_delay_arcsec, kappa_ext)
         return time_delay
 

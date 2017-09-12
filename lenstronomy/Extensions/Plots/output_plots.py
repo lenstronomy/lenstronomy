@@ -91,7 +91,8 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
 
 
 def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap_string):
+                        else_result, cmap_string, v_min=None, v_max=None):
+
     cmap = plt.get_cmap(cmap_string)
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
@@ -102,7 +103,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
 
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
-
+    print(lens_result, source_result, lens_light_result, else_result, 'parameters to be plotted.')
     lens_light, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
                                                 else_result, unconvolved=True, source_add=False,
                                                 lens_light_add=True, point_source_add=False)
@@ -125,9 +126,8 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
 
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     ax = axes[0, 0]
-    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap)  # , vmin=0, vmax=2
+    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)
 
-    v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -162,7 +162,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d - 1., "Observed", color="w", fontsize=15, backgroundcolor='k')
+    ax.text(0.5, d - 1., "point source", color="w", fontsize=15, backgroundcolor='k')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -170,14 +170,13 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     ax = axes[1, 0]
     im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap)  # , vmin=0, vmax=2
 
-    v_min, v_max = im.get_clim()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d - 1., "Lens light", color="w", fontsize=15, backgroundcolor='k')
+    ax.text(0.5, d - 1., "Lens light convolved", color="w", fontsize=15, backgroundcolor='k')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -191,7 +190,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
     ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
     ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
-    ax.text(0.5, d - 1., "Source light", color="w", fontsize=15, backgroundcolor='k')
+    ax.text(0.5, d - 1., "Source light convolved", color="w", fontsize=15, backgroundcolor='k')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -214,7 +213,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     return f, axes
 
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap_string, source_sigma=0.01, v_min=None, v_max=None):
+                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005, v_min=None, v_max=None):
     cmap = plt.get_cmap(cmap_string)
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
@@ -236,8 +235,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     norm_residuals = makeImage.Data.reduced_residuals(model, error_map=error_map)
     reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)
-    numPix_source = 200
-    deltaPix_source = 0.005
     d_s = numPix_source * deltaPix_source
     x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
     kwargs_source_new = copy.deepcopy(source_result)
@@ -348,7 +345,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma/deltaPix_source, mode='nearest', truncate=20)
     ax = axes[1, 0]
     im = ax.matshow(np.log10(source_conv), origin='lower', extent=[0, d_s, 0, d_s],
-                    cmap=cmap, vmin=-4, vmax=np.log10(np.max(source_conv) / 10))  # source
+                    cmap=cmap, vmin=v_min, vmax=v_max)  # source
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 

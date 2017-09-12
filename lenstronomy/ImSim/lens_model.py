@@ -40,6 +40,9 @@ class LensModel(object):
             elif lens_type == 'SPEMD':
                 from astrofunc.LensingProfiles.spemd import SPEMD
                 self.func_list.append(SPEMD())
+            elif lens_type == 'SPEMD_SMOOTH':
+                from astrofunc.LensingProfiles.spemd_smooth import SPEMD_SMOOTH
+                self.func_list.append(SPEMD_SMOOTH())
             elif lens_type == 'NFW':
                 from astrofunc.LensingProfiles.nfw import NFW
                 self.func_list.append(NFW())

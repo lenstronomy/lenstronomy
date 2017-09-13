@@ -590,16 +590,16 @@ class LensParam(object):
                     low.append(0)
                     high.append(1000)
                 if not 'sigma_x' in kwargs_fixed:
-                    low.append(-10)
-                    high.append(10)
+                    low.append(-30)
+                    high.append(30)
                 if not 'sigma_y' in kwargs_fixed:
-                    low.append(-10)
-                    high.append(10)
+                    low.append(-30)
+                    high.append(30)
 
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP', 'COMPOSITE']:
                 if not 'theta_E' in kwargs_fixed:
                     low.append(0.001)
-                    high.append(10)
+                    high.append(100)
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SPP']:
                 if not 'gamma' in kwargs_fixed:
                     low.append(1.5)
@@ -624,7 +624,7 @@ class LensParam(object):
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
                     low.append(0.1)
-                    high.append(3.)
+                    high.append(10.)
                 if not 'coeffs' in kwargs_fixed:
                     num_coeffs = self.kwargs_options['num_shapelet_lens']
                     if self.solver_type == 'SHAPELETS':
@@ -681,11 +681,11 @@ class LensParam(object):
                 , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
                          'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
-                    low.append(-20)
-                    high.append(20)
+                    low.append(-30)
+                    high.append(30)
                 if not 'center_y' in kwargs_fixed:
-                    low.append(-20)
-                    high.append(20)
+                    low.append(-30)
+                    high.append(30)
         return low, high
 
     def num_param(self):

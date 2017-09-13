@@ -138,19 +138,19 @@ class Constraints(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, solver_type='PROFILE', lens_model='SPEP'):
-        if solver_type == 'PROFILE':
+    def __init__(self, lens_model='SPEP'):
+        if lens_model in ['SPEP', 'SPEMD']:
             self.solver = SolverProfile(lens_model)
-        elif solver_type == 'NFW_PROFILE':
+        elif lens_model in ['NFW_ELLIPSE']:
             self.solver = SolverNFWProfile(lens_model)
-        elif solver_type == 'COMPOSITE':
+        elif lens_model == 'COMPOSITE':
             self.solver = SolverComposite(lens_model)
-        elif solver_type == 'SHAPELETS':
+        elif lens_model == 'SHAPELETS_CART':
             self.solver = SolverShapelets()
-        elif solver_type == 'NONE':
+        elif lens_model == 'NONE':
             pass
         else:
-            raise ValueError('invalid solver type!')
+            raise ValueError('lens model %s is not supported for solver!' % lens_model)
 
     def _subtract_constraint(self, x_cat, y_cat, x_sub, y_sub):
         """

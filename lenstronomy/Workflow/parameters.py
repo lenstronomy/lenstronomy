@@ -47,7 +47,7 @@ class Param(object):
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
-                self.constraints = Constraints(self.solver_type, lens_model=self.kwargs_options['lens_model_list'][0])
+                self.constraints = Constraints(lens_model=self.kwargs_options['lens_model_list'][0])
             elif self. _num_images == 2:
                 self.constraints = Constraints2(self.solver_type, lens_model=self.kwargs_options['lens_model_list'][0])
             else:

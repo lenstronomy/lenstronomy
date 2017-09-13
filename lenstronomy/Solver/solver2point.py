@@ -240,23 +240,26 @@ class Constraints2(object):
     class to make the constraints for the solver
     """
     def __init__(self, solver_type='CENTER', lens_model='SPEP'):
-        if solver_type == 'CENTER':
-            self.solver = SolverCenter2(lens_model)
-        elif solver_type == 'ELLIPSE':
-            self.solver = SolverEllipse2(lens_model)
-        elif solver_type == 'NFW_CENTER':
-            self.solver = SolverNFWCenter2(lens_model)
-        elif solver_type == 'NFW_ELLIPSE':
-            self.solver = SolverNFWEllipse2(lens_model)
-        elif solver_type == 'COMPOSITE_CENTER':
-            self.solver = SolverCompositeCenter2(lens_model)
-        elif solver_type == 'COMPOSITE_ELLIPSE':
-            self.solver = SolverCompositeEllipse2(lens_model)
-        elif solver_type == 'SHAPELETS':
+        if lens_model in ['SPEP', 'SPEMD']:
+            if solver_type == 'CENTER':
+                self.solver = SolverCenter2(lens_model)
+            elif solver_type == 'ELLIPSE':
+                self.solver = SolverEllipse2(lens_model)
+        elif lens_model in ['NFW_ELLIPSE']:
+            if solver_type == 'CENTER':
+                self.solver = SolverNFWCenter2(lens_model)
+            elif solver_type == 'ELLIPSE':
+                self.solver = SolverNFWEllipse2(lens_model)
+        elif lens_model in ['COMPOSITE']:
+            if solver_type == 'CENTER':
+                self.solver = SolverCompositeCenter2(lens_model)
+            elif solver_type == 'ELLIPSE':
+                self.solver = SolverCompositeEllipse2(lens_model)
+        elif lens_model in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
             self.solver = SolverShapelets2(lens_model)
-        elif solver_type == 'SHEAR':
+        elif lens_model == 'EXTERNAL_SHEAR':
             self.solver = SolverShear2(lens_model)
-        elif solver_type == 'NONE':
+        elif lens_model == 'NONE':
             pass
         else:
             raise ValueError('invalid solver type: %s !' % solver_type)

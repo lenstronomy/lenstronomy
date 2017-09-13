@@ -15,7 +15,7 @@ class TestSolver(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.constraints = Constraints(solver_type='PROFILE', lens_model='SPEP')
+        self.constraints = Constraints(lens_model='SPEP')
         kwargs_options_spep = {'lens_model_list': ['SPEP']}
         self.lens_spep = LensModel(kwargs_options_spep)
         self.Image_spep = ImagePosition(self.lens_spep)
@@ -206,7 +206,7 @@ class TestSolverNew(object):
         self.image_position_spep_spp_shapelets = ImagePosition(self.lens_spep_spp_shapelets)
         self.solverShapelets = SolverShapelets()
         self.solver = SolverProfile()
-        self.constraints = Constraints('SHAPELETS')
+        self.constraints = Constraints(lens_model='SHAPELETS_CART')
 
     def test_all_spp(self):
         sourcePos_x = 0.1

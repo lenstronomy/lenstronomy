@@ -38,7 +38,7 @@ class TestParam(object):
     def test_param_bound(self):
         low, high = self.param_class.param_bounds()
         assert low[0] == 0.001
-        assert high[0] == 10
+        assert high[0] == 100
 
     def test_num_param(self):
         low, high = self.param_class.param_bounds()

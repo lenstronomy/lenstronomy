@@ -45,7 +45,7 @@ class Data(object):
             self._exp_map = f
             self._data = data[self._idex_mask == 1]
             self._data_pure = data
-            self.C_D = self.covariance_matrix(self._data, self._sigma_b, f)
+            self.C_D = self.covariance_matrix(self._data, self._sigma_b, self._exp_map)
 
             if 'numPix_xy' in kwargs_data:
                 self._nx, self._ny = kwargs_data['numPix_xy']
@@ -233,6 +233,25 @@ class Data(object):
         mask = self.mask
         residual = (model - self._data)/np.sqrt(self.C_D+np.abs(error_map))*mask
         return residual
+
+    def log_likelihood(self, model, model_error=0):
+        """
+        returns reduced residual map
+        :param model:
+        :param data:
+        :param sigma:
+        :param reduce_frac:
+        :param mask:
+        :param model_error:
+        :return:
+        """
+        # covariance matrix based on the model (not on the data)
+        C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
+        X2 = (model - self._data)**2 / (C_D + np.abs(model_error)) * self._mask
+        X2 = np.array(X2)
+        logL = - np.sum(X2) / 2
+        return logL
+
 
     def reduced_chi2(self, model, error_map=0):
         """

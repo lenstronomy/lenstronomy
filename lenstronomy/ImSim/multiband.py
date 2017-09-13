@@ -97,3 +97,19 @@ class MakeImageMultiband(object):
         """
         x_mins, y_mins = self._makeImage_list[0].image_position(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
         return x_mins, y_mins
+
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+        """
+        computes the likelihood of the data given a model
+        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
+        """
+        # generate image
+        logL = 0
+        for i in range(self._num_bands):
+            logL += self._makeImage_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        return logL

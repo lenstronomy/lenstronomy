@@ -25,4 +25,17 @@ class TestDeLens(object):
         assert result[1] == 0.
         assert image[0] == 0.
 
+    def test_marginalisation_const(self):
+        A = np.array([[1,2,3],[3,2,1]]).T
+        C_D_inv = np.array([1,1,1])
+        d = np.array([1,2,3])
+        result, cov_error, image = self.deLens.get_param_WLS(A, C_D_inv, d)
+        logL_marg = self.deLens.marginalisation_const(cov_error)
+        assert logL_marg == -2.2821740957339181
+
+        M_inv = np.array([[1,0],[0,1]])
+        marg_const = self.deLens.marginalisation_const(M_inv)
+        assert marg_const == 0
+
+
 

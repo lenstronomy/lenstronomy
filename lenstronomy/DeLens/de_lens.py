@@ -36,7 +36,13 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     return B, M_inv, image
 
 
-
-
+def marginalisation_const(M_inv):
+    """
+    get marginalisation constant 1/2 log(M_beta) for flat priors
+    :param M_inv: 2D covariance matrix
+    :return: float
+    """
+    sign, log_det = np.linalg.slogdet(M_inv)
+    return log_det/2
 
 

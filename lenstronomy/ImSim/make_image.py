@@ -118,6 +118,30 @@ class MakeImage(object):
         x_mins, y_mins = self.imagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
         return x_mins, y_mins
 
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+        """
+        computes the likelihood of the data given a model
+        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :return: log likelihood (natural logarithm)
+        """
+        # generate image
+        source_marg = self.kwargs_options.get('source_marg', False)
+        im_sim, model_error, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
+                                                                                   kwargs_lens_light, kwargs_else,
+                                                                                   inv_bool=source_marg)
+        # compute X^2
+        logL = self.Data.log_likelihood(im_sim, model_error)
+        # logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
+        if cov_matrix is not None and source_marg:
+            marg_const = de_lens.marginalisation_const(cov_matrix)
+            if marg_const + logL > 0:
+                logL -= marg_const
+        return logL
+
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
         kwargs_psf = self.kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)

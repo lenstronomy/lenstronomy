@@ -68,7 +68,8 @@ class MCMC_sampler(object):
         if mpi is True and not pso.isMaster():
             pass
         else:
-            print(pso.gbest.fitness*2/(self.chain.numData_points()), 'reduced X^2 of best position')
+            print(pso.gbest.fitness * 2 / (self.chain.effectiv_numData_points()), 'reduced X^2 of best position')
+            print(self.chain.effectiv_numData_points(), 'effective number of data points')
             print(lens_dict, 'lens result')
             print(source_dict, 'source result')
             print(lens_light_dict, 'lens light result')

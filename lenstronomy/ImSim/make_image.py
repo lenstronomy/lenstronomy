@@ -114,7 +114,7 @@ class MakeImage(object):
         :return:
         """
         deltaPix = self.Data.deltaPix / 10.
-        numPix = self.Data.numPix
+        numPix = self.Data.numPix * 10
         x_mins, y_mins = self.imagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
         return x_mins, y_mins
 

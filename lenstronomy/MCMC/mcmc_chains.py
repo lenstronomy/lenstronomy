@@ -5,6 +5,7 @@ from astrofunc.util import Util_class
 
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.MCMC.compare import Compare
 from lenstronomy.Workflow.parameters import Param
 
@@ -22,6 +23,7 @@ class MCMC_chain(object):
 
         self.sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf)
+        self.lensModel = LensModel(kwargs_options)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.compare = Compare(kwargs_options)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()
@@ -155,7 +157,7 @@ class MCMC_chain(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.makeImage.fermat_potential(kwargs_lens, kwargs_else)
+        delay_arcsec = self.lensModel.fermat_potential(kwargs_lens, kwargs_else)
         D_dt_model = kwargs_else['delay_dist']
         delay_days = self.timeDelay.days_D_model(delay_arcsec, D_dt_model)
         logL = self.compare.delays(delay_days, self.delays_measured, self.delays_errors)

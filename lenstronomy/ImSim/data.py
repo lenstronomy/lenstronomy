@@ -111,6 +111,10 @@ class Data(object):
             return self._mask
 
     @property
+    def numData_evaluate(self):
+        return np.sum(self.mask)
+
+    @property
     def numPix(self):
         """
 
@@ -247,11 +251,10 @@ class Data(object):
         """
         # covariance matrix based on the model (not on the data)
         C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
-        X2 = (model - self._data)**2 / (C_D + np.abs(model_error)) * self._mask
+        X2 = (model - self._data)**2 / (C_D + np.abs(model_error)) * self.mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
-
 
     def reduced_chi2(self, model, error_map=0):
         """
@@ -261,7 +264,7 @@ class Data(object):
         :return:
         """
         chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map))\
-               *self._mask/np.sum(self._mask)
+               *self.mask/np.sum(self.mask)
         return np.sum(chi2)
 
     def psf_convolution(self, grid, grid_scale, **kwargs):

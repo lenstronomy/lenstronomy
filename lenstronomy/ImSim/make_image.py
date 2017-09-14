@@ -142,6 +142,10 @@ class MakeImage(object):
                 logL -= marg_const
         return logL
 
+    @property
+    def numData_evaluate(self):
+        return self.Data.numData_evaluate
+
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
         kwargs_psf = self.kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)

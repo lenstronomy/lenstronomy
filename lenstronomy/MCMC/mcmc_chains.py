@@ -4,7 +4,7 @@ import numpy as np
 from astrofunc.util import Util_class
 
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.multiband import MakeImageMultiband
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.Workflow.parameters import Param
 import astrofunc.util as util
@@ -22,7 +22,7 @@ class MCMC_chain(object):
         self.util_class = Util_class()
         self._source_marg = kwargs_options.get('source_marg', False) # whether to fully invert the covariance matrix for marginalization
         self._sampling_option = kwargs_options.get('X2_type', 'image')
-        self.makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf)
+        self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf)
         self.lensModel = LensModel(kwargs_options)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()
@@ -54,7 +54,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image and computes likelihood
-        logL = self.makeImage.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
 
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         # logL -= self.bounds_convergence(kwargs_lens)
@@ -153,10 +153,7 @@ class MCMC_chain(object):
         """
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value
         """
-        if type(self.makeImage.Data.mask) == int:
-            n = self.makeImage.Data._nx * self.makeImage.Data._ny
-        else:
-            n = np.sum(self.makeImage.Data.mask)
+        n = self.makeImageMultiband.numData_evaluate
         num_param, _ = self.param.num_param()
         return n - num_param - 1
 

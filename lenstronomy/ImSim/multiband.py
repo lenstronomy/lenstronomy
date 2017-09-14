@@ -9,7 +9,7 @@ class MakeImageMultiband(object):
     def __init__(self, kwargs_options, kwargs_data_list=[], kwargs_psf_list=[]):
         self._num_bands = len(kwargs_data_list)
         if self._num_bands != len(kwargs_psf_list):
-            raise ValueError("not equal number of PSF and Data configurations provided!")
+            raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))
         self._makeImage_list = []
         for i in range(self._num_bands):
             self._makeImage_list.append(MakeImage(kwargs_options, kwargs_data_list[i], kwargs_psf_list[i]))
@@ -113,3 +113,10 @@ class MakeImageMultiband(object):
         for i in range(self._num_bands):
             logL += self._makeImage_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return logL
+
+    @property
+    def numData_evaluate(self):
+        num = 0
+        for i in range(self._num_bands):
+            num += self._makeImage_list[i].numData_evaluate
+        return num

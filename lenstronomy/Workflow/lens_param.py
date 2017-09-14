@@ -607,10 +607,10 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    low.append(-0.5)
-                    high.append(0.5)
-                    low.append(-0.5)
-                    high.append(0.5)
+                    low.append(-0.8)
+                    high.append(0.8)
+                    low.append(-0.8)
+                    high.append(0.8)
 
             if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
@@ -655,10 +655,10 @@ class LensParam(object):
                     high.append(10)
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    low.append(-0.5)
-                    high.append(0.5)
-                    low.append(-0.5)
-                    high.append(0.5)
+                    low.append(-0.8)
+                    high.append(0.8)
+                    low.append(-0.8)
+                    high.append(0.8)
                 if not 'mass_light' in kwargs_fixed:
                     low.append(0)
                     high.append(100)

@@ -97,6 +97,19 @@ class Simulation(object):
                 kwargs_else_updated['point_amp'] *= norm_factor_point_source
         return kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated
 
+    def normalize_flux_source(self, kwargs_options, kwargs_source, norm_factor_source):
+        """
+        normalized the flux of the source
+        :param kwargs_options:
+        :param kwargs_source:
+        :param norm_factor_source:
+        :return:
+        """
+        kwargs_source_updated = copy.deepcopy(kwargs_source)
+        sourceModel = SourceModel(kwargs_options)
+        kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
+        return kwargs_source_updated
+
     def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
         """
         simulate image with solving for the point sources, if option choosen
@@ -153,6 +166,21 @@ class Simulation(object):
             poisson = util.add_poisson(image, exp_time=util.array2image(kwargs_data['exposure_map']))
             bkg = util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
             return image + bkg + poisson
+
+    def source_plane(self, kwargs_options, kwargs_source_updated, numPix, deltaPix):
+        """
+        source plane simulation
+        :param kwargs_options:
+        :param kwargs_source_updated:
+        :param numPix:
+        :param deltaPix:
+        :return:
+        """
+        x, y = util.make_grid(numPix, deltaPix)
+        sourceModel = SourceModel(kwargs_options)
+        image1d = sourceModel.surface_brightness(x, y, kwargs_source_list=kwargs_source_updated)
+        image2d = util.array2image(image1d)
+        return image2d
 
     def fermat_potential(self, kwargs_options, kwargs_lens, kwargs_else):
         """

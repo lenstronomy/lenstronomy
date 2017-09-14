@@ -469,14 +469,14 @@ class LightParam(object):
                     high.append(8)
                 if not 'R_sersic' in kwargs_fixed:
                     low.append(self._smoothing*2)
-                    high.append(3)
+                    high.append(20)
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        low.append(-0.5)
-                        high.append(0.5)
-                        low.append(-0.5)
-                        high.append(0.5)
+                        low.append(-0.8)
+                        high.append(0.8)
+                        low.append(-0.8)
+                        high.append(0.8)
 
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:

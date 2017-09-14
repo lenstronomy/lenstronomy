@@ -85,6 +85,22 @@ class MultiBand(object):
             image_list.append(image)
         return image_list
 
+    def source_plane(self, kwargs_options, kwargs_source, source_colour, numPix, deltaPix):
+        """
+
+        :param kwargs_options:
+        :param kwargs_source:
+        :param source_colour:
+        :param numPix:
+        :param deltaPix:
+        :return:
+        """
+        image_list = []
+        for i, exposure in enumerate(self._exposure_list):
+            image = exposure.source_plane(kwargs_options, kwargs_source, source_colour[i], numPix, deltaPix)
+            image_list.append(image)
+        return image_list
+
     def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
         lensModel = LensModel(kwargs_options)
         imPos = ImagePosition(lensModel=lensModel)
@@ -148,7 +164,23 @@ class SingleBand(object):
         norm_factor_source = self._flux_calibration_factor * source_colour
         norm_factor_lens_light = self._flux_calibration_factor * lens_colour
         norm_factor_point_source = self._flux_calibration_factor * quasar_colour
-        self.simulation.normalize_flux(kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source,
+        kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated = self.simulation.normalize_flux(kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source,
                        norm_factor_lens_light, norm_factor_point_source)
-        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated, no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        return image
+
+    def source_plane(self, kwargs_options, kwargs_source, source_colour, numPix=100, deltaPix=0.01):
+        """
+
+        :param kwargs_options:
+        :param kwargs_source:
+        :param kwargs_else:
+        :param source_colour:
+        :param numPix:
+        :param deltaPix:
+        :return:
+        """
+        norm_factor_source = self._flux_calibration_factor * source_colour
+        kwargs_source_updated = self.simulation.normalize_flux_source(kwargs_options, kwargs_source, norm_factor_source)
+        image = self.simulation.source_plane(kwargs_options, kwargs_source_updated, numPix, deltaPix)
         return image

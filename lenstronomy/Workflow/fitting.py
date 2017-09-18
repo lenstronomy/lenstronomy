@@ -171,7 +171,7 @@ class Fitting(object):
             else:
                 kwargs_fixed = {}
             if type == 'source_light_model_list':
-                if kwargs_options.get('solver', False):
+                if kwargs_options.get('solver', False) or kwargs_options.get('image_plane_source', False):
                     if kwargs_options.get('joint_center', False) or i == 0:
                         kwargs_fixed['center_x'] = 0
                         kwargs_fixed['center_y'] = 0

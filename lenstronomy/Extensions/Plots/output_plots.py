@@ -251,7 +251,6 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
 
     lens_light_no_mask = makeImage.lens_surface_brightness(lens_light_result)
-
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     d = deltaPix * nx
     ax = axes[0, 0]

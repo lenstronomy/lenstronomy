@@ -135,8 +135,8 @@ class FittingSequence(object):
         if psf_iteration is True:
             psf_iter_factor = fitting_kwargs['psf_iter_factor']
             psf_iter_num = fitting_kwargs['psf_iter_num']
-            psf_symmetry = self.kwargs_options.get('psf_symmetry', 1)
             for i in range(len(self.kwargs_psf)):
+                psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
                 self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_result, source_result,
                                                    lens_light_result, else_result, factor=psf_iter_factor, num_iter=psf_iter_num,
                                                    symmetry=psf_symmetry, verbose=False)

@@ -79,6 +79,49 @@ class TestSolver(object):
         npt.assert_almost_equal(x_[3], 0, decimal=2)
         npt.assert_almost_equal(x_[4], 0, decimal=2)
 
+    def test_large_separations(self):
+        sourcePos_x = 0.1
+        sourcePos_y = 0.03
+        deltapix = 0.5
+        numPix = 100
+        gamma = 1.9
+        kwargs_lens = [{'theta_E': 15., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
+        x_pos, y_pos = self.Image_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
+        sourcePos_x, sourcePos_y = self.lens_spep.ray_shooting(x_pos, y_pos, kwargs_lens)
+        print(sourcePos_x, sourcePos_y, 'source positions')
+        e1, e2 = util.phi_q2_elliptisity(kwargs_lens[0]['phi_G'], kwargs_lens[0]['q'])
+
+        init = np.array([2., 0, 0, 0., 0.1, 0])
+        x_true = np.array([1., e1, e2, 0.1, -0.1, 0])
+        kwargs_lens[0]['theta_E'] = 0
+
+        x_sub, y_sub = self.lens_spep.alpha(x_pos, y_pos, kwargs_lens)
+        a = self.constraints._subtract_constraint(x_pos, y_pos, x_sub, y_sub)
+        print(a, 'a')
+        print(self.solver.F(x_true, x_pos, y_pos, a, gamma), 'delta true result')
+        x = self.constraints.get_param(x_pos, y_pos, x_sub, y_sub, init, {'gamma': gamma})
+        x_ = self.solver.F(x, x_pos, y_pos, a, gamma)
+
+        [phi_E, e1_new, e2_new, center_x, center_y, no_sens_param] = x
+        phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
+        kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma, 'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y}]
+        sourcePos_x_new, sourcePos_y_new = self.lens_spep.ray_shooting(x_pos[0], y_pos[0], kwargs_lens_new)
+        x_pos_new, y_pos_new = self.Image_spep.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        print(x_pos_new, 'x_pos_new')
+        print(x_pos, 'x_pos old')
+        print(kwargs_lens_new)
+        npt.assert_almost_equal(x[0], 15, decimal=2)
+        npt.assert_almost_equal(kwargs_lens_new[0]['q'], kwargs_lens[0]['q'], decimal=2)
+        npt.assert_almost_equal(kwargs_lens_new[0]['phi_G'], kwargs_lens[0]['phi_G'], decimal=2)
+        npt.assert_almost_equal(x[3], kwargs_lens[0]['center_x'], decimal=2)
+        npt.assert_almost_equal(x[4], kwargs_lens[0]['center_y'], decimal=2)
+
+        npt.assert_almost_equal(x_[0], 0, decimal=2)
+        npt.assert_almost_equal(x_[1], 0, decimal=2)
+        npt.assert_almost_equal(x_[2], 0, decimal=2)
+        npt.assert_almost_equal(x_[3], 0, decimal=2)
+        npt.assert_almost_equal(x_[4], 0, decimal=2)
+
     def test_all_nfw(self):
         sourcePos_x = 0.1
         sourcePos_y = 0.03

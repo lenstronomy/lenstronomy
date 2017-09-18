@@ -418,12 +418,14 @@ class Param(object):
 
         kwargs_lens_list[0] = kwargs_lens
         if self.kwargs_options.get('image_plane_source', False):
+            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             for i, kwargs_source in enumerate(kwargs_source_list):
-                if 'center_x' in kwargs_source:
-                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_source['center_x'], kwargs_source['center_y'],
-                                                                 kwargs_lens_list, kwargs_else)
+                if self.kwargs_options.get('joint_center', False):
                     kwargs_source_list[i]['center_x'] = np.mean(x_mapped)
                     kwargs_source_list[i]['center_y'] = np.mean(y_mapped)
+                else:
+                    kwargs_source_list[i]['center_x'] = x_mapped[i]
+                    kwargs_source_list[i]['center_y'] = y_mapped[i]
         if self.kwargs_options.get('solver', False):
             x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             if self.kwargs_options.get('joint_center', False):

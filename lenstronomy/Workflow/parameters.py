@@ -170,6 +170,9 @@ class Param(object):
             if lens_model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if 'sigma0' in self.kwargs_fixed_lens[i]:
                     kwargs_lens[i]['sigma0'] = self.kwargs_fixed_lens[i]['sigma0'] * mass2light
+            elif lens_model in ['SIS', 'SIE', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH']:
+                if 'theta_E' in self.kwargs_fixed_lens[i]:
+                    kwargs_lens[i]['theta_E'] = self.kwargs_fixed_lens[i]['theta_E'] * mass2light
         return kwargs_lens
 
     def _update_spep(self, kwargs_lens, x):

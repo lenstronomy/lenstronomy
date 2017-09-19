@@ -79,6 +79,7 @@ class Data(object):
                 y_grid = kwargs_data['y_coords']
             else:
                 x_grid, y_grid = util.make_grid(np.sqrt(self._nx*self._ny), 1, subgrid_res=1, left_lower=False)
+            self._x_grid_all, self._y_grid_all = x_grid, y_grid
             self.x_grid = x_grid[self._idex_mask == 1]
             self.y_grid = y_grid[self._idex_mask == 1]
             x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self._subgrid_res)
@@ -336,3 +337,15 @@ class Data(object):
         kernel_subgrid = out_values
         kernel_subgrid = util.kernel_norm(kernel_subgrid)
         return kernel_subgrid
+
+    def flux_aperture(self, ra_pos, dec_pos, width):
+        """
+        computes the flux within an aperture
+        :param ra_pos: ra position of aperture
+        :param dec_pos: dec position of aperture
+        :param width: width of aperture
+        :return: summed value within the aperture
+        """
+        mask = util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
+        mask1d = 1. - util.image2array(mask)
+        return np.sum(self._data_pure * mask1d)

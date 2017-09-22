@@ -34,7 +34,7 @@ class LensAnalysis(object):
                                                delta_pix=source_size*100, subgrid_res=1000, shape=shape)
         return amp_list, mag, mag_finite
 
-    def half_light_radius(self, kwargs_lens_light):
+    def half_light_radius(self, kwargs_lens_light, deltaPix=None, numPix=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
         :param kwargs_lens_light:
@@ -42,9 +42,10 @@ class LensAnalysis(object):
         """
         kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
         lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
-        data = self.kwargs_data['image_data']
-        numPix = int(np.sqrt(len(data))*10)
-        deltaPix = self.kwargs_data['deltaPix']/10.
+        if numPix is None:
+            numPix = 1000
+        if deltaPix is None:
+            deltaPix = 0.001
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = np.zeros_like(x_grid)
         for i, bool in enumerate(lens_light_model_internal_bool):

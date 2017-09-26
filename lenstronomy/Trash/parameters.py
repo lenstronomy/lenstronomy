@@ -7,9 +7,9 @@ from lenstronomy.Solver.solver4point import Constraints
 from lenstronomy.Trash.lens_param import LensParam
 from lenstronomy.Trash.make_image import MakeImage
 from lenstronomy.Trash.solver2point_new import Constraints2_new
-from lenstronomy.Workflow.source_param import SourceParam
 from lenstronomy.Workflow_old.else_param import ElseParam
 from lenstronomy.Workflow_old.lens_light_param import LensLightParam
+from lenstronomy.Workflow_old.source_param import SourceParam
 
 
 class Param(object):

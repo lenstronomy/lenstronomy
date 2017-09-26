@@ -46,7 +46,6 @@ class TestParam(object):
         assert len(low) == num_param
         assert list[0] == 'theta_E'
 
-
     def test_get_all_params(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9,'q':0.8,'phi_G':1.5, 'center_x':0., 'center_y':0.}] #for SPEP lens
         kwargs_true_source = [{'amp':1*2*np.pi*0.1**2 ,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]

@@ -70,6 +70,15 @@ class LensModel(object):
             elif lens_type == 'HERNQUIST_ELLIPSE':
                 from astrofunc.LensingProfiles.hernquist_ellipse import Hernquist_Ellipse
                 self.func_list.append(Hernquist_Ellipse())
+            elif lens_type == 'GAUSSIAN':
+                from astrofunc.LensingProfiles.gaussian import Gaussian
+                self.func_list.append(Gaussian())
+            elif lens_type == 'GAUSSIAN_KAPPA':
+                from astrofunc.LensingProfiles.gaussian_kappa import GaussianKappa
+                self.func_list.append(GaussianKappa())
+            elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
+                from astrofunc.LensingProfiles.multi_gaussian_kappa import MultiGaussian_kappa
+                self.func_list.append(MultiGaussian_kappa())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func())

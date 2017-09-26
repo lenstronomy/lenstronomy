@@ -45,8 +45,11 @@ class LightModel(object):
         for profile_type in profile_type_list:
             valid = True
             if profile_type == 'GAUSSIAN':
-                from astrofunc.LensingProfiles.gaussian import Gaussian
+                from astrofunc.LightProfiles.gaussian import Gaussian
                 self.func_list.append(Gaussian())
+            elif profile_type == 'MULTI_GAUSSIAN':
+                from astrofunc.LightProfiles.gaussian import MultiGaussian
+                self.func_list.append(MultiGaussian())
             elif profile_type == 'SERSIC':
                 from astrofunc.LightProfiles.sersic import Sersic
                 self.func_list.append(Sersic())
@@ -118,7 +121,7 @@ class LightModel(object):
             if self.valid_list[i]:
                 if k == None or k == i:
                     kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
-                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
+                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'GAUSSIAN', 'MULTI_GAUSSIAN']:
                         flux += func.light_3d(r, **kwargs)
                     else:
                         raise ValueError('Light model %s does not support a 3d light distribution!'
@@ -156,6 +159,17 @@ class LightModel(object):
                 kwargs_new = dict(kwargs_list[k].items() + new.items())
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
+            elif model in ['GAUSSIAN']:
+                new = {'amp':  1}
+                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                response += [self.func_list[k].function(x, y, **kwargs_new)]
+                n += 1
+            elif model in ['MULTI_GAUSSIAN']:
+                num = len(kwargs_list[k]['amps'])
+                new = {'amp': np.ones(num)}
+                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                response += self.func_list[k].function_split(x, y, **kwargs_new)
+                n += num
             elif model in ['SHAPELETS']:
                 kwargs = kwargs_list[k]
                 n_max = kwargs['n_max']
@@ -186,6 +200,8 @@ class LightModel(object):
                 kwargs_list[k]['I0_d'] *= norm_factor
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_list[k]['sigma0'] *= norm_factor
+            if model in ['GAUSSIAN', 'MULTI_GAUSSIAN']:
+                kwargs_list[k]['amp'] *= norm_factor
             if model in ['SHAPELETS']:
                 kwargs_list[k]['amp'] *= norm_factor
         return kwargs_list

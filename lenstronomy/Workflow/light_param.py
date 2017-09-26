@@ -166,6 +166,33 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['Ra'] = kwargs_fixed['Ra']
+            if model in ['GAUSSIAN']:
+                if not 'amp' in kwargs_fixed:
+                    kwargs['amp'] = args[i]
+                    i += 1
+                else:
+                    kwargs['amp'] = kwargs_fixed['amp']
+                if not 'sigma_x' in kwargs_fixed:
+                    kwargs['sigma_x'] = args[i]
+                    i += 1
+                else:
+                    kwargs['sigma_x'] = kwargs_fixed['sigma_x']
+                if not 'sigma_y' in kwargs_fixed:
+                    kwargs['sigma_y'] = args[i]
+                    i += 1
+                else:
+                    kwargs['sigma_y'] = kwargs_fixed['sigma_y']
+            if model in ['MULTI_GAUSSIAN']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                else:
+                    kwargs['sigma'] = kwargs_fixed['sigma']
+                if not 'amp' in kwargs_fixed:
+                    num = len(kwargs['sigma'])
+                    kwargs['amp'] = args[i:i+num]
+                    i += num
+                else:
+                    kwargs['amp'] = kwargs_fixed['amp']
 
             kwargs_list.append(kwargs)
         return kwargs_list, i
@@ -245,6 +272,20 @@ class LightParam(object):
             if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
                 if not 'Ra' in kwargs_fixed:
                     args.append(kwargs['Ra'])
+            if model in ['GAUSSIAN']:
+                if not 'amp' in kwargs_fixed:
+                    args.append(kwargs['amp'])
+                if not 'sigma_x' in kwargs_fixed:
+                    args.append(kwargs['sigma_x'])
+                if not 'sigma_y' in kwargs_fixed:
+                    args.append(kwargs['sigma_y'])
+            if model in ['MULTI_GAUSSIAN']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                if not 'amp' in kwargs_fixed:
+                    num = len(kwargs['sigma'])
+                    for i in range(num):
+                        args.append(kwargs['amp'][i])
         return args
 
     def add2fix(self, kwargs_fixed_list):
@@ -318,6 +359,20 @@ class LightParam(object):
             if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
                 if 'Ra' in kwargs_fixed:
                     fix_return['Ra'] = kwargs_fixed['Ra']
+            if model in ['GAUSSIAN']:
+                if 'amp' in kwargs_fixed:
+                    fix_return['amp'] = kwargs_fixed['amp']
+                if 'sigma_x' in kwargs_fixed:
+                    fix_return['sigma_x'] = kwargs_fixed['sigma_x']
+                if 'sigma_y' in kwargs_fixed:
+                    fix_return['sigma_y'] = kwargs_fixed['sigma_y']
+            if model in ['MULTI_GAUSSIAN']:
+                if 'sigma' in kwargs_fixed:
+                    fix_return['sigma'] = kwargs_fixed['sigma']
+                else:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                if 'amp' in kwargs_fixed:
+                    fix_return['amp'] = kwargs_fixed['amp']
             fix_return_list.append(fix_return)
         return fix_return_list
 
@@ -431,6 +486,24 @@ class LightParam(object):
                 if not 'Ra' in kwargs_fixed:
                     mean.append(kwargs_mean['Ra'])
                     sigma.append(kwargs_mean['Ra_sigma'])
+            if model in ['GAUSSIAN']:
+                if not 'amp' in kwargs_fixed:
+                    mean.append(kwargs_mean['amp'])
+                    sigma.append(kwargs_mean['amp_sigma'])
+                if not 'sigma_x' in kwargs_fixed:
+                    mean.append(kwargs_mean['sigma_x'])
+                    sigma.append(kwargs_mean['sigma_x_sigma'])
+                if not 'sigma_y' in kwargs_fixed:
+                    mean.append(kwargs_mean['sigma_y'])
+                    sigma.append(kwargs_mean['sigma_y_sigma'])
+            if model in ['MULTI_GAUSSIAN']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                if not 'amp' in kwargs_fixed:
+                    num = len(kwargs_fixed['sigma'])
+                    for i in range(num):
+                        mean.append(kwargs_mean['amp'])
+                        sigma.append(kwargs_mean['amp_sigma'])
         return mean, sigma
 
     def param_bound(self):
@@ -530,6 +603,24 @@ class LightParam(object):
                 if not 'Ra' in kwargs_fixed:
                     low.append(self._smoothing*2)
                     high.append(10)
+            if model in ['GAUSSIAN']:
+                if not 'amp' in kwargs_fixed:
+                    low.append(-100)
+                    high.append(100)
+                if not 'sigma_x' in kwargs_fixed:
+                    low.append(0.0001)
+                    high.append(100)
+                if not 'sigma_y' in kwargs_fixed:
+                    low.append(0.0001)
+                    high.append(100)
+            if model in ['MULTI_GAUSSIAN']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                if not 'amp' in kwargs_fixed:
+                    num = len(kwargs_fixed['sigma'])
+                    for i in range(num):
+                        low.append(-100)
+                        high.append(100)
         return low, high
 
     def num_param(self):
@@ -624,4 +715,22 @@ class LightParam(object):
                 if not 'Ra' in kwargs_fixed:
                     list.append(str('Ra_'+self.type))
                     num += 1
+            if model in ['GAUSSIAN']:
+                if not 'amp' in kwargs_fixed:
+                    list.append(str('amp_'+self.type))
+                    num += 1
+                if not 'sigma_x' in kwargs_fixed:
+                    list.append(str('sigma_x_' + self.type))
+                    num += 1
+                if not 'sigma_y' in kwargs_fixed:
+                    list.append(str('sigma_y_' + self.type))
+                    num += 1
+            if model in ['MULTI_GAUSSIAN']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
+                if not 'amp' in kwargs_fixed:
+                    n = len(kwargs_fixed['sigma'])
+                    for i in range(n):
+                        list.append(str('amp_' + self.type))
+                    num += n
         return num, list

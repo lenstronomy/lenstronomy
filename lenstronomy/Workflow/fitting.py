@@ -161,6 +161,11 @@ class Fitting(object):
                 kwargs_fixed = {'I0_b': 1, 'I0_d': 1}
             elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_fixed = {'sigma0': 1.}
+            elif model in ['GAUSSIAN']:
+                kwargs_fixed = {'amp': 1}
+            elif model in ['MULTI_GAUSSIAN']:
+                num = len(kwargs_fixed_global[i]['sigma'])
+                kwargs_fixed = {'amp': np.ones(num)}
             elif model in ['SHAPELETS']:
                 if 'n_max' in kwargs_fixed_global[i]:
                     n_max = kwargs_fixed_global[i]['n_max']

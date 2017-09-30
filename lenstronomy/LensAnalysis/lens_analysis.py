@@ -42,7 +42,7 @@ class LensAnalysis(object):
         if numPix is None:
             numPix = 1000
         if deltaPix is None:
-            deltaPix = 0.001
+            deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self.lens_light_internal(x_grid, y_grid, kwargs_lens_light)
         R_h = util.half_light_radius(lens_light, x_grid, y_grid)

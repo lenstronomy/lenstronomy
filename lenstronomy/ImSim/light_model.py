@@ -86,8 +86,8 @@ class LightModel(object):
             elif profile_type == 'NONE':
                 valid = False
             else:
-                print('Warning! No light model of type', profile_type, ' found!')
                 valid = False
+                raise ValueError('Warning! No light model of type', profile_type, ' found!')
             self.valid_list.append(valid)
 
     def surface_brightness(self, x, y, kwargs_list, k=None):

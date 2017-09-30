@@ -4,12 +4,12 @@ import astrofunc.util as util
 from astrofunc.util import Util_class
 import astrofunc.LightProfiles.torus as torus
 from astrofunc.LensingProfiles.gaussian import Gaussian
+import astrofunc.multi_gauss_expansion as mge
 
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.make_image import MakeImage
-from lenstronomy.ImSim.data import Data
 
 
 class LensAnalysis(object):
@@ -21,7 +21,6 @@ class LensAnalysis(object):
         self.SourceModel = SourceModel(kwargs_options)
         self.LensModel = LensModel(kwargs_options)
         self.kwargs_data = kwargs_data
-        self.Data = Data(kwargs_options, kwargs_data)
         self.kwargs_options = kwargs_options
         self.NumLensModel = NumericLens(kwargs_options)
         self.gaussian = Gaussian()
@@ -40,13 +39,25 @@ class LensAnalysis(object):
         :param kwargs_lens_light:
         :return:
         """
-        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
         if numPix is None:
             numPix = 1000
         if deltaPix is None:
             deltaPix = 0.001
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        lens_light = self.lens_light_internal(x_grid, y_grid, kwargs_lens_light)
+        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
+        return R_h
+
+    def lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
+        """
+
+        :param x_grid:
+        :param y_grid:
+        :param kwargs_lens_light:
+        :return:
+        """
+        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
+        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
         lens_light = np.zeros_like(x_grid)
         for i, bool in enumerate(lens_light_model_internal_bool):
             if bool is True:
@@ -54,8 +65,42 @@ class LensAnalysis(object):
                 kwargs_lens_light_copy[i]['center_y'] = 0
                 lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
                 lens_light += lens_light_i
-        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
-        return R_h
+        return lens_light
+
+    def multi_gaussian_lens_light(self, kwargs_lens_light, n_comp=20):
+        """
+        multi-gaussian decomposition of the lens light profile (in 1-dimension)
+        :param kwargs_lens_light:
+        :param n_comp:
+        :return:
+        """
+        r_h = self.half_light_radius(kwargs_lens_light)
+        r_array = np.logspace(-2, 1, 50) * r_h
+        flux_r = self.lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
+        amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
+        return amplitudes, sigmas
+
+    def multi_gaussian_lens(self, kwargs_lens, kwargs_else, n_comp=20):
+        """
+        multi-gaussian lens model in convergence space
+        :param kwargs_lens:
+        :param n_comp:
+        :return:
+        """
+        kwargs_lens_copy = copy.deepcopy(kwargs_lens)
+        center_x = kwargs_lens_copy[0]['center_x']
+        center_y = kwargs_lens_copy[0]['center_y']
+        theta_E = self.effective_einstein_radius(kwargs_lens, kwargs_else)
+        r_array = np.logspace(-2, 1, 50) * theta_E
+        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
+        kappa_s = np.zeros_like(r_array)
+        for i in range(len(kwargs_lens_copy)):
+            if lens_model_internal_bool[i]:
+                kwargs_lens_copy[i]['center_x'] -= center_x
+                kwargs_lens_copy[i]['center_y'] -= center_y
+                kappa_s += self.LensModel.kappa(r_array, np.zeros_like(r_array), kwargs_lens_copy, kwargs_else, k=i)
+        amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
+        return amplitudes, sigmas, center_x, center_y
 
     def effective_einstein_radius(self, kwargs_lens_list, kwargs_else, k=None):
         """

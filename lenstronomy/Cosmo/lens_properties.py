@@ -9,6 +9,8 @@ import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
 from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
 from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.ImSim.light_model import LightModel
+import astrofunc.multi_gauss_expansion as mge
 
 
 class LensProp(object):
@@ -65,7 +67,7 @@ class LensProp(object):
         #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                               aperture_type, anisotropy_model, r_eff=1., num_evaluate=100, grid_num=100):
+                               aperture_type, anisotropy_model, r_eff=1., num_evaluate=100, grid_num=100, MGE_light=False):
         """
 
         :param kwargs_lens:
@@ -89,7 +91,18 @@ class LensProp(object):
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
             if lens_light_model_internal_bool[i]:
                 light_profile_list.append(light_model)
-                kwargs_light.append(kwargs_lens_light[i])
+                kwargs_Lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
+                if 'q' in kwargs_Lens_light_i:
+                    kwargs_Lens_light_i['q'] = 1
+                kwargs_light.append(kwargs_Lens_light_i)
+
+        if MGE_light is True:
+            lightModel = LightModel(light_profile_list)
+            r_array = np.logspace(-2, 2, 100) * r_eff * 2
+            flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
+            amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
+            light_profile_list = ['MULTI_GAUSSIAN']
+            kwargs_light = [{'amp': amps, 'sigma': sigmas}]
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)

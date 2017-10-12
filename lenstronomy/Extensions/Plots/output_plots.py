@@ -796,3 +796,44 @@ def param_list_from_kwargs(kwargs_data, kwargs_psf, kwargs_fixed, kwargs_options
     num_param, param_list = param.num_param()
 
     return truths, num_param, param_list
+
+
+def plot_point_source_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
+                        else_result, cmap_string, v_min=None, v_max=None):
+
+    cmap = plt.get_cmap(cmap_string)
+    cmap.set_bad(color='k', alpha=1.)
+    cmap.set_under('k')
+    deltaPix = kwargs_data['deltaPix']
+    nx, ny = kwargs_data['numPix_xy']
+    d = deltaPix * nx
+    image = kwargs_data['image_data']
+    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+
+    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
+                                                                      lens_light_result, else_result, inv_bool=True)
+    print(lens_result, source_result, lens_light_result, else_result, 'parameters to be plotted.')
+
+    point_source, _ = makeImage.image_with_params(lens_result, source_result, lens_light_result,
+                                                else_result, unconvolved=True, source_add=False,
+                                                lens_light_add=False, point_source_add=True)
+
+
+    f, axes = plt.subplots(1, 1, figsize=(5, 5), sharex=False, sharey=False)
+    ax = axes
+    im = ax.matshow(np.log10(makeImage.Data.array2image(image - point_source)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    ax.plot([0.5, 1.5], [0.5, 0.5], linewidth=2, color='w')
+    ax.plot([0.5, 0.5], [0.5, 1.5], linewidth=2, color='w')
+    ax.text(0.75, 0.5, '1"', fontsize=15, color='w')
+    ax.text(0.5, d - 1., "Point source subtracted", color="w", fontsize=15, backgroundcolor='k')
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    plt.show()
+
+    f.tight_layout()
+    return f, axes

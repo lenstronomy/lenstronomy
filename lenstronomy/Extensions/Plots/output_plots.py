@@ -213,7 +213,25 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     return f, axes
 
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005, v_min=None, v_max=None):
+                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005, v_min=None, v_max=None, high_res=10):
+    """
+
+    :param kwargs_data:
+    :param kwargs_psf:
+    :param kwargs_options:
+    :param lens_result:
+    :param source_result:
+    :param lens_light_result:
+    :param else_result:
+    :param cmap_string:
+    :param source_sigma:
+    :param numPix_source:
+    :param deltaPix_source:
+    :param v_min:
+    :param v_max:
+    :param high_res: factor of resolution for high resolution ray-tracing to compute critical curve and caustics
+    :return:
+    """
     cmap = plt.get_cmap(cmap_string)
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
@@ -222,7 +240,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     nx, ny = kwargs_data['numPix_xy']
 
     util_class = Util_class()
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 10)
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], high_res)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)

@@ -81,7 +81,7 @@ class LensModel(object):
                 self.func_list.append(MultiGaussian_kappa())
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
-                self.func_list.append(Interpol_func())
+                self.func_list.append(Interpol_func(grid=False))
             elif lens_type == 'SHAPELETS_POLAR':
                 from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
                 self.func_list.append(PolarShapelets())

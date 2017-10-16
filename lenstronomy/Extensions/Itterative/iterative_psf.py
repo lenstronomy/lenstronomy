@@ -115,7 +115,12 @@ class PSF_iterative(object):
             for k in range(symmetry):
                 kernel_rotated = util.rotateImage(kernel_shifted, angle*k)
                 kernel_norm = util.kernel_norm(kernel_rotated)
-                kernel_list[i, :, :] = kernel_norm
+                try:
+                    kernel_list[i, :, :] = kernel_norm
+                except:
+                    raise ValueError("cutout kernel has not the same shape as the PSF."
+                                     " This is probably because the cutout of the psf hits the boarder of the data."
+                                     "Use a smaller PSF or a larger data frame for the modelling.")
                 i += 1
         return kernel_list
 

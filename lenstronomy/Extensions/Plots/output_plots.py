@@ -473,7 +473,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
 
-    abc_list = ['A', 'B', 'C', 'D']
+    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     for i in range(len(x_image)):
         x_ = (x_image[i] + 0.5) * (deltaPix)
         y_ = (y_image[i] + 0.5) * (deltaPix)

@@ -67,7 +67,7 @@ class LensProp(object):
         #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                               aperture_type, anisotropy_model, r_eff=1., num_evaluate=100, grid_num=100, MGE_light=False):
+                               aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False):
         """
 
         :param kwargs_lens:
@@ -105,8 +105,8 @@ class LensProp(object):
             kwargs_light = [{'amp': amps, 'sigma': sigmas}]
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, num=num_evaluate, r_eff=r_eff, grid_num=grid_num)
+                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, r_eff=r_eff)
         return sigma_v
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):

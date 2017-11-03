@@ -644,7 +644,7 @@ class LensParam(object):
                     high.append(+np.pi)
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
-                    low.append(0.1)
+                    low.append(0.5)
                     high.append(8)
                 if not 'r_eff' in kwargs_fixed:
                     low.append(0.0001)
@@ -667,7 +667,7 @@ class LensParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'Rs' in kwargs_fixed:
-                    low.append(0.01)
+                    low.append(0.05)
                     high.append(60)
             if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
                 if not 'Ra' in kwargs_fixed:

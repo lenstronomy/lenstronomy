@@ -14,6 +14,58 @@ from lenstronomy.Workflow.parameters import Param
 from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
 
 
+def text_description(ax, d, text, color='w', backgroundcolor='k', flipped=False):
+    if flipped:
+        ax.text(d - d / 40., d - d / 15., text, color=color, fontsize=15, backgroundcolor=backgroundcolor)
+    else:
+        ax.text(d / 40., d - d / 15., text, color=color, fontsize=15, backgroundcolor=backgroundcolor)
+
+
+def scale_bar(ax, d, dist=1, text='1"', color='w', flipped=False):
+    if flipped:
+        p0 = d - d / 15. - dist
+        p1 = d / 15.
+        ax.plot([p0, p0 + dist], [p1, p1], linewidth=2, color=color)
+        ax.text(p0 + dist / 2., p1 + 0.01 * d, text, fontsize=15, color=color, ha='center')
+    else:
+        p0 = d / 15.
+        ax.plot([p0, p0 + dist], [p0, p0], linewidth=2, color=color)
+        ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=15, color=color, ha='center')
+
+
+def coordinate_arrows(ax, d, data, color='w', arrow_size=0.1):
+    d0 = d / 5.
+    p0 = d / 15.
+    pt = d / 6.
+    deltaPix = data.deltaPix
+    nx = data.numPix
+    ra0, dec0 = data.map_pix2coord(nx - d0 / deltaPix, d0 / deltaPix)
+    xx_, yy_ = data.map_coord2pix(ra0, dec0)
+    xx_ra, yy_ra = data.map_coord2pix(ra0 + p0, dec0)
+    xx_dec, yy_dec = data.map_coord2pix(ra0, dec0 + p0)
+    xx_ra_t, yy_ra_t = data.map_coord2pix(ra0 + pt, dec0)
+    xx_dec_t, yy_dec_t = data.map_coord2pix(ra0, dec0 + pt)
+
+    ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_ra - xx_) * deltaPix, (yy_ra - yy_) * deltaPix,
+             head_width=arrow_size, head_length=arrow_size, fc=color, ec=color, linewidth=2)
+    ax.text(xx_ra_t * deltaPix, yy_ra_t * deltaPix, "E", color=color, fontsize=15, ha='center')
+    ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_dec - xx_) * deltaPix, (yy_dec - yy_) * deltaPix,
+             head_width=arrow_size, head_length=arrow_size, fc=color, ec=color, linewidth=2)
+    ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=15, ha='center')
+
+
+def coordinate_arrows_source(ax, d, color='w'):
+    d_s = d
+    ax.arrow(d_s / 10, d_s / 10, 0, d_s / 10, head_width=0.05,
+             head_length=0.05, fc='w', ec='w', linewidth=2)
+    # ax.plot([d_s/10, (d_s/10 + 0.5)], [d_s/10, d_s/10], linewidth=2, color='w')
+    ax.arrow(d_s / 10, d_s / 10, d_s / 10, 0, head_width=0.05,
+             head_length=0.05, fc='w', ec='w', linewidth=2)
+    # ax.plot([d_s * 9/10, d_s * 9/10 - 0.1], [d_s/10, d_s/10], linewidth=2, color='w')
+    # ax.text((d_s * 9/10 - 0.05), d_s / 10. + d_s/30, '0.1"', fontsize=15, color='w', ha='center')
+    # ax.plot([d_s/10, d_s/10], [d_s/10, d_s/10 + 0.5], linewidth=2, color='w')
+    ax.plot(d_s / 2., d_s / 2., '*', color='g', markersize=20)
+
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
 
@@ -86,7 +138,7 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     im = ax.matshow(util.array2image(np.log10(kwargs_data['image_data'])), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
-    f.show()
+    #f.show()
     return f, ax
 
 
@@ -213,7 +265,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     return f, axes
 
 def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005, v_min=None, v_max=None, high_res=10):
+                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005, v_min=None, v_max=None, high_res=10, arrow_size=0.1):
     """
 
     :param kwargs_data:
@@ -240,7 +292,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     nx, ny = kwargs_data['numPix_xy']
 
     util_class = Util_class()
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], high_res)
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'],
+                                                               high_res)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
@@ -277,6 +330,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     paths = cs.collections[0].get_paths()
 
+
     im = ax.matshow(util.array2image(np.log10(image_raw)), origin='lower',
                     extent=[0, d, 0, d], cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
 
@@ -284,25 +338,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    p0 = d/10.
-    ra0, dec0 = makeImage.Data.map_pix2coord(nx - .75/deltaPix, .75/deltaPix)
-    xx_, yy_ = makeImage.Data.map_coord2pix(ra0, dec0)
-    xx_ra, yy_ra = makeImage.Data.map_coord2pix(ra0 + d/10., dec0)
-    xx_dec, yy_dec = makeImage.Data.map_coord2pix(ra0, dec0 + d/10.)
-    xx_ra_t, yy_ra_t = makeImage.Data.map_coord2pix(ra0 + d/6., dec0)
-    xx_dec_t, yy_dec_t = makeImage.Data.map_coord2pix(ra0, dec0 + d/6.)
 
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='w')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='w', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="w", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="w", fontsize=15, ha='center')
-
-    ax.text(d/10., 0.9*d, "Observed", color="w", fontsize=15, backgroundcolor='k')
+    scale_bar(ax, d, dist=1, text='1"')
+    text_description(ax, d, text="Observed", color="w", backgroundcolor='k')
+    coordinate_arrows(ax, d, makeImage.Data, arrow_size=arrow_size)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'log$_{10}$ flux', fontsize=15)
 
     ax = axes[0, 1]
     im = ax.matshow(np.log10(makeImage.Data.array2image(model_pure)), origin='lower', vmin=v_min, vmax=v_max,
@@ -310,16 +353,13 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='w')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='w', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="w", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="w", fontsize=15, ha='center')
-    ax.text(d/10., 0.9*d, "Reconstructed", color="w", fontsize=15, backgroundcolor='k')
+    scale_bar(ax, d, dist=1, text='1"')
+    text_description(ax, d, text="Reconstructed", color="w", backgroundcolor='k')
+    coordinate_arrows(ax, d, makeImage.Data, arrow_size=arrow_size)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'log$_{10}$ flux', fontsize=15)
 
     for p in paths:
         v = p.vertices
@@ -343,23 +383,21 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
 
     ax = axes[0, 2]
-    im = ax.matshow(makeImage.Data.array2image(norm_residuals), origin='lower', vmin=-6, vmax=6,
-                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap='bwr')
+    im = ax.matshow(makeImage.Data.array2image(norm_residuals), vmin=-6, vmax=6,
+                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap='bwr', origin='lower')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='k')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='k', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='k', ec='k', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="k", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='k', ec='k', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="k", fontsize=15, ha='center')
-    ax.text(d/10., 0.9*d, "Normalized Residuals", color="k", fontsize=15, backgroundcolor='w')
+    scale_bar(ax, d, dist=1, text='1"', color='k')
+    text_description(ax, d, text="Normalized Residuals", color="k", backgroundcolor='w')
+    coordinate_arrows(ax, d, makeImage.Data, color='k', arrow_size=arrow_size)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'(f$_{model}$-f$_{data}$)/$\sigma$', fontsize=15)
 
-    source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma/deltaPix_source, mode='nearest', truncate=20)
+    source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma / deltaPix_source, mode='nearest',
+                                                  truncate=20)
     ax = axes[1, 0]
     im = ax.matshow(np.log10(source_conv), origin='lower', extent=[0, d_s, 0, d_s],
                     cmap=cmap, vmin=v_min, vmax=v_max)  # source
@@ -370,7 +408,8 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'log$_{10}$ flux', fontsize=15)
 
     for p in paths:
         v = p.vertices
@@ -379,19 +418,15 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(x_points, y_points, lens_result, else_result)
         ax.plot(ra_caustics - x_center + d_s / 2.,
                 dec_caustics - y_center + d_s / 2., 'b')
-    ax.arrow(d_s/10, d_s/10, 0, d_s/10, head_width=0.05,
-             head_length=0.05, fc='w', ec='w', linewidth=2)
-    #ax.plot([d_s/10, (d_s/10 + 0.5)], [d_s/10, d_s/10], linewidth=2, color='w')
-    ax.arrow(d_s/10, d_s/10, d_s/10, 0, head_width=0.05,
-             head_length=0.05, fc='w', ec='w', linewidth=2)
-    ax.plot([d_s * 9/10, d_s * 9/10 - 0.1], [d_s/10, d_s/10], linewidth=2, color='w')
-    ax.text((d_s * 9/10 - 0.05), d_s / 10. + d_s/30, '0.1"', fontsize=15, color='w', ha='center')
-    #ax.plot([d_s/10, d_s/10], [d_s/10, d_s/10 + 0.5], linewidth=2, color='w')
-    ax.plot(d_s / 2., d_s / 2., '*', color='g', markersize=20)
 
-    ax.text(d_s - d_s/10., 0.9*d_s, "Reconstructed source", color="w", fontsize=15, backgroundcolor='k')
+    scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=True)
+    coordinate_arrows_source(ax, d_s, color='w')
+    # coordinate_arrows(ax, d_s, makeImage.Data, color='k')
+
+
+    text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=True)
+    # ax.text(d_s - d_s/10., 0.9*d_s, "Reconstructed source", color="w", fontsize=15, backgroundcolor='k')
     ax.set_xlim(ax.get_ylim()[::-1])
-
 
     ax = axes[1, 1]
     im = ax.matshow(np.log10(kappa_result), origin='lower',
@@ -399,49 +434,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='w')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='w', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="w", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="w", fontsize=15, ha='center')
-    ax.text(d/10., 0.9*d, "Convergence", color="w", fontsize=15, backgroundcolor='k')
+    scale_bar(ax, d, dist=1, text='1"', color='w')
+    coordinate_arrows(ax, d, makeImage.Data, color='w', arrow_size=arrow_size)
+    text_description(ax, d, text="Convergence", color="w", backgroundcolor='k', flipped=False)
     divider = make_axes_locatable(axes[1][1])
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'log$_{10}$ $\kappa$', fontsize=15)
 
-
-    """
-    ax = axes[1, 1]
-    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_no_mask)), origin='lower',
-                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap, vmin=v_min, vmax=v_max, )
-    v_min, v_max = im.get_clim()
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='w')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='w', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="w", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='w', ec='w', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="w", fontsize=15, ha='center')
-    ax.text(d/10., 0.9*d, "Lens light model", color="w", fontsize=15, backgroundcolor='k')
-    divider = make_axes_locatable(axes[1][1])
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    try:
-        x_light, y_light = makeImage.Data.map_coord2pix(lens_light_result[0]['center_x'], lens_light_result[0]['center_y'])
-    except:
-        x_light, y_light = 0, 0
-    if 'center_x' in lens_result[0]:
-        x_lens, y_lens = makeImage.Data.map_coord2pix(lens_result[0]['center_x'], lens_result[0]['center_y'])
-    elif 'center_x' in lens_result[1]:
-        x_lens, y_lens = makeImage.Data.map_coord2pix(lens_result[1]['center_x'], lens_result[1]['center_y'])
-    else:
-        x_lens, y_lens = 0, 0
-    ax.plot(x_light, y_light, 'og')
-    ax.plot(x_lens, y_lens, 'b', marker='+')
-    """
     ax = axes[1, 2]
     im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * nx, 0, deltaPix * ny],
                     vmin=-10, vmax=10, cmap=cmap, alpha=0.5)
@@ -449,16 +449,13 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.plot([p0, p0 + 1], [p0, p0], linewidth=2, color='k')
-    ax.text(p0 + 0.5, p0 + 0.15, '1"', fontsize=15, color='k', ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_ra-xx_)*deltaPix, (yy_ra-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='k', ec='k', linewidth=2)
-    ax.text(xx_ra_t*deltaPix, yy_ra_t*deltaPix, "E", color="k", fontsize=15, ha='center')
-    ax.arrow(xx_*deltaPix, yy_*deltaPix, (xx_dec-xx_)*deltaPix, (yy_dec-yy_)*deltaPix, head_width=0.3, head_length=0.3, fc='k', ec='k', linewidth=2)
-    ax.text(xx_dec_t*deltaPix, yy_dec_t*deltaPix, "N", color="k", fontsize=15, ha='center')
-    ax.text(d/10., 0.9*d, "Magnification model", color="k", fontsize=15, backgroundcolor='w')
+    scale_bar(ax, d, dist=1, text='1"', color='k')
+    coordinate_arrows(ax, d, makeImage.Data, color='k', arrow_size=arrow_size)
+    text_description(ax, d, text="Magnification model", color="k", backgroundcolor='w')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
+    cb = plt.colorbar(im, cax=cax)
+    cb.set_label(r'det(A$^{-1}$)', fontsize=15)
 
     for p in paths:
         v = p.vertices
@@ -482,14 +479,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
 
     f.tight_layout()
-    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.25, hspace=0.05)
+    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
     return f, axes
 
 def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap, source_sigma=0.001):
 
     util_class = Util_class()
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
+    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 20)
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,

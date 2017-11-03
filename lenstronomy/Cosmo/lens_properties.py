@@ -67,7 +67,7 @@ class LensProp(object):
         #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
     def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                               aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False):
+                               aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
         """
 
         :param kwargs_lens:
@@ -83,7 +83,17 @@ class LensProp(object):
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
             if lens_model_internal_bool[i]:
                 mass_profile_list.append(lens_model)
-                kwargs_profile.append(kwargs_lens[i])
+                kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_profile.append(kwargs_lens_i)
+
+        if MGE_mass is True:
+            massModel = LensModel({'lens_model_list': mass_profile_list})
+            theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else={})
+            r_array = np.logspace(-2, 1, 100) * theta_E
+            mass_r = massModel.kappa(r_array, 0, kwargs_profile)
+            amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=10)
+            mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
+            kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
 
         light_profile_list = []
         kwargs_light = []
@@ -98,7 +108,7 @@ class LensProp(object):
 
         if MGE_light is True:
             lightModel = LightModel(light_profile_list)
-            r_array = np.logspace(-2, 2, 100) * r_eff * 2
+            r_array = np.logspace(-3, 2, 100) * r_eff * 2
             flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
             amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
             light_profile_list = ['MULTI_GAUSSIAN']

@@ -548,7 +548,7 @@ class LightParam(object):
                     low.append(0)
                     high.append(100)
                 if not 'n_sersic' in kwargs_fixed:
-                    low.append(0.2)
+                    low.append(0.5)
                     high.append(8)
                 if not 'R_sersic' in kwargs_fixed:
                     low.append(self._smoothing*2)
@@ -569,7 +569,7 @@ class LightParam(object):
                     low.append(self._smoothing*2)
                     high.append(30)
                 if not 'n_2' in kwargs_fixed:
-                    low.append(0.2)
+                    low.append(0.5)
                     high.append(8)
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:

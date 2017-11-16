@@ -30,12 +30,12 @@ class PSF_iterative(object):
         kernel_small = kwargs_psf["kernel"]
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
-        model_no_point = self.image_no_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else)
+        image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
+                                                                                 kwargs_else)
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        data_point = util.array2image(makeImage.Data.data_pure) - makeImage.Data.array2image(model_no_point)
-        point_source_list = self.cutout_psf(x_, y_, data_point, kernel_size, symmetry=symmetry)
+
+        point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):
             kernel_old_array[i, :, :] = kernel_old
@@ -75,8 +75,8 @@ class PSF_iterative(object):
                                              kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry, verbose=verbose)
         return kwargs_psf_new
 
-    def image_no_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, verbose=False):
+    def image_single_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
+                                  kwargs_else, verbose=False):
         """
         return model without including the point source contributions
         :param kwargs_data:
@@ -92,16 +92,24 @@ class PSF_iterative(object):
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         wls_model, error_map, cov_param, param = makeImage.image_linear_solve(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
-        model_no_point, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,
-                                                                kwargs_lens_light, kwargs_else, point_source_add=False)
-        return model_no_point
+        model, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,
+                                                                kwargs_lens_light, kwargs_else, point_source_add=True)
+        model = makeImage.Data.array2image(model)
+        data = util.array2image(makeImage.Data.data_pure)
+        point_source_list = makeImage.point_sources_list(kwargs_else)
+        n = len(kwargs_else['ra_pos'])
+        model_single_source_list = []
+        for i in range(n):
+            model_single_source = data - model + point_source_list[i]
+            model_single_source_list.append(model_single_source)
+        return model_single_source_list
 
-    def cutout_psf(self, x_, y_, image, kernelsize, symmetry=1):
+    def cutout_psf(self, x_, y_, image_list, kernelsize, symmetry=1):
         """
 
         :param x_:
         :param y_:
-        :param image:
+        :param image_list: list of images (i.e. data - all models subtracted, except a single point source)
         :param kernelsize:
         :return:
         """
@@ -110,7 +118,7 @@ class PSF_iterative(object):
         kernel_list = np.zeros((n, kernelsize, kernelsize))
         i = 0
         for l in range(len(x_)):
-            kernel_shifted = util.cutout_source(x_[l], y_[l], image, kernelsize)
+            kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize)
             kernel_shifted[kernel_shifted < 0] = 0
             for k in range(symmetry):
                 kernel_rotated = util.rotateImage(kernel_shifted, angle*k)

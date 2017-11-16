@@ -87,6 +87,27 @@ class PointSource(object):
         point_source = self.Data.image2array(grid2d)
         return point_source, error_map
 
+    def point_source_list(self, kwargs_psf, kwargs_else):
+        """
+
+        :param kwargs_psf:
+        :param kwargs_else:
+        :return: list of point source models (in 2d image pixels)
+        """
+        ra_pos = kwargs_else['ra_pos']
+        dec_pos = kwargs_else['dec_pos']
+        x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
+        n_points = len(x_pos)
+        psf_large = kwargs_psf['kernel_large']
+        point_amp = kwargs_else['point_amp']
+
+        point_source_list = []
+        for i in range(n_points):
+            grid2d = np.zeros((self.Data._nx, self.Data._ny))
+            point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_large*point_amp[i])
+            point_source_list.append(point_source)
+        return point_source_list
+
     def get_error_map(self, data, x_pos, y_pos, psf_kernel, amplitude, error_map, psf_error_map):
         if self.kwargs_options.get('fix_error_map', False):
             amp_estimated = amplitude

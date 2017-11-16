@@ -104,6 +104,14 @@ class MakeImage(object):
             error_map = np.zeros_like(self.Data.data)
         return source_light + lens_light + point_source, error_map
 
+    def point_sources_list(self, kwargs_else):
+        """
+
+        :param kwargs_else:
+        :return: list of images containing only single point sources
+        """
+        return self.PointSource.point_source_list(self.kwargs_psf, kwargs_else)
+
     def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
         """
 

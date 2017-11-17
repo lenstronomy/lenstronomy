@@ -113,6 +113,8 @@ class LensAnalysis(object):
         numPix = 100
         deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        x_grid += center_x
+        y_grid += center_y
         kappa = self.LensModel.kappa(x_grid, y_grid, kwargs_lens_list, kwargs_else, k=k)
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
@@ -123,7 +125,8 @@ class LensAnalysis(object):
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
                 if kappa_mean < 1:
                     return r
-        return -1
+        print(kwargs_lens_list, "Warning, no Einstein radius computed!")
+        return r_array[-1]
 
     def external_shear(self, kwargs_lens_list):
         """

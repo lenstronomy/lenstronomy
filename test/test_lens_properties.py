@@ -46,5 +46,6 @@ class TestParam(object):
         vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_else={}, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=10000)
         print(v_sigma, vel_disp_temp)
         npt.assert_almost_equal(v_sigma/166.7, 1, decimal=1)
+
 if __name__ == '__main__':
     pytest.main()

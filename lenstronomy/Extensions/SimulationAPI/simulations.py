@@ -62,8 +62,9 @@ class Simulation(object):
             sigma_axis = sigma/np.sqrt(2)
             x_grid, y_grid = util.make_grid(kernelsize, deltaPix)
             kernel_large = self.gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
+            kernel_large /= np.sum(kernel_large)
             kernel_large = util.array2image(kernel_large)
-            kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_large': kernel_large}
+            kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_large': kernel_large, 'kernel': kernel_large}
         elif psf_type == 'pixel':
             kernel_large = copy.deepcopy(kernel)
             kernel_large = self.util_class.cut_psf(kernel_large, psf_size=kernelsize)

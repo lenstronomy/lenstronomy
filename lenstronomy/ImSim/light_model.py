@@ -10,7 +10,7 @@ class LensLightModel(object):
 
     def __init__(self, kwargs_options):
         lens_light_model_list = kwargs_options.get('lens_light_model_list', ['NONE'])
-        self.lightModel = LightModel(lens_light_model_list)
+        self.lightModel = LightModel(lens_light_model_list, smoothing=0.01)
 
     def surface_brightness(self, x, y, kwargs_lens_light_list, k=None):
         """
@@ -24,7 +24,7 @@ class SourceModel(object):
 
     def __init__(self, kwargs_options):
         source_light_model_list = kwargs_options.get('source_light_model_list', ['NONE'])
-        self.lightModel = LightModel(source_light_model_list)
+        self.lightModel = LightModel(source_light_model_list, smoothing=0.001)
 
     def surface_brightness(self, x, y, kwargs_source_list, k=None):
         """
@@ -38,7 +38,7 @@ class LightModel(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, profile_type_list):
+    def __init__(self, profile_type_list, smoothing=0.01):
         self.profile_type_list = profile_type_list
         self.func_list = []
         self.valid_list = []
@@ -52,25 +52,25 @@ class LightModel(object):
                 self.func_list.append(MultiGaussian())
             elif profile_type == 'SERSIC':
                 from astrofunc.LightProfiles.sersic import Sersic
-                self.func_list.append(Sersic())
+                self.func_list.append(Sersic(smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
                 from astrofunc.LightProfiles.sersic import Sersic_elliptic
-                self.func_list.append(Sersic_elliptic())
+                self.func_list.append(Sersic_elliptic(smoothing))
             elif profile_type == 'SHAPELETS':
                 from astrofunc.LightProfiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
             elif profile_type == 'DOUBLE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleSersic
-                self.func_list.append(DoubleSersic())
+                self.func_list.append(DoubleSersic(smoothing=smoothing))
             elif profile_type == 'CORE_SERSIC':
                 from astrofunc.LightProfiles.sersic import CoreSersic
-                self.func_list.append(CoreSersic())
+                self.func_list.append(CoreSersic(smoothing=smoothing))
             elif profile_type == 'DOUBLE_CORE_SERSIC':
                 from astrofunc.LightProfiles.sersic import DoubleCoreSersic
-                self.func_list.append(DoubleCoreSersic())
+                self.func_list.append(DoubleCoreSersic(smoothing=smoothing))
             elif profile_type == 'BULDGE_DISK':
                 from astrofunc.LightProfiles.sersic import BuldgeDisk
-                self.func_list.append(BuldgeDisk())
+                self.func_list.append(BuldgeDisk(smoothing=smoothing))
             elif profile_type == 'HERNQUIST':
                 from astrofunc.LightProfiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())

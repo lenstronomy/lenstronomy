@@ -55,6 +55,9 @@ class LensModel(object):
             elif lens_type == 'SERSIC_ELLIPSE':
                 from astrofunc.LensingProfiles.sersic_ellipse import SersicEllipse
                 self.func_list.append(SersicEllipse())
+            elif lens_type == 'SERSIC_DOUBLE':
+                from astrofunc.LensingProfiles.sersic_double import SersicDouble
+                self.func_list.append(SersicDouble())
             elif lens_type == 'COMPOSITE':
                 from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
                 self.func_list.append(CompositeSersicNFW())

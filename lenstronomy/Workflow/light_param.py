@@ -80,7 +80,6 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['R_sersic'] = kwargs_fixed['R_sersic']
-                kwargs['smoothing'] = self._smoothing
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:

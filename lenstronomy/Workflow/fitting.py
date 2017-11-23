@@ -193,7 +193,7 @@ class Fitting(object):
         kwargs_fixed_lens_list = []
         for k in range(len(kwargs_lens_list)):
             if k == 0:
-                if kwargs_options['solver'] is True:
+                if kwargs_options.get('solver', False) is True:
                     lens_model = kwargs_options['lens_model_list'][0]
                     kwargs_lens = kwargs_lens_list[0]
                     if kwargs_options['num_images'] == 4:

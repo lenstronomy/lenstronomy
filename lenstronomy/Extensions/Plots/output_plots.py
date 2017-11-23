@@ -371,14 +371,14 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(ra_points, dec_points, lens_result, else_result)
         x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), 'b')
-
-    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
-    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    for i in range(len(x_image)):
-        x_ = (x_image[i] + 0.5) * (deltaPix)
-        y_ = (y_image[i] + 0.5) * (deltaPix)
-        ax.plot(x_, y_, 'or')
-        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+    if 'ra_pos' in else_result:
+        x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * (deltaPix)
+            y_ = (y_image[i] + 0.5) * (deltaPix)
+            ax.plot(x_, y_, 'or')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
     x_source, y_source = makeImage.Data.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
 
@@ -467,15 +467,15 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
         ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(ra_points, dec_points, lens_result, else_result)
         x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), 'b')
+    if 'ra_pos' in else_result:
+        x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
 
-    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
-
-    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    for i in range(len(x_image)):
-        x_ = (x_image[i] + 0.5) * (deltaPix)
-        y_ = (y_image[i] + 0.5) * (deltaPix)
-        ax.plot(x_, y_, 'or')
-        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * (deltaPix)
+            y_ = (y_image[i] + 0.5) * (deltaPix)
+            ax.plot(x_, y_, 'or')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
     ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
 
     f.tight_layout()
@@ -709,14 +709,15 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
         x_c, y_c = makeImage.Data.map_coord2pix(ra_caustics, dec_caustics)
         ax.plot((x_c+0.5)*(deltaPix), (y_c+0.5)*(deltaPix), 'b')
 
-    x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
+    if 'ra_pos' in else_result:
+        x_image, y_image = makeImage.Data.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
 
-    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    for i in range(len(x_image)):
-        x_ = (x_image[i] + 0.5)*(deltaPix)
-        y_ = (y_image[i] + 0.5)*(deltaPix)
-        ax.plot(x_, y_, 'or')
-        ax.text(x_, y_, abc_list[i], fontsize=20, color='w')
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5)*(deltaPix)
+            y_ = (y_image[i] + 0.5)*(deltaPix)
+            ax.plot(x_, y_, 'or')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='w')
     x_, y_ = makeImage.Data.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
     ax.plot((x_+0.5)*deltaPix, (y_+0.5)*deltaPix, '*')
 

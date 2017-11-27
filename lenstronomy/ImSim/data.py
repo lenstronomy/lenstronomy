@@ -278,9 +278,9 @@ class Data(object):
         elif psf_type == 'gaussian':
             sigma = kwargs['sigma']/grid_scale
             if 'truncate' in kwargs:
-                sigma_truncate = kwargs['truncate']
+                sigma_truncate = kwargs['truncate']/grid_scale
             else:
-                sigma_truncate = 3.
+                sigma_truncate = 3./grid_scale
             img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate*sigma)
             return img_conv
         elif psf_type == 'pixel':
@@ -313,7 +313,7 @@ class Data(object):
             grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
         else:
-            gridScale = self.deltaPix/self._subgrid_res
+            gridScale = self.deltaPix/float(self._subgrid_res)
             if kwargs_psf == 'pixel' and not self._psf_subgrid:
                 grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)

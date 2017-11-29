@@ -102,7 +102,8 @@ class MakeImage(object):
         else:
             point_source = np.zeros_like(self.Data.data)
             error_map = np.zeros_like(self.Data.data)
-        return source_light + lens_light + point_source, error_map
+        model = (source_light + lens_light + point_source) * self.Data.mask
+        return model, error_map
 
     def point_sources_list(self, kwargs_else):
         """

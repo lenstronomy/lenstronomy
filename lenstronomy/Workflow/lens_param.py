@@ -225,6 +225,12 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['center_y'] = kwargs_fixed['center_y']
+            if model in ['INTERPOL']:
+                #grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None
+                kwargs['grid_interp_x'] = kwargs_fixed['grid_interp_x']
+                kwargs['grid_interp_y'] = kwargs_fixed['grid_interp_y']
+                kwargs['f_x'] = kwargs_fixed['f_x']
+                kwargs['f_y'] = kwargs_fixed['f_y']
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -440,6 +446,12 @@ class LensParam(object):
                     fix_return['center_x'] = kwargs_fixed['center_x']
                 if 'center_y' in kwargs_fixed:
                     fix_return['center_y'] = kwargs_fixed['center_y']
+            if model in ['INTERPOL']:
+                #grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None
+                fix_return['grid_interp_x'] = kwargs_fixed['grid_interp_x']
+                fix_return['grid_interp_y'] = kwargs_fixed['grid_interp_y']
+                fix_return['f_x'] = kwargs_fixed['f_x']
+                fix_return['f_y'] = kwargs_fixed['f_y']
             fix_return_list.append(fix_return)
         return fix_return_list
 

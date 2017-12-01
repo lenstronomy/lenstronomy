@@ -173,6 +173,8 @@ class Fitting(object):
                     n_max = kwargs_light[i]['n_max']
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_fixed = {'amp': np.ones(num_param)}
+            elif model in ['UNIFORM']:
+                kwargs_fixed = {'mean': 1}
             else:
                 kwargs_fixed = {}
             if type == 'source_light_model_list':

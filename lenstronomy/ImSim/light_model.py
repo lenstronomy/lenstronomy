@@ -83,6 +83,9 @@ class LightModel(object):
             elif profile_type == 'PJAFFE_ELLIPSE':
                 from astrofunc.LightProfiles.p_jaffe import PJaffe_Ellipse
                 self.func_list.append(PJaffe_Ellipse())
+            elif profile_type == 'UNIFORM':
+                from astrofunc.LightProfiles.uniform import Uniform
+                self.func_list.append(Uniform())
             elif profile_type == 'NONE':
                 valid = False
             else:
@@ -178,6 +181,11 @@ class LightModel(object):
                 kwargs_new = dict(kwargs.items() + new.items())
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += num_param
+            elif model in ['UNIFORM']:
+                new = {'mean':  1}
+                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                response += [self.func_list[k].function(x, y, **kwargs_new)]
+                n += 1
             elif model in ['NONE']:
                 pass
             else:
@@ -204,4 +212,6 @@ class LightModel(object):
                 kwargs_list[k]['amp'] *= norm_factor
             if model in ['SHAPELETS']:
                 kwargs_list[k]['amp'] *= norm_factor
+            if model in ['UNIFORM']:
+                kwargs_list[k]['mean'] *= norm_factor
         return kwargs_list

@@ -31,7 +31,7 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if self._joint_center and k > 0:
                     kwargs['center_x'] = kwargs_list[0]['center_x']
                     kwargs['center_y'] = kwargs_list[0]['center_y']
@@ -198,6 +198,12 @@ class LightParam(object):
                     i += num
                 else:
                     kwargs['amp'] = kwargs_fixed['amp']
+            if model in ['UNIFORM']:
+                if not 'mean' in kwargs_fixed:
+                    kwargs['mean'] = args[i]
+                    i += 1
+                else:
+                    kwargs['mean'] = kwargs_fixed['mean']
 
             kwargs_list.append(kwargs)
         return kwargs_list, i
@@ -212,7 +218,7 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if not (self._joint_center and k > 0):
                     if not 'center_x' in kwargs_fixed:
                         args.append(kwargs['center_x'])
@@ -292,6 +298,9 @@ class LightParam(object):
                     num = len(kwargs['sigma'])
                     for i in range(num):
                         args.append(kwargs['amp'][i])
+            if model in ['UNIFORM']:
+                if not 'mean' in kwargs_fixed:
+                    args.append(kwargs['mean'])
         return args
 
     def add2fix(self, kwargs_fixed_list):
@@ -304,7 +313,7 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if not (self._joint_center and k > 0):
                     if 'center_x' in kwargs_fixed:
                         fix_return['center_x'] = kwargs_fixed['center_x']
@@ -380,6 +389,9 @@ class LightParam(object):
                     raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
                 if 'amp' in kwargs_fixed:
                     fix_return['amp'] = kwargs_fixed['amp']
+            if model in ['UNIFORM']:
+                if 'mean' in kwargs_fixed:
+                    fix_return['mean'] = kwargs_fixed['mean']
             fix_return_list.append(fix_return)
         return fix_return_list
 
@@ -394,7 +406,7 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if not (self._joint_center and k > 0):
                     if not 'center_x' in kwargs_fixed:
                         mean.append(kwargs_mean['center_x'])
@@ -512,6 +524,10 @@ class LightParam(object):
                     for i in range(num):
                         mean.append(kwargs_mean['amp'])
                         sigma.append(kwargs_mean['amp_sigma'])
+            if model in ['UNIFORM']:
+                if not 'mean' in kwargs_fixed:
+                    mean.append(kwargs_mean['mean'])
+                    sigma.append(kwargs_mean['mean_sigma'])
         return mean, sigma
 
     def param_bound(self):
@@ -523,7 +539,7 @@ class LightParam(object):
         high = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if not (self._joint_center and k > 0):
                     if not 'center_x' in kwargs_fixed:
                         low.append(-60)
@@ -630,6 +646,10 @@ class LightParam(object):
                     for i in range(num):
                         low.append(-100)
                         high.append(100)
+            if model in ['UNIFORM']:
+                if not 'mean' in kwargs_fixed:
+                    low.append(-10)
+                    high.append(10)
         return low, high
 
     def num_param(self):
@@ -641,7 +661,7 @@ class LightParam(object):
         list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if not model == 'NONE':
+            if not model in ['NONE', 'UNIFORM']:
                 if not (self._joint_center and k > 0):
                     if not 'center_x' in kwargs_fixed:
                         num+=1
@@ -743,4 +763,8 @@ class LightParam(object):
                     for i in range(n):
                         list.append(str('amp_' + self.type))
                     num += n
+            if model in ['UNIFORM']:
+                if not 'mean' in kwargs_fixed:
+                    list.append('bkg_mean')
+                    num += 1
         return num, list

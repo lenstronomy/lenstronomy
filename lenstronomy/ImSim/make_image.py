@@ -231,6 +231,9 @@ class MakeImage(object):
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_source[k]['amp'] = param[i:i+num_param]
                 i += num_param
+            if model in ['UNIFORM']:
+                kwargs_source[k]['mean'] = param[i]
+                i += 1
         for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
                 kwargs_lens_light[k]['I0_sersic'] = param[i]
@@ -251,6 +254,9 @@ class MakeImage(object):
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_lens_light[k]['amp'] = param[i:i+num_param]
                 i += num_param
+            if model in ['UNIFORM']:
+                kwargs_lens_light[k]['mean'] = param[i]
+                i += 1
         num_images = self.kwargs_options.get('num_images', 0)
         if num_images > 0 and self.kwargs_options['point_source']:
             if self.kwargs_options.get('fix_magnification', False):

@@ -251,8 +251,8 @@ class Data(object):
         :return:
         """
         # covariance matrix based on the model (not on the data)
-        C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
-        X2 = (model - self._data)**2 / (C_D + np.abs(model_error)) * self.mask
+        #C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
+        X2 = (model - self._data)**2 / (self.C_D + np.abs(model_error)) * self.mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL

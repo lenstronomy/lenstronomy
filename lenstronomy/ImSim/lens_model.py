@@ -85,6 +85,9 @@ class LensModel(object):
             elif lens_type == 'INTERPOL':
                 from astrofunc.LensingProfiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func(grid=False))
+            elif lens_type == 'INTERPOL_SCALED':
+                from astrofunc.LensingProfiles.interpol import Interpol_func_scaled
+                self.func_list.append(Interpol_func_scaled(grid=False))
             elif lens_type == 'SHAPELETS_POLAR':
                 from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
                 self.func_list.append(PolarShapelets())

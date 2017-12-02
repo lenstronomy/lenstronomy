@@ -225,12 +225,18 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['center_y'] = kwargs_fixed['center_y']
-            if model in ['INTERPOL']:
+            if model in ['INTERPOL', 'INTERPOL_SCALED']:
                 #grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None
                 kwargs['grid_interp_x'] = kwargs_fixed['grid_interp_x']
                 kwargs['grid_interp_y'] = kwargs_fixed['grid_interp_y']
                 kwargs['f_x'] = kwargs_fixed['f_x']
                 kwargs['f_y'] = kwargs_fixed['f_y']
+            if model in ['INTERPOL_SCALED']:
+                if not 'scale_factor' in kwargs_fixed:
+                    kwargs['scale_factor'] = args[i]
+                    i += 1
+                else:
+                    kwargs['scale_factor'] = kwargs_fixed['scale_factor']
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -343,6 +349,9 @@ class LensParam(object):
                     args.append(kwargs['center_x'])
                 if not 'center_y' in kwargs_fixed:
                     args.append(kwargs['center_y'])
+            if model in ['INTERPOL_SCALED']:
+                if not 'scale_factor' in kwargs_fixed:
+                    args.append(kwargs['scale_factor'])
         return args
 
     def add2fix(self, kwargs_fixed_list):
@@ -446,12 +455,15 @@ class LensParam(object):
                     fix_return['center_x'] = kwargs_fixed['center_x']
                 if 'center_y' in kwargs_fixed:
                     fix_return['center_y'] = kwargs_fixed['center_y']
-            if model in ['INTERPOL']:
+            if model in ['INTERPOL', 'INTERPOL_SCALED']:
                 #grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None
                 fix_return['grid_interp_x'] = kwargs_fixed['grid_interp_x']
                 fix_return['grid_interp_y'] = kwargs_fixed['grid_interp_y']
                 fix_return['f_x'] = kwargs_fixed['f_x']
                 fix_return['f_y'] = kwargs_fixed['f_y']
+            if model in ['INTERPOL_SCALED']:
+                if 'scale_factor' in kwargs_fixed:
+                    fix_return['scale_factor'] = kwargs_fixed['scale_factor']
             fix_return_list.append(fix_return)
         return fix_return_list
 
@@ -606,6 +618,10 @@ class LensParam(object):
                 if not 'center_y' in kwargs_fixed:
                     mean.append(kwargs_mean['center_y'])
                     sigma.append(kwargs_mean['center_y_sigma'])
+            if model in ['INTERPOL_SCALED']:
+                if not 'scale_factor' in kwargs_fixed:
+                    mean.append(kwargs_mean['scale_factor'])
+                    sigma.append(kwargs_mean['scale_factor_sigma'])
         return mean, sigma
 
     def param_bounds(self):
@@ -748,6 +764,10 @@ class LensParam(object):
                 if not 'center_y' in kwargs_fixed:
                     low.append(-30)
                     high.append(30)
+            if model in ['INTERPOL_SCALED']:
+                if not 'scale_factor' in kwargs_fixed:
+                    low.append(0)
+                    high.append(100000)
         return low, high
 
     def num_param(self):
@@ -886,4 +906,8 @@ class LensParam(object):
                 if not 'center_y' in kwargs_fixed:
                     num += 1
                     list.append('center_y_lens')
+            if model in ['INTERPOL_SCALED']:
+                if not 'scale_factor' in kwargs_fixed:
+                    list.append('scale_factor')
+                    num += 1
         return num, list

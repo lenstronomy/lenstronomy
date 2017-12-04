@@ -176,6 +176,8 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
                                                 else_result, unconvolved=False, source_add=False,
                                                 lens_light_add=False, point_source_add=True)
 
+
+    print (np.sum(makeImage.Data.mask), 'number of pixels to evaluate')
     f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
     ax = axes[0, 0]
     im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)

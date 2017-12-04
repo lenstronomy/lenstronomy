@@ -61,8 +61,12 @@ class Data(object):
                 print('Warning: deltaPix has not been found in kwargs_data, using =1!')
             if 'mask' in kwargs_data:
                 self._mask = kwargs_data['mask'][self._idex_mask == 1]
+                self._mask_pure = kwargs_data['mask']
+                self._mask_pure[self._idex_mask == 0] = 0
             else:
                 self._mask = np.ones_like(self._data)
+                self._mask_pure = np.ones_like(self._data_pure)
+                self._mask_pure[self._idex_mask == 0] = 0
             if 'mask_lens_light' in kwargs_data:
                 self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
             else:
@@ -95,6 +99,14 @@ class Data(object):
     @property
     def data_pure(self):
         return self._data_pure
+
+    @property
+    def mask_pure(self):
+        """
+
+        :return: mask applied of full image, joint idex_mask and mask cut
+        """
+        return self._mask_pure
 
     @property
     def deltaPix(self):

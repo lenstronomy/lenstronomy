@@ -83,10 +83,10 @@ class FittingSequence(object):
         :return:
         """
         fitting_routine = fitting_kwargs['fitting_routine']
-        mpi = fitting_kwargs['mpi']
-        sigma_scale = fitting_kwargs['sigma_scale']
-        n_particles = fitting_kwargs['n_particles']
-        n_iterations = fitting_kwargs['n_iterations']
+        mpi = fitting_kwargs.get('mpi', False)
+        sigma_scale = fitting_kwargs.get('sigma_scale', 1)
+        n_particles = fitting_kwargs.get('n_particles', 10)
+        n_iterations = fitting_kwargs.get('n_iterations', 10)
         psf_iteration = fitting_kwargs.get('psf_iteration', False)
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
         if fitting_routine == 'lens_light_mask':
@@ -129,10 +129,22 @@ class FittingSequence(object):
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+        elif fitting_routine == 'psf_iteration':
+            print('PSF fitting...')
+            psf_iter_factor = fitting_kwargs['psf_iter_factor']
+            psf_iter_num = fitting_kwargs['psf_iter_num']
+            for i in range(len(self.kwargs_psf)):
+                psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
+                self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_input, source_input,
+                                                                    lens_light_input, else_input, factor=psf_iter_factor, num_iter=psf_iter_num,
+                                                   symmetry=psf_symmetry, verbose=False)
+            lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
+            chain, param_list = [], []
+            print('PSF fitting completed')
         else:
             raise ValueError("%s is not a valid fitting routine" %fitting_routine)
 
-        if psf_iteration is True:
+        if psf_iteration is True and not fitting_routine == 'psf_iteraton':
             psf_iter_factor = fitting_kwargs['psf_iter_factor']
             psf_iter_num = fitting_kwargs['psf_iter_num']
             for i in range(len(self.kwargs_psf)):
@@ -142,6 +154,7 @@ class FittingSequence(object):
                                                    symmetry=psf_symmetry, verbose=False)
 
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
+
 
     def _init_kwargs(self):
         """

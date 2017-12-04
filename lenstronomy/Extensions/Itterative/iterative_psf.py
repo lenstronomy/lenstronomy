@@ -34,8 +34,8 @@ class PSF_iterative(object):
                                                                                  kwargs_else)
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-
-        point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, symmetry=symmetry)
+        mask = util.array2image(makeImage.Data.mask_pure)
+        point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, kernel_old, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):
             kernel_old_array[i, :, :] = kernel_old
@@ -96,15 +96,16 @@ class PSF_iterative(object):
                                                                 kwargs_lens_light, kwargs_else, point_source_add=True)
         model = makeImage.Data.array2image(model)
         data = util.array2image(makeImage.Data.data_pure)
+        mask = util.array2image(makeImage.Data.mask_pure)
         point_source_list = makeImage.point_sources_list(kwargs_else)
         n = len(kwargs_else['ra_pos'])
         model_single_source_list = []
         for i in range(n):
-            model_single_source = data - model + point_source_list[i]
+            model_single_source = (data - model + point_source_list[i]) * mask
             model_single_source_list.append(model_single_source)
         return model_single_source_list
 
-    def cutout_psf(self, x_, y_, image_list, kernelsize, symmetry=1):
+    def cutout_psf(self, x_, y_, image_list, kernelsize, mask, kernel_init, symmetry=1):
         """
 
         :param x_:
@@ -119,7 +120,15 @@ class PSF_iterative(object):
         i = 0
         for l in range(len(x_)):
             kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize)
+            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask, kernelsize, shift=False)
             kernel_shifted[kernel_shifted < 0] = 0
+            kernel_shifted *= mask_cutout
+            kernel_init = util.kernel_norm(kernel_init)
+            kernel_norm = np.sum(kernel_init[mask_cutout == 1])
+            kernel_shifted = util.kernel_norm(kernel_shifted)
+            kernel_shifted *= kernel_norm
+            kernel_shifted[mask_cutout == 0] = kernel_init[mask_cutout == 0]
+            #kernel_shifted[mask_cutout == 1] /= (np.sum(kernel_init[mask_cutout == 1]) * np.sum(kernel_shifted[mask_cutout == 1]))
             for k in range(symmetry):
                 kernel_rotated = util.rotateImage(kernel_shifted, angle*k)
                 kernel_norm = util.kernel_norm(kernel_rotated)

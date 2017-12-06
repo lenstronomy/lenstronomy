@@ -88,54 +88,56 @@ class FittingSequence(object):
         n_particles = fitting_kwargs.get('n_particles', 10)
         n_iterations = fitting_kwargs.get('n_iterations', 10)
         psf_iteration = fitting_kwargs.get('psf_iteration', False)
+        compute_bool = fitting_kwargs.get('compute_bands', [True]*len(self.kwargs_data))
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
         if fitting_routine == 'lens_light_mask':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_light_mask(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'lens_only':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_only(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'source_only':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_source_only(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'lens_light_only':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_light_only(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'lens_fixed':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_fixed_lens(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'lens_combined_gamma_fixed':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, gamma_fixed=True)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, gamma_fixed=True, compute_bool=compute_bool)
         elif fitting_routine == 'lens_combined':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'buldge_disk':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_buldge_disk(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
         elif fitting_routine == 'psf_iteration':
             print('PSF fitting...')
             psf_iter_factor = fitting_kwargs['psf_iter_factor']
             psf_iter_num = fitting_kwargs['psf_iter_num']
             for i in range(len(self.kwargs_psf)):
-                psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
-                self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_input, source_input,
+                if compute_bool[i]:
+                    psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
+                    self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_input, source_input,
                                                                     lens_light_input, else_input, factor=psf_iter_factor, num_iter=psf_iter_num,
                                                    symmetry=psf_symmetry, verbose=False)
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
@@ -148,8 +150,9 @@ class FittingSequence(object):
             psf_iter_factor = fitting_kwargs['psf_iter_factor']
             psf_iter_num = fitting_kwargs['psf_iter_num']
             for i in range(len(self.kwargs_psf)):
-                psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
-                self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_result, source_result,
+                if compute_bool[i]:
+                    psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
+                    self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_result, source_result,
                                                    lens_light_result, else_result, factor=psf_iter_factor, num_iter=psf_iter_num,
                                                    symmetry=psf_symmetry, verbose=False)
 

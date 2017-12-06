@@ -6,15 +6,20 @@ class MakeImageMultiband(object):
     class to simulate/reconstruct images in multiband option
     """
 
-    def __init__(self, kwargs_options, kwargs_data_list=[], kwargs_psf_list=[]):
+    def __init__(self, kwargs_options, kwargs_data_list=[], kwargs_psf_list=[], compute_bool=None):
         self._num_bands = len(kwargs_data_list)
         if self._num_bands != len(kwargs_psf_list):
             raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))
         self._makeImage_list = []
         for i in range(self._num_bands):
             self._makeImage_list.append(MakeImage(kwargs_options, kwargs_data_list[i], kwargs_psf_list[i]))
-
         self.kwargs_options = kwargs_options
+        if compute_bool is None:
+            self._compute_bool = [True] * self._num_bands
+        else:
+            if not len(compute_bool) == self._num_bands:
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
+            self._compute_bool = compute_bool
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
@@ -111,12 +116,14 @@ class MakeImageMultiband(object):
         # generate image
         logL = 0
         for i in range(self._num_bands):
-            logL += self._makeImage_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+            if self._compute_bool[i]:
+                logL += self._makeImage_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return logL
 
     @property
     def numData_evaluate(self):
         num = 0
         for i in range(self._num_bands):
-            num += self._makeImage_list[i].numData_evaluate
+            if self._compute_bool:
+                num += self._makeImage_list[i].numData_evaluate
         return num

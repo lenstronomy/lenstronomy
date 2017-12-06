@@ -29,7 +29,7 @@ class Fitting(object):
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
-                 threadCount=1, mpi=False, print_key='Default', sigma_factor=1):
+                 threadCount=1, mpi=False, print_key='Default', sigma_factor=1, compute_bool=None):
         kwargs_prior_lens = []
         for k in range(len(kwargs_mean_lens)):
             kwargs_prior_lens.append(dict(kwargs_mean_lens[k].items() + kwargs_sigma_lens[k].items()))
@@ -55,7 +55,7 @@ class Fitting(object):
                                          kwargs_mean_lens_light, kwargs_mean_else)
         # run PSO
         mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                                kwargs_fixed_lens_light, kwargs_fixed_else)
+                                kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=compute_bool)
         lens_result, source_result, lens_light_result, else_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -91,7 +91,7 @@ class Fitting(object):
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_else, kwargs_mean_else, kwargs_sigma_else,
-                 threadCount=1, mpi=False, init_samples=None, sigma_factor=1):
+                 threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
 
         kwargs_prior_lens = []
         for k in range(len(kwargs_mean_lens)):
@@ -110,7 +110,7 @@ class Fitting(object):
         param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                                kwargs_fixed_lens_light, kwargs_fixed_else)
+                                kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=compute_bool)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_else)
         num_param, param_list = param_class.num_param()
@@ -239,7 +239,7 @@ class Fitting(object):
 
     def find_lens_catalogue(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, sigma_factor=1, compute_bool=None):
         """
         finds the positon of a SPEP configuration based on the catalogue level input
         :return: constraints of lens model
@@ -261,12 +261,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=1, mpi=mpi, print_key='Catalogue', sigma_factor=sigma_factor)
+            threadCount=1, mpi=mpi, print_key='Catalogue', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
     def find_lens_light_mask(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         finds lens light, type as specified in input kwargs_optinons
         :return: constraints of lens model
@@ -291,12 +291,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens light mask', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='lens light mask', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return kwargs_lens, kwargs_source, lens_light_result, kwargs_else, chain, param_list, kwargs_options_execute
 
     def find_lens_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         finds lens model with fixed lens light model, type as specified in input kwargs_optinons
         :return: constraints of lens model
@@ -325,12 +325,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens only', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='lens only', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_lens_light_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         finds lens light with fixed lens model
         :return: constraints of lens model
@@ -352,12 +352,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens light', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='lens light', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_source_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         finds lens light with fixed lens model
         :return: constraints of lens model
@@ -379,12 +379,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='source light', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='source light', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_fixed_lens(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         finds lens light and source light combined with fixed lens model
         :return: constraints of lens model
@@ -403,12 +403,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens fixed', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='lens fixed', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_lens_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False, compute_bool=None):
         """
         finds lens light and lens model combined fit
         :return: constraints of lens model
@@ -430,12 +430,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='combined', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='combined', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def find_buldge_disk(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1):
+                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
         """
         fits a buldge-to-disk decomposition to the source galaxy
         :return: constraints of lens model
@@ -461,12 +461,12 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source_new, kwargs_source_sigma_new,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='buldge-disk', sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, print_key='buldge-disk', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
     def mcmc_buldge_disk(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                  kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1):
+                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
         """
         MCMC
         """
@@ -488,13 +488,13 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma_new,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor, compute_bool=compute_bool)
         return samples, param_list, dist
 
 
     def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                  kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1):
+                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
         """
         MCMC
         """
@@ -505,7 +505,7 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor)
+            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor, compute_bool=compute_bool)
         return samples, param_list, dist
 
     def _mcmc_run_fixed(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):

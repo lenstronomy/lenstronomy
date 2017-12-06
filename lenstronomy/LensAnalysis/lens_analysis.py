@@ -88,16 +88,18 @@ class LensAnalysis(object):
         :return:
         """
         kwargs_lens_copy = copy.deepcopy(kwargs_lens)
-        center_x = kwargs_lens_copy[0]['center_x']
-        center_y = kwargs_lens_copy[0]['center_y']
+        if 'center_x' in kwargs_lens_copy[0]:
+            center_x = kwargs_lens_copy[0]['center_x']
+            center_y = kwargs_lens_copy[0]['center_y']
         theta_E = self.effective_einstein_radius(kwargs_lens, kwargs_else)
         r_array = np.logspace(-2, 1, 50) * theta_E
         lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         kappa_s = np.zeros_like(r_array)
         for i in range(len(kwargs_lens_copy)):
             if lens_model_internal_bool[i]:
-                kwargs_lens_copy[i]['center_x'] -= center_x
-                kwargs_lens_copy[i]['center_y'] -= center_y
+                if 'center_x' in kwargs_lens_copy[0]:
+                    kwargs_lens_copy[i]['center_x'] -= center_x
+                    kwargs_lens_copy[i]['center_y'] -= center_y
                 kappa_s += self.LensModel.kappa(r_array, np.zeros_like(r_array), kwargs_lens_copy, kwargs_else, k=i)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y

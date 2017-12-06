@@ -14,7 +14,7 @@ class MCMC_chain(object):
     """
     this class contains the routines to run a MCMC process with one single image
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=None):
         """
         initializes all the classes needed for the chain
         """
@@ -22,7 +22,7 @@ class MCMC_chain(object):
         self.util_class = Util_class()
         self._source_marg = kwargs_options.get('source_marg', False) # whether to fully invert the covariance matrix for marginalization
         self._sampling_option = kwargs_options.get('X2_type', 'image')
-        self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf)
+        self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf, compute_bool=compute_bool)
         self.lensModel = LensModel(kwargs_options)
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         self.lowerLimit, self.upperLimit = self.param.param_bounds()

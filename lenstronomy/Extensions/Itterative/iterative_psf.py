@@ -35,7 +35,11 @@ class PSF_iterative(object):
         makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
         mask = util.array2image(makeImage.Data.mask_pure)
-        point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, kernel_old, symmetry=symmetry)
+        x_grid, y_grid = makeImage.Data.coordinates
+        fwhm = makeImage.Data.psf_fwhm(kwargs_psf)
+        radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
+        mask_point_source_list = self.mask_point_sources(x_, y_, x_grid, y_grid, radius)
+        point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):
             kernel_old_array[i, :, :] = kernel_old
@@ -105,7 +109,7 @@ class PSF_iterative(object):
             model_single_source_list.append(model_single_source)
         return model_single_source_list
 
-    def cutout_psf(self, x_, y_, image_list, kernelsize, mask, kernel_init, symmetry=1):
+    def cutout_psf(self, x_, y_, image_list, kernelsize, mask, mask_point_source_list, kernel_init, symmetry=1):
         """
 
         :param x_:
@@ -120,7 +124,8 @@ class PSF_iterative(object):
         i = 0
         for l in range(len(x_)):
             kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize)
-            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask, kernelsize, shift=False)
+            mask_i = mask * mask_point_source_list[l]
+            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize, shift=False)
             kernel_shifted[kernel_shifted < 0] = 0
             kernel_shifted *= mask_cutout
             kernel_init = util.kernel_norm(kernel_init)
@@ -158,3 +163,28 @@ class PSF_iterative(object):
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
         error_map = np.var(kernel_list_new, axis=0)/(kernel_bkg)**2
         return kernel_return, error_map
+
+    def mask_point_source(self, x_pos, y_pos, x_grid, y_grid, radius, i=0):
+        """
+
+        :param x_pos:
+        :param y_pos:
+        :param i:
+        :param kernel:
+        :param image:
+        :return: a mask of the size of the image with cutouts around the position
+        """
+        mask = np.ones_like(x_grid)
+        for k in range(len(x_pos)):
+            if k != i:
+                mask_point = 1 - util.mask_sphere(x_grid, y_grid, x_pos[k], y_pos[k], radius)
+                mask *= mask_point
+        return mask
+
+    def mask_point_sources(self, x_pos, y_pos, x_grid, y_grid, radius):
+        mask_list = []
+        for i in range(len(x_pos)):
+            mask = self.mask_point_source(x_pos, y_pos, x_grid, y_grid, radius, i=i)
+            mask_list.append(util.array2image(mask))
+        return mask_list
+

@@ -135,6 +135,10 @@ class Data(object):
         """
         return np.sqrt(self._nx * self._ny)
 
+    @property
+    def coordinates(self):
+        return self._x_grid_all, self._y_grid_all
+
     def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
         """
 
@@ -361,3 +365,22 @@ class Data(object):
         mask = util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
         mask1d = 1. - util.image2array(mask)
         return np.sum(self._data_pure * mask1d)
+
+    def psf_fwhm(self, kwargs):
+        """
+
+        :param kwargs_psf:
+        :return: psf fwhm in units of arcsec
+        """
+        psf_type = kwargs.get('psf_type', 'NONE')
+        if psf_type == 'NONE':
+            fwhm = 0
+        elif psf_type == 'gaussian':
+            sigma = kwargs['sigma']
+            fwhm = util.sigma2fwhm(sigma)
+        elif psf_type == 'pixel':
+            kernel = kwargs['kernel_large']
+            fwhm = util.fwhm_kernel(kernel) * self.deltaPix
+        else:
+            raise ValueError('PSF type %s not valid!' % psf_type)
+        return fwhm

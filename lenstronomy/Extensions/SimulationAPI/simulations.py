@@ -59,7 +59,7 @@ class Simulation(object):
         # 'gaussian': 'sigma', 'truncate'
         if psf_type == 'gaussian':
             sigma = util.fwhm2sigma(fwhm)
-            sigma_axis = sigma/np.sqrt(2)
+            sigma_axis = sigma
             x_grid, y_grid = util.make_grid(kernelsize, deltaPix)
             kernel_large = self.gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
             kernel_large /= np.sum(kernel_large)

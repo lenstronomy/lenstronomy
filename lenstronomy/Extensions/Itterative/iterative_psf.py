@@ -38,7 +38,7 @@ class PSF_iterative(object):
         x_grid, y_grid = makeImage.Data.coordinates
         fwhm = makeImage.Data.psf_fwhm(kwargs_psf)
         radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
-        mask_point_source_list = self.mask_point_sources(x_, y_, x_grid, y_grid, radius)
+        mask_point_source_list = self.mask_point_sources(kwargs_else['ra_pos'], kwargs_else['dec_pos'], x_grid, y_grid, radius)
         point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):

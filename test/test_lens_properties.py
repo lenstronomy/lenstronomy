@@ -7,7 +7,7 @@ import pytest
 from lenstronomy.Cosmo.lens_properties import LensProp
 
 
-class TestParam(object):
+class TestLensProp(object):
 
     def setup(self):
         pass
@@ -20,7 +20,7 @@ class TestParam(object):
                          'foreground_shear': False, 'lens_model_internal_bool': [True, False, False, False, False],
                           'lens_light_model_internal_bool': [True], 'lens_light_model_list': ['DOUBLE_SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)
-        kwargs_lens = [{'theta_E': 1.4272358196260446, 'q': 0.96286768452645233, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'phi_G': 0.46030738644964475, 'gamma': 1.6343171236539333},
+        kwargs_lens = [{'theta_E': 1.4272358196260446, 'q': 0.96286768452645233, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'phi_G': 0.46030738644964475, 'gamma': 2.1},
                        {'Rs': 3.3343851394796515, 'q': 0.71808978862755635, 'center_x': 0, 'center_y': 0, 'Ra': 1.3113719625383848,
                         'phi_G': 1.2119791682610044, 'sigma0': 0.3405563712096914}, {'e1': -0.050871696555354479,
                         'e2': -0.0061601733920590464}, {'q': 0.28297894544102642, 'center_y': 2.79985456, 'center_x': -2.32019894,
@@ -45,7 +45,11 @@ class TestParam(object):
 
         vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_else={}, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=10000)
         print(v_sigma, vel_disp_temp)
-        npt.assert_almost_equal(v_sigma/166.7, 1, decimal=1)
+        #assert 1 == 0
+        npt.assert_almost_equal(v_sigma/vel_disp_temp, 1, decimal=1)
+        kwargs_numerics = {}
+
+        kwargs_lens_light = {'n_sersic': 2.474840710884247, 'R_2': 0.03534390928460919, 'I0_2': 48.50620123542663, 'center_x': -0.041110651331184814, 'n_2': 6.441956631512987, 'q': 0.815610540458232, 'I0_sersic': 0.50907639871167998, 'center_y': 0.094280889324232287, 'phi_G': -0.41067986340454093, 'R_sersic': 0.59310620263893432}
 
 if __name__ == '__main__':
     pytest.main()

@@ -310,11 +310,11 @@ class TestSolver_new(object):
         print(x_pos_new, 'x_pos_new')
         print(x_pos, 'x_pos old')
         print(kwargs_lens_new)
-        npt.assert_almost_equal(x[0], theta_E, decimal=2)
-        npt.assert_almost_equal(x[1], gamma, decimal=2)
+        npt.assert_almost_equal(x[0], theta_E, decimal=3)
+        npt.assert_almost_equal(x[1], gamma, decimal=3)
 
-        npt.assert_almost_equal(x_[0], 0, decimal=2)
-        npt.assert_almost_equal(x_[1], 0, decimal=2)
+        npt.assert_almost_equal(x_[0], 0, decimal=3)
+        npt.assert_almost_equal(x_[1], 0, decimal=3)
 
     def test_all_spp(self):
         sourcePos_x = 0.1
@@ -361,11 +361,11 @@ class TestSolver_new(object):
         print(sourcePos_x_new_array, sourcePos_y_new_array, 'sourcePos_x_new_array, sourcePos_y_new_array')
         x_pos_new, y_pos_new = self.image_position_spp.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
         print(x_pos_new[:2]-x_pos, 'x_pos_new - x_pos')
-        npt.assert_almost_equal(x[0], theta_E, decimal=2)
-        npt.assert_almost_equal(x[1], gamma, decimal=2)
+        npt.assert_almost_equal(x[0], theta_E, decimal=3)
+        npt.assert_almost_equal(x[1], gamma, decimal=3)
 
-        npt.assert_almost_equal(x_[0], 0, decimal=2)
-        npt.assert_almost_equal(x_[1], 0, decimal=2)
+        npt.assert_almost_equal(x_[0], 0, decimal=3)
+        npt.assert_almost_equal(x_[1], 0, decimal=3)
 
 
 if __name__ == '__main__':

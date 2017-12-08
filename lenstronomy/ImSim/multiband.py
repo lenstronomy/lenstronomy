@@ -100,7 +100,7 @@ class MakeImageMultiband(object):
         :param sourcePos_y: source position in relative arc sec
         :return:
         """
-        x_mins, y_mins = self._makeImage_list[0].image_position(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
+        x_mins, y_mins = self._makeImage_list[0].image_positions(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):

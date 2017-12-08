@@ -29,9 +29,11 @@ class ImagePosition(object):
         x_mapped, y_mapped = self.LensModel.ray_shooting(x_grid, y_grid, kwargs_lens, kwargs_else)
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         x_mins, y_mins, values = util.neighborSelect(absmapped, x_grid, y_grid)
+        x_mins = x_mins[values < deltapix]
+        y_mins = y_mins[values < deltapix]
         if x_mins == []:
             return None, None
-        num_iter = 1000
+        num_iter = 10
         x_mins, y_mins, values = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, deltapix, num_iter, kwargs_lens, kwargs_else)
         x_mins, y_mins, values = lenstronomy_util.findOverlap(x_mins, y_mins, values, deltapix)
         x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
@@ -60,7 +62,7 @@ class ImagePosition(object):
             DistMatrix = np.array([[1-kappa+gamma1, gamma2], [gamma2, 1-kappa-gamma1]])
             det = 1./mag
             posAngel = np.array([x_min[i], y_min[i]])
-            while(delta > deltapix/100000 and l<num_iter):
+            while(delta > deltapix/1000 and l<num_iter):
                 deltaVec = np.array([x_mapped - sourcePos_x, y_mapped - sourcePos_y])
                 posAngel = posAngel - DistMatrix.dot(deltaVec)/det
                 x_mapped, y_mapped = self.LensModel.ray_shooting(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)

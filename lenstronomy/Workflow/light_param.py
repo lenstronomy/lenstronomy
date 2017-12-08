@@ -1,5 +1,6 @@
 import astrofunc.util as util
 
+
 class LightParam(object):
     """
 
@@ -11,7 +12,7 @@ class LightParam(object):
         if type == 'lens_light':
             self.model_list = kwargs_options['lens_light_model_list']
             self._joint_center = kwargs_options.get('joint_center_lens_light', False)
-            self._smoothing = 0.0001
+            self._smoothing = 0.001
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
             self._joint_center = kwargs_options.get('joint_center_source', False)

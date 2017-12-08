@@ -46,6 +46,8 @@ class MCMC_chain(object):
         else:
             self._force_no_add_image = False
         self._num_images = kwargs_options.get('num_images', 0)
+        self._point_source_likelihood = kwargs_options.get('point_source_likelihood', False)
+        self._position_sigma = kwargs_options.get('position_uncertainty', 0.004)
 
     def X2_chain_image(self, args):
         """
@@ -55,7 +57,7 @@ class MCMC_chain(object):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image and computes likelihood
         logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
-
+        logL += self.likelihood_image_pos(kwargs_lens, kwargs_source, kwargs_else, self._position_sigma)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
@@ -110,6 +112,28 @@ class MCMC_chain(object):
             return True
         else:
             return False
+
+    def likelihood_image_pos(self, kwargs_lens, kwargs_source, kwargs_else, sigma):
+        """
+
+        :param x_lens_model: image position of lens model
+        :param y_lens_model: image position of lens model
+        :param x_image: image position of image data
+        :param y_image: image position of image data
+        :param sigma: likelihood sigma
+        :return: log likelihood of model given image positions
+        """
+        sourcePos_x = kwargs_source[0]['center_x']
+        sourcePos_y = kwargs_source[0]['center_y']
+        x_image = kwargs_else['ra_pos']
+        y_image = kwargs_else['dec_pos']
+        x_lens_model, y_lens_model = self.makeImageMultiband.image_positions(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
+        num_image = len(x_lens_model)
+        if num_image != len(x_image):
+            return -10**15
+        dist = util.min_square_dist(x_lens_model, y_lens_model, x_image, y_image)
+        logL = - np.sum(dist/sigma**2)/2
+        return logL
 
     def priors(self, kwargs_lens, kwargs_priors):
         """

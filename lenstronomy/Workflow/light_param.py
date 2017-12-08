@@ -16,7 +16,7 @@ class LightParam(object):
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
             self._joint_center = kwargs_options.get('joint_center_source', False)
-            self._smoothing = 0.00001
+            self._smoothing = 0.001
         else:
             raise ValueError("type %s not supported." % type)
         self.type = type

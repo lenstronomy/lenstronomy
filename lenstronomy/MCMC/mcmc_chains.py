@@ -57,7 +57,8 @@ class MCMC_chain(object):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image and computes likelihood
         logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
-        logL += self.likelihood_image_pos(kwargs_lens, kwargs_source, kwargs_else, self._position_sigma)
+        if self._point_source_likelihood:
+            logL += self.likelihood_image_pos(kwargs_lens, kwargs_source, kwargs_else, self._position_sigma)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:

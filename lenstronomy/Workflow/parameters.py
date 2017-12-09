@@ -440,4 +440,9 @@ class Param(object):
                 if 'center_x' in kwargs_source_list[0]:
                     kwargs_source_list[0]['center_x'] = np.mean(x_mapped)
                     kwargs_source_list[0]['center_y'] = np.mean(y_mapped)
+        if self.kwargs_options.get('joint_center'):
+            for i in range(1, len(kwargs_source_list)):
+                kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
+                kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']
+
         return kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else

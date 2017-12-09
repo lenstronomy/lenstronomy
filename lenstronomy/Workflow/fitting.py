@@ -182,6 +182,9 @@ class Fitting(object):
                     if kwargs_options.get('joint_center', False) or i == 0:
                         kwargs_fixed['center_x'] = 0
                         kwargs_fixed['center_y'] = 0
+                if kwargs_options.get('joint_center', False) and i != 0:
+                    kwargs_fixed['center_x'] = 0
+                    kwargs_fixed['center_y'] = 0
             kwargs_fixed_list.append(kwargs_fixed)
         return kwargs_fixed_list
 

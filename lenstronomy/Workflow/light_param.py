@@ -550,7 +550,7 @@ class LightParam(object):
                         high.append(60)
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
-                    low.append(0.000001)
+                    low.append(self._smoothing*2)
                     high.append(60)
                 if not 'n_max' in kwargs_fixed:
                     low.append(0)

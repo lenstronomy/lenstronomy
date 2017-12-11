@@ -40,6 +40,41 @@ class TestMakeImage(object):
         assert A[0, 1] == A_masked[0, 1]
         assert A_masked[0, 2] == 0
 
+    def test_point_source_rendering(self):
+        # initialize data
+        from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
+        SimAPI = Simulation()
+        numPix = 100
+        deltaPix = 0.05
+        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        kwargs_options = {'lens_model_list': ['SPEP'], 'point_source': True, 'subgrid_res': 2}
+        kernel = np.zeros((5, 5))
+        kernel[2, 2] = 1
+        kwargs_psf = {'kernel_large': kernel, 'kernel': kernel, 'psf_type': 'pixel'}
+        makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf=kwargs_psf)
+        # chose point source positions
+        x_pix = np.array([10, 5, 10, 90])
+        y_pix = np.array([40, 50, 60, 50])
+        ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
+        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
+        kwargs_else = {'ra_pos': ra_pos, 'dec_pos': dec_pos, 'point_amp': np.ones_like(ra_pos)}
+        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_else=kwargs_else)
+        image = makeImage.Data.array2image(model)
+        for i in range(len(x_pix)):
+            assert image[y_pix[i], x_pix[i]] == 1
+
+        x_pix = np.array([10.5, 5.5, 10.5, 90.5])
+        y_pix = np.array([40, 50, 60, 50])
+        ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
+        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
+        kwargs_else = {'ra_pos': ra_pos, 'dec_pos': dec_pos, 'point_amp': np.ones_like(ra_pos)}
+        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_else=kwargs_else)
+        image = makeImage.Data.array2image(model)
+        for i in range(len(x_pix)):
+            print(int(y_pix[i]), int(x_pix[i]+0.5))
+            assert image[int(y_pix[i]), int(x_pix[i])] == 0.5
+            assert image[int(y_pix[i]), int(x_pix[i]+0.5)] == 0.5
+
 
 if __name__ == '__main__':
     pytest.main()

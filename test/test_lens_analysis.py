@@ -40,6 +40,14 @@ class TestLensAnalysis(object):
         gamma_out = analysis.profile_slope(kwargs_lens, kwargs_else={})
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
+        kwargs_options = {'lens_model_list': ['SPEMD'], 'lens_model_internal_bool': [True]}
+        analysis = LensAnalysis(kwargs_options, kwargs_data={})
+        gamma_in = 2.
+        kwargs_lens = [{'theta_E': 1.4516812130749424, 'q': 0.89760957136967312, 'center_x': -0.04507598845306314,
+         'center_y': 0.054491803177414651, 'phi_G': 0.34403343049704888, 'gamma': gamma_in}]
+        gamma_out = analysis.profile_slope(kwargs_lens, kwargs_else={})
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
+
     def test_critical_curves(self):
         kwargs_options = {'lens_model_list': ['SPEP']}
         deltaPix = 0.05

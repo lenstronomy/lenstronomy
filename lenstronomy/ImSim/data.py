@@ -301,8 +301,9 @@ class Data(object):
             return img_conv
         elif psf_type == 'pixel':
             if self._psf_subgrid:
+                n = len(kwargs['kernel_pixel'])
                 kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res)
-                #kernel = util.c
+                kernel = util.cut_psf(kernel, psf_size=n*self._subgrid_res)
             else:
                 kernel = kwargs['kernel_pixel']
             if 'kernel_fft' in kwargs:

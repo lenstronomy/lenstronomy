@@ -243,29 +243,55 @@ class LensModel(object):
         return potential, f_x, f_y, kappa, gamma1, gamma2, mag
 
     def hessian(self, x, y, kwargs, kwargs_else=None, k=None):
-
-        # TODO non-linear part of foreground shear is not computed! Use numerical estimate or chain rule!
+        """
+        hessian matrix
+        :param x:
+        :param y:
+        :param kwargs:
+        :param kwargs_else:
+        :param k:
+        :return:
+        """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if self._foreground_shear:
-            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
-                                                            e2=kwargs_else['gamma2_foreground'])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
+            # needs to be computed numerically due to non-linear effects
+            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, kwargs_else)
         else:
             x_ = x
             y_ = y
-        if k is not None:
-            f_xx, f_yy, f_xy= self.func_list[k].hessian(x_, y_, **kwargs[k])
-        else:
-            f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
-            for i, func in enumerate(self.func_list):
-                if not self.model_list[i] == 'NONE':
-                    f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-                    f_xx += f_xx_i
-                    f_yy += f_yy_i
-                    f_xy += f_xy_i
+            if k is not None:
+                f_xx, f_yy, f_xy= self.func_list[k].hessian(x_, y_, **kwargs[k])
+            else:
+                f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
+                for i, func in enumerate(self.func_list):
+                    if not self.model_list[i] == 'NONE':
+                        f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
+                        f_xx += f_xx_i
+                        f_yy += f_yy_i
+                        f_xy += f_xy_i
         return f_xx, f_xy, f_yy
+
+    def hessian_differential(self, x, y, kwargs, kwargs_else=None, diff=0.0000001):
+        """
+        computes the differentials f_xx, f_yy, f_xy from f_x and f_y
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, kwargs_else)
+
+        alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, kwargs_else)
+        alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, kwargs_else)
+
+        dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
+        dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
+        dalpha_decra = (alpha_dec_dx - alpha_dec)/diff
+        dalpha_decdec = (alpha_dec_dy - alpha_dec)/diff
+
+        f_xx = dalpha_rara
+        f_yy = dalpha_decdec
+        f_xy = dalpha_radec
+        f_yx = dalpha_decra
+        return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d(self, r, kwargs, bool_list=None):
         """

@@ -31,14 +31,14 @@ class ImagePosition(object):
         x_mins, y_mins, values = util.neighborSelect(absmapped, x_grid, y_grid)
         x_mins = x_mins[values < deltapix]
         y_mins = y_mins[values < deltapix]
-        if x_mins == []:
-            return None, None
+        #if x_mins is []:
+        #    return None, None
         num_iter = 10
         x_mins, y_mins, values = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, deltapix, num_iter, kwargs_lens, kwargs_else)
         x_mins, y_mins, values = lenstronomy_util.findOverlap(x_mins, y_mins, values, deltapix)
         x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
-        if x_mins == []:
-            return None, None
+        #if x_mins is []:
+        #    return None, None
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, deltapix, num_iter, kwargs_lens, kwargs_else=None):
@@ -58,24 +58,18 @@ class ImagePosition(object):
             l = 0
             x_mapped, y_mapped = self.LensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens, kwargs_else)
             delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-            #potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x_min[i], y_min[i], kwargs_lens, kwargs_else)
             f_xx, f_xy, f_yy = self.LensModel.hessian(x_min[i], y_min[i], kwargs_lens, kwargs_else)
-            #DistMatrix = np.array([[1-kappa+gamma1, gamma2], [gamma2, 1-kappa-gamma1]])
             DistMatrix = np.array([[1 - f_yy, f_xy], [f_xy, 1 - f_xx]])
             det = (1 - f_xx) * (1 - f_yy) - f_xy * f_xy
-            #det = 1./mag
             posAngel = np.array([x_min[i], y_min[i]])
             while(delta > deltapix/1000 and l<num_iter):
                 deltaVec = np.array([x_mapped - sourcePos_x, y_mapped - sourcePos_y])
                 posAngel = posAngel - DistMatrix.dot(deltaVec)/det
                 x_mapped, y_mapped = self.LensModel.ray_shooting(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
                 delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-                #potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
-                #DistMatrix = np.array([[1 - kappa + gamma1, gamma2], [gamma2, 1 - kappa - gamma1]])
                 f_xx, f_xy, f_yy = self.LensModel.hessian(posAngel[0], posAngel[1], kwargs_lens, kwargs_else)
                 DistMatrix = np.array([[1 - f_yy, f_xy], [f_xy, 1 - f_xx]])
                 det = (1 - f_xx) * (1 - f_yy) - f_xy * f_xy
-                #det=1./mag
                 l += 1
             x_mins[i] = posAngel[0]
             y_mins[i] = posAngel[1]

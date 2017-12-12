@@ -63,8 +63,8 @@ class FittingSequence(object):
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
-        elif fitting_kwargs['fitting_routine'] == 'MCMC_buldge_disk':
-            samples, param, dist = self.fitting.mcmc_buldge_disk(self.kwargs_options,
+        elif fitting_kwargs['fitting_routine'] == 'MCMC_source':
+            samples, param, dist = self.fitting.mcmc_source(self.kwargs_options,
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
@@ -122,11 +122,6 @@ class FittingSequence(object):
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, gamma_fixed=True, compute_bool=compute_bool)
         elif fitting_routine == 'lens_combined':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
-                lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
-        elif fitting_routine == 'buldge_disk':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_buldge_disk(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)

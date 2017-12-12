@@ -38,7 +38,7 @@ class PointSource(object):
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
         data = self.Data.data
-        psf_large = kwargs_psf['kernel_large']
+        psf_point_source = kwargs_psf['kernel_point_source']
         if point_amp is None:
             point_amp = np.ones_like(n_points)
         #point_amp = kwargs_else['point_amp']
@@ -46,18 +46,18 @@ class PointSource(object):
         error_map = np.zeros(numPix)
         if map_error is True:
             for i in range(0, n_points):
-                error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_large, point_amp[i], error_map, kwargs_psf['error_map'])
+                error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         A = np.zeros((num_param, numPix))
 
         if self.kwargs_options.get('fix_magnification', False):
             grid2d = np.zeros((self.Data._nx, self.Data._ny))
             for i in range(n_points):
-                grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_large)
+                grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
             A[0, :] = self.Data.image2array(grid2d)
         else:
             for i in range(num_param):
                 grid2d = np.zeros((self.Data._nx, self.Data._ny))
-                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_large)
+                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source)
                 A[i, :] = self.Data.image2array(point_source)
         return A, error_map
 
@@ -74,16 +74,16 @@ class PointSource(object):
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
         data = self.Data.data
-        psf_large = kwargs_psf['kernel_large']
+        psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
         numPix = len(data)
         error_map = np.zeros(numPix)
         if self.kwargs_options.get('error_map', False) is True:
             for i in range(0, n_points):
-                error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_large, point_amp[i], error_map, kwargs_psf['error_map'])
+                error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         grid2d = np.zeros((self.Data._nx, self.Data._ny))
         for i in range(n_points):
-            grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_large*point_amp[i])
+            grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
         point_source = self.Data.image2array(grid2d)
         return point_source, error_map
 
@@ -98,13 +98,13 @@ class PointSource(object):
         dec_pos = kwargs_else['dec_pos']
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
-        psf_large = kwargs_psf['kernel_large']
+        psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
 
         point_source_list = []
         for i in range(n_points):
             grid2d = np.zeros((self.Data._nx, self.Data._ny))
-            point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_large*point_amp[i])
+            point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
             point_source_list.append(point_source)
         return point_source_list
 

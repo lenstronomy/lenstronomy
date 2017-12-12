@@ -1,6 +1,4 @@
 from lenstronomy.ImSim.make_image import MakeImage
-from astrofunc.util import Util_class
-util_class = Util_class()
 import astrofunc.util as util
 
 import numpy as np
@@ -26,8 +24,8 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        kernel_old = kwargs_psf["kernel_large"]
-        kernel_small = kwargs_psf["kernel"]
+        kernel_old = kwargs_psf["kernel_point_source"]
+        kernel_small = kwargs_psf["kernel_pixel"]
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
         image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
@@ -46,12 +44,13 @@ class PSF_iterative(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
-        kernel_new_small = util_class.cut_psf(kernel_new_small, psf_size=kernelsize_small)
-        kernel_new = util_class.cut_psf(kernel_new, psf_size=kernel_size)
+        kernel_new_small = util.pixel_kernel(kernel_new_small, subgrid_res=7)
+        kernel_new_small = util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
+        kernel_new = util.cut_psf(kernel_new, psf_size=kernel_size)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         if not kwargs_options.get('psf_keep_small', False):
-            kwargs_psf_new['kernel'] = kernel_new_small
-        kwargs_psf_new['kernel_large'] = kernel_new
+            kwargs_psf_new['kernel_pixel'] = kernel_new_small
+        kwargs_psf_new['kernel_point_source'] = kernel_new
         if not kwargs_options.get('psf_keep_error_map', False):
             kwargs_psf_new['error_map'] = error_map
         #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
@@ -123,12 +122,14 @@ class PSF_iterative(object):
         kernel_list = np.zeros((n, kernelsize, kernelsize))
         i = 0
         for l in range(len(x_)):
-            kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize)
+            kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize+2)
             mask_i = mask * mask_point_source_list[l]
-            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize, shift=False)
+            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize+2, shift=False)
             kernel_shifted[kernel_shifted < 0] = 0
             kernel_shifted *= mask_cutout
             kernel_init = util.kernel_norm(kernel_init)
+            mask_cutout = util.cut_edges(mask_cutout, kernelsize)
+            kernel_shifted = util.cut_edges(kernel_shifted, kernelsize)
             kernel_norm = np.sum(kernel_init[mask_cutout == 1])
             kernel_shifted = util.kernel_norm(kernel_shifted)
             kernel_shifted *= kernel_norm

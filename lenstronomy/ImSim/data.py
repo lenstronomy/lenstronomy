@@ -3,7 +3,8 @@ import scipy.ndimage as ndimage
 import scipy.signal as signal
 
 import astrofunc.util as util
-from astrofunc.util import Util_class
+from astrofunc.util import FFTConvolve
+fft = FFTConvolve()
 
 
 class Data(object):
@@ -13,7 +14,6 @@ class Data(object):
     def __init__(self, kwargs_options, kwargs_data):
         self.kwargs_options = kwargs_options
         self._subgrid_res = kwargs_options.get('subgrid_res', 1)
-        self.util_class = Util_class()
         if kwargs_data is None:
             pass
         else:
@@ -86,7 +86,7 @@ class Data(object):
             self._x_grid_all, self._y_grid_all = x_grid, y_grid
             self.x_grid = x_grid[self._idex_mask == 1]
             self.y_grid = y_grid[self._idex_mask == 1]
-            x_grid_sub, y_grid_sub = self.util_class.make_subgrid(x_grid, y_grid, self._subgrid_res)
+            x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, self._subgrid_res)
             self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
             self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
             self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
@@ -301,13 +301,14 @@ class Data(object):
             return img_conv
         elif psf_type == 'pixel':
             if self._psf_subgrid:
-                kernel = self._subgrid_kernel(kwargs['kernel'], self._subgrid_res)
+                kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res)
+                #kernel = util.c
             else:
-                kernel = kwargs['kernel']
+                kernel = kwargs['kernel_pixel']
             if 'kernel_fft' in kwargs:
-                kernel_fft = kwargs['kernel_fft']
+                kernel_fft = kwargs['kernel_pixel_fft']
                 try:
-                    img_conv1 = self.util_class.fftconvolve(grid, kernel, kernel_fft, mode='same')
+                    img_conv1 = fft.fftconvolve(grid, kernel, kernel_fft, mode='same')
                 except:
                     img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             else:
@@ -326,33 +327,18 @@ class Data(object):
         """
         image = self.array2image(image, self._subgrid_res)
         if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
-            grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
+            grid_re_sized = util.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
         else:
             gridScale = self.deltaPix/float(self._subgrid_res)
             if kwargs_psf == 'pixel' and not self._psf_subgrid:
-                grid_re_sized = self.util_class.re_size(image, self._subgrid_res)
+                grid_re_sized = util.re_size(image, self._subgrid_res)
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
             else:
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
-                grid_final = self.util_class.re_size(grid_conv, self._subgrid_res)
+                grid_final = util.re_size(grid_conv, self._subgrid_res)
 
         return self.image2array(grid_final)
-
-    def _subgrid_kernel(self, kernel, subgrid_res):
-        """
-        creates a higher resolution kernel with subgrid resolution
-        :param kernel: initial kernel
-        :param subgrid_res: subgrid resolution required
-        :return: kernel with higher resolution (larger)
-        """
-        numPix = len(kernel)
-        x_in = np.linspace(0, 1, numPix)
-        x_out = np.linspace(0, 1, numPix * subgrid_res)
-        out_values = util.re_size_array(x_in, x_in, kernel, x_out, x_out)
-        kernel_subgrid = out_values
-        kernel_subgrid = util.kernel_norm(kernel_subgrid)
-        return kernel_subgrid
 
     def flux_aperture(self, ra_pos, dec_pos, width):
         """
@@ -379,7 +365,7 @@ class Data(object):
             sigma = kwargs['sigma']
             fwhm = util.sigma2fwhm(sigma)
         elif psf_type == 'pixel':
-            kernel = kwargs['kernel_large']
+            kernel = kwargs['kernel_point_source']
             fwhm = util.fwhm_kernel(kernel) * self.deltaPix
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)

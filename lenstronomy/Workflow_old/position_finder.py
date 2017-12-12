@@ -5,6 +5,7 @@ import numpy as np
 from lenstronomy.MCMC.mcmc import MCMC_sampler
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
 from lenstronomy.Trash.parameters import Param
+import astrofunc.util as util
 
 
 #TODO: will be replaced by fitting.py
@@ -443,10 +444,8 @@ class PositionFinder(object):
             kwargs_data = self.kwargs_data
             kwargs_psf = self.kwargs_psf_init
         from lenstronomy.Trash.make_image import MakeImage
-        from lenstronomy.util import Util_class
-        util_class = Util_class()
         makeImage = MakeImage(self.kwargs_options, kwargs_data)
-        x_grid, y_grid = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
+        x_grid, y_grid = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], subgrid_res)
         numPix = len(kwargs_data['image_data'])
         grid_final, error_map, cov_param, param = makeImage.make_image_ideal(x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, kwargs_data['deltaPix'], subgrid_res)
         amp = makeImage.get_image_amplitudes(param, kwargs_else)

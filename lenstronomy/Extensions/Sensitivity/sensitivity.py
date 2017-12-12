@@ -1,12 +1,7 @@
 __author__ = 'sibirrer'
 
 import astrofunc.util as util
-from astrofunc.util import Util_class
-
-from lenstronomy.Trash.make_image import MakeImage
-
-util_class = Util_class()
-
+from lenstronomy.ImSim.make_image import MakeImage
 import copy
 
 
@@ -40,7 +35,7 @@ class Sensitivity(object):
             kwargs_psf_i = kwargs_psf["image"+str(i+1)]
             deltaPix = kwargs_data_i['deltaPix']
             x_grid, y_grid = kwargs_data_i['x_coords'], kwargs_data_i['y_coords']
-            x_grid_sub, y_grid_sub = util_class.make_subgrid(x_grid, y_grid, subgrid_res)
+            x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, subgrid_res)
             numPix = len(kwargs_data_i['image_data'])
             makeImage = MakeImage(kwargs_options, kwargs_data_i)
             if noMask:
@@ -78,7 +73,7 @@ class Sensitivity(object):
             param_i = param[i]
             deltaPix = kwargs_data_i['deltaPix']
             x_grid, y_grid = kwargs_data_i['x_coords'], kwargs_data_i['y_coords']
-            x_grid_sub, y_grid_sub = util_class.make_subgrid(x_grid, y_grid, subgrid_res)
+            x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, subgrid_res)
             numPix = len(kwargs_data_i['image_data'])
             makeImage = MakeImage(kwargs_options, kwargs_data_i)
             image_i, error_map = makeImage.make_image_with_params(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source, kwargs_psf_i,

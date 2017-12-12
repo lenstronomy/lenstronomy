@@ -50,7 +50,7 @@ class TestMakeImage(object):
         kwargs_options = {'lens_model_list': ['SPEP'], 'point_source': True, 'subgrid_res': 2}
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_large': kernel, 'kernel': kernel, 'psf_type': 'pixel'}
+        kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'pixel'}
         makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf=kwargs_psf)
         # chose point source positions
         x_pix = np.array([10, 5, 10, 90])

@@ -1,7 +1,6 @@
 import copy
 import numpy as np
 import astrofunc.util as util
-from astrofunc.util import Util_class
 import astrofunc.LightProfiles.torus as torus
 from astrofunc.LensingProfiles.gaussian import Gaussian
 import astrofunc.multi_gauss_expansion as mge
@@ -343,8 +342,7 @@ class LensAnalysis(object):
 
         :return:
         """
-        util_class = Util_class()
-        x_grid_high_res, y_grid_high_res = util_class.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'], 10)
+        x_grid_high_res, y_grid_high_res = util.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'], 10)
         mag_high_res = util.array2image(
             self.LensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
 

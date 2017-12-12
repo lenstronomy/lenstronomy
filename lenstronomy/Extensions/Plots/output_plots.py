@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndimage
 from astrofunc.LensingProfiles.external_shear import ExternalShear
-from astrofunc.util import Util_class
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from lenstronomy.ImSim.make_image import MakeImage
@@ -293,8 +292,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     image_raw = kwargs_data['image_data']
     nx, ny = kwargs_data['numPix_xy']
 
-    util_class = Util_class()
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'],
+    x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'],
                                                                high_res)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
@@ -487,8 +485,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
 def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
                         else_result, cmap, source_sigma=0.001):
 
-    util_class = Util_class()
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 20)
+    x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 20)
 
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
@@ -666,9 +663,8 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
     kwargs_options_run = copy.deepcopy(kwargs_options)
     kwargs_options_run['lens_light_type'] = "NONE"
 
-    util_class = Util_class()
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
-    x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
+    x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
     makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
 
@@ -735,8 +731,8 @@ def psf_iteration_compare(kwargs_psf):
     :param kwargs_psf:
     :return:
     """
-    psf_out = kwargs_psf['kernel_large']
-    psf_in = kwargs_psf['kernel_large_init']
+    psf_out = kwargs_psf['kernel_point_source']
+    psf_in = kwargs_psf['kernel_point_source_init']
     n_kernel = len(psf_in)
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.

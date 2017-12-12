@@ -5,7 +5,6 @@ import pytest
 from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
 from lenstronomy.ImSim.lens_model import LensModel
 import astrofunc.util as util
-from astrofunc.util import Util_class
 
 
 class TestLensAnalysis(object):
@@ -63,9 +62,8 @@ class TestLensAnalysis(object):
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = analysis.critical_curve(kwargs_lens, kwargs_else={})
 
         import matplotlib.pyplot as plt
-        util_class = Util_class()
         lensModel = LensModel(kwargs_options)
-        x_grid_high_res, y_grid_high_res = util_class.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 10)
+        x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 10)
         mag_high_res = util.array2image(
             lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else={}))
 

@@ -3,7 +3,6 @@ from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.Solver.image_positions import ImagePosition
 import astrofunc.util as util
-from astrofunc.util import Util_class
 from astrofunc.LensingProfiles.gaussian import Gaussian
 
 import numpy as np
@@ -16,7 +15,6 @@ class Simulation(object):
     """
     def __init__(self):
         self.gaussian = Gaussian()
-        self.util_class = Util_class()
 
     def data_configure(self, numPix, deltaPix, exposure_time, sigma_bkg):
         """
@@ -64,13 +62,14 @@ class Simulation(object):
             kernel_large = self.gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
             kernel_large /= np.sum(kernel_large)
             kernel_large = util.array2image(kernel_large)
-            kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_large': kernel_large, 'kernel': kernel_large}
+            kernel_pixel = util.pixel_kernel(kernel_large)
+            kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_point_source': kernel_large, 'kernel_pixel': kernel_pixel}
         elif psf_type == 'pixel':
             kernel_large = copy.deepcopy(kernel)
-            kernel_large = self.util_class.cut_psf(kernel_large, psf_size=kernelsize)
+            kernel_large = util.cut_psf(kernel_large, psf_size=kernelsize)
             kernel_small = copy.deepcopy(kernel)
-            kernel_small = self.util_class.cut_psf(kernel_small, psf_size=kernelsize)
-            kwargs_psf = {'psf_type': "pixel", 'kernel': kernel_small, 'kernel_large': kernel_large}
+            kernel_small = util.cut_psf(kernel_small, psf_size=kernelsize)
+            kwargs_psf = {'psf_type': "pixel", 'kernel_pixel': kernel_small, 'kernel_point_source': kernel_large}
         elif psf_type == 'NONE':
             kwargs_psf = {'psf_type': 'NONE'}
         else:

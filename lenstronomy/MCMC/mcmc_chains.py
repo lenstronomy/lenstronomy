@@ -1,7 +1,6 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-from astrofunc.util import Util_class
 
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.multiband import MakeImageMultiband
@@ -19,7 +18,6 @@ class MCMC_chain(object):
         initializes all the classes needed for the chain
         """
         # print('initialized on cpu', threading.current_thread())
-        self.util_class = Util_class()
         self._source_marg = kwargs_options.get('source_marg', False) # whether to fully invert the covariance matrix for marginalization
         self._sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf, compute_bool=compute_bool)

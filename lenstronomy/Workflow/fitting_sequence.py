@@ -31,7 +31,7 @@ class FittingSequence(object):
         samples_mcmc, param_mcmc, dist_mcmc = [], [], []
         lens_temp, source_temp, lens_light_temp, else_temp = self._init_kwargs()
         for fitting_kwargs in fitting_kwargs_list:
-            if fitting_kwargs['fitting_routine'] in ['MCMC', 'MCMC_buldge_disk']:
+            if fitting_kwargs['fitting_routine'] in ['MCMC', 'MCMC_source']:
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, else_temp)
             else:
                 lens_temp, source_temp, lens_light_temp, else_temp, chain, param = self.fit_single(fitting_kwargs,

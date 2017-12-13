@@ -42,16 +42,6 @@ class TestLensModel(object):
         output = self.lensModel.magnification(x=1., y=1., kwargs=self.kwargs)
         assert output == 0.98848384784633392
 
-    def test_all(self):
-        potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.lensModel.all(x=1., y=1., kwargs=self.kwargs)
-        assert potential == 0.77880078307140488/(8*np.pi)
-        assert alpha1 == -0.19470019576785122/(8*np.pi)
-        assert alpha2 == -0.19470019576785122/(8*np.pi)
-        assert kappa == -0.0058101559832649833
-        assert gamma1 == 0
-        assert gamma2 == 0.048675048941962805/(8*np.pi)
-        assert mag == 0.98848384784633392
-
     def test_ray_shooting(self):
         delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=self.kwargs)
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)

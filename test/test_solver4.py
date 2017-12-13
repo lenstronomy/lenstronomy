@@ -185,7 +185,7 @@ class TestSolver(object):
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
-        x_pos, y_pos = self.Image_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
+        x_pos, y_pos = self.Image_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
         x_mapped, y_mapped = self.lens_spp.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)
@@ -261,7 +261,7 @@ class TestSolverNew(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5},
                        {'coeffs': [0.,-0.1,0.01,-0.03,0.04, 0.1], 'beta': beta, 'center_x': 0, 'center_y': 0}]
-        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
+        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
         x_mapped, y_mapped = self.lens_spep_spp_shapelets.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)

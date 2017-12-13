@@ -142,7 +142,7 @@ class TestSolver(object):
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
-        x_pos, y_pos = self.image_position_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
+        x_pos, y_pos = self.image_position_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
         x_mapped, y_mapped = self.lens_spp.ray_shooting(x_pos, y_pos, kwargs_lens)
@@ -209,7 +209,7 @@ class TestSolverNew(object):
                        {'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}
                        ]
-        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
+        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
         x_mapped, y_mapped = self.lens_spep_spp_shapelets.ray_shooting(x_pos, y_pos, kwargs_lens)
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
@@ -327,7 +327,7 @@ class TestSolver_new(object):
         center_y = -0.1
         kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': center_x, 'center_y': center_y},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
-        x_pos, y_pos = self.image_position_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4)
+        x_pos, y_pos = self.image_position_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
         x_mapped, y_mapped = self.lens_spp.ray_shooting(x_pos, y_pos, kwargs_lens)

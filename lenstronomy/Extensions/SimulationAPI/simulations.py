@@ -133,7 +133,7 @@ class Simulation(object):
             n = len(x_mins)
             mag_list = np.zeros(n)
             for i in range(n):
-                potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = lensModel.all(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
+                mag = lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
                 mag_list[i] = abs(mag)
             kwargs_else['ra_pos'] = x_mins
             kwargs_else['dec_pos'] = y_mins

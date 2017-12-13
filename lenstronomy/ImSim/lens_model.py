@@ -208,40 +208,6 @@ class LensModel(object):
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
         return 1./det_A  # attention, if dividing to zero
 
-    def all(self, x, y, kwargs, kwargs_else=None):
-        """
-        specially build to reduce computational costs
-        """
-        x = np.array(x, dtype=float)
-        y = np.array(y, dtype=float)
-        if self._foreground_shear:
-            f_x_shear1, f_y_shear1 = self.shear.derivatives(x, y, e1=kwargs_else['gamma1_foreground'],
-                                                            e2=kwargs_else['gamma2_foreground'])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-        else:
-            x_ = x
-            y_ = y
-        potential = np.zeros_like(x_)
-        f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
-        f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
-        for i, func in enumerate(self.func_list):
-            if not self.model_list[i] == 'NONE':
-                potential += func.function(x_, y_, **kwargs[i])
-                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
-                f_x += f_x_i
-                f_y += f_y_i
-                f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-                f_xx += f_xx_i
-                f_yy += f_yy_i
-                f_xy += f_xy_i
-        kappa = 1./2 * (f_xx + f_yy)  # attention on units
-        gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
-        gamma2 = f_xy  # attention on units
-        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
-        mag = 1./det_A
-        return potential, f_x, f_y, kappa, gamma1, gamma2, mag
-
     def hessian(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         hessian matrix

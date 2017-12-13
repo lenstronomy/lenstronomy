@@ -76,7 +76,7 @@ class ImagePosition(object):
             values[i] = delta
         return x_mins, y_mins, values
 
-    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, magThresh=1., numImage=4, kwargs_else=None):
+    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4, kwargs_else=None):
         """
 
         :param sourcePos_x:
@@ -91,7 +91,7 @@ class ImagePosition(object):
         x_mins, y_mins = self.image_position(sourcePos_x, sourcePos_y, deltapix, numPix, kwargs_lens, kwargs_else)
         mag_list = []
         for i in range(len(x_mins)):
-            potential, alpha1, alpha2, kappa, gamma1, gamma2, mag = self.LensModel.all(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
+            mag = self.LensModel.magnification(x_mins[i], y_mins[i], kwargs_lens, kwargs_else)
             mag_list.append(abs(mag))
         mag_list = np.array(mag_list)
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImage)

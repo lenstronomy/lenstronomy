@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import astrofunc.util as util
 import numpy as np
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.Solver.image_positions import ImagePosition
+from lenstronomy.Solver.image_positions import LensEquationSolver
 from lenstronomy.Solver.solver2point import Constraints2
 from lenstronomy.Solver.solver4point import Constraints
 from lenstronomy.Workflow.else_param import ElseParam
@@ -36,7 +36,7 @@ class Param(object):
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
         self.lensModel = LensModel(kwargs_options)
-        self.ImagePosition = ImagePosition(self.lensModel)
+        self.ImagePosition = LensEquationSolver(self.lensModel)
 
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._num_images = kwargs_options.get('num_images', 4)
@@ -273,11 +273,9 @@ class Param(object):
         if 'center_x' in kwargs_source[0]:
             sourcePos_x = kwargs_source[0]['center_x']
             sourcePos_y = kwargs_source[0]['center_y']
-            deltaPix = 0.1
-            numPix = 100
-            #TODO make deltaPix and numPix more generic
-            x_pos, y_pos = self.ImagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens,
-                                                               kwargs_else)
+            min_distance = 0.05
+            search_window = 10
+            x_pos, y_pos = self.ImagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
             kwargs_else['ra_pos'] = x_pos
             kwargs_else['dec_pos'] = y_pos
         else:

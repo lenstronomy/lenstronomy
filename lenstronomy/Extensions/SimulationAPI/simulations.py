@@ -1,7 +1,7 @@
 from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
-from lenstronomy.Solver.image_positions import ImagePosition
+from lenstronomy.Solver.image_positions import LensEquationSolver
 import astrofunc.util as util
 from astrofunc.LensingProfiles.gaussian import Gaussian
 
@@ -123,13 +123,13 @@ class Simulation(object):
         :return:
         """
         lensModel = LensModel(kwargs_options)
-        imPos = ImagePosition(lensModel=lensModel)
+        imPos = LensEquationSolver(lensModel=lensModel)
         if kwargs_options.get('point_source', False):
-            deltaPix = kwargs_data['deltaPix']/10.
-            numPix = kwargs_data['numPix_xy'][0]*10
+            min_distance = kwargs_data['deltaPix']/10.
+            search_window = kwargs_data['numPix_xy'][0]*kwargs_data['deltaPix']
             sourcePos_x = kwargs_else['sourcePos_x']
             sourcePos_y = kwargs_else['sourcePos_y']
-            x_mins, y_mins = imPos.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
             n = len(x_mins)
             mag_list = np.zeros(n)
             for i in range(n):

@@ -4,25 +4,23 @@ import numpy as np
 import astrofunc.util as util_astrofunc
 
 
-def findOverlap(x_mins, y_mins, values, deltapix):
+def findOverlap(x_mins, y_mins, min_distance):
     """
     finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well
     """
     n = len(x_mins)
     idex = []
     for i in range(n):
-        if i==0:
-            if values[0] > deltapix/100.:
-                idex.append(i)
+        if i == 0:
+            pass
         else:
-            for j in range(0,i):
-                if ((abs(x_mins[i]-x_mins[j])<deltapix and abs(y_mins[i]-y_mins[j])<deltapix) or values[i]>deltapix/100.):
+            for j in range(0, i):
+                if (abs(x_mins[i] - x_mins[j]) < min_distance and abs(y_mins[i] - y_mins[j]) < min_distance):
                     idex.append(i)
                     break
     x_mins = np.delete(x_mins, idex, axis=0)
     y_mins = np.delete(y_mins, idex, axis=0)
-    values = np.delete(values, idex, axis=0)
-    return x_mins, y_mins, values
+    return x_mins, y_mins
 
 
 def coordInImage(x_coord, y_coord, numPix, deltapix):

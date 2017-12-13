@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.Solver.image_positions import ImagePosition
+from lenstronomy.Solver.image_positions import LensEquationSolver
 
 
 class MultiBand(object):
@@ -103,13 +103,13 @@ class MultiBand(object):
 
     def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
         lensModel = LensModel(kwargs_options)
-        imPos = ImagePosition(lensModel=lensModel)
+        imPos = LensEquationSolver(lensModel=lensModel)
         if kwargs_options.get('point_source', False):
-            deltaPix = 0.05
-            numPix = 100
+            min_distance = 0.05
+            search_window = 10
             sourcePos_x = kwargs_else['sourcePos_x']
             sourcePos_y = kwargs_else['sourcePos_y']
-            x_mins, y_mins = imPos.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
             n = len(x_mins)
             mag_list = np.zeros(n)
             for i in range(n):

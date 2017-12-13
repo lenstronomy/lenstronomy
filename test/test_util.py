@@ -9,12 +9,12 @@ import numpy.testing as npt
 def test_findOverlap():
     x_mins = [0,1,0]
     y_mins = [1,2,1]
-    values = [0.0001,1,0.001]
-    deltapix = 1
-    x_mins, y_mins, values = Util.findOverlap(x_mins, y_mins, values, deltapix)
-    assert x_mins == 0
-    assert y_mins == 1
-    assert values == 0.0001
+    deltapix = 0.5
+    x_mins, y_mins = Util.findOverlap(x_mins, y_mins, deltapix)
+    print(x_mins, y_mins)
+    assert x_mins[0] == 0
+    assert y_mins[0] == 1
+    assert len(x_mins) == 2
 
 
 def test_coordInImage():

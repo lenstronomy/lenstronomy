@@ -6,7 +6,7 @@ import numpy.testing as npt
 import pytest
 from astrofunc.LensingProfiles.nfw import NFW
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.Solver.image_positions import ImagePosition
+from lenstronomy.Solver.image_positions import LensEquationSolver
 from lenstronomy.Solver.solver4point import SolverProfile, Constraints, SolverShapelets
 
 
@@ -18,13 +18,13 @@ class TestSolver(object):
         self.constraints = Constraints(lens_model='SPEP')
         kwargs_options_spep = {'lens_model_list': ['SPEP']}
         self.lens_spep = LensModel(kwargs_options_spep)
-        self.Image_spep = ImagePosition(self.lens_spep)
+        self.Image_spep = LensEquationSolver(self.lens_spep)
         kwargs_options_nfw = {'lens_model_list': ['SPEP', 'NFW']}
         self.lens_nfw = LensModel(kwargs_options_nfw)
-        self.Image_nfw = ImagePosition(self.lens_nfw)
+        self.Image_nfw = LensEquationSolver(self.lens_nfw)
         kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP']}
         self.lens_spp = LensModel(kwargs_options_spp)
-        self.Image_spp = ImagePosition(self.lens_spp)
+        self.Image_spp = LensEquationSolver(self.lens_spp)
         self.solver = SolverProfile()
         self.nfw = NFW()
 
@@ -43,7 +43,7 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1, 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
-        x_pos, y_pos = self.Image_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
+        x_pos, y_pos = self.Image_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         sourcePos_x, sourcePos_y = self.lens_spep.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x, sourcePos_y, 'source positions')
         e1, e2 = util.phi_q2_elliptisity(kwargs_lens[0]['phi_G'], kwargs_lens[0]['q'])
@@ -63,7 +63,7 @@ class TestSolver(object):
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma, 'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y}]
         sourcePos_x_new, sourcePos_y_new = self.lens_spep.ray_shooting(x_pos[0], y_pos[0], kwargs_lens_new)
-        x_pos_new, y_pos_new = self.Image_spep.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        x_pos_new, y_pos_new = self.Image_spep.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         print(x_pos_new, 'x_pos_new')
         print(x_pos, 'x_pos old')
         print(kwargs_lens_new)
@@ -86,7 +86,7 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         kwargs_lens = [{'theta_E': 15., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
-        x_pos, y_pos = self.Image_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
+        x_pos, y_pos = self.Image_spep.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=deltapix, search_window=numPix*deltapix)
         sourcePos_x, sourcePos_y = self.lens_spep.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x, sourcePos_y, 'source positions')
         e1, e2 = util.phi_q2_elliptisity(kwargs_lens[0]['phi_G'], kwargs_lens[0]['q'])
@@ -106,7 +106,7 @@ class TestSolver(object):
         phi_G, q = util.elliptisity2phi_q(e1_new, e2_new)
         kwargs_lens_new = [{'theta_E': phi_E, 'gamma': gamma, 'q': q, 'phi_G': phi_G, 'center_x': center_x, 'center_y': center_y}]
         sourcePos_x_new, sourcePos_y_new = self.lens_spep.ray_shooting(x_pos[0], y_pos[0], kwargs_lens_new)
-        x_pos_new, y_pos_new = self.Image_spep.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        x_pos_new, y_pos_new = self.Image_spep.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, min_distance=deltapix, search_window=numPix*deltapix)
         print(x_pos_new, 'x_pos_new')
         print(x_pos, 'x_pos old')
         print(kwargs_lens_new)
@@ -132,7 +132,7 @@ class TestSolver(object):
         theta_Rs = self.nfw._rho02alpha(1., Rs)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
-        x_pos, y_pos = self.Image_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix)
+        x_pos, y_pos = self.Image_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=deltapix, search_window=numPix*deltapix)
         sourcePos_x_new, sourcePos_y_new = self.lens_nfw.ray_shooting(x_pos, y_pos, kwargs_lens)
         print(sourcePos_x - sourcePos_x_new, 'sourcePos_x- sourcePos_x_new NFW')
         print(sourcePos_y - sourcePos_y_new, 'sourcePos_y- sourcePos_y_new NFW')
@@ -159,7 +159,7 @@ class TestSolver(object):
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')
         print(sourcePos_x_new_array, sourcePos_y_new_array, 'sourcePos_x_new_array, sourcePos_y_new_array')
-        x_pos_new, y_pos_new = self.Image_nfw.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        x_pos_new, y_pos_new = self.Image_nfw.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, min_distance=deltapix, search_window=numPix*deltapix)
         # plt.plot(x_pos, y_pos, 'or')
         # plt.plot(x_pos_new, y_pos_new, 'og')
         # plt.show()
@@ -185,7 +185,7 @@ class TestSolver(object):
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5}]
-        x_pos, y_pos = self.Image_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
+        x_pos, y_pos = self.Image_spp.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=deltapix, search_window=numPix*deltapix, numImages=4)
         x_mapped, y_mapped = self.lens_spp.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)
@@ -216,7 +216,7 @@ class TestSolver(object):
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')
         print(sourcePos_x_new_array, sourcePos_y_new_array, 'sourcePos_x_new_array, sourcePos_y_new_array')
-        x_pos_new, y_pos_new = self.Image_spp.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        x_pos_new, y_pos_new = self.Image_spp.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, min_distance=deltapix, search_window=numPix*deltapix, numImages=4)
         # import matplotlib.pylab as plt
         # plt.plot(x_pos, y_pos, 'or')
         # plt.plot(x_pos_new, y_pos_new, 'og')
@@ -243,10 +243,10 @@ class TestSolverNew(object):
         self.lens_spep = LensModel(kwargs_options_spep)
         kwargs_options_spep_spp = {'lens_model_list': ['SPEP', 'SPP']}
         self.lens_spep_spp = LensModel(kwargs_options_spep_spp)
-        self.image_position_spep_spp = ImagePosition(self.lens_spep_spp)
+        self.image_position_spep_spp = LensEquationSolver(self.lens_spep_spp)
         kwargs_options_spep_spp_shapelets = {'lens_model_list': ['SPEP', 'SPP', 'SHAPELETS_CART']}
         self.lens_spep_spp_shapelets = LensModel(kwargs_options_spep_spp_shapelets)
-        self.image_position_spep_spp_shapelets = ImagePosition(self.lens_spep_spp_shapelets)
+        self.image_position_spep_spp_shapelets = LensEquationSolver(self.lens_spep_spp_shapelets)
         self.solverShapelets = SolverShapelets()
         self.solver = SolverProfile()
         self.constraints = Constraints(lens_model='SHAPELETS_CART')
@@ -261,7 +261,7 @@ class TestSolverNew(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'gamma': 1.9, 'center_x': -0.5, 'center_y': 0.5},
                        {'coeffs': [0.,-0.1,0.01,-0.03,0.04, 0.1], 'beta': beta, 'center_x': 0, 'center_y': 0}]
-        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, deltapix, numPix, numImage=4)
+        x_pos, y_pos = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         x_mapped, y_mapped = self.lens_spep_spp_shapelets.ray_shooting(x_pos, y_pos, kwargs_lens)
         center_x, center_y = np.mean(x_mapped), np.mean(y_mapped)
         npt.assert_almost_equal(center_x, sourcePos_x, decimal=5)
@@ -289,7 +289,7 @@ class TestSolverNew(object):
         sourcePos_y_new = np.mean(sourcePos_y_new_array)
         print(sourcePos_x_new, sourcePos_y_new, 'sourcePos_x_new, sourcePos_y_new')
         print(sourcePos_x_new_array, sourcePos_y_new_array, 'sourcePos_x_new_array, sourcePos_y_new_array')
-        x_pos_new, y_pos_new = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, deltapix, numPix)
+        x_pos_new, y_pos_new = self.image_position_spep_spp_shapelets.findBrightImage(sourcePos_x_new, sourcePos_y_new, kwargs_lens_new, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         # import matplotlib.pylab as plt
         # plt.plot(x_pos, y_pos, 'or')
         # plt.plot(x_pos_new, y_pos_new, 'og')

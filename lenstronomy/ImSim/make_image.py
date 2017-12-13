@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
-from lenstronomy.Solver.image_positions import ImagePosition
+from lenstronomy.Solver.image_positions import LensEquationSolver
 
 from lenstronomy.ImSim.data import Data
 import lenstronomy.DeLens.de_lens as de_lens
@@ -23,7 +23,7 @@ class MakeImage(object):
         self.PointSource = PointSource(kwargs_options, self.Data)
         self.kwargs_options = kwargs_options
         self.kwargs_psf = kwargs_psf
-        self.imagePosition = ImagePosition(self.LensModel)
+        self.imagePosition = LensEquationSolver(self.LensModel)
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
@@ -124,7 +124,7 @@ class MakeImage(object):
         """
         deltaPix = self.Data.deltaPix / 2.
         numPix = self.Data.numPix * 2
-        x_mins, y_mins = self.imagePosition.image_position(sourcePos_x, sourcePos_y, deltaPix, numPix, kwargs_lens, kwargs_else)
+        x_mins, y_mins = self.imagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=kwargs_else, min_distance=deltaPix, search_window=deltaPix*numPix)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):

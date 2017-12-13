@@ -221,7 +221,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     plt.colorbar(im, cax=cax)
 
     ax = axes[1, 0]
-    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap)  # , vmin=0, vmax=2
+    im = ax.matshow(np.log10(makeImage.Data.array2image(lens_light_conv)), extent=[0, deltaPix * nx, 0, deltaPix * ny], origin='lower', cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
 
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)

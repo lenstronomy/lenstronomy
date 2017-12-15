@@ -54,7 +54,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image and computes likelihood
-        logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=self._source_marg)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_source, kwargs_else, self._position_sigma)
         logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)

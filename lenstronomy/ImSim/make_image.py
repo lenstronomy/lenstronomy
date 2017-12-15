@@ -127,7 +127,7 @@ class MakeImage(object):
         x_mins, y_mins = self.imagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=kwargs_else, min_distance=deltaPix, search_window=deltaPix*numPix)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -138,7 +138,6 @@ class MakeImage(object):
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        source_marg = self.kwargs_options.get('source_marg', False)
         im_sim, model_error, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                    kwargs_lens_light, kwargs_else,
                                                                                    inv_bool=source_marg)

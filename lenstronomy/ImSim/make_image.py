@@ -17,13 +17,13 @@ class MakeImage(object):
     """
     def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
         self.Data = Data(kwargs_options, kwargs_data)
-        self.LensModel = LensModel(kwargs_options)
+        self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.SourceModel = SourceModel(kwargs_options)
         self.LensLightModel = LensLightModel(kwargs_options)
         self.PointSource = PointSource(kwargs_options, self.Data)
         self.kwargs_options = kwargs_options
         self.kwargs_psf = kwargs_psf
-        self.imagePosition = LensEquationSolver(self.LensModel)
+        self.imagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """

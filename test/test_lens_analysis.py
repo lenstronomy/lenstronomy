@@ -48,7 +48,8 @@ class TestLensAnalysis(object):
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
     def test_critical_curves(self):
-        kwargs_options = {'lens_model_list': ['SPEP']}
+        lens_model_list = ['SPEP']
+        kwargs_options = {'lens_model_list': lens_model_list}
         deltaPix = 0.05
         numPix = 100
         x_grid, y_grid, x_0, y_0, ra_0, dec_0, Matrix, Matrix_inv = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
@@ -62,7 +63,7 @@ class TestLensAnalysis(object):
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = analysis.critical_curve(kwargs_lens, kwargs_else={})
 
         import matplotlib.pyplot as plt
-        lensModel = LensModel(kwargs_options)
+        lensModel = LensModel(lens_model_list)
         x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 10)
         mag_high_res = util.array2image(
             lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else={}))

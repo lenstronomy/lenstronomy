@@ -7,12 +7,11 @@ import copy
 
 class LensModel(object):
 
-    def __init__(self, kwargs_options):
+    def __init__(self, lens_model_list, foreground_shear=False):
         self.func_list = []
-        model_list = kwargs_options['lens_model_list']
         from astrofunc.LensingProfiles.external_shear import ExternalShear
         self.shear = ExternalShear()
-        for lens_type in model_list:
+        for lens_type in lens_model_list:
             if lens_type == 'EXTERNAL_SHEAR':
                 from astrofunc.LensingProfiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
@@ -102,12 +101,8 @@ class LensModel(object):
                 self.func_list.append(NoLens())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
-        self._foreground_shear = kwargs_options.get('foreground_shear', False)
-        self.model_list = model_list
-        self._perturb_alpha = kwargs_options.get("perturb_alpha", False)
-        if self._perturb_alpha:
-            self.alpha_perturb_x = kwargs_options["alpha_perturb_x"]
-            self.alpha_perturb_y = kwargs_options["alpha_perturb_y"]
+        self._foreground_shear = foreground_shear
+        self._model_list = lens_model_list
 
     def ray_shooting(self, x, y, kwargs, kwargs_else=None):
         """
@@ -150,7 +145,7 @@ class LensModel(object):
             y_ = y
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
-            if not self.model_list[i] == 'NONE':
+            if not self._model_list[i] == 'NONE':
                 potential += func.function(x_, y_, **kwargs[i])
         return potential
 
@@ -172,13 +167,10 @@ class LensModel(object):
         else:
             f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
             for i, func in enumerate(self.func_list):
-                if not self.model_list[i] == 'NONE':
+                if not self._model_list[i] == 'NONE':
                     f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
                     f_x += f_x_i
                     f_y += f_y_i
-        if self._perturb_alpha:
-            f_x += self.alpha_perturb_x
-            f_y += self.alpha_perturb_y
         return f_x, f_y
 
     def kappa(self, x, y, kwargs, kwargs_else=None, k=None):
@@ -231,7 +223,7 @@ class LensModel(object):
             else:
                 f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
                 for i, func in enumerate(self.func_list):
-                    if not self.model_list[i] == 'NONE':
+                    if not self._model_list[i] == 'NONE':
                         f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
                         f_xx += f_xx_i
                         f_yy += f_yy_i

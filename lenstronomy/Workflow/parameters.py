@@ -35,8 +35,8 @@ class Param(object):
         self.kwargs_fixed_lens_light = kwargs_fixed_lens_light
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
-        self.lensModel = LensModel(kwargs_options)
-        self.ImagePosition = LensEquationSolver(self.lensModel)
+        self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.ImagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
 
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._num_images = kwargs_options.get('num_images', 4)

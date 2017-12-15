@@ -18,15 +18,12 @@ class TestSolver(object):
     """
     def setup(self):
         self.constraints = Constraints2(solver_type='CENTER', lens_model='SPEP')
-        kwargs_options_spep = {'lens_model_list': ['SPEP']}
-        self.lens_spep = LensModel(kwargs_options_spep)
-        self.image_position_spep = LensEquationSolver(self.lens_spep)
-        kwargs_options_nfw = {'lens_model_list': ['SPEP', 'NFW']}
-        self.lens_nfw = LensModel(kwargs_options_nfw)
-        self.image_position_nfw = LensEquationSolver(self.lens_nfw)
-        kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP']}
-        self.lens_spp = LensModel(kwargs_options_spp)
-        self.image_position_spp = LensEquationSolver(self.lens_spp)
+        self.lens_spep = LensModel(['SPEP'])
+        self.image_position_spep = LensEquationSolver(['SPEP'])
+        self.lens_nfw = LensModel(['SPEP', 'NFW'])
+        self.image_position_nfw = LensEquationSolver(['SPEP', 'NFW'])
+        self.lens_spp = LensModel(['SPEP', 'SPP'])
+        self.image_position_spp = LensEquationSolver(['SPEP', 'SPP'])
         self.solver = SolverCenter2()
         self.nfw = NFW()
 
@@ -186,14 +183,11 @@ class TestSolver(object):
 class TestSolverNew(object):
 
     def setup(self):
-        kwargs_options_spep = {'lens_model_list': ['SPEP']}
-        self.lens_spep = LensModel(kwargs_options_spep)
-        kwargs_options_spep_spp = {'lens_model_list': ['SPEP', 'SPP']}
-        self.lens_spep_spp = LensModel(kwargs_options_spep_spp)
-        self.image_position_spep_spp = LensEquationSolver(self.lens_spep_spp)
-        kwargs_options_spep_spp_shapelets = {'lens_model_list': ['SHAPELETS_CART', 'SPEP', 'SPP', ]}
-        self.lens_spep_spp_shapelets = LensModel(kwargs_options_spep_spp_shapelets)
-        self.image_position_spep_spp_shapelets = LensEquationSolver(self.lens_spep_spp_shapelets)
+        self.lens_spep = LensModel(['SPEP'])
+        self.lens_spep_spp = LensModel(['SPEP', 'SPP'])
+        self.image_position_spep_spp = LensEquationSolver(['SPEP', 'SPP'])
+        self.lens_spep_spp_shapelets = LensModel(['SHAPELETS_CART', 'SPEP', 'SPP', ])
+        self.image_position_spep_spp_shapelets = LensEquationSolver(['SHAPELETS_CART', 'SPEP', 'SPP', ])
         self.solverShapelets = SolverShapelets2()
         self.solver = SolverCenter2()
         self.constraints = Constraints2(solver_type='SHAPELETS', lens_model='SHAPELETS_CART')
@@ -252,14 +246,14 @@ class TestSolver_new(object):
     def setup(self):
         self.constraints = Constraints2_new('SPEP')
         kwargs_options_spep = {'lens_model_list': ['SPEP'], 'fix_center': True}
-        self.lens_spep = LensModel(kwargs_options_spep)
-        self.image_position_spep = LensEquationSolver(self.lens_spep)
+        self.lens_spep = LensModel(['SPEP'])
+        self.image_position_spep = LensEquationSolver(['SPEP'])
         kwargs_options_nfw = {'lens_model_list': ['SPEP', 'NFW'], 'fix_center': True}
-        self.lens_nfw = LensModel(kwargs_options_nfw)
-        self.image_position_nfw = LensEquationSolver(self.lens_nfw)
+        self.lens_nfw = LensModel(['SPEP', 'NFW'])
+        self.image_position_nfw = LensEquationSolver(['SPEP', 'NFW'])
         kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP'], 'fix_center': True}
-        self.lens_spp = LensModel(kwargs_options_spp)
-        self.image_position_spp = LensEquationSolver(self.lens_spp)
+        self.lens_spp = LensModel(['SPEP', 'SPP'])
+        self.image_position_spp = LensEquationSolver(['SPEP', 'SPP'])
         self.solver = SolverSPEP2_ellipse()
 
     def test_subtract(self):

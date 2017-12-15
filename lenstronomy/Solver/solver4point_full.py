@@ -11,11 +11,11 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lens_model_list=['SPEP']):
+    def __init__(self, lens_model_list=['SPEP'], foreground_shear=False):
         self._lens_mode_list = lens_model_list
-        self.lensModel = LensModel(kwargs_options={'lens_model_list': lens_model_list})
+        self.lensModel = LensModel(lens_model_list, foreground_shear)
 
-    def constraint_lensmodel(self, x_pos, y_pos, init, kwargs_list):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list):
         """
 
         :param x_pos: list of image positions (x-axis)
@@ -24,9 +24,10 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated lens model that satisfies the lens equation for the point sources
         """
-
+        init = self._extract_array(kwargs_list)
         x = self.solve(x_pos, y_pos, init, kwargs_list)
-        return x
+        kwargs_list = self._update_kwargs(x, kwargs_list)
+        return kwargs_list
 
     def solve(self, x_pos, y_pos, init, kwargs_list):
         x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list), xtol=1.49012e-10)#, factor=0.1)
@@ -52,7 +53,7 @@ class Solver4Point(object):
         :return: updated kwargs_list
         """
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
             phi_G, q = util.elliptisity2phi_q(e1, e2)
             kwargs_list[0]['theta_E'] = theta_E
@@ -71,6 +72,33 @@ class Solver4Point(object):
         else:
             raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
         return kwargs_list
+
+    def _extract_array(self, kwargs_list):
+        """
+        inverse of _update_kwargs
+        :param kwargs_list:
+        :return:
+        """
+        lens_model = self._lens_mode_list[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
+            q = kwargs_list[0]['q']
+            phi_G = kwargs_list[0]['phi_G']
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+            theta_E = kwargs_list[0]['theta_E']
+            x = [theta_E, e1, e2, center_x, center_y, 0]
+        elif lens_model in ['NFW_ELLIPSE']:
+            q = kwargs_list[0]['q']
+            phi_G = kwargs_list[0]['phi_G']
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+            theta_Rs = kwargs_list[0]['theta_Rs']
+            x = [theta_Rs, e1, e2, center_x, center_y, 0]
+        else:
+            raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
+        return x
 
 
 

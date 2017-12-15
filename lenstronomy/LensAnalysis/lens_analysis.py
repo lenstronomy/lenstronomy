@@ -18,10 +18,10 @@ class LensAnalysis(object):
     def __init__(self, kwargs_options, kwargs_data):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
-        self.LensModel = LensModel(kwargs_options)
+        self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
-        self.NumLensModel = NumericLens(kwargs_options)
+        self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.gaussian = Gaussian()
 
     def flux_ratios(self, kwargs_lens, kwargs_else, source_size=0.003

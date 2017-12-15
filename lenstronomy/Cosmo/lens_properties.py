@@ -23,7 +23,7 @@ class LensProp(object):
         self.z_s = z_source
         self.unitManager = UnitManager(z_lens, z_source)
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
-        self.lens_model = LensModel(kwargs_options)
+        self.lens_model = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}

@@ -11,9 +11,7 @@ class TestLensModel(object):
     tests the source model routines
     """
     def setup(self):
-        self.kwargs_options = {'lens_model_list': ['GAUSSIAN']}
-
-        self.lensModel = LensModel(self.kwargs_options)
+        self.lensModel = LensModel(['GAUSSIAN'])
         self.kwargs = [{'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
     def test_mass(self):

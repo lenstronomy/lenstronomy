@@ -1,18 +1,19 @@
 import numpy as np
 import astrofunc.util as util
 import lenstronomy.util as lenstronomy_util
+from lenstronomy.ImSim.lens_model import LensModel
 
 
 class LensEquationSolver(object):
     """
     class to solve for image positions given lens model and source position
     """
-    def __init__(self, lensModel):
+    def __init__(self, lens_model_list, foreground_shear=False):
         """
 
         :param imsim: imsim class
         """
-        self.LensModel = lensModel
+        self.LensModel = LensModel(lens_model_list, foreground_shear)
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, min_distance=0.01, search_window=5, precision_limit=10**(-6), num_iter_max=10):
         """

@@ -103,7 +103,7 @@ class MultiBand(object):
 
     def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
         lensModel = LensModel(kwargs_options)
-        imPos = LensEquationSolver(lensModel=lensModel)
+        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         if kwargs_options.get('point_source', False):
             min_distance = 0.05
             search_window = 10

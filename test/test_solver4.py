@@ -8,6 +8,7 @@ from astrofunc.LensingProfiles.nfw import NFW
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.Solver.image_positions import LensEquationSolver
 from lenstronomy.Solver.solver4point import SolverProfile, Constraints, SolverShapelets
+from lenstronomy.Solver.solver4point_full import Solver4Point
 
 
 class TestSolver(object):
@@ -16,15 +17,12 @@ class TestSolver(object):
     """
     def setup(self):
         self.constraints = Constraints(lens_model='SPEP')
-        kwargs_options_spep = {'lens_model_list': ['SPEP']}
-        self.lens_spep = LensModel(kwargs_options_spep)
-        self.Image_spep = LensEquationSolver(self.lens_spep)
-        kwargs_options_nfw = {'lens_model_list': ['SPEP', 'NFW']}
-        self.lens_nfw = LensModel(kwargs_options_nfw)
-        self.Image_nfw = LensEquationSolver(self.lens_nfw)
-        kwargs_options_spp = {'lens_model_list': ['SPEP', 'SPP']}
-        self.lens_spp = LensModel(kwargs_options_spp)
-        self.Image_spp = LensEquationSolver(self.lens_spp)
+        self.lens_spep = LensModel(['SPEP'])
+        self.Image_spep = LensEquationSolver(['SPEP'])
+        self.lens_nfw = LensModel(['SPEP', 'NFW'])
+        self.Image_nfw = LensEquationSolver(['SPEP', 'NFW'])
+        self.lens_spp = LensModel(['SPEP', 'SPP'])
+        self.Image_spp = LensEquationSolver(['SPEP', 'SPP'])
         self.solver = SolverProfile()
         self.nfw = NFW()
 
@@ -239,14 +237,11 @@ class TestSolver(object):
 class TestSolverNew(object):
 
     def setup(self):
-        kwargs_options_spep = {'lens_model_list': ['SPEP']}
-        self.lens_spep = LensModel(kwargs_options_spep)
-        kwargs_options_spep_spp = {'lens_model_list': ['SPEP', 'SPP']}
-        self.lens_spep_spp = LensModel(kwargs_options_spep_spp)
-        self.image_position_spep_spp = LensEquationSolver(self.lens_spep_spp)
-        kwargs_options_spep_spp_shapelets = {'lens_model_list': ['SPEP', 'SPP', 'SHAPELETS_CART']}
-        self.lens_spep_spp_shapelets = LensModel(kwargs_options_spep_spp_shapelets)
-        self.image_position_spep_spp_shapelets = LensEquationSolver(self.lens_spep_spp_shapelets)
+        self.lens_spep = LensModel(['SPEP'])
+        self.lens_spep_spp = LensModel(['SPEP', 'SPP'])
+        self.image_position_spep_spp = LensEquationSolver(['SPEP', 'SPP'])
+        self.lens_spep_spp_shapelets = LensModel(['SPEP', 'SPP', 'SHAPELETS_CART'])
+        self.image_position_spep_spp_shapelets = LensEquationSolver(['SPEP', 'SPP', 'SHAPELETS_CART'])
         self.solverShapelets = SolverShapelets()
         self.solver = SolverProfile()
         self.constraints = Constraints(lens_model='SHAPELETS_CART')
@@ -306,6 +301,57 @@ class TestSolverNew(object):
         npt.assert_almost_equal(x_[3], 0, decimal=3)
         npt.assert_almost_equal(x_[4], 0, decimal=3)
         npt.assert_almost_equal(x_[5], 0, decimal=3)
+
+
+class TestSolver4Point_full(object):
+
+    def setup(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def test_solver_spep(self):
+        lens_model_list = ['SPEP']
+        solver = Solver4Point(lens_model_list=lens_model_list)
+        lensEquationSolver = LensEquationSolver(lens_model_list)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.1
+        deltapix = 0.05
+        numPix = 150
+        gamma = 1.9
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma,'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0}]
+        kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
+        npt.assert_almost_equal(kwargs_lens_new[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['q'], kwargs_lens[0]['q'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['phi_G'], kwargs_lens[0]['phi_G'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens[0]['center_y'], decimal=3)
+
+    def test_solver_nfw(self):
+        lens_model_list = ['NFW_ELLIPSE', 'SIS']
+        solver = Solver4Point(lens_model_list=lens_model_list)
+        lensModel = LensModel(lens_model_list)
+        lensEquationSolver = LensEquationSolver(lens_model_list)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.1
+        deltapix = 0.05
+        numPix = 150
+        Rs = 4.
+        kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
+                       {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        kwargs_lens_init = [{'theta_Rs': 0.5, 'Rs': Rs,'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
+        kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
+        npt.assert_almost_equal(kwargs_lens_new[0]['theta_Rs'], kwargs_lens[0]['theta_Rs'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['q'], kwargs_lens[0]['q'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['phi_G'], kwargs_lens[0]['phi_G'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens[0]['center_y'], decimal=3)
+
 
 if __name__ == '__main__':
     pytest.main()

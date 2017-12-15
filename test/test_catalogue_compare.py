@@ -26,7 +26,7 @@ class TestCatalogueCompare(object):
             , 'cosmo_file': '', 'lens_model_list': ['SPEP']
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'x2_simple': True}
 
-        self.lensModel = LensModel(self.kwargs_options)
+        self.lensModel = LensModel(['SPEP'])
         self.kwargs = [{'theta_E': 1./0.8, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x':0., 'center_y': 0.}] #for SPEP lens
 
     def test_catalogue_compare(self):

@@ -122,8 +122,8 @@ class Simulation(object):
         :param kwargs_else:
         :return:
         """
-        lensModel = LensModel(kwargs_options)
-        imPos = LensEquationSolver(lensModel=lensModel)
+        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         if kwargs_options.get('point_source', False):
             min_distance = kwargs_data['deltaPix']/10.
             search_window = kwargs_data['numPix_xy'][0]*kwargs_data['deltaPix']
@@ -191,6 +191,6 @@ class Simulation(object):
         :param no_noise:
         :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
         """
-        lensModel = LensModel(kwargs_options)
+        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         fermat_pot = lensModel.fermat_potential(kwargs_lens, kwargs_else)
         return fermat_pot

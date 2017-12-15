@@ -1,184 +1,143 @@
 __author__ = 'sibirrer'
 
-import scipy.optimize
-import numpy as np
-from astrofunc.LensingProfiles.spep import SPEP
-from astrofunc.LensingProfiles.spemd import SPEMD
-from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
-from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
-from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
+from lenstronomy.ImSim.lens_model import LensModel
 import astrofunc.util as util
 
-
-class SolverProfile(object):
-    """
-    class to solve multidimensional non-linear equations for 4 point image
-    """
-    def __init__(self, lens_model='SPEP'):
-        if lens_model == 'SPEP':
-            self.lens = SPEP()
-        elif lens_model == 'SPEMD':
-            self.lens = SPEMD()
-        else:
-            raise ValueError('lens model %s not valid for solver type "PROFILE" ' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, gamma):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
-        y = np.zeros(6)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha1[0] - alpha1[2]
-        y[2] = alpha1[0] - alpha1[3]
-        y[3] = alpha2[0] - alpha2[1]
-        y[4] = alpha2[0] - alpha2[2]
-        y[5] = alpha2[0] - alpha2[3]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, gamma):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, gamma), xtol=1.49012e-08, factor=0.1)
-        return x
+import scipy.optimize
+import numpy as np
 
 
-class SolverNFWProfile(object):
-    """
-    class to solve multidimensional non-linear equations for 4 point image
-    """
-    def __init__(self, lens_model='NFW_ELLIPSE'):
-        if lens_model == 'NFW_ELLIPSE':
-            self.lens = NFW_ELLIPSE()
-        else:
-            raise ValueError('lens model %s not valid for solver type "NFW_PROFILE" ' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, Rs):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [theta_Rs, e1, e2, center_x, center_y, no_sens_param] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_Rs, Rs, q, phi_G, center_x, center_y)
-        y = np.zeros(6)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha1[0] - alpha1[2]
-        y[2] = alpha1[0] - alpha1[3]
-        y[3] = alpha2[0] - alpha2[1]
-        y[4] = alpha2[0] - alpha2[2]
-        y[5] = alpha2[0] - alpha2[3]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, Rs):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, Rs), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverComposite(object):
-    """
-    class to solve multidimensional non-linear equations for 4 point image
-    """
-    def __init__(self, lens_model='COMPOSITE'):
-        if lens_model == 'COMPOSITE':
-            self.lens = CompositeSersicNFW()
-        else:
-            raise ValueError('lens model %s not valid for solver type "COMPOSITE" ' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, mass_light, Rs, q, phi_G, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y)
-        y = np.zeros(6)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha1[0] - alpha1[2]
-        y[2] = alpha1[0] - alpha1[3]
-        y[3] = alpha2[0] - alpha2[1]
-        y[4] = alpha2[0] - alpha2[2]
-        y[5] = alpha2[0] - alpha2[3]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverShapelets(object):
-
-    def __init__(self):
-        self.shapelets = CartShapelets()
-
-    def F(self, x, x_cat, y_cat, a, beta, center_x, center_y):
-        [c00, c10, c01, c20, c11, c02] = x
-        coeffs = [0, c10, c01, c20, c11, c02]
-        alpha1, alpha2 = self.shapelets.derivatives(x_cat, y_cat, coeffs, beta, center_x, center_y)
-        y = np.zeros(6)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha1[0] - alpha1[2]
-        y[2] = alpha1[0] - alpha1[3]
-        y[3] = alpha2[0] - alpha2[1]
-        y[4] = alpha2[0] - alpha2[2]
-        y[5] = alpha2[0] - alpha2[3]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, beta, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, beta, center_x, center_y), xtol=1.49012e-10)#, factor=0.1)
-        return x
-
-
-class Constraints(object):
+class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lens_model='SPEP'):
-        if lens_model in ['SPEP', 'SPEMD']:
-            self.solver = SolverProfile(lens_model)
-        elif lens_model in ['NFW_ELLIPSE']:
-            self.solver = SolverNFWProfile(lens_model)
-        elif lens_model == 'COMPOSITE':
-            self.solver = SolverComposite(lens_model)
-        elif lens_model == 'SHAPELETS_CART':
-            self.solver = SolverShapelets()
-        elif lens_model == 'NONE':
-            pass
-        else:
-            raise ValueError('lens model %s is not supported for solver!' % lens_model)
+    def __init__(self, lens_model_list=['SPEP'], foreground_shear=False, decoupling=False):
+        self._lens_mode_list = lens_model_list
+        self.lensModel = LensModel(lens_model_list, foreground_shear)
+        self._decoupling = decoupling
 
-    def _subtract_constraint(self, x_cat, y_cat, x_sub, y_sub):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list):
         """
 
-        :param x_cat:
-        :param y_cat:
+        :param x_pos: list of image positions (x-axis)
+        :param y_pos: list of image position (y-axis)
+        :param init: initial parameters
+        :param kwargs_list: list of lens model kwargs
+        :return: updated lens model that satisfies the lens equation for the point sources
+        """
+        init = self._extract_array(kwargs_list)
+        if self._decoupling:
+            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list)
+            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=0)
+            x_sub = alpha_1_x - alpha_0_x
+            y_sub = alpha_1_y - alpha_0_y
+        else:
+            x_sub, y_sub = np.zeros(4), np.zeros(4)
+        a = self._subtract_constraint(x_sub, y_sub)
+        x = self.solve(x_pos, y_pos, init, kwargs_list, a)
+        kwargs_list = self._update_kwargs(x, kwargs_list)
+        return kwargs_list
+
+    def solve(self, x_pos, y_pos, init, kwargs_list, a):
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=1.49012e-10)#, factor=0.1)
+        return x
+
+    def _F(self, x, x_pos, y_pos, kwargs_list, a=0):
+        kwargs_list = self._update_kwargs(x, kwargs_list)
+        if self._decoupling:
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, k=0)
+        else:
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list)
+        y = np.zeros(6)
+        y[0] = beta_x[0] - beta_x[1]
+        y[1] = beta_x[0] - beta_x[2]
+        y[2] = beta_x[0] - beta_x[3]
+        y[3] = beta_y[0] - beta_y[1]
+        y[4] = beta_y[0] - beta_y[2]
+        y[5] = beta_y[0] - beta_y[3]
+        return y - a
+
+    def _subtract_constraint(self, x_sub, y_sub):
+        """
+
+        :param x_pos:
+        :param y_pos:
         :param x_sub:
         :param y_sub:
         :return:
         """
         a = np.zeros(6)
-        a[0] = x_cat[0] - x_cat[1] - x_sub[0] + x_sub[1]
-        a[1] = x_cat[0] - x_cat[2] - x_sub[0] + x_sub[2]
-        a[2] = x_cat[0] - x_cat[3] - x_sub[0] + x_sub[3]
-        a[3] = y_cat[0] - y_cat[1] - y_sub[0] + y_sub[1]
-        a[4] = y_cat[0] - y_cat[2] - y_sub[0] + y_sub[2]
-        a[5] = y_cat[0] - y_cat[3] - y_sub[0] + y_sub[3]
+        a[0] = - x_sub[0] + x_sub[1]
+        a[1] = - x_sub[0] + x_sub[2]
+        a[2] = - x_sub[0] + x_sub[3]
+        a[3] = - y_sub[0] + y_sub[1]
+        a[4] = - y_sub[0] + y_sub[2]
+        a[5] = - y_sub[0] + y_sub[3]
         return a
 
-    def get_param(self, x_cat, y_cat, x_sub, y_sub, init, kwargs):
+    def _update_kwargs(self, x, kwargs_list):
         """
 
-        :param x_cat:
-        :param y_cat:
-        :param x_sub:
-        :param y_sub:
+        :param x: list of parameters corresponding to the free parameter of the first lens model in the list
+        :param kwargs_list: list of lens model kwargs
+        :return: updated kwargs_list
+        """
+        lens_model = self._lens_mode_list[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
+            [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
+            phi_G, q = util.elliptisity2phi_q(e1, e2)
+            kwargs_list[0]['theta_E'] = theta_E
+            kwargs_list[0]['q'] = q
+            kwargs_list[0]['phi_G'] = phi_G
+            kwargs_list[0]['center_x'] = center_x
+            kwargs_list[0]['center_y'] = center_y
+        elif lens_model in ['NFW_ELLIPSE']:
+            [theta_Rs, e1, e2, center_x, center_y, no_sens_param] = x
+            phi_G, q = util.elliptisity2phi_q(e1, e2)
+            kwargs_list[0]['theta_Rs'] = theta_Rs
+            kwargs_list[0]['q'] = q
+            kwargs_list[0]['phi_G'] = phi_G
+            kwargs_list[0]['center_x'] = center_x
+            kwargs_list[0]['center_y'] = center_y
+        elif lens_model in ['SHAPELET_CART']:
+            [c00, c10, c01, c20, c11, c02] = x
+            coeffs = list(kwargs_list[0]['coeffs'])
+            coeffs[0: 6] = [0, c10, c01, c20, c11, c02]
+            kwargs_list[0]['coeffs'] = coeffs
+        else:
+            raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
+        return kwargs_list
+
+    def _extract_array(self, kwargs_list):
+        """
+        inverse of _update_kwargs
+        :param kwargs_list:
         :return:
         """
-        a = self._subtract_constraint(x_cat, y_cat, x_sub, y_sub)
-        x = self.solver.solve(init, x_cat, y_cat, a, **kwargs)
+        lens_model = self._lens_mode_list[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
+            q = kwargs_list[0]['q']
+            phi_G = kwargs_list[0]['phi_G']
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+            theta_E = kwargs_list[0]['theta_E']
+            x = [theta_E, e1, e2, center_x, center_y, 0]
+        elif lens_model in ['NFW_ELLIPSE']:
+            q = kwargs_list[0]['q']
+            phi_G = kwargs_list[0]['phi_G']
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+            theta_Rs = kwargs_list[0]['theta_Rs']
+            x = [theta_Rs, e1, e2, center_x, center_y, 0]
+        elif lens_model in ['SHAPELETS_CART']:
+            coeffs = list(kwargs_list[0]['coeffs'])
+            [c00, c10, c01, c20, c11, c02] = coeffs[0: 6]
+            x = [0, c10, c01, c20, c11, c02]
+        else:
+            raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
         return x
+
+
+

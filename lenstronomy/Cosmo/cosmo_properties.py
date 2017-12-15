@@ -133,7 +133,6 @@ class CosmoProp(object):
         """
         returns little h
         """
-        #TODO would be better when directly calling from the INPUT to PyCosmo and not as a RESULT from PyCosmo
         if not hasattr(self, 'h'):
             self.h = self.cosmo.params.h
         return self.h

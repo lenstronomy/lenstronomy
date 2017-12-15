@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import astrofunc.util as util
 import numpy as np
 from lenstronomy.Solver.solver2point import Constraints2
-from lenstronomy.Solver.solver4point import Constraints
+from lenstronomy.Trash.solver4point import Constraints
 from lenstronomy.Trash.lens_param import LensParam
 from lenstronomy.Trash.make_image import MakeImage
 from lenstronomy.Trash.solver2point_new import Constraints2_new

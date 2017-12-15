@@ -104,11 +104,11 @@ class LensModel(object):
         self._foreground_shear = foreground_shear
         self._model_list = lens_model_list
 
-    def ray_shooting(self, x, y, kwargs, kwargs_else=None):
+    def ray_shooting(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         maps image to source position (inverse deflection)
         """
-        dx, dy = self.alpha(x, y, kwargs, kwargs_else)
+        dx, dy = self.alpha(x, y, kwargs, kwargs_else, k=k)
         return x - dx, y - dy
 
     def fermat_potential(self, kwargs_lens, kwargs_else):

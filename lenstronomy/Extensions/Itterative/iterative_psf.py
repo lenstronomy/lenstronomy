@@ -24,13 +24,16 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
+        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        logL_before = makeImage.likelihood_data_given_model(kwargs_lens, kwargs_source,
+                                                                              kwargs_lens_light, kwargs_else)
         kernel_old = kwargs_psf["kernel_point_source"]
         kernel_small = kwargs_psf["kernel_pixel"]
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
         image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                                  kwargs_else)
-        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
         mask = util.array2image(makeImage.Data.mask_pure)
         x_grid, y_grid = makeImage.Data.coordinates
@@ -55,7 +58,16 @@ class PSF_iterative(object):
             kwargs_psf_new['error_map'] = error_map
         #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
         #              "error_map": error_map}
-        return kwargs_psf_new
+        makeImage_new = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf_new)
+        logL_after = makeImage_new.likelihood_data_given_model(kwargs_lens, kwargs_source,
+                                                                              kwargs_lens_light, kwargs_else)
+        if logL_after > logL_before:
+            improved_bool = True
+            kwargs_psf_return = kwargs_psf_new
+        else:
+            improved_bool = False
+            kwargs_psf_return = kwargs_psf
+        return kwargs_psf_return, improved_bool
 
     def update_iterative(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
                    kwargs_else, factor=1, num_iter=10, symmetry=1, verbose=True):
@@ -74,8 +86,11 @@ class PSF_iterative(object):
         """
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         for i in range(num_iter):
-            kwargs_psf_new = self.update_psf(kwargs_data, kwargs_psf_new, kwargs_options, kwargs_lens, kwargs_source,
+            kwargs_psf_new, improved_bool = self.update_psf(kwargs_data, kwargs_psf_new, kwargs_options, kwargs_lens, kwargs_source,
                                              kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry, verbose=verbose)
+            if not improved_bool:
+                print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
+                break
         return kwargs_psf_new
 
     def image_single_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,

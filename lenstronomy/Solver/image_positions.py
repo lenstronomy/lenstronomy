@@ -18,11 +18,15 @@ class LensEquationSolver(object):
         """
         finds image position source position and lense model
 
-        :param sourcePos: source position in units of angel
-        :type sourcePos: numpy array
-        :param args: contains all the lens model parameters
-        :type args: variable length depending on lense model
-        :returns:  (exact) angular position of (multiple) images [[posAngel,delta,mag]] (in pixel image , including outside)
+        :param sourcePos_x: source position in units of angle
+        :param sourcePos_y: source position in units of angle
+        :param kwargs_lens: lens model parameters as keyword arguments
+        :param kwargs_else: other parameters as keyword arguments
+        :param min_distance: minimum separation to consider for two images in units of angle
+        :param search_window: window size to be considered by the solver. Will not find image position outside this window
+        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
+        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
+        :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
         # compute number of pixels to cover the search window with the required min_distance

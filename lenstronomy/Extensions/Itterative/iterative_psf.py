@@ -60,10 +60,10 @@ class PSF_iterative(object):
         makeImage_new = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf_new)
         logL_after = makeImage_new.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
-        if not kwargs_options.get('psf_keep_error_map', False):
-            kwargs_psf_new['error_map'] = error_map
         if logL_after > logL_before:
             improved_bool = True
+            if not kwargs_options.get('psf_keep_error_map', False):
+                kwargs_psf_new['error_map'] = error_map
             kwargs_psf_return = kwargs_psf_new
         else:
             improved_bool = False

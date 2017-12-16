@@ -1,7 +1,7 @@
 from lenstronomy.ImSim.make_image import MakeImage
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
-from lenstronomy.Solver.image_positions import LensEquationSolver
+from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 import astrofunc.util as util
 from astrofunc.LensingProfiles.gaussian import Gaussian
 

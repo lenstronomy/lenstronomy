@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.Solver.image_positions import LensEquationSolver
+from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 
 
 class MultiBand(object):

@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.ImSim.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
-from lenstronomy.Solver.image_positions import LensEquationSolver
+from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 
 from lenstronomy.ImSim.data import Data
 import lenstronomy.DeLens.de_lens as de_lens

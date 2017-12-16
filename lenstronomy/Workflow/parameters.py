@@ -3,8 +3,8 @@ __author__ = 'sibirrer'
 import astrofunc.util as util
 import numpy as np
 from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.Solver.image_positions import LensEquationSolver
-from lenstronomy.Solver.solver2point import Constraints2
+from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.Solver.solver2point import Solver2Point
 from lenstronomy.Solver.solver4point import Solver4Point
 from lenstronomy.Workflow.else_param import ElseParam
 from lenstronomy.Workflow.lens_param import LensParam
@@ -50,9 +50,10 @@ class Param(object):
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
-                self.solver4points = Solver4Point(lens_model_list=self.kwargs_options['lens_model_list'], decoupling=decoupling)
+                self.solver4points = Solver4Point(lens_model_list=self.kwargs_options['lens_model_list'], decoupling=decoupling, foreground_shear=self._foreground_shear)
             elif self. _num_images == 2:
-                self.constraints = Constraints2(self.solver_type, lens_model=self.kwargs_options['lens_model_list'][0])
+                self.solver2points = Solver2Point(lens_model_list=self.kwargs_options['lens_model_list'],
+                                                  decoupling=decoupling, solver_type=self.solver_type, foreground_shear=self._foreground_shear)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
         else:
@@ -249,104 +250,15 @@ class Param(object):
         return kwargs_else
 
     def update_kwargs(self, kwargs_lens_list, kwargs_source_list, kwargs_lens_light, kwargs_else):
-        kwargs_lens = kwargs_lens_list[0]
-        lens_model = self.kwargs_options['lens_model_list'][0]
         if self.kwargs_options.get('solver', False):
-            if self._foreground_shear:
-                f_x_shear1, f_y_shear1 = self.lensModel.shear.derivatives(kwargs_else['ra_pos'], kwargs_else['dec_pos'], e1=kwargs_else['gamma1_foreground'], e2=kwargs_else['gamma2_foreground'])
-                x_ = kwargs_else['ra_pos'] - f_x_shear1
-                y_ = kwargs_else['dec_pos'] - f_y_shear1
-            else:
-                x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
+            x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
             if self._num_images == 4:
-                kwargs_lens_list = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens_list)
-
+                kwargs_lens_list = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens_list, kwargs_else)
             elif self._num_images == 2:
-                if lens_model in ['SPEP', 'SPEMD']:
-                    if self.solver_type == 'CENTER':
-                        e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                        init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'gamma': kwargs_lens['gamma'],
-                                    'theta_E': theta_E, 'e1': e1, 'e2': e2})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_2_center(kwargs_lens, x)
-                    elif self.solver_type == 'ELLIPSE':
-                        init = np.array([0, 0])
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'gamma': kwargs_lens['gamma']})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
-                elif lens_model in ['SHAPELETS_CART']:
-                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                    init = [0, 0]
-                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'beta': kwargs_lens['beta'],
-                                                                                   'center_x': kwargs_lens[
-                                                                                       'center_x_shape'],
-                                                                                   'center_y': kwargs_lens[
-                                                                                       'center_y_shape']})
-                    kwargs_lens = self._update_coeffs2(kwargs_lens, x)
-                elif lens_model == 'EXTERNAL_SHEAR':
-                    kwargs_lens['e1'] = 0
-                    kwargs_lens['e2'] = 0
-                    ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                    init = [0, 0]
-                    kwargs = {}
-                    x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, kwargs)
-                    kwargs_lens['e1'] = x[0]
-                    kwargs_lens['e2'] = x[1]
-                elif lens_model in ['NFW_ELLIPSE']:
-                    if self.solver_type == 'CENTER':
-                        e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                        init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])  # sub-clump parameters to solve for
-                        theta_Rs = kwargs_lens['theta_Rs']
-                        kwargs_lens['theta_Rs'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'Rs': kwargs_lens['Rs'],
-                                    'theta_Rs': theta_Rs, 'e1': e1, 'e2': e2})
-                        kwargs_lens['theta_Rs'] = theta_Rs
-                        kwargs_lens = self._update_2_center(kwargs_lens, x)
-                    elif self.solver_type == 'ELLIPSE':
-                        init = np.array([0, 0])
-                        theta_Rs = kwargs_lens['theta_Rs']
-                        kwargs_lens['theta_Rs'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'], 'center_y': kwargs_lens['center_y'], 'theta_Rs': theta_Rs, 'Rs': kwargs_lens['Rs']})
-                        kwargs_lens['theta_Rs'] = theta_Rs
-                        kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
-                elif lens_model == 'COMPOSITE':
-                    if self.solver_type == 'ELLIPSE':
-                        init = np.array([0, 0])
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'center_x': kwargs_lens['center_x'],
-                                'center_y': kwargs_lens['center_y'], 'theta_E': theta_E, 'Rs': kwargs_lens['Rs'],
-                                'mass_light': kwargs_lens['mass_light'], 'r_eff': kwargs_lens['r_eff'], 'n_sersic': kwargs_lens['n_sersic'], 'q_s': kwargs_lens['q_s'], 'phi_G_s': kwargs_lens['phi_G_s']})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_2_ellipse(kwargs_lens, x)
-                    elif self.solver_type == 'CENTER':
-                        e1, e2 = util.phi_q2_elliptisity(kwargs_lens['phi_G'], kwargs_lens['q'])
-                        init = np.array([kwargs_lens['center_x'], kwargs_lens['center_y']])
-                        theta_E = kwargs_lens['theta_E']
-                        kwargs_lens['theta_E'] = 0
-                        ra_sub, dec_sub = self.lensModel.alpha(x_, y_, kwargs_lens_list, kwargs_else)
-                        x = self.constraints.get_param(x_, y_, ra_sub, dec_sub, init, {'e1': e1, 'e2': e2, 'theta_E': theta_E, 'Rs': kwargs_lens['Rs'],
-                                'mass_light': kwargs_lens['mass_light'], 'r_eff': kwargs_lens['r_eff'], 'n_sersic': kwargs_lens['n_sersic'], 'q_s': kwargs_lens['q_s'], 'phi_G_s': kwargs_lens['phi_G_s']})
-                        kwargs_lens['theta_E'] = theta_E
-                        kwargs_lens = self._update_2_center(kwargs_lens, x)
-                elif lens_model == 'NONE':
-                    pass
-                else:
-                    raise ValueError('lens model %s not supported for two image lenses!' % lens_model)
+                kwargs_lens_list = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens_list, kwargs_else)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
 
-        kwargs_lens_list[0] = kwargs_lens
         if self.kwargs_options.get('image_plane_source', False):
             x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             for i, kwargs_source in enumerate(kwargs_source_list):

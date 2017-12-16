@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
-from lenstronomy.Solver.image_positions import LensEquationSolver
+from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Solver.solver4point import Solver4Point
 
 
@@ -17,7 +17,7 @@ class TestSolver4Point(object):
 
     def test_decoupling(self):
         lens_model_list = ['SPEP', 'SIS']
-        solver = Solver4Point(lens_model_list=lens_model_list)
+        solver = Solver4Point(lens_model_list=lens_model_list, decoupling=False)
         solver_decoupled = Solver4Point(lens_model_list=lens_model_list, decoupling=True)
         lensEquationSolver = LensEquationSolver(lens_model_list)
         sourcePos_x = 0.1

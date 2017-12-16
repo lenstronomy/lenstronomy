@@ -1,292 +1,127 @@
 __author__ = 'sibirrer'
 
-import scipy.optimize
-import numpy as np
-from astrofunc.LensingProfiles.spep import SPEP
-from astrofunc.LensingProfiles.spemd import SPEMD
-from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
-from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
-from astrofunc.LensingProfiles.external_shear import ExternalShear
-from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
-from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
+from lenstronomy.ImSim.lens_model import LensModel
 import astrofunc.util as util
 
-
-class SolverCenter2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='SPEP'):
-        if lens_model == 'SPEP':
-            self.lens = SPEP()
-        elif lens_model == 'SPEMD':
-            self.lens = SPEMD()
-        else:
-            raise ValueError('lens model %s not valid for solver type CENTER!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, theta_E, gamma, e1, e2):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [center_x, center_y] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_E, gamma, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, e1, e2), xtol=1.49012e-08, factor=0.1)
-        return x
+import scipy.optimize
+import numpy as np
 
 
-class SolverEllipse2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='SPEP'):
-        if lens_model == 'SPEP':
-            self.lens = SPEP()
-        elif lens_model == 'SPEMD':
-            self.lens = SPEMD()
-        else:
-            raise ValueError('lens model %s not valid for solver type ELLIPSE!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [e1, e2] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, gamma, q, phi_G, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_E, gamma, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, gamma, center_x, center_y), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverNFWCenter2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='NFW_ELLIPSE'):
-        if lens_model == 'NFW_ELLIPSE':
-            self.lens = NFW_ELLIPSE()
-        else:
-            raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, Rs, theta_Rs, e1, e2):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [center_x, center_y] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, Rs, theta_Rs, q, phi_G, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, e1, e2):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, Rs, theta_Rs, e1, e2), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverNFWEllipse2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='NFW_ELLIPSE'):
-        if lens_model == 'NFW_ELLIPSE':
-            self.lens = NFW_ELLIPSE()
-        else:
-            raise ValueError('lens model %s not valid for solver type NFW_CENTER!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, Rs, theta_Rs, center_x, center_y):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [e1, e2] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, Rs, theta_Rs, q, phi_G, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_Rs, Rs, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, Rs, theta_Rs, center_x, center_y), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverCompositeCenter2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='COMPISITE'):
-        if lens_model == 'COMPOSITE':
-            self.lens = CompositeSersicNFW()
-        else:
-            raise ValueError('lens model %s not valid for solver type COMPOSITE_CENTER!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, theta_E, mass_light, Rs, e1, e2, n_sersic, r_eff, q_s, phi_G_s):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [center_x, center_y] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, mass_light, Rs, q, phi_G, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_E, mass_light, Rs, e1, e2, n_sersic, r_eff, q_s, phi_G_s):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, mass_light, Rs, e1, e2, n_sersic, r_eff, q_s, phi_G_s), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverCompositeEllipse2(object):
-    """
-    class to solve multidimensional non-linear equations for 2 point image
-    """
-    def __init__(self, lens_model='COMPISITE'):
-        if lens_model == 'COMPOSITE':
-            self.lens = CompositeSersicNFW()
-        else:
-            raise ValueError('lens model %s not valid for solver type COMPOSITE_ELLIPSE!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, theta_E, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y):
-        """
-
-        :param x: array of parameters
-        :return:
-        """
-        [e1, e2] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        alpha1, alpha2 = self.lens.derivatives(x_cat, y_cat, theta_E, mass_light, Rs, q, phi_G, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, theta_E, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, theta_E, mass_light, Rs, n_sersic, r_eff, q_s, phi_G_s, center_x, center_y), xtol=1.49012e-08, factor=0.1)
-        return x
-
-
-class SolverShapelets2(object):
-
-    def __init__(self, lens_model='SHAPELETS_CART'):
-        if lens_model == 'SHAPELETS_CART':
-            self.shapelets = CartShapelets()
-        elif lens_model == 'SHAPELETS_POLAR':
-            self.shapelets = PolarShapelets()
-        else:
-            raise ValueError('lens model %s not valid for solver type "SHAPELETS" ' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a, beta, center_x, center_y):
-        [c10, c01] = x
-        coeffs = [0, c10, c01]
-        alpha1, alpha2 = self.shapelets.derivatives(x_cat, y_cat, coeffs, beta, center_x, center_y)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, beta, center_x, center_y):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a, beta, center_x, center_y), xtol=1.49012e-10)#, factor=0.1)
-        return x
-
-
-class SolverShear2(object):
-
-    def __init__(self, lens_model='EXTERNAL_SHEAR'):
-        if lens_model == 'EXTERNAL_SHEAR':
-            self.shear = ExternalShear()
-        else:
-            raise ValueError('lens model %s not valid for solver type SHAPELET!' % lens_model)
-
-    def F(self, x, x_cat, y_cat, a):
-        [e1, e2] = x
-        alpha1, alpha2 = self.shear.derivatives(x_cat, y_cat, e1=e1, e2=e2)
-        y = np.zeros(2)
-        y[0] = alpha1[0] - alpha1[1]
-        y[1] = alpha2[0] - alpha2[1]
-        return y - a
-
-    def solve(self, init, x_cat, y_cat, a, **kwargs):
-        x = scipy.optimize.fsolve(self.F, init, args=(x_cat, y_cat, a), xtol=1.49012e-10)#, factor=0.1)
-        return x
-
-
-class Constraints2(object):
+class Solver2Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, solver_type='CENTER', lens_model='SPEP'):
-        if lens_model in ['SPEP', 'SPEMD']:
-            if solver_type == 'CENTER':
-                self.solver = SolverCenter2(lens_model)
-            elif solver_type == 'ELLIPSE':
-                self.solver = SolverEllipse2(lens_model)
-        elif lens_model in ['NFW_ELLIPSE']:
-            if solver_type == 'CENTER':
-                self.solver = SolverNFWCenter2(lens_model)
-            elif solver_type == 'ELLIPSE':
-                self.solver = SolverNFWEllipse2(lens_model)
-        elif lens_model in ['COMPOSITE']:
-            if solver_type == 'CENTER':
-                self.solver = SolverCompositeCenter2(lens_model)
-            elif solver_type == 'ELLIPSE':
-                self.solver = SolverCompositeEllipse2(lens_model)
-        elif lens_model in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
-            self.solver = SolverShapelets2(lens_model)
-        elif lens_model == 'EXTERNAL_SHEAR':
-            self.solver = SolverShear2(lens_model)
-        elif lens_model == 'NONE':
-            pass
-        else:
-            raise ValueError('invalid solver type: %s !' % solver_type)
+    def __init__(self, lens_model_list=['SPEP'], solver_type='CENTER', foreground_shear=False, decoupling=True):
+        self._lens_mode_list = lens_model_list
+        self._solver_type = solver_type
+        self.lensModel = LensModel(lens_model_list, foreground_shear)
+        self._decoupling = decoupling
 
-    def _subtract_constraint(self, x_cat, y_cat, x_sub, y_sub):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, kwargs_else=None):
         """
 
-        :param x_cat:
-        :param y_cat:
+        :param x_pos: list of image positions (x-axis)
+        :param y_pos: list of image position (y-axis)
+        :param init: initial parameters
+        :param kwargs_list: list of lens model kwargs
+        :return: updated lens model that satisfies the lens equation for the point sources
+        """
+        init = self._extract_array(kwargs_list)
+        if self._decoupling:
+            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, kwargs_else)
+            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, kwargs_else, k=0)
+            x_sub = alpha_1_x - alpha_0_x
+            y_sub = alpha_1_y - alpha_0_y
+        else:
+            x_sub, y_sub = np.zeros(2), np.zeros(2)
+        a = self._subtract_constraint(x_sub, y_sub)
+        x = self.solve(x_pos, y_pos, init, kwargs_list, kwargs_else, a)
+        kwargs_list = self._update_kwargs(x, kwargs_list)
+        return kwargs_list
+
+    def solve(self, x_pos, y_pos, init, kwargs_list, kwargs_else, a):
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, kwargs_else, a), xtol=1.49012e-10)#, factor=0.1)
+        return x
+
+    def _F(self, x, x_pos, y_pos, kwargs_list, kwargs_else, a=0):
+        kwargs_list = self._update_kwargs(x, kwargs_list)
+        if self._decoupling:
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, kwargs_else, k=0)
+        else:
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, kwargs_else)
+        y = np.zeros(2)
+        y[0] = beta_x[0] - beta_x[1]
+        y[1] = beta_y[0] - beta_y[1]
+        return y - a
+
+    def _subtract_constraint(self, x_sub, y_sub):
+        """
+
+        :param x_pos:
+        :param y_pos:
         :param x_sub:
         :param y_sub:
         :return:
         """
         a = np.zeros(2)
-        a[0] = x_cat[0] - x_cat[1] - x_sub[0] + x_sub[1]
-        a[1] = y_cat[0] - y_cat[1] - y_sub[0] + y_sub[1]
+        a[0] = - x_sub[0] + x_sub[1]
+        a[1] = - y_sub[0] + y_sub[1]
         return a
 
-    def get_param(self, x_cat, y_cat, x_sub, y_sub, init, kwargs):
+    def _update_kwargs(self, x, kwargs_list):
         """
 
-        :param x_cat:
-        :param y_cat:
-        :param x_sub:
-        :param y_sub:
+        :param x: list of parameters corresponding to the free parameter of the first lens model in the list
+        :param kwargs_list: list of lens model kwargs
+        :return: updated kwargs_list
+        """
+        lens_model = self._lens_mode_list[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE']:
+            if self._solver_type == 'CENTER':
+                [center_x, center_y] = x
+                kwargs_list[0]['center_x'] = center_x
+                kwargs_list[0]['center_y'] = center_y
+            elif self._solver_type == 'ELLIPSE':
+                [e1, e2] = x
+                phi_G, q = util.elliptisity2phi_q(e1, e2)
+                kwargs_list[0]['q'] = q
+                kwargs_list[0]['phi_G'] = phi_G
+
+        elif lens_model in ['SHAPELET_CART']:
+            [c10, c01] = x
+            coeffs = list(kwargs_list[0]['coeffs'])
+            coeffs[1: 3] = [c10, c01]
+            kwargs_list[0]['coeffs'] = coeffs
+        else:
+            raise ValueError("Lens model %s not supported for 2-point solver!" % lens_model)
+        return kwargs_list
+
+    def _extract_array(self, kwargs_list):
+        """
+        inverse of _update_kwargs
+        :param kwargs_list:
         :return:
         """
-        a = self._subtract_constraint(x_cat, y_cat, x_sub, y_sub)
-        x = self.solver.solve(init, x_cat, y_cat, a, **kwargs)
+        lens_model = self._lens_mode_list[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE']:
+            if self._solver_type == 'CENTER':
+                center_x = kwargs_list[0]['center_x']
+                center_y = kwargs_list[0]['center_y']
+                x = [center_x, center_y]
+            elif self._solver_type == 'ELLIPSE':
+                q = kwargs_list[0]['q']
+                phi_G = kwargs_list[0]['phi_G']
+                e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+                x = [e1, e2]
+            else:
+                raise ValueError("Solver type %s not valid for lens model %s" % (self._solver_type, lens_model))
+        elif lens_model in ['SHAPELETS_CART']:
+            coeffs = list(kwargs_list[0]['coeffs'])
+            [c10, c01] = coeffs[1: 3]
+            x = [c10, c01]
+        else:
+            raise ValueError("Lens model %s not supported for 2-point solver!" % lens_model)
         return x
+
+
+

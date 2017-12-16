@@ -15,7 +15,7 @@ class LensEquationSolver(object):
         """
         self.LensModel = LensModel(lens_model_list, foreground_shear)
 
-    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, min_distance=0.01, search_window=5, precision_limit=10**(-6), num_iter_max=10):
+    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=10):
         """
         finds image position source position and lense model
 
@@ -53,7 +53,7 @@ class LensEquationSolver(object):
 
         return x_mins, y_mins
 
-    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, precision_limit=10**(-6), num_iter_max=100):
+    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, precision_limit=10**(-10), num_iter_max=100):
         """
         find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
 
@@ -88,7 +88,7 @@ class LensEquationSolver(object):
             solver_precision[i] = delta
         return x_mins, y_mins, solver_precision
 
-    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=0.01, search_window=5, precision_limit=10**(-6), num_iter_max=10):
+    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=10):
         """
 
         :param sourcePos_x:

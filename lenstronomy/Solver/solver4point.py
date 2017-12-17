@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 import astrofunc.util as util
 
 import scipy.optimize
@@ -16,7 +16,7 @@ class Solver4Point(object):
         self.lensModel = LensModel(lens_model_list, foreground_shear)
         self._decoupling = decoupling
 
-    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, kwargs_else=None):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, kwargs_else=None, xtol=1.49012e-10):
         """
 
         :param x_pos: list of image positions (x-axis)
@@ -34,12 +34,12 @@ class Solver4Point(object):
         else:
             x_sub, y_sub = np.zeros(4), np.zeros(4)
         a = self._subtract_constraint(x_sub, y_sub)
-        x = self.solve(x_pos, y_pos, init, kwargs_list, kwargs_else, a)
+        x = self.solve(x_pos, y_pos, init, kwargs_list, kwargs_else, a, xtol)
         kwargs_list = self._update_kwargs(x, kwargs_list)
         return kwargs_list
 
-    def solve(self, x_pos, y_pos, init, kwargs_list, kwargs_else, a):
-        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, kwargs_else, a), xtol=1.49012e-10)#, factor=0.1)
+    def solve(self, x_pos, y_pos, init, kwargs_list, kwargs_else, a, xtol=1.49012e-10):
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, kwargs_else, a), xtol=xtol)#, factor=0.1)
         return x
 
     def _F(self, x, x_pos, y_pos, kwargs_list, kwargs_else, a=0):

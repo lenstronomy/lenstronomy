@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy.testing as npt
 import pytest
 from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestLensEquationSolver(object):

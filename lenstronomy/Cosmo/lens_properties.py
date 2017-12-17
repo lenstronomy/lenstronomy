@@ -8,7 +8,7 @@ from galkin.galkin import Galkin
 import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
 from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LightModel
 import astrofunc.multi_gauss_expansion as mge
 
@@ -87,7 +87,7 @@ class LensProp(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_mass is True:
-            massModel = LensModel({'lens_model_list': mass_profile_list})
+            massModel = LensModel(lens_model_list=mass_profile_list)
             theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else={})
             r_array = np.logspace(-2, 1, 100) * theta_E
             mass_r = massModel.kappa(r_array, 0, kwargs_profile)

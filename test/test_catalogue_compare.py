@@ -9,7 +9,7 @@ import pytest
 from mock import patch
 
 import astrofunc.util as util
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestCatalogueCompare(object):

@@ -3,8 +3,8 @@ __author__ = 'sibirrer'
 import pytest
 import numpy.testing as npt
 
-from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 
 
 class TestNumerics(object):

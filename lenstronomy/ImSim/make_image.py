@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
 from lenstronomy.Solver.lens_equation_solver import LensEquationSolver

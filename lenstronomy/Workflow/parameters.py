@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import astrofunc.util as util
 import numpy as np
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Solver.solver2point import Solver2Point
 from lenstronomy.Solver.solver4point import Solver4Point

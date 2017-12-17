@@ -1,6 +1,6 @@
 import numpy as np
 from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 
 

@@ -4,7 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from astrofunc.LensingProfiles.nfw import NFW
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Solver.solver2point import Solver2Point
 

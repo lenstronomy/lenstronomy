@@ -12,8 +12,8 @@ from astrofunc.LensingProfiles.shapelets import Shapelets
 from astrofunc.util import Util_class
 
 from lenstronomy.DeLens.de_lens import DeLens
-from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 from lenstronomy.Trash.light_model import LensLightModel, SourceModel
 
 

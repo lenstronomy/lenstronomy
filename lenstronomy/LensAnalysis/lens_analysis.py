@@ -1,13 +1,12 @@
 import copy
 import numpy as np
 import astrofunc.util as util
-import astrofunc.LightProfiles.torus as torus
 from astrofunc.LensingProfiles.gaussian import Gaussian
 import astrofunc.multi_gauss_expansion as mge
 
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
-from lenstronomy.ImSim.lens_model import LensModel
-from lenstronomy.ImSim.numeric_lens_differentials import NumericLens
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.make_image import MakeImage
 
 
@@ -18,7 +17,7 @@ class LensAnalysis(object):
     def __init__(self, kwargs_options, kwargs_data):
         self.LensLightModel = LensLightModel(kwargs_options)
         self.SourceModel = SourceModel(kwargs_options)
-        self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
@@ -28,8 +27,8 @@ class LensAnalysis(object):
                     , shape="GAUSSIAN"):
         amp_list = kwargs_else['point_amp']
         ra_pos, dec_pos, mag = self.magnification_model(kwargs_lens, kwargs_else)
-        mag_finite = self.magnification_finite(kwargs_lens, kwargs_else, source_sigma=source_size,
-                                               delta_pix=source_size*100, subgrid_res=1000, shape=shape)
+        mag_finite = self.LensModel.magnification_finite(ra_pos, dec_pos, kwargs_lens, kwargs_else, source_sigma=source_size,
+                                               window_size=source_size*100, grid_number=1000, shape=shape)
         return amp_list, mag, mag_finite
 
     def half_light_radius(self, kwargs_lens_light, deltaPix=None, numPix=None):
@@ -269,35 +268,6 @@ class LensAnalysis(object):
         alpha2 = makeImage.Data.array2image(alpha2)
         return alpha1, alpha2
 
-    def magnification_finite(self, kwargs_lens, kwargs_else, source_sigma=0.003, delta_pix=0.01, subgrid_res=100,
-                             shape="GAUSSIAN"):
-        """
-        returns the magnification of an extended source with Gaussian light profile
-        :param kwargs_lens: lens model kwargs
-        :param kwargs_else: kwargs of image positions
-        :param source_sigma: Gaussian sigma in arc sec in source
-        :return: numerically computed brightness of the sources
-        """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        mag_finite = np.zeros_like(ra_pos)
-        x_grid, y_grid = util.make_grid(numPix=subgrid_res, deltapix=delta_pix/subgrid_res, subgrid_res=1)
-        for i in range(len(ra_pos)):
-            ra, dec = ra_pos[i], dec_pos[i]
-            center_x, center_y = self.LensModel.ray_shooting(ra, dec, kwargs_lens, kwargs_else)
-            x_source, y_source = self.LensModel.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
-            if shape == "GAUSSIAN":
-                I_image = self.gaussian.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
-            elif shape == "TORUS":
-                I_image = torus.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
-            else:
-                raise ValueError("shape %s not valid!" % shape)
-            mag_finite[i] = np.sum(I_image)/subgrid_res**2*delta_pix**2
-        return mag_finite
-
     def position_size_estimate(self, ra_pos, dec_pos, kwargs_lens, kwargs_else, delta, scale=1):
         """
         estimate the magnification at the positions and define resolution limit
@@ -336,46 +306,3 @@ class LensAnalysis(object):
                 shear1 += 1./2 * (f_xx - f_yy)
                 shear2 += f_xy
         return alpha0_x, alpha0_y, kappa_ext, shear1, shear2
-
-    def critical_curve(self, kwargs_lens, kwargs_else):
-        """
-
-        :return:
-        """
-        x_grid_high_res, y_grid_high_res = util.make_subgrid(self.kwargs_data['x_coords'], self.kwargs_data['y_coords'], 10)
-        mag_high_res = util.array2image(
-            self.LensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
-
-        import matplotlib._cntr as cntr
-        #import numpy.ma as ma
-        #z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.
-
-        # Non-filled contours (lines only).
-        level = 0.5
-        import matplotlib._cntr as cntr
-        c = cntr.Cntr(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res)
-        nlist = c.trace(level, level, 0)
-        segs = nlist[:len(nlist) // 2]
-        # print segs  # x,y coords of contour points.
-
-        #cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
-        #                alpha=0.0)
-        #paths = cs.collections[0].get_paths()
-        paths = segs
-        ra_crit_list = []
-        dec_crit_list = []
-        ra_caustic_list = []
-        dec_caustic_list = []
-        for p in paths:
-            #v = p.vertices
-            v = p
-            ra_points = v[:, 0]
-            dec_points = v[:, 1]
-            ra_crit_list.append(ra_points)
-            dec_crit_list.append(dec_points)
-
-            ra_caustics, dec_caustics = self.LensModel.ray_shooting(ra_points, dec_points, kwargs_lens,
-                                                                         kwargs_else)
-            ra_caustic_list.append(ra_caustics)
-            dec_caustic_list.append(dec_caustics)
-        return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list

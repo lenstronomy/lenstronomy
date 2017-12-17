@@ -4,7 +4,7 @@ import numpy as np
 
 from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.multiband import MakeImageMultiband
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Workflow.parameters import Param
 import astrofunc.util as util
 

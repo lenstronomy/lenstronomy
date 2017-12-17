@@ -47,7 +47,7 @@ class PSF_iterative(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
-        kernel_new_small = util.pixel_kernel(kernel_new_small, subgrid_res=7)
+        kernel_new_small = util.pixel_kernel(kernel_new_small, subgrid_res=3)
         kernel_new_small = util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
         kernel_new = util.cut_psf(kernel_new, psf_size=kernel_size)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)

@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 import astrofunc.util as util
 
 import scipy.optimize

@@ -1,7 +1,7 @@
 import numpy as np
 import astrofunc.util as util
 import lenstronomy.util as lenstronomy_util
-from lenstronomy.ImSim.lens_model import LensModel
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 class LensEquationSolver(object):
@@ -15,7 +15,7 @@ class LensEquationSolver(object):
         """
         self.LensModel = LensModel(lens_model_list, foreground_shear)
 
-    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=10):
+    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
         """
         finds image position source position and lense model
 

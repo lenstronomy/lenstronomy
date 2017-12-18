@@ -11,9 +11,9 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking
     """
-    def __init__(self, kwargs_options, kwargs_data):
-        self.kwargs_options = kwargs_options
-        self._subgrid_res = kwargs_options.get('subgrid_res', 1)
+    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, lens_light_mask=False):
+        self._subgrid_res = subgrid_res
+        self._lens_light_mask = lens_light_mask
         if kwargs_data is None:
             pass
         else:
@@ -90,7 +90,7 @@ class Data(object):
             self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
             self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
             self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
-            self._psf_subgrid = kwargs_options.get('psf_subgrid', False)
+            self._psf_subgrid = psf_subgrid
 
     @property
     def data(self):
@@ -118,7 +118,7 @@ class Data(object):
 
     @property
     def mask(self):
-        if self.kwargs_options.get('lens_light_mask', False):
+        if self._lens_light_mask:
             return self._mask_lens_light
         else:
             return self._mask

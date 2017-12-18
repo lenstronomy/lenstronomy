@@ -6,11 +6,8 @@ from lenstronomy.ImSim.data import Data
 
 class TestData(object):
     def setup(self):
-        kwargs_options = {'system_name': '', 'data_file': ''
-            , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'], 'lens_light_model_list': ['SERSIC']
-            , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
         kwargs_data = {}
-        self.Data = Data(kwargs_options, kwargs_data)
+        self.Data = Data(kwargs_data)
 
     def test_idex_subgrid(self):
         idex_mask = np.zeros(100)
@@ -32,6 +29,7 @@ class TestData(object):
         result = self.Data.covariance_matrix(d, sigma_b, f)
         assert result[0] == 1.1
         assert result[1] == 1.2
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -16,7 +16,7 @@ class MakeImage(object):
     this class uses functions of lens_model and source_model to make a lensed image
     """
     def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
-        self.Data = Data(kwargs_options, kwargs_data)
+        self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1), psf_subgrid=kwargs_options.get('psf_subgrid', False), lens_light_mask=kwargs_options.get('lens_light_mask', False))
         self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.SourceModel = SourceModel(kwargs_options)
         self.LensLightModel = LensLightModel(kwargs_options)

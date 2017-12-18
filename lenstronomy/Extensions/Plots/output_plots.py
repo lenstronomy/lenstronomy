@@ -291,6 +291,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     deltaPix = kwargs_data['deltaPix']
     image_raw = kwargs_data['image_data']
     nx, ny = kwargs_data['numPix_xy']
+    Mpix2coord = kwargs_data['transform_pix2angle']
 
     x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'],
                                                                high_res)
@@ -307,7 +308,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
     reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
     print("reduced chi2 = ", reduced_x2)
     d_s = numPix_source * deltaPix_source
-    x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
+    x_grid_source, y_grid_source = util.make_grid_transformed(numPix_source, Mpix2coord*deltaPix_source/deltaPix)
     kwargs_source_new = copy.deepcopy(source_result)
     x_center = copy.deepcopy(kwargs_source_new[0]['center_x'])
     y_center = copy.deepcopy(kwargs_source_new[0]['center_y'])

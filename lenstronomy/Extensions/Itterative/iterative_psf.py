@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 import astrofunc.util as util
 
 import numpy as np
@@ -24,7 +24,7 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         logL_before = makeImage.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         kernel_old = kwargs_psf["kernel_point_source"]
@@ -57,7 +57,7 @@ class PSF_iterative(object):
 
         #kwargs_psf_new = {'psf_type': "pixel", 'kernel': kernel_new_small, 'kernel_large': kernel_new,
         #              "error_map": error_map}
-        makeImage_new = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf_new)
+        makeImage_new = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf_new)
         logL_after = makeImage_new.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         if logL_after > logL_before:
@@ -108,7 +108,7 @@ class PSF_iterative(object):
         :return:
         """
         # reconstructed model with given psf
-        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         wls_model, error_map, cov_param, param = makeImage.image_linear_solve(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         model, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,

@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import lenstronomy.DeLens.de_lens as DeLens
+import lenstronomy.ImSim.de_lens as DeLens
 
 
 class TestDeLens(object):

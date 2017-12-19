@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 
 
 class MakeImageMultiband(object):
@@ -12,7 +12,7 @@ class MakeImageMultiband(object):
             raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))
         self._makeImage_list = []
         for i in range(self._num_bands):
-            self._makeImage_list.append(MakeImage(kwargs_options, kwargs_data_list[i], kwargs_psf_list[i]))
+            self._makeImage_list.append(ImageModel(kwargs_options, kwargs_data_list[i], kwargs_psf_list[i]))
         self.kwargs_options = kwargs_options
         if compute_bool is None:
             self._compute_bool = [True] * self._num_bands

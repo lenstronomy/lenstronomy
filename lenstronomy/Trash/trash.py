@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import astrofunc.util as util
 
-import lenstronomy.util as lenstronomy_util
+import lenstronomy.Util.image_util as lenstronomy_util
 
 class Trash(object):
 

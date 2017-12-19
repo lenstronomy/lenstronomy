@@ -8,9 +8,9 @@ import scipy.ndimage as ndimage
 from astrofunc.LensingProfiles.external_shear import ExternalShear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Workflow.parameters import Param
-from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.lens_analysis import LensAnalysis
 
 
 def text_description(ax, d, text, color='w', backgroundcolor='k', flipped=False):
@@ -150,7 +150,7 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     deltaPix = kwargs_data['deltaPix']
     nx, ny = kwargs_data['numPix_xy']
     d = deltaPix * nx
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
@@ -297,7 +297,7 @@ def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, so
                                                                high_res)
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
@@ -488,7 +488,7 @@ def plot_source(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
 
     x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 20)
 
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)
     model_pure, _ = makeImage.image_with_params(lens_result, source_result,
@@ -623,7 +623,7 @@ def plot_lens_light_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_re
                         else_result, cmap):
     image = kwargs_data['image_data']
     mask_lens_light = kwargs_data['mask_lens_light']
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
     lens_light_model = makeImage.lens_surface_brightness(lens_light_result)
 
@@ -666,7 +666,7 @@ def detect_lens(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_res
 
     x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
     x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'], 5)
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
 
 
@@ -823,7 +823,7 @@ def plot_point_source_subtraction(kwargs_data, kwargs_psf, kwargs_options, lens_
     nx, ny = kwargs_data['numPix_xy']
     d = deltaPix * nx
     image = kwargs_data['image_data']
-    makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
 
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)

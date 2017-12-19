@@ -1,7 +1,7 @@
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 import astrofunc.util as util
 from astrofunc.LensingProfiles.gaussian import Gaussian
 
@@ -156,7 +156,7 @@ class Simulation(object):
         :param no_noise:
         :return:
         """
-        makeImage = MakeImage(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         image = makeImage.Data.array2image(image)
         # add noise

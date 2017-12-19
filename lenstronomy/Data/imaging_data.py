@@ -5,6 +5,7 @@ import scipy.signal as signal
 import astrofunc.util as util
 from astrofunc.util import FFTConvolve
 fft = FFTConvolve()
+from lenstronomy.Data.coord_transforms import Coordinates
 
 
 class Data(object):
@@ -14,83 +15,68 @@ class Data(object):
     def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, lens_light_mask=False):
         self._subgrid_res = subgrid_res
         self._lens_light_mask = lens_light_mask
-        if kwargs_data is None:
-            pass
-        else:
-            if 'image_data' in kwargs_data:
-                data = kwargs_data['image_data']
-            else:
-                print('Warning: image_data not specified in kwargs_data!')
-                data = np.ones(100)
-            if 'idex_mask' in kwargs_data:
-                self._idex_mask = kwargs_data['idex_mask']
-                self._idex_mask_bool = True
-            else:
-                self._idex_mask = np.ones_like(data)
-                self._idex_mask_bool = False
-            if 'sigma_background' in kwargs_data:
-                self._sigma_b = kwargs_data['sigma_background']
-            else:
-                print('Warning: sigma_background not specified in kwargs_data. Default is set to 1!')
-                self._sigma_b = 1
-            if 'exposure_map' in kwargs_data:
-                exp_map = kwargs_data['exposure_map']
-                exp_map[exp_map <= 0] = 10**(-3)
-                f = exp_map[self._idex_mask == 1]
-            elif 'exp_time' in kwargs_data:
-                f = kwargs_data['exp_time']
-            else:
-                print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
-                f = 1
-            self._exp_map = f
-            self._data = data[self._idex_mask == 1]
-            self._data_pure = data
-            self.C_D = self.covariance_matrix(self._data, self._sigma_b, self._exp_map)
 
-            if 'numPix_xy' in kwargs_data:
-                self._nx, self._ny = kwargs_data['numPix_xy']
-            else:
-                if 'numPix' in kwargs_data:
-                    self._nx, self._ny = kwargs_data['numPix'], kwargs_data['numPix']
-                else:
-                    self._nx, self._ny = np.sqrt(len(data)), np.sqrt(len(data))
-            if 'deltaPix' in kwargs_data:
-                self._deltaPix = kwargs_data['deltaPix']
-            else:
-                self._deltaPix = 1
-                print('Warning: deltaPix has not been found in kwargs_data, using =1!')
-            if 'mask' in kwargs_data:
-                self._mask = kwargs_data['mask'][self._idex_mask == 1]
-                self._mask_pure = kwargs_data['mask']
-                self._mask_pure[self._idex_mask == 0] = 0
-            else:
-                self._mask = np.ones_like(self._data)
-                self._mask_pure = np.ones_like(self._data_pure)
-                self._mask_pure[self._idex_mask == 0] = 0
-            if 'mask_lens_light' in kwargs_data:
-                self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
-            else:
-                self._mask_lens_light = np.ones_like(self._data)
-            if 'x_at_radec_0' in kwargs_data and 'y_at_radec_0' in kwargs_data and 'transform_angle2pix' in kwargs_data and 'transform_pix2angle' in kwargs_data:
-                self._x_at_radec_0 = kwargs_data['x_at_radec_0']
-                self._y_at_radec_0 = kwargs_data['y_at_radec_0']
-                self._ra_at_xy_0 = kwargs_data['ra_at_xy_0']
-                self._dec_at_xy_0 = kwargs_data['dec_at_xy_0']
-                self._Ma2pix = kwargs_data['transform_angle2pix']
-                self._Mpix2a = kwargs_data['transform_pix2angle']
-            if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
-                x_grid = kwargs_data['x_coords']
-                y_grid = kwargs_data['y_coords']
-            else:
-                x_grid, y_grid = util.make_grid(np.sqrt(self._nx*self._ny), 1, subgrid_res=1, left_lower=False)
-            self._x_grid_all, self._y_grid_all = x_grid, y_grid
-            self.x_grid = x_grid[self._idex_mask == 1]
-            self.y_grid = y_grid[self._idex_mask == 1]
-            x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, self._subgrid_res)
-            self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
-            self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
-            self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
-            self._psf_subgrid = psf_subgrid
+        if 'image_data' in kwargs_data:
+            data = kwargs_data['image_data']
+        else:
+            print('Warning: image_data not specified in kwargs_data!')
+            data = np.ones(16)
+        if 'idex_mask' in kwargs_data:
+            self._idex_mask = kwargs_data['idex_mask']
+            self._idex_mask_bool = True
+        else:
+            self._idex_mask = np.ones_like(data)
+            self._idex_mask_bool = False
+        if 'sigma_background' in kwargs_data:
+            self._sigma_b = kwargs_data['sigma_background']
+        else:
+            print('Warning: sigma_background not specified in kwargs_data. Default is set to 1!')
+            self._sigma_b = 1
+        if 'exposure_map' in kwargs_data:
+            exp_map = kwargs_data['exposure_map']
+            exp_map[exp_map <= 0] = 10**(-3)
+            f = exp_map[self._idex_mask == 1]
+        elif 'exp_time' in kwargs_data:
+            f = kwargs_data['exp_time']
+        else:
+            print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
+            f = 1.
+        self._exp_map = f
+        self._data = data[self._idex_mask == 1]
+        self._data_pure = data
+        self.C_D = self.covariance_matrix(self._data, self._sigma_b, self._exp_map)
+
+        if 'numPix_xy' in kwargs_data:
+            self._nx, self._ny = kwargs_data['numPix_xy']
+        else:
+            self._nx, self._ny = np.sqrt(len(data)), np.sqrt(len(data))
+
+        if 'mask' in kwargs_data:
+            self._mask = kwargs_data['mask'][self._idex_mask == 1]
+            self._mask_pure = kwargs_data['mask']
+            self._mask_pure[self._idex_mask == 0] = 0
+        else:
+            self._mask = np.ones_like(self._data)
+            self._mask_pure = np.ones_like(self._data_pure)
+            self._mask_pure[self._idex_mask == 0] = 0
+        if 'mask_lens_light' in kwargs_data:
+            self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
+        else:
+            self._mask_lens_light = np.ones_like(self._data)
+        if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
+            x_grid = kwargs_data['x_coords']
+            y_grid = kwargs_data['y_coords']
+        else:
+            x_grid, y_grid = util.make_grid(np.sqrt(self._nx*self._ny), 1, subgrid_res=1, left_lower=False)
+        self._x_grid_all, self._y_grid_all = x_grid, y_grid
+        self.x_grid = x_grid[self._idex_mask == 1]
+        self.y_grid = y_grid[self._idex_mask == 1]
+        x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, self._subgrid_res)
+        self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+        self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
+        self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
+        self._psf_subgrid = psf_subgrid
+        self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])), ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0), dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0))
 
     @property
     def data(self):
@@ -110,7 +96,7 @@ class Data(object):
 
     @property
     def deltaPix(self):
-        return self._deltaPix
+        return self._coords.pixel_size
 
     @property
     def numData(self):
@@ -133,11 +119,29 @@ class Data(object):
 
         :return:
         """
-        return np.sqrt(self._nx * self._ny)
+        return np.sqrt(self.numData)
 
     @property
     def coordinates(self):
         return self._x_grid_all, self._y_grid_all
+
+    def map_coord2pix(self, ra, dec):
+        """
+
+        :param ra:
+        :param dec:
+        :return:
+        """
+        return self._coords.map_coord2pix(ra, dec)
+
+    def map_pix2coord(self, x, y):
+        """
+
+        :param x:
+        :param y:
+        :return:
+        """
+        return self._coords.map_pix2coord(x, y)
 
     def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
         """
@@ -213,27 +217,6 @@ class Data(object):
         sigma = d_pos/f + sigma_b**2
         return sigma
 
-    def map_coord2pix(self, ra, dec):
-        """
-
-        :param ra: ra coordinates, relative
-        :param dec: dec coordinates, relative
-        :param x_0: pixel value in x-axis of ra,dec = 0,0
-        :param y_0: pixel value in y-axis of ra,dec = 0,0
-        :param M:
-        :return:
-        """
-        return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
-
-    def map_pix2coord(self, x_pos, y_pos):
-        """
-
-        :param x_pos:
-        :param y_pos:
-        :return:
-        """
-        return util.map_coord2pix(x_pos, y_pos, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
-
     def add_noise2image(self, image):
         """
         adds Poisson and Gaussian noise to the modeled image
@@ -280,8 +263,7 @@ class Data(object):
         :param error_map:
         :return:
         """
-        chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map))\
-               *self.mask/np.sum(self.mask)
+        chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map)) * self.mask/np.sum(self.mask)
         return np.sum(chi2)
 
     def psf_convolution(self, grid, grid_scale, **kwargs):

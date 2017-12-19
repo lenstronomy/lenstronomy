@@ -5,8 +5,8 @@ import numpy.testing as npt
 import pytest
 from astrofunc.LensingProfiles.nfw import NFW
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.Solver.solver2point import Solver2Point
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.solver2point import Solver2Point
 
 
 class TestSolver(object):

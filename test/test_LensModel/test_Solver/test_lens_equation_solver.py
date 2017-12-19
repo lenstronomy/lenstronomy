@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
 
 

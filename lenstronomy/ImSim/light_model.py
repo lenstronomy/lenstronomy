@@ -8,9 +8,8 @@ import copy
 
 class LensLightModel(object):
 
-    def __init__(self, kwargs_options):
-        lens_light_model_list = kwargs_options.get('lens_light_model_list', ['NONE'])
-        self.lightModel = LightModel(lens_light_model_list, smoothing=0.001)
+    def __init__(self, light_model_list=['NONE']):
+        self.lightModel = LightModel(light_model_list, smoothing=0.001)
 
     def surface_brightness(self, x, y, kwargs_lens_light_list, k=None):
         """
@@ -22,9 +21,8 @@ class LensLightModel(object):
 
 class SourceModel(object):
 
-    def __init__(self, kwargs_options):
-        source_light_model_list = kwargs_options.get('source_light_model_list', ['NONE'])
-        self.lightModel = LightModel(source_light_model_list, smoothing=0.00001)
+    def __init__(self, light_model_list=['NONE']):
+        self.lightModel = LightModel(light_model_list, smoothing=0.00001)
 
     def surface_brightness(self, x, y, kwargs_source_list, k=None):
         """

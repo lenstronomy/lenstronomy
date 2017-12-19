@@ -1,6 +1,6 @@
 import numpy as np
 import astrofunc.util as util
-import lenstronomy.util as lenstronomy_util
+import lenstronomy.Util.image_util as lenstronomy_util
 from lenstronomy.LensModel.lens_model import LensModel
 
 

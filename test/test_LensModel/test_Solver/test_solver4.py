@@ -2,8 +2,8 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.Solver.solver4point import Solver4Point
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.solver4point import Solver4Point
 
 
 class TestSolver4Point(object):

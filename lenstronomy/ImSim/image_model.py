@@ -3,27 +3,34 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
-from lenstronomy.ImSim.data import Data
-import lenstronomy.DeLens.de_lens as de_lens
+from lenstronomy.Data.imaging_data import Data
+import lenstronomy.ImSim.de_lens as de_lens
 
 import numpy as np
 
 
-class MakeImage(object):
+class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data=None, kwargs_psf=None):
-        self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1), psf_subgrid=kwargs_options.get('psf_subgrid', False), lens_light_mask=kwargs_options.get('lens_light_mask', False))
-        self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        self.SourceModel = SourceModel(kwargs_options)
-        self.LensLightModel = LensLightModel(kwargs_options)
-        self.PointSource = PointSource(kwargs_options, self.Data)
-        self.kwargs_options = kwargs_options
-        self.kwargs_psf = kwargs_psf
-        self.imagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None):
+        self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1),
+                         psf_subgrid=kwargs_options.get('psf_subgrid', False),
+                         lens_light_mask=kwargs_options.get('lens_light_mask', False))
+        self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'],
+                                   foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        self.PointSource = PointSource(self.Data, point_source=kwargs_options.get('point_source', False),
+                                       fix_magnification=kwargs_options.get('fix_magnification', False),
+                                       error_map=kwargs_options.get('error_map', False),
+                                       fix_error_map=kwargs_options.get('fix_error_map', False))
+        self._kwargs_options = kwargs_options
+        self._kwargs_psf = kwargs_psf
+        self.imagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'],
+                                                foreground_shear=kwargs_options.get("foreground_shear", False))
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
@@ -41,7 +48,7 @@ class MakeImage(object):
         else:
             x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source)
-        source_light_final = self.Data.re_size_convolve(source_light, self.kwargs_psf, unconvolved=unconvolved)
+        source_light_final = self.Data.re_size_convolve(source_light, self._kwargs_psf, unconvolved=unconvolved)
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
@@ -52,7 +59,7 @@ class MakeImage(object):
         :return: 1d array of surface brightness pixels
         """
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
-        lens_light_final = self.Data.re_size_convolve(lens_light, self.kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.Data.re_size_convolve(lens_light, self._kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
@@ -66,13 +73,13 @@ class MakeImage(object):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        map_error = self.kwargs_options.get('error_map', False)
+        map_error = self._kwargs_options.get('error_map', False)
         x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
         mask = self.Data.mask
         A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
         data = self.Data.data
         d = data*mask
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1/(self.Data.C_D + error_map), d, inv_bool=inv_bool)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.Data.C_D + error_map), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
         return wls_model, error_map, cov_param, param
 
@@ -97,8 +104,8 @@ class MakeImage(object):
             lens_light = self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         else:
             lens_light = np.zeros_like(self.Data.data)
-        if point_source_add and self.kwargs_options.get('point_source', False):
-            point_source, error_map = self.PointSource.point_source(self.kwargs_psf, kwargs_else)
+        if point_source_add and self._kwargs_options.get('point_source', False):
+            point_source, error_map = self.PointSource.point_source(self._kwargs_psf, kwargs_else)
         else:
             point_source = np.zeros_like(self.Data.data)
             error_map = np.zeros_like(self.Data.data)
@@ -111,7 +118,7 @@ class MakeImage(object):
         :param kwargs_else:
         :return: list of images containing only single point sources
         """
-        return self.PointSource.point_source_list(self.kwargs_psf, kwargs_else)
+        return self.PointSource.point_source_list(self._kwargs_psf, kwargs_else)
 
     def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
         """
@@ -155,11 +162,11 @@ class MakeImage(object):
         return self.Data.numData_evaluate
 
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
-        kwargs_psf = self.kwargs_psf
+        kwargs_psf = self._kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
         lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(x_grid, y_grid,
                                                                                            kwargs_lens_light)
-        n_points = self.PointSource.num_basis(kwargs_psf, kwargs_else)
+        n_points = self.PointSource.num_basis(kwargs_else)
         num_param = n_points + n_lens_light + n_source
 
         numPix = self.Data.numData
@@ -182,8 +189,8 @@ class MakeImage(object):
             A[n, :] = image
             n += 1
         # response of point sources
-        if self.kwargs_options.get('point_source', False):
-            if self.kwargs_options.get('fix_magnification', False):
+        if self._kwargs_options.get('point_source', False):
+            if self._kwargs_options.get('fix_magnification', False):
                 mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens,
                                                 kwargs_else)
             else:
@@ -210,7 +217,7 @@ class MakeImage(object):
         :return:
         """
         i = 0
-        for k, model in enumerate(self.kwargs_options['source_light_model_list']):
+        for k, model in enumerate(self._kwargs_options['source_light_model_list']):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
                 kwargs_source[k]['I0_sersic'] = param[i]
                 i += 1
@@ -233,7 +240,7 @@ class MakeImage(object):
             if model in ['UNIFORM']:
                 kwargs_source[k]['mean'] = param[i]
                 i += 1
-        for k, model in enumerate(self.kwargs_options['lens_light_model_list']):
+        for k, model in enumerate(self._kwargs_options['lens_light_model_list']):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
                 kwargs_lens_light[k]['I0_sersic'] = param[i]
                 i += 1
@@ -256,9 +263,9 @@ class MakeImage(object):
             if model in ['UNIFORM']:
                 kwargs_lens_light[k]['mean'] = param[i]
                 i += 1
-        num_images = self.kwargs_options.get('num_images', 0)
-        if num_images > 0 and self.kwargs_options['point_source']:
-            if self.kwargs_options.get('fix_magnification', False):
+        num_images = self._kwargs_options.get('num_images', 0)
+        if num_images > 0 and self._kwargs_options['point_source']:
+            if self._kwargs_options.get('fix_magnification', False):
                 mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens,
                                                              kwargs_else)
                 kwargs_else['point_amp'] = np.abs(mag) * param[i]
@@ -280,9 +287,9 @@ class MakeImage(object):
         """
         kwargs_source = self.SourceModel.lightModel.re_normalize_flux(kwargs_source, norm_factor)
         kwargs_lens_light = self.LensLightModel.lightModel.re_normalize_flux(kwargs_lens_light, norm_factor)
-        num_images = self.kwargs_options.get('num_images', 0)
-        if num_images > 0 and self.kwargs_options['point_source']:
-            if self.kwargs_options.get('fix_magnification', False):
+        num_images = self._kwargs_options.get('num_images', 0)
+        if num_images > 0 and self._kwargs_options['point_source']:
+            if self._kwargs_options.get('fix_magnification', False):
                 kwargs_else['point_amp'] *= norm_factor
             else:
                 kwargs_else['point_amp'] *= norm_factor

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from lenstronomy.ImSim.data import Data
+from lenstronomy.Data.imaging_data import Data
 
 
 class TestData(object):

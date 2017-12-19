@@ -7,7 +7,7 @@ import astrofunc.multi_gauss_expansion as mge
 from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 
 
 class LensAnalysis(object):
@@ -15,8 +15,8 @@ class LensAnalysis(object):
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
     def __init__(self, kwargs_options, kwargs_data):
-        self.LensLightModel = LensLightModel(kwargs_options)
-        self.SourceModel = SourceModel(kwargs_options)
+        self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
@@ -262,7 +262,7 @@ class LensAnalysis(object):
         :param kwargs_else:
         :return:
         """
-        makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
+        makeImage = ImageModel(self.kwargs_options, self.kwargs_data)
         alpha1, alpha2 = self.LensModel.alpha(makeImage.Data.x_grid, makeImage.Data.y_grid, kwargs_lens, kwargs_else)
         alpha1 = makeImage.Data.array2image(alpha1)
         alpha2 = makeImage.Data.array2image(alpha2)

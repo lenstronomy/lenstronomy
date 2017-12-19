@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import astrofunc.util as util
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 import copy
 
 
@@ -37,7 +37,7 @@ class Sensitivity(object):
             x_grid, y_grid = kwargs_data_i['x_coords'], kwargs_data_i['y_coords']
             x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, subgrid_res)
             numPix = len(kwargs_data_i['image_data'])
-            makeImage = MakeImage(kwargs_options, kwargs_data_i)
+            makeImage = ImageModel(kwargs_options, kwargs_data_i)
             if noMask:
                 image_i, param_i, error_map = makeImage.make_image_ideal_noMask(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source,
                                                 kwargs_psf_i, kwargs_lens_light, kwargs_else, numPix,
@@ -75,7 +75,7 @@ class Sensitivity(object):
             x_grid, y_grid = kwargs_data_i['x_coords'], kwargs_data_i['y_coords']
             x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, subgrid_res)
             numPix = len(kwargs_data_i['image_data'])
-            makeImage = MakeImage(kwargs_options, kwargs_data_i)
+            makeImage = ImageModel(kwargs_options, kwargs_data_i)
             image_i, error_map = makeImage.make_image_with_params(x_grid_sub, y_grid_sub, kwargs_lens, kwargs_source, kwargs_psf_i,
                                                           kwargs_lens_light,
                                                           kwargs_else, numPix, deltaPix, subgrid_res, param_i, num_order)
@@ -169,7 +169,7 @@ class Sensitivity(object):
         kwargs_options_clump["add_clump"] = True
         clump_kwargs = {'r_trunc': r_trunc, 'phi_E_clump': phi_E_clump, 'x_clump': x_clump, 'y_clump': y_clump}
         kwargs_else = dict(kwargs_else.items() + clump_kwargs.items())
-        makeImage = MakeImage(kwargs_options_clump, kwargs_data)
+        makeImage = ImageModel(kwargs_options_clump, kwargs_data)
         if kwargs_options["multiBand"]:
             x_grid, y_grid = kwargs_data[0]['x_coords'], kwargs_data[0]['y_coords']
         else:

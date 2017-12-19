@@ -19,9 +19,6 @@ class UnitManager(object):
         self.z_lens = z_lens
         self.z_source = z_source
         self.cosmoProp = CosmoProp(z_lens=self.z_lens, z_source=self.z_source)
-        """
-        test test
-        """
 
     def _linear_convert(self, input, converting_const, center=None):
         """

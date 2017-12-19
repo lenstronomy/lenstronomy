@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from mock import patch
 
-from lenstronomy.ImSim.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 
 
 class TestMakeImage(object):
@@ -19,7 +19,7 @@ class TestMakeImage(object):
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
         self.kwargs_data = {}
         
-        self.makeImage = MakeImage(self.kwargs_options, self.kwargs_data)
+        self.makeImage = ImageModel(self.kwargs_options, self.kwargs_data)
         self.kwargs_lens = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2,'center_x': 0, 'center_y': 0}]
         self.kwargs_source = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
         x_grid, y_grid = util.make_grid(numPix=101, deltapix=0.1)
@@ -51,7 +51,7 @@ class TestMakeImage(object):
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'pixel'}
-        makeImage = MakeImage(kwargs_options, kwargs_data, kwargs_psf=kwargs_psf)
+        makeImage = ImageModel(kwargs_options, kwargs_data, kwargs_psf=kwargs_psf)
         # chose point source positions
         x_pix = np.array([10, 5, 10, 90])
         y_pix = np.array([40, 50, 60, 50])

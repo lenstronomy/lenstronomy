@@ -1,11 +1,10 @@
 __author__ = 'sibirrer'
 
-import astrofunc.util as util
 import numpy as np
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.Solver.solver2point import Solver2Point
-from lenstronomy.Solver.solver4point import Solver4Point
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.LensModel.Solver.solver2point import Solver2Point
+from lenstronomy.LensModel.Solver.solver4point import Solver4Point
 from lenstronomy.Workflow.else_param import ElseParam
 from lenstronomy.Workflow.lens_param import LensParam
 from lenstronomy.Workflow.light_param import LightParam
@@ -177,36 +176,6 @@ class Param(object):
             elif lens_model in ['SIS', 'SIE', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH']:
                 if 'theta_E' in self.kwargs_fixed_lens[i]:
                     kwargs_lens[i]['theta_E'] = self.kwargs_fixed_lens[i]['theta_E'] * mass2light
-        return kwargs_lens
-
-    def _update_2_center(self, kwargs_lens, x):
-        """
-
-        :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
-        :return: updated kwargs of lens parameters
-        """
-        [center_x, center_y] = x
-        kwargs_lens['center_x'] = center_x
-        kwargs_lens['center_y'] = center_y
-        return kwargs_lens
-
-    def _update_2_ellipse(self, kwargs_lens, x):
-        """
-
-        :param x: 1d array with spep parameters [phi_E, gamma, q, phi_G, center_x, center_y]
-        :return: updated kwargs of lens parameters
-        """
-        [e1, e2] = x
-        phi_G, q = util.elliptisity2phi_q(e1, e2)
-        kwargs_lens['phi_G'] = phi_G
-        kwargs_lens['q'] = q
-        return kwargs_lens
-
-    def _update_coeffs2(self, kwargs_lens, x):
-        [c10, c01] = x
-        coeffs = list(kwargs_lens['coeffs'])
-        coeffs[1:3] = [c10, c01]
-        kwargs_lens['coeffs'] = coeffs
         return kwargs_lens
 
     def _update_magnification(self, kwargs_lens, kwargs_else):

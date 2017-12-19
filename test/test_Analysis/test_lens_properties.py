@@ -1,10 +1,9 @@
 __author__ = 'sibirrer'
 
-import numpy as np
 import numpy.testing as npt
 import pytest
 
-from lenstronomy.Cosmo.lens_properties import LensProp
+from lenstronomy.Analysis.lens_properties import LensProp
 
 
 class TestLensProp(object):

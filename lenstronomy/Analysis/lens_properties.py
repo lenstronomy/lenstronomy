@@ -7,7 +7,7 @@ from galkin.galkin import Galkin
 
 import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
-from lenstronomy.LensAnalysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.ImSim.light_model import LightModel
 import astrofunc.multi_gauss_expansion as mge

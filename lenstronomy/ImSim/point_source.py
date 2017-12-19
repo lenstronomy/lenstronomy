@@ -7,15 +7,16 @@ class PointSource(object):
     """
     class to handle point sources
     """
-    def __init__(self, kwargs_options, data):
-        self.kwargs_options = kwargs_options
+    def __init__(self, data, point_source=True, fix_magnification=False, error_map=False, fix_error_map=False):
         self.Data = data
+        self._point_source = point_source
+        self._fix_magnification = fix_magnification
+        self._error_map = error_map
+        self._fix_error_map = fix_error_map
 
-    def num_basis(self, kwargs_psf, kwargs_else):
-        if self.kwargs_options.get('point_source', False):
-            if self.kwargs_options.get('psf_iteration', False):
-                n_points = len(kwargs_psf['kernel_list'])
-            elif self.kwargs_options.get('fix_magnification', False):
+    def num_basis(self, kwargs_else):
+        if self._point_source:
+            if self._fix_magnification:
                 n_points = 1
             else:
                 n_points = len(kwargs_else['ra_pos'])
@@ -32,7 +33,7 @@ class PointSource(object):
         :param psf_large:
         :return: response matrix of point sources
         """
-        num_param = self.num_basis(kwargs_psf, kwargs_else)
+        num_param = self.num_basis(kwargs_else)
         ra_pos = kwargs_else['ra_pos']
         dec_pos = kwargs_else['dec_pos']
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
@@ -49,7 +50,7 @@ class PointSource(object):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         A = np.zeros((num_param, numPix))
 
-        if self.kwargs_options.get('fix_magnification', False):
+        if self._fix_magnification:
             grid2d = np.zeros((self.Data._nx, self.Data._ny))
             for i in range(n_points):
                 grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
@@ -78,7 +79,7 @@ class PointSource(object):
         point_amp = kwargs_else['point_amp']
         numPix = len(data)
         error_map = np.zeros(numPix)
-        if self.kwargs_options.get('error_map', False) is True:
+        if self._error_map:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         grid2d = np.zeros((self.Data._nx, self.Data._ny))
@@ -109,7 +110,7 @@ class PointSource(object):
         return point_source_list
 
     def get_error_map(self, data, x_pos, y_pos, psf_kernel, amplitude, error_map, psf_error_map):
-        if self.kwargs_options.get('fix_error_map', False):
+        if self._fix_error_map:
             amp_estimated = amplitude
         else:
             data_2d = self.Data.array2image(data)

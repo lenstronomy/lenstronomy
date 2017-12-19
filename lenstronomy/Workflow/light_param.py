@@ -440,7 +440,7 @@ class LightParam(object):
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                         phi = kwargs_mean['phi_G']
                         q = kwargs_mean['q']
-                        e1,e2 = util.phi_q2_elliptisity(phi, q)
+                        e1, e2 = util.phi_q2_elliptisity(phi, q)
                         mean.append(e1)
                         mean.append(e2)
                         ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -572,10 +572,10 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        low.append(-0.8)
-                        high.append(0.8)
-                        low.append(-0.8)
-                        high.append(0.8)
+                        low.append(-0.7)
+                        high.append(0.7)
+                        low.append(-0.7)
+                        high.append(0.7)
 
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
@@ -603,10 +603,10 @@ class LightParam(object):
                     low.append(self._smoothing*2)
                     high.append(100)
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    low.append(-0.5)
-                    high.append(0.5)
-                    low.append(-0.5)
-                    high.append(0.5)
+                    low.append(-0.7)
+                    high.append(0.7)
+                    low.append(-0.7)
+                    high.append(0.7)
                 if not 'I0_d' in kwargs_fixed:
                     low.append(0)
                     high.append(100)
@@ -614,10 +614,10 @@ class LightParam(object):
                     low.append(self._smoothing*2)
                     high.append(100)
                 if not 'phi_G_d' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    low.append(-0.5)
-                    high.append(0.5)
-                    low.append(-0.5)
-                    high.append(0.5)
+                    low.append(-0.7)
+                    high.append(0.7)
+                    low.append(-0.7)
+                    high.append(0.7)
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
                     low.append(0)

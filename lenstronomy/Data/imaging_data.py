@@ -78,6 +78,41 @@ class Data(object):
         self._psf_subgrid = psf_subgrid
         self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])), ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0), dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0))
 
+    def _init_mask_psf(self):
+        """
+        smaller frame that encolses all the idex_mask
+        :param idex_mask:
+        :param nx:
+        :param ny:
+        :return:
+        """
+        if not hasattr(self, '_x_min_psf'):
+            idex_2d = util.array2image(self._idex_mask, self._nx, self._ny)
+            self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
+            self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
+            self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
+            self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
+
+    def _cutout_psf(self, image, subgrid_res):
+        """
+        cutout the part of the image relevant for the psf convolution
+        :param image:
+        :return:
+        """
+        self._init_mask_psf()
+        return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
+
+    def _add_psf(self, image_psf):
+        """
+
+        :param image_psf:
+        :return:
+        """
+        self._init_mask_psf()
+        image = np.zeros((self._nx, self._ny))
+        image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
+        return image
+
     @property
     def data(self):
         return self._data
@@ -156,7 +191,7 @@ class Data(object):
         idex_sub = util.image2array(idex_sub)
         return idex_sub
 
-    def array2image(self, array, subrid_res=1):
+    def array2image(self, array, subgrid_res=1):
         """
         maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
         :param array: 1d array
@@ -165,11 +200,11 @@ class Data(object):
         :param ny: y-axis of 2d grid
         :return:
         """
-        nx, ny = self._nx * subrid_res, self._ny * subrid_res
+        nx, ny = self._nx * subgrid_res, self._ny * subgrid_res
         if self._idex_mask_bool is True:
             idex_mask = self._idex_mask
             grid1d = np.zeros((nx * ny))
-            if subrid_res > 1:
+            if subgrid_res > 1:
                 idex_mask_subgrid = self._idex_mask_sub
             else:
                 idex_mask_subgrid = idex_mask
@@ -312,6 +347,7 @@ class Data(object):
         :return: array with convolved and re-binned data/model
         """
         image = self.array2image(image, self._subgrid_res)
+        image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
             grid_re_sized = util.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
@@ -323,8 +359,9 @@ class Data(object):
             else:
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
                 grid_final = util.re_size(grid_conv, self._subgrid_res)
-
-        return self.image2array(grid_final)
+        grid_final = self._add_psf(grid_final)
+        grid_final = self.image2array(grid_final)
+        return grid_final
 
     def flux_aperture(self, ra_pos, dec_pos, width):
         """

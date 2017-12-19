@@ -284,10 +284,11 @@ class Data(object):
         elif psf_type == 'pixel':
             if self._psf_subgrid:
                 n = len(kwargs['kernel_pixel'])
-                if self._subgrid_res % 2 == 0:
-                    raise ValueError('For PSF subgrid resolution, the subgrid must be an odd number!')
-                kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res)
-                kernel = util.cut_psf(kernel, psf_size=n*self._subgrid_res)
+                kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
+                n_new = n*self._subgrid_res
+                if n_new % 2 == 0:
+                    n_new -= 1
+                kernel = util.cut_psf(kernel, psf_size=n_new)
             else:
                 kernel = kwargs['kernel_pixel']
             if 'kernel_fft' in kwargs:

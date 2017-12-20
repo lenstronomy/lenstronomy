@@ -139,10 +139,10 @@ class LensModelPlot(object):
         self._kwargs_lens = kwargs_lens
         self._kwargs_source = kwargs_source
         self._kwargs_else = kwargs_else
-        self._model = util.array2image(model)
+        self._model = self._imageModel.Data.array2image(model)
         self._data = util.array2image(kwargs_data['image_data'])
 
-        self._norm_residuals = util.array2image(self._imageModel.Data.reduced_residuals(model, error_map=error_map))
+        self._norm_residuals = self._imageModel.Data.array2image(self._imageModel.Data.reduced_residuals(model, error_map=error_map))
         self._reduced_x2 = self._imageModel.Data.reduced_chi2(model, error_map=error_map)
         print("reduced chi^^ = ", self._reduced_x2)
 

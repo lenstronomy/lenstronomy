@@ -43,24 +43,24 @@ class PointSource(object):
         if point_amp is None:
             point_amp = np.ones_like(n_points)
         #point_amp = kwargs_else['point_amp']
-        numPix = len(data)
-        error_map = np.zeros(numPix)
+        num_response = self.Data.num_response
+        error_map = np.zeros_like(data)
         if map_error is True:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
-        A = np.zeros((num_param, numPix))
+        A = np.zeros((num_param, num_response))
 
         if self._fix_magnification:
-            grid2d = np.zeros((self.Data._nx, self.Data._ny))
+            grid2d = np.zeros_like(data)
             for i in range(n_points):
                 grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
             A[0, :] = self.Data.image2array(grid2d)
         else:
             for i in range(num_param):
-                grid2d = np.zeros((self.Data._nx, self.Data._ny))
+                grid2d = np.zeros_like(data)
                 point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source)
                 A[i, :] = self.Data.image2array(point_source)
-        return A, error_map
+        return A, self.Data.image2array(error_map)
 
     def point_source(self, kwargs_psf, kwargs_else):
         """
@@ -78,14 +78,14 @@ class PointSource(object):
         psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
         numPix = len(data)
-        error_map = np.zeros(numPix)
+        error_map = np.zeros_like(data)
         if self._error_map:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
-        grid2d = np.zeros((self.Data._nx, self.Data._ny))
+        grid2d = np.zeros_like(data)
         for i in range(n_points):
             grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
-        point_source = self.Data.image2array(grid2d)
+        point_source = grid2d
         return point_source, error_map
 
     def point_source_list(self, kwargs_psf, kwargs_else):
@@ -104,7 +104,7 @@ class PointSource(object):
 
         point_source_list = []
         for i in range(n_points):
-            grid2d = np.zeros((self.Data._nx, self.Data._ny))
+            grid2d = np.zeros_like(self.Data.data)
             point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
             point_source_list.append(point_source)
         return point_source_list
@@ -113,10 +113,9 @@ class PointSource(object):
         if self._fix_error_map:
             amp_estimated = amplitude
         else:
-            data_2d = self.Data.array2image(data)
-            amp_estimated = self.estimate_amp(data_2d, x_pos, y_pos, psf_kernel)
-        error_map = util.add_layer2image(self.Data.array2image(error_map), x_pos, y_pos, psf_error_map*(psf_kernel * amp_estimated)**2)
-        return self.Data.image2array(error_map)
+            amp_estimated = self.estimate_amp(data, x_pos, y_pos, psf_kernel)
+        error_map = util.add_layer2image(error_map, x_pos, y_pos, psf_error_map*(psf_kernel * amp_estimated)**2)
+        return error_map
 
     def estimate_amp(self, data, x_pos, y_pos, psf_kernel):
         """
@@ -127,11 +126,11 @@ class PointSource(object):
         :param deltaPix:
         :return:
         """
-        numPix = len(data)
+        numPix_x, numPix_y = np.shape(data)
         #data_center = int((numPix-1.)/2)
         x_int = int(round(x_pos-0.49999))#+data_center
         y_int = int(round(y_pos-0.49999))#+data_center
-        if x_int > 2 and x_int < numPix-2 and y_int > 2 and y_int < numPix-2:
+        if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
             mean_image = max(np.sum(data[y_int-2:y_int+3, x_int-2:x_int+3]), 0)
             num = len(psf_kernel)
             center = int((num-0.5)/2)

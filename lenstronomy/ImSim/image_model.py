@@ -75,13 +75,13 @@ class ImageModel(object):
         """
         map_error = self._kwargs_options.get('error_map', False)
         x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens, kwargs_else)
-        mask = self.Data.mask
-        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=map_error)
-        data = self.Data.data
-        d = data*mask
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.Data.C_D + error_map), d, inv_bool=inv_bool)
+        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.Data.mask, map_error=map_error)
+        d = self.Data.image2array(self.Data.data*self.Data.mask)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.Data.C_D_response + error_map), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
-        return wls_model, error_map, cov_param, param
+        model = self.Data.array2image(wls_model)
+        error_map = self.Data.array2image(error_map)
+        return model, error_map, cov_param, param
 
     def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
@@ -130,7 +130,7 @@ class ImageModel(object):
         :return:
         """
         deltaPix = self.Data.deltaPix / 2.
-        numPix = self.Data.numPix * 2
+        numPix = self.Data.nx * 2
         x_mins, y_mins = self.imagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=kwargs_else, min_distance=deltaPix, search_window=deltaPix*numPix)
         return x_mins, y_mins
 
@@ -169,10 +169,10 @@ class ImageModel(object):
         n_points = self.PointSource.num_basis(kwargs_else)
         num_param = n_points + n_lens_light + n_source
 
-        numPix = self.Data.numData
-        A = np.zeros((num_param, numPix))
+        num_response = self.Data.num_response
+        A = np.zeros((num_param, num_response))
         if map_error is True:
-            error_map = np.zeros(numPix)
+            error_map = np.zeros(num_response)
         else:
             error_map = 0
         n = 0
@@ -180,13 +180,13 @@ class ImageModel(object):
         for i in range(0, n_source):
             image = source_light_response[i]
             image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
-            A[n, :] = image
+            A[n, :] = self.Data.image2array(image)
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
-            A[n, :] = image
+            A[n, :] = self.Data.image2array(image)
             n += 1
         # response of point sources
         if self._kwargs_options.get('point_source', False):
@@ -208,7 +208,7 @@ class ImageModel(object):
         :param mask: 1d vector of 1 or zeros
         :return: column wise multiplication of A*mask
         """
-        return A[:] * mask
+        return A[:] * self.Data.image2array(mask)
 
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """

@@ -20,13 +20,18 @@ class Data(object):
             data = kwargs_data['image_data']
         else:
             print('Warning: image_data not specified in kwargs_data!')
-            data = np.ones(16)
+            data = np.ones((4, 4))
+        self.nx, self.ny = np.shape(data)
+        if self.nx != self.ny:
+            print("Warning: non-rectangular shape of image data might result in an error!")
+
         if 'idex_mask' in kwargs_data:
-            self._idex_mask = kwargs_data['idex_mask']
+            self._idex_mask_2d = kwargs_data['idex_mask']
             self._idex_mask_bool = True
         else:
-            self._idex_mask = np.ones_like(data)
+            self._idex_mask_2d = np.ones_like(data)
             self._idex_mask_bool = False
+        self._idex_mask = util.image2array(self._idex_mask_2d)
         if 'sigma_background' in kwargs_data:
             self._sigma_b = kwargs_data['sigma_background']
         else:
@@ -35,103 +40,59 @@ class Data(object):
         if 'exposure_map' in kwargs_data:
             exp_map = kwargs_data['exposure_map']
             exp_map[exp_map <= 0] = 10**(-3)
-            f = exp_map[self._idex_mask == 1]
+            f = util.image2array(exp_map)[self._idex_mask == 1]
         elif 'exp_time' in kwargs_data:
-            f = kwargs_data['exp_time']
+            exp_map = kwargs_data['exp_time']
+            f = exp_map
         else:
             print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
-            f = 1.
-        self._exp_map = f
-        self._data = data[self._idex_mask == 1]
-        self._data_pure = data
-        self.C_D = self.covariance_matrix(self._data, self._sigma_b, self._exp_map)
-
-        if 'numPix_xy' in kwargs_data:
-            self._nx, self._ny = kwargs_data['numPix_xy']
-        else:
-            self._nx, self._ny = np.sqrt(len(data)), np.sqrt(len(data))
+            exp_map = 1.
+            f = exp_map
+        self._exp_map = exp_map
+        self._data = data
+        self.C_D_response = self.covariance_matrix(self.image2array(data), self._sigma_b, f)
+        self.C_D = self.covariance_matrix(data, self._sigma_b, exp_map)
 
         if 'mask' in kwargs_data:
-            self._mask = kwargs_data['mask'][self._idex_mask == 1]
-            self._mask_pure = kwargs_data['mask']
-            self._mask_pure[self._idex_mask == 0] = 0
+            self._mask = kwargs_data['mask']
         else:
             self._mask = np.ones_like(self._data)
-            self._mask_pure = np.ones_like(self._data_pure)
-            self._mask_pure[self._idex_mask == 0] = 0
+        self._mask[self._idex_mask_2d == 0] = 0
         if 'mask_lens_light' in kwargs_data:
-            self._mask_lens_light = kwargs_data['mask_lens_light'][self._idex_mask == 1]
+            self._mask_lens_light = kwargs_data['mask_lens_light']
         else:
             self._mask_lens_light = np.ones_like(self._data)
+        self._mask_lens_light[self._idex_mask_2d == 0] = 0
         if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
             x_grid = kwargs_data['x_coords']
             y_grid = kwargs_data['y_coords']
         else:
-            x_grid, y_grid = util.make_grid(np.sqrt(self._nx*self._ny), 1, subgrid_res=1, left_lower=False)
+            x_grid, y_grid = util.make_grid(np.sqrt(self.nx * self.ny), 1, subgrid_res=1, left_lower=False)
         self._x_grid_all, self._y_grid_all = x_grid, y_grid
         self.x_grid = x_grid[self._idex_mask == 1]
         self.y_grid = y_grid[self._idex_mask == 1]
         x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, self._subgrid_res)
-        self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+        self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self.nx, self.ny)
         self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
         self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
         self._psf_subgrid = psf_subgrid
         self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])), ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0), dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0))
-
-    def _init_mask_psf(self):
-        """
-        smaller frame that encolses all the idex_mask
-        :param idex_mask:
-        :param nx:
-        :param ny:
-        :return:
-        """
-        if not hasattr(self, '_x_min_psf'):
-            idex_2d = util.array2image(self._idex_mask, self._nx, self._ny)
-            self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
-            self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
-            self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
-            self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
-
-    def _cutout_psf(self, image, subgrid_res):
-        """
-        cutout the part of the image relevant for the psf convolution
-        :param image:
-        :return:
-        """
-        self._init_mask_psf()
-        return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
-
-    def _add_psf(self, image_psf):
-        """
-
-        :param image_psf:
-        :return:
-        """
-        self._init_mask_psf()
-        image = np.zeros((self._nx, self._ny))
-        image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
-        return image
 
     @property
     def data(self):
         return self._data
 
     @property
-    def data_pure(self):
-        return self._data_pure
-
-    @property
-    def mask_pure(self):
-        """
-
-        :return: mask applied of full image, joint idex_mask and mask cut
-        """
-        return self._mask_pure
-
-    @property
     def deltaPix(self):
         return self._coords.pixel_size
+
+    @property
+    def num_response(self):
+        """
+        number of pixels as part of the response array
+        :return:
+        """
+        return int(np.sum(self._idex_mask))
 
     @property
     def numData(self):
@@ -146,15 +107,7 @@ class Data(object):
 
     @property
     def numData_evaluate(self):
-        return np.sum(self.mask)
-
-    @property
-    def numPix(self):
-        """
-
-        :return:
-        """
-        return np.sqrt(self.numData)
+        return int(np.sum(self.mask))
 
     @property
     def coordinates(self):
@@ -200,7 +153,7 @@ class Data(object):
         :param ny: y-axis of 2d grid
         :return:
         """
-        nx, ny = self._nx * subgrid_res, self._ny * subgrid_res
+        nx, ny = self.nx * subgrid_res, self.ny * subgrid_res
         if self._idex_mask_bool is True:
             idex_mask = self._idex_mask
             grid1d = np.zeros((nx * ny))
@@ -273,7 +226,7 @@ class Data(object):
         residual = (model - self._data)/np.sqrt(self.C_D+np.abs(error_map))*mask
         return residual
 
-    def log_likelihood(self, model, model_error=0):
+    def log_likelihood(self, model, error_map=0):
         """
         returns reduced residual map
         :param model:
@@ -281,12 +234,10 @@ class Data(object):
         :param sigma:
         :param reduce_frac:
         :param mask:
-        :param model_error:
+        :param error_map:
         :return:
         """
-        # covariance matrix based on the model (not on the data)
-        #C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
-        X2 = (model - self._data)**2 / (self.C_D + np.abs(model_error)) * self.mask
+        X2 = (model - self._data)**2 / (self.C_D + np.abs(error_map))* self.mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
@@ -298,8 +249,8 @@ class Data(object):
         :param error_map:
         :return:
         """
-        chi2 = (model - self._data)**2/(self.C_D+np.abs(error_map)) * self.mask/np.sum(self.mask)
-        return np.sum(chi2)
+        chi2 = (model - self._data)**2 * self.mask / (self.C_D+np.abs(error_map))
+        return np.sum(chi2) / self.numData_evaluate
 
     def psf_convolution(self, grid, grid_scale, **kwargs):
         """
@@ -338,15 +289,15 @@ class Data(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
 
-    def re_size_convolve(self, image, kwargs_psf, unconvolved=False):
+    def re_size_convolve(self, array, kwargs_psf, unconvolved=False):
         """
 
-        :param image: 2d image (can also be higher resolution binned
+        :param array: 2d image (can also be higher resolution binned
         :param kwargs_psf: kwargs of psf modelling
         :param unconvolved: bool, if True, no convlolution performed, only re-binning
         :return: array with convolved and re-binned data/model
         """
-        image = self.array2image(image, self._subgrid_res)
+        image = self.array2image(array, self._subgrid_res)
         image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
             grid_re_sized = util.re_size(image, self._subgrid_res)
@@ -360,7 +311,6 @@ class Data(object):
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
                 grid_final = util.re_size(grid_conv, self._subgrid_res)
         grid_final = self._add_psf(grid_final)
-        grid_final = self.image2array(grid_final)
         return grid_final
 
     def flux_aperture(self, ra_pos, dec_pos, width):
@@ -372,8 +322,8 @@ class Data(object):
         :return: summed value within the aperture
         """
         mask = util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
-        mask1d = 1. - util.image2array(mask)
-        return np.sum(self._data_pure * mask1d)
+        mask1d = 1. - mask
+        return np.sum(self._data * mask1d)
 
     def psf_fwhm(self, kwargs):
         """
@@ -393,3 +343,38 @@ class Data(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
         return fwhm
+
+    def _init_mask_psf(self):
+        """
+        smaller frame that encolses all the idex_mask
+        :param idex_mask:
+        :param nx:
+        :param ny:
+        :return:
+        """
+        if not hasattr(self, '_x_min_psf'):
+            idex_2d = self._idex_mask_2d
+            self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
+            self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
+            self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
+            self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
+
+    def _cutout_psf(self, image, subgrid_res):
+        """
+        cutout the part of the image relevant for the psf convolution
+        :param image:
+        :return:
+        """
+        self._init_mask_psf()
+        return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
+
+    def _add_psf(self, image_psf):
+        """
+
+        :param image_psf:
+        :return:
+        """
+        self._init_mask_psf()
+        image = np.zeros((self.nx, self.ny))
+        image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
+        return image

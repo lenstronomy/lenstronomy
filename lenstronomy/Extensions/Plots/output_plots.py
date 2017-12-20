@@ -121,7 +121,7 @@ class LensModelPlot(object):
         self._cmap = cmap
         self._arrow_size = arrow_size
 
-        nx, ny = kwargs_data['numPix_xy']
+        nx, ny = np.shape(kwargs_data['image_data'])
         Mpix2coord = kwargs_data['transform_pix2angle']
         self._Mpix2coord = Mpix2coord
         self._coords = Coordinates(Mpix2coord, ra_at_xy_0=kwargs_data['ra_at_xy_0'], dec_at_xy_0=kwargs_data['dec_at_xy_0'])
@@ -139,10 +139,10 @@ class LensModelPlot(object):
         self._kwargs_lens = kwargs_lens
         self._kwargs_source = kwargs_source
         self._kwargs_else = kwargs_else
-        self._model = self._imageModel.Data.array2image(model)
-        self._data = util.array2image(kwargs_data['image_data'])
+        self._model = model
+        self._data = kwargs_data['image_data']
 
-        self._norm_residuals = self._imageModel.Data.array2image(self._imageModel.Data.reduced_residuals(model, error_map=error_map))
+        self._norm_residuals = self._imageModel.Data.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self._imageModel.Data.reduced_chi2(model, error_map=error_map)
         print("reduced chi^^ = ", self._reduced_x2)
 
@@ -296,7 +296,7 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         plot_line_set(ax, coords_source, self._ra_caustic_list, self._dec_caustic_list, color='b')
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
-        coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='k')
+        coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
@@ -325,222 +325,6 @@ class LensModelPlot(object):
         plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         image_position_plot(ax, self._coords, self._kwargs_else)
         source_position_plot(ax, self._coords, self._kwargs_source)
-
-
-def plot_reconstruction(kwargs_data, kwargs_psf, kwargs_options, lens_result, source_result, lens_light_result,
-                        else_result, cmap_string, source_sigma=0.01, numPix_source=200, deltaPix_source=0.005,
-                        v_min=None, v_max=None, high_res=10, arrow_size=0.02):
-    """
-
-    :param kwargs_data:
-    :param kwargs_psf:
-    :param kwargs_options:
-    :param lens_result:
-    :param source_result:
-    :param lens_light_result:
-    :param else_result:
-    :param cmap_string:
-    :param source_sigma:
-    :param numPix_source:
-    :param deltaPix_source:
-    :param v_min:
-    :param v_max:
-    :param high_res: factor of resolution for high resolution ray-tracing to compute critical curve and caustics
-    :return:
-    """
-    cmap = plt.get_cmap(cmap_string)
-    cmap.set_bad(color='k', alpha=1.)
-    cmap.set_under('k')
-    image_raw = kwargs_data['image_data']
-    nx, ny = kwargs_data['numPix_xy']
-    Mpix2coord = kwargs_data['transform_pix2angle']
-    coords = Coordinates(Mpix2coord, ra_at_xy_0=kwargs_data['ra_at_xy_0'], dec_at_xy_0=kwargs_data['dec_at_xy_0'])
-    deltaPix = coords.pixel_size
-    x_grid_high_res, y_grid_high_res = util.make_subgrid(kwargs_data['x_coords'], kwargs_data['y_coords'],
-                                                         high_res)
-    x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
-
-    makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-    lensAnalysis = LensAnalysis(kwargs_options, kwargs_data)
-    model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
-                                                                      lens_light_result, else_result, inv_bool=True)
-
-    model_pure, _ = makeImage.image_with_params(lens_result, source_result,
-                                                lens_light_result, else_result)
-    norm_residuals = makeImage.Data.reduced_residuals(model, error_map=error_map)
-    reduced_x2 = makeImage.Data.reduced_chi2(model, error_map=error_map)
-    print("reduced chi2 = ", reduced_x2)
-    d_s = numPix_source * deltaPix_source
-    x_grid_source, y_grid_source = util.make_grid_transformed(numPix_source, Mpix2coord * deltaPix_source / deltaPix)
-    x_center = source_result[0]['center_x']
-    y_center = source_result[0]['center_y']
-    x_grid_source += x_center
-    y_grid_source += y_center
-    coords_source = Coordinates(Mpix2coord * deltaPix_source / deltaPix, ra_at_xy_0=x_grid_source[0],
-                                dec_at_xy_0=y_grid_source[0])
-
-    source, error_map_source = lensAnalysis.get_source(x_grid_source, y_grid_source, source_result, cov_param)
-    source = util.array2image(source)
-    mag_result = util.array2image(makeImage.LensModel.magnification(x_grid, y_grid, lens_result, else_result))
-    kappa_result = util.array2image(makeImage.LensModel.kappa(x_grid, y_grid, lens_result, else_result))
-    mag_high_res = util.array2image(
-        makeImage.LensModel.magnification(x_grid_high_res, y_grid_high_res, lens_result, else_result))
-
-    f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
-    d = deltaPix * nx
-    ax = axes[0, 0]
-
-    cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0], alpha=0.0)
-
-    paths = cs.collections[0].get_paths()
-
-    im = ax.matshow(util.array2image(np.log10(image_raw)), origin='lower',
-                    extent=[0, d, 0, d], cmap=cmap, vmin=v_min, vmax=v_max)  # , vmin=0, vmax=2
-
-    v_min, v_max = im.get_clim()
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-
-    scale_bar(ax, d, dist=1, text='1"')
-    text_description(ax, d, text="Observed", color="w", backgroundcolor='k')
-    coordinate_arrows(ax, d, coords, arrow_size=arrow_size)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'log$_{10}$ flux', fontsize=15)
-
-    ax = axes[0, 1]
-    im = ax.matshow(np.log10(makeImage.Data.array2image(model_pure)), origin='lower', vmin=v_min, vmax=v_max,
-                    extent=[0, d, 0, d], cmap=cmap)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    scale_bar(ax, d, dist=1, text='1"')
-    text_description(ax, d, text="Reconstructed", color="w", backgroundcolor='k')
-    coordinate_arrows(ax, d, coords, arrow_size=arrow_size)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'log$_{10}$ flux', fontsize=15)
-
-    for p in paths:
-        v = p.vertices
-        ra_points = v[:, 0]
-        dec_points = v[:, 1]
-        x_points, y_points = coords.map_coord2pix(ra_points, dec_points)
-        ax.plot((x_points + 0.5) * (deltaPix), (y_points + 0.5) * (deltaPix), 'r')
-
-        ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(ra_points, dec_points, lens_result, else_result)
-        x_c, y_c = coords.map_coord2pix(ra_caustics, dec_caustics)
-        ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), 'b')
-    if 'ra_pos' in else_result:
-        x_image, y_image = coords.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-        for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * (deltaPix)
-            y_ = (y_image[i] + 0.5) * (deltaPix)
-            ax.plot(x_, y_, 'or')
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
-    x_source, y_source = coords.map_coord2pix(source_result[0]['center_x'], source_result[0]['center_y'])
-    ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
-
-    ax = axes[0, 2]
-    im = ax.matshow(makeImage.Data.array2image(norm_residuals), vmin=-6, vmax=6,
-                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap='bwr', origin='lower')
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    scale_bar(ax, d, dist=1, text='1"', color='k')
-    text_description(ax, d, text="Normalized Residuals", color="k", backgroundcolor='w')
-    coordinate_arrows(ax, d, coords, color='k', arrow_size=arrow_size)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'(f$_{model}$-f$_{data}$)/$\sigma$', fontsize=15)
-
-    source_conv = ndimage.filters.gaussian_filter(source, sigma=source_sigma / deltaPix_source, mode='nearest',
-                                                  truncate=20)
-    ax = axes[1, 0]
-    im = ax.matshow(np.log10(source_conv), origin='lower', extent=[0, d_s, 0, d_s],
-                    cmap=cmap, vmin=v_min, vmax=v_max)  # source
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-
-    ax.autoscale(False)
-
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'log$_{10}$ flux', fontsize=15)
-
-    for p in paths:
-        v = p.vertices
-        x_points = v[:, 0]
-        y_points = v[:, 1]
-        ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(x_points, y_points, lens_result, else_result)
-        x_c, y_c = coords_source.map_coord2pix(ra_caustics, dec_caustics)
-        ax.plot((x_c + 0.5) * (deltaPix_source), (y_c + 0.5) * (deltaPix_source), 'b')
-
-    scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
-    coordinate_arrows(ax, d_s, coords_source, arrow_size=arrow_size, color='k')
-
-    text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
-    # ax.set_xlim(ax.get_ylim()[::-1])
-
-    ax = axes[1, 1]
-    im = ax.matshow(np.log10(kappa_result), origin='lower',
-                    extent=[0, deltaPix * nx, 0, deltaPix * ny], cmap=cmap)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    scale_bar(ax, d, dist=1, text='1"', color='w')
-    coordinate_arrows(ax, d, coords, color='w', arrow_size=arrow_size)
-    text_description(ax, d, text="Convergence", color="w", backgroundcolor='k', flipped=False)
-    divider = make_axes_locatable(axes[1][1])
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'log$_{10}$ $\kappa$', fontsize=15)
-
-    ax = axes[1, 2]
-    im = ax.matshow(mag_result, origin='lower', extent=[0, deltaPix * nx, 0, deltaPix * ny],
-                    vmin=-10, vmax=10, cmap=cmap, alpha=0.5)
-    v_min, v_max = im.get_clim()
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    scale_bar(ax, d, dist=1, text='1"', color='k')
-    coordinate_arrows(ax, d, coords, color='k', arrow_size=arrow_size)
-    text_description(ax, d, text="Magnification model", color="k", backgroundcolor='w')
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax)
-    cb.set_label(r'det(A$^{-1}$)', fontsize=15)
-
-    for p in paths:
-        v = p.vertices
-        ra_points = v[:, 0]
-        dec_points = v[:, 1]
-        x_points, y_points = makeImage.Data.map_coord2pix(ra_points, dec_points)
-        ax.plot((x_points + 0.5) * (deltaPix), (y_points + 0.5) * (deltaPix), 'r')
-
-        ra_caustics, dec_caustics = makeImage.LensModel.ray_shooting(ra_points, dec_points, lens_result, else_result)
-        x_c, y_c = coords.map_coord2pix(ra_caustics, dec_caustics)
-        ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), 'b')
-    if 'ra_pos' in else_result:
-        x_image, y_image = coords.map_coord2pix(else_result['ra_pos'], else_result['dec_pos'])
-
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-        for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * (deltaPix)
-            y_ = (y_image[i] + 0.5) * (deltaPix)
-            ax.plot(x_, y_, 'or')
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
-    ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
-
-    f.tight_layout()
-    f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
-    return f, axes
 
 
 def plot_chain(chain, param_list):
@@ -625,10 +409,11 @@ def plot_decomposition(kwargs_data, kwargs_psf, kwargs_options, lens_result, sou
     cmap = plt.get_cmap(cmap_string)
     cmap.set_bad(color='k', alpha=1.)
     cmap.set_under('k')
-    deltaPix = kwargs_data['deltaPix']
-    nx, ny = kwargs_data['numPix_xy']
-    d = deltaPix * nx
+
     makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+    nx, ny = np.shape(kwargs_data['image_data'])
+    deltaPix = makeImage.Data.deltaPix
+    d = deltaPix * nx
 
     model, error_map, cov_param, param = makeImage.image_linear_solve(lens_result, source_result,
                                                                       lens_light_result, else_result, inv_bool=True)

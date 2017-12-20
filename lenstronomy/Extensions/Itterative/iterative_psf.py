@@ -35,7 +35,7 @@ class PSF_iterative(object):
                                                                                  kwargs_else)
 
         x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        mask = util.array2image(makeImage.Data.mask_pure)
+        mask = makeImage.Data.mask
         x_grid, y_grid = makeImage.Data.coordinates
         fwhm = makeImage.Data.psf_fwhm(kwargs_psf)
         radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
@@ -113,9 +113,8 @@ class PSF_iterative(object):
                                                                               kwargs_lens_light, kwargs_else)
         model, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,
                                                                 kwargs_lens_light, kwargs_else, point_source_add=True)
-        model = makeImage.Data.array2image(model)
-        data = util.array2image(makeImage.Data.data_pure)
-        mask = util.array2image(makeImage.Data.mask_pure)
+        data = makeImage.Data.data
+        mask = makeImage.Data.mask
         point_source_list = makeImage.point_sources_list(kwargs_else)
         n = len(kwargs_else['ra_pos'])
         model_single_source_list = []

@@ -34,11 +34,11 @@ class TestMakeImage(object):
         assert (grid_convolved[0][0] > 8.447e-05 and grid_convolved[0][0] < 8.448e-05)
 
     def test_add_mask(self):
-        mask = [0, 1, 0]
-        A = np.ones((10, 3))
+        mask = np.array([[0, 1],[1, 0]])
+        A = np.ones((10, 4))
         A_masked = self.makeImage._add_mask(A, mask)
         assert A[0, 1] == A_masked[0, 1]
-        assert A_masked[0, 2] == 0
+        assert A_masked[0, 3] == 0
 
     def test_point_source_rendering(self):
         # initialize data

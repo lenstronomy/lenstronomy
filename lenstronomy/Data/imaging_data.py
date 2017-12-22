@@ -269,12 +269,7 @@ class Data(object):
             return img_conv
         elif psf_type == 'pixel':
             if self._psf_subgrid:
-                n = len(kwargs['kernel_pixel'])
-                kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
-                n_new = n*self._subgrid_res
-                if n_new % 2 == 0:
-                    n_new -= 1
-                kernel = util.cut_psf(kernel, psf_size=n_new)
+                kernel = self._subgrid_kernel(kwargs)
             else:
                 kernel = kwargs['kernel_pixel']
             if 'kernel_fft' in kwargs:
@@ -288,6 +283,20 @@ class Data(object):
             return img_conv1
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
+
+    def _subgrid_kernel(self, kwargs):
+        """
+
+        :return:
+        """
+        if not hasattr(self, '_subgrid_kernel_out'):
+            kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
+            n = len(kwargs['kernel_pixel'])
+            n_new = n * self._subgrid_res
+            if n_new % 2 == 0:
+                n_new -= 1
+            self._subgrid_kernel_out = util.cut_psf(kernel, psf_size=n_new)
+        return self._subgrid_kernel_out
 
     def re_size_convolve(self, array, kwargs_psf, unconvolved=False):
         """

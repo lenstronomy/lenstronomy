@@ -3,7 +3,7 @@ import scipy.ndimage as ndimage
 import scipy.signal as signal
 
 import astrofunc.util as util
-from astrofunc.util import FFTConvolve
+from astrofunc.fft_convolve import FFTConvolve
 fft = FFTConvolve()
 from lenstronomy.Data.coord_transforms import Coordinates
 

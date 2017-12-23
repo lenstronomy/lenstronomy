@@ -18,8 +18,9 @@ class LensAnalysis(object):
         self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
         self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        self.kwargs_data = kwargs_data
+        #self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
+        self.imageModel = ImageModel(self.kwargs_options, kwargs_data)
         self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.gaussian = Gaussian()
 
@@ -188,7 +189,9 @@ class LensAnalysis(object):
 
     def source_properties(self, kwargs_source, numPix_source,
                           deltaPix_source, cov_param=None, k=0, n_bins=20):
-        deltaPix = self.kwargs_data['deltaPix']
+
+        deltaPix = self.imageModel.Data.deltaPix
+
 
         x_grid_source, y_grid_source = util.make_grid(numPix_source, deltaPix_source)
         kwargs_source_copy = copy.deepcopy(kwargs_source)
@@ -262,10 +265,10 @@ class LensAnalysis(object):
         :param kwargs_else:
         :return:
         """
-        makeImage = ImageModel(self.kwargs_options, self.kwargs_data)
-        alpha1, alpha2 = self.LensModel.alpha(makeImage.Data.x_grid, makeImage.Data.y_grid, kwargs_lens, kwargs_else)
-        alpha1 = makeImage.Data.array2image(alpha1)
-        alpha2 = makeImage.Data.array2image(alpha2)
+
+        alpha1, alpha2 = self.LensModel.alpha(self.imageModel.Data.x_grid, self.imageModel.Data.y_grid, kwargs_lens, kwargs_else)
+        alpha1 = self.imageModel.Data.array2image(alpha1)
+        alpha2 = self.imageModel.Data.array2image(alpha2)
         return alpha1, alpha2
 
     def position_size_estimate(self, ra_pos, dec_pos, kwargs_lens, kwargs_else, delta, scale=1):

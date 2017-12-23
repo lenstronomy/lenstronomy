@@ -24,8 +24,10 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        logL_before = makeImage.likelihood_data_given_model(kwargs_lens, kwargs_source,
+        kwargs_options_psf = copy.deepcopy(kwargs_options)
+        kwargs_options_psf['error_map'] = False
+        imageModel = ImageModel(kwargs_options=kwargs_options_psf, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        logL_before = imageModel.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         kernel_old = kwargs_psf["kernel_point_source"]
         kernel_small = kwargs_psf["kernel_pixel"]
@@ -34,10 +36,10 @@ class PSF_iterative(object):
         image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                                  kwargs_else)
 
-        x_, y_ = makeImage.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        mask = makeImage.Data.mask
-        x_grid, y_grid = makeImage.Data.coordinates
-        fwhm = makeImage.Data.psf_fwhm(kwargs_psf)
+        x_, y_ = imageModel.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
+        mask = imageModel.Data.mask
+        x_grid, y_grid = imageModel.Data.coordinates
+        fwhm = imageModel.Data.psf_fwhm(kwargs_psf)
         radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
         mask_point_source_list = self.mask_point_sources(kwargs_else['ra_pos'], kwargs_else['dec_pos'], x_grid, y_grid, radius)
         point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)

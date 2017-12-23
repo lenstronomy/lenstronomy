@@ -66,7 +66,7 @@ class LensProp(object):
         return sigma2
         #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
-    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_else, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
         """
 
@@ -88,7 +88,7 @@ class LensProp(object):
 
         if MGE_mass is True:
             massModel = LensModel(lens_model_list=mass_profile_list)
-            theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else={})
+            theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
             r_array = np.logspace(-2, 1, 100) * theta_E
             mass_r = massModel.kappa(r_array, 0, kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=10)

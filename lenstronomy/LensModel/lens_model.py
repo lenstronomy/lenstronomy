@@ -214,7 +214,7 @@ class LensModel(object):
         y = np.array(y, dtype=float)
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
-            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, kwargs_else)
+            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, kwargs_else, k=i)
         else:
             x_ = x
             y_ = y
@@ -230,15 +230,15 @@ class LensModel(object):
                         f_xy += f_xy_i
         return f_xx, f_xy, f_yy
 
-    def hessian_differential(self, x, y, kwargs, kwargs_else=None, diff=0.0000001):
+    def hessian_differential(self, x, y, kwargs, kwargs_else=None, diff=0.0000001, k=None):
         """
         computes the differentials f_xx, f_yy, f_xy from f_x and f_y
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, kwargs_else)
+        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, kwargs_else, k=k)
 
-        alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, kwargs_else)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, kwargs_else)
+        alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, kwargs_else, k=k)
+        alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, kwargs_else, k=k)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
         dalpha_radec = (alpha_ra_dy - alpha_ra)/diff

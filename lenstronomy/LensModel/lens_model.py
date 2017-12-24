@@ -214,7 +214,7 @@ class LensModel(object):
         y = np.array(y, dtype=float)
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
-            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, kwargs_else, k=i)
+            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, kwargs_else, k=k)
         else:
             x_ = x
             y_ = y

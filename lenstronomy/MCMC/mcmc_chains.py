@@ -98,7 +98,7 @@ class MCMC_chain(object):
                                                                        kwargs_lens, kwargs_else)
             dist = np.sqrt((source_x - source_x[0])**2 + (source_y - source_y[0])**2)
             if np.max(dist) > tolerance:
-                return 10**10
+                return 10**5
         return 0
 
     def check_additional_images(self, kwargs_else):
@@ -166,7 +166,7 @@ class MCMC_chain(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.lensModel.fermat_potential(kwargs_lens, kwargs_else)
+        delay_arcsec = self.makeImageMultiband.fermat_potential(kwargs_lens, kwargs_else)
         D_dt_model = kwargs_else['delay_dist']
         delay_days = self.timeDelay.days_D_model(delay_arcsec, D_dt_model)
         logL = self.timeDelay.logL_delays(delay_days, self.delays_measured, self.delays_errors)

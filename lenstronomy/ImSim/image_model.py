@@ -161,6 +161,22 @@ class ImageModel(object):
     def numData_evaluate(self):
         return self.Data.numData_evaluate
 
+    def fermat_potential(self, kwargs_lens, kwargs_else):
+        """
+
+        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        """
+        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
+            ra_pos = kwargs_else['ra_pos']
+            dec_pos = kwargs_else['dec_pos']
+        else:
+            raise ValueError('No point source positions assigned')
+        ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
+        ra_source = np.mean(ra_source)
+        dec_source = np.mean(dec_source)
+        phi_fermat = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens, kwargs_else)
+        return phi_fermat
+
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
         kwargs_psf = self._kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)

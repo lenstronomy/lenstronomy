@@ -127,3 +127,10 @@ class MakeImageMultiband(object):
             if self._compute_bool:
                 num += self._makeImage_list[i].numData_evaluate
         return num
+
+    def fermat_potential(self, kwargs_lens, kwargs_else):
+        """
+
+        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        """
+        return self._makeImage_list[0].fermat_potential(kwargs_lens, kwargs_else)

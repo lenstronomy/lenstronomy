@@ -30,7 +30,7 @@ class LensProp(object):
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
-        time_delay_arcsec = self.lens_model.fermat_potential(kwargs_lens, kwargs_else)
+        time_delay_arcsec = self.lens_analysis.imageModel.fermat_potential(kwargs_lens, kwargs_else)
         time_delay = self.unitManager.time_delay_units(time_delay_arcsec, kappa_ext)
         return time_delay
 

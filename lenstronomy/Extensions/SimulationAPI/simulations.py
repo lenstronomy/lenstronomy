@@ -191,5 +191,13 @@ class Simulation(object):
         :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
         """
         lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        fermat_pot = lensModel.fermat_potential(kwargs_lens, kwargs_else)
+        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
+            ra_pos = kwargs_else['ra_pos']
+            dec_pos = kwargs_else['dec_pos']
+        else:
+            raise ValueError('No point source positions assigned')
+        ra_source, dec_source = lensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
+        ra_source = np.mean(ra_source)
+        dec_source = np.mean(dec_source)
+        fermat_pot = lensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens, kwargs_else)
         return fermat_pot

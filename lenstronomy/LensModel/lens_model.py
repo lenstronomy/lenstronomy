@@ -111,21 +111,14 @@ class LensModel(object):
         dx, dy = self.alpha(x, y, kwargs, kwargs_else, k=k)
         return x - dx, y - dy
 
-    def fermat_potential(self, kwargs_lens, kwargs_else):
+    def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens, kwargs_else):
         """
 
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        potential = self.potential(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source, dec_source = self.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
-        ra_source = np.mean(ra_source)
-        dec_source = np.mean(dec_source)
-        geometry = (ra_pos - ra_source)**2 + (dec_pos - dec_source)**2
+
+        potential = self.potential(x_image, y_image, kwargs_lens, kwargs_else)
+        geometry = (x_image - x_source)**2 + (y_image - y_source)**2
         return geometry/2 - potential
 
     def mass(self, x, y, sigma_crit, kwargs):

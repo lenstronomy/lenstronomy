@@ -48,7 +48,7 @@ class LensEquationSolver(object):
         y_mins = y_mins[solver_precision <= precision_limit]
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = lenstronomy_util.findOverlap(x_mins, y_mins, min_distance)
-
+        x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens, kwargs_else)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
 
         return x_mins, y_mins
@@ -109,3 +109,21 @@ class LensEquationSolver(object):
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)
         y_mins_sorted = util.selectBest(y_mins, mag_list, numImages)
         return x_mins_sorted, y_mins_sorted
+
+    def sort_arrival_times(self, x_mins, y_mins, kwargs_lens, kwargs_else=None):
+        """
+        sort arrival times (fermat potential) of image positions
+        :param x_mins:
+        :param y_mins:
+        :param kwargs_lens:
+        :param kwargs_else:
+        :return:
+        """
+        x_source, y_source = self.LensModel.ray_shooting(x_mins, y_mins, kwargs_lens, kwargs_else)
+        x_source = np.mean(x_source)
+        y_source = np.mean(y_source)
+        fermat_pot = self.LensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens, kwargs_else)
+        idx = np.argsort(fermat_pot)
+        x_mins = np.array(x_mins)[idx]
+        y_mins = np.array(y_mins)[idx]
+        return x_mins, y_mins

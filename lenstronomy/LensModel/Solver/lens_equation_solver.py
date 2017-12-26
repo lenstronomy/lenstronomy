@@ -1,6 +1,6 @@
 import numpy as np
-import astrofunc.util as util
-import lenstronomy.Util.image_util as lenstronomy_util
+import lenstronomy.Util.util as util
+import lenstronomy.Util.image_util as image_util
 from lenstronomy.LensModel.lens_model import LensModel
 
 
@@ -47,7 +47,7 @@ class LensEquationSolver(object):
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
         # find redundant solutions within the min_distance criterion
-        x_mins, y_mins = lenstronomy_util.findOverlap(x_mins, y_mins, min_distance)
+        x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
         x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens, kwargs_else)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
 
@@ -123,7 +123,7 @@ class LensEquationSolver(object):
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
         fermat_pot = self.LensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens, kwargs_else)
-        idx = np.argsort(fermat_pot)
+        idx = np.argsort(-fermat_pot)
         x_mins = np.array(x_mins)[idx]
         y_mins = np.array(y_mins)[idx]
         return x_mins, y_mins

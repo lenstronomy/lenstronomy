@@ -9,8 +9,8 @@ import lenstronomy.Cosmo.constants as const
 from lenstronomy.Cosmo.unit_manager import UnitManager
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.ImSim.light_model import LightModel
-import astrofunc.multi_gauss_expansion as mge
+from lenstronomy.LightModel.light_model import LightModel
+import lenstronomy.Util.multi_gauss_expansion as mge
 
 
 class LensProp(object):

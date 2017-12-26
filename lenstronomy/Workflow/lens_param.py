@@ -1,5 +1,5 @@
 import numpy as np
-import astrofunc.util as util
+import lenstronomy.Util.param_util as param_util
 
 
 class LensParam(object):
@@ -86,7 +86,7 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'SIE', 'SERSIC_DOUBLE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
@@ -179,7 +179,7 @@ class LensParam(object):
                     kwargs['n_2'] = kwargs_fixed['n_2']
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G_s'] = phi
                     kwargs['q_s'] = q
                     i += 2
@@ -281,7 +281,7 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
                     args.append(e1)
                     args.append(e2)
 
@@ -326,7 +326,7 @@ class LensParam(object):
                     args.append(kwargs['n_2'])
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G_s'], kwargs['q_s'])
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_s'], kwargs['q_s'])
                     args.append(e1)
                     args.append(e2)
                 if not 'mass_light' in kwargs_fixed:
@@ -522,7 +522,7 @@ class LensParam(object):
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     phi = kwargs_mean['phi_G']
                     q = kwargs_mean['q']
-                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -585,7 +585,7 @@ class LensParam(object):
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_s']
                     q = kwargs_mean['q_s']
-                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_s_sigma']

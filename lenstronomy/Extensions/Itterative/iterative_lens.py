@@ -1,12 +1,12 @@
 __author__ = 'sibirrer'
 
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 import numpy as np
 
-from lenstronomy.Trash.make_image import MakeImage
+from lenstronomy.ImSim.image_model import ImageModel
 
 
-class MakeImageIterLens(MakeImage):
+class MakeImageIterLens(ImageModel):
     """
     class to perform an iterative lens reconstruction with given source model
     goal: find the floor in the (smooth) lens information (minimal image residuals for a given source model)

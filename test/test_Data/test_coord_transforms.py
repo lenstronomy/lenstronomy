@@ -55,7 +55,7 @@ class TestCoordinates(object):
         assert deltaPix_out == -deltaPix
 
     def test_rescaled_grid(self):
-        import astrofunc.util as util
+        import lenstronomy.Util.util as util
         numPix = 10
         theta = 0.5
         deltaPix = 0.05

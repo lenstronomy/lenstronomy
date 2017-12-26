@@ -13,7 +13,7 @@ Installation
 >>> python setup.py install
 or in development mode
 >>> python setup.py develop
-* it is recommended to check out and install the dependencies astrofunc (on the same github repo) and fastell4py independently.
+* it is recommended to check out and install the dependency fastell4py independently.
 * run the test functions to see whether the installation was successful.
 >>> cd lenstronomy
 >>> py.test
@@ -21,7 +21,6 @@ or in development mode
 
 Requirements
 -------
-* github/sibirrer/astrofunc package
 * to run the lens models from Barkana (fastell), also requires githug/sibirrer/fastell4py (needs a fortran compiler)
 * CosmoHammer (through PyPi)
 * standard python libraries (numpy, scipy)

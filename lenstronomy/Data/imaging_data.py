@@ -2,9 +2,11 @@ import numpy as np
 import scipy.ndimage as ndimage
 import scipy.signal as signal
 
-import astrofunc.util as util
-from astrofunc.fft_convolve import FFTConvolve
-fft = FFTConvolve()
+import lenstronomy.Util.util as util
+import lenstronomy.Util.image_util as image_util
+import lenstronomy.Util.kernel_util as kernel_util
+import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.fft_convolve as fft
 from lenstronomy.Data.coord_transforms import Coordinates
 
 
@@ -211,8 +213,8 @@ class Data(object):
         :param image:
         :return:
         """
-        gaussian = util.add_background(image, self._sigma_b)
-        poisson = util.add_poisson(image, self._exp_map)
+        gaussian = image_util.add_background(image, self._sigma_b)
+        poisson = image_util.add_poisson(image, self._exp_map)
         image_noisy = image + gaussian + poisson
         return image_noisy
 
@@ -290,12 +292,12 @@ class Data(object):
         :return:
         """
         if not hasattr(self, '_subgrid_kernel_out'):
-            kernel = util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
+            kernel = kernel_util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
             n = len(kwargs['kernel_pixel'])
             n_new = n * self._subgrid_res
             if n_new % 2 == 0:
                 n_new -= 1
-            self._subgrid_kernel_out = util.cut_psf(kernel, psf_size=n_new)
+            self._subgrid_kernel_out = kernel_util.cut_psf(kernel, psf_size=n_new)
         return self._subgrid_kernel_out
 
     def re_size_convolve(self, array, kwargs_psf, unconvolved=False):
@@ -309,16 +311,16 @@ class Data(object):
         image = self.array2image(array, self._subgrid_res)
         image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
-            grid_re_sized = util.re_size(image, self._subgrid_res)
+            grid_re_sized = image_util.re_size(image, self._subgrid_res)
             grid_final = grid_re_sized
         else:
             gridScale = self.deltaPix/float(self._subgrid_res)
             if kwargs_psf == 'pixel' and not self._psf_subgrid:
-                grid_re_sized = util.re_size(image, self._subgrid_res)
+                grid_re_sized = image_util.re_size(image, self._subgrid_res)
                 grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
             else:
                 grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
-                grid_final = util.re_size(grid_conv, self._subgrid_res)
+                grid_final = image_util.re_size(grid_conv, self._subgrid_res)
         grid_final = self._add_psf(grid_final)
         return grid_final
 
@@ -330,7 +332,7 @@ class Data(object):
         :param width: width of aperture
         :return: summed value within the aperture
         """
-        mask = util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
+        mask = mask_util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
         mask1d = 1. - mask
         return np.sum(self._data * mask1d)
 
@@ -348,7 +350,7 @@ class Data(object):
             fwhm = util.sigma2fwhm(sigma)
         elif psf_type == 'pixel':
             kernel = kwargs['kernel_point_source']
-            fwhm = util.fwhm_kernel(kernel) * self.deltaPix
+            fwhm = kernel_util.fwhm_kernel(kernel) * self.deltaPix
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
         return fwhm

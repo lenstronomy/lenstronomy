@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.lens_model import LensModel
 

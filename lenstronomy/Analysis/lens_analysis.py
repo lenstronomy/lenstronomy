@@ -1,10 +1,13 @@
 import copy
 import numpy as np
-import astrofunc.util as util
-from astrofunc.LensingProfiles.gaussian import Gaussian
-import astrofunc.multi_gauss_expansion as mge
+import lenstronomy.Util.util as util
+import lenstronomy.Util.analysis_util as analysis_util
+import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+import lenstronomy.Util.multi_gauss_expansion as mge
 
-from lenstronomy.ImSim.light_model import LensLightModel, SourceModel
+from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 from lenstronomy.ImSim.image_model import ImageModel
@@ -44,7 +47,7 @@ class LensAnalysis(object):
             deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self.lens_light_internal(x_grid, y_grid, kwargs_lens_light)
-        R_h = util.half_light_radius(lens_light, x_grid, y_grid)
+        R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
     def lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
@@ -64,7 +67,7 @@ class LensAnalysis(object):
                 kwargs_lens_light_copy[i]['center_y'] = 0
                 lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
                 lens_light += lens_light_i
-        return lens_light
+        return util.array2image(lens_light)
 
     def multi_gaussian_lens_light(self, kwargs_lens_light, n_comp=20):
         """
@@ -120,7 +123,7 @@ class LensAnalysis(object):
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:
-            mask = np.array(1 - util.get_mask(center_x, center_y, r, x_grid, y_grid))
+            mask = np.array(1 - mask_util.get_mask(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
@@ -138,7 +141,7 @@ class LensAnalysis(object):
         phi_ext, gamma_ext = 0, 0
         for i, model in enumerate(self.kwargs_options['lens_model_list']):
             if model == 'EXTERNAL_SHEAR':
-                phi_ext, gamma_ext = util.ellipticity2phi_gamma(kwargs_lens_list[i]['e1'], kwargs_lens_list[i]['e2'])
+                phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_lens_list[i]['e1'], kwargs_lens_list[i]['e2'])
         return phi_ext, gamma_ext
 
     def profile_slope(self, kwargs_lens_list, kwargs_else):
@@ -182,7 +185,7 @@ class LensAnalysis(object):
             else:
                 raise ValueError("type %s not supported!" % type)
             flux = np.sum(light)*delta_grid**2
-            R_h = util.half_light_radius(light, x_grid, y_grid)
+            R_h = analysis_util.half_light_radius(light, x_grid, y_grid)
             flux_list.append(flux)
             R_h_list.append(R_h)
         return flux_list, R_h_list
@@ -198,9 +201,9 @@ class LensAnalysis(object):
         kwargs_source_copy[k]['center_x'] = 0
         kwargs_source_copy[k]['center_y'] = 0
         source, error_map_source = self.get_source(x_grid_source, y_grid_source, kwargs_source_copy, cov_param=cov_param, k=k)
-        R_h = util.half_light_radius(source, x_grid_source, y_grid_source)
+        R_h = analysis_util.half_light_radius(source, x_grid_source, y_grid_source)
         flux = np.sum(source)*(deltaPix_source/deltaPix)**2
-        I_r, r = util.radial_profile(source, x_grid_source, y_grid_source, n=n_bins)
+        I_r, r = analysis_util.radial_profile(source, x_grid_source, y_grid_source, n=n_bins)
         return flux, R_h, I_r, r, source, error_map_source
 
     def buldge_disk_ratio(self, kwargs_buldge_disk):
@@ -215,7 +218,7 @@ class LensAnalysis(object):
         deltaPix = 0.005
         numPix = 200
         x_grid, y_grid = util.make_grid(numPix, deltaPix)
-        from astrofunc.LightProfiles.sersic import BuldgeDisk
+        from lenstronomy.LightModel.Profiles.sersic import BuldgeDisk
         bd_class = BuldgeDisk()
         light_grid = bd_class.function(x_grid, y_grid, **kwargs_bd)
         light_tot = np.sum(light_grid)

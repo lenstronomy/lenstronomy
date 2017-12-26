@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.lens_model import LensModel
-import astrofunc.util as util
+import lenstronomy.Util.param_util as param_util
 
 import scipy.optimize
 import numpy as np
@@ -83,7 +83,7 @@ class Solver2Point(object):
                 kwargs_list[0]['center_y'] = center_y
             elif self._solver_type == 'ELLIPSE':
                 [e1, e2] = x
-                phi_G, q = util.elliptisity2phi_q(e1, e2)
+                phi_G, q = param_util.elliptisity2phi_q(e1, e2)
                 kwargs_list[0]['q'] = q
                 kwargs_list[0]['phi_G'] = phi_G
 
@@ -111,7 +111,7 @@ class Solver2Point(object):
             elif self._solver_type == 'ELLIPSE':
                 q = kwargs_list[0]['q']
                 phi_G = kwargs_list[0]['phi_G']
-                e1, e2 = util.phi_q2_elliptisity(phi_G, q)
+                e1, e2 = param_util.phi_q2_elliptisity(phi_G, q)
                 x = [e1, e2]
             else:
                 raise ValueError("Solver type %s not valid for lens model %s" % (self._solver_type, lens_model))

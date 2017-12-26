@@ -1,16 +1,15 @@
 import copy
 
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 import corner
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndimage
-from astrofunc.LensingProfiles.external_shear import ExternalShear
+from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Workflow.parameters import Param
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.Data.coord_transforms import Coordinates
 

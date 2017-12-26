@@ -3,8 +3,6 @@ import numpy.testing as npt
 import pytest
 
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
-from lenstronomy.LensModel.lens_model import LensModel
-import astrofunc.util as util
 
 
 class TestLensAnalysis(object):

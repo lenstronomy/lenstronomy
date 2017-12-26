@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
-from astrofunc.LensingProfiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.Solver.solver2point import Solver2Point

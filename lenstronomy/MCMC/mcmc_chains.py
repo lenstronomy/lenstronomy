@@ -6,7 +6,7 @@ from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.multiband import MakeImageMultiband
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Workflow.parameters import Param
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 
 
 class MCMC_chain(object):

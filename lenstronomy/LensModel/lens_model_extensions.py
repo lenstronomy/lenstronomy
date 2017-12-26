@@ -1,6 +1,6 @@
 import numpy as np
 from lenstronomy.LensModel.lens_model import LensModel
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 
 
 class LensModelExtensions(LensModel):
@@ -25,10 +25,10 @@ class LensModelExtensions(LensModel):
         mag_finite = np.zeros_like(x_pos)
         deltaPix = float(window_size)/grid_number
         if shape == 'GAUSSIAN':
-            from astrofunc.LightProfiles.gaussian import Gaussian
+            from lenstronomy.LightModel.Profiles.gaussian import Gaussian
             quasar = Gaussian()
         elif shape == 'TORUS':
-            import astrofunc.LightProfiles.torus as quasar
+            import lenstronomy.LightModel.Profiles.torus as quasar
         else:
             raise ValueError("shape %s not valid for finite magnification computation!" % shape)
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)

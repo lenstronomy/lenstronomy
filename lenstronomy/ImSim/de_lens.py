@@ -16,7 +16,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
 
     if inv_bool:
-        if np.linalg.cond(M) < 1/sys.float_info.epsilon:
+        if np.linalg.cond(M) < 10/sys.float_info.epsilon:
             M_inv = np.linalg.inv(M)
         else:
             M_inv = np.zeros_like(M)

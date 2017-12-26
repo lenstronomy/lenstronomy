@@ -1,6 +1,6 @@
 import numpy.linalg as linalg
 import numpy as np
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 
 
 class Coordinates(object):

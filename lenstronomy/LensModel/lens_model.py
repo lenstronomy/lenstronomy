@@ -2,102 +2,101 @@ __author__ = 'sibirrer'
 
 #file which contains class for lens model routines
 import numpy as np
-import copy
 
 
 class LensModel(object):
 
     def __init__(self, lens_model_list, foreground_shear=False):
         self.func_list = []
-        from astrofunc.LensingProfiles.external_shear import ExternalShear
+        from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
         self.shear = ExternalShear()
         for lens_type in lens_model_list:
             if lens_type == 'EXTERNAL_SHEAR':
-                from astrofunc.LensingProfiles.external_shear import ExternalShear
+                from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
             elif lens_type == 'FLEXION':
-                from astrofunc.LensingProfiles.flexion import Flexion
+                from lenstronomy.LensModel.Profiles.flexion import Flexion
                 self.func_list.append(Flexion())
             elif lens_type == 'GAUSSIAN':
-                from astrofunc.LensingProfiles.gaussian import Gaussian
+                from lenstronomy.LensModel.Profiles.gaussian import Gaussian
                 self.func_list.append(Gaussian())
             elif lens_type == 'SIS':
-                from astrofunc.LensingProfiles.sis import SIS
+                from lenstronomy.LensModel.Profiles.sis import SIS
                 self.func_list.append(SIS())
             elif lens_type == 'SIS_TRUNCATED':
-                from astrofunc.LensingProfiles.sis_truncate import SIS_truncate
+                from lenstronomy.LensModel.Profiles.sis_truncate import SIS_truncate
                 self.func_list.append(SIS_truncate())
             elif lens_type == 'SIE':
-                from astrofunc.LensingProfiles.sie import SIE
+                from lenstronomy.LensModel.Profiles.sie import SIE
                 self.func_list.append(SIE())
             elif lens_type == 'SPP':
-                from astrofunc.LensingProfiles.spp import SPP
+                from lenstronomy.LensModel.Profiles.spp import SPP
                 self.func_list.append(SPP())
             elif lens_type == 'SPEP':
-                from astrofunc.LensingProfiles.spep import SPEP
+                from lenstronomy.LensModel.Profiles.spep import SPEP
                 self.func_list.append(SPEP())
             elif lens_type == 'SPEMD':
-                from astrofunc.LensingProfiles.spemd import SPEMD
+                from lenstronomy.LensModel.Profiles.spemd import SPEMD
                 self.func_list.append(SPEMD())
             elif lens_type == 'SPEMD_SMOOTH':
-                from astrofunc.LensingProfiles.spemd_smooth import SPEMD_SMOOTH
+                from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
                 self.func_list.append(SPEMD_SMOOTH())
             elif lens_type == 'NFW':
-                from astrofunc.LensingProfiles.nfw import NFW
+                from lenstronomy.LensModel.Profiles.nfw import NFW
                 self.func_list.append(NFW())
             elif lens_type == 'NFW_ELLIPSE':
-                from astrofunc.LensingProfiles.nfw_ellipse import NFW_ELLIPSE
+                from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
                 self.func_list.append(NFW_ELLIPSE())
             elif lens_type == 'SERSIC':
-                from astrofunc.LensingProfiles.sersic import Sersic
+                from lenstronomy.LensModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic())
             elif lens_type == 'SERSIC_ELLIPSE':
-                from astrofunc.LensingProfiles.sersic_ellipse import SersicEllipse
+                from lenstronomy.LensModel.Profiles.sersic_ellipse import SersicEllipse
                 self.func_list.append(SersicEllipse())
             elif lens_type == 'SERSIC_DOUBLE':
-                from astrofunc.LensingProfiles.sersic_double import SersicDouble
+                from lenstronomy.LensModel.Profiles.sersic_double import SersicDouble
                 self.func_list.append(SersicDouble())
             elif lens_type == 'COMPOSITE':
-                from astrofunc.LensingProfiles.composite_sersic_nfw import CompositeSersicNFW
+                from lenstronomy.LensModel.Profiles.composite_sersic_nfw import CompositeSersicNFW
                 self.func_list.append(CompositeSersicNFW())
             elif lens_type == 'PJAFFE':
-                from astrofunc.LensingProfiles.p_jaffe import PJaffe
+                from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())
             elif lens_type == 'PJAFFE_ELLIPSE':
-                from astrofunc.LensingProfiles.p_jaffe_ellipse import PJaffe_Ellipse
+                from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
                 self.func_list.append(PJaffe_Ellipse())
             elif lens_type == 'HERNQUIST':
-                from astrofunc.LensingProfiles.hernquist import Hernquist
+                from lenstronomy.LensModel.Profiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())
             elif lens_type == 'HERNQUIST_ELLIPSE':
-                from astrofunc.LensingProfiles.hernquist_ellipse import Hernquist_Ellipse
+                from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
                 self.func_list.append(Hernquist_Ellipse())
             elif lens_type == 'GAUSSIAN':
-                from astrofunc.LensingProfiles.gaussian import Gaussian
+                from lenstronomy.LensModel.Profiles.gaussian import Gaussian
                 self.func_list.append(Gaussian())
             elif lens_type == 'GAUSSIAN_KAPPA':
-                from astrofunc.LensingProfiles.gaussian_kappa import GaussianKappa
+                from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
                 self.func_list.append(GaussianKappa())
             elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
-                from astrofunc.LensingProfiles.multi_gaussian_kappa import MultiGaussian_kappa
+                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussian_kappa
                 self.func_list.append(MultiGaussian_kappa())
             elif lens_type == 'INTERPOL':
-                from astrofunc.LensingProfiles.interpol import Interpol_func
+                from lenstronomy.LensModel.Profiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func(grid=False))
             elif lens_type == 'INTERPOL_SCALED':
-                from astrofunc.LensingProfiles.interpol import Interpol_func_scaled
+                from lenstronomy.LensModel.Profiles.interpol import Interpol_func_scaled
                 self.func_list.append(Interpol_func_scaled(grid=False))
             elif lens_type == 'SHAPELETS_POLAR':
-                from astrofunc.LensingProfiles.shapelet_pot import PolarShapelets
+                from lenstronomy.LensModel.Profiles.shapelet_pot import PolarShapelets
                 self.func_list.append(PolarShapelets())
             elif lens_type == 'SHAPELETS_CART':
-                from astrofunc.LensingProfiles.shapelet_pot_2 import CartShapelets
+                from lenstronomy.LensModel.Profiles.shapelet_pot_2 import CartShapelets
                 self.func_list.append(CartShapelets())
             elif lens_type == 'DIPOLE':
-                from astrofunc.LensingProfiles.dipole import Dipole
+                from lenstronomy.LensModel.Profiles.dipole import Dipole
                 self.func_list.append(Dipole())
             elif lens_type == 'NONE':
-                from astrofunc.LensingProfiles.no_lens import NoLens
+                from lenstronomy.LensModel.Profiles.no_lens import NoLens
                 self.func_list.append(NoLens())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)

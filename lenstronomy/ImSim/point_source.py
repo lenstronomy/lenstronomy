@@ -1,6 +1,6 @@
 import numpy as np
 
-import astrofunc.util as util
+import lenstronomy.Util.image_util as image_util
 
 
 class PointSource(object):
@@ -53,12 +53,12 @@ class PointSource(object):
         if self._fix_magnification:
             grid2d = np.zeros_like(data)
             for i in range(n_points):
-                grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
+                grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
             A[0, :] = self.Data.image2array(grid2d)
         else:
             for i in range(num_param):
                 grid2d = np.zeros_like(data)
-                point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source)
+                point_source = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source)
                 A[i, :] = self.Data.image2array(point_source)
         return A, self.Data.image2array(error_map)
 
@@ -84,7 +84,7 @@ class PointSource(object):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         grid2d = np.zeros_like(data)
         for i in range(n_points):
-            grid2d = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
+            grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source * point_amp[i])
         point_source = grid2d
         return point_source, error_map
 
@@ -105,7 +105,7 @@ class PointSource(object):
         point_source_list = []
         for i in range(n_points):
             grid2d = np.zeros_like(self.Data.data)
-            point_source = util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source*point_amp[i])
+            point_source = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source * point_amp[i])
             point_source_list.append(point_source)
         return point_source_list
 
@@ -114,7 +114,7 @@ class PointSource(object):
             amp_estimated = amplitude
         else:
             amp_estimated = self.estimate_amp(data, x_pos, y_pos, psf_kernel)
-        error_map = util.add_layer2image(error_map, x_pos, y_pos, psf_error_map*(psf_kernel * amp_estimated)**2)
+        error_map = image_util.add_layer2image(error_map, x_pos, y_pos, psf_error_map * (psf_kernel * amp_estimated) ** 2)
         return error_map
 
     def estimate_amp(self, data, x_pos, y_pos, psf_kernel):

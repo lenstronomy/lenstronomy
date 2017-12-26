@@ -1,5 +1,8 @@
 from lenstronomy.ImSim.image_model import ImageModel
-import astrofunc.util as util
+import lenstronomy.Util.util as util
+import lenstronomy.Util.image_util as image_util
+import lenstronomy.Util.kernel_util as kernel_util
+import lenstronomy.Util.mask as mask_util
 
 import numpy as np
 import copy
@@ -12,7 +15,7 @@ class PSF_iterative(object):
     """
 
     def update_psf(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_else, factor=1, symmetry=1, verbose=True):
+                   kwargs_else, factor=1, symmetry=1):
         """
 
         :param kwargs_data:
@@ -24,16 +27,17 @@ class PSF_iterative(object):
         :param kwargs_else:
         :return:
         """
-        kwargs_options_psf = copy.deepcopy(kwargs_options)
-        kwargs_options_psf['error_map'] = False
-        imageModel = ImageModel(kwargs_options=kwargs_options_psf, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+
+        imageModel = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         logL_before = imageModel.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         kernel_old = kwargs_psf["kernel_point_source"]
         kernel_small = kwargs_psf["kernel_pixel"]
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
-        image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
+        kwargs_options_psf = copy.deepcopy(kwargs_options)
+        kwargs_options_psf['error_map'] = False
+        image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options_psf, kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                                  kwargs_else)
 
         x_, y_ = imageModel.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
@@ -49,9 +53,9 @@ class PSF_iterative(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
                                                  sigma_bkg=kwargs_data['sigma_background'], factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
-        kernel_new_small = util.pixel_kernel(kernel_new_small, subgrid_res=3)
-        kernel_new_small = util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
-        kernel_new = util.cut_psf(kernel_new, psf_size=kernel_size)
+        kernel_new_small = kernel_util.pixel_kernel(kernel_new_small, subgrid_res=3)
+        kernel_new_small = kernel_util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
+        kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         if not kwargs_options.get('psf_keep_small', False):
             kwargs_psf_new['kernel_pixel'] = kernel_new_small
@@ -90,7 +94,7 @@ class PSF_iterative(object):
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         for i in range(num_iter):
             kwargs_psf_new, improved_bool = self.update_psf(kwargs_data, kwargs_psf_new, kwargs_options, kwargs_lens, kwargs_source,
-                                             kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry, verbose=verbose)
+                                             kwargs_lens_light, kwargs_else, factor=factor, symmetry=symmetry)
             if not improved_bool:
                 print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
                 break
@@ -139,22 +143,22 @@ class PSF_iterative(object):
         kernel_list = np.zeros((n, kernelsize, kernelsize))
         i = 0
         for l in range(len(x_)):
-            kernel_shifted = util.cutout_source(x_[l], y_[l], image_list[l], kernelsize+2)
+            kernel_shifted = kernel_util.cutout_source(x_[l], y_[l], image_list[l], kernelsize + 2)
             mask_i = mask * mask_point_source_list[l]
-            mask_cutout = util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize+2, shift=False)
+            mask_cutout = kernel_util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize + 2, shift=False)
             kernel_shifted[kernel_shifted < 0] = 0
             kernel_shifted *= mask_cutout
-            kernel_init = util.kernel_norm(kernel_init)
-            mask_cutout = util.cut_edges(mask_cutout, kernelsize)
-            kernel_shifted = util.cut_edges(kernel_shifted, kernelsize)
+            kernel_init = kernel_util.kernel_norm(kernel_init)
+            mask_cutout = image_util.cut_edges(mask_cutout, kernelsize)
+            kernel_shifted = image_util.cut_edges(kernel_shifted, kernelsize)
             kernel_norm = np.sum(kernel_init[mask_cutout == 1])
-            kernel_shifted = util.kernel_norm(kernel_shifted)
+            kernel_shifted = kernel_util.kernel_norm(kernel_shifted)
             kernel_shifted *= kernel_norm
             kernel_shifted[mask_cutout == 0] = kernel_init[mask_cutout == 0]
             #kernel_shifted[mask_cutout == 1] /= (np.sum(kernel_init[mask_cutout == 1]) * np.sum(kernel_shifted[mask_cutout == 1]))
             for k in range(symmetry):
-                kernel_rotated = util.rotateImage(kernel_shifted, angle*k)
-                kernel_norm = util.kernel_norm(kernel_rotated)
+                kernel_rotated = image_util.rotateImage(kernel_shifted, angle * k)
+                kernel_norm = kernel_util.kernel_norm(kernel_rotated)
                 try:
                     kernel_list[i, :, :] = kernel_norm
                 except:
@@ -174,7 +178,7 @@ class PSF_iterative(object):
         kernel_list_new = np.append(kernel_list, kernel_old, axis=0)
         kernel_new = np.median(kernel_list_new, axis=0)
         kernel_new[kernel_new < 0] = 0
-        kernel_new = util.kernel_norm(kernel_new)
+        kernel_new = kernel_util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1.-factor)*np.mean(kernel_old, axis=0)
 
         kernel_bkg = copy.deepcopy(kernel_return)
@@ -195,7 +199,7 @@ class PSF_iterative(object):
         mask = np.ones_like(x_grid)
         for k in range(len(x_pos)):
             if k != i:
-                mask_point = 1 - util.mask_sphere(x_grid, y_grid, x_pos[k], y_pos[k], radius)
+                mask_point = 1 - mask_util.mask_sphere(x_grid, y_grid, x_pos[k], y_pos[k], radius)
                 mask *= mask_point
         return mask
 

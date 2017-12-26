@@ -1,4 +1,4 @@
-import astrofunc.util as util
+import lenstronomy.Util.param_util as param_util
 
 
 class LightParam(object):
@@ -84,7 +84,7 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
@@ -130,7 +130,7 @@ class LightParam(object):
                 else:
                     kwargs['R_b'] = kwargs_fixed['R_b']
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G_b'] = phi
                     kwargs['q_b'] = q
                     i += 2
@@ -148,7 +148,7 @@ class LightParam(object):
                 else:
                     kwargs['R_d'] = kwargs_fixed['R_d']
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    phi, q = util.elliptisity2phi_q(args[i], args[i+1])
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G_d'] = phi
                     kwargs['q_d'] = q
                     i += 2
@@ -245,7 +245,7 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
+                        e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
                         args.append(e1)
                         args.append(e2)
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
@@ -266,7 +266,7 @@ class LightParam(object):
                 if not 'R_b' in kwargs_fixed:
                     args.append(kwargs['R_b'])
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G_b'], kwargs['q_b'])
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_b'], kwargs['q_b'])
                     args.append(e1)
                     args.append(e2)
                 if not 'I0_d' in kwargs_fixed:
@@ -274,7 +274,7 @@ class LightParam(object):
                 if not 'R_d' in kwargs_fixed:
                     args.append(kwargs['R_b'])
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    e1, e2 = util.phi_q2_elliptisity(kwargs['phi_G_d'], kwargs['q_d'])
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_d'], kwargs['q_d'])
                     args.append(e1)
                     args.append(e2)
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
@@ -440,7 +440,7 @@ class LightParam(object):
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                         phi = kwargs_mean['phi_G']
                         q = kwargs_mean['q']
-                        e1, e2 = util.phi_q2_elliptisity(phi, q)
+                        e1, e2 = param_util.phi_q2_elliptisity(phi, q)
                         mean.append(e1)
                         mean.append(e2)
                         ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -475,7 +475,7 @@ class LightParam(object):
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_b']
                     q = kwargs_mean['q_b']
-                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -490,7 +490,7 @@ class LightParam(object):
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_d']
                     q = kwargs_mean['q_d']
-                    e1, e2 = util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']

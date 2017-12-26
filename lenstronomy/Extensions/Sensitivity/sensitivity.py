@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-import astrofunc.util as util
+import lenstronomy.Util.util as util
 from lenstronomy.ImSim.image_model import ImageModel
 import copy
 

@@ -332,9 +332,9 @@ class Data(object):
         :param width: width of aperture
         :return: summed value within the aperture
         """
-        mask = mask_util.get_mask(ra_pos, dec_pos, width/2., self._x_grid_all, self._y_grid_all)
-        mask1d = 1. - mask
-        return np.sum(self._data * mask1d)
+        mask = mask_util.mask_center_2d(ra_pos, dec_pos, width / 2., self._x_grid_all, self._y_grid_all)
+        mask2d = 1. - mask
+        return np.sum(self._data * mask2d)
 
     def psf_fwhm(self, kwargs):
         """

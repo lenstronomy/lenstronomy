@@ -9,7 +9,7 @@ def test_get_mask():
     center_x = 5
     center_y = 5
     r = 1
-    mask = mask_util.get_mask(center_x,center_y,r,x,y)
+    mask = mask_util.mask_center_2d(center_x, center_y, r, x, y)
     assert mask[0][0] == 1
     assert mask[5][5] == 0
 

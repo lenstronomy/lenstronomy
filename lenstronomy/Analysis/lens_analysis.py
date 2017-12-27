@@ -46,11 +46,11 @@ class LensAnalysis(object):
         if deltaPix is None:
             deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self.lens_light_internal(x_grid, y_grid, kwargs_lens_light)
+        lens_light = self._lens_light_internal(x_grid, y_grid, kwargs_lens_light)
         R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid)
         return R_h
 
-    def lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
+    def _lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
         """
 
         :param x_grid:
@@ -67,7 +67,7 @@ class LensAnalysis(object):
                 kwargs_lens_light_copy[i]['center_y'] = 0
                 lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
                 lens_light += lens_light_i
-        return util.array2image(lens_light)
+        return lens_light
 
     def multi_gaussian_lens_light(self, kwargs_lens_light, n_comp=20):
         """
@@ -78,7 +78,7 @@ class LensAnalysis(object):
         """
         r_h = self.half_light_radius(kwargs_lens_light)
         r_array = np.logspace(-2, 1, 50) * r_h
-        flux_r = self.lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
+        flux_r = self._lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
         return amplitudes, sigmas
 
@@ -123,7 +123,7 @@ class LensAnalysis(object):
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:
-            mask = np.array(1 - mask_util.get_mask(center_x, center_y, r, x_grid, y_grid))
+            mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)

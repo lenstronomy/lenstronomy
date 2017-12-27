@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def get_mask(center_x, center_y, r, x, y):
+def mask_center_2d(center_x, center_y, r, x, y):
     """
 
     :param center: 2D coordinate of center position of circular mask

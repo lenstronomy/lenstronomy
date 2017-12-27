@@ -17,7 +17,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     r_max = np.max(np.sqrt(x_grid**2 + y_grid**2))
     for i in range(1000):
         r = i/500. * r_max
-        mask = 1. - mask_util.get_mask(center_x, center_y, r, x_grid, y_grid)
+        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, r)
         flux_enclosed = np.sum(np.array(lens_light)*mask)
         if flux_enclosed > total_flux_2:
             return r
@@ -42,7 +42,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     I_enclosed = 0
     r = np.linspace(1./n*r_max, r_max, n)
     for i, r_i in enumerate(r):
-        mask = 1. - mask_util.get_mask(center_x, center_y, r_i, x_grid, y_grid)
+        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, r_i)
         flux_enclosed = np.sum(np.array(light_grid)*mask)
         I_r[i] = flux_enclosed - I_enclosed
         I_enclosed = flux_enclosed

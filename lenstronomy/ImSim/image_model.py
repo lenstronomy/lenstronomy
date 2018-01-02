@@ -187,10 +187,7 @@ class ImageModel(object):
 
         num_response = self.Data.num_response
         A = np.zeros((num_param, num_response))
-        if map_error is True:
-            error_map = np.zeros(num_response)
-        else:
-            error_map = 0
+        error_map = np.zeros(num_response)
         n = 0
         # response of sersic source profile
         for i in range(0, n_source):

@@ -1,11 +1,11 @@
 __author__ = 'sibirrer'
 
 import scipy.optimize
-from scipy.optimize import newton_krylov
 import scipy.interpolate as interpolate
 import numpy as np
 
-from lenstronomy.Cosmo.cosmo_properties import CosmoProp
+from astropy.cosmology import FlatLambdaCDM
+from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 
 class SolverUtil(object):
@@ -15,7 +15,6 @@ class SolverUtil(object):
     def __init__(self, z_d, z_s):
         self.z_d = z_d
         self.z_s = z_s
-        self.cosmoProp = CosmoProp(z_lens=z_d, z_source=z_s)
 
     def cosmo2Dd_Ds_Dds(self, H_0, omega_m):
         """
@@ -24,9 +23,11 @@ class SolverUtil(object):
         :param omega_m: matter density
         :return: angular diameter distances Dd and Ds/Dds
         """
-        Dd = self.cosmoProp.D_d(H_0, omega_m)
-        Ds = self.cosmoProp.D_s(H_0, omega_m)
-        Dds = self.cosmoProp.D_ds(H_0, omega_m)
+        cosmo = FlatLambdaCDM(H0=H_0, Om0=omega_m, Ob0=0.)
+        lensCosmo = LensCosmo(z_lens=self.z_d, z_source=self.z_s, cosmo=cosmo)
+        Dd = lensCosmo.D_d
+        Ds = lensCosmo.D_s
+        Dds = lensCosmo.D_ds
         return Dd, Ds/Dds
 
 

@@ -1,4 +1,4 @@
-from lenstronomy.Extensions.Itterative.iterative_psf import PSF_iterative
+from lenstronomy.ImSim.iterative_psf import PSF_iterative
 from lenstronomy.Workflow.fitting import Fitting
 
 

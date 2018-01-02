@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import lenstronomy.Cosmo.constants as const
+import lenstronomy.Util.constants as const
 
 
 class TimeDelaySampling(object):

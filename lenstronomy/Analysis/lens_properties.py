@@ -5,8 +5,8 @@ import numpy as np
 from galkin.LOS_dispersion import Velocity_dispersion
 from galkin.galkin import Galkin
 
-import lenstronomy.Cosmo.constants as const
-from lenstronomy.Cosmo.unit_manager import UnitManager
+import lenstronomy.Util.constants as const
+from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -21,23 +21,23 @@ class LensProp(object):
     def __init__(self, z_lens, z_source, kwargs_options, kwargs_data):
         self.z_d = z_lens
         self.z_s = z_source
-        self.unitManager = UnitManager(z_lens, z_source)
+        self.lensCosmo = LensCosmo(z_lens, z_source)
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
         self.lens_model = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
-        kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
+        kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
-        time_delay_arcsec = self.lens_analysis.imageModel.fermat_potential(kwargs_lens, kwargs_else)
-        time_delay = self.unitManager.time_delay_units(time_delay_arcsec, kappa_ext)
+        fermat_pot = self.lens_analysis.imageModel.fermat_potential(kwargs_lens, kwargs_else)
+        time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def rho0_r0_gamma(self, kwargs_lens, kwargs_else, gamma, kappa_ext=0):
+    def _rho0_r0_gamma(self, kwargs_lens, kwargs_else, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
         theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
-        return (kappa_ext - 1) * math.gamma(gamma/2)/(np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E**gamma/self.unitManager.arcsec2phys_lens(theta_E) * self.unitManager.cosmoProp.epsilon_crit * const.M_sun/const.Mpc**3  # units kg/m^3
+        return (kappa_ext - 1) * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / self.lensCosmo.arcsec2phys_lens(theta_E) * self.lensCosmo.cosmoProp.epsilon_crit * const.M_sun / const.Mpc ** 3  # units kg/m^3
 
     def v_sigma(self, kwargs_lens, kwargs_lens_light, kwargs_else, r_ani_scaling=1, r_eff=None, r=0.01):
         """
@@ -48,10 +48,10 @@ class LensProp(object):
         # equation (14) in Suyu+ 2010
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
-        rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
+        rho0_r0_gamma = self._rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         r_ani = r_ani_scaling * r_eff
         sigma2_center = self.dispersion.sigma_r2(r, 0.551*r_eff, gamma, rho0_r0_gamma, r_ani)
-        return np.sqrt(sigma2_center) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
+        return np.sqrt(sigma2_center) * self.lensCosmo.arcsec2phys_lens(1.) * const.Mpc / 1000
 
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_else, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
         gamma = kwargs_lens[0]['gamma']
@@ -76,7 +76,7 @@ class LensProp(object):
         :param kwargs_aperature:
         :return:
         """
-        kwargs_cosmo = {'D_d': self.unitManager.D_d, 'D_s': self.unitManager.D_s, 'D_ds': self.unitManager.D_ds}
+        kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         mass_profile_list = []
         kwargs_profile = []
         lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
@@ -125,7 +125,7 @@ class LensProp(object):
         :return:
         """
         sigma_v2_model = sigma_v_model**2
-        Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model*self.unitManager.cosmoProp.dist_LS/self.unitManager.cosmoProp.dist_OS)
+        Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model * self.lensCosmo.D_ds / self.lensCosmo.D_s)
         D_d = D_dt_model/(1+z_d)/Ds_Dds/(1-kappa_ext)
         return D_d, Ds_Dds
 
@@ -140,6 +140,6 @@ class LensProp(object):
         :return: D_d and D_d*D_s/D_ds, units in Mpc physical
         """
 
-        Ds_Dds = (sigma_v_measured/sigma_v_modeled)**2/(self.unitManager.cosmoProp.dist_LS/self.unitManager.cosmoProp.dist_OS)/(1-kappa_ext)
+        Ds_Dds = (sigma_v_measured/sigma_v_modeled) ** 2 / (self.lensCosmo.D_ds / self.lensCosmo.D_s) / (1 - kappa_ext)
         DdDs_Dds = 1./(1+self.z_d)/(1-kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
         return Ds_Dds, DdDs_Dds

@@ -11,7 +11,7 @@ from cosmoHammer.util.InMemoryStorageUtil import InMemoryStorageUtil
 from cosmoHammer import LikelihoodComputationChain
 from cosmoHammer import CosmoHammerSampler
 from cosmoHammer import MpiCosmoHammerSampler
-from lenstronomy.Cosmo.cosmo_properties import CosmoProp
+from lenstronomy.Cosmo.cosmo_properties_pycosmo import CosmoProp
 from lenstronomy.FunctionSet.porb_density import SkewGaussian
 
 

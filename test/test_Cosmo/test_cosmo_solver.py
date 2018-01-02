@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.Cosmo.cosmo_solver import SolverFlatCosmo
+from lenstronomy.Extensions.CosmoSampling.cosmo_solver import SolverFlatCosmo
 
 import numpy as np
 import pytest
@@ -16,8 +16,8 @@ class TestCompare(object):
         H0 = 70
         omega_m = 0.3
         Dd, Ds_Dds = self.solver.cosmo2Dd_Ds_Dds(H0, omega_m)
-        assert Dd == 911.50751299806996
-        assert Ds_Dds == 1.9761802059893767
+        assert Dd == 908.1103885379476
+        assert Ds_Dds == 1.974997411415468
 
     def test_F(self):
         H0 = 70
@@ -38,15 +38,6 @@ class TestCompare(object):
         npt.assert_almost_equal(x[1], omega_m, decimal=5)
 
         H0 = 30
-        omega_m = 0.1
-        Dd, Ds_Dds = self.solver.cosmo2Dd_Ds_Dds(H0, omega_m)
-        print(Dd, Ds_Dds, 'Dd, Ds_Dds')
-        x = self.solver.solve(init, Dd, Ds_Dds)
-        print(x, 'x')
-        npt.assert_almost_equal(x[0], H0, decimal=5)
-        npt.assert_almost_equal(x[1], omega_m, decimal=5)
-
-        H0 = 10
         omega_m = 0.1
         Dd, Ds_Dds = self.solver.cosmo2Dd_Ds_Dds(H0, omega_m)
         print(Dd, Ds_Dds, 'Dd, Ds_Dds')

@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
-from lenstronomy.Cosmo.time_delay_sampling import TimeDelaySampling
+from lenstronomy.Extensions.CosmoSampling.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.multiband import MakeImageMultiband
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Workflow.parameters import Param

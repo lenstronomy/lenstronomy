@@ -6,7 +6,7 @@ import mpmath as mp
 
 import PyCosmo
 import numpy as np
-import lenstronomy.Cosmo.constants as constants
+import lenstronomy.Util.constants as constants
 
 class CosmoProp(object):
 
@@ -116,8 +116,8 @@ class CosmoProp(object):
         returns the critical projected mass density in units of M_sun/Mpc^2 (physical units)
         """
         if not hasattr(self,'Epsilon_Crit'):
-            const_SI = constants.c**2/(4*np.pi * constants.G)  #c^2/(4*pi*G) in units of [kg/m]
-            conversion = constants.Mpc/constants.M_sun  # converts [kg/m] to [M_sun/Mpc]
+            const_SI = constants.c ** 2 / (4 * np.pi * constants.G)  #c^2/(4*pi*G) in units of [kg/m]
+            conversion = constants.Mpc / constants.M_sun  # converts [kg/m] to [M_sun/Mpc]
             const = const_SI*conversion   #c^2/(4*pi*G) in units of [M_sun/Mpc]
             self.Epsilon_Crit = self.dist_OS/(self.dist_OL*self.dist_LS) * const #[M_sun/Mpc^2]
         return self.Epsilon_Crit
@@ -158,7 +158,7 @@ class CosmoProp(object):
 
     @property
     def rho_crit(self):
-        return 3*self.hubble_small**2/(8 * np.pi * constants.G) * 10**10 * constants.Mpc/constants.M_sun
+        return 3 * self.hubble_small ** 2 / (8 * np.pi * constants.G) * 10 ** 10 * constants.Mpc / constants.M_sun
 
     @property
     def trans_dist_L(self):

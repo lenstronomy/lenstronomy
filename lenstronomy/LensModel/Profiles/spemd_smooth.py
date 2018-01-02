@@ -1,7 +1,10 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-from fastell4py import fastell4py
+try:
+    from fastell4py import fastell4py
+except:
+    raise ImportError("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
 from lenstronomy.LensModel.Profiles.spp import SPP
 
 

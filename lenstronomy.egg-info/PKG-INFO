@@ -4,8 +4,8 @@ Version: 0.1.0
 Summary: This package is designed to model strong lens systems.
 Home-page: http://www.astro.ethz.ch/refregier/research/index
 Author: Simon Birrer
-Author-email: simon.birrer@phys.ethz.ch
-License: Proprietary
+Author-email: sibirrer@gmail.com
+License: MIT
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy

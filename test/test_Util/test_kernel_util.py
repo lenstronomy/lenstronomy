@@ -52,7 +52,7 @@ def test_cutout_source():
 
 
 def test_cut_psf():
-    image = np.zeros((7, 7))
+    image = np.ones((7, 7))
     psf_cut = kernel_util.cut_psf(image, 5)
     assert len(psf_cut) == 5
 

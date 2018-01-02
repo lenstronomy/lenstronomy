@@ -130,7 +130,7 @@ class LensModelPlot(object):
         self._x_grid, self._y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
 
         self._imageModel = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        self._lensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
+        self._lensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModel.critical_curve_caustics(kwargs_lens, kwargs_else, compute_window=self._frame_size, grid_scale=0.01)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,

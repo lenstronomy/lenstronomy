@@ -107,6 +107,14 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['n_2'] = kwargs_fixed['n_2']
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
+                    kwargs['phi_G_2'] = phi
+                    kwargs['q_2'] = q
+                    i += 2
+                else:
+                    kwargs['phi_G_2'] = kwargs_fixed['phi_G_2']
+                    kwargs['q_b'] = kwargs_fixed['q_b']
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     kwargs['Re'] = args[i]
@@ -245,9 +253,9 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
-                        args.append(e1)
-                        args.append(e2)
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
+                    args.append(e1)
+                    args.append(e2)
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
                     args.append(kwargs['I0_2'])
@@ -255,11 +263,19 @@ class LightParam(object):
                     args.append(kwargs['R_2'])
                 if not 'n_2' in kwargs_fixed:
                     args.append(kwargs['n_2'])
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_2'], kwargs['q_2'])
+                    args.append(e1)
+                    args.append(e2)
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     args.append(kwargs['Re'])
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_2'], kwargs['q_2'])
+                    args.append(e1)
+                    args.append(e2)
             if model in ['BULDGE_DISK']:
                 if not 'I0_b' in kwargs_fixed:
                     args.append(kwargs['I0_b'])
@@ -347,6 +363,9 @@ class LightParam(object):
                     fix_return['R_2'] = kwargs_fixed['R_2']
                 if 'n_2' in kwargs_fixed:
                     fix_return['n_2'] = kwargs_fixed['n_2']
+                if 'phi_G_2' in kwargs_fixed or 'q_2' in kwargs_fixed:
+                        fix_return['phi_G_2'] = kwargs_fixed['phi_G_2']
+                        fix_return['q_2'] = kwargs_fixed['q_2']
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if 'Re' in kwargs_fixed:
@@ -457,6 +476,15 @@ class LightParam(object):
                 if not 'n_2' in kwargs_fixed:
                     mean.append(kwargs_mean['n_2'])
                     sigma.append(kwargs_mean['n_2_sigma'])
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    phi = kwargs_mean['phi_G_2']
+                    q = kwargs_mean['q_2']
+                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    mean.append(e1)
+                    mean.append(e2)
+                    ellipse_sigma = kwargs_mean['ellipse_sigma']
+                    sigma.append(ellipse_sigma)
+                    sigma.append(ellipse_sigma)
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
@@ -572,10 +600,10 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        low.append(-0.7)
-                        high.append(0.7)
-                        low.append(-0.7)
-                        high.append(0.7)
+                    low.append(-0.7)
+                    high.append(0.7)
+                    low.append(-0.7)
+                    high.append(0.7)
 
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
@@ -587,6 +615,11 @@ class LightParam(object):
                 if not 'n_2' in kwargs_fixed:
                     low.append(0.5)
                     high.append(8)
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    low.append(-0.7)
+                    high.append(0.7)
+                    low.append(-0.7)
+                    high.append(0.7)
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
@@ -692,9 +725,9 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                        num += 2
-                        list.append(str('e1_'+self.type))
-                        list.append(str('e2_' + self.type))
+                    num += 2
+                    list.append(str('e1_'+self.type))
+                    list.append(str('e2_' + self.type))
 
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
@@ -706,6 +739,10 @@ class LightParam(object):
                 if not 'n_2' in kwargs_fixed:
                     num += 1
                     list.append(str('n_2_'+self.type))
+                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
+                    num += 2
+                    list.append(str('e1_2_'+self.type))
+                    list.append(str('e2_2_' + self.type))
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:

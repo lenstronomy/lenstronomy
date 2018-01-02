@@ -1,6 +1,5 @@
 __author__ = 'sibirrer'
 
-import MultiLens.Utils.constants as const
 
 import numpy as np
 

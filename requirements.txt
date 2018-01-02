@@ -1,2 +1,4 @@
 mock
+mpmath
+numpy>=1.13
 -e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

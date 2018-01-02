@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+
 class TestSersic(object):
     """
     tests the Gaussian methods
@@ -101,7 +102,6 @@ class TestSersic(object):
         q = 0.9
         center_x = 0
         center_y = 0
-        smoothing = 0.02
         values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, phi_G, q, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.84489101, decimal=8)
         x = np.array([0])
@@ -127,19 +127,20 @@ class TestSersic(object):
         I0_2 = 0.1
         R_2 = 2
         n_2 = 2
+        phi_G_2 = 1
+        q_2 = 1
         center_x = 0
         center_y = 0
-        smoothing = 0.02
-        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, center_x, center_y)
-        assert values[0] == 0.20696126663199443
+        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, phi_G_2, q_2, center_x, center_y)
+        npt.assert_almost_equal(values[0], 0.20696126663199443, decimal=8)
         x = np.array([0])
         y = np.array([0])
-        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, center_x, center_y)
-        assert values[0] == 7.8708488164502022
+        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, phi_G_2, q_2, center_x, center_y)
+        npt.assert_almost_equal(values[0], 7.8708484172821045, decimal=8)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
-        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, center_x, center_y)
+        values = self.double_sersic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, I0_2, R_2, n_2, phi_G_2, q_2, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.19409037374964733, decimal=8)
         npt.assert_almost_equal(values[1], 0.060052096255106595, decimal=8)
         npt.assert_almost_equal(values[2], 0.023917479151437715, decimal=8)

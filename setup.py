@@ -52,14 +52,14 @@ setup(
     description='This package is designed to model strong lens systems.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Simon Birrer',
-    author_email='simon.birrer@phys.ethz.ch',
+    author_email='sibirrer@gmail.com',
     url='http://www.astro.ethz.ch/refregier/research/index',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,
     #setup_requires=requires,
     install_requires=requires,
-    license='Proprietary',
+    license='MIT',
     zip_safe=False,
     keywords='lenstronomy',
     classifiers=[
@@ -75,5 +75,5 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     tests_require=tests_require,
-    cmdclass = { 'test': PyTest },#'build_ext':build_ext,
+    cmdclass = {'test': PyTest },#'build_ext':build_ext,
 )

@@ -23,7 +23,7 @@ class TestParam(object):
         kwargs_true_source = [{'amp': 1*2*np.pi*0.1**2, 'center_x': 0.2, 'center_y': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
         kwargs_true_lens_light = [{'center_x_2': 0.1, 'n_2': 1, 'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'R_2': 1.2, 'I0_2': 1.7, 'center_y_2': 0.14, 'n_sersic': 1.7,
-                                  'I0_sersic': 11.8, 'R_sersic': 0.697}]
+                                  'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0, 'q_2': 1}]
         args = self.param_class.setParams(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_else={})
         lens_dict_list, source_dict, lens_light_dic, else_dict = self.param_class.getParams(args)
         lens_dict = lens_dict_list[0]
@@ -51,7 +51,7 @@ class TestParam(object):
         kwargs_true_source = [{'amp':1*2*np.pi*0.1**2 ,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
         kwargs_true_lens_light = [{'center_x_2': 0.1, 'n_2': 1, 'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'R_2': 1.2, 'I0_2': 1.7, 'center_y_2': 0.14, 'n_sersic': 1.7,
-                                  'I0_sersic': 11.8, 'R_sersic': 0.697}]
+                                  'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0, 'q_2': 1}]
         args = self.param_class.setParams(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_else={})
         lens_dict_list, source_dict, lens_light_dic, else_dict = self.param_class.get_all_params(args)
         lens_dict = lens_dict_list[0]

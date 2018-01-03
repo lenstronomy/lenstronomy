@@ -114,7 +114,7 @@ class Shapelets(object):
         :param numPix: number of pixel of the grid
         :return: list of shapelets drawn on pixel grid, centered.
         """
-        num_param = (num_order+2)*(num_order+1)/2
+        num_param = int((num_order+2)*(num_order+1)/2)
         kernel_list = []
         x_grid, y_grid = util.make_grid(numPix, deltapix=1, subgrid_res=1)
         n1 = 0
@@ -152,7 +152,7 @@ class ShapeletSet(object):
         :param center_y:
         :return:
         """
-        num_param = (n_max+1)*(n_max+2)/2
+        num_param = int((n_max+1)*(n_max+2)/2)
         f_ = np.zeros_like(x)
         n1 = 0
         n2 = 0
@@ -169,7 +169,7 @@ class ShapeletSet(object):
         return f_
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
-        num_param = (n_max+1)*(n_max+2)/2
+        num_param = int((n_max+1)*(n_max+2)/2)
         A = []
         n1 = 0
         n2 = 0
@@ -197,7 +197,7 @@ class ShapeletSet(object):
         :param center_y:
         :return:
         """
-        num_param = (n_max+1)*(n_max+2)/2
+        num_param = int((n_max+1)*(n_max+2)/2)
         param_list = np.zeros(num_param)
         amp_norm = 1./beta**2*deltaPix**2
         n1 = 0
@@ -235,7 +235,7 @@ class Decompose(object):
         :param center_y:
         :return:
         """
-        num_param = (n_max + 1) * (n_max + 2) / 2
+        num_param = int((n_max + 1) * (n_max + 2) / 2)
         param_list = np.zeros(num_param)
         amp_norm = 1. / beta ** 2 * deltaPix ** 2
         n1 = 0

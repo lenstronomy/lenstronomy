@@ -172,7 +172,7 @@ def re_size(image, factor=1):
     f = int(factor)
     nx, ny = np.shape(image)
     if int(nx/f) == nx/f and int(ny/f) == ny/f:
-        small = image.reshape([nx/f, f, ny/f, f]).mean(3).mean(1)
+        small = image.reshape([int(nx/f), f, int(ny/f), f]).mean(3).mean(1)
         return small
     else:
         raise ValueError("scaling with factor %s is not possible with grid size %s, %s" %(f, nx, ny))

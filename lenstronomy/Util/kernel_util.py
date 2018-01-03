@@ -131,10 +131,10 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     y_int = int(round(y_pos))
     n = len(image)
     d = (kernelsize - 1)/2
-    x_max = np.minimum(x_int + d + 1, n)
-    x_min = np.maximum(x_int - d, 0)
-    y_max = np.minimum(y_int + d + 1, n)
-    y_min = np.maximum(y_int - d, 0)
+    x_max = int(np.minimum(x_int + d + 1, n))
+    x_min = int(np.maximum(x_int - d, 0))
+    y_max = int(np.minimum(y_int + d + 1, n))
+    y_min = int(np.maximum(y_int - d, 0))
     image_cut = copy.deepcopy(image[y_min:y_max, x_min:x_max])
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
@@ -154,9 +154,9 @@ def fwhm_kernel(kernel):
     n = len(kernel)
     if n % 2 == 0:
         raise ValueError('only works with odd number of pixels in kernel!')
-    max_flux = kernel[(n-1)/2, (n-1)/2]
+    max_flux = kernel[int((n-1)/2), int((n-1)/2)]
     I_2 = max_flux/2.
-    I_r = kernel[(n-1)/2, (n-1)/2:]
+    I_r = kernel[int((n-1)/2), int((n-1)/2):]
     r = np.linspace(0, (n-1)/2, (n+1)/2)
     for i in range(1, len(r)):
         if I_r[i] < I_2:

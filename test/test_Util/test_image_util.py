@@ -162,7 +162,7 @@ def test_rotateImage():
 def test_re_size_array():
     numPix = 9
     kernel = np.zeros((numPix, numPix))
-    kernel[(numPix-1)/2, (numPix-1)/2] = 1
+    kernel[int((numPix-1)/2), int((numPix-1)/2)] = 1
     subgrid_res = 2
     input_values = kernel
     x_in = np.linspace(0, 1, numPix)

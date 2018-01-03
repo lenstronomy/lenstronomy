@@ -1,0 +1,248 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.MCMC.mcmc &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.MCMC.mcmc</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">emcee</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">CosmoHammerSampler</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">LikelihoodComputationChain</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">MpiCosmoHammerSampler</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">MpiParticleSwarmOptimizer</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">ParticleSwarmOptimizer</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer.util</span> <span class="k">import</span> <span class="n">InMemoryStorageUtil</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer.util</span> <span class="k">import</span> <span class="n">MpiUtil</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.MCMC.mcmc_chains</span> <span class="k">import</span> <span class="n">MCMC_chain</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Workflow.parameters</span> <span class="k">import</span> <span class="n">Param</span>
+
+
+<div class="viewcode-block" id="MCMC_sampler"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc.MCMC_sampler">[docs]</a><span class="k">class</span> <span class="nc">MCMC_sampler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class which executes the different sampling  methods</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialise the classes of the chain and for parameter options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">MCMC_chain</span><span class="p">(</span><span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MCMC_sampler.pso"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc.MCMC_sampler.pso">[docs]</a>    <span class="k">def</span> <span class="nf">pso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upperLimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_positions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the best fit for the lense model on catalogue basis with particle swarm optimizer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lowerLimit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">upperLimit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PSO initialises its particles with default values&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mpi</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">pso</span> <span class="o">=</span> <span class="n">MpiParticleSwarmOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pso</span> <span class="o">=</span> <span class="n">ParticleSwarmOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="n">threadCount</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">init_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">init_pos</span>
+            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
+            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
+        <span class="n">X2_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pos_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the </span><span class="si">%s</span><span class="s1"> ...&#39;</span> <span class="o">%</span> <span class="n">print_key</span><span class="p">)</span>
+        <span class="n">num_iter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">swarm</span> <span class="ow">in</span> <span class="n">pso</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
+            <span class="n">X2_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">fitness</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">vel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+            <span class="n">pos_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="n">num_iter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">num_iter</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">num_iter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mpi</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">MpiUtil</span><span class="o">.</span><span class="n">mpiBCast</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">lens_dict</span><span class="p">,</span> <span class="n">source_dict</span><span class="p">,</span> <span class="n">lens_light_dict</span><span class="p">,</span> <span class="n">else_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">get_all_params</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="c1">#if (pso.isMaster() and mpi is True) or self.chain.sampling_option == &#39;X2_catalogue&#39;:</span>
+        <span class="k">if</span> <span class="n">mpi</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">fitness</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">effectiv_numData_points</span><span class="p">()),</span> <span class="s1">&#39;reduced X^2 of best position&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">effectiv_numData_points</span><span class="p">(),</span> <span class="s1">&#39;effective number of data points&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">lens_dict</span><span class="p">,</span> <span class="s1">&#39;lens result&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">source_dict</span><span class="p">,</span> <span class="s1">&#39;source result&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">lens_light_dict</span><span class="p">,</span> <span class="s1">&#39;lens light result&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">else_dict</span><span class="p">,</span> <span class="s1">&#39;else result&#39;</span><span class="p">)</span>
+            <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time used for PSO&#39;</span><span class="p">,</span> <span class="n">print_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lens_dict</span><span class="p">,</span> <span class="n">source_dict</span><span class="p">,</span> <span class="n">lens_light_dict</span><span class="p">,</span> <span class="n">else_dict</span><span class="p">,</span> <span class="p">[</span><span class="n">X2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">,</span> <span class="p">[]]</span></div>
+
+<div class="viewcode-block" id="MCMC_sampler.mcmc_emcee"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_emcee">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_emcee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the mcmc analysis of the parameter space</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">X2_chain_image</span><span class="p">)</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">)</span>
+        <span class="n">new_pos</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStorageUtil</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">new_pos</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">):</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">persistSamplingValues</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">samples</span></div>
+
+<div class="viewcode-block" id="MCMC_sampler.mcmc_CH"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_CH">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_CH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">walkerRatio</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler</span>
+<span class="sd">        returns the chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">LikelihoodComputationChain</span><span class="p">(</span>
+            <span class="nb">min</span><span class="o">=</span><span class="n">lowerLimit</span><span class="p">,</span>
+            <span class="nb">max</span><span class="o">=</span><span class="n">upperLimit</span><span class="p">)</span>
+
+        <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="s2">&quot;Hammer&quot;</span><span class="p">)</span>
+        <span class="n">file_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+        <span class="c1">#file_prefix = &quot;./lenstronomy_debug&quot;</span>
+        <span class="c1"># chain.addCoreModule(CambCoreModule())</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">addLikelihoodModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+        <span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStorageUtil</span><span class="p">()</span>
+        <span class="c1">#store = None</span>
+        <span class="k">if</span> <span class="n">mpi</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">MpiCosmoHammerSampler</span><span class="p">(</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">likelihoodComputationChain</span><span class="o">=</span><span class="n">chain</span><span class="p">,</span>
+            <span class="n">filePrefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+            <span class="n">walkersRatio</span><span class="o">=</span><span class="n">walkerRatio</span><span class="p">,</span>
+            <span class="n">burninIterations</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span>
+            <span class="n">sampleIterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">,</span>
+            <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">initPositionGenerator</span><span class="o">=</span><span class="n">init_pos</span><span class="p">,</span>
+            <span class="n">storageUtil</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">CosmoHammerSampler</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">likelihoodComputationChain</span><span class="o">=</span><span class="n">chain</span><span class="p">,</span>
+                <span class="n">filePrefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+                <span class="n">walkersRatio</span><span class="o">=</span><span class="n">walkerRatio</span><span class="p">,</span>
+                <span class="n">burninIterations</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span>
+                <span class="n">sampleIterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">,</span>
+                <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span>
+                <span class="n">initPositionGenerator</span><span class="o">=</span><span class="n">init_pos</span><span class="p">,</span>
+                <span class="n">storageUtil</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sampler</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the MCMC...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of walkers = &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span><span class="o">*</span><span class="n">walkerRatio</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Burn-in iterations: &#39;</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sampling iterations:&#39;</span><span class="p">,</span> <span class="n">n_run</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">startSampling</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sampler</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time taken for MCMC sampling&#39;</span><span class="p">)</span>
+        <span class="c1"># if sampler._sampler.pool is not None:</span>
+        <span class="c1">#     sampler._sampler.pool.close()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="s1">&#39;shutil.rmtree did not work&#39;</span><span class="p">)</span>
+            <span class="k">pass</span>
+        <span class="c1">#samples = np.loadtxt(file_prefix+&quot;.out&quot;)</span>
+        <span class="c1">#prob = np.loadtxt(file_prefix+&quot;prob.out&quot;)</span>
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">samples</span><span class="p">,</span> <span class="n">store</span><span class="o">.</span><span class="n">prob</span></div></div>
+        <span class="c1">#return samples, prob</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

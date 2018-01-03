@@ -1,0 +1,287 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Cosmo.lens_cosmo</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="c1">#this file contains a class to convert units</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.background</span> <span class="k">import</span> <span class="n">Background</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">FlatLambdaCDM</span>
+
+
+<div class="viewcode-block" id="LensCosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo">[docs]</a><span class="k">class</span> <span class="nc">LensCosmo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to manage the physical units and distances present in a single plane lens with fixed input cosmology</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z_lens: redshift of lens</span>
+<span class="sd">        :param z_source: redshift of source</span>
+<span class="sd">        :param cosmo: astropy.cosmology instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">Background</span><span class="p">(</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">D_d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: angular diameter distance to the deflector [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">D_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">D_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: angular diameter distance to the source [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">D_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">D_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: angular diameter distance from deflector to source [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">D_xy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">D_dt_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: time delay distance [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">epsilon_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the critical projected mass density in units of M_sun/Mpc^2 (physical units)</span>
+<span class="sd">        :return: critical projected mass density</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Epsilon_Crit&#39;</span><span class="p">):</span>
+            <span class="n">const_SI</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1">#c^2/(4*pi*G) in units of [kg/m]</span>
+            <span class="n">conversion</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span>  <span class="c1"># converts [kg/m] to [M_sun/Mpc]</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">const_SI</span><span class="o">*</span><span class="n">conversion</span>   <span class="c1">#c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_d</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span> <span class="c1">#[M_sun/Mpc^2]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit</span>
+
+<div class="viewcode-block" id="LensCosmo.phys2arcsec_lens"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.phys2arcsec_lens">[docs]</a>    <span class="k">def</span> <span class="nf">phys2arcsec_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phys</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert physical Mpc into arc seconds</span>
+<span class="sd">        :param phys: physical distance [Mpc]</span>
+<span class="sd">        :return: angular diameter [arcsec]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">phys</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_d</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">arcsec</span></div>
+
+<div class="viewcode-block" id="LensCosmo.arcsec2phys_lens"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.arcsec2phys_lens">[docs]</a>    <span class="k">def</span> <span class="nf">arcsec2phys_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arcsec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert angular to physical quantities for lens plane</span>
+<span class="sd">        :param arcsec: angular size at lens plane [arcsec]</span>
+<span class="sd">        :return: physical size at lens plane [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">arcsec</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_d</span></div>
+
+<div class="viewcode-block" id="LensCosmo.arcsec2phys_source"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.arcsec2phys_source">[docs]</a>    <span class="k">def</span> <span class="nf">arcsec2phys_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arcsec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert angular to physical quantities for source plane</span>
+<span class="sd">        :param arcsec: angular size at source plane [arcsec]</span>
+<span class="sd">        :return: physical size at source plane [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">arcsec</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span></div>
+
+<div class="viewcode-block" id="LensCosmo.kappa2proj_mass"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.kappa2proj_mass">[docs]</a>    <span class="k">def</span> <span class="nf">kappa2proj_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kappa</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert convergence to projected mass M_sun/Mpc^2</span>
+<span class="sd">        :param kappa: lensing convergence</span>
+<span class="sd">        :return: projected mass [M_sun/Mpc^2]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span></div>
+
+<div class="viewcode-block" id="LensCosmo.mass_in_theta_E"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_theta_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass within Einstein radius (area * epsilon crit) [M_sun]</span>
+<span class="sd">        :param theta_E: Einstein radius [arcsec]</span>
+<span class="sd">        :return: mass within Einstein radius [M_sun]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span>
+        <span class="k">return</span> <span class="n">mass</span></div>
+
+<div class="viewcode-block" id="LensCosmo.mass_in_theta_E_2"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E_2">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_theta_E_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass within Einstein radius (area * epsilon crit) [M_sun]</span>
+<span class="sd">        :param theta_E: Einstein radius [arcsec]</span>
+<span class="sd">        :return: mass within Einstein radius [M_sun]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_E</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span>
+        <span class="k">return</span> <span class="n">mass</span></div>
+
+<div class="viewcode-block" id="LensCosmo.mass_in_coin"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_coin">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_coin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param theta_E: Einstein radius [arcsec]</span>
+<span class="sd">        :return: mass in coin calculated in mean density of the universe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chi_L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">T_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span>
+        <span class="n">chi_S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">T_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">chi_L</span> <span class="o">*</span> <span class="n">theta_E</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">chi_S</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">rho_crit</span>  <span class="c1">#[M_sun/Mpc**3]</span></div>
+
+<div class="viewcode-block" id="LensCosmo.time_delay_units"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.time_delay_units">[docs]</a>    <span class="k">def</span> <span class="nf">time_delay_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fermat_pot</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param delay_unitless: in units of arcsec^2 (Fermat potential)</span>
+<span class="sd">        :param kappa_ext: unit less</span>
+<span class="sd">        :return: time delay in days</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">D_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_dt_model</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">kappa_ext</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span>  <span class="c1"># eqn 7 in Suyu et al.</span>
+        <span class="k">return</span> <span class="n">D_dt</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">fermat_pot</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># * self.arcsec2phys_lens(1.)**2</span></div></div>
+
+
+<div class="viewcode-block" id="FlatLCDM"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM">[docs]</a><span class="k">class</span> <span class="nc">FlatLCDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z_lens: redshift of lens</span>
+<span class="sd">        :param z_source: redshift of source</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+
+<div class="viewcode-block" id="FlatLCDM.D_d"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_d">[docs]</a>    <span class="k">def</span> <span class="nf">D_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        angular diameter to deflector</span>
+<span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
+<span class="sd">        :param Om0: normalized matter density at present time</span>
+<span class="sd">        :return: float [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_d</span></div>
+
+<div class="viewcode-block" id="FlatLCDM.D_s"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_s">[docs]</a>    <span class="k">def</span> <span class="nf">D_s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        angular diameter to source</span>
+<span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
+<span class="sd">        :param Om0: normalized matter density at present time</span>
+<span class="sd">        :return: float [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_s</span></div>
+
+<div class="viewcode-block" id="FlatLCDM.D_ds"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_ds">[docs]</a>    <span class="k">def</span> <span class="nf">D_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        angular diameter from deflector to source</span>
+<span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
+<span class="sd">        :param Om0: normalized matter density at present time</span>
+<span class="sd">        :return: float [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_ds</span></div>
+
+<div class="viewcode-block" id="FlatLCDM.D_dt_model"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt_model">[docs]</a>    <span class="k">def</span> <span class="nf">D_dt_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        time delay distance</span>
+<span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
+<span class="sd">        :param Om0: normalized matter density at present time</span>
+<span class="sd">        :return: float [Mpc]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_dt_model</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

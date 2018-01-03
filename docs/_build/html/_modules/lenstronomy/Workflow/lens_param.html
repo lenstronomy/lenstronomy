@@ -1,0 +1,1001 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Workflow.lens_param &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Workflow.lens_param</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
+
+
+<div class="viewcode-block" id="LensParam"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam">[docs]</a><span class="k">class</span> <span class="nc">LensParam</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to handle the lens model parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_options:</span>
+<span class="sd">        :param kwargs_fixed:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span> <span class="o">=</span> <span class="n">kwargs_options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_images&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LensParam.getParams"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">phi</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">elliptisity2phi_q</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;num_shapelet_lens&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span> <span class="mi">6</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">num_coeffs</span><span class="p">]</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span><span class="mi">3</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">num_coeffs</span><span class="p">]</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Option for solver_type not valid!&quot;</span><span class="p">)</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coeffs</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">num_coeffs</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="n">num_coeffs</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;phi_dipole_decoupling&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">phi</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">elliptisity2phi_q</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;s_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="c1">#grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;grid_interp_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;grid_interp_x&#39;</span><span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;grid_interp_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;grid_interp_y&#39;</span><span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;f_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;f_x&#39;</span><span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;f_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;f_y&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span>
+            <span class="n">kwargs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">i</span></div>
+
+<div class="viewcode-block" id="LensParam.setParams"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">])</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                    <span class="n">args</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;phi_dipole_decoupling&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">])</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;s_scale&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">args</span></div>
+
+<div class="viewcode-block" id="LensParam.add2fix"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.add2fix">[docs]</a>    <span class="k">def</span> <span class="nf">add2fix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_fixed_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_fixed:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fix_return_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">fix_return</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;s_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;s_scale&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="c1">#grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None</span>
+                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;grid_interp_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;grid_interp_x&#39;</span><span class="p">]</span>
+                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;grid_interp_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;grid_interp_y&#39;</span><span class="p">]</span>
+                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;f_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;f_x&#39;</span><span class="p">]</span>
+                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;f_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;f_y&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">]</span>
+            <span class="n">fix_return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fix_return</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fix_return_list</span></div>
+
+<div class="viewcode-block" id="LensParam.param_init"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.param_init">[docs]</a>    <span class="k">def</span> <span class="nf">param_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mean_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_mean:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs_mean</span> <span class="o">=</span> <span class="n">kwargs_mean_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;shear_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;shear_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;g1&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flexion_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;g2&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flexion_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;g3&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flexion_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;g4&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flexion_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;amp_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma_x&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma_x_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma_y&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma_y_sigma&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;theta_E_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;gamma_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;DOUBLE_SERSIC&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">phi</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+                    <span class="n">q</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
+                    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+                    <span class="n">ellipse_sigma</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;ellipse_sigma&#39;</span><span class="p">]</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ellipse_sigma</span><span class="p">)</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ellipse_sigma</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Rs_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;theta_Rs_sigma&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;beta_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">coeffs</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)):</span>
+                        <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coeffs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;coeffs_sigma&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;coupling&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;coupling_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;phi_dipole_decoupling&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;phi_dipole_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;n_sersic&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;n_sersic_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;r_eff_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;k_eff&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;k_eff_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flux_ratio&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;flux_ratio_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;R_2&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;R_2_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;n_2&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;n_2_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">phi</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;phi_G_s&#39;</span><span class="p">]</span>
+                    <span class="n">q</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;q_s&#39;</span><span class="p">]</span>
+                    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+                    <span class="n">ellipse_sigma</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;ellipse_s_sigma&#39;</span><span class="p">]</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ellipse_sigma</span><span class="p">)</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ellipse_sigma</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;mass_light&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;mass_light_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;sigma0_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Rs_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;Ra_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;s_scale&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;s_scale_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span>
+                <span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;center_x_sigma&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;center_y_sigma&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">])</span>
+                    <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;scale_factor_sigma&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span></div>
+
+<div class="viewcode-block" id="LensParam.param_bounds"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.param_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">param_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">2.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">10.</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;num_shapelet_lens&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span> <span class="mi">6</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">low</span> <span class="o">+=</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="n">num_coeffs</span>
+                    <span class="n">high</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="n">num_coeffs</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;phi_dipole_decoupling&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0000001</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span>
+                <span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span></div>
+
+<div class="viewcode-block" id="LensParam.num_param"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.lens_param.LensParam.num_param">[docs]</a>    <span class="k">def</span> <span class="nf">num_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e1&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e2&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g1&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;g1&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;g2&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g3&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;g3&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;g4&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;g4&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;amp_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;sigma_x_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;sigma_y_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;theta_E&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;gamma_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e1_lens&#39;</span><span class="p">)</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e2_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Rs_nfw&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;theta_Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;theta_Rs_nfw&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;beta_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coeffs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;num_shapelet_lens&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span> <span class="mi">6</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">num_coeffs</span> <span class="o">-=</span> <span class="mi">3</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="n">num_coeffs</span>
+                    <span class="nb">list</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;coeff&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">num_coeffs</span>
+
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DIPOLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;coupling&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;coupling&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_dipole&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;phi_dipole_decoupling&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;phi_dipole&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_sersic&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;n_sersic_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;r_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;r_eff_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;k_eff&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;k_eff_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;flux_ratio&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;flux_ratio_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;R_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;R_2_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;n_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;n_2_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;q_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_s&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e1_lens&#39;</span><span class="p">)</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;e2_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;mass_light&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;sigma0_&#39;</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Rs&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Rs_&#39;</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;Ra&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Ra_&#39;</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;s_scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;s_scale&#39;</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_DOUBLE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;center_x_lens&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;center_y&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;center_y_lens&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;scale_factor&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;scale_factor&#39;</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">num</span><span class="p">,</span> <span class="nb">list</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

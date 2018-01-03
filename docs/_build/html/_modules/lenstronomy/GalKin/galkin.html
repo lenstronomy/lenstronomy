@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.GalKin.galkin &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.GalKin.galkin</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">light_profile</span> <span class="k">import</span> <span class="n">LightProfile</span>
+<span class="kn">from</span> <span class="nn">mass_profile</span> <span class="k">import</span> <span class="n">MassProfile</span>
+<span class="kn">from</span> <span class="nn">aperture</span> <span class="k">import</span> <span class="n">Aperture</span>
+<span class="kn">from</span> <span class="nn">anisotropy</span> <span class="k">import</span> <span class="n">MamonLokasAnisotropy</span>
+<span class="kn">from</span> <span class="nn">cosmo</span> <span class="k">import</span> <span class="n">Cosmo</span>
+<span class="kn">import</span> <span class="nn">velocity_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="Galkin"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin">[docs]</a><span class="k">class</span> <span class="nc">Galkin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    major class to compute velocity dispersion measurements given light and mass models</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mass_profile_list</span><span class="p">,</span> <span class="n">light_profile_list</span><span class="p">,</span> <span class="n">aperture_type</span><span class="o">=</span><span class="s1">&#39;slit&#39;</span><span class="p">,</span> <span class="n">anisotropy_model</span><span class="o">=</span><span class="s1">&#39;isotropic&#39;</span><span class="p">,</span>
+                 <span class="n">fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">massProfile</span> <span class="o">=</span> <span class="n">MassProfile</span><span class="p">(</span><span class="n">mass_profile_list</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span> <span class="o">=</span> <span class="n">LightProfile</span><span class="p">(</span><span class="n">light_profile_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="n">aperture_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span> <span class="o">=</span> <span class="n">MamonLokasAnisotropy</span><span class="p">(</span><span class="n">anisotropy_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span> <span class="o">=</span> <span class="n">fwhm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_sampling</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sampling_number&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interpol_grid_num&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_int</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_integration&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_integrate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_integrate&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1"># maximal integration (and interpolation) in units of arcsecs</span>
+
+<div class="viewcode-block" id="Galkin.vel_disp"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin.vel_disp">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_apertur</span><span class="p">,</span> <span class="n">r_eff</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the averaged LOS velocity dispersion in the slit (convolved)</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :param phi_E:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param r_ani:</span>
+<span class="sd">        :param R_slit:</span>
+<span class="sd">        :param FWHM:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sigma2_R_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_sampling</span><span class="p">):</span>
+            <span class="n">sigma2_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_one_sigma2</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_apertur</span><span class="p">,</span> <span class="n">r_eff</span><span class="o">=</span><span class="n">r_eff</span><span class="p">)</span>
+            <span class="n">sigma2_R_sum</span> <span class="o">+=</span> <span class="n">sigma2_R</span>
+        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma2_R_sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_sampling</span>
+        <span class="c1"># apply unit conversion from arc seconds and deflections to physical velocity disperison in (km/s)</span>
+        <span class="n">sigma_s2_average</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span>  <span class="c1"># correcting for integral prefactor</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_s2_average</span><span class="o">/</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span><span class="p">))</span><span class="o">/</span><span class="mf">1000.</span>  <span class="c1"># in units of km/s</span></div>
+
+<div class="viewcode-block" id="Galkin.draw_one_sigma2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin.draw_one_sigma2">[docs]</a>    <span class="k">def</span> <span class="nf">draw_one_sigma2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">r_eff</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_mass:</span>
+<span class="sd">        :param kwargs_light:</span>
+<span class="sd">        :param kwargs_anisotropy:</span>
+<span class="sd">        :param kwargs_aperture:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span><span class="o">.</span><span class="n">draw_light_2d</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">,</span> <span class="n">r_eff</span><span class="o">=</span><span class="n">r_eff</span><span class="p">)</span>  <span class="c1"># draw r</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">draw_xy</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>  <span class="c1"># draw projected R</span>
+            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">displace_PSF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span><span class="p">)</span>  <span class="c1"># displace via PSF</span>
+            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">sigma2_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2_R</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sigma2_R</span></div>
+
+<div class="viewcode-block" id="Galkin.sigma2_R"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin.sigma2_R">[docs]</a>    <span class="k">def</span> <span class="nf">sigma2_R</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns unweighted los velocity dispersion</span>
+<span class="sd">        :param R:</span>
+<span class="sd">        :param kwargs_mass:</span>
+<span class="sd">        :param kwargs_light:</span>
+<span class="sd">        :param kwargs_anisotropy:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">I_R_sigma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">I_R_simga2</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="n">I_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span><span class="o">.</span><span class="n">light_2d</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span>
+        <span class="c1">#I_R = self.lightProfile._integrand_light(R, kwargs_light)</span>
+        <span class="k">return</span> <span class="n">I_R_sigma2</span> <span class="o">/</span> <span class="n">I_R</span></div>
+
+<div class="viewcode-block" id="Galkin.I_R_simga2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin.I_R_simga2">[docs]</a>    <span class="k">def</span> <span class="nf">I_R_simga2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        equation A15 in Mamon&amp;Lokas 2005 as a logarithmic numerical integral</span>
+<span class="sd">        modulo pre-factor 2*G</span>
+<span class="sd">        :param R:</span>
+<span class="sd">        :param kwargs_mass:</span>
+<span class="sd">        :param kwargs_light:</span>
+<span class="sd">        :param kwargs_anisotropy:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_int</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">min_log</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span><span class="o">+</span><span class="mf">0.0001</span><span class="p">)</span>
+            <span class="n">max_log</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_integrate</span><span class="p">)</span>
+            <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">min_log</span><span class="p">,</span> <span class="n">max_log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
+            <span class="n">dlog_r</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">IR_sigma2_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrand_A15</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span> <span class="o">*</span> <span class="n">dlog_r</span> <span class="o">*</span> <span class="n">r_array</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_integrate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
+            <span class="n">dr</span> <span class="o">=</span> <span class="n">r_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">IR_sigma2_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrand_A15</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span> <span class="o">*</span> <span class="n">dr</span>
+        <span class="n">IR_sigma2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">IR_sigma2_dr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">IR_sigma2</span></div>
+
+    <span class="k">def</span> <span class="nf">_integrand_A15</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        integrand of A15 (in log space)</span>
+<span class="sd">        :param r:</span>
+<span class="sd">        :param kwargs_mass:</span>
+<span class="sd">        :param kwargs_light:</span>
+<span class="sd">        :param kwargs_anisotropy:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span><span class="o">.</span><span class="n">K</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="n">l_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span><span class="o">.</span><span class="n">light_3d_interp</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span>
+        <span class="n">m_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">massProfile</span><span class="o">.</span><span class="n">mass_3d_interp</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">k_r</span> <span class="o">*</span> <span class="n">l_r</span> <span class="o">*</span> <span class="n">m_r</span> <span class="o">/</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

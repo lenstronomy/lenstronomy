@@ -1,0 +1,412 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Extensions package" href="lenstronomy.Extensions.html" />
+    <link rel="prev" title="lenstronomy.Cosmo package" href="lenstronomy.Cosmo.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Extensions.html" title="lenstronomy.Extensions package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-data-package">
+<h1>lenstronomy.Data package<a class="headerlink" href="#lenstronomy-data-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Data.coord_transforms">
+<span id="lenstronomy-data-coord-transforms-module"></span><h2>lenstronomy.Data.coord_transforms module<a class="headerlink" href="#module-lenstronomy.Data.coord_transforms" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates">
+<em class="property">class </em><code class="descclassname">lenstronomy.Data.coord_transforms.</code><code class="descname">Coordinates</code><span class="sig-paren">(</span><em>transform_pix2angle</em>, <em>ra_at_xy_0</em>, <em>dec_at_xy_0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to handle linear coordinate transformations of a square pixel image</p>
+<dl class="method">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix">
+<code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – ra coordinates, relative</li>
+<li><strong>dec</strong> – dec coordinates, relative</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(x, y) pixel position of coordinate (ra, dec)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord">
+<code class="descname">map_pix2coord</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_pix2coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_pos</strong> – pixel position</li>
+<li><strong>y_pos</strong> – pixel position</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(ra, dec) coordinates of pixel position (x_pos, y_pos)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.pixel_area">
+<code class="descname">pixel_area</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>angular area of a pixel in the image
+:return: area [arcsec^2]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.pixel_size">
+<code class="descname">pixel_size</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of pixel
+:return: sqrt(pixel_area)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Data.imaging_data">
+<span id="lenstronomy-data-imaging-data-module"></span><h2>lenstronomy.Data.imaging_data module<a class="headerlink" href="#module-lenstronomy.Data.imaging_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Data.imaging_data.Data">
+<em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>subgrid_res=1</em>, <em>psf_subgrid=False</em>, <em>lens_light_mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.add_noise2image">
+<code class="descname">add_noise2image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.add_noise2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.add_noise2image" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds Poisson and Gaussian noise to the modeled image
+:param image:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.array2image">
+<code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.array2image" title="Permalink to this definition">¶</a></dt>
+<dd><p>maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
+:param array: 1d array
+:param idex_mask: 1d array of length nx*ny
+:param nx: x-axis of 2d grid
+:param ny: y-axis of 2d grid
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.coordinates">
+<code class="descname">coordinates</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.covariance_matrix">
+<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>d</em>, <em>sigma_b</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a diagonal matrix for the covariance estimation
+:param d: data array
+:param sigma_b: background noise
+:param f: reduced poissonian noise
+:return: len(d) x len(d) matrix</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.data">
+<code class="descname">data</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.deltaPix">
+<code class="descname">deltaPix</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.deltaPix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.flux_aperture">
+<code class="descname">flux_aperture</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>width</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.flux_aperture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.flux_aperture" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the flux within an aperture
+:param ra_pos: ra position of aperture
+:param dec_pos: dec position of aperture
+:param width: width of aperture
+:return: summed value within the aperture</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.image2array">
+<code class="descname">image2array</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.image2array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.image2array" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 1d array of values in image in idex_mask
+:param image:
+:param idex_mask:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.log_likelihood">
+<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns reduced residual map
+:param model:
+:param data:
+:param sigma:
+:param reduce_frac:
+:param mask:
+:param error_map:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.map_coord2pix">
+<code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.map_coord2pix" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – </li>
+<li><strong>dec</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.map_pix2coord">
+<code class="descname">map_pix2coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.map_pix2coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.map_pix2coord" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.mask">
+<code class="descname">mask</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.numData">
+<code class="descname">numData</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.numData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.numData_evaluate">
+<code class="descname">numData_evaluate</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.numData_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.num_response">
+<code class="descname">num_response</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.num_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of pixels as part of the response array
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.psf_convolution">
+<code class="descname">psf_convolution</code><span class="sig-paren">(</span><em>grid</em>, <em>grid_scale</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.psf_convolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.psf_convolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>convolves a given pixel grid with a PSF</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.psf_fwhm">
+<code class="descname">psf_fwhm</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.psf_fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.psf_fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">psf fwhm in units of arcsec</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.re_size_convolve">
+<code class="descname">re_size_convolve</code><span class="sig-paren">(</span><em>array</em>, <em>kwargs_psf</em>, <em>unconvolved=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> – 2d image (can also be higher resolution binned</li>
+<li><strong>kwargs_psf</strong> – kwargs of psf modelling</li>
+<li><strong>unconvolved</strong> – bool, if True, no convlolution performed, only re-binning</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array with convolved and re-binned data/model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.reduced_chi2">
+<code class="descname">reduced_chi2</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.reduced_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.reduced_chi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns reduced chi2
+:param model:
+:param error_map:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.reduced_residuals">
+<code class="descname">reduced_residuals</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.reduced_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.reduced_residuals" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Data" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Data package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Data.coord_transforms">lenstronomy.Data.coord_transforms module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Data.imaging_data">lenstronomy.Data.imaging_data module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Data">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.Cosmo.html"
+                        title="previous chapter">lenstronomy.Cosmo package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Extensions.html"
+                        title="next chapter">lenstronomy.Extensions package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Extensions.html" title="lenstronomy.Extensions package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

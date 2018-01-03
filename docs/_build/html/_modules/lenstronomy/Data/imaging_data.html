@@ -1,0 +1,479 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Data.imaging_data &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Data.imaging_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">signal</span>
+
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.mask</span> <span class="k">as</span> <span class="nn">mask_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.fft_convolve</span> <span class="k">as</span> <span class="nn">fft</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Data.coord_transforms</span> <span class="k">import</span> <span class="n">Coordinates</span>
+
+
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to handle the data, coordinate system and masking, including convolution with various numerical precisions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_subgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lens_light_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span> <span class="o">=</span> <span class="n">subgrid_res</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_mask</span> <span class="o">=</span> <span class="n">lens_light_mask</span>
+
+        <span class="k">if</span> <span class="s1">&#39;image_data&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;image_data&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: image_data not specified in kwargs_data!&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: non-rectangular shape of image data might result in an error!&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;idex_mask&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;idex_mask&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;sigma_background&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;sigma_background&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: sigma_background not specified in kwargs_data. Default is set to 1!&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="s1">&#39;exposure_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="n">exp_map</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;exposure_map&#39;</span><span class="p">]</span>
+            <span class="n">exp_map</span><span class="p">[</span><span class="n">exp_map</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">exp_map</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">&#39;exp_time&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="n">exp_map</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;exp_time&#39;</span><span class="p">]</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">exp_map</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!&#39;</span><span class="p">)</span>
+            <span class="n">exp_map</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">exp_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exp_map</span> <span class="o">=</span> <span class="n">exp_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C_D_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">,</span> <span class="n">exp_map</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;mask&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;mask_lens_light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_lens_light</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;mask_lens_light&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_lens_light</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_lens_light</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;x_coords&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span> <span class="ow">and</span> <span class="s1">&#39;y_coords&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="n">x_grid</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;x_coords&#39;</span><span class="p">]</span>
+            <span class="n">y_grid</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;y_coords&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid_all</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid_all</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_grid</span> <span class="o">=</span> <span class="n">y_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">x_grid_sub</span><span class="p">,</span> <span class="n">y_grid_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_subgrid</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_idex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_grid_sub</span> <span class="o">=</span> <span class="n">x_grid_sub</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_sub</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_grid_sub</span> <span class="o">=</span> <span class="n">y_grid_sub</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_sub</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_psf_subgrid</span> <span class="o">=</span> <span class="n">psf_subgrid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="n">Coordinates</span><span class="p">(</span><span class="n">transform_pix2angle</span><span class="o">=</span><span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transform_pix2angle&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])),</span> <span class="n">ra_at_xy_0</span><span class="o">=</span><span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ra_at_xy_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dec_at_xy_0</span><span class="o">=</span><span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dec_at_xy_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deltaPix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">pixel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of pixels as part of the response array</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">numData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_mask</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_lens_light</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">numData_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid_all</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid_all</span>
+
+<div class="viewcode-block" id="Data.map_coord2pix"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.map_coord2pix">[docs]</a>    <span class="k">def</span> <span class="nf">map_coord2pix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param ra:</span>
+<span class="sd">        :param dec:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Data.map_pix2coord"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.map_pix2coord">[docs]</a>    <span class="k">def</span> <span class="nf">map_pix2coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x:</span>
+<span class="sd">        :param y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">map_pix2coord</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_subgrid_idex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param idex_mask: 1d array of mask of data</span>
+<span class="sd">        :param subgrid_res: subgrid resolution</span>
+<span class="sd">        :return: 1d array of equivalent mask in subgrid resolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="n">ny</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">idex_sub</span>
+
+<div class="viewcode-block" id="Data.array2image"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.array2image">[docs]</a>    <span class="k">def</span> <span class="nf">array2image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices</span>
+<span class="sd">        :param array: 1d array</span>
+<span class="sd">        :param idex_mask: 1d array of length nx*ny</span>
+<span class="sd">        :param nx: x-axis of 2d grid</span>
+<span class="sd">        :param ny: y-axis of 2d grid</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">*</span> <span class="n">subgrid_res</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">idex_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span>
+            <span class="n">grid1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">subgrid_res</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">idex_mask_subgrid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_sub</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idex_mask_subgrid</span> <span class="o">=</span> <span class="n">idex_mask</span>
+            <span class="n">grid1d</span><span class="p">[</span><span class="n">idex_mask_subgrid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grid1d</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="n">grid2d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">grid1d</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid2d</span></div>
+
+<div class="viewcode-block" id="Data.image2array"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.image2array">[docs]</a>    <span class="k">def</span> <span class="nf">image2array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns 1d array of values in image in idex_mask</span>
+<span class="sd">        :param image:</span>
+<span class="sd">        :param idex_mask:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idex_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">idex_mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">array</span></div>
+
+<div class="viewcode-block" id="Data.covariance_matrix"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">sigma_b</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns a diagonal matrix for the covariance estimation</span>
+<span class="sd">        :param d: data array</span>
+<span class="sd">        :param sigma_b: background noise</span>
+<span class="sd">        :param f: reduced poissonian noise</span>
+<span class="sd">        :return: len(d) x len(d) matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mean_exp_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span>
+
+        <span class="k">if</span> <span class="n">sigma_b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING! sigma_b*f </span><span class="si">%s</span><span class="s2"> &gt;1 may introduce unstable error estimates&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sigma_b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
+        <span class="n">d_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="c1">#threshold = 1.5*sigma_b</span>
+        <span class="n">d_pos</span><span class="p">[</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#d_pos[d &lt; threshold] = 0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">d_pos</span><span class="o">/</span><span class="n">f</span> <span class="o">+</span> <span class="n">sigma_b</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">sigma</span></div>
+
+<div class="viewcode-block" id="Data.add_noise2image"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.add_noise2image">[docs]</a>    <span class="k">def</span> <span class="nf">add_noise2image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds Poisson and Gaussian noise to the modeled image</span>
+<span class="sd">        :param image:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gaussian</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">)</span>
+        <span class="n">poisson</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">add_poisson</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_map</span><span class="p">)</span>
+        <span class="n">image_noisy</span> <span class="o">=</span> <span class="n">image</span> <span class="o">+</span> <span class="n">gaussian</span> <span class="o">+</span> <span class="n">poisson</span>
+        <span class="k">return</span> <span class="n">image_noisy</span></div>
+
+<div class="viewcode-block" id="Data.reduced_residuals"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.reduced_residuals">[docs]</a>    <span class="k">def</span> <span class="nf">reduced_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param model:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_D</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_map</span><span class="p">))</span><span class="o">*</span><span class="n">mask</span>
+        <span class="k">return</span> <span class="n">residual</span></div>
+
+<div class="viewcode-block" id="Data.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns reduced residual map</span>
+<span class="sd">        :param model:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :param sigma:</span>
+<span class="sd">        :param reduce_frac:</span>
+<span class="sd">        :param mask:</span>
+<span class="sd">        :param error_map:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_D</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_map</span><span class="p">))</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">logL</span></div>
+
+<div class="viewcode-block" id="Data.reduced_chi2"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.reduced_chi2">[docs]</a>    <span class="k">def</span> <span class="nf">reduced_chi2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns reduced chi2</span>
+<span class="sd">        :param model:</span>
+<span class="sd">        :param error_map:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chi2</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_D</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_map</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">chi2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numData_evaluate</span></div>
+
+<div class="viewcode-block" id="Data.psf_convolution"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.psf_convolution">[docs]</a>    <span class="k">def</span> <span class="nf">psf_convolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">grid_scale</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convolves a given pixel grid with a PSF</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">psf_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">grid</span>
+        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">grid_scale</span>
+            <span class="k">if</span> <span class="s1">&#39;truncate&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">sigma_truncate</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;truncate&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">grid_scale</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sigma_truncate</span> <span class="o">=</span> <span class="mf">3.</span><span class="o">/</span><span class="n">grid_scale</span>
+            <span class="n">img_conv</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="n">sigma_truncate</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">img_conv</span>
+        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;pixel&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_subgrid</span><span class="p">:</span>
+                <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_kernel</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kernel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_pixel&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;kernel_fft&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kernel_fft</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_pixel_fft&#39;</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">img_conv1</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">kernel_fft</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">img_conv1</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">img_conv1</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">img_conv1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSF type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">psf_type</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_subgrid_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subgrid_kernel_out&#39;</span><span class="p">):</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">subgrid_kernel</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_pixel&#39;</span><span class="p">])</span>
+            <span class="n">n_new</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span>
+            <span class="k">if</span> <span class="n">n_new</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">n_new</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_kernel_out</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">n_new</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_kernel_out</span>
+
+<div class="viewcode-block" id="Data.re_size_convolve"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param array: 2d image (can also be higher resolution binned</span>
+<span class="sd">        :param kwargs_psf: kwargs of psf modelling</span>
+<span class="sd">        :param unconvolved: bool, if True, no convlolution performed, only re-binning</span>
+<span class="sd">        :return: array with convolved and re-binned data/model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutout_psf</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unconvolved</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;psf_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
+            <span class="n">grid_re_sized</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+            <span class="n">grid_final</span> <span class="o">=</span> <span class="n">grid_re_sized</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gridScale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaPix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kwargs_psf</span> <span class="o">==</span> <span class="s1">&#39;pixel&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_subgrid</span><span class="p">:</span>
+                <span class="n">grid_re_sized</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+                <span class="n">grid_final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_convolution</span><span class="p">(</span><span class="n">grid_re_sized</span><span class="p">,</span> <span class="n">gridScale</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">grid_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_convolution</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">gridScale</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
+                <span class="n">grid_final</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">grid_conv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span><span class="p">)</span>
+        <span class="n">grid_final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_psf</span><span class="p">(</span><span class="n">grid_final</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid_final</span></div>
+
+<div class="viewcode-block" id="Data.flux_aperture"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.flux_aperture">[docs]</a>    <span class="k">def</span> <span class="nf">flux_aperture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the flux within an aperture</span>
+<span class="sd">        :param ra_pos: ra position of aperture</span>
+<span class="sd">        :param dec_pos: dec position of aperture</span>
+<span class="sd">        :param width: width of aperture</span>
+<span class="sd">        :return: summed value within the aperture</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask_util</span><span class="o">.</span><span class="n">mask_center_2d</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid_all</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid_all</span><span class="p">)</span>
+        <span class="n">mask2d</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">mask</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">*</span> <span class="n">mask2d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Data.psf_fwhm"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.psf_fwhm">[docs]</a>    <span class="k">def</span> <span class="nf">psf_fwhm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_psf:</span>
+<span class="sd">        :return: psf fwhm in units of arcsec</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">psf_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
+            <span class="n">fwhm</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span>
+            <span class="n">fwhm</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;pixel&#39;</span><span class="p">:</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span>
+            <span class="n">fwhm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">fwhm_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaPix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSF type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">psf_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fwhm</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_mask_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        smaller frame that encolses all the idex_mask</span>
+<span class="sd">        :param idex_mask:</span>
+<span class="sd">        :param nx:</span>
+<span class="sd">        :param ny:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_x_min_psf&#39;</span><span class="p">):</span>
+            <span class="n">idex_2d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idex_mask_2d</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x_min_psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idex_2d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x_max_psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idex_2d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y_min_psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idex_2d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y_max_psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idex_2d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_cutout_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        cutout the part of the image relevant for the psf convolution</span>
+<span class="sd">        :param image:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_mask_psf</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">image</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_min_psf</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">:(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_max_psf</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_min_psf</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">:(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_max_psf</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_add_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_psf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param image_psf:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_mask_psf</span><span class="p">()</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span><span class="p">))</span>
+        <span class="n">image</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_min_psf</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_max_psf</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_min_psf</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_max_psf</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_psf</span>
+        <span class="k">return</span> <span class="n">image</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

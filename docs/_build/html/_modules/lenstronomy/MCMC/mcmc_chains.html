@@ -1,0 +1,297 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.MCMC.mcmc_chains &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.MCMC.mcmc_chains</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Extensions.CosmoSampling.time_delay_sampling</span> <span class="k">import</span> <span class="n">TimeDelaySampling</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.multiband</span> <span class="k">import</span> <span class="n">MakeImageMultiband</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Workflow.parameters</span> <span class="k">import</span> <span class="n">Param</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+
+
+<div class="viewcode-block" id="MCMC_chain"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain">[docs]</a><span class="k">class</span> <span class="nc">MCMC_chain</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this class contains the routines to run a MCMC process with one single image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initializes all the classes needed for the chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(&#39;initialized on cpu&#39;, threading.current_thread())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source_marg</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_marg&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="c1"># whether to fully invert the covariance matrix for marginalization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;X2_type&#39;</span><span class="p">,</span> <span class="s1">&#39;image&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">makeImageMultiband</span> <span class="o">=</span> <span class="n">MakeImageMultiband</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foreground_shear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowerLimit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upperLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelay</span> <span class="o">=</span> <span class="n">TimeDelaySampling</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_delay</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_delay&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delays_measured</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;time_delays&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delays_errors</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;time_delays_errors&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors_bool</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;priors&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors_bool</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_priors</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;kwargs_priors&#39;</span><span class="p">]</span>
+        <span class="n">check_solver</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;check_solver&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_solver</span> <span class="o">=</span> <span class="n">check_solver</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_solver</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_solver</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver_tolerance</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver_tolerance&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;additional_images&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_force_no_add_image</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;force_no_add_image&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_force_no_add_image</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_images&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_likelihood</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_source_likelihood&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_sigma</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position_uncertainty&#39;</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MCMC_chain.X2_chain_image"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_image">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X2 given variable parameters for a MCMC/PSO chainF</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#extract parameters</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">get_all_params</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1">#generate image and computes likelihood</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeImageMultiband</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">source_marg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_source_marg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_likelihood</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_image_pos</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_sigma</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_bounds</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowerLimit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upperLimit</span><span class="p">)</span>
+        <span class="c1"># logL -= self.bounds_convergence(kwargs_lens)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logL_delay</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors_bool</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_priors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_solver</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_solver</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_tolerance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_no_add_image</span><span class="p">:</span>
+            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_additional_images</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="n">logL</span> <span class="o">-=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+        <span class="k">return</span> <span class="n">logL</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.X2_chain_catalogue"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_catalogue">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_catalogue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X2 given variable parameters for a MCMC/PSO chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#extract parameters</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">get_all_params</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1">#generate image</span>
+        <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="c1">#compute X^2</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">compare_distance</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+        <span class="n">X2</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_bounds</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowerLimit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upperLimit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors_bool</span><span class="p">:</span>
+            <span class="n">X2</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_priors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">X2</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.check_solver"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_solver">[docs]</a>    <span class="k">def</span> <span class="nf">check_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        test whether the image positions map back to the same source position</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_else</span><span class="p">:</span>
+            <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">],</span>
+                                                                       <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">source_x</span> <span class="o">-</span> <span class="n">source_x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">source_y</span> <span class="o">-</span> <span class="n">source_y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="mi">5</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.check_additional_images"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_additional_images">[docs]</a>    <span class="k">def</span> <span class="nf">check_additional_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether additional images have been found and placed in kwargs_else</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.likelihood_image_pos"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood_image_pos">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_image_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_lens_model: image position of lens model</span>
+<span class="sd">        :param y_lens_model: image position of lens model</span>
+<span class="sd">        :param x_image: image position of image data</span>
+<span class="sd">        :param y_image: image position of image data</span>
+<span class="sd">        :param sigma: likelihood sigma</span>
+<span class="sd">        :return: log likelihood of model given image positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sourcePos_x</span> <span class="o">=</span> <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+        <span class="n">sourcePos_y</span> <span class="o">=</span> <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+        <span class="n">x_image</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span>
+        <span class="n">y_image</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
+        <span class="n">x_lens_model</span><span class="p">,</span> <span class="n">y_lens_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeImageMultiband</span><span class="o">.</span><span class="n">image_positions</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">)</span>
+        <span class="n">num_image</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_lens_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_image</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_image</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">min_square_dist</span><span class="p">(</span><span class="n">x_lens_model</span><span class="p">,</span> <span class="n">y_lens_model</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dist</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">logL</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.priors"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.priors">[docs]</a>    <span class="k">def</span> <span class="nf">priors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_priors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_priors:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prior</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;gamma_ext&#39;</span> <span class="ow">in</span> <span class="n">kwargs_lens</span> <span class="ow">and</span> <span class="s1">&#39;gamma_ext&#39;</span> <span class="ow">in</span> <span class="n">kwargs_priors</span> <span class="ow">and</span> <span class="s1">&#39;gamma_ext_sigma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_priors</span><span class="p">:</span>
+            <span class="n">prior</span> <span class="o">-=</span> <span class="p">(</span><span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;gamma_ext&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">kwargs_priors</span><span class="p">[</span><span class="s1">&#39;gamma_ext&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">kwargs_priors</span><span class="p">[</span><span class="s1">&#39;gamma_ext_sigma&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="s1">&#39;psi_ext&#39;</span> <span class="ow">in</span> <span class="n">kwargs_lens</span> <span class="ow">and</span> <span class="s1">&#39;psi_ext&#39;</span> <span class="ow">in</span> <span class="n">kwargs_priors</span> <span class="ow">and</span> <span class="s1">&#39;psi_ext_sigma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_priors</span><span class="p">:</span>
+            <span class="n">prior</span> <span class="o">-=</span> <span class="p">(</span><span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;psi_ext&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">kwargs_priors</span><span class="p">[</span><span class="s1">&#39;psi_ext&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">kwargs_priors</span><span class="p">[</span><span class="s1">&#39;psi_ext_sigma&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">prior</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.check_bounds"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">check_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether the parameter vector has left its bound, if so, adds a big number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">penalty</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">15</span><span class="c1">#np.NaN #10**10</span>
+                <span class="c1">#print(i, args[i], lowerLimit[i], upperLimit[i])</span>
+                <span class="c1">#print(&quot;warning!!!&quot;)</span>
+        <span class="k">return</span> <span class="n">penalty</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.logL_delay"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.logL_delay">[docs]</a>    <span class="k">def</span> <span class="nf">logL_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute the log likelihood of the time delay distance</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delay_arcsec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeImageMultiband</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">D_dt_model</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span>
+        <span class="n">delay_days</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeDelay</span><span class="o">.</span><span class="n">days_D_model</span><span class="p">(</span><span class="n">delay_arcsec</span><span class="p">,</span> <span class="n">D_dt_model</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeDelay</span><span class="o">.</span><span class="n">logL_delays</span><span class="p">(</span><span class="n">delay_days</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delays_measured</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delays_errors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.effectiv_numData_points"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.effectiv_numData_points">[docs]</a>    <span class="k">def</span> <span class="nf">effectiv_numData_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeImageMultiband</span><span class="o">.</span><span class="n">numData_evaluate</span>
+        <span class="n">num_param</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">n</span> <span class="o">-</span> <span class="n">num_param</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;image&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_image</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;catalogue&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_catalogue</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;option </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MCMC_chain.likelihood"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;image&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_image</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;catalogue&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_catalogue</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;option </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.computeLikelihood"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.computeLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">computeLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;image&#39;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_image</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span> <span class="o">==</span> <span class="s1">&#39;catalogue&#39;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_catalogue</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;option </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampling_option</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">likelihood</span></div>
+
+<div class="viewcode-block" id="MCMC_chain.setup"><a class="viewcode-back" href="../../../lenstronomy.MCMC.html#lenstronomy.MCMC.mcmc_chains.MCMC_chain.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

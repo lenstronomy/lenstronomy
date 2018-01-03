@@ -1,0 +1,178 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.GalKin.galkin_old &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.GalKin.galkin_old</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">velocity_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">from</span> <span class="nn">light_profile</span> <span class="k">import</span> <span class="n">LightProfile_old</span>
+<span class="kn">from</span> <span class="nn">aperture</span> <span class="k">import</span> <span class="n">Aperture</span>
+<span class="kn">from</span> <span class="nn">anisotropy</span> <span class="k">import</span> <span class="n">Anisotropy</span>
+<span class="kn">from</span> <span class="nn">jeans_equation</span> <span class="k">import</span> <span class="n">Jeans_solver</span>
+
+
+<div class="viewcode-block" id="GalKin_analytic"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKin_analytic">[docs]</a><span class="k">class</span> <span class="nc">GalKin_analytic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    master class for all computations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aperture</span><span class="o">=</span><span class="s1">&#39;slit&#39;</span><span class="p">,</span> <span class="n">mass_profile</span><span class="o">=</span><span class="s1">&#39;power_law&#39;</span><span class="p">,</span> <span class="n">light_profile</span><span class="o">=</span><span class="s1">&#39;Hernquist&#39;</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="o">=</span><span class="s1">&#39;r_ani&#39;</span><span class="p">,</span> <span class="n">psf_fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initializes the observation condition and masks</span>
+<span class="sd">        :param aperture_type: string</span>
+<span class="sd">        :param psf_fwhm: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mass_profile</span> <span class="o">=</span> <span class="n">mass_profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">=</span> <span class="n">psf_fwhm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_cosmo</span> <span class="o">=</span> <span class="n">kwargs_cosmo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span> <span class="o">=</span> <span class="n">LightProfile_old</span><span class="p">(</span><span class="n">light_profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="n">aperture</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span> <span class="o">=</span> <span class="n">Anisotropy</span><span class="p">(</span><span class="n">anisotropy_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span> <span class="o">=</span> <span class="n">psf_fwhm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jeans_solver</span> <span class="o">=</span> <span class="n">Jeans_solver</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">mass_profile</span><span class="p">,</span> <span class="n">light_profile</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GalKin_analytic.vel_disp"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKin_analytic.vel_disp">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the averaged LOS velocity dispersion in the slit (convolved)</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :param phi_E:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param r_ani:</span>
+<span class="sd">        :param R_slit:</span>
+<span class="sd">        :param FWHM:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sigma_s2_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+            <span class="n">sigma_s2_draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vel_disp_one</span><span class="p">(</span><span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+            <span class="n">sigma_s2_sum</span> <span class="o">+=</span> <span class="n">sigma_s2_draw</span>
+        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma_s2_sum</span><span class="o">/</span><span class="n">num</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_s2_average</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_vel_disp_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes one realisation of the velocity dispersion realized in the slit</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :param rho0_r0_gamma:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param r_ani:</span>
+<span class="sd">        :param R_slit:</span>
+<span class="sd">        :param dR_slit:</span>
+<span class="sd">        :param FWHM:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span><span class="o">.</span><span class="n">draw_light</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">)</span>  <span class="c1"># draw r</span>
+            <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">R_r</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># draw projected R</span>
+            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">displace_PSF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span><span class="p">)</span>  <span class="c1"># displace via PSF</span>
+            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">sigma_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sigma_s2</span>
+
+<div class="viewcode-block" id="GalKin_analytic.sigma_s2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_s2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_s2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        projected velocity dispersion</span>
+<span class="sd">        :param r:</span>
+<span class="sd">        :param R:</span>
+<span class="sd">        :param r_ani:</span>
+<span class="sd">        :param a:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :param phi_E:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span><span class="o">.</span><span class="n">beta_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GalKin_analytic.sigma_r2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_r2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_r2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes radial velocity dispersion at radius r (solving the Jeans equation</span>
+<span class="sd">        :param r:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jeans_solver</span><span class="o">.</span><span class="n">sigma_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

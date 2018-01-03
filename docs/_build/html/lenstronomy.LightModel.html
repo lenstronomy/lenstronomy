@@ -1,0 +1,259 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LightModel package &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.LightModel.Profiles package" href="lenstronomy.LightModel.Profiles.html" />
+    <link rel="prev" title="lenstronomy.LensModel.Solver package" href="lenstronomy.LensModel.Solver.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-lightmodel-package">
+<h1>lenstronomy.LightModel package<a class="headerlink" href="#lenstronomy-lightmodel-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html">lenstronomy.LightModel.Profiles package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.uniform">lenstronomy.LightModel.Profiles.uniform module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.LightModel.light_model">
+<span id="lenstronomy-lightmodel-light-model-module"></span><h2>lenstronomy.LightModel.light_model module<a class="headerlink" href="#module-lenstronomy.LightModel.light_model" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.light_model.LensLightModel">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">LensLightModel</code><span class="sig-paren">(</span><em>light_model_list=['NONE']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LensLightModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LensLightModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LensLightModel.surface_brightness">
+<code class="descname">surface_brightness</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens_light_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LensLightModel.surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LensLightModel.surface_brightness" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>set</em><em> or </em><em>single 1d numpy array</em>) – coordinate in units of arcsec relative to the center of the image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.light_model.LightModel">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">LightModel</code><span class="sig-paren">(</span><em>profile_type_list</em>, <em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to handle source and lens light models</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LightModel.functions_split">
+<code class="descname">functions_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel.functions_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel.functions_split" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>kwargs_list</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LightModel.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes 3d density at radius r
+:param x: coordinate in units of arcsec relative to the center of the image
+:type x: set or single 1d numpy array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LightModel.re_normalize_flux">
+<code class="descname">re_normalize_flux</code><span class="sig-paren">(</span><em>kwargs_list</em>, <em>norm_factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel.re_normalize_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel.re_normalize_flux" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LightModel.surface_brightness">
+<code class="descname">surface_brightness</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel.surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel.surface_brightness" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>set</em><em> or </em><em>single 1d numpy array</em>) – coordinate in units of arcsec relative to the center of the image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.light_model.SourceModel">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">SourceModel</code><span class="sig-paren">(</span><em>light_model_list=['NONE']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#SourceModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.SourceModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.SourceModel.surface_brightness">
+<code class="descname">surface_brightness</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_source_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#SourceModel.surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.SourceModel.surface_brightness" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>set</em><em> or </em><em>single 1d numpy array</em>) – coordinate in units of arcsec relative to the center of the image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LightModel">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LightModel" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.LightModel package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.light_model">lenstronomy.LightModel.light_model module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.LensModel.Solver.html"
+                        title="previous chapter">lenstronomy.LensModel.Solver package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.LightModel.Profiles.html"
+                        title="next chapter">lenstronomy.LightModel.Profiles package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.LightModel.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

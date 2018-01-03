@@ -1,0 +1,1326 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Util package &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Workflow package" href="lenstronomy.Workflow.html" />
+    <link rel="prev" title="lenstronomy.MCMC package" href="lenstronomy.MCMC.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-util-package">
+<h1>lenstronomy.Util package<a class="headerlink" href="#lenstronomy-util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Util.analysis_util">
+<span id="lenstronomy-util-analysis-util-module"></span><h2>lenstronomy.Util.analysis_util module<a class="headerlink" href="#module-lenstronomy.Util.analysis_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.analysis_util.azimuthalAverage">
+<code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">azimuthalAverage</code><span class="sig-paren">(</span><em>image</em>, <em>center=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#azimuthalAverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.azimuthalAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the azimuthally averaged radial profile.</p>
+<p>image - The 2D image
+center - The [x,y] pixel coordinates used as the center. The default is</p>
+<blockquote>
+<div>None, which then uses the center of the image (including
+fracitonal pixels).</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.analysis_util.half_light_radius">
+<code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">half_light_radius</code><span class="sig-paren">(</span><em>lens_light</em>, <em>x_grid</em>, <em>y_grid</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#half_light_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.half_light_radius" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lens_light</strong> – array of surface brightness</li>
+<li><strong>x_grid</strong> – x-axis coordinates</li>
+<li><strong>y_gird</strong> – y-axis coordinates</li>
+<li><strong>center_x</strong> – center of light</li>
+<li><strong>center_y</strong> – center of light</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.analysis_util.radial_profile">
+<code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">radial_profile</code><span class="sig-paren">(</span><em>light_grid</em>, <em>x_grid</em>, <em>y_grid</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.radial_profile" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>light_grid</strong> – array of surface brightness</li>
+<li><strong>x_grid</strong> – x-axis coordinates</li>
+<li><strong>y_gird</strong> – y-axis coordinates</li>
+<li><strong>center_x</strong> – center of light</li>
+<li><strong>center_y</strong> – center of light</li>
+<li><strong>n</strong> – number of discrete steps</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.constants">
+<span id="lenstronomy-util-constants-module"></span><h2>lenstronomy.Util.constants module<a class="headerlink" href="#module-lenstronomy.Util.constants" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Util.correlation">
+<span id="lenstronomy-util-correlation-module"></span><h2>lenstronomy.Util.correlation module<a class="headerlink" href="#module-lenstronomy.Util.correlation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.correlation.correlation_2D">
+<code class="descclassname">lenstronomy.Util.correlation.</code><code class="descname">correlation_2D</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/correlation.html#correlation_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.correlation.correlation_2D" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>residuals</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.correlation.random_1D">
+<code class="descclassname">lenstronomy.Util.correlation.</code><code class="descname">random_1D</code><span class="sig-paren">(</span><em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/correlation.html#random_1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.correlation.random_1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>same as corr1D put with a random distribution with mean 0 and sigma=1
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.derivative_util">
+<span id="lenstronomy-util-derivative-util-module"></span><h2>lenstronomy.Util.derivative_util module<a class="headerlink" href="#module-lenstronomy.Util.derivative_util" title="Permalink to this headline">¶</a></h2>
+<p>routines to compute derivatives of spherical functions</p>
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_r_dx">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_r_dx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_r_dx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_r_dx" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative of r with respect to x
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_r_dy">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_r_dy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_r_dy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_r_dy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_x_diffr_dx">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_x_diffr_dx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_x_diffr_dx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_x_diffr_dx" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative of d(x/r)/dx
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_x_diffr_dy">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_x_diffr_dy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_x_diffr_dy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_x_diffr_dy" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative of d(x/r)/dy
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_y_diffr_dx">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_y_diffr_dx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_y_diffr_dx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_y_diffr_dx" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative of d(y/r)/dx
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.derivative_util.d_y_diffr_dy">
+<code class="descclassname">lenstronomy.Util.derivative_util.</code><code class="descname">d_y_diffr_dy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/derivative_util.html#d_y_diffr_dy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.derivative_util.d_y_diffr_dy" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative of d(y/r)/dy
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.fft_convolve">
+<span id="lenstronomy-util-fft-convolve-module"></span><h2>lenstronomy.Util.fft_convolve module<a class="headerlink" href="#module-lenstronomy.Util.fft_convolve" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Util.fft_convolve.FFT">
+<em class="property">class </em><code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">FFT</code><span class="sig-paren">(</span><em>image</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#FFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.FFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for fast convolution computation with given image size and fixed kernel</p>
+<dl class="method">
+<dt id="lenstronomy.Util.fft_convolve.FFT.fft_convolve">
+<code class="descname">fft_convolve</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#FFT.fft_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.FFT.fft_convolve" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – 2d array to match “shape”/rfftn kernel</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.fft_convolve.fftconvolve">
+<code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">fftconvolve</code><span class="sig-paren">(</span><em>in1</em>, <em>in2</em>, <em>int2_fft</em>, <em>mode='same'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#fftconvolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.fftconvolve" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>in1</strong> – </li>
+<li><strong>in2</strong> – </li>
+<li><strong>int2_fft</strong> – </li>
+<li><strong>mode</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.fft_convolve.fftn">
+<code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">fftn</code><span class="sig-paren">(</span><em>image</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#fftn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.fftn" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the fourier transpose of the kernel in same modes as image
+:param image:
+:param kernel:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.image_util">
+<span id="lenstronomy-util-image-util-module"></span><h2>lenstronomy.Util.image_util module<a class="headerlink" href="#module-lenstronomy.Util.image_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.add_background">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_background</code><span class="sig-paren">(</span><em>image</em>, <em>sigma_bkd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds background noise to image
+:param image: pixel values of image
+:param sigma_bkd: background noise (sigma)
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.add_layer2image">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_layer2image</code><span class="sig-paren">(</span><em>grid2d</em>, <em>x_pos</em>, <em>y_pos</em>, <em>kernel</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_layer2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_layer2image" title="Permalink to this definition">¶</a></dt>
+<dd><p>makes a point source on a grid with shifted PSF
+:param x_pos:
+:param y_pos:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.add_poisson">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_poisson</code><span class="sig-paren">(</span><em>image</em>, <em>exp_time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_poisson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a poison (or Gaussian) distributed noise with mean given by surface brightness
+:param image: pixel values (photon counts per unit exposure time)
+:param exp_time: exposure time
+:return: Poisson noise realization of input image</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.coordInImage">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">coordInImage</code><span class="sig-paren">(</span><em>x_coord</em>, <em>y_coord</em>, <em>numPix</em>, <em>deltapix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#coordInImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.coordInImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether image positions are within the pixel image in units of arcsec
+if not: remove it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>imcoord</strong> (<em>(</em><em>n</em><em>,</em><em>4</em><em>) </em><em>numpy array</em>) – image coordinate (in units of angels)  [[x,y,delta,magnification][…]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">image positions within the pixel image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.cut_edges">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">cut_edges</code><span class="sig-paren">(</span><em>image</em>, <em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#cut_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.cut_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>cuts out the edges of a 2d image and returns re-sized image to numPix
+:param image: 2d numpy array
+:param numPix:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.findOverlap">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">findOverlap</code><span class="sig-paren">(</span><em>x_mins</em>, <em>y_mins</em>, <em>min_distance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#findOverlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.findOverlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.re_size">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">re_size</code><span class="sig-paren">(</span><em>image</em>, <em>factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#re_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.re_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>resizes image with nx x ny to nx/factor x ny/factor
+:param image: 2d image with shape (nx,ny)
+:param factor: integer &gt;=1
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.re_size_array">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">re_size_array</code><span class="sig-paren">(</span><em>x_in</em>, <em>y_in</em>, <em>input_values</em>, <em>x_out</em>, <em>y_out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#re_size_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.re_size_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.
+:param x_in:
+:param y_in:
+:param input_values:
+:param x_out:
+:param y_out:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.rebin_coord_transform">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">rebin_coord_transform</code><span class="sig-paren">(</span><em>factor</em>, <em>x_at_radec_0</em>, <em>y_at_radec_0</em>, <em>Mpix2coord</em>, <em>Mcoord2pix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#rebin_coord_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.rebin_coord_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
+:param bin_size:
+:param ra_0:
+:param dec_0:
+:param x_0:
+:param y_0:
+:param Matrix:
+:param Matrix_inv:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.rebin_image">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">rebin_image</code><span class="sig-paren">(</span><em>bin_size</em>, <em>image</em>, <em>wht_map</em>, <em>sigma_bkg</em>, <em>ra_coords</em>, <em>dec_coords</em>, <em>idex_mask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#rebin_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.rebin_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
+:param bin_size: number of pixels (per axis) to merge
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.rotateImage">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">rotateImage</code><span class="sig-paren">(</span><em>img</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#rotateImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.rotateImage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> – </li>
+<li><strong>angle</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.stack_images">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">stack_images</code><span class="sig-paren">(</span><em>image_list</em>, <em>wht_list</em>, <em>sigma_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.stack_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>stacks images and saves new image as a fits file
+:param image_name_list: list of image_names to be stacked
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.image_util.symmetry_average">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">symmetry_average</code><span class="sig-paren">(</span><em>image</em>, <em>symmetry</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#symmetry_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.symmetry_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>symmetry averaged image
+:param image:
+:param symmetry:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.kernel_util">
+<span id="lenstronomy-util-kernel-util-module"></span><h2>lenstronomy.Util.kernel_util module<a class="headerlink" href="#module-lenstronomy.Util.kernel_util" title="Permalink to this headline">¶</a></h2>
+<p>routines that manipulate convolution kernels</p>
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.cut_psf">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">cut_psf</code><span class="sig-paren">(</span><em>psf_data</em>, <em>psf_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#cut_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.cut_psf" title="Permalink to this definition">¶</a></dt>
+<dd><p>cut the psf properly
+:param psf_data: image of PSF
+:param psf_size: size of psf
+:return: re-sized and re-normalized PSF</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.cutout_source">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">cutout_source</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>image</em>, <em>kernelsize</em>, <em>shift=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#cutout_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.cutout_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel
+:param x_pos:
+:param y_pos:
+:param image:
+:param kernelsize:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.de_shift_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">de_shift_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>shift_x</em>, <em>shift_y</em>, <em>iterations=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#de_shift_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.de_shift_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kernel</strong> – </li>
+<li><strong>shift_x</strong> – </li>
+<li><strong>shift_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.fwhm_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">fwhm_kernel</code><span class="sig-paren">(</span><em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#fwhm_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.fwhm_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the full width at half maximum of a (PSF) kernel
+:param kernel: (psf) kernel, 2d numpy array
+:return: fwhm in units of pixels</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.kernel_norm">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">kernel_norm</code><span class="sig-paren">(</span><em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#kernel_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.kernel_norm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kernel</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">normalisation of the psf kernel</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.kernel_pixelsize_change">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">kernel_pixelsize_change</code><span class="sig-paren">(</span><em>kernel</em>, <em>deltaPix_in</em>, <em>deltaPix_out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#kernel_pixelsize_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.kernel_pixelsize_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>change the pixel size of a given kernel
+:param kernel:
+:param deltaPix_in:
+:param deltaPix_out:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.pixel_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">pixel_kernel</code><span class="sig-paren">(</span><em>point_source_kernel</em>, <em>subgrid_res=7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#pixel_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.pixel_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel
+:param point_source_kernel:
+:param subgrid_res:
+:return: convolution kernel for an extended pixel</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.kernel_util.subgrid_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">subgrid_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>subgrid_res</em>, <em>odd=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#subgrid_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.subgrid_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
+:param kernel: initial kernel
+:param subgrid_res: subgrid resolution required
+:return: kernel with higher resolution (larger)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.mask">
+<span id="lenstronomy-util-mask-module"></span><h2>lenstronomy.Util.mask module<a class="headerlink" href="#module-lenstronomy.Util.mask" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.mask.mask_center_2d">
+<code class="descclassname">lenstronomy.Util.mask.</code><code class="descname">mask_center_2d</code><span class="sig-paren">(</span><em>center_x</em>, <em>center_y</em>, <em>r</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/mask.html#mask_center_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.mask.mask_center_2d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>center</strong> – 2D coordinate of center position of circular mask</li>
+<li><strong>r</strong> – radius of mask in pixel values</li>
+<li><strong>data</strong> – data image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.mask.mask_half_moon">
+<code class="descclassname">lenstronomy.Util.mask.</code><code class="descname">mask_half_moon</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x</em>, <em>center_y</em>, <em>r_in</em>, <em>r_out</em>, <em>phi0=0</em>, <em>delta_phi=6.283185307179586</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/mask.html#mask_half_moon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.mask.mask_half_moon" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+<li><strong>r_in</strong> – </li>
+<li><strong>r_out</strong> – </li>
+<li><strong>phi</strong> – </li>
+<li><strong>delta_phi</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.mask.mask_sphere">
+<code class="descclassname">lenstronomy.Util.mask.</code><code class="descname">mask_sphere</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x</em>, <em>center_y</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/mask.html#mask_sphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.mask.mask_sphere" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>center</strong> – 2D coordinate of center position of circular mask</li>
+<li><strong>r</strong> – radius of mask in pixel values</li>
+<li><strong>data</strong> – data image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.multi_gauss_expansion">
+<span id="lenstronomy-util-multi-gauss-expansion-module"></span><h2>lenstronomy.Util.multi_gauss_expansion module<a class="headerlink" href="#module-lenstronomy.Util.multi_gauss_expansion" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.multi_gauss_expansion.de_projection_3d">
+<code class="descclassname">lenstronomy.Util.multi_gauss_expansion.</code><code class="descname">de_projection_3d</code><span class="sig-paren">(</span><em>amplitudes</em>, <em>sigmas</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/multi_gauss_expansion.html#de_projection_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.multi_gauss_expansion.de_projection_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)
+:param amplitudes:
+:param sigmas:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.multi_gauss_expansion.gaussian">
+<code class="descclassname">lenstronomy.Util.multi_gauss_expansion.</code><code class="descname">gaussian</code><span class="sig-paren">(</span><em>R</em>, <em>sigma</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/multi_gauss_expansion.html#gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.multi_gauss_expansion.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – radius</li>
+<li><strong>sigma</strong> – gaussian sigma</li>
+<li><strong>amp</strong> – normalization</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Gaussian function</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.multi_gauss_expansion.mge_1d">
+<code class="descclassname">lenstronomy.Util.multi_gauss_expansion.</code><code class="descname">mge_1d</code><span class="sig-paren">(</span><em>r_array</em>, <em>flux_r</em>, <em>N=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/multi_gauss_expansion.html#mge_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.multi_gauss_expansion.mge_1d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r_array</strong> – list or radii (numpy array)</li>
+<li><strong>flux_r</strong> – list of flux values (numpy array)</li>
+<li><strong>N</strong> – number of Gaussians</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">amplitudes and Gaussian sigmas for the best 1d flux profile</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.param_util">
+<span id="lenstronomy-util-param-util-module"></span><h2>lenstronomy.Util.param_util module<a class="headerlink" href="#module-lenstronomy.Util.param_util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.cart2polar">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">cart2polar</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center=array([0</em>, <em>0])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#cart2polar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.cart2polar" title="Permalink to this definition">¶</a></dt>
+<dd><p>transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coord</strong> (<em>array of size</em><em> (</em><em>n</em><em>,</em><em>2</em><em>)</em>) – set of coordinates</li>
+<li><strong>center</strong> (<em>array of size</em><em> (</em><em>2</em><em>)</em>) – rotation point</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array of same size with coords [r,phi]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.ellipticity2phi_gamma">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">ellipticity2phi_gamma</code><span class="sig-paren">(</span><em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#ellipticity2phi_gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.ellipticity2phi_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>e1</strong> – ellipticity component</li>
+<li><strong>e2</strong> – ellipticity component</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">angle and abs value of ellipticity</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.elliptisity2phi_q">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">elliptisity2phi_q</code><span class="sig-paren">(</span><em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#elliptisity2phi_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.elliptisity2phi_q" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.phi_gamma_ellipticity">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">phi_gamma_ellipticity</code><span class="sig-paren">(</span><em>phi</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#phi_gamma_ellipticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.phi_gamma_ellipticity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> – angel</li>
+<li><strong>gamma</strong> – ellipticity</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.phi_q2_elliptisity">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">phi_q2_elliptisity</code><span class="sig-paren">(</span><em>phi</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#phi_q2_elliptisity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.phi_q2_elliptisity" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> – </li>
+<li><strong>q</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.polar2cart">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">polar2cart</code><span class="sig-paren">(</span><em>r</em>, <em>phi</em>, <em>center</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#polar2cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.polar2cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the lense center</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coord</strong> (<em>array of size</em><em> (</em><em>n</em><em>,</em><em>2</em><em>)</em>) – set of coordinates</li>
+<li><strong>center</strong> (<em>array of size</em><em> (</em><em>2</em><em>)</em>) – rotation point</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array of same size with coords [x,y]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.prob_density">
+<span id="lenstronomy-util-prob-density-module"></span><h2>lenstronomy.Util.prob_density module<a class="headerlink" href="#module-lenstronomy.Util.prob_density" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Util.prob_density.Approx">
+<em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">Approx</code><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for approximations with a given pdf sample</p>
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.Approx.approx_cdf_1d">
+<code class="descname">approx_cdf_1d</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.approx_cdf_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.approx_cdf_1d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_array</strong> – x-values of pdf</li>
+<li><strong>pdf_array</strong> – pdf array of given x-values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.Approx.draw">
+<code class="descname">draw</code><span class="sig-paren">(</span><em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.Approx.draw_discrete_interpol">
+<code class="descname">draw_discrete_interpol</code><span class="sig-paren">(</span><em>cdf_inv_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.draw_discrete_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw_discrete_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cdf_inv_func</strong> – 1D interpolation of inverse cdf</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">random realisation of the cdf</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Util.prob_density.Approx.draw_one">
+<code class="descname">draw_one</code><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw_one" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.Approx.set_cdf">
+<code class="descname">set_cdf</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.set_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.set_cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the cdf and its inverse and writes it to self
+:param x_array:
+:param pdf_array:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Util.prob_density.SkewGaussian">
+<em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">SkewGaussian</code><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#SkewGaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.SkewGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for the Skew Gaussian distribution</p>
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.SkewGaussian.map_mu_sigma_skw">
+<code class="descname">map_mu_sigma_skw</code><span class="sig-paren">(</span><em>mu</em>, <em>sigma</em>, <em>skw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#SkewGaussian.map_mu_sigma_skw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.SkewGaussian.map_mu_sigma_skw" title="Permalink to this definition">¶</a></dt>
+<dd><p>map to parameters e, w, a
+:param mu: mean
+:param sigma: standard deviation
+:param skw: skewness
+:return: e, w, a</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.SkewGaussian.pdf">
+<code class="descname">pdf</code><span class="sig-paren">(</span><em>x</em>, <em>e=0.0</em>, <em>w=1.0</em>, <em>a=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#SkewGaussian.pdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.SkewGaussian.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>probability density function
+see: <a class="reference external" href="https://en.wikipedia.org/wiki/Skew_normal_distribution">https://en.wikipedia.org/wiki/Skew_normal_distribution</a>
+:param x: input value
+:param e:
+:param w:
+:param a:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Util.prob_density.SkewGaussian.pdf_new">
+<code class="descname">pdf_new</code><span class="sig-paren">(</span><em>x</em>, <em>mu</em>, <em>sigma</em>, <em>skw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#SkewGaussian.pdf_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.SkewGaussian.pdf_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>function with different parameterisation
+:param x:
+:param mu: mean
+:param sigma: sigma
+:param skw: skewness
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.prob_density.compute_lower_upper_errors">
+<code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">compute_lower_upper_errors</code><span class="sig-paren">(</span><em>sample</em>, <em>num_sigma=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#compute_lower_upper_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.compute_lower_upper_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the upper and lower sigma from the median value.
+This functions gives good error estimates for skewed pdf’s
+:param sample: 1-D sample
+:return: median, lower_sigma, upper_sigma</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.util">
+<span id="lenstronomy-util-util-module"></span><h2>lenstronomy.Util.util module<a class="headerlink" href="#module-lenstronomy.Util.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.util.array2image">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>nx=0</em>, <em>ny=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.array2image" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> (<em>array of size n**2</em>) – image values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">2d array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.averaging">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">averaging</code><span class="sig-paren">(</span><em>grid</em>, <em>numGrid</em>, <em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#averaging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.averaging" title="Permalink to this definition">¶</a></dt>
+<dd><p>resize 2d pixel grid with numGrid to numPix and averages over the pixels
+:param grid: higher resolution pixel grid
+:param numGrid:
+:param numPix:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.circle">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">circle</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x</em>, <em>center_y</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>uniform density circle
+:param x: x-coordinates
+:param y: y-coordinates
+:param center_x: center of x-coordinates
+:param center_y: center of y-coordinates
+:param radius: radius of circle
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.compare">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">compare</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>sigma</em>, <em>poisson</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.compare" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – model 2d image</li>
+<li><strong>data</strong> – data 2d image</li>
+<li><strong>sigma</strong> – minimal noise level of background (float&gt;0 or as image)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">X^2 value if images have same size</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.compare_distance">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">compare_distance</code><span class="sig-paren">(</span><em>x_mapped</em>, <em>y_mapped</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#compare_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.compare_distance" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_mapped</strong> – array of x-positions of remapped catalogue image</li>
+<li><strong>y_mapped</strong> – array of y-positions of remapped catalogue image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sum of distance square of positions</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.displaceAbs">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">displaceAbs</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sourcePos_x</em>, <em>sourcePos_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#displaceAbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.displaceAbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates a grid of distances to the observer in angel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mapped_cartcoord</strong> (<em>numpy array</em><em> (</em><em>n</em><em>,</em><em>2</em><em>)</em>) – mapped cartesian coordinates</li>
+<li><strong>sourcePos</strong> (<em>numpy vector</em><em> [</em><em>x0</em><em>,</em><em>y0</em><em>]</em>) – source position</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array of displacement</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.fwhm2sigma">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">fwhm2sigma</code><span class="sig-paren">(</span><em>fwhm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#fwhm2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.fwhm2sigma" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fwhm</strong> – full-widt-half-max value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">gaussian sigma (sqrt(var))</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.get_axes">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">get_axes</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#get_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.get_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the axis x and y of a given 2d grid
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.get_distance">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>x_mins</em>, <em>y_mins</em>, <em>x_true</em>, <em>y_true</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.get_distance" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_mins</strong> – </li>
+<li><strong>y_mins</strong> – </li>
+<li><strong>x_true</strong> – </li>
+<li><strong>y_true</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.hyper2F2_array">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">hyper2F2_array</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#hyper2F2_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.hyper2F2_array" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> – </li>
+<li><strong>b</strong> – </li>
+<li><strong>c</strong> – </li>
+<li><strong>d</strong> – </li>
+<li><strong>x</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.image2array">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">image2array</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#image2array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.image2array" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the information contained in a 2d array into an n*n 1d array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> (<em>array of size</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – image values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">1d array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.make_grid">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">make_grid</code><span class="sig-paren">(</span><em>numPix</em>, <em>deltapix</em>, <em>subgrid_res=1</em>, <em>left_lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#make_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.make_grid" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>numPix</strong> – number of pixels per axis</li>
+<li><strong>deltapix</strong> – pixel size</li>
+<li><strong>subgrid_res</strong> – sub-pixel resolution (default=1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x, y position information in two 1d arrays</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.make_grid_transformed">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">make_grid_transformed</code><span class="sig-paren">(</span><em>numPix</em>, <em>Mpix2Angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#make_grid_transformed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.make_grid_transformed" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns grid with linear transformation (deltaPix and rotation)
+:param numPix: number of Pixels
+:param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate
+:return: coordinate grid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.make_grid_with_coordtransform">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">make_grid_with_coordtransform</code><span class="sig-paren">(</span><em>numPix</em>, <em>deltapix</em>, <em>subgrid_res=1</em>, <em>left_lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#make_grid_with_coordtransform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.make_grid_with_coordtransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel
+:param numPix:
+:param deltapix:
+:param subgrid_res:
+:param left_lower:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.make_subgrid">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">make_subgrid</code><span class="sig-paren">(</span><em>ra_coord</em>, <em>dec_coord</em>, <em>subgrid_res=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#make_subgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.make_subgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a grid with subgrid resolution
+:param ra_coord:
+:param dec_coord:
+:param subgrid_res:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.map_coord2pix">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>x_0</em>, <em>y_0</em>, <em>M</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.map_coord2pix" title="Permalink to this definition">¶</a></dt>
+<dd><p>this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular
+into pixel coordinates in an image
+:param ra: ra coordinates
+:param dec: dec coordinates
+:param x_0: pixel value in x-axis of ra,dec = 0,0
+:param y_0: pixel value in y-axis of ra,dec = 0,0
+:param M: 2x2 matrix to transform angular to pixel coordinates
+:return: transformed coordnate systems of input ra and dec</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.min_square_dist">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">min_square_dist</code><span class="sig-paren">(</span><em>x_1</em>, <em>y_1</em>, <em>x_2</em>, <em>y_2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#min_square_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.min_square_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
+:param x_1:
+:param y_1:
+:param x_2:
+:param y_2:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.mk_array">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">mk_array</code><span class="sig-paren">(</span><em>input_var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#mk_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.mk_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions makes sure that the input is a numpy array. If it is
+a recognised format (float, array or list) the output will be a numpy array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.mk_array_2p">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">mk_array_2p</code><span class="sig-paren">(</span><em>input1</em>, <em>input2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#mk_array_2p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.mk_array_2p" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions makes sure that the input is a numpy array. If it is
+a recognised format (float, array or list) the output will be a numpy array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.neighborSelect">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">neighborSelect</code><span class="sig-paren">(</span><em>a</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#neighborSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.neighborSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds (local) minima in a 2d grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> (<em>numpy array with length numPix**2 in float</em>) – 1d array of displacements from the source positions</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array of indices of local minima, values of those minima</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">AttributeError, KeyError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.points_on_circle">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">points_on_circle</code><span class="sig-paren">(</span><em>radius</em>, <em>points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#points_on_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.points_on_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a set of uniform points around a circle
+:param radius: radius of the circle
+:param points: number of points on the circle
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.selectBest">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">selectBest</code><span class="sig-paren">(</span><em>array</em>, <em>criteria</em>, <em>numSelect</em>, <em>highest=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#selectBest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.selectBest" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> – numpy array to be selected from</li>
+<li><strong>criteria</strong> – criteria of selection</li>
+<li><strong>highest</strong> – bool, if false the lowest will be selected</li>
+<li><strong>numSelect</strong> – number of elements to be selected</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.util.sigma2fwhm">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">sigma2fwhm</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#sigma2fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.sigma2fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sigma</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Util" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.analysis_util">lenstronomy.Util.analysis_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.constants">lenstronomy.Util.constants module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.correlation">lenstronomy.Util.correlation module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.derivative_util">lenstronomy.Util.derivative_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.fft_convolve">lenstronomy.Util.fft_convolve module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.image_util">lenstronomy.Util.image_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.kernel_util">lenstronomy.Util.kernel_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.mask">lenstronomy.Util.mask module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.multi_gauss_expansion">lenstronomy.Util.multi_gauss_expansion module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.param_util">lenstronomy.Util.param_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.prob_density">lenstronomy.Util.prob_density module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.util">lenstronomy.Util.util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.MCMC.html"
+                        title="previous chapter">lenstronomy.MCMC package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Workflow.html"
+                        title="next chapter">lenstronomy.Workflow package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Util.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

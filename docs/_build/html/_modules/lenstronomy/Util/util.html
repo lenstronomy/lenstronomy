@@ -1,0 +1,547 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Util.util &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Util.util</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Simon Birrer&#39;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">this file contains standard routines</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mpmath</span>
+
+
+<div class="viewcode-block" id="map_coord2pix"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.map_coord2pix">[docs]</a><span class="k">def</span> <span class="nf">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular</span>
+<span class="sd">    into pixel coordinates in an image</span>
+<span class="sd">    :param ra: ra coordinates</span>
+<span class="sd">    :param dec: dec coordinates</span>
+<span class="sd">    :param x_0: pixel value in x-axis of ra,dec = 0,0</span>
+<span class="sd">    :param y_0: pixel value in y-axis of ra,dec = 0,0</span>
+<span class="sd">    :param M: 2x2 matrix to transform angular to pixel coordinates</span>
+<span class="sd">    :return: transformed coordnate systems of input ra and dec</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y_0</span></div>
+
+
+<div class="viewcode-block" id="array2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.array2image">[docs]</a><span class="k">def</span> <span class="nf">array2image</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)</span>
+
+<span class="sd">    :param array: image values</span>
+<span class="sd">    :type array: array of size n**2</span>
+<span class="sd">    :returns:  2d array</span>
+<span class="sd">    :raises: AttributeError, KeyError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lenght of input array given as </span><span class="si">%s</span><span class="s2"> is not square of integer number!&quot;</span> <span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)))</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ny</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="image2array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.image2array">[docs]</a><span class="k">def</span> <span class="nf">image2array</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns the information contained in a 2d array into an n*n 1d array</span>
+
+<span class="sd">    :param array: image values</span>
+<span class="sd">    :type array: array of size (n,n)</span>
+<span class="sd">    :returns:  1d array</span>
+<span class="sd">    :raises: AttributeError, KeyError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># find the size of the array</span>
+    <span class="n">imgh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">nx</span><span class="o">*</span><span class="n">ny</span><span class="p">)</span>  <span class="c1"># change the shape to be 1d</span>
+    <span class="k">return</span> <span class="n">imgh</span></div>
+
+
+<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid">[docs]</a><span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param numPix: number of pixels per axis</span>
+<span class="sd">    :param deltapix: pixel size</span>
+<span class="sd">    :param subgrid_res: sub-pixel resolution (default=1)</span>
+<span class="sd">    :return: x, y position information in two 1d arrays</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="n">numPix</span><span class="o">*</span><span class="n">subgrid_res</span>
+    <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">)</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+        <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
+        <span class="n">y_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">subgrid_res</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix</span>
+    <span class="k">return</span> <span class="n">x_grid</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">-</span> <span class="n">shift</span></div>
+
+
+<div class="viewcode-block" id="make_grid_transformed"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_transformed">[docs]</a><span class="k">def</span> <span class="nf">make_grid_transformed</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">Mpix2Angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns grid with linear transformation (deltaPix and rotation)</span>
+<span class="sd">    :param numPix: number of Pixels</span>
+<span class="sd">    :param Mpix2Angle: 2-by-2 matrix to mat a pixel to a coordinate</span>
+<span class="sd">    :return: coordinate grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span> <span class="o">=</span> <span class="n">map_coord2pix</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Mpix2Angle</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span></div>
+
+
+<div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel</span>
+<span class="sd">    :param numPix:</span>
+<span class="sd">    :param deltapix:</span>
+<span class="sd">    :param subgrid_res:</span>
+<span class="sd">    :param left_lower:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="n">numPix</span><span class="o">*</span><span class="n">subgrid_res</span>
+    <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">)</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+        <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
+        <span class="n">y_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">subgrid_res</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix</span>
+    <span class="n">x_grid</span> <span class="o">-=</span> <span class="n">shift</span>
+    <span class="n">y_grid</span> <span class="o">-=</span> <span class="n">shift</span>
+    <span class="n">ra_at_xy_0</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dec_at_xy_0</span> <span class="o">=</span> <span class="n">y_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x_at_radec_0</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+    <span class="n">y_at_radec_0</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">Mpix2coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">deltapix_eff</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">deltapix_eff</span><span class="p">]])</span>
+    <span class="n">Mcoord2pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Mpix2coord</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span></div>
+
+
+<div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    computes the axis x and y of a given 2d grid</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lenght of input array given as </span><span class="si">%s</span><span class="s2"> is not square of integer number!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+    <span class="n">x_image</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">y_image</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">x_axes</span> <span class="o">=</span> <span class="n">x_image</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+    <span class="n">y_axes</span> <span class="o">=</span> <span class="n">y_image</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x_axes</span><span class="p">,</span> <span class="n">y_axes</span></div>
+
+
+<div class="viewcode-block" id="averaging"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.averaging">[docs]</a><span class="k">def</span> <span class="nf">averaging</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">numGrid</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    resize 2d pixel grid with numGrid to numPix and averages over the pixels</span>
+<span class="sd">    :param grid: higher resolution pixel grid</span>
+<span class="sd">    :param numGrid:</span>
+<span class="sd">    :param numPix:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Nbig</span> <span class="o">=</span> <span class="n">numGrid</span>
+    <span class="n">Nsmall</span> <span class="o">=</span> <span class="n">numPix</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="n">Nsmall</span><span class="p">,</span> <span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">,</span> <span class="n">Nsmall</span><span class="p">,</span> <span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">small</span></div>
+
+
+<div class="viewcode-block" id="compare"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.compare">[docs]</a><span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">poisson</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param model: model 2d image</span>
+<span class="sd">    :param data: data 2d image</span>
+<span class="sd">    :param sigma: minimal noise level of background (float&gt;0 or as image)</span>
+<span class="sd">    :return: X^2 value if images have same size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deltaIm</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">-</span><span class="n">model</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">relDeltaIm</span> <span class="o">=</span> <span class="n">deltaIm</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">/</span><span class="n">poisson</span><span class="p">)</span>
+    <span class="n">X2_estimate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">relDeltaIm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X2_estimate</span></div>
+
+
+<div class="viewcode-block" id="displaceAbs"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.displaceAbs">[docs]</a><span class="k">def</span> <span class="nf">displaceAbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculates a grid of distances to the observer in angel</span>
+
+<span class="sd">    :param mapped_cartcoord: mapped cartesian coordinates</span>
+<span class="sd">    :type mapped_cartcoord: numpy array (n,2)</span>
+<span class="sd">    :param sourcePos: source position</span>
+<span class="sd">    :type sourcePos: numpy vector [x0,y0]</span>
+<span class="sd">    :returns:  array of displacement</span>
+<span class="sd">    :raises: AttributeError, KeyError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_mapped</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">sourcePos_x</span>
+    <span class="n">y_mapped</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">sourcePos_y</span>
+    <span class="n">absmapped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_mapped</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y_mapped</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">absmapped</span></div>
+
+
+<div class="viewcode-block" id="get_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_distance">[docs]</a><span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_true</span><span class="p">,</span> <span class="n">y_true</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param x_mins:</span>
+<span class="sd">    :param y_mins:</span>
+<span class="sd">    :param x_true:</span>
+<span class="sd">    :param y_true:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_true</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x_true_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_true</span><span class="p">)</span>
+    <span class="n">y_true_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)):</span>
+        <span class="n">dist_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_true_list</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_true_list</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">dist</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dist_list</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dist_list</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">dist_list</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_true_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x_true_list</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+        <span class="n">y_true_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">y_true_list</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span></div>
+
+
+<div class="viewcode-block" id="compare_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.compare_distance">[docs]</a><span class="k">def</span> <span class="nf">compare_distance</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param x_mapped: array of x-positions of remapped catalogue image</span>
+<span class="sd">    :param y_mapped: array of y-positions of remapped catalogue image</span>
+<span class="sd">    :return: sum of distance square of positions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">)):</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="n">x_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">x_mapped</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">dy</span> <span class="o">=</span> <span class="n">y_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">y_mapped</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">X2</span> <span class="o">+=</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">dy</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">X2</span></div>
+
+
+<div class="viewcode-block" id="min_square_dist"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.min_square_dist">[docs]</a><span class="k">def</span> <span class="nf">min_square_dist</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y_2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)</span>
+<span class="sd">    :param x_1:</span>
+<span class="sd">    :param y_1:</span>
+<span class="sd">    :param x_2:</span>
+<span class="sd">    :param y_2:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_1</span><span class="p">)):</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">((</span><span class="n">x_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span></div>
+
+
+<div class="viewcode-block" id="mk_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.mk_array">[docs]</a><span class="k">def</span> <span class="nf">mk_array</span><span class="p">(</span><span class="n">input_var</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This functions makes sure that the input is a numpy array. If it is</span>
+<span class="sd">    a recognised format (float, array or list) the output will be a numpy array&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input_var</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">(</span><span class="n">input_var</span><span class="p">)])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
+        <span class="n">output_var</span> <span class="o">=</span> <span class="n">input_var</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
+
+    <span class="k">return</span> <span class="n">output_var</span></div>
+
+
+<div class="viewcode-block" id="mk_array_2p"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.mk_array_2p">[docs]</a><span class="k">def</span> <span class="nf">mk_array_2p</span><span class="p">(</span><span class="n">input1</span><span class="p">,</span> <span class="n">input2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This functions makes sure that the input is a numpy array. If it is</span>
+<span class="sd">    a recognised format (float, array or list) the output will be a numpy array&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input1</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
+        <span class="n">output1</span> <span class="o">=</span> <span class="n">input1</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
+        <span class="n">output2</span> <span class="o">=</span> <span class="n">input2</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
+
+    <span class="n">output12_format</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">output1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">output2</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">output1</span><span class="p">,</span><span class="n">output2</span><span class="p">,</span><span class="n">output12_format</span></div>
+
+
+<div class="viewcode-block" id="selectBest"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.selectBest">[docs]</a><span class="k">def</span> <span class="nf">selectBest</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">numSelect</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param array: numpy array to be selected from</span>
+<span class="sd">    :param criteria: criteria of selection</span>
+<span class="sd">    :param highest: bool, if false the lowest will be selected</span>
+<span class="sd">    :param numSelect: number of elements to be selected</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">criteria</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Elements in array (</span><span class="si">%s</span><span class="s1">) not equal to elements in criteria (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">numSelect</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span>
+    <span class="n">array_sorted</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">criteria</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">highest</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">array_sorted</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="n">numSelect</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">array_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numSelect</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.circle">[docs]</a><span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    uniform density circle</span>
+<span class="sd">    :param x: x-coordinates</span>
+<span class="sd">    :param y: y-coordinates</span>
+<span class="sd">    :param center_x: center of x-coordinates</span>
+<span class="sd">    :param center_y: center of y-coordinates</span>
+<span class="sd">    :param radius: radius of circle</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">circle_draw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">circle_draw</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">circle_draw</span></div>
+
+
+<div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns a set of uniform points around a circle</span>
+<span class="sd">    :param radius: radius of the circle</span>
+<span class="sd">    :param points: number of points on the circle</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">x_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">radius</span>
+    <span class="n">y_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">radius</span>
+    <span class="k">return</span> <span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span></div>
+
+
+<div class="viewcode-block" id="neighborSelect"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.neighborSelect">[docs]</a><span class="k">def</span> <span class="nf">neighborSelect</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    finds (local) minima in a 2d grid</span>
+
+<span class="sd">    :param a: 1d array of displacements from the source positions</span>
+<span class="sd">    :type a: numpy array with length numPix**2 in float</span>
+<span class="sd">    :returns:  array of indices of local minima, values of those minima</span>
+<span class="sd">    :raises: AttributeError, KeyError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">x_mins</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y_mins</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">dim</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">dim</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="p">(</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="p">(</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="p">(</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="p">(</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)]):</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="n">dim</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="n">dim</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="n">dim</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="n">dim</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="n">dim</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">-</span><span class="n">dim</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="n">dim</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="n">dim</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">dim</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span><span class="p">]):</span>
+                        <span class="n">x_mins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">y_mins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_mins</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_mins</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fwhm2sigma"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.fwhm2sigma">[docs]</a><span class="k">def</span> <span class="nf">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param fwhm: full-widt-half-max value</span>
+<span class="sd">    :return: gaussian sigma (sqrt(var))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">fwhm</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">sigma</span></div>
+
+
+<div class="viewcode-block" id="sigma2fwhm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sigma2fwhm">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param sigma:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fwhm</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">fwhm</span></div>
+
+
+<div class="viewcode-block" id="hyper2F2_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.hyper2F2_array">[docs]</a><span class="k">def</span> <span class="nf">hyper2F2_array</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param a:</span>
+<span class="sd">    :param b:</span>
+<span class="sd">    :param c:</span>
+<span class="sd">    :param d:</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">mpmath</span><span class="o">.</span><span class="n">hyp2f2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpmath</span><span class="o">.</span><span class="n">hyp2f2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="make_subgrid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_subgrid">[docs]</a><span class="k">def</span> <span class="nf">make_subgrid</span><span class="p">(</span><span class="n">ra_coord</span><span class="p">,</span> <span class="n">dec_coord</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return a grid with subgrid resolution</span>
+<span class="sd">    :param ra_coord:</span>
+<span class="sd">    :param dec_coord:</span>
+<span class="sd">    :param subgrid_res:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra_array</span> <span class="o">=</span> <span class="n">array2image</span><span class="p">(</span><span class="n">ra_coord</span><span class="p">)</span>
+    <span class="n">dec_array</span> <span class="o">=</span> <span class="n">array2image</span><span class="p">(</span><span class="n">dec_coord</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra_array</span><span class="p">)</span>
+    <span class="n">d_ra_x</span> <span class="o">=</span> <span class="n">ra_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ra_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">d_ra_y</span> <span class="o">=</span> <span class="n">ra_array</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ra_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">d_dec_x</span> <span class="o">=</span> <span class="n">dec_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dec_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">d_dec_y</span> <span class="o">=</span> <span class="n">dec_array</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">dec_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">ra_array_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">))</span>
+    <span class="n">dec_array_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+            <span class="n">ra_array_new</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra_array</span> <span class="o">+</span> <span class="n">d_ra_x</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mf">2.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">))</span> <span class="o">+</span> <span class="n">d_ra_y</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mf">2.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">))</span>
+            <span class="n">dec_array_new</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">]</span> <span class="o">=</span> <span class="n">dec_array</span> <span class="o">+</span> <span class="n">d_dec_x</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mf">2.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">))</span> <span class="o">+</span> <span class="n">d_dec_y</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mf">2.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">))</span>
+
+    <span class="n">ra_coords_sub</span> <span class="o">=</span> <span class="n">image2array</span><span class="p">(</span><span class="n">ra_array_new</span><span class="p">)</span>
+    <span class="n">dec_coords_sub</span> <span class="o">=</span> <span class="n">image2array</span><span class="p">(</span><span class="n">dec_array_new</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ra_coords_sub</span><span class="p">,</span> <span class="n">dec_coords_sub</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

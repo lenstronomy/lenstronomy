@@ -1,0 +1,353 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Util.image_util &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Util.image_util</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage.interpolation</span> <span class="k">as</span> <span class="nn">interp</span>
+
+
+<div class="viewcode-block" id="add_layer2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image">[docs]</a><span class="k">def</span> <span class="nf">add_layer2image</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    makes a point source on a grid with shifted PSF</span>
+<span class="sd">    :param x_pos:</span>
+<span class="sd">    :param y_pos:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_x</span><span class="p">,</span> <span class="n">num_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">grid2d</span><span class="p">)</span>
+    <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
+    <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="p">))</span>
+    <span class="n">shift_x</span> <span class="o">=</span> <span class="n">x_int</span> <span class="o">-</span> <span class="n">x_pos</span>
+    <span class="n">shift_y</span> <span class="o">=</span> <span class="n">y_int</span> <span class="o">-</span> <span class="n">y_pos</span>
+    <span class="n">kernel_shifted</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">shift_y</span><span class="p">,</span> <span class="o">-</span><span class="n">shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+    <span class="n">k_x</span><span class="p">,</span> <span class="n">k_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">k_l2_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">k_x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">k_l2_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">k_y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">min_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_int</span><span class="o">-</span><span class="n">k_l2_x</span><span class="p">)</span>
+    <span class="n">min_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_int</span><span class="o">-</span><span class="n">k_l2_y</span><span class="p">)</span>
+    <span class="n">max_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">num_x</span><span class="p">,</span> <span class="n">x_int</span><span class="o">+</span><span class="n">k_l2_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">max_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">num_y</span><span class="p">,</span> <span class="n">y_int</span><span class="o">+</span><span class="n">k_l2_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">min_xk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">x_int</span> <span class="o">+</span> <span class="n">k_l2_x</span><span class="p">)</span>
+    <span class="n">min_yk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">y_int</span> <span class="o">+</span> <span class="n">k_l2_y</span><span class="p">)</span>
+    <span class="n">max_xk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">k_x</span><span class="p">,</span> <span class="o">-</span><span class="n">x_int</span> <span class="o">+</span> <span class="n">k_l2_x</span> <span class="o">+</span> <span class="n">num_x</span><span class="p">)</span>
+    <span class="n">max_yk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">k_y</span><span class="p">,</span> <span class="o">-</span><span class="n">y_int</span> <span class="o">+</span> <span class="n">k_l2_y</span> <span class="o">+</span> <span class="n">num_y</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_x</span> <span class="o">&gt;=</span> <span class="n">max_x</span> <span class="ow">or</span> <span class="n">min_y</span> <span class="o">&gt;=</span> <span class="n">max_y</span> <span class="ow">or</span> <span class="n">min_xk</span> <span class="o">&gt;=</span> <span class="n">max_xk</span> <span class="ow">or</span> <span class="n">min_yk</span> <span class="o">&gt;=</span> <span class="n">max_yk</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_x</span><span class="o">-</span><span class="n">min_x</span> <span class="o">!=</span> <span class="n">max_xk</span><span class="o">-</span><span class="n">min_xk</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_y</span><span class="o">-</span><span class="n">min_y</span> <span class="o">!=</span> <span class="n">max_yk</span><span class="o">-</span><span class="n">min_yk</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">grid2d</span>
+    <span class="n">kernel_re_sized</span> <span class="o">=</span> <span class="n">kernel_shifted</span><span class="p">[</span><span class="n">min_yk</span><span class="p">:</span><span class="n">max_yk</span><span class="p">,</span> <span class="n">min_xk</span><span class="p">:</span><span class="n">max_xk</span><span class="p">]</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">grid2d</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">new</span><span class="p">[</span><span class="n">min_y</span><span class="p">:</span><span class="n">max_y</span><span class="p">,</span> <span class="n">min_x</span><span class="p">:</span><span class="n">max_x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">kernel_re_sized</span>
+    <span class="k">return</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="add_background"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_background">[docs]</a><span class="k">def</span> <span class="nf">add_background</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">sigma_bkd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adds background noise to image</span>
+<span class="sd">    :param image: pixel values of image</span>
+<span class="sd">    :param sigma_bkd: background noise (sigma)</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sigma_bkd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sigma background is smaller than zero! Please use positive values.&quot;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_bkd</span>
+    <span class="k">return</span> <span class="n">background</span></div>
+
+
+<div class="viewcode-block" id="add_poisson"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_poisson">[docs]</a><span class="k">def</span> <span class="nf">add_poisson</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">exp_time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adds a poison (or Gaussian) distributed noise with mean given by surface brightness</span>
+<span class="sd">    :param image: pixel values (photon counts per unit exposure time)</span>
+<span class="sd">    :param exp_time: exposure time</span>
+<span class="sd">    :return: Poisson noise realization of input image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adds a poison (or Gaussian) distributed noise with mean given by surface brightness</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp_time</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp_time</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">exp_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">exp_time</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mean_exp_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">exp_time</span><span class="p">)</span>
+        <span class="n">exp_time</span><span class="p">[</span><span class="n">exp_time</span> <span class="o">&lt;</span> <span class="n">mean_exp_time</span><span class="o">/</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_exp_time</span><span class="o">/</span><span class="mi">10</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">exp_time</span><span class="p">)</span> <span class="c1"># Gaussian approximation for Poisson distribution, normalized to exposure time</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">poisson</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span>
+    <span class="k">return</span> <span class="n">poisson</span></div>
+
+
+<div class="viewcode-block" id="rotateImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rotateImage">[docs]</a><span class="k">def</span> <span class="nf">rotateImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">    :param img:</span>
+<span class="sd">    :param angle:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">imgR</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">imgR</span></div>
+
+
+<div class="viewcode-block" id="re_size_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size_array">[docs]</a><span class="k">def</span> <span class="nf">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.</span>
+<span class="sd">    :param x_in:</span>
+<span class="sd">    :param y_in:</span>
+<span class="sd">    :param input_values:</span>
+<span class="sd">    :param x_out:</span>
+<span class="sd">    :param y_out:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interp_2d</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp2d</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+    <span class="c1">#interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)</span>
+    <span class="n">out_values</span> <span class="o">=</span> <span class="n">interp_2d</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_values</span></div>
+
+
+<div class="viewcode-block" id="symmetry_average"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.symmetry_average">[docs]</a><span class="k">def</span> <span class="nf">symmetry_average</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    symmetry averaged image</span>
+<span class="sd">    :param image:</span>
+<span class="sd">    :param symmetry:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img_sym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="mf">360.</span><span class="o">/</span><span class="n">symmetry</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">symmetry</span><span class="p">):</span>
+        <span class="n">img_sym</span> <span class="o">+=</span> <span class="n">rotateImage</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">angle</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">img_sym</span> <span class="o">/=</span> <span class="n">symmetry</span>
+    <span class="k">return</span> <span class="n">img_sym</span></div>
+
+
+<div class="viewcode-block" id="findOverlap"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.findOverlap">[docs]</a><span class="k">def</span> <span class="nf">findOverlap</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span>
+    <span class="n">idex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_mins</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">min_distance</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">min_distance</span><span class="p">):</span>
+                    <span class="n">idex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>
+    <span class="n">x_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">idex</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">y_mins</span><span class="p">,</span> <span class="n">idex</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
+
+
+<div class="viewcode-block" id="coordInImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.coordInImage">[docs]</a><span class="k">def</span> <span class="nf">coordInImage</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    checks whether image positions are within the pixel image in units of arcsec</span>
+<span class="sd">    if not: remove it</span>
+
+<span class="sd">    :param imcoord: image coordinate (in units of angels)  [[x,y,delta,magnification][...]]</span>
+<span class="sd">    :type imcoord: (n,4) numpy array</span>
+<span class="sd">    :returns: image positions within the pixel image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">idex</span><span class="o">=</span><span class="p">[]</span>
+    <span class="nb">min</span> <span class="o">=</span> <span class="o">-</span><span class="n">deltapix</span><span class="o">*</span><span class="n">numPix</span><span class="o">/</span><span class="mi">2</span>
+    <span class="nb">max</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">*</span><span class="n">numPix</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_coord</span><span class="p">)):</span> <span class="c1">#sum over image positions</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">min</span> <span class="ow">or</span> <span class="n">x_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">max</span> <span class="ow">or</span> <span class="n">y_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">min</span> <span class="ow">or</span> <span class="n">y_coord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">):</span>
+            <span class="n">idex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">x_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">idex</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">y_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">y_coord</span><span class="p">,</span> <span class="n">idex</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span></div>
+
+
+<div class="viewcode-block" id="re_size"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size">[docs]</a><span class="k">def</span> <span class="nf">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    resizes image with nx x ny to nx/factor x ny/factor</span>
+<span class="sd">    :param image: 2d image with shape (nx,ny)</span>
+<span class="sd">    :param factor: integer &gt;=1</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">factor</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;scaling factor in re-sizing </span><span class="si">%s</span><span class="s1"> &lt; 1&#39;</span> <span class="o">%</span><span class="n">factor</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">nx</span><span class="o">/</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">nx</span><span class="o">/</span><span class="n">f</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">ny</span><span class="o">/</span><span class="n">f</span><span class="p">)</span> <span class="o">==</span> <span class="n">ny</span><span class="o">/</span><span class="n">f</span><span class="p">:</span>
+        <span class="n">small</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="n">nx</span><span class="o">/</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ny</span><span class="o">/</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">small</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;scaling with factor </span><span class="si">%s</span><span class="s2"> is not possible with grid size </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="rebin_image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_image">[docs]</a><span class="k">def</span> <span class="nf">rebin_image</span><span class="p">(</span><span class="n">bin_size</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">wht_map</span><span class="p">,</span> <span class="n">sigma_bkg</span><span class="p">,</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF</span>
+<span class="sd">    :param bin_size: number of pixels (per axis) to merge</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">bin_size</span><span class="p">)</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">numPix</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numPix</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">bin_size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;image with size </span><span class="si">%s</span><span class="s2"> can not be rebinned with factor </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">),</span> <span class="n">bin_size</span><span class="p">))</span>
+    <span class="n">image_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">image_resized</span> <span class="o">*=</span> <span class="n">bin_size</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">wht_map_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">wht_map</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">sigma_bkg_resized</span> <span class="o">=</span> <span class="n">bin_size</span><span class="o">*</span><span class="n">sigma_bkg</span>
+    <span class="n">ra_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">ra_coords</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">dec_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">dec_coords</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">idex_mask_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">idex_mask_resized</span><span class="p">[</span><span class="n">idex_mask_resized</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">image_resized</span><span class="p">,</span> <span class="n">wht_map_resized</span><span class="p">,</span> <span class="n">sigma_bkg_resized</span><span class="p">,</span> <span class="n">ra_coords_resized</span><span class="p">,</span> <span class="n">dec_coords_resized</span><span class="p">,</span> <span class="n">idex_mask_resized</span></div>
+
+
+<div class="viewcode-block" id="rebin_coord_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_coord_transform">[docs]</a><span class="k">def</span> <span class="nf">rebin_coord_transform</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image</span>
+<span class="sd">    :param bin_size:</span>
+<span class="sd">    :param ra_0:</span>
+<span class="sd">    :param dec_0:</span>
+<span class="sd">    :param x_0:</span>
+<span class="sd">    :param y_0:</span>
+<span class="sd">    :param Matrix:</span>
+<span class="sd">    :param Matrix_inv:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+    <span class="n">Mcoord2pix_resized</span> <span class="o">=</span> <span class="n">Mcoord2pix</span> <span class="o">/</span> <span class="n">factor</span>
+    <span class="n">Mpix2coord_resized</span> <span class="o">=</span> <span class="n">Mpix2coord</span> <span class="o">*</span> <span class="n">factor</span>
+    <span class="n">x_at_radec_0_resized</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_at_radec_0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span> <span class="o">-</span> <span class="mf">0.5</span>
+    <span class="n">y_at_radec_0_resized</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_at_radec_0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span> <span class="o">-</span> <span class="mf">0.5</span>
+    <span class="n">ra_at_xy_0_resized</span><span class="p">,</span> <span class="n">dec_at_xy_0_resized</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="o">-</span><span class="n">x_at_radec_0_resized</span><span class="p">,</span> <span class="o">-</span><span class="n">y_at_radec_0_resized</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Mpix2coord_resized</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ra_at_xy_0_resized</span><span class="p">,</span> <span class="n">dec_at_xy_0_resized</span><span class="p">,</span> <span class="n">x_at_radec_0_resized</span><span class="p">,</span> <span class="n">y_at_radec_0_resized</span><span class="p">,</span> <span class="n">Mpix2coord_resized</span><span class="p">,</span> <span class="n">Mcoord2pix_resized</span></div>
+
+
+<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">wht_list</span><span class="p">,</span> <span class="n">sigma_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    stacks images and saves new image as a fits file</span>
+<span class="sd">    :param image_name_list: list of image_names to be stacked</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image_stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">wht_stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image_stacked</span><span class="p">)</span>
+    <span class="n">sigma_stacked</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image_list</span><span class="p">)):</span>
+        <span class="n">image_stacked</span> <span class="o">+=</span> <span class="n">image_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">wht_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">sigma_stacked</span> <span class="o">+=</span> <span class="n">sigma_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">wht_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">wht_stacked</span> <span class="o">+=</span> <span class="n">wht_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">image_stacked</span> <span class="o">/=</span> <span class="n">wht_stacked</span>
+    <span class="n">sigma_stacked</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">wht_stacked</span><span class="p">)</span>
+    <span class="n">wht_stacked</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wht_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image_stacked</span><span class="p">,</span> <span class="n">wht_stacked</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_stacked</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cut_edges"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.cut_edges">[docs]</a><span class="k">def</span> <span class="nf">cut_edges</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    cuts out the edges of a 2d image and returns re-sized image to numPix</span>
+<span class="sd">    :param image: 2d numpy array</span>
+<span class="sd">    :param numPix:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">numPix</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">numPix</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: image can not be resized.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1">#pass</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: image or cutout side are even number. This routine only works for odd numbers </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">numPix</span><span class="p">))</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">numPix</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cy</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">resized</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">cx</span><span class="o">-</span><span class="n">d</span><span class="p">:</span><span class="n">cx</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">cy</span><span class="o">-</span><span class="n">d</span><span class="p">:</span><span class="n">cy</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">resized</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

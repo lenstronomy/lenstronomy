@@ -1,0 +1,303 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Profiles.barkana_integrals &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Profiles.barkana_integrals</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">integrate</span>
+
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+
+
+<div class="viewcode-block" id="BarkanaIntegrals"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals">[docs]</a><span class="k">class</span> <span class="nc">BarkanaIntegrals</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I1"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I1">[docs]</a>    <span class="k">def</span> <span class="nf">I1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        integral of Barkana et al. (18)</span>
+<span class="sd">        :param nu2:</span>
+<span class="sd">        :param s_:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I1_numeric</span><span class="p">(</span><span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+        <span class="c1"># if not hasattr(self,&#39;I1_interp&#39;):</span>
+        <span class="c1">#     self.open_I1()</span>
+        <span class="c1"># return self.I1_interp(nu2, s_, gamma)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.write_I1"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.write_I1">[docs]</a>    <span class="k">def</span> <span class="nf">write_I1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interp_I1</span><span class="p">()</span>  <span class="c1"># creating self.I1_interp</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I1_interp.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I1_interp</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;file I1_interp.txt new writen&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.open_I1"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.open_I1">[docs]</a>    <span class="k">def</span> <span class="nf">open_I1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;Interpolations/I1_interp.txt&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_I1</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I1_interp.txt&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I1_interp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I1 opened&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.interp_I1"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.interp_I1">[docs]</a>    <span class="k">def</span> <span class="nf">interp_I1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_I1_intg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="p">(</span><span class="n">nu</span><span class="o">-</span><span class="n">s_</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I1_numeric"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I1_numeric">[docs]</a>    <span class="k">def</span> <span class="nf">I1_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="n">nu1</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu1</span><span class="p">)</span>
+        <span class="n">nu2</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="n">s_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">s_</span><span class="p">)</span>
+        <span class="n">I1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nu2</span><span class="p">)):</span>
+            <span class="n">nu_min</span> <span class="o">=</span> <span class="n">nu1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">nu_max</span> <span class="o">=</span> <span class="n">nu2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_I1_intg</span><span class="p">,</span> <span class="n">nu_min</span><span class="p">,</span> <span class="n">nu_max</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">gamma</span><span class="p">))</span>
+            <span class="n">I1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">I1</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I2"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I2">[docs]</a>    <span class="k">def</span> <span class="nf">I2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        integral of Barkana et al. (18)</span>
+<span class="sd">        :param nu2:</span>
+<span class="sd">        :param s_:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I2_numeric</span><span class="p">(</span><span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+        <span class="c1"># if not hasattr(self,&#39;I2_interp&#39;):</span>
+        <span class="c1">#     self.open_I2()</span>
+        <span class="c1"># return self.I2_interp(nu2, s_, gamma)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.write_I2"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.write_I2">[docs]</a>    <span class="k">def</span> <span class="nf">write_I2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interp_I2</span><span class="p">()</span>  <span class="c1"># creating self.I2_interp</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I2_interp.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I2_interp</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;file I2_interp.txt new writen&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.open_I2"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.open_I2">[docs]</a>    <span class="k">def</span> <span class="nf">open_I2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;Interpolations/I2_interp.txt&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_I2</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I2_interp.txt&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I2_interp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I1 opened&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.interp_I2"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.interp_I2">[docs]</a>    <span class="k">def</span> <span class="nf">interp_I2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_I2_intg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="p">(</span><span class="n">s_</span><span class="o">-</span><span class="n">nu</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I2_numeric"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I2_numeric">[docs]</a>    <span class="k">def</span> <span class="nf">I2_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu1</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="n">nu1</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu1</span><span class="p">)</span>
+        <span class="n">nu2</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="n">s_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">s_</span><span class="p">)</span>
+        <span class="n">I2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nu2</span><span class="p">)):</span>
+            <span class="n">nu_min</span> <span class="o">=</span> <span class="n">nu1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">nu_max</span> <span class="o">=</span> <span class="n">nu2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_I2_intg</span><span class="p">,</span><span class="n">nu_min</span><span class="p">,</span><span class="n">nu_max</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">gamma</span><span class="p">))</span>
+            <span class="n">I2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">I2</span></div>
+
+
+<div class="viewcode-block" id="BarkanaIntegrals.I3"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I3">[docs]</a>    <span class="k">def</span> <span class="nf">I3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        integral of Barkana et al. (23)</span>
+<span class="sd">        :param nu2:</span>
+<span class="sd">        :param s_:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I3_numeric</span><span class="p">(</span><span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+        <span class="c1"># if not hasattr(self,&#39;I3_interp&#39;):</span>
+        <span class="c1">#     self.open_I3()</span>
+        <span class="c1"># return self.I3_interp(nu2, s_, gamma)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.write_I3"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.write_I3">[docs]</a>    <span class="k">def</span> <span class="nf">write_I3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interp_I3</span><span class="p">()</span>  <span class="c1"># creating self.I3_interp</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I3_interp.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I3_interp</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;file I3_interp.txt new writen&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.open_I3"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.open_I3">[docs]</a>    <span class="k">def</span> <span class="nf">open_I3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;Interpolations/I3_interp.txt&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_I3</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I3_interp.txt&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I3_interp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I3 opened&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.interp_I3"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.interp_I3">[docs]</a>    <span class="k">def</span> <span class="nf">interp_I3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_I3_intg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_deriv</span><span class="p">(</span><span class="n">nu</span><span class="o">-</span><span class="n">s_</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I3_numeric"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I3_numeric">[docs]</a>    <span class="k">def</span> <span class="nf">I3_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="n">nu_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nu2</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="n">s_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">s_</span><span class="p">)</span>
+        <span class="n">I3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nu2</span><span class="p">)):</span>
+            <span class="n">nu_max</span> <span class="o">=</span> <span class="n">nu2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_I3_intg</span><span class="p">,</span><span class="n">nu_min</span><span class="p">,</span><span class="n">nu_max</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">gamma</span><span class="p">))</span>
+            <span class="n">I3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">I3</span></div>
+
+
+
+<div class="viewcode-block" id="BarkanaIntegrals.I4"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I4">[docs]</a>    <span class="k">def</span> <span class="nf">I4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        integral of Barkana et al. (23)</span>
+<span class="sd">        :param nu2:</span>
+<span class="sd">        :param s_:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I4_numeric</span><span class="p">(</span><span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+        <span class="c1"># if not hasattr(self,&#39;I4_interp&#39;):</span>
+        <span class="c1">#     self.open_I4()</span>
+        <span class="c1"># return self.I4_interp(nu2, s_, gamma)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.write_I4"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.write_I4">[docs]</a>    <span class="k">def</span> <span class="nf">write_I4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interp_I4</span><span class="p">()</span>  <span class="c1"># creating self.I4_interp</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I4_interp.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I4_interp</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;file I4_interp.txt new writen&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.open_I4"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.open_I4">[docs]</a>    <span class="k">def</span> <span class="nf">open_I4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;Interpolations/I4_interp.txt&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_I4</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Interpolations/I4_interp.txt&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I4_interp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I4 opened&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BarkanaIntegrals.interp_I4"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.interp_I4">[docs]</a>    <span class="k">def</span> <span class="nf">interp_I4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_I4_intg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_deriv</span><span class="p">(</span><span class="n">s_</span><span class="o">-</span><span class="n">nu</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BarkanaIntegrals.I4_numeric"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.barkana_integrals.BarkanaIntegrals.I4_numeric">[docs]</a>    <span class="k">def</span> <span class="nf">I4_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu2</span><span class="p">,</span> <span class="n">s_</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="n">nu_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nu2</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="n">s_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">mk_array</span><span class="p">(</span><span class="n">s_</span><span class="p">)</span>
+        <span class="n">I4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">nu2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nu2</span><span class="p">)):</span>
+            <span class="n">nu_max</span> <span class="o">=</span> <span class="n">nu2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_I4_intg</span><span class="p">,</span><span class="n">nu_min</span><span class="p">,</span><span class="n">nu_max</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">gamma</span><span class="p">))</span>
+            <span class="n">I4</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">I4</span></div>
+
+    <span class="k">def</span> <span class="nf">_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        f(mu) function (eq 15 in Barkana et al.)</span>
+<span class="sd">        :param mu:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">mu</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">mu</span><span class="o">/</span><span class="p">(</span><span class="n">mu</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_f_deriv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        f&#39;(mu) function (derivative of eq 15 in barkana et al.)</span>
+<span class="sd">        :param mu:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mu</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">term1</span> <span class="o">=</span> <span class="o">-</span><span class="n">mu</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span><span class="o">**</span><span class="mi">3</span>
+        <span class="n">term2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span><span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">mu</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">mu</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">term1</span> <span class="o">+</span> <span class="n">term2</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

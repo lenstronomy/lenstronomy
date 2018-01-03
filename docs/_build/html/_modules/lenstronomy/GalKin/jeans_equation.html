@@ -1,0 +1,152 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.GalKin.jeans_equation &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.GalKin.jeans_equation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">velocity_util</span> <span class="k">as</span> <span class="nn">vel_util</span>
+<span class="kn">from</span> <span class="nn">cosmo</span> <span class="k">import</span> <span class="n">Cosmo</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
+
+
+<div class="viewcode-block" id="Jeans_solver"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.jeans_equation.Jeans_solver">[docs]</a><span class="k">class</span> <span class="nc">Jeans_solver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to solve radial Jeans equation for different configuration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">mass_profile</span><span class="p">,</span> <span class="n">light_profile</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mass_profile</span> <span class="o">=</span> <span class="n">mass_profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_light_profile</span> <span class="o">=</span> <span class="n">light_profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_anisotropy_type</span> <span class="o">=</span> <span class="n">anisotropy_type</span>
+
+<div class="viewcode-block" id="Jeans_solver.numerical_solver"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.jeans_equation.Jeans_solver.numerical_solver">[docs]</a>    <span class="k">def</span> <span class="nf">numerical_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Jeans_solver.power_law_anisotropy"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.jeans_equation.Jeans_solver.power_law_anisotropy">[docs]</a>    <span class="k">def</span> <span class="nf">power_law_anisotropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        equation (19) in Suyu+ 2010</span>
+<span class="sd">        :param r:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># first term</span>
+        <span class="n">theta_E</span> <span class="o">=</span> <span class="n">kwargs_profile</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">kwargs_profile</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+        <span class="n">r_ani</span> <span class="o">=</span> <span class="n">kwargs_anisotropy</span><span class="p">[</span><span class="s1">&#39;r_ani&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mf">0.551</span> <span class="o">*</span> <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span>
+        <span class="n">rho0_r0_gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_r0_gamma</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+        <span class="n">prefac1</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">a</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho0_r0_gamma</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="n">prefac2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">r_ani</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">hyp1</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">hyp_2F1</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">r</span><span class="o">/</span><span class="n">a</span><span class="p">))</span>
+        <span class="n">hyp2</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">hyp_2F1</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="n">a</span><span class="o">/</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">r_ani</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hyp1</span> <span class="o">/</span> <span class="p">((</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">))</span> <span class="o">+</span> <span class="n">hyp2</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="n">sigma2_dim_less</span> <span class="o">=</span> <span class="n">prefac1</span> <span class="o">*</span> <span class="n">prefac2</span> <span class="o">*</span> <span class="n">fac</span>
+        <span class="k">return</span> <span class="n">sigma2_dim_less</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span></div>
+
+    <span class="k">def</span> <span class="nf">_rho0_r0_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="c1"># equation (14) in Suyu+ 2010</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">((</span><span class="n">gamma</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="n">theta_E</span><span class="o">**</span><span class="n">gamma</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">epsilon_crit</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">Mpc</span><span class="o">**</span><span class="mi">3</span>  <span class="c1"># units kg/m^3</span>
+
+<div class="viewcode-block" id="Jeans_solver.sigma_r2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.jeans_equation.Jeans_solver.sigma_r2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_r2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        solves radial Jeans equation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass_profile</span> <span class="o">==</span> <span class="s1">&#39;power_law&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anisotropy_type</span> <span class="o">==</span> <span class="s1">&#39;r_ani&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_light_profile</span> <span class="o">==</span> <span class="s1">&#39;Hernquist&#39;</span><span class="p">:</span>
+                    <span class="n">sigma_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_law_anisotropy</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39; light profile </span><span class="si">%s</span><span class="s1"> not supported for Jeans solver&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_light_profile</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;anisotropy type </span><span class="si">%s</span><span class="s1"> not implemented in Jeans equation modelling&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anisotropy_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mass profile type </span><span class="si">%s</span><span class="s1"> not implemented in Jeans solver&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass_profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sigma_r</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,402 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Analysis.lens_analysis &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Analysis.lens_analysis</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.analysis_util</span> <span class="k">as</span> <span class="nn">analysis_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.mask</span> <span class="k">as</span> <span class="nn">mask_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.multi_gauss_expansion</span> <span class="k">as</span> <span class="nn">mge</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_model</span> <span class="k">import</span> <span class="n">LensLightModel</span><span class="p">,</span> <span class="n">SourceModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model_extensions</span> <span class="k">import</span> <span class="n">LensModelExtensions</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.numeric_lens_differentials</span> <span class="k">import</span> <span class="n">NumericLens</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.image_model</span> <span class="k">import</span> <span class="n">ImageModel</span>
+
+
+<div class="viewcode-block" id="LensAnalysis"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis">[docs]</a><span class="k">class</span> <span class="nc">LensAnalysis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to compute flux ratio anomalies, inherited from standard MakeImage</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span> <span class="o">=</span> <span class="n">LensLightModel</span><span class="p">(</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_light_model_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span> <span class="o">=</span> <span class="n">SourceModel</span><span class="p">(</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_light_model_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span> <span class="o">=</span> <span class="n">LensModelExtensions</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foreground_shear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="c1">#self.kwargs_data = kwargs_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span> <span class="o">=</span> <span class="n">kwargs_options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span> <span class="o">=</span> <span class="n">ImageModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NumLensModel</span> <span class="o">=</span> <span class="n">NumericLens</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foreground_shear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LensAnalysis.flux_ratios"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_ratios">[docs]</a>    <span class="k">def</span> <span class="nf">flux_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">source_size</span><span class="o">=</span><span class="mf">0.003</span>
+                    <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;GAUSSIAN&quot;</span><span class="p">):</span>
+        <span class="n">amp_list</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
+        <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnification_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">mag_finite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">magnification_finite</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">source_sigma</span><span class="o">=</span><span class="n">source_size</span><span class="p">,</span>
+                                               <span class="n">window_size</span><span class="o">=</span><span class="n">source_size</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">grid_number</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">amp_list</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">mag_finite</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.half_light_radius"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.half_light_radius">[docs]</a>    <span class="k">def</span> <span class="nf">half_light_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">deltaPix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes numerically the half-light-radius of the deflector light and the total photon flux</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">numPix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">numPix</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="k">if</span> <span class="n">deltaPix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">deltaPix</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">)</span>
+        <span class="n">lens_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_internal</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">R_h</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">half_light_radius</span><span class="p">(</span><span class="n">lens_light</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">R_h</span></div>
+
+    <span class="k">def</span> <span class="nf">_lens_light_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_grid:</span>
+<span class="sd">        :param y_grid:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_lens_light_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">lens_light_model_internal_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_light_model_internal_bool&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">))</span>
+        <span class="n">lens_light</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="nb">bool</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens_light_model_internal_bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">kwargs_lens_light_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">kwargs_lens_light_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">lens_light_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens_light_copy</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">lens_light</span> <span class="o">+=</span> <span class="n">lens_light_i</span>
+        <span class="k">return</span> <span class="n">lens_light</span>
+
+<div class="viewcode-block" id="LensAnalysis.multi_gaussian_lens_light"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens_light">[docs]</a>    <span class="k">def</span> <span class="nf">multi_gaussian_lens_light</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">n_comp</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        multi-gaussian decomposition of the lens light profile (in 1-dimension)</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param n_comp:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">half_light_radius</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_h</span>
+        <span class="n">flux_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_internal</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">mge</span><span class="o">.</span><span class="n">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">n_comp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.multi_gaussian_lens"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens">[docs]</a>    <span class="k">def</span> <span class="nf">multi_gaussian_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">n_comp</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        multi-gaussian lens model in convergence space</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param n_comp:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_lens_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">center_x</span> <span class="o">=</span> <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+            <span class="n">center_y</span> <span class="o">=</span> <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+        <span class="n">theta_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_einstein_radius</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta_E</span>
+        <span class="n">lens_model_internal_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_internal_bool&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">))</span>
+        <span class="n">kappa_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens_copy</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">lens_model_internal_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">center_x</span>
+                    <span class="n">kwargs_lens_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">center_y</span>
+                <span class="n">kappa_s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">kappa</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">kwargs_lens_copy</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">mge</span><span class="o">.</span><span class="n">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kappa_s</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">n_comp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.effective_einstein_radius"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.effective_einstein_radius">[docs]</a>    <span class="k">def</span> <span class="nf">effective_einstein_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the radius with mean convergence=1</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">center_x</span> <span class="o">=</span> <span class="n">kwargs_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+        <span class="n">center_y</span> <span class="o">=</span> <span class="n">kwargs_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">deltaPix</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">)</span>
+        <span class="n">x_grid</span> <span class="o">+=</span> <span class="n">center_x</span>
+        <span class="n">y_grid</span> <span class="o">+=</span> <span class="n">center_y</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">kappa</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span>
+        <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">numPix</span><span class="o">*</span><span class="n">deltaPix</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">r_array</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mask_util</span><span class="o">.</span><span class="n">mask_center_2d</span><span class="p">(</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">))</span>
+            <span class="n">sum_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sum_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kappa_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kappa</span><span class="o">*</span><span class="n">mask</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">kappa_mean</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">r</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="s2">&quot;Warning, no Einstein radius computed!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r_array</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.external_shear"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.external_shear">[docs]</a>    <span class="k">def</span> <span class="nf">external_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens_list:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">phi_ext</span><span class="p">,</span> <span class="n">gamma_ext</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EXTERNAL_SHEAR&#39;</span><span class="p">:</span>
+                <span class="n">phi_ext</span><span class="p">,</span> <span class="n">gamma_ext</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_gamma</span><span class="p">(</span><span class="n">kwargs_lens_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">kwargs_lens_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">phi_ext</span><span class="p">,</span> <span class="n">gamma_ext</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.profile_slope"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.profile_slope">[docs]</a>    <span class="k">def</span> <span class="nf">profile_slope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="n">theta_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_einstein_radius</span><span class="p">(</span><span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">kwargs_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">kwargs_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="mf">0.01</span>
+        <span class="n">alpha_E_x</span><span class="p">,</span> <span class="n">alpha_E_y</span><span class="p">,</span> <span class="n">alpha_E_dr_x</span><span class="p">,</span> <span class="n">alpha_E_dr_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">lens_model_internal_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_internal_bool&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens_list</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">lens_model_internal_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">alpha_E_x_i</span><span class="p">,</span> <span class="n">alpha_E_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+                <span class="n">alpha_E_dr_x_i</span><span class="p">,</span> <span class="n">alpha_E_dr_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">theta_E</span> <span class="o">+</span> <span class="n">dr</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+                <span class="n">alpha_E_dr_x</span> <span class="o">+=</span> <span class="n">alpha_E_dr_x_i</span>
+                <span class="n">alpha_E_dr_y</span> <span class="o">+=</span> <span class="n">alpha_E_dr_y_i</span>
+                <span class="n">alpha_E_x</span> <span class="o">+=</span> <span class="n">alpha_E_x_i</span>
+                <span class="n">alpha_E_y</span> <span class="o">+=</span> <span class="n">alpha_E_y_i</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alpha_E_dr_x</span> <span class="o">/</span> <span class="n">alpha_E_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">theta_E</span> <span class="o">+</span> <span class="n">dr</span><span class="p">)</span> <span class="o">/</span> <span class="n">theta_E</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="o">-</span><span class="n">slope</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">gamma</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.flux_components"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_components">[docs]</a>    <span class="k">def</span> <span class="nf">flux_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">n_grid</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">delta_grid</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;lens&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the total flux in each component of the model</span>
+<span class="sd">        :param kwargs_light:</span>
+<span class="sd">        :param n_grid:</span>
+<span class="sd">        :param delta_grid:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flux_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">R_h_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">n_grid</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">delta_grid</span><span class="p">)</span>
+        <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">):</span>
+            <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;lens&#39;</span><span class="p">:</span>
+                <span class="n">light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_copy</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
+                <span class="n">light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_copy</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;type </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">)</span>
+            <span class="n">flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">light</span><span class="p">)</span><span class="o">*</span><span class="n">delta_grid</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">R_h</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">half_light_radius</span><span class="p">(</span><span class="n">light</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
+            <span class="n">flux_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+            <span class="n">R_h_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R_h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">flux_list</span><span class="p">,</span> <span class="n">R_h_list</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.source_properties"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.source_properties">[docs]</a>    <span class="k">def</span> <span class="nf">source_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">numPix_source</span><span class="p">,</span>
+                          <span class="n">deltaPix_source</span><span class="p">,</span> <span class="n">cov_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+
+        <span class="n">deltaPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">deltaPix</span>
+
+
+        <span class="n">x_grid_source</span><span class="p">,</span> <span class="n">y_grid_source</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix_source</span><span class="p">,</span> <span class="n">deltaPix_source</span><span class="p">)</span>
+        <span class="n">kwargs_source_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">)</span>
+        <span class="n">kwargs_source_copy</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kwargs_source_copy</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">source</span><span class="p">,</span> <span class="n">error_map_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source</span><span class="p">(</span><span class="n">x_grid_source</span><span class="p">,</span> <span class="n">y_grid_source</span><span class="p">,</span> <span class="n">kwargs_source_copy</span><span class="p">,</span> <span class="n">cov_param</span><span class="o">=</span><span class="n">cov_param</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">R_h</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">half_light_radius</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">x_grid_source</span><span class="p">,</span> <span class="n">y_grid_source</span><span class="p">)</span>
+        <span class="n">flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">deltaPix_source</span><span class="o">/</span><span class="n">deltaPix</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">I_r</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">radial_profile</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">x_grid_source</span><span class="p">,</span> <span class="n">y_grid_source</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n_bins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">flux</span><span class="p">,</span> <span class="n">R_h</span><span class="p">,</span> <span class="n">I_r</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">error_map_source</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.buldge_disk_ratio"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.buldge_disk_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">buldge_disk_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_buldge_disk</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the buldge-to-disk ratio of the luminosity</span>
+<span class="sd">        :param kwargs_buldge_disk: kwargs of the buldge2disk function</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_bd</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_buldge_disk</span><span class="p">)</span>
+        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">deltaPix</span> <span class="o">=</span> <span class="mf">0.005</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">BuldgeDisk</span>
+        <span class="n">bd_class</span> <span class="o">=</span> <span class="n">BuldgeDisk</span><span class="p">()</span>
+        <span class="n">light_grid</span> <span class="o">=</span> <span class="n">bd_class</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_bd</span><span class="p">)</span>
+        <span class="n">light_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">light_grid</span><span class="p">)</span>
+        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;I0_d&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">light_grid</span> <span class="o">=</span> <span class="n">bd_class</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_bd</span><span class="p">)</span>
+        <span class="n">light_buldge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">light_grid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">light_tot</span><span class="p">,</span> <span class="n">light_buldge</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.get_source"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.get_source">[docs]</a>    <span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">cov_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param param:</span>
+<span class="sd">        :param num_order:</span>
+<span class="sd">        :param beta:</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">error_map_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">lightModel</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">basis_functions</span><span class="p">,</span> <span class="n">n_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">lightModel</span><span class="o">.</span><span class="n">functions_split</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">)</span>
+        <span class="n">basis_functions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">basis_functions</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cov_param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error_map_source</span><span class="p">)):</span>
+                <span class="n">error_map_source</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">basis_functions</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cov_param</span><span class="p">[:</span><span class="n">n_source</span><span class="p">,</span> <span class="p">:</span><span class="n">n_source</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">basis_functions</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">source</span><span class="p">,</span> <span class="n">error_map_source</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.magnification_model"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.magnification_model">[docs]</a>    <span class="k">def</span> <span class="nf">magnification_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the point source magnification at the position of the point source images</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return: list of magnifications</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_else</span> <span class="ow">and</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_else</span><span class="p">:</span>
+            <span class="n">ra_pos</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span>
+            <span class="n">dec_pos</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No point source positions assigned&#39;</span><span class="p">)</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumLensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">mag</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.deflection_field"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.deflection_field">[docs]</a>    <span class="k">def</span> <span class="nf">deflection_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">alpha1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">alpha1</span><span class="p">)</span>
+        <span class="n">alpha2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageModel</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">alpha2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.position_size_estimate"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.position_size_estimate">[docs]</a>    <span class="k">def</span> <span class="nf">position_size_estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        estimate the magnification at the positions and define resolution limit</span>
+<span class="sd">        :param ra_pos:</span>
+<span class="sd">        :param dec_pos:</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">d_x</span><span class="p">,</span> <span class="n">d_y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">points_on_circle</span><span class="p">(</span><span class="n">delta</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">x_s</span><span class="p">,</span> <span class="n">y_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra_pos</span> <span class="o">+</span> <span class="n">d_x</span><span class="p">,</span> <span class="n">dec_pos</span> <span class="o">+</span> <span class="n">d_y</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">x_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_s</span><span class="p">)</span>
+        <span class="n">y_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_s</span><span class="p">)</span>
+        <span class="n">r_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x_s</span> <span class="o">-</span> <span class="n">x_m</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_s</span> <span class="o">-</span> <span class="n">y_m</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">r_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_m</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="n">r_m</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r_min</span></div>
+
+<div class="viewcode-block" id="LensAnalysis.external_lensing_effect"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.external_lensing_effect">[docs]</a>    <span class="k">def</span> <span class="nf">external_lensing_effect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha0_x</span><span class="p">,</span> <span class="n">alpha0_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">kappa_ext</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">lens_model_internal_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_internal_bool&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">lens_model_internal_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">alpha0_x</span> <span class="o">+=</span> <span class="n">f_x</span>
+                <span class="n">alpha0_y</span> <span class="o">+=</span> <span class="n">f_y</span>
+                <span class="n">kappa_ext</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f_xx</span> <span class="o">+</span> <span class="n">f_yy</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
+                <span class="n">shear1</span> <span class="o">+=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">)</span>
+                <span class="n">shear2</span> <span class="o">+=</span> <span class="n">f_xy</span>
+        <span class="k">return</span> <span class="n">alpha0_x</span><span class="p">,</span> <span class="n">alpha0_y</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

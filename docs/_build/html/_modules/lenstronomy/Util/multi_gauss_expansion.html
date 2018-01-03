@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Util.multi_gauss_expansion &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Util.multi_gauss_expansion</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ajshajib&quot;</span><span class="p">,</span> <span class="s2">&quot;sibirrer&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Multi-Gaussian expansion fitting, based on Capellari 2002, http://adsabs.harvard.edu/abs/2002MNRAS.333..400C</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">nnls</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
+<span class="n">gaussian_func</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">amp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param R: radius</span>
+<span class="sd">    :param sigma: gaussian sigma</span>
+<span class="sd">    :param amp: normalization</span>
+<span class="sd">    :return: Gaussian function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mge_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.mge_1d">[docs]</a><span class="k">def</span> <span class="nf">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param r_array: list or radii (numpy array)</span>
+<span class="sd">    :param flux_r: list of flux values (numpy array)</span>
+<span class="sd">    :param N: number of Gaussians</span>
+<span class="sd">    :return: amplitudes and Gaussian sigmas for the best 1d flux profile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span> <span class="n">_mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">N_new</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">N_new</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of MGE went down to zero! This should not happen!&quot;</span><span class="p">)</span>
+        <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N_new</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span></div>
+
+
+<span class="k">def</span> <span class="nf">_mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param r_array:</span>
+<span class="sd">    :param flux_r:</span>
+<span class="sd">    :param N:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">),</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># sigmas = np.linspace(r_array[0], r_array[-1]/2, N + 2)[1:-1]</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">flux_r</span><span class="p">),</span> <span class="n">N</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">A</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="n">amplitudes</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">nnls</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span>
+
+
+<div class="viewcode-block" id="de_projection_3d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.de_projection_3d">[docs]</a><span class="k">def</span> <span class="nf">de_projection_3d</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)</span>
+<span class="sd">    :param amplitudes:</span>
+<span class="sd">    :param sigmas:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">amplitudes_3d</span> <span class="o">=</span> <span class="n">amplitudes</span> <span class="o">/</span> <span class="n">sigmas</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">amplitudes_3d</span><span class="p">,</span> <span class="n">sigmas</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+lenstronomy package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.Analysis
+    lenstronomy.Cosmo
+    lenstronomy.Data
+    lenstronomy.Extensions
+    lenstronomy.GalKin
+    lenstronomy.ImSim
+    lenstronomy.LensModel
+    lenstronomy.LightModel
+    lenstronomy.MCMC
+    lenstronomy.Util
+    lenstronomy.Workflow
+
+Module contents
+---------------
+
+.. automodule:: lenstronomy
+    :members:
+    :undoc-members:
+    :show-inheritance:

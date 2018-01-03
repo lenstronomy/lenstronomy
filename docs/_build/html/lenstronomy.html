@@ -1,0 +1,350 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy package &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Analysis package" href="lenstronomy.Analysis.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-package">
+<h1>lenstronomy package<a class="headerlink" href="#lenstronomy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Analysis.html">lenstronomy.Analysis package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Analysis.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Analysis.html#module-lenstronomy.Analysis.lens_analysis">lenstronomy.Analysis.lens_analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Analysis.html#module-lenstronomy.Analysis.lens_properties">lenstronomy.Analysis.lens_properties module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Analysis.html#module-lenstronomy.Analysis">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Cosmo.html">lenstronomy.Cosmo package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.background">lenstronomy.Cosmo.background module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#lenstronomy-cosmo-cosmo-properties-pycosmo-module">lenstronomy.Cosmo.cosmo_properties_pycosmo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.lens_cosmo">lenstronomy.Cosmo.lens_cosmo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Data.html">lenstronomy.Data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Data.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Data.html#module-lenstronomy.Data.coord_transforms">lenstronomy.Data.coord_transforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Data.html#module-lenstronomy.Data.imaging_data">lenstronomy.Data.imaging_data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Data.html#module-lenstronomy.Data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Extensions.html">lenstronomy.Extensions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Extensions.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html">lenstronomy.Extensions.CosmoSampling package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html#lenstronomy-extensions-cosmosampling-cosmo-chain-module">lenstronomy.Extensions.CosmoSampling.cosmo_chain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html#module-lenstronomy.Extensions.CosmoSampling.cosmo_solver">lenstronomy.Extensions.CosmoSampling.cosmo_solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html#module-lenstronomy.Extensions.CosmoSampling.time_delay_sampling">lenstronomy.Extensions.CosmoSampling.time_delay_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.CosmoSampling.html#module-lenstronomy.Extensions.CosmoSampling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.Itterative.html">lenstronomy.Extensions.Itterative package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Itterative.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Itterative.html#module-lenstronomy.Extensions.Itterative.iterative_lens">lenstronomy.Extensions.Itterative.iterative_lens module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Itterative.html#module-lenstronomy.Extensions.Itterative.iterative_source">lenstronomy.Extensions.Itterative.iterative_source module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Itterative.html#module-lenstronomy.Extensions.Itterative">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.Plots.html">lenstronomy.Extensions.Plots package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Plots.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Plots.html#module-lenstronomy.Extensions.Plots.output_plots">lenstronomy.Extensions.Plots.output_plots module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Plots.html#module-lenstronomy.Extensions.Plots">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html">lenstronomy.Extensions.Scripts package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-compute-map-module">lenstronomy.Extensions.Scripts.compute_map module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-mcmc-script-module">lenstronomy.Extensions.Scripts.mcmc_script module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-monch-array-script-module">lenstronomy.Extensions.Scripts.monch_array_script module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-monch-map-script-module">lenstronomy.Extensions.Scripts.monch_map_script module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-run-sequence-module">lenstronomy.Extensions.Scripts.run_sequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#lenstronomy-extensions-scripts-submit-random-module">lenstronomy.Extensions.Scripts.submit_random module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Scripts.html#module-lenstronomy.Extensions.Scripts">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html">lenstronomy.Extensions.Sensitivity package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html#module-lenstronomy.Extensions.Sensitivity.clump_detection">lenstronomy.Extensions.Sensitivity.clump_detection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html#module-lenstronomy.Extensions.Sensitivity.sensitivity">lenstronomy.Extensions.Sensitivity.sensitivity module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html#module-lenstronomy.Extensions.Sensitivity.sensitivity_map">lenstronomy.Extensions.Sensitivity.sensitivity_map module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.Sensitivity.html#module-lenstronomy.Extensions.Sensitivity">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.Extensions.SimulationAPI.html">lenstronomy.Extensions.SimulationAPI package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.SimulationAPI.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.SimulationAPI.html#module-lenstronomy.Extensions.SimulationAPI.multiband">lenstronomy.Extensions.SimulationAPI.multiband module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.SimulationAPI.html#module-lenstronomy.Extensions.SimulationAPI.simulations">lenstronomy.Extensions.SimulationAPI.simulations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.Extensions.SimulationAPI.html#module-lenstronomy.Extensions.SimulationAPI">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Extensions.html#module-lenstronomy.Extensions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.GalKin.html">lenstronomy.GalKin package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.LOS_dispersion">lenstronomy.GalKin.LOS_dispersion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.anisotropy">lenstronomy.GalKin.anisotropy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.aperture">lenstronomy.GalKin.aperture module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.cosmo">lenstronomy.GalKin.cosmo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.galkin">lenstronomy.GalKin.galkin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.galkin_old">lenstronomy.GalKin.galkin_old module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.jeans_equation">lenstronomy.GalKin.jeans_equation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.light_profile">lenstronomy.GalKin.light_profile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.mass_profile">lenstronomy.GalKin.mass_profile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin.velocity_util">lenstronomy.GalKin.velocity_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.GalKin.html#module-lenstronomy.GalKin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.ImSim.html">lenstronomy.ImSim package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim.de_lens">lenstronomy.ImSim.de_lens module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim.image_model">lenstronomy.ImSim.image_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim.iterative_psf">lenstronomy.ImSim.iterative_psf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim.multiband">lenstronomy.ImSim.multiband module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim.point_source">lenstronomy.ImSim.point_source module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.html#module-lenstronomy.ImSim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.LensModel.html">lenstronomy.LensModel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html">lenstronomy.LensModel.Profiles package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.barkana_integrals">lenstronomy.LensModel.Profiles.barkana_integrals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.composite_sersic_nfw">lenstronomy.LensModel.Profiles.composite_sersic_nfw module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.external_shear">lenstronomy.LensModel.Profiles.external_shear module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian">lenstronomy.LensModel.Profiles.gaussian module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_kappa">lenstronomy.LensModel.Profiles.gaussian_kappa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.hernquist">lenstronomy.LensModel.Profiles.hernquist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.hernquist_ellipse">lenstronomy.LensModel.Profiles.hernquist_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.interpol">lenstronomy.LensModel.Profiles.interpol module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.multi_gaussian_kappa">lenstronomy.LensModel.Profiles.multi_gaussian_kappa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.nfw">lenstronomy.LensModel.Profiles.nfw module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.nfw_ellipse">lenstronomy.LensModel.Profiles.nfw_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.no_lens">lenstronomy.LensModel.Profiles.no_lens module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.p_jaffe">lenstronomy.LensModel.Profiles.p_jaffe module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.p_jaffe_ellipse">lenstronomy.LensModel.Profiles.p_jaffe_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.point_mass">lenstronomy.LensModel.Profiles.point_mass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic">lenstronomy.LensModel.Profiles.sersic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_double">lenstronomy.LensModel.Profiles.sersic_double module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_ellipse">lenstronomy.LensModel.Profiles.sersic_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_utils">lenstronomy.LensModel.Profiles.sersic_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.shapelet_pot">lenstronomy.LensModel.Profiles.shapelet_pot module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.shapelet_pot_2">lenstronomy.LensModel.Profiles.shapelet_pot_2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-sie-module">lenstronomy.LensModel.Profiles.sie module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis">lenstronomy.LensModel.Profiles.sis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis_truncate">lenstronomy.LensModel.Profiles.sis_truncate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-module">lenstronomy.LensModel.Profiles.spemd module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-own-module">lenstronomy.LensModel.Profiles.spemd_own module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-smooth-module">lenstronomy.LensModel.Profiles.spemd_smooth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spep">lenstronomy.LensModel.Profiles.spep module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spp">lenstronomy.LensModel.Profiles.spp module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.LensModel.Solver.html">lenstronomy.LensModel.Solver package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Solver.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Solver.html#module-lenstronomy.LensModel.Solver.lens_equation_solver">lenstronomy.LensModel.Solver.lens_equation_solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Solver.html#module-lenstronomy.LensModel.Solver.solver2point">lenstronomy.LensModel.Solver.solver2point module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Solver.html#module-lenstronomy.LensModel.Solver.solver4point">lenstronomy.LensModel.Solver.solver4point module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Solver.html#module-lenstronomy.LensModel.Solver">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#module-lenstronomy.LensModel.lens_model">lenstronomy.LensModel.lens_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#module-lenstronomy.LensModel.lens_model_extensions">lenstronomy.LensModel.lens_model_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#module-lenstronomy.LensModel.numeric_lens_differentials">lenstronomy.LensModel.numeric_lens_differentials module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#module-lenstronomy.LensModel.numerical_profile_integrals">lenstronomy.LensModel.numerical_profile_integrals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#module-lenstronomy.LensModel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.LightModel.html">lenstronomy.LightModel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html">lenstronomy.LightModel.Profiles package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.uniform">lenstronomy.LightModel.Profiles.uniform module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.html#module-lenstronomy.LightModel.light_model">lenstronomy.LightModel.light_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.html#module-lenstronomy.LightModel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.MCMC.html">lenstronomy.MCMC package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#module-lenstronomy.MCMC.initialise_from_chain">lenstronomy.MCMC.initialise_from_chain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#module-lenstronomy.MCMC.mcmc">lenstronomy.MCMC.mcmc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#module-lenstronomy.MCMC.mcmc_chains">lenstronomy.MCMC.mcmc_chains module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#module-lenstronomy.MCMC.reinitialize">lenstronomy.MCMC.reinitialize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.MCMC.html#module-lenstronomy.MCMC">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Util.html">lenstronomy.Util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.analysis_util">lenstronomy.Util.analysis_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.constants">lenstronomy.Util.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.correlation">lenstronomy.Util.correlation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.derivative_util">lenstronomy.Util.derivative_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.fft_convolve">lenstronomy.Util.fft_convolve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.image_util">lenstronomy.Util.image_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.kernel_util">lenstronomy.Util.kernel_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.mask">lenstronomy.Util.mask module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.multi_gauss_expansion">lenstronomy.Util.multi_gauss_expansion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.param_util">lenstronomy.Util.param_util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.prob_density">lenstronomy.Util.prob_density module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util.util">lenstronomy.Util.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Util.html#module-lenstronomy.Util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.Workflow.html">lenstronomy.Workflow package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.else_param">lenstronomy.Workflow.else_param module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.fitting">lenstronomy.Workflow.fitting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.fitting_sequence">lenstronomy.Workflow.fitting_sequence module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.lens_param">lenstronomy.Workflow.lens_param module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.light_param">lenstronomy.Workflow.light_param module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow.parameters">lenstronomy.Workflow.parameters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Workflow.html#module-lenstronomy.Workflow">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-lenstronomy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#module-lenstronomy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="previous chapter">Usage</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Analysis.html"
+                        title="next chapter">lenstronomy.Analysis package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Usage"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

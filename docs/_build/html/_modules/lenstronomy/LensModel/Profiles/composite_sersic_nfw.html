@@ -1,0 +1,185 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Profiles.composite_sersic_nfw &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Profiles.composite_sersic_nfw</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_ellipse</span> <span class="k">import</span> <span class="n">SersicEllipse</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw_ellipse</span> <span class="k">import</span> <span class="n">NFW_ELLIPSE</span>
+
+
+<div class="viewcode-block" id="CompositeSersicNFW"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.composite_sersic_nfw.CompositeSersicNFW">[docs]</a><span class="k">class</span> <span class="nc">CompositeSersicNFW</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class for a composite model (Sersic and NFW profile combined)</span>
+<span class="sd">    with joint center and parameterization of Einstein radius</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sersic</span> <span class="o">=</span> <span class="n">SersicEllipse</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span> <span class="o">=</span> <span class="n">NFW_ELLIPSE</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CompositeSersicNFW.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.composite_sersic_nfw.CompositeSersicNFW.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :param mass_light:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :param q:</span>
+<span class="sd">        :param phi_G:</span>
+<span class="sd">        :param n_sersic:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param center_x:</span>
+<span class="sd">        :param center_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">k_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_mass</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">)</span>
+        <span class="n">f_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sersic</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">f_nfw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_s</span> <span class="o">+</span> <span class="n">f_nfw</span></div>
+
+<div class="viewcode-block" id="CompositeSersicNFW.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.composite_sersic_nfw.CompositeSersicNFW.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :param mass_light:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :param q:</span>
+<span class="sd">        :param phi_G:</span>
+<span class="sd">        :param n_sersic:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param center_x:</span>
+<span class="sd">        :param center_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">k_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_mass</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">)</span>
+        <span class="n">f_x_s</span><span class="p">,</span> <span class="n">f_y_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sersic</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">f_x_nfw</span><span class="p">,</span> <span class="n">f_y_nfw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_x_s</span> <span class="o">+</span> <span class="n">f_x_nfw</span><span class="p">,</span> <span class="n">f_y_s</span> <span class="o">+</span> <span class="n">f_y_nfw</span></div>
+
+<div class="viewcode-block" id="CompositeSersicNFW.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.composite_sersic_nfw.CompositeSersicNFW.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :param mass_light:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :param q:</span>
+<span class="sd">        :param phi_G:</span>
+<span class="sd">        :param n_sersic:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :param center_x:</span>
+<span class="sd">        :param center_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">k_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_mass</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">)</span>
+        <span class="n">f_xx_s</span><span class="p">,</span> <span class="n">f_yy_s</span><span class="p">,</span> <span class="n">f_xy_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sersic</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">q_s</span><span class="p">,</span> <span class="n">phi_G_s</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">f_xx_nfw</span><span class="p">,</span> <span class="n">f_yy_nfw</span><span class="p">,</span> <span class="n">f_xy_nfw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_xx_s</span> <span class="o">+</span> <span class="n">f_xx_nfw</span><span class="p">,</span> <span class="n">f_yy_s</span> <span class="o">+</span> <span class="n">f_yy_nfw</span><span class="p">,</span> <span class="n">f_xy_s</span> <span class="o">+</span> <span class="n">f_xy_nfw</span></div>
+
+<div class="viewcode-block" id="CompositeSersicNFW.convert_mass"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.composite_sersic_nfw.CompositeSersicNFW.convert_mass">[docs]</a>    <span class="k">def</span> <span class="nf">convert_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">mass_light</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert global parameters theta_E and mass_light to specific ones theta_Rs and k_eff</span>
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :param mass_light:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :param n_sersic:</span>
+<span class="sd">        :param r_eff:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">theta_E</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">alpha_E_sersic</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sersic</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi_G</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">alpha_E_nfw</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi_G</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1">#f_xx_s, f_yy_s, _ = self.sersic.hessian(r_eff, 0, n_sersic, r_eff, k_eff=1)</span>
+        <span class="c1">#f_xx_n, f_yy_n, _ = self.nfw.hessian(r_eff, 0, Rs, theta_Rs=1, q=1, phi_G=0)</span>
+        <span class="c1">#kappa_eff_sersic = (f_xx_s + f_yy_s) / 2.</span>
+        <span class="c1">#kappa_eff_nfw = (f_xx_n + f_yy_n) / 2.</span>
+        <span class="c1"># equations must satisfy:</span>
+        <span class="c1"># theta_Rs * alpha_E_nfw + k_eff * alpha_E_sersic = theta_E</span>
+        <span class="c1"># theta_Rs * kappa_eff_nfw / (k_eff * kappa_eff_sersic) = mass_light</span>
+        <span class="c1">#k_eff = theta_E * kappa_eff_nfw / (alpha_E_sersic*kappa_eff_nfw+mass_light*alpha_E_nfw*kappa_eff_sersic)</span>
+
+        <span class="c1">#theta_Rs = (theta_E - k_eff*alpha_E_sersic)/alpha_E_nfw</span>
+        <span class="n">theta_Rs</span> <span class="o">=</span> <span class="n">theta_E</span><span class="o">/</span><span class="n">alpha_E_nfw</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">1.</span><span class="o">/</span><span class="n">mass_light</span><span class="p">)</span>
+        <span class="n">k_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_E</span> <span class="o">-</span> <span class="n">theta_Rs</span> <span class="o">*</span> <span class="n">alpha_E_nfw</span><span class="p">)</span><span class="o">/</span><span class="n">alpha_E_sersic</span>
+        <span class="k">return</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">k_eff</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

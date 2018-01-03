@@ -1,0 +1,344 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Workflow.parameters &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Workflow.parameters</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.lens_equation_solver</span> <span class="k">import</span> <span class="n">LensEquationSolver</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.solver2point</span> <span class="k">import</span> <span class="n">Solver2Point</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.solver4point</span> <span class="k">import</span> <span class="n">Solver4Point</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Workflow.else_param</span> <span class="k">import</span> <span class="n">ElseParam</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Workflow.lens_param</span> <span class="k">import</span> <span class="n">LensParam</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Workflow.light_param</span> <span class="k">import</span> <span class="n">LightParam</span>
+
+
+<div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this class contains routines to deal with the number of parameters given certain options in a config file</span>
+
+<span class="sd">    rule: first come the lens parameters, than the source parameters, psf parameters and at the end (if needed) some more</span>
+
+<span class="sd">    list of parameters</span>
+<span class="sd">    Gaussian: amp, sigma_x, sigma_y (center_x, center_y as options)</span>
+<span class="sd">    NFW: to do</span>
+<span class="sd">    SIS:  phi_E, (center_x, center_y as options)</span>
+<span class="sd">    SPEMD: to do</span>
+<span class="sd">    SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens</span> <span class="o">=</span> <span class="n">kwargs_fixed_lens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_source</span> <span class="o">=</span> <span class="n">kwargs_fixed_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens_light</span> <span class="o">=</span> <span class="n">kwargs_fixed_lens_light</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_else</span> <span class="o">=</span> <span class="n">kwargs_fixed_else</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span> <span class="o">=</span> <span class="n">kwargs_options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foreground_shear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ImagePosition</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;foreground_shear&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;foreground_shear&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
+            <span class="n">decoupling</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">decoupling</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_images&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_mass2light</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mass2light_fixed&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_magnification</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fix_magnification&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additional_images</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;additional_images&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver4points</span> <span class="o">=</span> <span class="n">Solver4Point</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span> <span class="n">decoupling</span><span class="o">=</span><span class="n">decoupling</span><span class="p">,</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span> <span class="n">_num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver2points</span> <span class="o">=</span> <span class="n">Solver2Point</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">],</span>
+                                                  <span class="n">decoupling</span><span class="o">=</span><span class="n">decoupling</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span><span class="p">,</span> <span class="n">foreground_shear</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> number of images is not valid. Use 2 or 4!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="s2">&quot;NONE&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span> <span class="o">=</span> <span class="n">LensParam</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span> <span class="o">=</span> <span class="n">LightParam</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;source_light&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span> <span class="o">=</span> <span class="n">LightParam</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;lens_light&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span> <span class="o">=</span> <span class="n">ElseParam</span><span class="p">(</span><span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed_else</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Param.getParams"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param args: tuple of parameter values (float, strings, ...(</span>
+<span class="sd">        :return: keyword arguments sorted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span></div>
+
+<div class="viewcode-block" id="Param.setParams"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        inverse of getParam function</span>
+<span class="sd">        :param kwargs_lens: keyword arguments depending on model options</span>
+<span class="sd">        :param kwargs_source: keyword arguments depending on model options</span>
+<span class="sd">        :return: tuple of parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">setParams</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">setParams</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">setParams</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">setParams</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">args</span></div>
+
+<div class="viewcode-block" id="Param.add_to_fixed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.add_to_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_fixed</span><span class="p">,</span> <span class="n">source_fixed</span><span class="p">,</span> <span class="n">lens_light_fixed</span><span class="p">,</span> <span class="n">else_fixed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        changes the kwargs fixed with the inputs, if options are chosen such that it is modeled</span>
+<span class="sd">        :param lens_fixed:</span>
+<span class="sd">        :param source_fixed:</span>
+<span class="sd">        :param lens_light_fixed:</span>
+<span class="sd">        :param else_fixed:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lens_fix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">add2fix</span><span class="p">(</span><span class="n">lens_fixed</span><span class="p">)</span>
+        <span class="n">source_fix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">add2fix</span><span class="p">(</span><span class="n">source_fixed</span><span class="p">)</span>
+        <span class="n">lens_light_fix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">add2fix</span><span class="p">(</span><span class="n">lens_light_fixed</span><span class="p">)</span>
+        <span class="n">else_fix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">add2fix</span><span class="p">(</span><span class="n">else_fixed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lens_fix</span><span class="p">,</span> <span class="n">source_fix</span><span class="p">,</span> <span class="n">lens_light_fix</span><span class="p">,</span> <span class="n">else_fix</span></div>
+
+<div class="viewcode-block" id="Param.param_init"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.param_init">[docs]</a>    <span class="k">def</span> <span class="nf">param_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwarg_mean_lens</span><span class="p">,</span> <span class="n">kwarg_mean_source</span><span class="p">,</span> <span class="n">kwarg_mean_lens_light</span><span class="p">,</span> <span class="n">kwarg_mean_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting</span>
+<span class="sd">        bounds are defined relative to the catalogue level image called in the class Data</span>
+<span class="sd">        might be migrated to the param class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#inizialize mean and sigma limit arrays</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwarg_mean_lens</span><span class="p">)</span>
+        <span class="n">_mean</span><span class="p">,</span> <span class="n">_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwarg_mean_source</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">+=</span> <span class="n">_mean</span>
+        <span class="n">sigma</span> <span class="o">+=</span> <span class="n">_sigma</span>
+        <span class="n">_mean</span><span class="p">,</span> <span class="n">_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwarg_mean_lens_light</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">+=</span> <span class="n">_mean</span>
+        <span class="n">sigma</span> <span class="o">+=</span> <span class="n">_sigma</span>
+        <span class="n">_mean</span><span class="p">,</span> <span class="n">_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwarg_mean_else</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">+=</span> <span class="n">_mean</span>
+        <span class="n">sigma</span> <span class="o">+=</span> <span class="n">_sigma</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span></div>
+
+<div class="viewcode-block" id="Param.param_bounds"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.param_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">param_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: hard bounds on the parameter space</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#inizialize lower and upper limit arrays</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
+        <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
+        <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
+        <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">high</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Param.num_param"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.num_param">[docs]</a>    <span class="k">def</span> <span class="nf">num_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: number of parameters involved (int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num</span><span class="p">,</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="n">_num</span><span class="p">,</span> <span class="n">_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="n">_num</span>
+        <span class="nb">list</span> <span class="o">+=</span> <span class="n">_list</span>
+        <span class="n">_num</span><span class="p">,</span> <span class="n">_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="n">_num</span>
+        <span class="nb">list</span> <span class="o">+=</span> <span class="n">_list</span>
+        <span class="n">_num</span><span class="p">,</span> <span class="n">_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="n">_num</span>
+        <span class="nb">list</span> <span class="o">+=</span> <span class="n">_list</span>
+        <span class="k">return</span> <span class="n">num</span><span class="p">,</span> <span class="nb">list</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_mass2ligth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates the lens models with an additional multiplicative factor to convert light profiles into mass profiles</span>
+<span class="sd">        ATTENTION: this makes only sense when the original parameters of the LENS model were derived from a LIGHTMODEL</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param mass2light:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_mass2light</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">kwargs_lens</span>
+        <span class="n">mass2light</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">]</span>
+        <span class="n">lens_model_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="p">[</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;sigma0&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sigma0&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass2light</span>
+            <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;theta_E&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass2light</span>
+        <span class="k">return</span> <span class="n">kwargs_lens</span>
+
+    <span class="k">def</span> <span class="nf">_update_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates point source amplitude to relative magnifications</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_else</span>
+
+<div class="viewcode-block" id="Param.get_all_params"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.get_all_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_mass2light</span><span class="p">:</span>
+            <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_mass2ligth</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_kwargs</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_images</span><span class="p">:</span>
+            <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_image_positions</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_magnification</span><span class="p">:</span>
+            <span class="n">kwargs_else</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_magnification</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span></div>
+
+<div class="viewcode-block" id="Param.update_image_positions"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.update_image_positions">[docs]</a>    <span class="k">def</span> <span class="nf">update_image_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">sourcePos_x</span> <span class="o">=</span> <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+            <span class="n">sourcePos_y</span> <span class="o">=</span> <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+            <span class="n">min_distance</span> <span class="o">=</span> <span class="mf">0.05</span>
+            <span class="n">search_window</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ImagePosition</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="n">search_window</span><span class="p">)</span>
+            <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_pos</span>
+            <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pos</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;To compute the image positions, the kwargs_source requires positional information!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_else</span></div>
+
+<div class="viewcode-block" id="Param.update_kwargs"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.parameters.Param.update_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">update_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_source_list</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">kwargs_lens_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver4points</span><span class="o">.</span><span class="n">constraint_lensmodel</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">kwargs_lens_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver2points</span><span class="o">.</span><span class="n">constraint_lensmodel</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> number of images is not valid. Use 2 or 4!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_plane_source&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">kwargs_source</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kwargs_source_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joint_center&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">)</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_mapped</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_mapped</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solver&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">],</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joint_center&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs_source_list</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">)</span>
+                        <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_mapped</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_source_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">)</span>
+                    <span class="n">kwargs_source_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_mapped</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;joint_center&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_source_list</span><span class="p">)):</span>
+                <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_source_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+                <span class="n">kwargs_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_source_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">kwargs_source_list</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

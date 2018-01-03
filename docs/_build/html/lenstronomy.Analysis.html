@@ -1,0 +1,380 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Cosmo package" href="lenstronomy.Cosmo.html" />
+    <link rel="prev" title="lenstronomy package" href="lenstronomy.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.html" title="lenstronomy package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-analysis-package">
+<h1>lenstronomy.Analysis package<a class="headerlink" href="#lenstronomy-analysis-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Analysis.lens_analysis">
+<span id="lenstronomy-analysis-lens-analysis-module"></span><h2>lenstronomy.Analysis.lens_analysis module<a class="headerlink" href="#module-lenstronomy.Analysis.lens_analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis">
+<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.lens_analysis.</code><code class="descname">LensAnalysis</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to compute flux ratio anomalies, inherited from standard MakeImage</p>
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.buldge_disk_ratio">
+<code class="descname">buldge_disk_ratio</code><span class="sig-paren">(</span><em>kwargs_buldge_disk</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.buldge_disk_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.buldge_disk_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the buldge-to-disk ratio of the luminosity
+:param kwargs_buldge_disk: kwargs of the buldge2disk function
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.deflection_field">
+<code class="descname">deflection_field</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.deflection_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.deflection_field" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_else</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.effective_einstein_radius">
+<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the radius with mean convergence=1
+:param kwargs_lens:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.external_lensing_effect">
+<code class="descname">external_lensing_effect</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.external_lensing_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.external_lensing_effect" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
+:param kwargs_lens:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.external_shear">
+<code class="descname">external_shear</code><span class="sig-paren">(</span><em>kwargs_lens_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.external_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.external_shear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens_list</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_components">
+<code class="descname">flux_components</code><span class="sig-paren">(</span><em>kwargs_light</em>, <em>n_grid=400</em>, <em>delta_grid=0.01</em>, <em>type='lens'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.flux_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the total flux in each component of the model
+:param kwargs_light:
+:param n_grid:
+:param delta_grid:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_ratios">
+<code class="descname">flux_ratios</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>source_size=0.003</em>, <em>shape='GAUSSIAN'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.flux_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.flux_ratios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.get_source">
+<code class="descname">get_source</code><span class="sig-paren">(</span><em>x_grid</em>, <em>y_grid</em>, <em>kwargs_source</em>, <em>cov_param=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.get_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.get_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>param</strong> – </li>
+<li><strong>num_order</strong> – </li>
+<li><strong>beta</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.half_light_radius">
+<code class="descname">half_light_radius</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>deltaPix=None</em>, <em>numPix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.half_light_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.half_light_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes numerically the half-light-radius of the deflector light and the total photon flux
+:param kwargs_lens_light:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.magnification_model">
+<code class="descname">magnification_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.magnification_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.magnification_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the point source magnification at the position of the point source images
+:param kwargs_lens:
+:param kwargs_else:
+:return: list of magnifications</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens">
+<code class="descname">multi_gaussian_lens</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>n_comp=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.multi_gaussian_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>multi-gaussian lens model in convergence space
+:param kwargs_lens:
+:param n_comp:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens_light">
+<code class="descname">multi_gaussian_lens_light</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>n_comp=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.multi_gaussian_lens_light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens_light" title="Permalink to this definition">¶</a></dt>
+<dd><p>multi-gaussian decomposition of the lens light profile (in 1-dimension)
+:param kwargs_lens_light:
+:param n_comp:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.position_size_estimate">
+<code class="descname">position_size_estimate</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>kwargs_lens</em>, <em>kwargs_else</em>, <em>delta</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.position_size_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.position_size_estimate" title="Permalink to this definition">¶</a></dt>
+<dd><p>estimate the magnification at the positions and define resolution limit
+:param ra_pos:
+:param dec_pos:
+:param kwargs_lens:
+:param kwargs_else:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.profile_slope">
+<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.profile_slope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.source_properties">
+<code class="descname">source_properties</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>numPix_source</em>, <em>deltaPix_source</em>, <em>cov_param=None</em>, <em>k=0</em>, <em>n_bins=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.source_properties"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.source_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Analysis.lens_properties">
+<span id="lenstronomy-analysis-lens-properties-module"></span><h2>lenstronomy.Analysis.lens_properties module<a class="headerlink" href="#module-lenstronomy.Analysis.lens_properties" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp">
+<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.lens_properties.</code><code class="descname">LensProp</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_options</em>, <em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model</p>
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations">
+<code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em>, <em>z_d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.angular_distances">
+<code class="descname">angular_distances</code><span class="sig-paren">(</span><em>sigma_v_measured</em>, <em>time_delay_measured</em>, <em>kappa_ext</em>, <em>sigma_v_modeled</em>, <em>fermat_pot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.angular_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.angular_distances" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sigma_v_measured</strong> – velocity dispersion measured [km/s]</li>
+<li><strong>time_delay_measured</strong> – time delay measured [d]</li>
+<li><strong>kappa_ext</strong> – external convergence estimated []</li>
+<li><strong>sigma_v_modeled</strong> – lens model velocity dispersion with default cosmology and without external convergence [km/s]</li>
+<li><strong>fermat_pot</strong> – fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">D_d and D_d*D_s/D_ds, units in Mpc physical</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.time_delays">
+<code class="descname">time_delays</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_else</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.time_delays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.time_delays" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.v_sigma">
+<code class="descname">v_sigma</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>r_ani_scaling=1</em>, <em>r_eff=None</em>, <em>r=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.v_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.v_sigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns LOL central velocity dispersion in units of km/s
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion">
+<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>aniso_param=1</em>, <em>r_eff=None</em>, <em>R_slit=0.81</em>, <em>dR_slit=0.1</em>, <em>psf_fwhm=0.7</em>, <em>num_evaluate=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_disperson_new">
+<code class="descname">velocity_disperson_new</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>psf_fwhm</em>, <em>aperture_type</em>, <em>anisotropy_model</em>, <em>r_eff=1.0</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_disperson_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_disperson_new" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_anisotropy</strong> – </li>
+<li><strong>kwargs_aperature</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Analysis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Analysis" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Analysis package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Analysis.lens_analysis">lenstronomy.Analysis.lens_analysis module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Analysis.lens_properties">lenstronomy.Analysis.lens_properties module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Analysis">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.html"
+                        title="previous chapter">lenstronomy package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Cosmo.html"
+                        title="next chapter">lenstronomy.Cosmo package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Analysis.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.html" title="lenstronomy package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,178 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.lens_model_extensions &#8212; lenstronomy 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.lens_model_extensions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+
+
+<div class="viewcode-block" id="LensModelExtensions"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions">[docs]</a><span class="k">class</span> <span class="nc">LensModelExtensions</span><span class="p">(</span><span class="n">LensModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class with extension routines not part of the LensModel core routines</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LensModelExtensions.magnification_finite"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite">[docs]</a>    <span class="k">def</span> <span class="nf">magnification_finite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_sigma</span><span class="o">=</span><span class="mf">0.003</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">grid_number</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                             <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;GAUSSIAN&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the magnification of an extended source with Gaussian light profile</span>
+<span class="sd">        :param x_pos: x-axis positons of point sources</span>
+<span class="sd">        :param y_pos: y-axis position of point sources</span>
+<span class="sd">        :param kwargs_lens: lens model kwargs</span>
+<span class="sd">        :param kwargs_else: kwargs of image positions</span>
+<span class="sd">        :param source_sigma: Gaussian sigma in arc sec in source</span>
+<span class="sd">        :param window_size: size of window to compute the finite flux</span>
+<span class="sd">        :param grid_number: number of grid cells per axis in the window to numerically comute the flux</span>
+<span class="sd">        :return: numerically computed brightness of the sources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mag_finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)</span>
+        <span class="n">deltaPix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span><span class="o">/</span><span class="n">grid_number</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
+            <span class="n">quasar</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;TORUS&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">lenstronomy.LightModel.Profiles.torus</span> <span class="k">as</span> <span class="nn">quasar</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;shape </span><span class="si">%s</span><span class="s2"> not valid for finite magnification computation!&quot;</span> <span class="o">%</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">grid_number</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)):</span>
+            <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">x_pos</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_grid</span> <span class="o">+</span> <span class="n">ra</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">+</span> <span class="n">dec</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="n">I_image</span> <span class="o">=</span> <span class="n">quasar</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+            <span class="n">mag_finite</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">I_image</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaPix</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">mag_finite</span></div>
+
+<div class="viewcode-block" id="LensModelExtensions.critical_curve_caustics"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics">[docs]</a>    <span class="k">def</span> <span class="nf">critical_curve_caustics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">compute_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">grid_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens: lens model kwargs</span>
+<span class="sd">        :param kwargs_else: other kwargs</span>
+<span class="sd">        :param compute_window: window size in arcsec where the critical curve is computed</span>
+<span class="sd">        :param grid_scale: numerical grid spacing of the computation of the critical curves</span>
+<span class="sd">        :return: lists of ra and dec arrays corresponding to different disconnected critical curves</span>
+<span class="sd">        and their caustic counterparts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">compute_window</span> <span class="o">/</span> <span class="n">grid_scale</span><span class="p">)</span>
+        <span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">grid_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mag_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">))</span>
+
+        <span class="c1">#import numpy.ma as ma</span>
+        <span class="c1">#z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.</span>
+
+        <span class="c1"># Non-filled contours (lines only).</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="kn">import</span> <span class="nn">matplotlib._cntr</span> <span class="k">as</span> <span class="nn">cntr</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">cntr</span><span class="o">.</span><span class="n">Cntr</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid_high_res</span><span class="p">),</span> <span class="n">mag_high_res</span><span class="p">)</span>
+        <span class="n">nlist</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">segs</span> <span class="o">=</span> <span class="n">nlist</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">nlist</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="c1"># print segs  # x,y coords of contour points.</span>
+
+        <span class="c1">#cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],</span>
+        <span class="c1">#                alpha=0.0)</span>
+        <span class="c1">#paths = cs.collections[0].get_paths()</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">segs</span>
+        <span class="n">ra_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dec_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ra_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dec_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+            <span class="c1">#v = p.vertices</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="n">ra_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">dec_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">ra_crit_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_points</span><span class="p">)</span>
+            <span class="n">dec_crit_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_points</span><span class="p">)</span>
+
+            <span class="n">ra_caustics</span><span class="p">,</span> <span class="n">dec_caustics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra_points</span><span class="p">,</span> <span class="n">dec_points</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                         <span class="n">kwargs_else</span><span class="p">)</span>
+            <span class="n">ra_caustic_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_caustics</span><span class="p">)</span>
+            <span class="n">dec_caustic_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_caustics</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ra_crit_list</span><span class="p">,</span> <span class="n">dec_crit_list</span><span class="p">,</span> <span class="n">ra_caustic_list</span><span class="p">,</span> <span class="n">dec_caustic_list</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

@@ -85,7 +85,6 @@ class MakeImageIterLens(ImageModel):
             im_sim_new, model_error_new, param_new = self.get_source_model_base(x_grid, y_grid, kwargs_lens_new, kwargs_source, kwargs_psf,
                                                                     kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res)
             chi2_new = self.chi2(im_sim_new, model_error_new)
-            print chi2_new, i
             if chi2_new < chi2:
                 chi2 = chi2_new
                 model_error = model_error_new

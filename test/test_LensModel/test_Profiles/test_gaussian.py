@@ -110,7 +110,6 @@ class TestGaussianKappa(object):
         kappa = 1./2 * (f_xx + f_yy)
         amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma_x, sigma_y)
         density_2d = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma_x, sigma_y, center_x, center_y)
-        print kappa, density_2d
         npt.assert_almost_equal(kappa[1], density_2d[1], decimal=5)
         npt.assert_almost_equal(kappa[2], density_2d[2], decimal=5)
 
@@ -125,7 +124,6 @@ class TestGaussianKappa(object):
         amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma_x, sigma_y)
         density_2d_gauss = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma_x, sigma_y, center_x, center_y)
         density_2d = self.gaussian.function(x, y, amp, sigma_x, sigma_y, center_x, center_y)
-        print density_2d_gauss, density_2d
         npt.assert_almost_equal(density_2d_gauss[1], density_2d[1], decimal=5)
 
 if __name__ == '__main__':

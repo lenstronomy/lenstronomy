@@ -3,7 +3,9 @@ from lenstronomy.ImSim.image_model import ImageModel
 
 class MakeImageMultiband(object):
     """
-    class to simulate/reconstruct images in multiband option
+    class to simulate/reconstruct images in multi-band option.
+    This class calls functions of image_model.py with different bands with
+    joint non-linear parameters and decoupled linear parameters.
     """
 
     def __init__(self, kwargs_options, kwargs_data_list=[], kwargs_psf_list=[], compute_bool=None):
@@ -93,12 +95,12 @@ class MakeImageMultiband(object):
 
     def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
         """
-
-        :param kwargs_lens:
-        :param kwargs_else:
+        lens equation solver for image positions given lens model and source position
+        :param kwargs_lens: keyword arguments of lens models (as list)
+        :param kwargs_else: keyword arguments of other parameters
         :param sourcePos_x: source position in relative arc sec
         :param sourcePos_y: source position in relative arc sec
-        :return:
+        :return: x_coords, y_coords of image positions
         """
         x_mins, y_mins = self._makeImage_list[0].image_positions(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
         return x_mins, y_mins

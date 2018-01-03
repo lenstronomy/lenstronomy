@@ -122,12 +122,12 @@ class ImageModel(object):
 
     def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
         """
-
-        :param kwargs_lens:
-        :param kwargs_else:
+        lens equation solver for image positions given lens model and source position
+        :param kwargs_lens: keyword arguments of lens models (as list)
+        :param kwargs_else: keyword arguments of other parameters
         :param sourcePos_x: source position in relative arc sec
         :param sourcePos_y: source position in relative arc sec
-        :return:
+        :return: x_coords, y_coords of image positions
         """
         deltaPix = self.Data.deltaPix / 2.
         numPix = self.Data.nx * 2
@@ -138,10 +138,10 @@ class ImageModel(object):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_else:
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: log likelihood (natural logarithm)
         """
         # generate image
@@ -159,13 +159,20 @@ class ImageModel(object):
 
     @property
     def numData_evaluate(self):
+        """
+        number of data points to be used in the linear solver
+        :return:
+        """
         return self.Data.numData_evaluate
 
     def fermat_potential(self, kwargs_lens, kwargs_else):
         """
 
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
+
         if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
             ra_pos = kwargs_else['ra_pos']
             dec_pos = kwargs_else['dec_pos']
@@ -178,6 +185,21 @@ class ImageModel(object):
         return phi_fermat
 
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
+        """
+        return linear response Matrix
+        :param x_grid:
+        :param y_grid:
+        :param x_source:
+        :param y_source:
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_else:
+        :param mask:
+        :param map_error:
+        :param unconvolved:
+        :return:
+        """
         kwargs_psf = self._kwargs_psf
         source_light_response, n_source = self.SourceModel.lightModel.functions_split(x_source, y_source, kwargs_source)
         lens_light_response, n_lens_light = self.LensLightModel.lightModel.functions_split(x_grid, y_grid,
@@ -226,8 +248,8 @@ class ImageModel(object):
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """
         links linear parameters to kwargs arguments
-        :param param:
-        :return:
+        :param param: linear parameter vector corresponding to the response matrix
+        :return: updated list of kwargs with linear parameter values
         """
         i = 0
         for k, model in enumerate(self._kwargs_options['source_light_model_list']):
@@ -295,6 +317,7 @@ class ImageModel(object):
         aim: mimic different telescopes photon collection area or colours for different imaging bands
         :param kwargs_source:
         :param kwargs_lens_light:
+        :param kwargs_else:
         :param norm_factor:
         :return:
         """

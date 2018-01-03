@@ -3,7 +3,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.constants as const
-from cosmo import Cosmo
+from lenstronomy.GalKin.cosmo import Cosmo
 
 
 class MassProfile(object):

@@ -9,8 +9,8 @@ import lenstronomy.Util.analysis_util as analysis_util
 def correlation_2D(image):
     """
 
-    :param residuals:
-    :return:
+    :param image: 2d image
+    :return: psd1D, psd2D
     """
     # Take the fourier transform of the image.
     F1 = fftpack.fft2(image)

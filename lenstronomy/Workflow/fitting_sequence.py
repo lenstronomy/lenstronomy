@@ -39,7 +39,7 @@ class FittingSequence(object):
                 chain_list.append(chain)
                 param_list.append(param)
             # print statement, parameters ect
-        #TODO update fixed parameters as in fitting class
+        #TODO update fixed paramet  ers as in fitting class
         return lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, else_input):
@@ -152,7 +152,6 @@ class FittingSequence(object):
                                                    symmetry=psf_symmetry, verbose=False)
 
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
-
 
     def _init_kwargs(self):
         """

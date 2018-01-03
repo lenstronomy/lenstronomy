@@ -1,9 +1,9 @@
-from light_profile import LightProfile
-from mass_profile import MassProfile
-from aperture import Aperture
-from anisotropy import MamonLokasAnisotropy
-from cosmo import Cosmo
-import velocity_util as util
+from lenstronomy.GalKin.light_profile import LightProfile
+from lenstronomy.GalKin.mass_profile import MassProfile
+from lenstronomy.GalKin.aperture import Aperture
+from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
+from lenstronomy.GalKin.cosmo import Cosmo
+import lenstronomy.GalKin.velocity_util as util
 import lenstronomy.Util.constants as const
 
 import numpy as np

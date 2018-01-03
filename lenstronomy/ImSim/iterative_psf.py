@@ -204,6 +204,15 @@ class PSF_iterative(object):
         return mask
 
     def mask_point_sources(self, x_pos, y_pos, x_grid, y_grid, radius):
+        """
+
+        :param x_pos:
+        :param y_pos:
+        :param x_grid:
+        :param y_grid:
+        :param radius:
+        :return:
+        """
         mask_list = []
         for i in range(len(x_pos)):
             mask = self.mask_point_source(x_pos, y_pos, x_grid, y_grid, radius, i=i)

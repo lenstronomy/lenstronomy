@@ -13,14 +13,18 @@ class ProfileIntegrals(object):
     - projected enclosed densities
     """
     def __init__(self, profile_class):
+        """
+
+        :param profile_class: list of lens models
+        """
         self._profile = profile_class
 
     def mass_enclosed_3d(self, r, kwargs_profile):
         """
         computes the mass enclosed within a sphere of radius r
-        :param r:
-        :param kwargs_profile:
-        :return:
+        :param r: radius (arcsec)
+        :param kwargs_profile: keyword argument list with lens model parameters
+        :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
         try:
@@ -35,9 +39,9 @@ class ProfileIntegrals(object):
     def density_2d(self, r, kwargs_profile):
         """
         computes the projected density along the line-of-sight
-        :param r:
-        :param kwargs_profile:
-        :return:
+        :param r: radius (arcsec)
+        :param kwargs_profile: keyword argument list with lens model parameters
+        :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
         try:
@@ -52,9 +56,9 @@ class ProfileIntegrals(object):
     def mass_enclosed_2d(self, r, kwargs_profile):
         """
         computes the mass enclosed the projected line-of-sight
-        :param r:
-        :param kwargs_profile:
-        :return:
+        :param r: radius (arcsec)
+        :param kwargs_profile: keyword argument list with lens model parameters
+        :return: projected mass enclosed radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
         try:
@@ -71,13 +75,14 @@ class ConvergenceIntegrals(object):
     """
     class to compute lensing potentials and deflection angles provided a convergence map
     """
+
     def potential_from_kappa(self, kappa, x_grid, y_grid, deltaPix):
         """
 
-        :param kappa:
-        :param x_coords:
-        :param y_coords:
-        :return:
+        :param kappa: 1d grid of convergence values
+        :param x_grid: x-coordinate grid
+        :param y_grid: y-coordinate grid
+        :return: lensing potential in a 2d grid at positions x_grid, y_grid
         """
         kernel = self._potential_kernel(x_grid, y_grid)
         f_ = scp.fftconvolve(kernel, util.array2image(kappa), mode='same') / np.pi * deltaPix**2

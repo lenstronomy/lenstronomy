@@ -1,10 +1,10 @@
 import numpy as np
 
-import velocity_util as util
-from light_profile import LightProfile_old
-from aperture import Aperture
-from anisotropy import Anisotropy
-from jeans_equation import Jeans_solver
+import lenstronomy.GalKin.velocity_util as util
+from lenstronomy.GalKin.light_profile import LightProfile_old
+from lenstronomy.GalKin.aperture import Aperture
+from lenstronomy.GalKin.anisotropy import Anisotropy
+from lenstronomy.GalKin.jeans_equation import Jeans_solver
 
 
 class GalKin_analytic(object):

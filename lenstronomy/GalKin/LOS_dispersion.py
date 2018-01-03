@@ -1,8 +1,8 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import velocity_util as vel_util
-from cosmo import Cosmo
+import lenstronomy.GalKin.velocity_util as vel_util
+from lenstronomy.GalKin.cosmo import Cosmo
 import lenstronomy.Util.constants as const
 import math
 

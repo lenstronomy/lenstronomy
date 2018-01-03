@@ -153,24 +153,6 @@ def averaging(grid, numGrid, numPix):
     return small
 
 
-def averaging2(grid, numGrid, numPix):
-    """
-
-    :param grid:
-    :param numGrid:
-    :param numPix:
-    :return:
-    """
-    from PIL import Image
-    width_org, height_org = grid.shape
-    factor = numPix/float(numGrid)
-    width = int(width_org * factor)
-    height = int(height_org * factor)
-    im = Image.fromarray(grid)
-    img_anti = im.resize((width, height), Image.ANTIALIAS)
-    return np.array(img_anti)
-
-
 def compare(model, data, sigma, poisson):
     """
 

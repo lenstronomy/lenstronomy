@@ -1,5 +1,6 @@
 numpy>=1.13
 astropy>=2.0
-mock
 mpmath
+cosmohammer
+matplotlib
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

@@ -40,7 +40,7 @@ The full documentation can be generated with Sphinx"""
 
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-requires = ['numpy>=1.11.1', 'scipy>=0.14.0', "configparser"] #during runtime ,, "darkskysync", "configparser", 'astropy', "PyCosmo", 'numpy>=1.7'
+requires = ['numpy>=1.11.1', 'scipy>=0.14.0', "configparser"] #during runtime , "configparser", 'astropy', "PyCosmo", 'numpy>=1.7'
 tests_require=['pytest>=2.3', "mock"] #for testing
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))

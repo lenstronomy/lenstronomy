@@ -7,6 +7,9 @@ class SPEP(object):
     """
     class for Softened power-law elliptical potential (SPEP)
     """
+    def __init__(self):
+        from lenstronomy.LensModel.Profiles.spp import SPP
+        self.spp = SPP()
 
     def function(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
         """
@@ -117,3 +120,15 @@ class SPEP(object):
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_yy, f_xy
+
+    def mass_3d_lens(self, r, theta_E, gamma, q, phi_G):
+        """
+        computes the spherical power-law mass enclosed (with SPP routiune)
+        :param r:
+        :param theta_E:
+        :param gamma:
+        :param q:
+        :param phi_G:
+        :return:
+        """
+        return self.spp.mass_3d_lens(r, theta_E, gamma)

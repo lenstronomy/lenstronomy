@@ -2,9 +2,8 @@ __author__ = 'sibirrer'
 
 import math
 import numpy as np
-from galkin.LOS_dispersion import Velocity_dispersion
-from galkin.galkin import Galkin
-
+from lenstronomy.GalKin.LOS_dispersion import Velocity_dispersion
+from lenstronomy.GalKin.galkin import Galkin
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis

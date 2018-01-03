@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 import lenstronomy.Util.util as util
 import numpy as np
 import pytest
-from mock import patch
 
 from lenstronomy.ImSim.image_model import ImageModel
 
@@ -12,8 +11,7 @@ class TestMakeImage(object):
     """
     tests the source model routines
     """
-    @patch("darkskysync.DarkSkySync", autospec=False)
-    def setup(self, dss_mock):
+    def setup(self):
         self.kwargs_options = {'system_name': '', 'data_file': ''
             , 'cosmo_file': '', 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'], 'lens_light_model_list': ['SERSIC']
             , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}

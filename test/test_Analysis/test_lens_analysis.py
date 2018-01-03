@@ -37,7 +37,7 @@ class TestLensAnalysis(object):
         gamma_out = analysis.profile_slope(kwargs_lens, kwargs_else={})
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
-        kwargs_options = {'lens_model_list': ['SPEMD'], 'lens_model_internal_bool': [True]}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True]}
         analysis = LensAnalysis(kwargs_options, kwargs_data={})
         gamma_in = 2.
         kwargs_lens = [{'theta_E': 1.4516812130749424, 'q': 0.89760957136967312, 'center_x': -0.04507598845306314,
@@ -51,7 +51,7 @@ class TestLensAnalysis(object):
             {'Rs': 0.29187068596715743, 'q': 0.70799587973181288, 'center_x': 0.020568531548241405,
             'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
             'sigma0': 85.948773973262391}]
-        kwargs_options = {'lens_model_list': ['SPEMD'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options, {})
         r_eff_true = 0.282786143932
         r_eff = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.05)
@@ -67,6 +67,7 @@ class TestLensAnalysis(object):
         r_eff = lensAnalysis.half_light_radius(kwargs_profile, numPix=2000, deltaPix=0.05)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
+
 
 if __name__ == '__main__':
     pytest.main()

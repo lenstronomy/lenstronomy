@@ -204,12 +204,6 @@ def test_neighborSelect():
     assert values[0] == 0
 
 
-def test_averaging2():
-    grid = np.ones((100, 100))
-    grid_smoothed = Util.averaging2(grid, numGrid=100, numPix=50)
-    assert grid_smoothed[0][0] == 1
-
-
 def test_make_subgrid():
     numPix = 101
     deltapix = 1

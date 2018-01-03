@@ -12,7 +12,7 @@ from lenstronomy.Data.coord_transforms import Coordinates
 
 class Data(object):
     """
-    class to handle the data, coordinate system and masking
+    class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
     def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, lens_light_mask=False):
         self._subgrid_res = subgrid_res

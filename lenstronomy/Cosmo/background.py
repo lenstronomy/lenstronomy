@@ -12,8 +12,8 @@ class Background(object):
     def __init__(self, cosmo=None):
         """
 
-        :param param_file: parameter file for pycosmo
-        :return:
+        :param cosmo: instance of astropy.cosmology
+        :return: Background class with instance of astropy.cosmology
         """
         from astropy.cosmology import default_cosmology
 
@@ -24,15 +24,17 @@ class Background(object):
     def a_z(self, z):
         """
         returns scale factor (a_0 = 1) for given redshift
+        :param z: redshift
+        :return: scale factor
         """
         return 1./(1+z)
 
     def D_xy(self, z_observer, z_source):
         """
-        angular diamter distance in units of Mpc
+
         :param z_observer: observer
         :param z_source: source
-        :return:
+        :return: angular diamter distance in units of Mpc
         """
         a_S = self.a_z(z_source)
         D_xy = (self.cosmo.comoving_transverse_distance(z_source) - self.cosmo.comoving_transverse_distance(z_observer))*a_S
@@ -40,10 +42,10 @@ class Background(object):
 
     def T_xy(self, z_observer, z_source):
         """
-        transverse comoving distance in units of Mpc
+
         :param z_observer: observer
         :param z_source: source
-        :return:
+        :return: transverse comoving distance in units of Mpc
         """
         T_xy = self.cosmo.comoving_transverse_distance(z_source) - self.cosmo.comoving_transverse_distance(z_observer)
         return T_xy.value

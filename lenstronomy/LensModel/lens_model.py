@@ -5,8 +5,16 @@ import numpy as np
 
 
 class LensModel(object):
+    """
+    class to handle an arbitrary list of lens models
+    """
 
     def __init__(self, lens_model_list, foreground_shear=False):
+        """
+
+        :param lens_model_list: list of strings with lens model names
+        :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
+        """
         self.func_list = []
         from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
         self.shear = ExternalShear()
@@ -106,6 +114,14 @@ class LensModel(object):
     def ray_shooting(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         maps image to source position (inverse deflection)
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: source plane positions corresponding to (x, y) in the image plane
         """
         dx, dy = self.alpha(x, y, kwargs, kwargs_else, k=k)
         return x - dx, y - dy
@@ -113,19 +129,44 @@ class LensModel(object):
     def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens, kwargs_else):
         """
 
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :param x_image: image position
+        :param y_image: image position
+        :param x_source: source position
+        :param y_source: source position
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else:
+        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens, kwargs_else)
         geometry = (x_image - x_source)**2 + (y_image - y_source)**2
         return geometry/2 - potential
 
-    def mass(self, x, y, sigma_crit, kwargs):
+    def mass(self, x, y, epsilon_crit, kwargs):
+        """
+
+        :param x: position
+        :param y: position
+        :param epsilon_crit: critical mass density of a lens
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :return: projected mass density in units of input epsilon_crit
+        """
         kappa = self.kappa(x, y, kwargs)
-        mass = sigma_crit*kappa
+        mass = epsilon_crit * kappa
         return mass
 
-    def potential(self, x, y, kwargs, kwargs_else=None):
+    def potential(self, x, y, kwargs, kwargs_else=None, k=None):
+        """
+        lensing potential
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: lensing potential in units of arcsec^2
+        """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if self._foreground_shear:
@@ -135,15 +176,26 @@ class LensModel(object):
         else:
             x_ = x
             y_ = y
-        potential = np.zeros_like(x)
-        for i, func in enumerate(self.func_list):
-            if not self._model_list[i] == 'NONE':
-                potential += func.function(x_, y_, **kwargs[i])
+        if k is not None:
+            potential = self.func_list[k].function(x_, y_, **kwargs[k])
+        else:
+            potential = np.zeros_like(x)
+            for i, func in enumerate(self.func_list):
+                if not self._model_list[i] == 'NONE':
+                    potential += func.function(x_, y_, **kwargs[i])
         return potential
 
     def alpha(self, x, y, kwargs, kwargs_else=None, k=None):
         """
-        a = grad(phi)
+        deflection angles
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: deflection angles in units of arcsec
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
@@ -167,40 +219,71 @@ class LensModel(object):
 
     def kappa(self, x, y, kwargs, kwargs_else=None, k=None):
         """
-        k = 1/2 laplacian(phi)
+        lensing convergence k = 1/2 laplacian(phi)
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: lensing convergence
         """
+
         f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else, k=k)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         return kappa
 
-    def gamma(self, x, y, kwargs, kwargs_else=None):
+    def gamma(self, x, y, kwargs, kwargs_else=None, k=None):
         """
+        shear computation
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
         g2 = d^2phi/dxdy
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: gamma1, gamma2
         """
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else)
+
+        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else, k=k)
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
         return gamma1, gamma2
 
-    def magnification(self, x, y, kwargs, kwargs_else=None):
+    def magnification(self, x, y, kwargs, kwargs_else=None, k=None):
         """
+        magnification
         mag = 1/det(A)
         A = 1 - d^2phi/d_ij
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: magnification
         """
+
         f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, kwargs_else=kwargs_else)
-        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy  # attention, only works in right units of critical density
-        return 1./det_A  # attention, if dividing to zero
+        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy
+        return 1./det_A  # attention, if dividing by zero
 
     def hessian(self, x, y, kwargs, kwargs_else=None, k=None):
         """
         hessian matrix
-        :param x:
-        :param y:
-        :param kwargs:
-        :param kwargs_else:
-        :param k:
-        :return:
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param k: only evaluate the k-th lens model
+        :return: f_xx, f_xy, f_yy components
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
@@ -224,9 +307,19 @@ class LensModel(object):
 
     def hessian_differential(self, x, y, kwargs, kwargs_else=None, diff=0.0000001, k=None):
         """
-        computes the differentials f_xx, f_yy, f_xy from f_x and f_y
+        computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs_else: keyword arguments, necessary for foreground shear values only
+        :param diff: numerical differential step (float)
+        :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy
         """
+
         alpha_ra, alpha_dec = self.alpha(x, y, kwargs, kwargs_else, k=k)
 
         alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, kwargs_else, k=k)
@@ -246,9 +339,10 @@ class LensModel(object):
     def mass_3d(self, r, kwargs, bool_list=None):
         """
         computes the mass within a 3d sphere of radius r
-        :param r:
-        :param kwargs:
-        :return:
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: mass (in angular units, modulo epsilon_crit)
         """
         if bool_list is None:
             bool_list = [True]*len(self.func_list)
@@ -265,9 +359,10 @@ class LensModel(object):
     def mass_2d(self, r, kwargs, bool_list=None):
         """
         computes the mass enclosed a projected (2d) radius r
-        :param r:
-        :param kwargs:
-        :return:
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: projected mass (in angular units, modulo epsilon_crit)
         """
         if bool_list is None:
             bool_list = [True]*len(self.func_list)

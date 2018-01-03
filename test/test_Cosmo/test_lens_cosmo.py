@@ -38,7 +38,7 @@ class TestLensCosmo(object):
 
     def test_mass_in_phi_E(self):
         phi_E = 1.5
-        mass = self.lensCosmo.mass_in_phi_E(phi_E)
+        mass = self.lensCosmo.mass_in_theta_E(phi_E)
         assert mass == 761967261292.6725
 
 

@@ -47,11 +47,12 @@ Modelling Features
 Analysis tools
 -------
 * Standardized fitting procedures for some lens systems
-* Modular build up to designe plugins by users
+* Modular build up to design plugins by users
 * Interactive jupyter notebooks
-* Pre-defined plotting and ilustration routines
+* Pre-defined plotting and illustration routines
 * Particle swarm optimization for parameter fitting
-* MCMC (emcee from CosmoHammer)
+* MCMC (emcee from CosmoHammer) for parameter inferences
+* Kinematic modelling
 * Cosmographic inference tools
 
 

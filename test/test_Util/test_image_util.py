@@ -169,7 +169,7 @@ def test_re_size_array():
     x_out = np.linspace(0, 1, numPix*subgrid_res)
     out_values = image_util.re_size_array(x_in, x_in, input_values, x_out, x_out)
     kernel_out = out_values
-    assert kernel_out[(numPix*subgrid_res-1)/2, (numPix*subgrid_res-1)/2] == 0.58477508650519028
+    assert kernel_out[int((numPix*subgrid_res-1)/2), int((numPix*subgrid_res-1)/2)] == 0.58477508650519028
 
 
 def test_symmetry_average():

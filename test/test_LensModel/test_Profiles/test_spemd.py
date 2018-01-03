@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
-class TestSPEP(object):
+class TestSPEMD(object):
     """
     tests the Gaussian methods
     """

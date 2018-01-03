@@ -5,6 +5,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
+from astropy.cosmology import FlatLambdaCDM
+
 
 class LensCosmo(object):
     """
@@ -91,3 +93,36 @@ class LensCosmo(object):
         D_dt = self.D_dt_model/(1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
 
+
+class FlatLCDM(object):
+    """
+
+    """
+
+    def __init__(self, z_lens, z_source):
+        """
+        :param CosmoProp: instance of class CosmoProp
+        :param StrongLensSystem: instance of a StrongLensSystem class
+        """
+        self.z_lens = z_lens
+        self.z_source = z_source
+
+    def D_d(self, H_0, Om0):
+        cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
+        lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
+        return lensCosmo.D_d
+
+    def D_s(self, H_0, Om0):
+        cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
+        lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
+        return lensCosmo.D_s
+
+    def D_ds(self, H_0, Om0):
+        cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
+        lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
+        return lensCosmo.D_ds
+
+    def D_dt_model(self, H_0, Om0):
+        cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
+        lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
+        return lensCosmo.D_dt_model

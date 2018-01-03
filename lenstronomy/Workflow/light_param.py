@@ -114,7 +114,7 @@ class LightParam(object):
                     i += 2
                 else:
                     kwargs['phi_G_2'] = kwargs_fixed['phi_G_2']
-                    kwargs['q_b'] = kwargs_fixed['q_b']
+                    kwargs['q_2'] = kwargs_fixed['q_2']
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     kwargs['Re'] = args[i]

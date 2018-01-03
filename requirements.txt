@@ -1,4 +1,5 @@
 numpy>=1.13
+astropy>=2.0
 mock
 mpmath
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

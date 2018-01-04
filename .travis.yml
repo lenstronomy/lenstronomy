@@ -10,13 +10,14 @@ python:
 before_install:
   - sudo apt-get build-dep python-scipy
   - pip install coveralls
+  - pip install python-coveralls
   - pip install scipy
 # command to install dependencies
 install:
   - pip install .
   - pip install -r requirements.txt
 # command to run tests
-script: pytest
+script: coverage
 
 after_success:
     coveralls

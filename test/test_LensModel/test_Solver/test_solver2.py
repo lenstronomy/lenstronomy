@@ -131,6 +131,35 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out_ellipse[0]['phi_G'], kwargs_lens[0]['phi_G'], decimal=3)
         npt.assert_almost_equal(kwargs_out_ellipse[0]['q'], 0.8, decimal=3)
 
+    def test_shapelet_cart(self):
+        lens_model_list = ['SHAPELETS_CART', 'SIS']
+        solver = Solver2Point(lens_model_list)
+        lens = LensModel(lens_model_list)
+        image_position = LensEquationSolver(lens_model_list)
+        sourcePos_x = 0.1
+        sourcePos_y = 0.03
+        deltapix = 0.05
+        numPix = 100
+
+        kwargs_lens = [{'coeffs': [1., 0., 0.1, 1.], 'beta': 1.},
+                       {'theta_E': 1., 'center_x': -0.1, 'center_y': 0.1}]
+        x_pos, y_pos = image_position.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=2, min_distance=deltapix, search_window=numPix*deltapix, precision_limit=10**(-10))
+        print(len(x_pos), 'number of images')
+        x_pos = x_pos[:2]
+        y_pos = y_pos[:2]
+
+        kwargs_init = [{'coeffs': [1., 0., 0.1, 1.], 'beta': 1.},
+                       {'theta_E': 1., 'center_x': -0.1, 'center_y': 0.1}]
+        kwargs_out = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
+        print(kwargs_out, 'output')
+        source_x, source_y = lens.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
+        x_pos_new, y_pos_new = image_position.findBrightImage(source_x, source_y, kwargs_out, kwargs_else=None, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
+        npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
+        npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
+
+        npt.assert_almost_equal(kwargs_out[0]['coeffs'][1], kwargs_lens[0]['coeffs'][1], decimal=3)
+        npt.assert_almost_equal(kwargs_out[0]['coeffs'][2], kwargs_lens[0]['coeffs'][2], decimal=3)
+
 
 if __name__ == '__main__':
     pytest.main()

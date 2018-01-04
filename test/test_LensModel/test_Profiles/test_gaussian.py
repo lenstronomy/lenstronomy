@@ -82,7 +82,19 @@ class TestGaussianKappa(object):
         self.gaussian_kappa = GaussianKappa()
         self.gaussian = Gaussian()
 
-    def test_kappa(self):
+    def test_derivatives(self):
+        x = np.linspace(0, 5, 10)
+        y = np.linspace(0, 5, 10)
+        amp = 1.*2*np.pi
+        center_x = 0.
+        center_y = 0.
+        sigma_x = 1.
+        sigma_y = 1.
+        f_x, f_y = self.gaussian_kappa.derivatives(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        npt.assert_almost_equal(f_x[2], 0.63813558702212059, decimal=8)
+        npt.assert_almost_equal(f_y[2], 0.63813558702212059, decimal=8)
+
+    def test_hessian(self):
         x = np.linspace(0, 5, 10)
         y = np.linspace(0, 5, 10)
         amp = 1.*2*np.pi
@@ -125,6 +137,7 @@ class TestGaussianKappa(object):
         density_2d_gauss = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma_x, sigma_y, center_x, center_y)
         density_2d = self.gaussian.function(x, y, amp, sigma_x, sigma_y, center_x, center_y)
         npt.assert_almost_equal(density_2d_gauss[1], density_2d[1], decimal=5)
+
 
 if __name__ == '__main__':
     pytest.main()

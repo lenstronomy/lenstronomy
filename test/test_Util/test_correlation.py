@@ -12,7 +12,7 @@ class TestCorrelation(object):
     def setup(self):
         pass
 
-    def test_corr1D(self):
+    def test_corr2D(self):
         residuals = np.ones((10,10))
         residuals[5,5] = 100
         psd1D, psd2D = correlation.correlation_2D(residuals)

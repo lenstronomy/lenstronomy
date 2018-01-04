@@ -25,13 +25,3 @@ def correlation_2D(image):
     # Calculate the azimuthally averaged 1D power spectrum
     psd1D = analysis_util.azimuthalAverage(psd2D)
     return psd1D, psd2D
-
-
-def random_1D(numPix):
-    """
-    same as corr1D put with a random distribution with mean 0 and sigma=1
-    :return:
-    """
-    noise = util.array2image(np.random.normal(0, 1, numPix**2))**2
-    psd1D_noise, psd2D_noise = correlation_2D(noise)
-    return psd1D_noise, psd2D_noise

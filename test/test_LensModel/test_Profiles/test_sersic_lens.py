@@ -168,6 +168,13 @@ class TestSersic(object):
         kappa /= kappa[0]
         npt.assert_almost_equal(flux[1], kappa[1], decimal=5)
 
+    def test_sersic_util(self):
+        n = 1.
+        Re = 2.
+        k, bn = self.sersic.k_bn(n, Re)
+        Re_new = self.sersic.k_Re(n, k)
+        assert Re == Re_new
+
 
 if __name__ == '__main__':
     pytest.main()

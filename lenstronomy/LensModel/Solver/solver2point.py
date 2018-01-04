@@ -87,7 +87,7 @@ class Solver2Point(object):
                 kwargs_list[0]['q'] = q
                 kwargs_list[0]['phi_G'] = phi_G
 
-        elif lens_model in ['SHAPELET_CART']:
+        elif lens_model in ['SHAPELETS_CART']:
             [c10, c01] = x
             coeffs = list(kwargs_list[0]['coeffs'])
             coeffs[1: 3] = [c10, c01]

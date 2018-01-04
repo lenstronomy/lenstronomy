@@ -15,7 +15,6 @@ class TestDipole(object):
         self.dipole = Dipole()
         self.dipole_util = Dipole_util()
 
-
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
@@ -41,7 +40,6 @@ class TestDipole(object):
         #npt.assert_almost_equal(values[0], 0, decimal=5)
         #npt.assert_almost_equal(values[1], 0, decimal=5)
         #npt.assert_almost_equal(values[2], 0, decimal=5)
-
 
     def test_derivatives(self):
         x = np.array([1])
@@ -91,6 +89,10 @@ class TestDipole(object):
         npt.assert_almost_equal(values[0][1], 0.11310581066966192, decimal=5)
         npt.assert_almost_equal(values[1][1], 0.22621162133932399, decimal=5)
         npt.assert_almost_equal(values[2][1], -0.16965871600449295, decimal=5)
+
+    def test_mass_ratio(self):
+        ratio = self.dipole_util.mass_ratio(theta_E=1., theta_E_sub=0.1)
+        assert ratio == 100
 
 
 if __name__ == '__main__':

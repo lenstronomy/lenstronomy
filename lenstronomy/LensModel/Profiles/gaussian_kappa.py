@@ -107,6 +107,18 @@ class GaussianKappa(object):
         c = 1./(2 * sigma_x * sigma_y)
         return amp2d * 2 * np.pi * 1./(2*c) * (1. - np.exp(-c * R**2))
 
+    def mass_2d_lens(self, R, amp, sigma_x, sigma_y):
+        """
+
+        :param R:
+        :param amp:
+        :param sigma_x:
+        :param sigma_y:
+        :return:
+        """
+        amp_density = self._amp2d_to_3d(amp, sigma_x, sigma_y)
+        return self.mass_2d(R, amp_density, sigma_x, sigma_y)
+
     def alpha_abs(self, R, amp, sigma_x, sigma_y):
         """
         absolute value of the deflection

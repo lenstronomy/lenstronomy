@@ -118,5 +118,11 @@ def test_cutout_source2():
     assert kernel[2, 2] == 1
 
 
+def test_subgrid_kernel():
+    kernel = np.ones((3, 3))
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=2)
+    assert subgrid_kernel[0,0] == 0.0069444444444444441
+
+
 if __name__ == '__main__':
     pytest.main()

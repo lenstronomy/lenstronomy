@@ -45,5 +45,10 @@ class TestLensModel(object):
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
+    def test_mass_2d(self):
+        lensModel = LensModel(['GAUSSIAN_KAPPA'])
+        output = lensModel.mass_2d(r=1, kwargs=self.kwargs)
+        assert output == 0.11750309741540453
+
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

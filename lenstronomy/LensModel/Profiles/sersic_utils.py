@@ -81,7 +81,6 @@ class SersicUtil(object):
         x_red = self._x_reduced(x, y, n_sersic, r_eff, center_x, center_y)
         b = self.b_n(n_sersic)
         a_eff = self._alpha_eff(r_eff, n_sersic, k_eff)
-        #alpha = 2. * a_eff * x_red**(-n) * (1 - special.gammainc(2*n, b*x_red) / special.gamma(2*n))
         alpha = 2. * a_eff * x_red ** (-n) * (special.gammainc(2 * n, b * x_red))
         return alpha
 
@@ -104,50 +103,7 @@ class SersicUtil(object):
         alpha = self.alpha_abs(r, 0, n_sersic, r_eff, k_eff)
         alpha_dr = self.alpha_abs(r+_dr, 0, n_sersic, r_eff, k_eff)
         d_alpha_dr = (alpha_dr - alpha)/_dr
-        #p = self._p(x, y, n_sersic, r_eff, k_eff, center_x, center_y)
-        #q = self._q(x, y, n_sersic, r_eff, k_eff, center_x, center_y)
-        #return -(p + q)
         return d_alpha_dr
-
-    def _p(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
-        """
-        equation (21) in paper
-        :param x:
-        :param y:
-        :param n_sersic:
-        :param r_eff:
-        :param k_eff:
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-        n = n_sersic
-        x_red = self._x_reduced(x, y, n, r_eff, center_x, center_y)
-        b = self.b_n(n)
-        a_eff = self._alpha_eff(r_eff, n_sersic, k_eff)
-        #f_r_1 = 2 * a_eff / r_eff * x_red**(-2*n) * (1 - special.gammainc(2*n, b*x_red) / special.gamma(2*n))  # equation 21
-        f_r_1 = 2 * a_eff / r_eff * x_red**(-2*n) * (special.gammainc(2*n, b*x_red))  # equation 21
-
-        return f_r_1
-
-    def _q(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
-        """
-        equation (22) in paper
-        :param x:
-        :param y:
-        :param n_sersic:
-        :param r_eff:
-        :param k_eff:
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-        n = n_sersic
-        x_red = self._x_reduced(x, y, n, r_eff, center_x, center_y)
-        b = self.b_n(n)
-        a_eff = self._alpha_eff(r_eff, n_sersic, k_eff)
-        f_r_2 = 2 * a_eff / r_eff / n * b**(2*n) / special.gamma(2*n) * np.exp(-b*x_red)  # equation 22
-        return f_r_2
 
     def density(self, x, y, n_sersic, r_eff, k_eff, center_x=0, center_y=0):
         """

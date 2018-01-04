@@ -87,14 +87,14 @@ class Dipole_util(object):
         com_y = (Fm * center1_y + center2_y)/(Fm + 1.)
         return com_x, com_y
 
-    def mass_ratio(self, phi_E, phi_E_sub):
+    def mass_ratio(self, theta_E, theta_E_sub):
         """
         computes mass ration of the two clumps with given Einstein radius and power law slope (clump1/sub-clump)
-        :param phi_E:
-        :param phi_E_sub:
+        :param theta_E:
+        :param theta_E_sub:
         :return:
         """
-        return (phi_E/phi_E_sub)**2
+        return (theta_E / theta_E_sub) ** 2
 
     def angle(self, center1_x, center1_y, center2_x, center2_y):
         """

@@ -170,12 +170,12 @@
 
 <div class="viewcode-block" id="ImageModel.image_positions"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.image_positions">[docs]</a>    <span class="k">def</span> <span class="nf">image_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param kwargs_lens:</span>
-<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        lens equation solver for image positions given lens model and source position</span>
+<span class="sd">        :param kwargs_lens: keyword arguments of lens models (as list)</span>
+<span class="sd">        :param kwargs_else: keyword arguments of other parameters</span>
 <span class="sd">        :param sourcePos_x: source position in relative arc sec</span>
 <span class="sd">        :param sourcePos_y: source position in relative arc sec</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: x_coords, y_coords of image positions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">deltaPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">deltaPix</span> <span class="o">/</span> <span class="mf">2.</span>
         <span class="n">numPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">nx</span> <span class="o">*</span> <span class="mi">2</span>
@@ -186,10 +186,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the likelihood of the data given a model</span>
 <span class="sd">        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</span>
-<span class="sd">        :param kwargs_lens:</span>
-<span class="sd">        :param kwargs_source:</span>
-<span class="sd">        :param kwargs_lens_light:</span>
-<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
+<span class="sd">        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles</span>
+<span class="sd">        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles</span>
+<span class="sd">        :param kwargs_else: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
 <span class="sd">        :return: log likelihood (natural logarithm)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># generate image</span>
@@ -207,13 +207,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">numData_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of data points to be used in the linear solver</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">numData_evaluate</span>
 
 <div class="viewcode-block" id="ImageModel.fermat_potential"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.fermat_potential">[docs]</a>    <span class="k">def</span> <span class="nf">fermat_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
+<span class="sd">        :param kwargs_else: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
 <span class="sd">        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_else</span> <span class="ow">and</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_else</span><span class="p">:</span>
             <span class="n">ra_pos</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span>
             <span class="n">dec_pos</span> <span class="o">=</span> <span class="n">kwargs_else</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
@@ -226,6 +233,21 @@
         <span class="k">return</span> <span class="n">phi_fermat</span></div>
 
     <span class="k">def</span> <span class="nf">_response_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">map_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return linear response Matrix</span>
+<span class="sd">        :param x_grid:</span>
+<span class="sd">        :param y_grid:</span>
+<span class="sd">        :param x_source:</span>
+<span class="sd">        :param y_source:</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_source:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        :param mask:</span>
+<span class="sd">        :param map_error:</span>
+<span class="sd">        :param unconvolved:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_psf</span>
         <span class="n">source_light_response</span><span class="p">,</span> <span class="n">n_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">lightModel</span><span class="o">.</span><span class="n">functions_split</span><span class="p">(</span><span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">)</span>
         <span class="n">lens_light_response</span><span class="p">,</span> <span class="n">n_lens_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span><span class="o">.</span><span class="n">lightModel</span><span class="o">.</span><span class="n">functions_split</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span>
@@ -274,8 +296,8 @@
     <span class="k">def</span> <span class="nf">_update_linear_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        links linear parameters to kwargs arguments</span>
-<span class="sd">        :param param:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param param: linear parameter vector corresponding to the response matrix</span>
+<span class="sd">        :return: updated list of kwargs with linear parameter values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_options</span><span class="p">[</span><span class="s1">&#39;source_light_model_list&#39;</span><span class="p">]):</span>
@@ -343,6 +365,7 @@
 <span class="sd">        aim: mimic different telescopes photon collection area or colours for different imaging bands</span>
 <span class="sd">        :param kwargs_source:</span>
 <span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_else:</span>
 <span class="sd">        :param norm_factor:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -390,7 +413,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

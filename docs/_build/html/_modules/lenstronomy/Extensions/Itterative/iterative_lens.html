@@ -133,7 +133,6 @@
             <span class="n">im_sim_new</span><span class="p">,</span> <span class="n">model_error_new</span><span class="p">,</span> <span class="n">param_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source_model_base</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens_new</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span>
                                                                     <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
             <span class="n">chi2_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi2</span><span class="p">(</span><span class="n">im_sim_new</span><span class="p">,</span> <span class="n">model_error_new</span><span class="p">)</span>
-            <span class="nb">print</span> <span class="n">chi2_new</span><span class="p">,</span> <span class="n">i</span>
             <span class="k">if</span> <span class="n">chi2_new</span> <span class="o">&lt;</span> <span class="n">chi2</span><span class="p">:</span>
                 <span class="n">chi2</span> <span class="o">=</span> <span class="n">chi2_new</span>
                 <span class="n">model_error</span> <span class="o">=</span> <span class="n">model_error_new</span>
@@ -229,7 +228,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

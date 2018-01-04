@@ -61,14 +61,18 @@
 <span class="sd">    - projected enclosed densities</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_class</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param profile_class: list of lens models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">profile_class</span>
 
 <div class="viewcode-block" id="ProfileIntegrals.mass_enclosed_3d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.numerical_profile_integrals.ProfileIntegrals.mass_enclosed_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_enclosed_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the mass enclosed within a sphere of radius r</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param kwargs_profile:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param r: radius (arcsec)</span>
+<span class="sd">        :param kwargs_profile: keyword argument list with lens model parameters</span>
+<span class="sd">        :return: 3d mass enclosed of r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_profile</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -83,9 +87,9 @@
 <div class="viewcode-block" id="ProfileIntegrals.density_2d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.numerical_profile_integrals.ProfileIntegrals.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the projected density along the line-of-sight</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param kwargs_profile:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param r: radius (arcsec)</span>
+<span class="sd">        :param kwargs_profile: keyword argument list with lens model parameters</span>
+<span class="sd">        :return: 2d projected density at projected radius r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_profile</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -100,9 +104,9 @@
 <div class="viewcode-block" id="ProfileIntegrals.mass_enclosed_2d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.numerical_profile_integrals.ProfileIntegrals.mass_enclosed_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_enclosed_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the mass enclosed the projected line-of-sight</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param kwargs_profile:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param r: radius (arcsec)</span>
+<span class="sd">        :param kwargs_profile: keyword argument list with lens model parameters</span>
+<span class="sd">        :return: projected mass enclosed radius r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_profile</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -119,13 +123,14 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to compute lensing potentials and deflection angles provided a convergence map</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="ConvergenceIntegrals.potential_from_kappa"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.numerical_profile_integrals.ConvergenceIntegrals.potential_from_kappa">[docs]</a>    <span class="k">def</span> <span class="nf">potential_from_kappa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kappa:</span>
-<span class="sd">        :param x_coords:</span>
-<span class="sd">        :param y_coords:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kappa: 1d grid of convergence values</span>
+<span class="sd">        :param x_grid: x-coordinate grid</span>
+<span class="sd">        :param y_grid: y-coordinate grid</span>
+<span class="sd">        :return: lensing potential in a 2d grid at positions x_grid, y_grid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_potential_kernel</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kappa</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">deltaPix</span><span class="o">**</span><span class="mi">2</span>
@@ -213,7 +218,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

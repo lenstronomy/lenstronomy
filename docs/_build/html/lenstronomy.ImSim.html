@@ -94,7 +94,14 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -116,23 +123,12 @@ The linear parameters are computed with a weighted linear least square optimizat
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.image_positions">
 <code class="descname">image_positions</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>sourcePos_x</em>, <em>sourcePos_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_positions" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-<li><strong>sourcePos_x</strong> – source position in relative arc sec</li>
-<li><strong>sourcePos_y</strong> – source position in relative arc sec</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>lens equation solver for image positions given lens model and source position
+:param kwargs_lens: keyword arguments of lens models (as list)
+:param kwargs_else: keyword arguments of other parameters
+:param sourcePos_x: source position in relative arc sec
+:param sourcePos_y: source position in relative arc sec
+:return: x_coords, y_coords of image positions</p>
 </dd></dl>
 
 <dl class="method">
@@ -164,10 +160,10 @@ The linear parameters are computed with a weighted linear least square optimizat
 <code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
 This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_lens_light:
-:param kwargs_else:
+:param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+:param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+:param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
 :return: log likelihood (natural logarithm)</p>
 </dd></dl>
 
@@ -178,6 +174,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 aim: mimic different telescopes photon collection area or colours for different imaging bands
 :param kwargs_source:
 :param kwargs_lens_light:
+:param kwargs_else:
 :param norm_factor:
 :return:</p>
 </dd></dl>
@@ -185,7 +182,9 @@ aim: mimic different telescopes photon collection area or colours for different 
 <dl class="attribute">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.numData_evaluate">
 <code class="descname">numData_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.numData_evaluate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>number of data points to be used in the linear solver
+:return:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.point_sources_list">
@@ -296,7 +295,25 @@ this technique can be dangerous as one might overfit the data</p>
 <dl class="method">
 <dt id="lenstronomy.ImSim.iterative_psf.PSF_iterative.mask_point_sources">
 <code class="descname">mask_point_sources</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>x_grid</em>, <em>y_grid</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/iterative_psf.html#PSF_iterative.mask_point_sources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.iterative_psf.PSF_iterative.mask_point_sources" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_pos</strong> – </li>
+<li><strong>y_pos</strong> – </li>
+<li><strong>x_grid</strong> – </li>
+<li><strong>y_grid</strong> – </li>
+<li><strong>radius</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.iterative_psf.PSF_iterative.update_iterative">
@@ -359,7 +376,9 @@ this technique can be dangerous as one might overfit the data</p>
 <dt id="lenstronomy.ImSim.multiband.MakeImageMultiband">
 <em class="property">class </em><code class="descclassname">lenstronomy.ImSim.multiband.</code><code class="descname">MakeImageMultiband</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data_list=[]</em>, <em>kwargs_psf_list=[]</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/multiband.html#MakeImageMultiband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.multiband.MakeImageMultiband" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class to simulate/reconstruct images in multiband option</p>
+<p>class to simulate/reconstruct images in multi-band option.
+This class calls functions of image_model.py with different bands with
+joint non-linear parameters and decoupled linear parameters.</p>
 <dl class="method">
 <dt id="lenstronomy.ImSim.multiband.MakeImageMultiband.fermat_potential">
 <code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/multiband.html#MakeImageMultiband.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.multiband.MakeImageMultiband.fermat_potential" title="Permalink to this definition">¶</a></dt>
@@ -389,23 +408,12 @@ The linear parameters are computed with a weighted linear least square optimizat
 <dl class="method">
 <dt id="lenstronomy.ImSim.multiband.MakeImageMultiband.image_positions">
 <code class="descname">image_positions</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>sourcePos_x</em>, <em>sourcePos_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/multiband.html#MakeImageMultiband.image_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.multiband.MakeImageMultiband.image_positions" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-<li><strong>sourcePos_x</strong> – source position in relative arc sec</li>
-<li><strong>sourcePos_y</strong> – source position in relative arc sec</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>lens equation solver for image positions given lens model and source position
+:param kwargs_lens: keyword arguments of lens models (as list)
+:param kwargs_else: keyword arguments of other parameters
+:param sourcePos_x: source position in relative arc sec
+:param sourcePos_y: source position in relative arc sec
+:return: x_coords, y_coords of image positions</p>
 </dd></dl>
 
 <dl class="method">
@@ -619,7 +627,7 @@ only analysis function
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

@@ -252,6 +252,15 @@
         <span class="k">return</span> <span class="n">mask</span></div>
 
 <div class="viewcode-block" id="PSF_iterative.mask_point_sources"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.iterative_psf.PSF_iterative.mask_point_sources">[docs]</a>    <span class="k">def</span> <span class="nf">mask_point_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_pos:</span>
+<span class="sd">        :param y_pos:</span>
+<span class="sd">        :param x_grid:</span>
+<span class="sd">        :param y_grid:</span>
+<span class="sd">        :param radius:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)):</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_point_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
@@ -293,7 +302,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

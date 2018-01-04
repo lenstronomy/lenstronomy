@@ -51,7 +51,9 @@
 
 <div class="viewcode-block" id="MakeImageMultiband"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.multiband.MakeImageMultiband">[docs]</a><span class="k">class</span> <span class="nc">MakeImageMultiband</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to simulate/reconstruct images in multiband option</span>
+<span class="sd">    class to simulate/reconstruct images in multi-band option.</span>
+<span class="sd">    This class calls functions of image_model.py with different bands with</span>
+<span class="sd">    joint non-linear parameters and decoupled linear parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_data_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs_psf_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -141,12 +143,12 @@
 
 <div class="viewcode-block" id="MakeImageMultiband.image_positions"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.multiband.MakeImageMultiband.image_positions">[docs]</a>    <span class="k">def</span> <span class="nf">image_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param kwargs_lens:</span>
-<span class="sd">        :param kwargs_else:</span>
+<span class="sd">        lens equation solver for image positions given lens model and source position</span>
+<span class="sd">        :param kwargs_lens: keyword arguments of lens models (as list)</span>
+<span class="sd">        :param kwargs_else: keyword arguments of other parameters</span>
 <span class="sd">        :param sourcePos_x: source position in relative arc sec</span>
 <span class="sd">        :param sourcePos_y: source position in relative arc sec</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: x_coords, y_coords of image positions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeImage_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image_positions</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
@@ -217,7 +219,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

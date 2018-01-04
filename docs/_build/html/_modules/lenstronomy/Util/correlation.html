@@ -57,8 +57,8 @@
 <div class="viewcode-block" id="correlation_2D"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.correlation_2D">[docs]</a><span class="k">def</span> <span class="nf">correlation_2D</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    :param residuals:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param image: 2d image</span>
+<span class="sd">    :return: psd1D, psd2D</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Take the fourier transform of the image.</span>
     <span class="n">F1</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -118,7 +118,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

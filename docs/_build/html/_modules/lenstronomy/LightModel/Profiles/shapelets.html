@@ -162,7 +162,7 @@
 <span class="sd">        :param numPix: number of pixel of the grid</span>
 <span class="sd">        :return: list of shapelets drawn on pixel grid, centered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_order</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">num_order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num_order</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">num_order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
@@ -200,7 +200,7 @@
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
@@ -217,7 +217,7 @@
         <span class="k">return</span> <span class="n">f_</span></div>
 
 <div class="viewcode-block" id="ShapeletSet.function_split"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split">[docs]</a>    <span class="k">def</span> <span class="nf">function_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
@@ -245,7 +245,7 @@
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">param_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_param</span><span class="p">)</span>
         <span class="n">amp_norm</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">deltaPix</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
@@ -283,7 +283,7 @@
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">param_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_param</span><span class="p">)</span>
         <span class="n">amp_norm</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">beta</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">deltaPix</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
@@ -336,7 +336,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, ETH Zurich, Institute for Astronomy.
+        &#169; Copyright 2018, ETH Zurich.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

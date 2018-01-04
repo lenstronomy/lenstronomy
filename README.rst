@@ -9,10 +9,19 @@ lenstronomy
         :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master
+        :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=master
+
 
 This package is designed to model strong lens systems.
 The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015ApJ...813..102B and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
+
+
+The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_
+
+
 
 Installation
 --------

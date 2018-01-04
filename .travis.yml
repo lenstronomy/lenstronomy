@@ -19,7 +19,7 @@ install:
 # command to run tests
 script:
   #- py.test
-  - coverage run --source cosmoHammer setup.py test
+  - coverage run --source lenstronomy setup.py test
 
 after_success:
     coveralls

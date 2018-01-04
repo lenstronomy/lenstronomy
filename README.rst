@@ -2,6 +2,14 @@
 lenstronomy
 =============================
 
+.. image:: https://travis-ci.org/sibirrer/lenstronomy.png?branch=master
+        :target: https://travis-ci.org/sibirrer/lenstronomy
+
+.. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
+        :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
+
+
 This package is designed to model strong lens systems.
 The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015ApJ...813..102B and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.

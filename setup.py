@@ -40,7 +40,7 @@ The full documentation can be generated with Sphinx"""
 
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-requires = ['numpy>=1.11.1', 'scipy>=0.14.0', "configparser"] #during runtime , "configparser", 'astropy', "PyCosmo", 'numpy>=1.7'
+requires = ['numpy>=1.12.0', 'scipy>=0.14.0', "configparser"] #during runtime , "configparser", 'astropy', "PyCosmo", 'numpy>=1.7'
 tests_require=['pytest>=2.3', "mock"] #for testing
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
@@ -53,7 +53,7 @@ setup(
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
-    url='http://www.astro.ethz.ch/refregier/research/index',
+    url='https://github.com/sibirrer/lenstronomy',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,
@@ -69,10 +69,9 @@ setup(
         'License :: Other/Proprietary License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.5',
     ],
     tests_require=tests_require,
     cmdclass = {'test': PyTest },#'build_ext':build_ext,

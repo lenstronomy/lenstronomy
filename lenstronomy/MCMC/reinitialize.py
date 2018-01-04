@@ -1,13 +1,12 @@
-# Copyright (C) 2015 ETH Zurich, Institute for Astronomy
-
-'''
+"""
 Created on May 18, 2015
 
 author: jakeret
-'''
+"""
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 import numpy as np
+
 
 class ReusePositionGenerator(object):
     

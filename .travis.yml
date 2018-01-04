@@ -7,6 +7,11 @@ python:
   # PyPy versions
   - "pypy"   # PyPy2 5.8.0
   - "pypy3"  # Pypy3 5.8.0-beta0
+
+before_install:
+  - sudo apt-get build-dep python-scipy
+  - pip install coveralls
+  - pip install scipy
 # command to install dependencies
 install:
   - pip install .

@@ -1,4 +1,5 @@
 numpy>=1.13
+scipy
 astropy>=2.0
 mpmath
 cosmohammer

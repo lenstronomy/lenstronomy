@@ -50,5 +50,6 @@ class TestLensModel(object):
         output = lensModel.mass_2d(r=1, kwargs=self.kwargs)
         assert output == 0.11750309741540453
 
+
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

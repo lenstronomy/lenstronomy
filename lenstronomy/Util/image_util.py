@@ -9,11 +9,15 @@ import scipy.ndimage.interpolation as interp
 
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     """
-    makes a point source on a grid with shifted PSF
-    :param x_pos:
-    :param y_pos:
-    :return:
+    adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order
+    :param grid2d: 2d pixel grid (i.e. image)
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
+    :param kernel: the layer to be added to the image
+    :param order: interpolation order for sub-pixel shift of the kernel to be added
+    :return: image with added layer, cut to original size
     """
+
     num_x, num_y = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
@@ -47,7 +51,7 @@ def add_background(image, sigma_bkd):
     adds background noise to image
     :param image: pixel values of image
     :param sigma_bkd: background noise (sigma)
-    :return:
+    :return: a realisation of Gaussian noise of the same size as image
     """
     if sigma_bkd < 0:
         raise ValueError("Sigma background is smaller than zero! Please use positive values.")
@@ -81,10 +85,10 @@ def add_poisson(image, exp_time):
 def rotateImage(img, angle):
     """
 
-
-    :param img:
-    :param angle:
-    :return:
+    querries scipy.ndimage.rotate routine
+    :param img: image to be rotated
+    :param angle: angle to be rotated (radian)
+    :return: rotated image
     """
     imgR = scipy.ndimage.rotate(img, angle, reshape=False)
     return imgR
@@ -242,9 +246,10 @@ def stack_images(image_list, wht_list, sigma_list):
 def cut_edges(image, numPix):
     """
     cuts out the edges of a 2d image and returns re-sized image to numPix
+    center is well defined for odd pixel sizes.
     :param image: 2d numpy array
-    :param numPix:
-    :return:
+    :param numPix: square size of cut out image
+    :return: cutout image with size numPix
     """
     nx, ny = image.shape
     if nx < numPix or ny < numPix:

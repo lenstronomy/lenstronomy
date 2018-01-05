@@ -66,7 +66,7 @@ setup(
         'Development Status :: 2 - Pre-Alpha',
         "Intended Audience :: Science/Research",
         'Intended Audience :: Developers',
-        'License :: Other/Proprietary License',
+        'License :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',

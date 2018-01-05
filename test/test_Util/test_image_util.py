@@ -198,5 +198,37 @@ def test_re_size():
     assert grid_small[50][25] == 1
 
 
+def test_stack_images():
+    numPix = 10
+    image1 = np.ones((numPix, numPix))
+    image2 = np.ones((numPix, numPix)) / 10.
+    image_list = [image1, image2]
+    wht1 = np.ones((numPix, numPix))
+    wht2 = np.ones((numPix, numPix)) * 10
+    wht_list = [wht1, wht2]
+    sigma_list = [0.1, 0.2]
+    image_stacked, wht_stacked, sigma_stacked = image_util.stack_images(image_list=image_list, wht_list=wht_list, sigma_list=sigma_list)
+    assert sigma_stacked == 0.19306145983268458
+    assert image_stacked[0, 0] == 0.18181818181818182
+    assert wht_stacked[0, 0] == 5.5
+
+
+def test_rebin_image():
+    numPix = 10
+    bin_size = 2
+    image = np.ones((numPix, numPix))
+    wht_map = np.ones((numPix, numPix)) * 10
+    idex_mask = np.ones((numPix, numPix))
+    sigma_bkg = 0.1
+    ra_coords, dec_coords = util.make_grid(numPix, deltapix=0.05)
+    ra_coords = util.array2image(ra_coords)
+    dec_coords = util.array2image(dec_coords)
+    image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized = image_util.rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask)
+    assert image_resized[0, 0] == 4
+    assert wht_map_resized[0, 0] == wht_map[0, 0]
+    assert sigma_bkg_resized == 0.2
+    assert ra_coords_resized[0, 0] == -0.2
+
+
 if __name__ == '__main__':
     pytest.main()

@@ -1,7 +1,7 @@
 import sys
 
 import numpy as np
-from lenstronomy.Extensions.Sensitivity.sensitivity import Sensitivity
+from lenstronomy.Extensions.Substructure.sensitivity import Sensitivity
 
 
 class SensitivityMap(Sensitivity):

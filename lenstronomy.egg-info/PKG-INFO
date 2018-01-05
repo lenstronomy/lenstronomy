@@ -2,7 +2,7 @@ Metadata-Version: 1.1
 Name: lenstronomy
 Version: 0.1.0
 Summary: This package is designed to model strong lens systems.
-Home-page: http://www.astro.ethz.ch/refregier/research/index
+Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
@@ -11,9 +11,26 @@ Description: =============================
         lenstronomy
         =============================
         
+        .. image:: https://travis-ci.org/sibirrer/lenstronomy.png?branch=master
+                :target: https://travis-ci.org/sibirrer/lenstronomy
+        
+        .. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
+                :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest
+                :alt: Documentation Status
+        
+        .. image:: https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master
+                :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=master
+        
+        
         This package is designed to model strong lens systems.
         The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015ApJ...813..102B and finds application in
         e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
+        
+        
+        The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+        The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_
+        
+        
         
         Installation
         --------
@@ -56,13 +73,13 @@ Description: =============================
         Analysis tools
         -------
         * Standardized fitting procedures for some lens systems
-        * Modular build up to designe plugins by users
+        * Modular build up to design plugins by users
         * Interactive jupyter notebooks
-        * Pre-defined plotting and ilustration routines
+        * Pre-defined plotting and illustration routines
         * Particle swarm optimization for parameter fitting
-        * MCMC (emcee from CosmoHammer)
+        * MCMC (emcee from CosmoHammer) for parameter inferences
+        * Kinematic modelling
         * Cosmographic inference tools
-        
         
         
         
@@ -86,10 +103,9 @@ Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha
 Classifier: Intended Audience :: Science/Research
 Classifier: Intended Audience :: Developers
-Classifier: License :: Other/Proprietary License
+Classifier: License :: MIT License
 Classifier: Natural Language :: English
 Classifier: Programming Language :: Python :: 2
-Classifier: Programming Language :: Python :: 2.6
 Classifier: Programming Language :: Python :: 2.7
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.5

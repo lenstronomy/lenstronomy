@@ -1,12 +1,12 @@
 __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
 from lenstronomy.ImSim.point_source import PointSource
-from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-
-from lenstronomy.Data.imaging_data import Data
 import lenstronomy.ImSim.de_lens as de_lens
+from lenstronomy.Data.imaging_data import Data
+
 
 import numpy as np
 
@@ -183,6 +183,27 @@ class ImageModel(object):
         dec_source = np.mean(dec_source)
         phi_fermat = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens, kwargs_else)
         return phi_fermat
+
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+        """
+        variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+        of the basis set.
+        :param kwargs_source: keyword arguments of source model
+        :param x_grid: x-axis of positions to compute error map
+        :param y_grid: y-axis of positions to compute error map
+        :param cov_param: covariance matrix of liner inversion parameters
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
+        """
+
+        error_map = np.zeros_like(x_grid)
+        basis_functions, n_source = self.SourceModel.lightModel.functions_split(x_grid, y_grid, kwargs_source)
+        basis_functions = np.array(basis_functions)
+
+        if cov_param is not None:
+            for i in range(len(error_map)):
+                error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
+        return error_map
 
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, mask, map_error=False, unconvolved=False):
         """

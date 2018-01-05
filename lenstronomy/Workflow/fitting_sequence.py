@@ -38,8 +38,6 @@ class FittingSequence(object):
                     lens_temp, source_temp, lens_light_temp, else_temp)
                 chain_list.append(chain)
                 param_list.append(param)
-            # print statement, parameters ect
-        #TODO update fixed parameters as in fitting class
         return lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, else_input):
@@ -55,7 +53,7 @@ class FittingSequence(object):
         n_burn = fitting_kwargs['n_burn']
         n_run = fitting_kwargs['n_run']
         walkerRatio = fitting_kwargs['walkerRatio']
-        mpi = fitting_kwargs['mpi']
+        mpi = fitting_kwargs.get('mpi', False)
         sigma_scale = fitting_kwargs['sigma_scale']
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
         if fitting_kwargs['fitting_routine'] == 'MCMC':

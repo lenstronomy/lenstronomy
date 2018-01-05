@@ -70,8 +70,9 @@ class TestFittingSequence(object):
             {'fitting_routine': 'lens_light_only', 'sigma_scale': .1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'source_only', 'sigma_scale': .1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'lens_combined_gamma_fixed', 'sigma_scale': 1., 'n_particles': n_p, 'n_iterations': n_i},
-            {'fitting_routine': 'lens_combined', 'sigma_scale': 0.1, 'n_particles': n_p,
-             'n_iterations': n_i},
+            {'fitting_routine': 'lens_combined', 'sigma_scale': 0.1, 'n_particles': n_p,'n_iterations': n_i},
+            {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2},
+            {'fitting_routine': 'MCMC_source', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2}
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)

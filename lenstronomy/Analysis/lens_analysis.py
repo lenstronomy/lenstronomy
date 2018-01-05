@@ -236,14 +236,9 @@ class LensAnalysis(object):
 
         :return:
         """
-        error_map_source = np.zeros_like(x_grid)
-        source = self.SourceModel.lightModel.surface_brightness(x_grid, y_grid, kwargs_source, k=k)
-        basis_functions, n_source = self.SourceModel.lightModel.functions_split(x_grid, y_grid, kwargs_source)
-        basis_functions = np.array(basis_functions)
 
-        if cov_param is not None:
-            for i in range(len(error_map_source)):
-                error_map_source[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
+        source = self.SourceModel.lightModel.surface_brightness(x_grid, y_grid, kwargs_source, k=k)
+        error_map_source = self.imageModel.error_map_source(kwargs_source, x_grid, y_grid, cov_param)
         return source, error_map_source
 
     def magnification_model(self, kwargs_lens, kwargs_else):

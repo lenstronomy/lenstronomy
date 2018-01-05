@@ -1,7 +1,8 @@
 numpy>=1.13
-scipy
 astropy>=2.0
+scipy
 mpmath
 cosmohammer
 matplotlib
+corner
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

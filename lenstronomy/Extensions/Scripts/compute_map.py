@@ -16,8 +16,8 @@ f.close()
 os.system("rm "+path2load)
 print("file loaded, computation is starting...")
 
-from lenstronomy.Extensions.Sensitivity.sensitivity_map import SensitivityMap
-from lenstronomy.Extensions.Sensitivity.clump_detection import ClumpDetect
+from lenstronomy.Extensions.Substructure.sensitivity_map import SensitivityMap
+from lenstronomy.Extensions.Substructure.clump_detection import ClumpDetect
 if kwargs_compute['detect_only'] is False:
     sensitivityMap = SensitivityMap(kwargs_options, kwargs_data, kwargs_lens, kwargs_source, kwargs_psf,
                               kwargs_lens_light, kwargs_else)

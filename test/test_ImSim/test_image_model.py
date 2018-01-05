@@ -7,7 +7,7 @@ import pytest
 from lenstronomy.ImSim.image_model import ImageModel
 
 
-class TestMakeImage(object):
+class TestImageModel(object):
     """
     tests the source model routines
     """

@@ -1,3 +1,2 @@
-Config
 lenstronomy
 test

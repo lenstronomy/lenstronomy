@@ -10,8 +10,8 @@ import sys
 import time
 
 import numpy as np
-from lenstronomy.Extensions.Sensitivity.clump_detection import ClumpDetect
-from lenstronomy.Extensions.Sensitivity.sensitivity_map import SensitivityMap
+from lenstronomy.Extensions.Substructure.clump_detection import ClumpDetect
+from lenstronomy.Extensions.Substructure.sensitivity_map import SensitivityMap
 
 start_time = time.time()
 

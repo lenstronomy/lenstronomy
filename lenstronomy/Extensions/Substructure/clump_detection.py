@@ -1,14 +1,14 @@
 import sys
 
 import numpy as np
-from lenstronomy.Extensions.Sensitivity.sensitivity import Sensitivity
+from lenstronomy.Extensions.Substructure.sensitivity import Sensitivity
 
 
 class ClumpDetect(Sensitivity):
     """
     class with routines to make sensitivity maps
     """
-    def __init__(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_source, kwargs_psf,
+    def __init__(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source,
                           kwargs_lens_light, kwargs_else):
         self.kwargs_options = kwargs_options
         self.kwargs_data = kwargs_data
@@ -18,7 +18,7 @@ class ClumpDetect(Sensitivity):
         self.kwargs_lens_light = kwargs_lens_light
         self.kwargs_else = kwargs_else
 
-    def relative_chi2(self, phi_E_clump, r_trunc, x_clump, y_clump):
+    def relative_chi2(self, theta_E_clump, r_trunc, x_clump, y_clump):
         """
 
         :param phi_E:
@@ -28,14 +28,14 @@ class ClumpDetect(Sensitivity):
         :return:
         """
         image, param, residuals, image_smooth, param_smooth, residuals_smooth = self.detection(self.kwargs_options, self.kwargs_data, self.kwargs_lens, self.kwargs_source, self.kwargs_psf,
-                        self.kwargs_lens_light, self.kwargs_else, x_clump, y_clump, phi_E_clump, r_trunc)
+                                                                                               self.kwargs_lens_light, self.kwargs_else, x_clump, y_clump, theta_E_clump, r_trunc)
         chi2_clump, chi2_smooth = np.sum(np.array(residuals)**2, axis=1), np.sum(np.array(residuals_smooth)**2, axis=1)
         return chi2_clump, chi2_smooth
 
-    def iterate_position(self, phi_E_clump, r_trunc, x_clump, y_clump, compute_bool):
+    def iterate_position(self, theta_E_clump, r_trunc, x_clump, y_clump, compute_bool):
         """
 
-        :param phi_E_clump:
+        :param theta_E_clump:
         :param r_trunc:
         :param x_clump:
         :param y_clump:
@@ -50,7 +50,7 @@ class ClumpDetect(Sensitivity):
         p_i = 0
         for i in range(n):
             if compute_bool[i] == 1:
-                chi2_list_clump[i], chi2_list_smooth[i] = self.relative_chi2(phi_E_clump, r_trunc, x_clump[i], y_clump[i])
+                chi2_list_clump[i], chi2_list_smooth[i] = self.relative_chi2(theta_E_clump, r_trunc, x_clump[i], y_clump[i])
                 print(p_i)
                 p_i += 1
                 #sys.stdout.flush()

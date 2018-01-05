@@ -38,7 +38,8 @@ or in development mode
 
 Requirements
 -------
-* to run the lens models from Barkana (fastell), also requires githug/sibirrer/fastell4py (needs a fortran compiler)
+* to run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
+is also required and can be cloned from: githug/sibirrer/fastell4py (needs a fortran compiler)
 * CosmoHammer (through PyPi)
 * standard python libraries (numpy, scipy)
 
@@ -63,7 +64,7 @@ Modelling Features
 
 Analysis tools
 -------
-* Standardized fitting procedures for some lens systems
+* Standardized fitting procedures for lens modelling
 * Modular build up to design plugins by users
 * Interactive jupyter notebooks
 * Pre-defined plotting and illustration routines

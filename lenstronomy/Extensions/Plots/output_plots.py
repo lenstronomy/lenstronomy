@@ -1,6 +1,7 @@
 import copy
 
 import lenstronomy.Util.util as util
+import lenstronomy.Util.mask as util_maskl
 import corner
 import matplotlib.pyplot as plt
 import numpy as np
@@ -479,8 +480,8 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     center_x = np.mean(x_grid)
     center_y = np.mean(y_grid)
     radius = (np.max(x_grid) - np.min(x_grid))/4
-    circle_shear = util.circle(x_shear, y_shear, center_x, center_y, radius)
-    circle_foreground = util.circle(x_foreground, y_foreground, center_x, center_y, radius)
+    circle_shear = util_maskl.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
+    circle_foreground = util_maskl.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
     f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
     im = ax.matshow(util.array2image(np.log10(kwargs_data['image_data'])), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")

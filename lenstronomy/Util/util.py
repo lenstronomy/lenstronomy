@@ -241,59 +241,6 @@ def min_square_dist(x_1, y_1, x_2, y_2):
     return dist
 
 
-def mk_array(input_var):
-    """This functions makes sure that the input is a numpy array. If it is
-    a recognised format (float, array or list) the output will be a numpy array"""
-
-    if type(input_var) is float:
-        output_var = np.array([input_var]) # turning a into a numpy array
-    elif type(input_var) is type(np.float64(1)):
-        output_var = np.array([np.asscalar(input_var)]) # turning a into a numpy array
-    elif type(input_var) == type(np.array([])):
-        output_var = input_var
-    elif type(input_var) == list:
-        output_var = np.array(input_var)
-    else:
-        print('input type for a not recognised. please use either float or numpy array')
-        print(type(input_var))
-        return 'ERROR!'
-
-    return output_var
-
-
-def mk_array_2p(input1, input2):
-    """This functions makes sure that the input is a numpy array. If it is
-    a recognised format (float, array or list) the output will be a numpy array"""
-
-    if type(input1) is float:
-        output1 = np.array([input1]) # turning a into a numpy array
-    elif type(input1) is type(np.float64(1)):
-        output1 = np.array([input2]) # turning a into a numpy array
-    elif type(input1) == type(np.array([])):
-        output1 = input1
-    elif type(input1) == list:
-        output1 = np.array(input1)
-    else:
-        print('input type for a not recognised. please use either float or numpy array')
-        return 'ERROR!'
-
-    if type(input2) is float:
-        output2 = np.array([input2]) # turning a into a numpy array
-    elif type(input2) is type(np.float64(1)):
-        output2 = np.array([input2]) # turning a into a numpy array
-    elif type(input2) == type(np.array([])):
-        output2 = input2
-    elif type(input2) == list:
-        output2 = np.array(input2)
-    else:
-        print('input type for a not recognised. please use either float or numpy array')
-        return 'ERROR!'
-
-    output12_format = np.zeros([len(output1),len(output2)])
-
-    return output1,output2,output12_format
-
-
 def selectBest(array, criteria, numSelect, highest=True):
     """
 
@@ -315,22 +262,6 @@ def selectBest(array, criteria, numSelect, highest=True):
     else:
         result = array_sorted[0:numSelect]
     return result[::-1]
-
-
-def circle(x, y, center_x, center_y, radius):
-    """
-    uniform density circle
-    :param x: x-coordinates
-    :param y: y-coordinates
-    :param center_x: center of x-coordinates
-    :param center_y: center of y-coordinates
-    :param radius: radius of circle
-    :return:
-    """
-    r = np.sqrt((x - center_x)**2 + (y - center_y)**2)
-    circle_draw = np.zeros_like(r)
-    circle_draw[r < radius] = 1
-    return circle_draw
 
 
 def points_on_circle(radius, points):

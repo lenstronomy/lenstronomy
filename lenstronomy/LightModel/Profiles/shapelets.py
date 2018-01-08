@@ -11,7 +11,7 @@ class Shapelets(object):
     """
 
     """
-    def __init__(self, interpolation=False, precalc=True):
+    def __init__(self, interpolation=False, precalc=False):
         """
         load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 50
         :return:
@@ -106,40 +106,13 @@ class Shapelets(object):
             H_y[n] = hermite.hermval(y_/beta, n_array) * prefactor * np.exp(-(y_/beta)**2/2.)
         return H_x, H_y
 
-    def get_shapelet_set(self, num_order, beta, numPix):
-        """
-
-        :param num_order: max shapelet order
-        :param beta: shapelet scale
-        :param numPix: number of pixel of the grid
-        :return: list of shapelets drawn on pixel grid, centered.
-        """
-        num_param = int((num_order+2)*(num_order+1)/2)
-        kernel_list = []
-        x_grid, y_grid = util.make_grid(numPix, deltapix=1, subgrid_res=1)
-        n1 = 0
-        n2 = 0
-        H_x, H_y = self.pre_calc(x_grid, y_grid, beta, num_order, center_x=0, center_y=0)
-        for i in range(num_param):
-            if True: # n1 % 2 == 0 and n2 % 2 == 0:
-                kwargs_source_shapelet = {'center_x': 0, 'center_y': 0, 'n1': n1, 'n2': n2, 'beta': beta, 'amp': 1}
-                kernel = self.function(H_x, H_y, **kwargs_source_shapelet)
-                kernel = util.array2image(kernel)
-                kernel_list.append(kernel)
-            if n1 == 0:
-                n1 = n2 + 1
-                n2 = 0
-            else:
-                n1 -= 1
-                n2 += 1
-        return kernel_list
 
 class ShapeletSet(object):
     """
     class to operate on entire shapelet set
     """
     def __init__(self):
-        self.shapelets = Shapelets()
+        self.shapelets = Shapelets(precalc=True)
 
     def function(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
         """
@@ -185,6 +158,33 @@ class ShapeletSet(object):
                 n2 += 1
         return A
 
+    def shapelet_basis_2d(self, num_order, beta, numPix, deltaPix=1, center_x=0, center_y=0):
+        """
+
+        :param num_order: max shapelet order
+        :param beta: shapelet scale
+        :param numPix: number of pixel of the grid
+        :return: list of shapelets drawn on pixel grid, centered.
+        """
+        num_param = int((num_order+2)*(num_order+1)/2)
+        kernel_list = []
+        x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix, subgrid_res=1)
+        n1 = 0
+        n2 = 0
+        H_x, H_y = self.shapelets.pre_calc(x_grid, y_grid, beta, num_order, center_x=center_x, center_y=center_y)
+        for i in range(num_param):
+            kwargs_source_shapelet = {'center_x': 0, 'center_y': 0, 'n1': n1, 'n2': n2, 'beta': beta, 'amp': 1}
+            kernel = self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
+            kernel = util.array2image(kernel)
+            kernel_list.append(kernel)
+            if n1 == 0:
+                n1 = n2 + 1
+                n2 = 0
+            else:
+                n1 -= 1
+                n2 += 1
+        return kernel_list
+
     def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
         """
         decomposes an image into the shapelet coefficients in same order as for the function call
@@ -207,44 +207,6 @@ class ShapeletSet(object):
             kwargs_source_shapelet = {'center_x': center_x, 'center_y': center_y, 'n1': n1, 'n2': n2, 'beta': beta, 'amp': amp_norm}
             base = self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
             param = np.sum(image*base)
-            param_list[i] = param
-            if n1 == 0:
-                n1 = n2 + 1
-                n2 = 0
-            else:
-                n1 -= 1
-                n2 += 1
-        return param_list
-
-class Decompose(object):
-    """
-    class to decompose image into shapelets
-    """
-    def __init__(self):
-        self.shapelets = Shapelets(precalc=False)
-
-    def decomposition(self, image, x, y, n_max, beta, deltaPix, center_x=0, center_y=0):
-        """
-        decomposes an image into the shapelet coefficients in same order as for the function call
-        :param image:
-        :param x:
-        :param y:
-        :param n_max:
-        :param beta:
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-        num_param = int((n_max + 1) * (n_max + 2) / 2)
-        param_list = np.zeros(num_param)
-        amp_norm = 1. / beta ** 2 * deltaPix ** 2
-        n1 = 0
-        n2 = 0
-        for i in range(num_param):
-            kwargs_source_shapelet = {'center_x': center_x, 'center_y': center_y, 'n1': n1, 'n2': n2, 'beta': beta,
-                                      'amp': amp_norm}
-            base = self.shapelets.function(x, y, **kwargs_source_shapelet)
-            param = np.sum(image * base)
             param_list[i] = param
             if n1 == 0:
                 n1 = n2 + 1

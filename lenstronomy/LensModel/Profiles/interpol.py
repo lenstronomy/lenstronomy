@@ -129,18 +129,18 @@ class Interpol_func_scaled(object):
     def __init__(self, grid=True):
         self.interp_func = Interpol_func(grid)
 
-    def function(self, x, y, scale_factor=1 ,grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
+    def function(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         f_out = self.interp_func.function(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         f_out *= scale_factor
         return f_out
 
-    def derivatives(self, x, y, scale_factor=1 ,grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
+    def derivatives(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         f_x_out, f_y_out = self.interp_func.derivatives(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         f_x_out *= scale_factor
         f_y_out *= scale_factor
         return f_x_out, f_y_out
 
-    def hessian(self, x, y, scale_factor=1 ,grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
+    def hessian(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         f_xx_out, f_yy_out, f_xy_out = self.interp_func.hessian(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         f_xx_out *= scale_factor
         f_yy_out *= scale_factor

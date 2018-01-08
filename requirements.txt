@@ -1,6 +1,6 @@
 numpy>=1.13
 astropy>=2.0
-scipy
+scipy>=0.19.1
 mpmath
 cosmohammer
 matplotlib

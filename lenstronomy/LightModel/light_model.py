@@ -53,9 +53,6 @@ class LightModel(object):
             elif profile_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.sersic import Sersic_elliptic
                 self.func_list.append(Sersic_elliptic(smoothing=smoothing))
-            elif profile_type == 'SHAPELETS':
-                from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
-                self.func_list.append(ShapeletSet())
             elif profile_type == 'DOUBLE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import DoubleSersic
                 self.func_list.append(DoubleSersic(smoothing=smoothing))
@@ -68,6 +65,9 @@ class LightModel(object):
             elif profile_type == 'BULDGE_DISK':
                 from lenstronomy.LightModel.Profiles.sersic import BuldgeDisk
                 self.func_list.append(BuldgeDisk(smoothing=smoothing))
+            elif profile_type == 'SHAPELETS':
+                from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
+                self.func_list.append(ShapeletSet())
             elif profile_type == 'HERNQUIST':
                 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())

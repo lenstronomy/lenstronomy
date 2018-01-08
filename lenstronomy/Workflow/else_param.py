@@ -7,11 +7,11 @@ class ElseParam(object):
     """
 
     def __init__(self, kwargs_options, kwargs_fixed):
-        self.kwargs_options = kwargs_options
         self.kwargs_fixed = kwargs_fixed
         self._num_images = kwargs_options.get('num_images', 0)
         self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._mass2light = kwargs_options.get('mass2light_fixed', False)
+        self._time_delay = kwargs_options.get('time_delay', False)
 
     def getParams(self, args, i):
         """
@@ -45,7 +45,7 @@ class ElseParam(object):
             else:
                 kwargs['gamma1_foreground'] = self.kwargs_fixed['gamma1_foreground']
                 kwargs['gamma2_foreground'] = self.kwargs_fixed['gamma2_foreground']
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 kwargs['delay_dist'] = args[i]
                 i += 1
@@ -83,7 +83,7 @@ class ElseParam(object):
             if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
                 args.append(kwargs['gamma1_foreground'])
                 args.append(kwargs['gamma2_foreground'])
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 args.append(kwargs['delay_dist'])
         if self._mass2light:
@@ -113,7 +113,7 @@ class ElseParam(object):
 
         if 'delay_dist' in kwargs_fixed:
             fix_return['delay_dist'] = kwargs_fixed['delay_dist']
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if 'delay_dist' in kwargs_fixed:
                 fix_return['delay_dist'] = kwargs_fixed['delay_dist']
         if self._mass2light:
@@ -154,7 +154,7 @@ class ElseParam(object):
                 shear_sigma = kwargs_mean['shear_foreground_sigma']
                 sigma.append(shear_sigma)
                 sigma.append(shear_sigma)
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 mean.append(kwargs_mean['delay_dist'])
                 sigma.append(kwargs_mean['delay_dist_sigma'])
@@ -164,7 +164,7 @@ class ElseParam(object):
                 sigma.append(kwargs_mean['mass2light_sigma'])
         return mean, sigma
 
-    def param_bound(self):
+    def param_bounds(self):
         """
 
         :return:
@@ -193,7 +193,7 @@ class ElseParam(object):
                 high.append(0.8)
                 low.append(-0.8)
                 high.append(0.8)
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 low.append(0)
                 high.append(10000)
@@ -228,7 +228,7 @@ class ElseParam(object):
                 num += 2
                 list.append('shear_foreground_1')
                 list.append('shear_foreground_2')
-        if self.kwargs_options.get('time_delay', False) is True:
+        if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 num += 1
                 list.append('delay_dist')

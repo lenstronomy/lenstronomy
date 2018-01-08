@@ -145,41 +145,32 @@ def test_displaceAbs():
     assert result[1] == 0
 
 
-def test_mk_array():
-    variable = 1.
-    output = Util.mk_array(variable)
-    assert output[0] == 1
-    variable = [1,2,3]
-    output = Util.mk_array(variable)
-    assert output[0] == 1
-
-
 def test_get_distance():
-    x_mins = Util.mk_array(1.)
-    y_mins = Util.mk_array(1.)
-    x_true = Util.mk_array(0.)
-    y_true = Util.mk_array(0.)
+    x_mins = np.array([1.])
+    y_mins = np.array([1.])
+    x_true = np.array([0.])
+    y_true = np.array([0.])
     dist = Util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 2
 
-    x_mins = Util.mk_array([1.,2])
-    y_mins = Util.mk_array([1.,1])
-    x_true = Util.mk_array(0.)
-    y_true = Util.mk_array(0.)
+    x_mins = np.array([1.,2])
+    y_mins = np.array([1.,1])
+    x_true = np.array([0.])
+    y_true = np.array([0.])
     dist = Util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 10000000000
 
-    x_mins = Util.mk_array([1.,2])
-    y_mins = Util.mk_array([1.,1])
-    x_true = Util.mk_array([0.,1])
-    y_true = Util.mk_array([0.,2])
+    x_mins = np.array([1.,2])
+    y_mins = np.array([1.,1])
+    x_true = np.array([0.,1])
+    y_true = np.array([0.,2])
     dist = Util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 6
 
-    x_mins = Util.mk_array([1.,2,0])
-    y_mins = Util.mk_array([1.,1,0])
-    x_true = Util.mk_array([0.,1,1])
-    y_true = Util.mk_array([0.,2,1])
+    x_mins = np.array([1.,2,0])
+    y_mins = np.array([1.,1,0])
+    x_true = np.array([0.,1,1])
+    y_true = np.array([0.,2,1])
     dist = Util.get_distance(x_mins, y_mins, x_true, y_true)
     assert dist == 2
 
@@ -221,6 +212,14 @@ def test_fwhm2sigma():
     fwhm = 0.5
     sigma = Util.fwhm2sigma(fwhm)
     assert sigma == fwhm/ (2 * np.sqrt(2 * np.log(2)))
+
+
+def test_points_on_circle():
+    radius = 1
+    points = 8
+    ra, dec = Util.points_on_circle(radius, points)
+    assert ra[0] == 1
+    assert dec[0] == 0
 
 
 if __name__ == '__main__':

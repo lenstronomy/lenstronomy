@@ -63,5 +63,6 @@ class TestParam(object):
         assert lens_dict['center_y'] == 0.
         assert lens_light_dic[0]['center_x'] == -0.06
 
+
 if __name__ == '__main__':
     pytest.main()

@@ -129,13 +129,13 @@ class Param(object):
         """
         #inizialize lower and upper limit arrays
         low, high = self.lensParams.param_bounds()
-        _low, _high = self.souceParams.param_bound()
+        _low, _high = self.souceParams.param_bounds()
         low += _low
         high += _high
-        _low, _high = self.lensLightParams.param_bound()
+        _low, _high = self.lensLightParams.param_bounds()
         low += _low
         high += _high
-        _low, _high = self.elseParams.param_bound()
+        _low, _high = self.elseParams.param_bounds()
         low += _low
         high += _high
         return np.asarray(low), np.asarray(high)

@@ -54,8 +54,8 @@ class TestFittingSequence(object):
     def test_simulationAPI_psf(self):
         assert self.kwargs_psf[0]['kernel_pixel'][1, 1] == 0.29837520844570531
 
+
     """
-    
     def test_fitting_sequence(self):
         kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else]
         lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'ellipse_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
@@ -78,7 +78,7 @@ class TestFittingSequence(object):
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
-        """
+    """
 
 if __name__ == '__main__':
     pytest.main()

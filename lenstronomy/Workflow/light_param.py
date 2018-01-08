@@ -272,10 +272,6 @@ class LightParam(object):
                     args.append(kwargs['Re'])
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
-                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_2'], kwargs['q_2'])
-                    args.append(e1)
-                    args.append(e2)
             if model in ['BULDGE_DISK']:
                 if not 'I0_b' in kwargs_fixed:
                     args.append(kwargs['I0_b'])
@@ -559,7 +555,7 @@ class LightParam(object):
                     sigma.append(kwargs_mean['mean_sigma'])
         return mean, sigma
 
-    def param_bound(self):
+    def param_bounds(self):
         """
 
         :return:

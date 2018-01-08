@@ -19,7 +19,7 @@ class TestHernquist(object):
         Rs = 1.
         sigma0 = 0.5
         values = self.profile.function(x, y, sigma0, Rs)
-        assert values[0] == 0.66514613455415028
+        npt.assert_almost_equal(values[0], 0.66514613455415028, decimal=8)
         x = np.array([0])
         y = np.array([0])
         Rs = 1.
@@ -30,9 +30,9 @@ class TestHernquist(object):
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.profile.function( x, y, sigma0, Rs)
-        assert values[0] == 0.66514613455415028
-        assert values[1] == 0.87449395673649566
-        assert values[2] == 1.0549139073851708
+        npt.assert_almost_equal(values[0], 0.66514613455415028, decimal=8)
+        npt.assert_almost_equal(values[1], 0.87449395673649566, decimal=8)
+        npt.assert_almost_equal(values[2], 1.0549139073851708, decimal=8)
 
     def test_derivatives(self):
         x = 1
@@ -40,14 +40,13 @@ class TestHernquist(object):
         Rs = 1.
         sigma0 = 0.5
         f_x, f_y = self.profile.derivatives( x, y, sigma0, Rs)
-        assert f_x == 0.11160641027573866
-        assert f_y == 0.22321282055147731
+        npt.assert_almost_equal(f_x, 0.11160641027573866, decimal=8)
+        npt.assert_almost_equal(f_y, 0.22321282055147731, decimal=8)
         x = np.array([0])
         y = np.array([0])
         f_x, f_y = self.profile.derivatives( x, y, sigma0, Rs)
-        assert f_x[0] == 0
-        assert f_y[0] == 0
-
+        npt.assert_almost_equal(f_x, 0, decimal=8)
+        npt.assert_almost_equal(f_y, 0, decimal=8)
 
     def test_hessian(self):
         x = np.array([1])
@@ -55,9 +54,9 @@ class TestHernquist(object):
         Rs = 1.
         sigma0 = 0.5
         f_xx, f_yy,f_xy = self.profile.hessian(x, y, sigma0, Rs)
-        assert f_xx[0] == 0.07790120765543973
-        assert f_yy[0] == -0.023212946451134361
-        assert f_xy[0] == -0.067409341317214988
+        npt.assert_almost_equal(f_xx[0], 0.07790120765543973, decimal=8)
+        npt.assert_almost_equal(f_yy[0], -0.023212946451134361, decimal=8)
+        npt.assert_almost_equal(f_xy[0], -0.067409341317214988, decimal=8)
 
 
 class TestHernquistEllipse(object):
@@ -72,7 +71,7 @@ class TestHernquistEllipse(object):
         sigma0 = 0.5
         q, phi_G = 0.8, 0.5
         values = self.profile.function(x, y, sigma0, Rs,q, phi_G)
-        assert values[0] == 0.6451374041763912
+        npt.assert_almost_equal(values[0], 0.6451374041763912, decimal=8)
         x = np.array([0])
         y = np.array([0])
         Rs = 1.
@@ -83,9 +82,9 @@ class TestHernquistEllipse(object):
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.profile.function( x, y, sigma0, Rs, q, phi_G)
-        assert values[0] == 0.60477384241056542
-        assert values[1] == 0.80854098526603968
-        assert values[2] == 0.98780932325084092
+        npt.assert_almost_equal(values[0], 0.60477384241056542, decimal=8)
+        npt.assert_almost_equal(values[1], 0.80854098526603968, decimal=8)
+        npt.assert_almost_equal(values[2], 0.98780932325084092, decimal=8)
 
     def test_derivatives(self):
         x = 1
@@ -94,14 +93,13 @@ class TestHernquistEllipse(object):
         sigma0 = 0.5
         q, phi_G = 0.8, 0.5
         f_x, f_y = self.profile.derivatives( x, y, sigma0, Rs, q, phi_G)
-        assert f_x == 0.065446024625706908
-        assert f_y == 0.24132860718623173
+        npt.assert_almost_equal(f_x, 0.065446024625706908, decimal=8)
+        npt.assert_almost_equal(f_y, 0.24132860718623173, decimal=8)
         x = np.array([0])
         y = np.array([0])
         f_x, f_y = self.profile.derivatives( x, y, sigma0, Rs, q, phi_G)
-        assert f_x[0] == 0
-        assert f_y[0] == 0
-
+        npt.assert_almost_equal(f_x, 0, decimal=8)
+        npt.assert_almost_equal(f_y, 0, decimal=8)
 
     def test_hessian(self):
         x = np.array([1])
@@ -110,9 +108,9 @@ class TestHernquistEllipse(object):
         sigma0 = 0.5
         q, phi_G = 0.8, 0.5
         f_xx, f_yy,f_xy = self.profile.hessian(x, y, sigma0, Rs, q, phi_G)
-        assert f_xx[0] == 0.093409372903252574
-        assert f_yy[0] == -0.028538260199439947
-        assert f_xy[0] == -0.06298435105411837
+        npt.assert_almost_equal(f_xx[0], 0.093409372903252574, decimal=8)
+        npt.assert_almost_equal(f_yy[0], -0.028538260199439947, decimal=8)
+        npt.assert_almost_equal(f_xy[0], -0.06298435105411837, decimal=8)
 
 
 if __name__ == '__main__':

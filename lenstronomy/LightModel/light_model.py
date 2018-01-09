@@ -198,20 +198,23 @@ class LightModel(object):
         :param kwargs:
         :return:
         """
+        kwargs_list_new = []
         for k, model in enumerate(self.profile_type_list):
+            kwargs_list_k = kwargs_list[k].copy()
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
-                kwargs_list[k]['I0_sersic'] *= norm_factor
+                kwargs_list_k['I0_sersic'] *= norm_factor
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_list[k]['I0_2'] *= norm_factor
+                kwargs_list_k['I0_2'] *= norm_factor
             if model in ['BULDGE_DISK']:
-                kwargs_list[k]['I0_b'] *= norm_factor
-                kwargs_list[k]['I0_d'] *= norm_factor
+                kwargs_list_k['I0_b'] *= norm_factor
+                kwargs_list_k['I0_d'] *= norm_factor
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
-                kwargs_list[k]['sigma0'] *= norm_factor
+                kwargs_list_k['sigma0'] *= norm_factor
             if model in ['GAUSSIAN', 'MULTI_GAUSSIAN']:
-                kwargs_list[k]['amp'] *= norm_factor
+                kwargs_list_k['amp'] *= norm_factor
             if model in ['SHAPELETS']:
-                kwargs_list[k]['amp'] *= norm_factor
+                kwargs_list_k['amp'] *= norm_factor
             if model in ['UNIFORM']:
-                kwargs_list[k]['mean'] *= norm_factor
-        return kwargs_list
+                kwargs_list_k['mean'] *= norm_factor
+            kwargs_list_new.append(kwargs_list_k)
+        return kwargs_list_new

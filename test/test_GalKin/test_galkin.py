@@ -170,14 +170,14 @@ class TestGalkin(object):
 
         psf_fwhm = 1.  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
-        kwargs_numerics = {'sampling_number': 5000, 'interpol_grid_num': 5000, 'log_integration': False,
+        kwargs_numerics = {'sampling_number': 10000, 'interpol_grid_num': 5000, 'log_integration': False,
                            'max_integrate': 500}
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
 
         los_disp = Velocity_dispersion(beta_const=False, b_prior=False, kwargs_cosmo=kwargs_cosmo)
         sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, aniso_param=r_ani, R_slit=length, dR_slit=width,
-                                     FWHM=psf_fwhm, num=5000)
+                                     FWHM=psf_fwhm, num=10000)
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)
 

@@ -108,7 +108,7 @@ class Sensitivity(object):
     def detection(self, kwargs_options, kwargs_data, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, x_clump, y_clump, phi_E_clump, r_trunc):
         kwargs_options["add_clump"] = True
         clump_kwargs = {'r_trunc': r_trunc, 'phi_E_clump': phi_E_clump, 'x_clump': x_clump, 'y_clump': y_clump}
-        kwargs_else = dict(kwargs_else.items() + clump_kwargs.items())
+        kwargs_else.update(clump_kwargs)
         image, param, residuals = self.make_mock_image(kwargs_options, kwargs_data, kwargs_lens, kwargs_source, kwargs_psf,
                             kwargs_lens_light, kwargs_else, add_noise=True, noMask=False)
 
@@ -168,7 +168,7 @@ class Sensitivity(object):
         kwargs_options_clump = copy.deepcopy(kwargs_options)
         kwargs_options_clump["add_clump"] = True
         clump_kwargs = {'r_trunc': r_trunc, 'phi_E_clump': phi_E_clump, 'x_clump': x_clump, 'y_clump': y_clump}
-        kwargs_else = dict(kwargs_else.items() + clump_kwargs.items())
+        kwargs_else.update(clump_kwargs)
         makeImage = ImageModel(kwargs_options_clump, kwargs_data)
         if kwargs_options["multiBand"]:
             x_grid, y_grid = kwargs_data[0]['x_coords'], kwargs_data[0]['y_coords']

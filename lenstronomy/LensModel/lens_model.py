@@ -95,10 +95,10 @@ class LensModel(object):
                 from lenstronomy.LensModel.Profiles.interpol import Interpol_func_scaled
                 self.func_list.append(Interpol_func_scaled(grid=False))
             elif lens_type == 'SHAPELETS_POLAR':
-                from lenstronomy.LensModel.Profiles.shapelet_pot import PolarShapelets
+                from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
                 self.func_list.append(PolarShapelets())
             elif lens_type == 'SHAPELETS_CART':
-                from lenstronomy.LensModel.Profiles.shapelet_pot_2 import CartShapelets
+                from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import CartShapelets
                 self.func_list.append(CartShapelets())
             elif lens_type == 'DIPOLE':
                 from lenstronomy.LensModel.Profiles.dipole import Dipole

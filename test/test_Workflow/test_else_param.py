@@ -16,7 +16,8 @@ class TestParam(object):
                        'delay_dist': 1000, 'mass2light': 1}
         self.kwargs_sigma = {'pos_sigma': 1, 'point_amp_sigma': 1, 'shear_foreground_sigma': 0.1,
                              'delay_dist_sigma': 100, 'mass2light_sigma': 0.1}
-        self.kwargs_mean = dict(self.kwargs.items() + self.kwargs_sigma.items())
+        self.kwargs_mean = self.kwargs.copy()
+        self.kwargs_mean.update(self.kwargs_sigma)
 
     def test_get_setParams(self):
         args = self.param.setParams(self.kwargs)

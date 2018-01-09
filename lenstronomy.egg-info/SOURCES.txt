@@ -125,8 +125,8 @@ lenstronomy/LensModel/Profiles/sersic.py
 lenstronomy/LensModel/Profiles/sersic_double.py
 lenstronomy/LensModel/Profiles/sersic_ellipse.py
 lenstronomy/LensModel/Profiles/sersic_utils.py
-lenstronomy/LensModel/Profiles/shapelet_pot.py
-lenstronomy/LensModel/Profiles/shapelet_pot_2.py
+lenstronomy/LensModel/Profiles/shapelet_pot_cartesian.py
+lenstronomy/LensModel/Profiles/shapelet_pot_polar.py
 lenstronomy/LensModel/Profiles/sie.py
 lenstronomy/LensModel/Profiles/sis.py
 lenstronomy/LensModel/Profiles/sis_truncate.py
@@ -217,7 +217,8 @@ test/test_LensModel/test_Profiles/test_no_lens.py
 test/test_LensModel/test_Profiles/test_p_jaffe.py
 test/test_LensModel/test_Profiles/test_point_mass.py
 test/test_LensModel/test_Profiles/test_sersic_lens.py
-test/test_LensModel/test_Profiles/test_shapelet_pot.py
+test/test_LensModel/test_Profiles/test_shapelet_pot_cartesian.py
+test/test_LensModel/test_Profiles/test_shapelet_pot_polar.py
 test/test_LensModel/test_Profiles/test_sie.py
 test/test_LensModel/test_Profiles/test_sis.py
 test/test_LensModel/test_Profiles/test_sis_truncate.py

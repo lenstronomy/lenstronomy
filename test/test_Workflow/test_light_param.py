@@ -63,8 +63,9 @@ class TestParam(object):
                              ]
         self.kwargs_mean = []
         for i in range(len(self.light_model_list)):
-            kwargs_mean = dict(self.kwargs[i].items() + self.kwargs_sigma[i].items())
-            self.kwargs_mean.append(kwargs_mean)
+            kwargs_mean_k = self.kwargs[i].copy()
+            kwargs_mean_k.update(self.kwargs_sigma[i])
+            self.kwargs_mean.append(kwargs_mean_k)
         self.param = LightParam(kwargs_options={'source_light_model_list': self.light_model_list},
                                kwargs_fixed=self.kwargs_fixed, type='source_light')
         self.param_fixed = LightParam(kwargs_options={'source_light_model_list': self.light_model_list},

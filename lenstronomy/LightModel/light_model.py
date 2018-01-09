@@ -136,33 +136,39 @@ class LightModel(object):
         for k, model in enumerate(self.profile_type_list):
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 new = {'I0_sersic': 1, 'I0_2': 1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += 2
             elif model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 new = {'I0_sersic': 1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['BULDGE_DISK']:
                 new = {'I0_b': 1, 'I0_d': 1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += 2
             elif model in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
                 new = {'sigma0': 1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['GAUSSIAN']:
                 new = {'amp':  1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['MULTI_GAUSSIAN']:
                 num = len(kwargs_list[k]['amps'])
                 new = {'amp': np.ones(num)}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += num
             elif model in ['SHAPELETS']:
@@ -170,12 +176,14 @@ class LightModel(object):
                 n_max = kwargs['n_max']
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 new = {'amp': np.ones(num_param)}
-                kwargs_new = dict(kwargs.items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += num_param
             elif model in ['UNIFORM']:
                 new = {'mean':  1}
-                kwargs_new = dict(kwargs_list[k].items() + new.items())
+                kwargs_new = kwargs_list[k].copy()
+                kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['NONE']:

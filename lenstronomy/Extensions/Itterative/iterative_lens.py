@@ -34,7 +34,8 @@ class MakeImageIterLens(ImageModel):
         flux_default = self.get_image(param, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_else, numPix, deltaPix, subgrid_res, beta, num_order, mask=mask)
 
         coeffs[coeff_num] += delta
-        kwargs_lens_perturb = dict(kwargs_lens.items() + {'coeffs': coeffs}.items())
+        kwargs_lens_perturb = kwargs_lens.copy()
+        kwargs_lens_perturb.update({'coeffs': coeffs})
         flux_perturb = self.get_image(param, x_grid, y_grid, kwargs_lens_perturb, kwargs_source, kwargs_psf, kwargs_else,
                                           numPix, deltaPix, subgrid_res, beta, num_order,
                                           mask=mask)
@@ -57,7 +58,8 @@ class MakeImageIterLens(ImageModel):
         factor = np.sign(param_iter[0])*np.minimum(np.abs(param_iter[0]), 10)
         factor = param_iter[0]
         coeffs_new[coeff_num] -= factor * delta * fraction
-        kwargs_lens_new = dict(kwargs_lens.items() + {'coeffs': coeffs_new}.items())
+        kwargs_lens_new = kwargs_lens.copy()
+        kwargs_lens_new.update({'coeffs': coeffs_new})
         return kwargs_lens_new, im_sim, im_sim_iter+im_sim,
 
     def step(self, im_sim, model_error, param, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_else, numPix, deltaPix, subgrid_res, coeff_num=0, delta=0.01, fraction=1.):
@@ -68,7 +70,8 @@ class MakeImageIterLens(ImageModel):
         factor = np.sign(param_iter[0])*np.minimum(np.abs(param_iter[0]), 10)
         factor = param_iter[0]
         coeffs_new[coeff_num] -= factor * delta * fraction
-        kwargs_lens_new = dict(kwargs_lens.items() + {'coeffs': coeffs_new}.items())
+        kwargs_lens_new = kwargs_lens.copy()
+        kwargs_lens_new.update({'coeffs': coeffs_new})
         return kwargs_lens_new, im_sim_iter+im_sim
 
     def iteration(self, numIter, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_psf, kwargs_lens_light, kwargs_else, numPix, deltaPix, subgrid_res, delta=0.01, fraction=1.):

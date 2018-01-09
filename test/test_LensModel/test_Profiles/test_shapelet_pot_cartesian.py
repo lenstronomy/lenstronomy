@@ -1,14 +1,14 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.Profiles.shapelet_pot import PolarShapelets
-from lenstronomy.LensModel.Profiles.shapelet_pot_2 import CartShapelets
+from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
+from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import CartShapelets
 
 import numpy as np
 import numpy.testing as npt
 import pytest
 
 
-class TestPolarShapelets(object):
+class TestCartShapelets(object):
     """
     tests the Gaussian methods
     """

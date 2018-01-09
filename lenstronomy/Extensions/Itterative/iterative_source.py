@@ -195,7 +195,8 @@ class MakeImageIter(ImageModel):
         """
         if not self.kwargs_options['source_type'] == 'NONE':
             new = {'I0_sersic': param[0], 'center_x': 0, 'center_y': 0}
-            kwargs_source_new = dict(kwargs_source.items() + new.items())
+            kwargs_source_new = kwargs_source.copy()
+            kwargs_source_new.update(new)
             source = self.get_surface_brightness(x_grid, y_grid, **kwargs_source_new)
         else:
             source = np.zeros_like(x_grid)

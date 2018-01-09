@@ -119,7 +119,7 @@ class PolarShapelets(object):
                 i+=1
         return normFactor
 
-    def _shapeletOutput(self,r, phi, beta, shapelets):
+    def _shapeletOutput(self, r, phi, beta, shapelets):
         """
         returns the the numerical values of a set of shapelets at polar coordinates
         :param shapelets: set of shapelets [l=,r=,a_lr=]
@@ -132,10 +132,11 @@ class PolarShapelets(object):
         if type(r) == float or type(r) == int or type(r) == type(np.float64(1)) or len(r) <= 1:
             values = 0.
         else:
-            values=np.zeros(len(r))
+            values = np.zeros(len(r), 'complex')
         for nl in range(0,len(shapelets)): #sum over different shapelets
             for nr in range(0,len(shapelets)):
-                values+=shapelets[nl][nr]*self._chi_lr(r, phi, nl, nr, beta)
+                value = shapelets[nl][nr]*self._chi_lr(r, phi, nl, nr, beta)
+                values += value
         return values.real
 
     def _chi_lr(self,r, phi, nl,nr,beta):
@@ -196,8 +197,8 @@ class PolarShapelets(object):
         :returns:  set of alpha shapelets.
         :raises: AttributeError, KeyError
         """
-        output_x=np.zeros((len(shapelets)+1,len(shapelets)+1),'complex')
-        output_y=np.zeros((len(shapelets)+1,len(shapelets)+1),'complex')
+        output_x = np.zeros((len(shapelets)+1, len(shapelets)+1), 'complex')
+        output_y = np.zeros((len(shapelets)+1, len(shapelets)+1), 'complex')
         for nl in range(0,len(shapelets)):
             for nr in range(0,len(shapelets)):
                 a_lr=shapelets[nl][nr]
@@ -252,5 +253,5 @@ class PolarShapelets(object):
         :param n_coeffs: number of coeffs
         :return: number of n_l of order of the shapelets
         """
-        num_l = round((math.sqrt(8*n_coeffs + 9)-3)/2 +0.499)
+        num_l = int(round((math.sqrt(8*n_coeffs + 9)-3)/2 +0.499))
         return num_l

@@ -73,8 +73,9 @@ class TestParam(object):
                              {}, {}, {}]
         self.kwargs_mean = []
         for i in range(len(self.lens_model_list)):
-            kwargs_mean = dict(self.kwargs[i].items() + self.kwargs_sigma[i].items())
-            self.kwargs_mean.append(kwargs_mean)
+            kwargs_mean_k = self.kwargs[i].copy()
+            kwargs_mean_k.update(self.kwargs_sigma[i])
+            self.kwargs_mean.append(kwargs_mean_k)
         self.param = LensParam(kwargs_options={'lens_model_list': self.lens_model_list, 'num_shapelet_lens': 2},
                                kwargs_fixed=self.kwargs_fixed)
         self.param_fixed = LensParam(kwargs_options={'lens_model_list': self.lens_model_list, 'num_shapelet_lens': 2},

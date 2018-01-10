@@ -2,6 +2,9 @@
 lenstronomy
 =============================
 
+.. image:: https://badge.fury.io/py/lenstronomy.png
+    :target: http://badge.fury.io/py/lenstronomy
+
 .. image:: https://travis-ci.org/sibirrer/lenstronomy.png?branch=master
         :target: https://travis-ci.org/sibirrer/lenstronomy
 
@@ -18,14 +21,16 @@ The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015Ap
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
 
-The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
-The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_
+The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`__ and contributions are welcome.
+The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`__ and
+the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`__.
 
 
 
 Installation
 --------
-* check out the github repository
+>>> pip install lenstronomy
+* or check out the github repository
 >>> cd lenstronomy
 >>> python setup.py install
 or in development mode

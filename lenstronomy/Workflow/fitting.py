@@ -95,7 +95,7 @@ class Fitting(object):
         for k in range(len(lens_light_fix)):
             kwargs_fixed_lens_light_updated_k = kwargs_fixed_lens_light[k].copy()
             kwargs_fixed_lens_light_updated_k.update(lens_light_fix[k])
-            kwargs_fixed_lens_updated.append(kwargs_fixed_lens_light_updated_k)
+            kwargs_fixed_lens_light_updated.append(kwargs_fixed_lens_light_updated_k)
         kwargs_fixed_else_updated = kwargs_fixed_else.copy()
         kwargs_fixed_else_updated.update(else_fix)
         return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated, kwargs_fixed_else_updated

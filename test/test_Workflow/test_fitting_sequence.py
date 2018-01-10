@@ -80,5 +80,6 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
     """
 
+
 if __name__ == '__main__':
     pytest.main()

@@ -1,11 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.1.0
-Summary: This package is designed to model strong lens systems.
+Version: 0.0.1
+Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.1.tar.gz
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy

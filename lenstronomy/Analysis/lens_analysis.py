@@ -38,6 +38,7 @@ class LensAnalysis(object):
     def half_light_radius(self, kwargs_lens_light, deltaPix=None, numPix=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
+
         :param kwargs_lens_light:
         :return:
         """
@@ -72,6 +73,7 @@ class LensAnalysis(object):
     def multi_gaussian_lens_light(self, kwargs_lens_light, n_comp=20):
         """
         multi-gaussian decomposition of the lens light profile (in 1-dimension)
+
         :param kwargs_lens_light:
         :param n_comp:
         :return:
@@ -85,6 +87,7 @@ class LensAnalysis(object):
     def multi_gaussian_lens(self, kwargs_lens, kwargs_else, n_comp=20):
         """
         multi-gaussian lens model in convergence space
+
         :param kwargs_lens:
         :param n_comp:
         :return:
@@ -109,6 +112,7 @@ class LensAnalysis(object):
     def effective_einstein_radius(self, kwargs_lens_list, kwargs_else, k=None):
         """
         computes the radius with mean convergence=1
+
         :param kwargs_lens:
         :return:
         """
@@ -166,6 +170,7 @@ class LensAnalysis(object):
     def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01, type="lens"):
         """
         computes the total flux in each component of the model
+
         :param kwargs_light:
         :param n_grid:
         :param delta_grid:
@@ -244,6 +249,7 @@ class LensAnalysis(object):
     def magnification_model(self, kwargs_lens, kwargs_else):
         """
         computes the point source magnification at the position of the point source images
+
         :param kwargs_lens:
         :param kwargs_else:
         :return: list of magnifications
@@ -272,6 +278,7 @@ class LensAnalysis(object):
     def position_size_estimate(self, ra_pos, dec_pos, kwargs_lens, kwargs_else, delta, scale=1):
         """
         estimate the magnification at the positions and define resolution limit
+
         :param ra_pos:
         :param dec_pos:
         :param kwargs_lens:
@@ -290,6 +297,7 @@ class LensAnalysis(object):
     def external_lensing_effect(self, kwargs_lens, kwargs_else):
         """
         computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
+
         :param kwargs_lens:
         :return:
         """

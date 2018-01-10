@@ -35,6 +35,7 @@ class ImageModel(object):
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """
         computes the source surface brightness distribution
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
@@ -54,6 +55,7 @@ class ImageModel(object):
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
         """
         computes the lens surface brightness distribution
+
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
@@ -66,6 +68,7 @@ class ImageModel(object):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -86,6 +89,7 @@ class ImageModel(object):
     def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -123,6 +127,7 @@ class ImageModel(object):
     def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
         """
         lens equation solver for image positions given lens model and source position
+
         :param kwargs_lens: keyword arguments of lens models (as list)
         :param kwargs_else: keyword arguments of other parameters
         :param sourcePos_x: source position in relative arc sec
@@ -138,6 +143,7 @@ class ImageModel(object):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -189,6 +195,7 @@ class ImageModel(object):
         variance of the linear source reconstruction in the source plane coordinates,
         computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
         of the basis set.
+
         :param kwargs_source: keyword arguments of source model
         :param x_grid: x-axis of positions to compute error map
         :param y_grid: y-axis of positions to compute error map
@@ -269,6 +276,7 @@ class ImageModel(object):
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """
         links linear parameters to kwargs arguments
+
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
@@ -336,6 +344,7 @@ class ImageModel(object):
         """
         multiplies the surface brightness amplitudes with a norm_factor
         aim: mimic different telescopes photon collection area or colours for different imaging bands
+
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_else:

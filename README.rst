@@ -17,7 +17,7 @@ lenstronomy
 
 
 This package is designed to model strong lens systems.
-The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015ApJ...813..102B and finds application in
+The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`__  and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
 
@@ -29,22 +29,13 @@ the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>
 
 Installation
 --------
->>> pip install lenstronomy
-* or check out the github repository
->>> cd lenstronomy
->>> python setup.py install
-or in development mode
->>> python setup.py develop
-* it is recommended to check out and install the dependency fastell4py independently.
-* run the test functions to see whether the installation was successful.
->>> cd lenstronomy
->>> py.test
+* see INSTALLATION.rst
 
 
 Requirements
 -------
-* to run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-is also required and can be cloned from: githug/sibirrer/fastell4py (needs a fortran compiler)
+To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
+is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`__ (needs a fortran compiler)
 * CosmoHammer (through PyPi)
 * standard python libraries (numpy, scipy)
 
@@ -52,7 +43,7 @@ is also required and can be cloned from: githug/sibirrer/fastell4py (needs a for
 Bug reporting and contributions
 -------
 * see CONTRIBUTING.rst
-* you can also directly contact the lead developer, Simon Birrer
+
 
 Modelling Features
 --------

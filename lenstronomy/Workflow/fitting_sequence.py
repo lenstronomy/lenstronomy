@@ -88,12 +88,8 @@ class FittingSequence(object):
         psf_iteration = fitting_kwargs.get('psf_iteration', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True]*len(self.kwargs_data))
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
-        if fitting_routine == 'lens_light_mask':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_light_mask(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
-                lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
-        elif fitting_routine == 'lens_only':
+
+        if fitting_routine == 'lens_only':
             lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_only(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
@@ -138,17 +134,6 @@ class FittingSequence(object):
             print('PSF fitting completed')
         else:
             raise ValueError("%s is not a valid fitting routine" %fitting_routine)
-
-        if psf_iteration is True and not fitting_routine == 'psf_iteraton':
-            psf_iter_factor = fitting_kwargs['psf_iter_factor']
-            psf_iter_num = fitting_kwargs['psf_iter_num']
-            for i in range(len(self.kwargs_psf)):
-                if compute_bool[i]:
-                    psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
-                    self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_result, source_result,
-                                                   lens_light_result, else_result, factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                   symmetry=psf_symmetry, verbose=False)
-
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
     def _init_kwargs(self):

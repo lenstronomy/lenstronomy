@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.Extensions.CosmoSampling.cosmo_solver import SolverFlatCosmo
+from lenstronomy.Cosmo.cosmo_solver import SolverFlatCosmo, InvertCosmo
 
 import numpy as np
 import pytest
@@ -53,6 +53,19 @@ class TestCompare(object):
         print(Dd, Ds_Dds, Dd_new, Ds_Dds_new)
         #npt.assert_almost_equal(Dd, Dd_new, decimal=3)
         #npt.assert_almost_equal(Ds_Dds, Ds_Dds_new, decimal=3)
+
+
+class TestInvertCosmo(object):
+    def setup(self):
+        self.invertCosmo = InvertCosmo(z_d=0.295, z_s=0.658)
+
+    def test_get_cosmo(self):
+        H0 = 80
+        omega_m = 0.4
+        Dd, Ds_Dds = self.invertCosmo.cosmo2Dd_Ds_Dds(H0, omega_m)
+        H0_new, omega_m_new = self.invertCosmo.get_cosmo(Dd, Ds_Dds)
+        npt.assert_almost_equal(H0_new, H0, decimal=2)
+        npt.assert_almost_equal(omega_m_new, omega_m, decimal=3)
 
 
 if __name__ == '__main__':

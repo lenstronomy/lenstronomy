@@ -75,6 +75,10 @@ class TestP_JAFFW(object):
         assert values[1][1] == 0.052668405375961035
         assert values[2][1] == -0.033723449997241584
 
+    def test_mass_3d_lens(self):
+        mass = self.profile.mass_3d_lens(r=1, sigma0=1, Ra=0.5, Rs=0.8)
+        assert mass == 0.87077306005349242
+
 
 if __name__ == '__main__':
     pytest.main()

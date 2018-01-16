@@ -144,7 +144,7 @@ try:
             npt.assert_almost_equal(f_x[0], f_x_spep[0], decimal=4)
 
 
-    if __name__ == '__main__' and bool_test:
+    if __name__ == '__main__':
        pytest.main()
 
 except:

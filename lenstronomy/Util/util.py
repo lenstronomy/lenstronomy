@@ -153,20 +153,6 @@ def averaging(grid, numGrid, numPix):
     return small
 
 
-def compare(model, data, sigma, poisson):
-    """
-
-    :param model: model 2d image
-    :param data: data 2d image
-    :param sigma: minimal noise level of background (float>0 or as image)
-    :return: X^2 value if images have same size
-    """
-    deltaIm = (data-model)**2
-    relDeltaIm = deltaIm/(sigma**2 + np.abs(model)/poisson)
-    X2_estimate = np.sum(relDeltaIm)
-    return X2_estimate
-
-
 def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     """
     calculates a grid of distances to the observer in angel

@@ -56,22 +56,6 @@ class LightProfile(object):
             kwargs_list_new.append({k: v for k, v in kwargs.items() if not k in ['center_x', 'center_y']})
         return self.light_model.surface_brightness(R, 0, kwargs_list_new)
 
-    def _integrand_light(self, R, kwargs_light):
-        """
-
-        :param r:
-        :param R:
-        :param kwargs_light:
-        :return:
-        """
-        min_log = np.log10(self._min_interpolate)
-        max_log = np.log10(self._max_interpolate)
-        num = self._interp_grid_num
-        r_array = np.logspace(min_log, max_log, num)
-        dlogr = float(max_log - min_log) / num * np.log(10)
-        r_ = np.sqrt(r_array**2 + R**2)
-        return np.sum(self.light_3d_interp(r_, kwargs_light) * r_array) * 2 * dlogr
-
     def draw_light_2d_linear(self, kwargs_list, n=1, new_compute=False, r_eff=1.):
         """
         constructs the CDF and draws from it random realizations of projected radii R

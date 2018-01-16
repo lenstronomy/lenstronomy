@@ -11,6 +11,7 @@ class TimeDelaySampling(object):
     def days_D_model(self, delay_arcsec, D_dt_model):
         """
         given a delay in arcsec^2 and a Delay distance, the delay is computed in days
+
         :param delay_arc_sec:
         :param D_dt_model:
         :return:
@@ -21,6 +22,7 @@ class TimeDelaySampling(object):
     def logL_delays(self, delays_model, delays_measured, delays_errors):
         """
         log likelihoood of modeled delays vs measured time delays under considerations of errors
+
         :param delays_model: n delays of the model (not relative delays)
         :param delays_measured: relative delays (1-2,1-3,1-4) relative to the first in the list
         :param delays_errors: gaussian errors on the measured delays

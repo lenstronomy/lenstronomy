@@ -48,13 +48,13 @@ PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 setup(
     name='lenstronomy',
-    version='0.0.1',
+    version='0.0.2',
     description='Strong lens modeling package.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
     url='https://github.com/sibirrer/lenstronomy',
-    download_url='https://github.com/sibirrer/lenstronomy/archive/0.0.1.tar.gz',
+    download_url='https://github.com/sibirrer/lenstronomy/archive/0.0.2.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,

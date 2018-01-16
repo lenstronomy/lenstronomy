@@ -7,7 +7,8 @@ from lenstronomy.GalKin.galkin import Galkin
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 
@@ -17,25 +18,26 @@ class LensProp(object):
     this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model
     """
 
-    def __init__(self, z_lens, z_source, kwargs_options, kwargs_data):
+    def __init__(self, z_lens, z_source, kwargs_options, kwargs_data, cosmo=None):
         self.z_d = z_lens
         self.z_s = z_source
-        self.lensCosmo = LensCosmo(z_lens, z_source)
+        self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
-        self.lens_model = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.image_model = ImageModel(kwargs_options, kwargs_data)
+        self.lens_model = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
-    def time_delays(self, kwargs_lens, kwargs_source, kwargs_else, kappa_ext=0):
-        fermat_pot = self.lens_analysis.imageModel.fermat_potential(kwargs_lens, kwargs_else)
+    def time_delays(self, kwargs_lens, kwargs_else, kappa_ext=0):
+        fermat_pot = self.image_model.fermat_potential(kwargs_lens, kwargs_else)
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
     def _rho0_r0_gamma(self, kwargs_lens, kwargs_else, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
-        theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
+        theta_E = self.lens_model.effective_einstein_radius(kwargs_lens, kwargs_else)
         return (kappa_ext - 1) * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / self.lensCosmo.arcsec2phys_lens(theta_E) * self.lensCosmo.cosmoProp.epsilon_crit * const.M_sun / const.Mpc ** 3  # units kg/m^3
 
     def v_sigma(self, kwargs_lens, kwargs_lens_light, kwargs_else, r_ani_scaling=1, r_eff=None, r=0.01):
@@ -86,8 +88,8 @@ class LensProp(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_mass is True:
-            massModel = LensModel(lens_model_list=mass_profile_list)
-            theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else)
+            massModel = LensModelExtensions(lens_model_list=mass_profile_list)
+            theta_E = massModel.effective_einstein_radius(kwargs_lens, kwargs_else)
             r_array = np.logspace(-2, 1, 100) * theta_E
             mass_r = massModel.kappa(r_array, 0, kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=10)

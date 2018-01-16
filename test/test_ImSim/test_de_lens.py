@@ -1,7 +1,9 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import numpy.testing as npt
 import lenstronomy.ImSim.de_lens as DeLens
+import pytest
 
 
 class TestDeLens(object):
@@ -17,6 +19,11 @@ class TestDeLens(object):
         assert result[0] == 1.
         assert result[1] == 0.
         assert image[0] == d[0]
+
+        result_new, cov_error_new, image_new = self.deLens.get_param_WLS(A, C_D_inv, d, inv_bool=False)
+        npt.assert_almost_equal(result_new[0], result[0], decimal=10)
+        npt.assert_almost_equal(result_new[1], result[1], decimal=10)
+        npt.assert_almost_equal(image_new[0], image[0], decimal=10)
 
     def test_wls_stability(self):
         A = np.array([[1, 2, 3], [3, 2, 1]]).T
@@ -47,4 +54,6 @@ class TestDeLens(object):
         assert marg_const == 0
 
 
+if __name__ == '__main__':
+    pytest.main()
 

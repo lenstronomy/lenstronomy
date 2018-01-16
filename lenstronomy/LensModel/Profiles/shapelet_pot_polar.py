@@ -8,6 +8,7 @@ import math
 
 import lenstronomy.Util.param_util as param_util
 
+
 class PolarShapelets(object):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
@@ -87,37 +88,6 @@ class PolarShapelets(object):
                 shapelets[k][nl] -= 1j*coeff[i]/2.
                 i+=1
         return shapelets
-
-    def _normFactor(self,coeff):
-        """
-        returns the normalisation factor sqrt((nl+1)*(nr+1)) for all coefficients for better physical constraints on mass sheet
-
-        :param num_l: order of shapelets
-        :type num_l: int.
-        :param coeff: shapelet coefficients
-        :type coeff: floats
-        :returns:  float array
-        :raises: AttributeError, KeyError
-        """
-        normFactor=np.zeros(len(coeff)+1)
-        nl=0
-        k=0
-        i=0
-        while i <len(coeff):
-            normFactor[i]=np.sqrt((nl+1)*(k+1))*coeff[i]
-            if i%2==0:
-                if k==nl:
-                    nl+=1
-                    k=0
-                    i+=1
-                    continue
-                else:
-                    k+=1
-                    i+=1
-                    continue
-            else:
-                i+=1
-        return normFactor
 
     def _shapeletOutput(self, r, phi, beta, shapelets):
         """
@@ -222,30 +192,30 @@ class PolarShapelets(object):
         :returns:  set of alpha shapelets.
         :raises: AttributeError, KeyError
         """
-        output_x=np.zeros((len(shapelets)+2,len(shapelets)+2),'complex')
-        output_y=np.zeros((len(shapelets)+2,len(shapelets)+2),'complex')
-        for nl in range(0,len(shapelets)):
-            for nr in range(0,len(shapelets)):
-                a_lr=shapelets[nl][nr]
-                output_x[nl+2][nr]+=a_lr*np.sqrt((nl+1)*(nl+2))/2
-                output_x[nl][nr+2]+=a_lr*np.sqrt((nr+1)*(nr+2))/2
-                output_x[nl][nr]+=a_lr*(1-(nr+1)-(nl+1))
+        output_x = np.zeros((len(shapelets)+2,len(shapelets)+2),'complex')
+        output_y = np.zeros((len(shapelets)+2,len(shapelets)+2),'complex')
+        for nl in range(0, len(shapelets)):
+            for nr in range(0, len(shapelets)):
+                a_lr = shapelets[nl][nr]
+                output_x[nl+2][nr] += a_lr*np.sqrt((nl+1)*(nl+2))/2
+                output_x[nl][nr+2] += a_lr*np.sqrt((nr+1)*(nr+2))/2
+                output_x[nl][nr] += a_lr*(1-(nr+1)-(nl+1))
                 if nl>1:
-                    output_x[nl-2][nr]+=a_lr*np.sqrt((nl)*(nl-1))/2
+                    output_x[nl-2][nr] += a_lr*np.sqrt((nl)*(nl-1))/2
                 if nr>1:
-                    output_x[nl][nr-2]+=a_lr*np.sqrt((nr)*(nr-1))/2
+                    output_x[nl][nr-2] += a_lr*np.sqrt((nr)*(nr-1))/2
 
-                output_y[nl+2][nr]+=a_lr*np.sqrt((nl+1)*(nl+2))*1j/4
-                output_y[nl][nr+2]-=a_lr*np.sqrt((nr+1)*(nr+2))*1j/4
+                output_y[nl+2][nr] += a_lr*np.sqrt((nl+1)*(nl+2))*1j/4
+                output_y[nl][nr+2] -= a_lr*np.sqrt((nr+1)*(nr+2))*1j/4
                 if nl>0:
-                    output_y[nl-1][nr+1]+=a_lr*np.sqrt((nl)*(nr+1))*1j/2
+                    output_y[nl-1][nr+1] += a_lr*np.sqrt((nl)*(nr+1))*1j/2
                 if nr>0:
-                    output_y[nl+1][nr-1]-=a_lr*np.sqrt((nr)*(nl+1))*1j/2
+                    output_y[nl+1][nr-1] -= a_lr*np.sqrt((nr)*(nl+1))*1j/2
                 if nl>1:
-                    output_y[nl-2][nr]-=a_lr*np.sqrt((nl)*(nl-1))*1j/4
+                    output_y[nl-2][nr] -= a_lr*np.sqrt((nl)*(nl-1))*1j/4
                 if nr>1:
-                    output_y[nl][nr-2]+=a_lr*np.sqrt((nr)*(nr-1))*1j/4
-        return output_x/beta**2,output_y/beta**2  #attention complex numbers!!!!
+                    output_y[nl][nr-2] += a_lr*np.sqrt((nr)*(nr-1))*1j/4
+        return output_x/beta**2, output_y/beta**2  #attention complex numbers!!!!
 
     def _get_num_l(self, n_coeffs):
         """

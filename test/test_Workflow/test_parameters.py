@@ -63,6 +63,27 @@ class TestParam(object):
         assert lens_dict['center_y'] == 0.
         assert lens_light_dic[0]['center_x'] == -0.06
 
+    def test_add_to_fixed(self):
+        lens_fixed = [{'theta_E': 1}] #for SPEP lens
+        source_fixed = [{'amp': 1*2*np.pi*0.1**2, 'center_x': 0.2, 'center_y': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
+        lens_light_fixed = [{'center_x_2': 0.1, 'n_2': 1, 'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
+                                  'q': 0.86, 'R_2': 1.2, 'I0_2': 1.7, 'center_y_2': 0.14, 'n_sersic': 1.7,
+                                  'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0, 'q_2': 1}]
+        else_fixed = {'point_amp': 1, 'ra_pos': [-1, 1], 'dec_pos': [-1, 1], 'shapelet_beta': 1}
+        lens_fixed, source_fixed, lens_light_fixed, else_fixed= self.param_class.add_to_fixed(lens_fixed, source_fixed, lens_light_fixed, else_fixed)
+        assert lens_fixed[0]['theta_E'] == 1
+
+    def test_param_init(self):
+        kwargs_mean_lens = [{'theta_E': 1., 'theta_E_sigma': 0.1, 'gamma':1.9, 'gamma_sigma': 0.2 ,'q':0.8,'phi_G':1.5, 'ellipse_sigma': 0.2, 'center_x':0., 'center_y':0., 'center_x_sigma':0., 'center_y_sigma':0.}] #for SPEP lens
+        kwargs_mean_source = [{'amp': 1*2*np.pi*0.1**2, 'amp_sigma': 1, 'center_x': 0.2, 'center_y': 0.2, 'center_x_sigma': 0.2, 'center_y_sigma': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1, 'sigma_x_sigma': 0.1, 'sigma_y_sigma': 0.1}]
+        kwargs_mean_lens_light = [{'n_2': 1, 'n_2_sigma': 0.1, 'center_x': -0.06, 'center_y': 0.4, 'center_x_sigma': -0.06, 'center_y_sigma': 0.4, 'phi_G': 4.8,
+                                  'q': 0.86, 'ellipse_sigma': 0.2, 'R_2': 1.2, 'R_2_sigma': 0.1, 'I0_2': 1.7, 'I0_2_sigma': 1, 'n_sersic': 1.7, 'n_sersic_sigma': 1,
+                                  'I0_sersic': 11.8, 'I0_sersic_sigma': 1, 'R_sersic': 0.697, 'R_sersic_sigma': 0.1, 'phi_G_2': 0, 'q_2': 1}]
+        kwargs_mean_else = {'point_amp': 1, 'ra_pos': [-1, 1], 'dec_pos': [-1, 1], 'shapelet_beta': 1}
+        mean, sigma = self.param_class.param_init(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_else)
+        assert mean[0] == 1
+        assert sigma[0] == 0.1
+
 
 if __name__ == '__main__':
     pytest.main()

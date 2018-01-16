@@ -2,6 +2,7 @@ from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.Data.imaging_data import Data
 import lenstronomy.Util.util as util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
@@ -45,7 +46,7 @@ class Simulation(object):
             }
         return kwargs_data
 
-    def psf_configure(self, psf_type="gaussian", fwhm=1, kernelsize=11, deltaPix=1, truncate=3, kernel=None):
+    def psf_configure(self, psf_type="gaussian", fwhm=1, kernelsize=11, deltaPix=1, truncate=6, kernel=None):
         """
 
         :param psf_type:
@@ -86,15 +87,14 @@ class Simulation(object):
         :param norm_factor:
         :return:
         """
-        lensLightModel = LensLightModel(kwargs_options)
-        sourceModel = SourceModel(kwargs_options)
+        lensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         kwargs_source_updated = copy.deepcopy(kwargs_source)
         kwargs_lens_light_updated = copy.deepcopy(kwargs_lens_light)
         kwargs_else_updated = copy.deepcopy(kwargs_else)
         kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         kwargs_lens_light_updated = lensLightModel.lightModel.re_normalize_flux(kwargs_lens_light_updated, norm_factor_lens_light)
-        num_images = kwargs_options.get('num_images', 0)
-        if num_images > 0 and kwargs_options.get('point_source', False):
+        if 'point_amp' in kwargs_else:
                 kwargs_else_updated['point_amp'] *= norm_factor_point_source
         return kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated
 
@@ -107,7 +107,7 @@ class Simulation(object):
         :return:
         """
         kwargs_source_updated = copy.deepcopy(kwargs_source)
-        sourceModel = SourceModel(kwargs_options)
+        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
@@ -126,8 +126,10 @@ class Simulation(object):
         lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         if kwargs_options.get('point_source', False):
-            min_distance = kwargs_data['deltaPix']/10.
-            search_window = kwargs_data['numPix_xy'][0]*kwargs_data['deltaPix']
+            data = Data(kwargs_data)
+            deltaPix = data.deltaPix
+            min_distance = deltaPix/10.
+            search_window = len(kwargs_data['image_data'])*deltaPix
             sourcePos_x = kwargs_else['sourcePos_x']
             sourcePos_y = kwargs_else['sourcePos_y']
             x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
@@ -139,6 +141,7 @@ class Simulation(object):
             kwargs_else['ra_pos'] = x_mins
             kwargs_else['dec_pos'] = y_mins
             kwargs_else['point_amp'] = mag_list * kwargs_else['quasar_amp']
+            kwargs_options['num_images'] = len(x_mins)
 
         # update kwargs_else
         image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)
@@ -168,18 +171,18 @@ class Simulation(object):
             bkg = image_util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
             return image + bkg + poisson
 
-    def source_plane(self, kwargs_options, kwargs_source_updated, numPix, deltaPix):
+    def source_plane(self, kwargs_options, kwargs_source, numPix, deltaPix):
         """
         source plane simulation
         :param kwargs_options:
-        :param kwargs_source_updated:
+        :param kwargs_source:
         :param numPix:
         :param deltaPix:
         :return:
         """
         x, y = util.make_grid(numPix, deltaPix)
-        sourceModel = SourceModel(kwargs_options)
-        image1d = sourceModel.surface_brightness(x, y, kwargs_source_list=kwargs_source_updated)
+        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        image1d = sourceModel.surface_brightness(x, y, kwargs_source_list=kwargs_source)
         image2d = util.array2image(image1d)
         return image2d
 

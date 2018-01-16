@@ -290,35 +290,6 @@ class Fitting(object):
             threadCount=1, mpi=mpi, print_key='Catalogue', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def find_lens_light_mask(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
-                             kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
-        """
-        finds lens light, type as specified in input kwargs_optinons
-        :return: constraints of lens model
-        """
-        if kwargs_options['lens_light_model_list'] is []:
-            return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, [None]*4, None, kwargs_options
-        kwargs_options_special = {'lens_model_list': ['NONE'], 'source_light_model_list': ['NONE'],
-                                  'X2_type': 'image', 'solver': False, 'lens_light_mask': True, 'point_source': False, 'additional_images': False}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-        kwargs_fixed_lens = kwargs_lens
-        kwargs_fixed_source = kwargs_source
-        kwargs_fixed_lens_light = self._fixed_light(kwargs_options_execute, kwargs_lens_light, 'lens_light_model_list')
-        kwargs_fixed_else = kwargs_else.copy()
-        kwargs_fixed_else.update(self._fixed_else(kwargs_options, kwargs_else))
-
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_else, kwargs_else, kwargs_else_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens light mask', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return kwargs_lens, kwargs_source, lens_light_result, kwargs_else, chain, param_list, kwargs_options_execute
-
     def find_lens_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
                              kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_else_sigma,
                              n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):

@@ -40,7 +40,7 @@ class TestImageModel(object):
 
     def test_point_source_rendering(self):
         # initialize data
-        from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
+        from lenstronomy.SimulationAPI.simulations import Simulation
         SimAPI = Simulation()
         numPix = 100
         deltaPix = 0.05

@@ -14,9 +14,8 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
-    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, lens_light_mask=False):
+    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False):
         self._subgrid_res = subgrid_res
-        self._lens_light_mask = lens_light_mask
 
         if 'image_data' in kwargs_data:
             data = kwargs_data['image_data']
@@ -102,10 +101,7 @@ class Data(object):
 
     @property
     def mask(self):
-        if self._lens_light_mask:
-            return self._mask_lens_light
-        else:
-            return self._mask
+        return self._mask
 
     @property
     def numData_evaluate(self):

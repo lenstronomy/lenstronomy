@@ -1,13 +1,12 @@
 __author__ = 'sibirrer'
 
 import numpy.testing as npt
+import numpy as np
 import pytest
-import lenstronomy.Util.util as util
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.LensModel.lens_model import LensModel
 
 
-class TestLensModel(object):
+class TestLensModelExtensions(object):
     """
     tests the source model routines
     """
@@ -16,11 +15,6 @@ class TestLensModel(object):
 
     def test_critical_curves(self):
         lens_model_list = ['SPEP']
-        deltaPix = 0.05
-        numPix = 100
-        x_grid, y_grid, x_0, y_0, ra_0, dec_0, Matrix, Matrix_inv = util.make_grid_with_coordtransform(numPix=numPix,
-                                                                                                       deltapix=deltaPix,
-                                                                                                       subgrid_res=1)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'q': 0.8, 'phi_G': 1., 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(lens_model_list)
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModel.critical_curve_caustics(kwargs_lens,
@@ -49,6 +43,41 @@ class TestLensModel(object):
             npt.assert_almost_equal(ra_points[0], ra_crit_list[i][0], 5)
             npt.assert_almost_equal(dec_points[0], dec_crit_list[i][0], 5)
         """
+
+    def test_get_magnification_model(self):
+        self.kwargs_options = { 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'],
+                               'lens_light_model_list': ['SERSIC']
+            , 'subgrid_res': 10, 'numPix': 200, 'psf_type': 'gaussian', 'x2_simple': True}
+        kwargs_lens = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
+
+        x_pos = np.array([1., 1., 2.])
+        y_pos = np.array([-1., 0., 0.])
+        lens_model = LensModelExtensions(lens_model_list=['GAUSSIAN'])
+        mag = lens_model.magnification_finite(x_pos, y_pos, kwargs_lens, kwargs_else=None, source_sigma=0.003, window_size=0.1, grid_number=100)
+        npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
+
+    def test_profile_slope(self):
+        lens_model = LensModelExtensions(lens_model_list=['SPP'])
+        gamma_in = 2.
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
+        gamma_out = lens_model.profile_slope(kwargs_lens, kwargs_else={})
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
+        gamma_in = 1.7
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
+        gamma_out = lens_model.profile_slope(kwargs_lens, kwargs_else={})
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
+
+        gamma_in = 2.5
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
+        gamma_out = lens_model.profile_slope(kwargs_lens, kwargs_else={})
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
+
+        lens_model = LensModelExtensions(lens_model_list=['SPEP'])
+        gamma_in = 2.
+        kwargs_lens = [{'theta_E': 1.4516812130749424, 'q': 0.89760957136967312, 'center_x': -0.04507598845306314,
+         'center_y': 0.054491803177414651, 'phi_G': 0.34403343049704888, 'gamma': gamma_in}]
+        gamma_out = lens_model.profile_slope(kwargs_lens, kwargs_else={})
+        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
 
 if __name__ == '__main__':

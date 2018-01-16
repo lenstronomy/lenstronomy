@@ -98,38 +98,14 @@ class Approx(object):
     """
     class for approximations with a given pdf sample
     """
-
-    def approx_cdf_1d(self, x_array, pdf_array):
-        """
-
-        :param x_array: x-values of pdf
-        :param pdf_array: pdf array of given x-values
-        """
-        norm_pdf = pdf_array/np.sum(pdf_array)
-        cdf_array = np.zeros_like(norm_pdf)
-        cdf_array[0] = norm_pdf[0]
-        for i in range(1, len(norm_pdf)):
-            cdf_array[i] = cdf_array[i-1] + norm_pdf[i]
-        cdf_func = interp1d(x_array, cdf_array)
-        cdf_inv_func = interp1d(cdf_array, x_array)
-        return cdf_array, cdf_func, cdf_inv_func
-
-    def draw_discrete_interpol(self, cdf_inv_func):
-        """
-
-        :param cdf_inv_func: 1D interpolation of inverse cdf
-        :return: random realisation of the cdf
-        """
-        p = np.random.uniform(0,1,1)
-        return cdf_inv_func(p)
+    def __init__(self, x_array, pdf_array):
+        self._cdf_array, self._cdf_func, self._cdf_inv_func = approx_cdf_1d(x_array, pdf_array)
 
     def draw(self, n=1):
         """
 
         :return:
         """
-        if not hasattr(self, "_cdf_inv_func"):
-            raise ValueError("class has no attribute _cdf_inv_func")
         p = np.random.uniform(0, 1, n)
         return self._cdf_inv_func(p)
 
@@ -139,19 +115,23 @@ class Approx(object):
 
         :return:
         """
-        if not hasattr(self, "_cdf_inv_func"):
-            raise ValueError("class has no attribute _cdf_inv_func")
-        p = np.random.uniform(0, 1, 1)
-        return self._cdf_inv_func(p)
+        return self.draw(n=1)
 
-    def set_cdf(self, x_array, pdf_array):
-        """
-        computes the cdf and its inverse and writes it to self
-        :param x_array:
-        :param pdf_array:
-        :return:
-        """
-        self._cdf_array, self._cdf_func, self._cdf_inv_func = self.approx_cdf_1d(x_array, pdf_array)
+
+def approx_cdf_1d(x_array, pdf_array):
+    """
+
+    :param x_array: x-values of pdf
+    :param pdf_array: pdf array of given x-values
+    """
+    norm_pdf = pdf_array/np.sum(pdf_array)
+    cdf_array = np.zeros_like(norm_pdf)
+    cdf_array[0] = norm_pdf[0]
+    for i in range(1, len(norm_pdf)):
+        cdf_array[i] = cdf_array[i-1] + norm_pdf[i]
+    cdf_func = interp1d(x_array, cdf_array)
+    cdf_inv_func = interp1d(cdf_array, x_array)
+    return cdf_array, cdf_func, cdf_inv_func
 
 
 def compute_lower_upper_errors(sample, num_sigma=1):

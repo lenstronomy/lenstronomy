@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
-from lenstronomy.Extensions.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
 
 

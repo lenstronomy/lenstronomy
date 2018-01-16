@@ -12,6 +12,9 @@ Description: =============================
         lenstronomy
         =============================
         
+        .. image:: https://badge.fury.io/py/lenstronomy.png
+            :target: http://badge.fury.io/py/lenstronomy
+        
         .. image:: https://travis-ci.org/sibirrer/lenstronomy.png?branch=master
                 :target: https://travis-ci.org/sibirrer/lenstronomy
         
@@ -24,32 +27,25 @@ Description: =============================
         
         
         This package is designed to model strong lens systems.
-        The software is based on Birrer et al 2015, http://adsabs.harvard.edu/abs/2015ApJ...813..102B and finds application in
+        The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`__  and finds application in
         e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
         
         
-        The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
-        The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_
+        The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`__ and contributions are welcome.
+        The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`__ and
+        the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`__.
         
         
         
         Installation
         --------
-        * check out the github repository
-        >>> cd lenstronomy
-        >>> python setup.py install
-        or in development mode
-        >>> python setup.py develop
-        * it is recommended to check out and install the dependency fastell4py independently.
-        * run the test functions to see whether the installation was successful.
-        >>> cd lenstronomy
-        >>> py.test
+        * see INSTALLATION.rst
         
         
         Requirements
         -------
-        * to run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-        is also required and can be cloned from: githug/sibirrer/fastell4py (needs a fortran compiler)
+        To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
+        is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`__ (needs a fortran compiler)
         * CosmoHammer (through PyPi)
         * standard python libraries (numpy, scipy)
         
@@ -57,7 +53,7 @@ Description: =============================
         Bug reporting and contributions
         -------
         * see CONTRIBUTING.rst
-        * you can also directly contact the lead developer, Simon Birrer
+        
         
         Modelling Features
         --------
@@ -96,7 +92,7 @@ Description: =============================
         History
         -------
         
-        0.1.0 (2014-05-26)
+        0.0.1 (2018-01-09)
         ++++++++++++++++++
         
         * First release on PyPI.
@@ -104,9 +100,9 @@ Keywords: lenstronomy
 Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha
 Classifier: Intended Audience :: Science/Research
-Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
-Classifier: Programming Language :: Python :: 2
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 2.7
-Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.6

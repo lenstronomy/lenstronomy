@@ -63,7 +63,7 @@ class InvertCosmo(SolverUtil):
     """
     class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m
     """
-    def make_interpolation(self):
+    def _make_interpolation(self):
         """
         creates an interpolation grid in H_0, omega_m and computes quantities in Dd and Ds_Dds
         :return:
@@ -92,11 +92,12 @@ class InvertCosmo(SolverUtil):
         :return:
         """
         if not hasattr(self, '_f_H0') or not hasattr(self, '_f_omega_m'):
-            self.make_interpolation()
+            self._make_interpolation()
         H0 = self._f_H0(Dd, Ds_Dds)
+        print(H0, 'H0')
         omega_m = self._f_omega_m(Dd, Ds_Dds)
-        Dd_new, Ds_Dds_new = self.cosmo2Dd_Ds_Dds(H0, omega_m)
+        Dd_new, Ds_Dds_new = self.cosmo2Dd_Ds_Dds(H0[0], omega_m[0])
         if abs(Dd - Dd_new)/Dd > 0.01 or abs(Ds_Dds - Ds_Dds_new)/Ds_Dds > 0.01:
             return [-1], [-1]
         else:
-            return H0, omega_m
+            return H0[0], omega_m[0]

@@ -184,6 +184,23 @@ def test_selectBest():
     assert array_select[3] == 1
 
 
+def test_compare_distance():
+    x_mapped = np.array([4,3,6,1,3])
+    y_mapped = np.array([2,4,7,3,3])
+    X2 = Util.compare_distance(x_mapped, y_mapped)
+    assert X2 == 140
+
+
+def test_min_square_dist():
+    x_1 = np.array([4, 3, 6, 1, 3])
+    y_1 = np.array([2, 4, 7, 3, 3])
+    x_2 = np.array([4, 3, 6, 1, 3])
+    y_2 = np.array([2, 3, 7, 3, 3])
+    dist = Util.min_square_dist(x_1, y_1, x_2, y_2)
+    assert dist[0] == 0
+    assert dist[1] == 1
+
+
 def test_neighborSelect():
     a = np.ones(100)
     a[41] = 0

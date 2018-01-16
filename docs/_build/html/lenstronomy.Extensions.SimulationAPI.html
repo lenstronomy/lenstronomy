@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.GalKin package" href="lenstronomy.GalKin.html" />
-    <link rel="prev" title="lenstronomy.Extensions.Sensitivity package" href="lenstronomy.Extensions.Sensitivity.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,15 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Sensitivity.html" title="lenstronomy.Extensions.Sensitivity package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" accesskey="U">lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,298 +49,14 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.SimulationAPI.multiband">
-<span id="lenstronomy-extensions-simulationapi-multiband-module"></span><h2>lenstronomy.Extensions.SimulationAPI.multiband module<a class="headerlink" href="#module-lenstronomy.Extensions.SimulationAPI.multiband" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.SimulationAPI.multiband.</code><code class="descname">MultiBand</code><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class to handle multi-band simulations
-this class splits joint parameters in multi-bands (e.g. lens model)
-and different ones (e.g. colour, image qualities)</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.add_band">
-<code class="descname">add_band</code><span class="sig-paren">(</span><em>name</em>, <em>collector_area</em>, <em>numPix</em>, <em>deltaPix</em>, <em>readout_noise</em>, <em>sky_brightness</em>, <em>extinction</em>, <em>exposure_time</em>, <em>psf_type='gaussian'</em>, <em>fwhm=1.0</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand.add_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.add_band" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> – string, name of exposure e.g. DES-Y_band</li>
-<li><strong>numPix</strong> – number of pixels to simulate</li>
-<li><strong>deltaPix</strong> – pixel size</li>
-<li><strong>exposure_time</strong> – exposure time</li>
-<li><strong>sigma_bkg</strong> – background noise, assumed to be independent of exposure time</li>
-<li><strong>flux_calibration_factor</strong> – factor to scale the flux in the image based on relative throughput and efficiency of the telescope and instrument</li>
-<li><strong>psf_type</strong> – type of point-spread function</li>
-<li><strong>fwhm</strong> – full width at half maximum of PSF</li>
-<li><strong>args</strong> – </li>
-<li><strong>kwargs</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.del_band">
-<code class="descname">del_band</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand.del_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.del_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>delete exposure with the name indicated
-:param name: string, name of exposure
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.image_name">
-<code class="descname">image_name</code><span class="sig-paren">(</span><em>idex</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand.image_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.image_name" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idex</strong> – index of band</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string, image name</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.simulate_bands">
-<code class="descname">simulate_bands</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>lens_colour</em>, <em>source_colour</em>, <em>quasar_colour</em>, <em>no_noise=False</em>, <em>source_add=True</em>, <em>lens_light_add=True</em>, <em>point_source_add=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand.simulate_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.simulate_bands" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>kwargs_lens_light</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-<li><strong>no_noise</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.source_plane">
-<code class="descname">source_plane</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_source</em>, <em>source_colour</em>, <em>numPix</em>, <em>deltaPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#MultiBand.source_plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.MultiBand.source_plane" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>source_colour</strong> – </li>
-<li><strong>numPix</strong> – </li>
-<li><strong>deltaPix</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.SingleBand">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.SimulationAPI.multiband.</code><code class="descname">SingleBand</code><span class="sig-paren">(</span><em>collector_area</em>, <em>numPix</em>, <em>deltaPix</em>, <em>readout_noise</em>, <em>sky_brightness</em>, <em>extinction</em>, <em>exposure_time</em>, <em>psf_type</em>, <em>fwhm</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#SingleBand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.SingleBand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class to operate on single exposure</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.SingleBand.simulate">
-<code class="descname">simulate</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>lens_colour</em>, <em>source_colour</em>, <em>quasar_colour</em>, <em>no_noise=False</em>, <em>source_add=True</em>, <em>lens_light_add=True</em>, <em>point_source_add=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#SingleBand.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.SingleBand.simulate" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>kwargs_lens_light</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-<li><strong>no_noise</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.multiband.SingleBand.source_plane">
-<code class="descname">source_plane</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_source</em>, <em>source_colour</em>, <em>numPix=100</em>, <em>deltaPix=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/multiband.html#SingleBand.source_plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.multiband.SingleBand.source_plane" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-<li><strong>source_colour</strong> – </li>
-<li><strong>numPix</strong> – </li>
-<li><strong>deltaPix</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-simulationapi-multiband-module">
+<h2>lenstronomy.Extensions.SimulationAPI.multiband module<a class="headerlink" href="#lenstronomy-extensions-simulationapi-multiband-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.SimulationAPI.simulations">
-<span id="lenstronomy-extensions-simulationapi-simulations-module"></span><h2>lenstronomy.Extensions.SimulationAPI.simulations module<a class="headerlink" href="#module-lenstronomy.Extensions.SimulationAPI.simulations" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.SimulationAPI.simulations.</code><code class="descname">Simulation</code><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>simulation class that querries the major class of lenstronomy</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.data_configure">
-<code class="descname">data_configure</code><span class="sig-paren">(</span><em>numPix</em>, <em>deltaPix</em>, <em>exposure_time</em>, <em>sigma_bkg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.data_configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.data_configure" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>numPix</strong> – number of pixel (numPix x numPix)</li>
-<li><strong>deltaPix</strong> – pixel size</li>
-<li><strong>exposure_time</strong> – exposure time</li>
-<li><strong>sigma_bkg</strong> – background noise (Gaussian sigma)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.fermat_potential">
-<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.fermat_potential" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the Fermat potential
-:param kwargs_options:
-:param kwargs_lens:
-:param kwargs_else:
-:param no_noise:
-:return: array of Fermat potential for all image positions (in ordering of kwargs_else[‘ra_pos’])</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.im_sim">
-<code class="descname">im_sim</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>no_noise=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.im_sim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.im_sim" title="Permalink to this definition">¶</a></dt>
-<dd><p>simulate image with solving for the point sources, if option choosen
-:param kwargs_options:
-:param kwargs_data:
-:param kwargs_psf:
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_lens_light:
-:param kwargs_else:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.normalize_flux">
-<code class="descname">normalize_flux</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>norm_factor_source=1</em>, <em>norm_factor_lens_light=1</em>, <em>norm_factor_point_source=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.normalize_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.normalize_flux" title="Permalink to this definition">¶</a></dt>
-<dd><p>multiplies the surface brightness amplitudes with a norm_factor
-aim: mimic different telescopes photon collection area or colours for different imaging bands
-:param kwargs_source:
-:param kwargs_lens_light:
-:param norm_factor:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.normalize_flux_source">
-<code class="descname">normalize_flux_source</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_source</em>, <em>norm_factor_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.normalize_flux_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.normalize_flux_source" title="Permalink to this definition">¶</a></dt>
-<dd><p>normalized the flux of the source
-:param kwargs_options:
-:param kwargs_source:
-:param norm_factor_source:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.psf_configure">
-<code class="descname">psf_configure</code><span class="sig-paren">(</span><em>psf_type='gaussian'</em>, <em>fwhm=1</em>, <em>kernelsize=11</em>, <em>deltaPix=1</em>, <em>truncate=3</em>, <em>kernel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.psf_configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.psf_configure" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>psf_type</strong> – </li>
-<li><strong>fwhm</strong> – </li>
-<li><strong>pixel_grid</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.simulate">
-<code class="descname">simulate</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>no_noise=False</em>, <em>source_add=True</em>, <em>lens_light_add=True</em>, <em>point_source_add=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.simulate" title="Permalink to this definition">¶</a></dt>
-<dd><p>simulate image
-:param kwargs_options:
-:param kwargs_data:
-:param kwargs_psf:
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_lens_light:
-:param kwargs_else:
-:param no_noise:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.SimulationAPI.simulations.Simulation.source_plane">
-<code class="descname">source_plane</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_source_updated</em>, <em>numPix</em>, <em>deltaPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/SimulationAPI/simulations.html#Simulation.source_plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.SimulationAPI.simulations.Simulation.source_plane" title="Permalink to this definition">¶</a></dt>
-<dd><p>source plane simulation
-:param kwargs_options:
-:param kwargs_source_updated:
-:param numPix:
-:param deltaPix:
-:return:</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-simulationapi-simulations-module">
+<h2>lenstronomy.Extensions.SimulationAPI.simulations module<a class="headerlink" href="#lenstronomy-extensions-simulationapi-simulations-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.SimulationAPI">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Extensions.SimulationAPI" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -364,19 +70,13 @@ aim: mimic different telescopes photon collection area or colours for different 
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.Extensions.SimulationAPI package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.SimulationAPI.multiband">lenstronomy.Extensions.SimulationAPI.multiband module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.SimulationAPI.simulations">lenstronomy.Extensions.SimulationAPI.simulations module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.SimulationAPI">Module contents</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-simulationapi-multiband-module">lenstronomy.Extensions.SimulationAPI.multiband module</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-simulationapi-simulations-module">lenstronomy.Extensions.SimulationAPI.simulations module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.Sensitivity.html"
-                        title="previous chapter">lenstronomy.Extensions.Sensitivity package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.GalKin.html"
-                        title="next chapter">lenstronomy.GalKin package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -407,15 +107,7 @@ aim: mimic different telescopes photon collection area or colours for different 
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Sensitivity.html" title="lenstronomy.Extensions.Sensitivity package"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" >lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

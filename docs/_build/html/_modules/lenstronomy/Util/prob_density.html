@@ -146,38 +146,14 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class for approximations with a given pdf sample</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="Approx.approx_cdf_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.approx_cdf_1d">[docs]</a>    <span class="k">def</span> <span class="nf">approx_cdf_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param x_array: x-values of pdf</span>
-<span class="sd">        :param pdf_array: pdf array of given x-values</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">norm_pdf</span> <span class="o">=</span> <span class="n">pdf_array</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdf_array</span><span class="p">)</span>
-        <span class="n">cdf_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">norm_pdf</span><span class="p">)</span>
-        <span class="n">cdf_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_pdf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">norm_pdf</span><span class="p">)):</span>
-            <span class="n">cdf_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdf_array</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">norm_pdf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">cdf_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">cdf_array</span><span class="p">)</span>
-        <span class="n">cdf_inv_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf_array</span><span class="p">,</span> <span class="n">x_array</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cdf_array</span><span class="p">,</span> <span class="n">cdf_func</span><span class="p">,</span> <span class="n">cdf_inv_func</span></div>
-
-<div class="viewcode-block" id="Approx.draw_discrete_interpol"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.draw_discrete_interpol">[docs]</a>    <span class="k">def</span> <span class="nf">draw_discrete_interpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdf_inv_func</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param cdf_inv_func: 1D interpolation of inverse cdf</span>
-<span class="sd">        :return: random realisation of the cdf</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cdf_inv_func</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_inv_func</span> <span class="o">=</span> <span class="n">approx_cdf_1d</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Approx.draw"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cdf_inv_func&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;class has no attribute _cdf_inv_func&quot;</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_inv_func</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
 
@@ -187,19 +163,23 @@
 
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cdf_inv_func&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;class has no attribute _cdf_inv_func&quot;</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_inv_func</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Approx.set_cdf"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.set_cdf">[docs]</a>    <span class="k">def</span> <span class="nf">set_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes the cdf and its inverse and writes it to self</span>
-<span class="sd">        :param x_array:</span>
-<span class="sd">        :param pdf_array:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cdf_inv_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">approx_cdf_1d</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="approx_cdf_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.approx_cdf_1d">[docs]</a><span class="k">def</span> <span class="nf">approx_cdf_1d</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">pdf_array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param x_array: x-values of pdf</span>
+<span class="sd">    :param pdf_array: pdf array of given x-values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">norm_pdf</span> <span class="o">=</span> <span class="n">pdf_array</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdf_array</span><span class="p">)</span>
+    <span class="n">cdf_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">norm_pdf</span><span class="p">)</span>
+    <span class="n">cdf_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_pdf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">norm_pdf</span><span class="p">)):</span>
+        <span class="n">cdf_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdf_array</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">norm_pdf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">cdf_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">x_array</span><span class="p">,</span> <span class="n">cdf_array</span><span class="p">)</span>
+    <span class="n">cdf_inv_func</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf_array</span><span class="p">,</span> <span class="n">x_array</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cdf_array</span><span class="p">,</span> <span class="n">cdf_func</span><span class="p">,</span> <span class="n">cdf_inv_func</span></div>
 
 
 <div class="viewcode-block" id="compute_lower_upper_errors"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.compute_lower_upper_errors">[docs]</a><span class="k">def</span> <span class="nf">compute_lower_upper_errors</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">num_sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>

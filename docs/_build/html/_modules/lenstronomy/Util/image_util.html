@@ -57,11 +57,15 @@
 
 <div class="viewcode-block" id="add_layer2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image">[docs]</a><span class="k">def</span> <span class="nf">add_layer2image</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    makes a point source on a grid with shifted PSF</span>
-<span class="sd">    :param x_pos:</span>
-<span class="sd">    :param y_pos:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order</span>
+<span class="sd">    :param grid2d: 2d pixel grid (i.e. image)</span>
+<span class="sd">    :param x_pos: x-position center (pixel coordinate) of the layer to be added</span>
+<span class="sd">    :param y_pos: y-position center (pixel coordinate) of the layer to be added</span>
+<span class="sd">    :param kernel: the layer to be added to the image</span>
+<span class="sd">    :param order: interpolation order for sub-pixel shift of the kernel to be added</span>
+<span class="sd">    :return: image with added layer, cut to original size</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">num_x</span><span class="p">,</span> <span class="n">num_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">grid2d</span><span class="p">)</span>
     <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
     <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="p">))</span>
@@ -95,7 +99,7 @@
 <span class="sd">    adds background noise to image</span>
 <span class="sd">    :param image: pixel values of image</span>
 <span class="sd">    :param sigma_bkd: background noise (sigma)</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :return: a realisation of Gaussian noise of the same size as image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sigma_bkd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sigma background is smaller than zero! Please use positive values.&quot;</span><span class="p">)</span>
@@ -129,10 +133,10 @@
 <div class="viewcode-block" id="rotateImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rotateImage">[docs]</a><span class="k">def</span> <span class="nf">rotateImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
-
-<span class="sd">    :param img:</span>
-<span class="sd">    :param angle:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    querries scipy.ndimage.rotate routine</span>
+<span class="sd">    :param img: image to be rotated</span>
+<span class="sd">    :param angle: angle to be rotated (radian)</span>
+<span class="sd">    :return: rotated image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">imgR</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">imgR</span></div>
@@ -290,9 +294,10 @@
 <div class="viewcode-block" id="cut_edges"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.cut_edges">[docs]</a><span class="k">def</span> <span class="nf">cut_edges</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    cuts out the edges of a 2d image and returns re-sized image to numPix</span>
+<span class="sd">    center is well defined for odd pixel sizes.</span>
 <span class="sd">    :param image: 2d numpy array</span>
-<span class="sd">    :param numPix:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param numPix: square size of cut out image</span>
+<span class="sd">    :return: cutout image with size numPix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">numPix</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">numPix</span><span class="p">:</span>

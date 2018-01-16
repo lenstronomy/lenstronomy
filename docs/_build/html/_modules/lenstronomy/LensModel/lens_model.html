@@ -143,10 +143,10 @@
                 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.interpol</span> <span class="k">import</span> <span class="n">Interpol_func_scaled</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Interpol_func_scaled</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot</span> <span class="k">import</span> <span class="n">PolarShapelets</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_polar</span> <span class="k">import</span> <span class="n">PolarShapelets</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PolarShapelets</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_2</span> <span class="k">import</span> <span class="n">CartShapelets</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_cartesian</span> <span class="k">import</span> <span class="n">CartShapelets</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CartShapelets</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.dipole</span> <span class="k">import</span> <span class="n">Dipole</span>

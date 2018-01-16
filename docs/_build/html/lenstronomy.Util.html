@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.Workflow package" href="lenstronomy.Workflow.html" />
-    <link rel="prev" title="lenstronomy.MCMC package" href="lenstronomy.MCMC.html" /> 
+    <link rel="prev" title="lenstronomy.SimulationAPI package" href="lenstronomy.SimulationAPI.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -41,7 +41,7 @@
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
@@ -137,13 +137,6 @@ fracitonal pixels).</div></blockquote>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.correlation.random_1D">
-<code class="descclassname">lenstronomy.Util.correlation.</code><code class="descname">random_1D</code><span class="sig-paren">(</span><em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/correlation.html#random_1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.correlation.random_1D" title="Permalink to this definition">¶</a></dt>
-<dd><p>same as corr1D put with a random distribution with mean 0 and sigma=1
-:return:</p>
 </dd></dl>
 
 </div>
@@ -280,16 +273,19 @@ fracitonal pixels).</div></blockquote>
 <dd><p>adds background noise to image
 :param image: pixel values of image
 :param sigma_bkd: background noise (sigma)
-:return:</p>
+:return: a realisation of Gaussian noise of the same size as image</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="lenstronomy.Util.image_util.add_layer2image">
 <code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_layer2image</code><span class="sig-paren">(</span><em>grid2d</em>, <em>x_pos</em>, <em>y_pos</em>, <em>kernel</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_layer2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_layer2image" title="Permalink to this definition">¶</a></dt>
-<dd><p>makes a point source on a grid with shifted PSF
-:param x_pos:
-:param y_pos:
-:return:</p>
+<dd><p>adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order
+:param grid2d: 2d pixel grid (i.e. image)
+:param x_pos: x-position center (pixel coordinate) of the layer to be added
+:param y_pos: y-position center (pixel coordinate) of the layer to be added
+:param kernel: the layer to be added to the image
+:param order: interpolation order for sub-pixel shift of the kernel to be added
+:return: image with added layer, cut to original size</p>
 </dd></dl>
 
 <dl class="function">
@@ -322,9 +318,10 @@ if not: remove it</p>
 <dt id="lenstronomy.Util.image_util.cut_edges">
 <code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">cut_edges</code><span class="sig-paren">(</span><em>image</em>, <em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#cut_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.cut_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>cuts out the edges of a 2d image and returns re-sized image to numPix
+center is well defined for odd pixel sizes.
 :param image: 2d numpy array
-:param numPix:
-:return:</p>
+:param numPix: square size of cut out image
+:return: cutout image with size numPix</p>
 </dd></dl>
 
 <dl class="function">
@@ -379,21 +376,10 @@ if not: remove it</p>
 <dl class="function">
 <dt id="lenstronomy.Util.image_util.rotateImage">
 <code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">rotateImage</code><span class="sig-paren">(</span><em>img</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#rotateImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.rotateImage" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>img</strong> – </li>
-<li><strong>angle</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>querries scipy.ndimage.rotate routine
+:param img: image to be rotated
+:param angle: angle to be rotated (radian)
+:return: rotated image</p>
 </dd></dl>
 
 <dl class="function">
@@ -770,26 +756,9 @@ if not: remove it</p>
 <span id="lenstronomy-util-prob-density-module"></span><h2>lenstronomy.Util.prob_density module<a class="headerlink" href="#module-lenstronomy.Util.prob_density" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Util.prob_density.Approx">
-<em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">Approx</code><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">Approx</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class for approximations with a given pdf sample</p>
-<dl class="method">
-<dt id="lenstronomy.Util.prob_density.Approx.approx_cdf_1d">
-<code class="descname">approx_cdf_1d</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.approx_cdf_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.approx_cdf_1d" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_array</strong> – x-values of pdf</li>
-<li><strong>pdf_array</strong> – pdf array of given x-values</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="lenstronomy.Util.prob_density.Approx.draw">
 <code class="descname">draw</code><span class="sig-paren">(</span><em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw" title="Permalink to this definition">¶</a></dt>
@@ -798,21 +767,6 @@ if not: remove it</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Util.prob_density.Approx.draw_discrete_interpol">
-<code class="descname">draw_discrete_interpol</code><span class="sig-paren">(</span><em>cdf_inv_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.draw_discrete_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw_discrete_interpol" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cdf_inv_func</strong> – 1D interpolation of inverse cdf</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">random realisation of the cdf</td>
 </tr>
 </tbody>
 </table>
@@ -829,15 +783,6 @@ if not: remove it</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Util.prob_density.Approx.set_cdf">
-<code class="descname">set_cdf</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.set_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.set_cdf" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the cdf and its inverse and writes it to self
-:param x_array:
-:param pdf_array:
-:return:</p>
 </dd></dl>
 
 </dd></dl>
@@ -883,6 +828,23 @@ see: <a class="reference external" href="https://en.wikipedia.org/wiki/Skew_norm
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.prob_density.approx_cdf_1d">
+<code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">approx_cdf_1d</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#approx_cdf_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.approx_cdf_1d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_array</strong> – x-values of pdf</li>
+<li><strong>pdf_array</strong> – pdf array of given x-values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.prob_density.compute_lower_upper_errors">
 <code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">compute_lower_upper_errors</code><span class="sig-paren">(</span><em>sample</em>, <em>num_sigma=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#compute_lower_upper_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.compute_lower_upper_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the upper and lower sigma from the median value.
@@ -920,39 +882,6 @@ This functions gives good error estimates for skewed pdf’s
 :param numGrid:
 :param numPix:
 :return:</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.util.circle">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">circle</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x</em>, <em>center_y</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.circle" title="Permalink to this definition">¶</a></dt>
-<dd><p>uniform density circle
-:param x: x-coordinates
-:param y: y-coordinates
-:param center_x: center of x-coordinates
-:param center_y: center of y-coordinates
-:param radius: radius of circle
-:return:</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.util.compare">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">compare</code><span class="sig-paren">(</span><em>model</em>, <em>data</em>, <em>sigma</em>, <em>poisson</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.compare" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – model 2d image</li>
-<li><strong>data</strong> – data 2d image</li>
-<li><strong>sigma</strong> – minimal noise level of background (float&gt;0 or as image)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">X^2 value if images have same size</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
@@ -1162,20 +1091,6 @@ into pixel coordinates in an image
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Util.util.mk_array">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">mk_array</code><span class="sig-paren">(</span><em>input_var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#mk_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.mk_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>This functions makes sure that the input is a numpy array. If it is
-a recognised format (float, array or list) the output will be a numpy array</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.util.mk_array_2p">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">mk_array_2p</code><span class="sig-paren">(</span><em>input1</em>, <em>input2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#mk_array_2p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.mk_array_2p" title="Permalink to this definition">¶</a></dt>
-<dd><p>This functions makes sure that the input is a numpy array. If it is
-a recognised format (float, array or list) the output will be a numpy array</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="lenstronomy.Util.util.neighborSelect">
 <code class="descclassname">lenstronomy.Util.util.</code><code class="descname">neighborSelect</code><span class="sig-paren">(</span><em>a</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#neighborSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.neighborSelect" title="Permalink to this definition">¶</a></dt>
 <dd><p>finds (local) minima in a 2d grid</p>
@@ -1273,8 +1188,8 @@ a recognised format (float, array or list) the output will be a numpy array</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.MCMC.html"
-                        title="previous chapter">lenstronomy.MCMC package</a></p>
+  <p class="topless"><a href="lenstronomy.SimulationAPI.html"
+                        title="previous chapter">lenstronomy.SimulationAPI package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="lenstronomy.Workflow.html"
                         title="next chapter">lenstronomy.Workflow package</a></p>
@@ -1312,7 +1227,7 @@ a recognised format (float, array or list) the output will be a numpy array</p>
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              >next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 

@@ -88,6 +88,31 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>this class uses functions of lens_model and source_model to make a lensed image</p>
 <dl class="method">
+<dt id="lenstronomy.ImSim.image_model.ImageModel.error_map_source">
+<code class="descname">error_map_source</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>x_grid</em>, <em>y_grid</em>, <em>cov_param</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.error_map_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.error_map_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>variance of the linear source reconstruction in the source plane coordinates,
+computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+of the basis set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_source</strong> – keyword arguments of source model</li>
+<li><strong>x_grid</strong> – x-axis of positions to compute error map</li>
+<li><strong>y_grid</strong> – y-axis of positions to compute error map</li>
+<li><strong>cov_param</strong> – covariance matrix of liner inversion parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">diagonal covariance errors at the positions (x_grid, y_grid)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.fermat_potential">
 <code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.fermat_potential" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -111,72 +136,144 @@
 <dt id="lenstronomy.ImSim.image_model.ImageModel.image_linear_solve">
 <code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
-The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
-:param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-:param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-:param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
-:param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
-:return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
+The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>inv_bool</strong> – if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.image_positions">
 <code class="descname">image_positions</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>sourcePos_x</em>, <em>sourcePos_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>lens equation solver for image positions given lens model and source position
-:param kwargs_lens: keyword arguments of lens models (as list)
-:param kwargs_else: keyword arguments of other parameters
-:param sourcePos_x: source position in relative arc sec
-:param sourcePos_y: source position in relative arc sec
-:return: x_coords, y_coords of image positions</p>
+<dd><p>lens equation solver for image positions given lens model and source position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – keyword arguments of lens models (as list)</li>
+<li><strong>kwargs_else</strong> – keyword arguments of other parameters</li>
+<li><strong>sourcePos_x</strong> – source position in relative arc sec</li>
+<li><strong>sourcePos_y</strong> – source position in relative arc sec</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x_coords, y_coords of image positions</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.image_with_params">
 <code class="descname">image_with_params</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>unconvolved=False</em>, <em>source_add=True</em>, <em>lens_light_add=True</em>, <em>point_source_add=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_with_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_with_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>make a image with a realisation of linear parameter values “param”
-:param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-:param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-:param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
-:param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
-:param source_add: if True, compute source, otherwise without
-:param lens_light_add: if True, compute lens light, otherwise without
-:param point_source_add: if True, add point sources, otherwise without
-:return: 1d array of surface brightness pixels of the simulation</p>
+<dd><p>make a image with a realisation of linear parameter values “param”</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>unconvolved</strong> – if True: returns the unconvolved light distribution (prefect seeing)</li>
+<li><strong>source_add</strong> – if True, compute source, otherwise without</li>
+<li><strong>lens_light_add</strong> – if True, compute lens light, otherwise without</li>
+<li><strong>point_source_add</strong> – if True, add point sources, otherwise without</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the simulation</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.lens_surface_brightness">
 <code class="descname">lens_surface_brightness</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>unconvolved=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.lens_surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.lens_surface_brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the lens surface brightness distribution
-:param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-:param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
-:return: 1d array of surface brightness pixels</p>
+<dd><p>computes the lens surface brightness distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>unconvolved</strong> – if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">
 <code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
-This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
-:param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-:param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-:param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
-:return: log likelihood (natural logarithm)</p>
+This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood (natural logarithm)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.normalize_flux">
 <code class="descname">normalize_flux</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>norm_factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.normalize_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.normalize_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>multiplies the surface brightness amplitudes with a norm_factor
-aim: mimic different telescopes photon collection area or colours for different imaging bands
-:param kwargs_source:
-:param kwargs_lens_light:
-:param kwargs_else:
-:param norm_factor:
-:return:</p>
+aim: mimic different telescopes photon collection area or colours for different imaging bands</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_else</strong> – </li>
+<li><strong>norm_factor</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -204,13 +301,25 @@ aim: mimic different telescopes photon collection area or colours for different 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness">
 <code class="descname">source_surface_brightness</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_else</em>, <em>unconvolved=False</em>, <em>de_lensed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.source_surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the source surface brightness distribution
-:param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-:param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
-:param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
-:param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
-:return: 1d array of surface brightness pixels</p>
+<dd><p>computes the source surface brightness distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>unconvolved</strong> – if True: returns the unconvolved light distribution (prefect seeing)</li>
+<li><strong>de_lensed</strong> – if True: returns the un-lensed source surface brightness profile, otherwise the lensed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

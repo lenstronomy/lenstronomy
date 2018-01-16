@@ -9,12 +9,12 @@ Subpackages
     lenstronomy.Analysis
     lenstronomy.Cosmo
     lenstronomy.Data
-    lenstronomy.Extensions
     lenstronomy.GalKin
     lenstronomy.ImSim
     lenstronomy.LensModel
     lenstronomy.LightModel
     lenstronomy.MCMC
+    lenstronomy.SimulationAPI
     lenstronomy.Util
     lenstronomy.Workflow
 

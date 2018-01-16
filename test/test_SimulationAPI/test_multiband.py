@@ -52,12 +52,12 @@ class TestMultiband(object):
         # 'SPEP': Smooth power-law ellipsoidal potential
         kwargs_spep = {'theta_E': 1., 'gamma': 2.1, 'center_x': 0, 'center_y': 0, 'q': 0.9, 'phi_G': 0.2}
         # 'SPEMD': Smoothed power-law ellipsoidal mass distribution
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
+        kwargs_spep = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
         # 'NONE': no lens
         kwargs_none = {}
 
-        lens_model_list = ['SPEMD', 'EXTERNAL_SHEAR']
-        kwargs_lens_list = [kwargs_spemd, kwargs_shear]
+        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        kwargs_lens_list = [kwargs_spep, kwargs_shear]
 
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile

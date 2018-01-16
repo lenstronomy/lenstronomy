@@ -201,20 +201,6 @@
     <span class="k">return</span> <span class="n">small</span></div>
 
 
-<div class="viewcode-block" id="compare"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.compare">[docs]</a><span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">poisson</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    :param model: model 2d image</span>
-<span class="sd">    :param data: data 2d image</span>
-<span class="sd">    :param sigma: minimal noise level of background (float&gt;0 or as image)</span>
-<span class="sd">    :return: X^2 value if images have same size</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deltaIm</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">-</span><span class="n">model</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">relDeltaIm</span> <span class="o">=</span> <span class="n">deltaIm</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">/</span><span class="n">poisson</span><span class="p">)</span>
-    <span class="n">X2_estimate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">relDeltaIm</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X2_estimate</span></div>
-
-
 <div class="viewcode-block" id="displaceAbs"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.displaceAbs">[docs]</a><span class="k">def</span> <span class="nf">displaceAbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    calculates a grid of distances to the observer in angel</span>
@@ -289,59 +275,6 @@
     <span class="k">return</span> <span class="n">dist</span></div>
 
 
-<div class="viewcode-block" id="mk_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.mk_array">[docs]</a><span class="k">def</span> <span class="nf">mk_array</span><span class="p">(</span><span class="n">input_var</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This functions makes sure that the input is a numpy array. If it is</span>
-<span class="sd">    a recognised format (float, array or list) the output will be a numpy array&quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input_var</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">(</span><span class="n">input_var</span><span class="p">)])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
-        <span class="n">output_var</span> <span class="o">=</span> <span class="n">input_var</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="n">output_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input_var</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">input_var</span><span class="p">))</span>
-        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
-
-    <span class="k">return</span> <span class="n">output_var</span></div>
-
-
-<div class="viewcode-block" id="mk_array_2p"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.mk_array_2p">[docs]</a><span class="k">def</span> <span class="nf">mk_array_2p</span><span class="p">(</span><span class="n">input1</span><span class="p">,</span> <span class="n">input2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This functions makes sure that the input is a numpy array. If it is</span>
-<span class="sd">    a recognised format (float, array or list) the output will be a numpy array&quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input1</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
-        <span class="n">output1</span> <span class="o">=</span> <span class="n">input1</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="n">output1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input1</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
-
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">input2</span><span class="p">])</span> <span class="c1"># turning a into a numpy array</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])):</span>
-        <span class="n">output2</span> <span class="o">=</span> <span class="n">input2</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="n">output2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">input2</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input type for a not recognised. please use either float or numpy array&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;ERROR!&#39;</span>
-
-    <span class="n">output12_format</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">output1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">output2</span><span class="p">)])</span>
-
-    <span class="k">return</span> <span class="n">output1</span><span class="p">,</span><span class="n">output2</span><span class="p">,</span><span class="n">output12_format</span></div>
-
-
 <div class="viewcode-block" id="selectBest"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.selectBest">[docs]</a><span class="k">def</span> <span class="nf">selectBest</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">numSelect</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -363,22 +296,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">array_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numSelect</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.circle">[docs]</a><span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    uniform density circle</span>
-<span class="sd">    :param x: x-coordinates</span>
-<span class="sd">    :param y: y-coordinates</span>
-<span class="sd">    :param center_x: center of x-coordinates</span>
-<span class="sd">    :param center_y: center of y-coordinates</span>
-<span class="sd">    :param radius: radius of circle</span>
-<span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">circle_draw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="n">circle_draw</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">radius</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">circle_draw</span></div>
 
 
 <div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>

@@ -46,8 +46,7 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.GalKin.mass_profile</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
@@ -98,40 +97,6 @@
         <span class="n">mass_dim</span> <span class="o">=</span> <span class="n">mass_dimless</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_s</span> \
                        <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mass_dim</span></div></div>
-
-
-<div class="viewcode-block" id="MassProfile_old"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.mass_profile.MassProfile_old">[docs]</a><span class="k">class</span> <span class="nc">MassProfile_old</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to deal with arbitrary mass profiles</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-
-<div class="viewcode-block" id="MassProfile_old.m_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.mass_profile.MassProfile_old.m_r">[docs]</a>    <span class="k">def</span> <span class="nf">m_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns mass enclosed &lt; r of the mass profile</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">==</span> <span class="s1">&#39;power_law&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_r_power_law</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span></div>
-
-<div class="viewcode-block" id="MassProfile_old.m_r_power_law"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.mass_profile.MassProfile_old.m_r_power_law">[docs]</a>    <span class="k">def</span> <span class="nf">m_r_power_law</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param r:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">theta_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
-        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
-        <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">D_d</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">rho_0</span> <span class="o">=</span> <span class="n">Sigma_crit</span> <span class="o">*</span> <span class="n">theta_E</span><span class="o">**</span><span class="p">(</span><span class="n">gamma</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">D_d</span><span class="o">**</span><span class="p">(</span><span class="n">gamma</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">((</span><span class="n">gamma</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">rho_0</span> <span class="o">/</span> <span class="n">r</span><span class="o">**</span><span class="n">gamma</span></div></div>
 </pre></div>
 
           </div>

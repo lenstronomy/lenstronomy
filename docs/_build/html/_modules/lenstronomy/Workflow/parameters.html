@@ -177,13 +177,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#inizialize lower and upper limit arrays</span>
         <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
-        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
         <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
         <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
-        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
         <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
         <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
-        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">param_bound</span><span class="p">()</span>
+        <span class="n">_low</span><span class="p">,</span> <span class="n">_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elseParams</span><span class="o">.</span><span class="n">param_bounds</span><span class="p">()</span>
         <span class="n">low</span> <span class="o">+=</span> <span class="n">_low</span>
         <span class="n">high</span> <span class="o">+=</span> <span class="n">_high</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">high</span><span class="p">)</span></div>

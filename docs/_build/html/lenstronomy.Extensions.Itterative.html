@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.Extensions.Plots package" href="lenstronomy.Extensions.Plots.html" />
-    <link rel="prev" title="lenstronomy.Extensions.CosmoSampling package" href="lenstronomy.Extensions.CosmoSampling.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,15 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Plots.html" title="lenstronomy.Extensions.Plots package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.CosmoSampling.html" title="lenstronomy.Extensions.CosmoSampling package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" accesskey="U">lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,183 +49,14 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Itterative.iterative_lens">
-<span id="lenstronomy-extensions-itterative-iterative-lens-module"></span><h2>lenstronomy.Extensions.Itterative.iterative_lens module<a class="headerlink" href="#module-lenstronomy.Extensions.Itterative.iterative_lens" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Itterative.iterative_lens.</code><code class="descname">MakeImageIterLens</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_psf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel" title="lenstronomy.ImSim.image_model.ImageModel"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.ImSim.image_model.ImageModel</span></code></a></p>
-<p>class to perform an iterative lens reconstruction with given source model
-goal: find the floor in the (smooth) lens information (minimal image residuals for a given source model)</p>
-<p>Steps:
-1: reconstruct source with default soure and lens model
-2: perturb lens basis function and evaluate relative modeled images
-3: use relative images to construct a linear minimization of these lens basis sets
-4: with the new lens solution, minimize the source
-5: Repeat steps 2-4 until convergence</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.chi2">
-<code class="descname">chi2</code><span class="sig-paren">(</span><em>im_sim</em>, <em>model_error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.chi2" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes chi2 values</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_image">
-<code class="descname">get_image</code><span class="sig-paren">(</span><em>param</em>, <em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>beta</em>, <em>num_order</em>, <em>mask=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.get_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns response matrix for general inputs
-:param x_grid:
-:param y_grid:
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_psf:
-:param kwargs_lens_light:
-:param kwargs_else:
-:param numPix:
-:param deltaPix:
-:param subgrid_res:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_lens_perturb_matrix">
-<code class="descname">get_lens_perturb_matrix</code><span class="sig-paren">(</span><em>param</em>, <em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>coeff_num</em>, <em>delta=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.get_lens_perturb_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_lens_perturb_matrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_new_lens_model">
-<code class="descname">get_new_lens_model</code><span class="sig-paren">(</span><em>A</em>, <em>error_map</em>, <em>im_sim</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.get_new_lens_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_new_lens_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_source_model_base">
-<code class="descname">get_source_model_base</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.get_source_model_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.get_source_model_base" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.iteration">
-<code class="descname">iteration</code><span class="sig-paren">(</span><em>numIter</em>, <em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>delta=0.01</em>, <em>fraction=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>iterates multiple times trough source and lens reconstruction</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.one_step">
-<code class="descname">one_step</code><span class="sig-paren">(</span><em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>coeff_num=0</em>, <em>delta=0.01</em>, <em>fraction=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.one_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.one_step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.step">
-<code class="descname">step</code><span class="sig-paren">(</span><em>im_sim</em>, <em>model_error</em>, <em>param</em>, <em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>coeff_num=0</em>, <em>delta=0.01</em>, <em>fraction=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_lens.html#MakeImageIterLens.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_lens.MakeImageIterLens.step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-itterative-iterative-lens-module">
+<h2>lenstronomy.Extensions.Itterative.iterative_lens module<a class="headerlink" href="#lenstronomy-extensions-itterative-iterative-lens-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Itterative.iterative_source">
-<span id="lenstronomy-extensions-itterative-iterative-source-module"></span><h2>lenstronomy.Extensions.Itterative.iterative_source module<a class="headerlink" href="#module-lenstronomy.Extensions.Itterative.iterative_source" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Itterative.iterative_source.</code><code class="descname">MakeImageIter</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_psf=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel" title="lenstronomy.ImSim.image_model.ImageModel"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.ImSim.image_model.ImageModel</span></code></a></p>
-<p>class to perform an iterative source reconstruction
-goal: find the floor in the source information (minimal image residuals for a given lens model)</p>
-<p>Steps:
-1: reconstruct source with shapelets
-2: find N local maximas in positive residuals (image-model), indicating not enough peaky positive surface brightness
-3: compute magnification at this position -&gt; minimum scale to be resolved
-4: Add N gaussians with minimal scale at that position
-5: Perform reconstruction of source with shapelets and Gaussians
-6: iterate over</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.check_overlap_in_source">
-<code class="descname">check_overlap_in_source</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>ra_pos</em>, <em>dec_pos</em>, <em>r_min</em>, <em>N</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.check_overlap_in_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.check_overlap_in_source" title="Permalink to this definition">¶</a></dt>
-<dd><p>check whether different residuals correspond to the same position in the source plane (modulo magnification)
-:param ra_pos:
-:param dec_pos:
-:param kwargs_lens:
-:param kwargs_else:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.clump_response">
-<code class="descname">clump_response</code><span class="sig-paren">(</span><em>x_source</em>, <em>y_source</em>, <em>x_pos</em>, <em>y_pos</em>, <em>sigma</em>, <em>deltaPix</em>, <em>numPix</em>, <em>subgrid_res</em>, <em>kwargs_psf</em>, <em>mask=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.clump_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.clump_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>response matrix of gaussian clumps
-:param x_source:
-:param y_source:
-:param x_pos:
-:param y_pos:
-:param sigma:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.find_clump_param">
-<code class="descname">find_clump_param</code><span class="sig-paren">(</span><em>residuals</em>, <em>ra_coords</em>, <em>dec_coords</em>, <em>N</em>, <em>kwargs_lens</em>, <em>kwargs_else</em>, <em>deltaPix</em>, <em>clump_scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.find_clump_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.find_clump_param" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.find_max_residuals">
-<code class="descname">find_max_residuals</code><span class="sig-paren">(</span><em>residuals</em>, <em>ra_coords</em>, <em>dec_coords</em>, <em>N</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.find_max_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.find_max_residuals" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>residuals</strong> – reduced residual map</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">pixel coords of maximas</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.get_source_iter">
-<code class="descname">get_source_iter</code><span class="sig-paren">(</span><em>param</em>, <em>num_order</em>, <em>beta</em>, <em>x_grid</em>, <em>y_grid</em>, <em>kwargs_source</em>, <em>x_pos</em>, <em>y_pos</em>, <em>sigma</em>, <em>cov_param=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.get_source_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.get_source_iter" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>param</strong> – </li>
-<li><strong>num_order</strong> – </li>
-<li><strong>beta</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.make_image_iteration">
-<code class="descname">make_image_iteration</code><span class="sig-paren">(</span><em>x_grid</em>, <em>y_grid</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>numPix</em>, <em>deltaPix</em>, <em>subgrid_res</em>, <em>inv_bool=False</em>, <em>no_lens=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.make_image_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.make_image_iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.shapelet_response">
-<code class="descname">shapelet_response</code><span class="sig-paren">(</span><em>x_source</em>, <em>y_source</em>, <em>x_pos</em>, <em>y_pos</em>, <em>sigma</em>, <em>deltaPix</em>, <em>numPix</em>, <em>subgrid_res</em>, <em>kwargs_psf</em>, <em>num_order=1</em>, <em>mask=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Itterative/iterative_source.html#MakeImageIter.shapelet_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Itterative.iterative_source.MakeImageIter.shapelet_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns response matrix for general inputs
-:param x_grid:
-:param y_grid:
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_psf:
-:param kwargs_lens_light:
-:param kwargs_else:
-:param numPix:
-:param deltaPix:
-:param subgrid_res:
-:return:</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-itterative-iterative-source-module">
+<h2>lenstronomy.Extensions.Itterative.iterative_source module<a class="headerlink" href="#lenstronomy-extensions-itterative-iterative-source-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Itterative">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Extensions.Itterative" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -249,19 +70,13 @@ goal: find the floor in the source information (minimal image residuals for a gi
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.Extensions.Itterative package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Itterative.iterative_lens">lenstronomy.Extensions.Itterative.iterative_lens module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Itterative.iterative_source">lenstronomy.Extensions.Itterative.iterative_source module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Itterative">Module contents</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-itterative-iterative-lens-module">lenstronomy.Extensions.Itterative.iterative_lens module</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-itterative-iterative-source-module">lenstronomy.Extensions.Itterative.iterative_source module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.CosmoSampling.html"
-                        title="previous chapter">lenstronomy.Extensions.CosmoSampling package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.Plots.html"
-                        title="next chapter">lenstronomy.Extensions.Plots package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -292,15 +107,7 @@ goal: find the floor in the source information (minimal image residuals for a gi
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Plots.html" title="lenstronomy.Extensions.Plots package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.CosmoSampling.html" title="lenstronomy.Extensions.CosmoSampling package"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" >lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

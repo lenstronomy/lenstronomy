@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.Extensions.Scripts package" href="lenstronomy.Extensions.Scripts.html" />
-    <link rel="prev" title="lenstronomy.Extensions.Itterative package" href="lenstronomy.Extensions.Itterative.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,15 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Scripts.html" title="lenstronomy.Extensions.Scripts package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Itterative.html" title="lenstronomy.Extensions.Itterative package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" accesskey="U">lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,306 +49,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Plots.output_plots">
-<span id="lenstronomy-extensions-plots-output-plots-module"></span><h2>lenstronomy.Extensions.Plots.output_plots module<a class="headerlink" href="#module-lenstronomy.Extensions.Plots.output_plots" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">LensModelPlot</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>arrow_size=0.1</em>, <em>cmap_string='gist_heat'</em>, <em>high_res=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class that manages the summary plots of a lens model</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.absolute_residual_plot">
-<code class="descname">absolute_residual_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=-1</em>, <em>v_max=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.absolute_residual_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.absolute_residual_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>residuals</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.convergence_plot">
-<code class="descname">convergence_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=None</em>, <em>v_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.convergence_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.convergence_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_grid</strong> – </li>
-<li><strong>y_grid</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.data_plot">
-<code class="descname">data_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=None</em>, <em>v_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.data_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.data_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.decomposition_plot">
-<code class="descname">decomposition_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>text='Reconstructed'</em>, <em>v_min=None</em>, <em>v_max=None</em>, <em>unconvolved=False</em>, <em>point_source_add=False</em>, <em>source_add=False</em>, <em>lens_light_add=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.decomposition_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.decomposition_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.magnification_plot">
-<code class="descname">magnification_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=-10</em>, <em>v_max=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.magnification_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.magnification_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.model_plot">
-<code class="descname">model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=None</em>, <em>v_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.model_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>model</strong> – </li>
-<li><strong>v_min</strong> – </li>
-<li><strong>v_max</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.normalized_residual_plot">
-<code class="descname">normalized_residual_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=-6</em>, <em>v_max=6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.normalized_residual_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.normalized_residual_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>residuals</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.source_plot">
-<code class="descname">source_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>numPix</em>, <em>deltaPix_source</em>, <em>source_sigma=0.001</em>, <em>convolution=False</em>, <em>v_min=None</em>, <em>v_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.source_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.source_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>coords_source</strong> – </li>
-<li><strong>source</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Plots.output_plots.LensModelPlot.subtract_from_data_plot">
-<code class="descname">subtract_from_data_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>text='Subtracted'</em>, <em>v_min=None</em>, <em>v_max=None</em>, <em>point_source_add=False</em>, <em>source_add=False</em>, <em>lens_light_add=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#LensModelPlot.subtract_from_data_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.LensModelPlot.subtract_from_data_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.coordinate_arrows">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">coordinate_arrows</code><span class="sig-paren">(</span><em>ax</em>, <em>d</em>, <em>coords</em>, <em>color='w'</em>, <em>arrow_size=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#coordinate_arrows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.coordinate_arrows" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.ext_shear_direction">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">ext_shear_direction</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_options</em>, <em>kwargs_lens</em>, <em>kwargs_else</em>, <em>strength_multiply=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#ext_shear_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.ext_shear_direction" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_data</strong> – </li>
-<li><strong>kwargs_psf</strong> – </li>
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>lens_result</strong> – </li>
-<li><strong>source_result</strong> – </li>
-<li><strong>lens_light_result</strong> – </li>
-<li><strong>else_result</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.image_position_plot">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">image_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#image_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.image_position_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>coords</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.mcmc_output">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">mcmc_output</code><span class="sig-paren">(</span><em>samples_mcmc</em>, <em>param_mcmc</em>, <em>fitting_kwargs_list</em>, <em>truths=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#mcmc_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.mcmc_output" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples_mcmc</strong> – </li>
-<li><strong>param_mcmc</strong> – </li>
-<li><strong>kwargs_fitting_mcmc</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.plot_chain">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">plot_chain</code><span class="sig-paren">(</span><em>chain</em>, <em>param_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#plot_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.plot_chain" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.plot_line_set">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_caustic_list</em>, <em>dec_caustic_list</em>, <em>color='g'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.plot_line_set" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.plot_source">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">plot_source</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_options</em>, <em>lens_result</em>, <em>source_result</em>, <em>lens_light_result</em>, <em>else_result</em>, <em>cmap</em>, <em>source_sigma=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#plot_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.plot_source" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.psf_iteration_compare">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">psf_iteration_compare</code><span class="sig-paren">(</span><em>kwargs_psf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#psf_iteration_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.psf_iteration_compare" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.scale_bar">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">scale_bar</code><span class="sig-paren">(</span><em>ax</em>, <em>d</em>, <em>dist=1.0</em>, <em>text='1&quot;'</em>, <em>color='w'</em>, <em>flipped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#scale_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.scale_bar" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.source_position_plot">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">source_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>kwargs_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#source_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.source_position_plot" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>coords</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Extensions.Plots.output_plots.text_description">
-<code class="descclassname">lenstronomy.Extensions.Plots.output_plots.</code><code class="descname">text_description</code><span class="sig-paren">(</span><em>ax</em>, <em>d</em>, <em>text</em>, <em>color='w'</em>, <em>backgroundcolor='k'</em>, <em>flipped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Plots/output_plots.html#text_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Plots.output_plots.text_description" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="lenstronomy-extensions-plots-output-plots-module">
+<h2>lenstronomy.Extensions.Plots.output_plots module<a class="headerlink" href="#lenstronomy-extensions-plots-output-plots-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Plots">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Extensions.Plots" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -372,18 +67,12 @@
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.Extensions.Plots package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Plots.output_plots">lenstronomy.Extensions.Plots.output_plots module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Plots">Module contents</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-plots-output-plots-module">lenstronomy.Extensions.Plots.output_plots module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.Itterative.html"
-                        title="previous chapter">lenstronomy.Extensions.Itterative package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.Scripts.html"
-                        title="next chapter">lenstronomy.Extensions.Scripts package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -414,15 +103,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Scripts.html" title="lenstronomy.Extensions.Scripts package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Itterative.html" title="lenstronomy.Extensions.Itterative package"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" >lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

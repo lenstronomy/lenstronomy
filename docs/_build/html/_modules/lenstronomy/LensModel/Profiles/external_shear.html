@@ -51,51 +51,6 @@
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="ExternalShear_old"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.external_shear.ExternalShear_old">[docs]</a><span class="k">class</span> <span class="nc">ExternalShear_old</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to deal with external shear. We do not include external convergence at this stage</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="ExternalShear_old.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.external_shear.ExternalShear_old.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">gamma_ext</span><span class="p">,</span> <span class="n">psi_ext</span><span class="p">):</span>
-        <span class="c1"># change to polar coordinates</span>
-        <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gamma_ext</span> <span class="o">*</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">psi_ext</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">f_</span></div>
-
-<div class="viewcode-block" id="ExternalShear_old.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.external_shear.ExternalShear_old.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">gamma_ext</span><span class="p">,</span> <span class="n">psi_ext</span><span class="p">):</span>
-        <span class="c1"># rotation angle</span>
-        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi_ext</span><span class="p">)</span>
-        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi_ext</span><span class="p">)</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">y</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">y</span>
-
-        <span class="n">f_x_prim</span> <span class="o">=</span> <span class="n">gamma_ext</span> <span class="o">*</span> <span class="n">y_</span>
-        <span class="n">f_y_prim</span> <span class="o">=</span> <span class="n">gamma_ext</span> <span class="o">*</span> <span class="n">x_</span>
-        <span class="n">f_x</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">f_x_prim</span><span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">f_y_prim</span>
-        <span class="n">f_y</span> <span class="o">=</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">f_x_prim</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">f_y_prim</span>
-        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
-
-<div class="viewcode-block" id="ExternalShear_old.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.external_shear.ExternalShear_old.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">gamma_ext</span><span class="p">,</span> <span class="n">psi_ext</span><span class="p">):</span>
-        <span class="c1"># rotation angle</span>
-        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">psi_ext</span><span class="p">)</span>
-        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">psi_ext</span><span class="p">)</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">sin_phi</span><span class="o">*</span><span class="n">y</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">y</span>
-        <span class="n">f_xx_prim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
-        <span class="n">f_yy_prim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
-        <span class="n">f_xy_prim</span> <span class="o">=</span> <span class="n">gamma_ext</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_prim</span> <span class="o">+</span> <span class="n">f_yy_prim</span><span class="p">)</span>
-        <span class="n">gamma1_value</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_prim</span> <span class="o">-</span><span class="n">f_yy_prim</span><span class="p">)</span>
-        <span class="n">gamma2_value</span> <span class="o">=</span> <span class="n">f_xy_prim</span>
-        <span class="c1"># rotate back</span>
-        <span class="n">gamma1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">psi_ext</span><span class="p">)</span><span class="o">*</span><span class="n">gamma1_value</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">psi_ext</span><span class="p">)</span><span class="o">*</span><span class="n">gamma2_value</span>
-        <span class="n">gamma2</span> <span class="o">=</span> <span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">psi_ext</span><span class="p">)</span><span class="o">*</span><span class="n">gamma1_value</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">psi_ext</span><span class="p">)</span><span class="o">*</span><span class="n">gamma2_value</span>
-
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">gamma1</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">-</span> <span class="n">gamma1</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div></div>
-
 
 <div class="viewcode-block" id="ExternalShear"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.external_shear.ExternalShear">[docs]</a><span class="k">class</span> <span class="nc">ExternalShear</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

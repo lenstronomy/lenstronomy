@@ -62,9 +62,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle the data, coordinate system and masking, including convolution with various numerical precisions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_subgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lens_light_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_subgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_res</span> <span class="o">=</span> <span class="n">subgrid_res</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_mask</span> <span class="o">=</span> <span class="n">lens_light_mask</span>
 
         <span class="k">if</span> <span class="s1">&#39;image_data&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;image_data&#39;</span><span class="p">]</span>
@@ -150,10 +149,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_mask</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_lens_light</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">numData_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

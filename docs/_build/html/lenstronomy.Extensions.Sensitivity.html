@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.Extensions.SimulationAPI package" href="lenstronomy.Extensions.SimulationAPI.html" />
-    <link rel="prev" title="lenstronomy.Extensions.Scripts package" href="lenstronomy.Extensions.Scripts.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,15 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.SimulationAPI.html" title="lenstronomy.Extensions.SimulationAPI package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Scripts.html" title="lenstronomy.Extensions.Scripts package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" accesskey="U">lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -59,214 +49,17 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Sensitivity.clump_detection">
-<span id="lenstronomy-extensions-sensitivity-clump-detection-module"></span><h2>lenstronomy.Extensions.Sensitivity.clump_detection module<a class="headerlink" href="#module-lenstronomy.Extensions.Sensitivity.clump_detection" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Sensitivity.clump_detection.</code><code class="descname">ClumpDetect</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/clump_detection.html#ClumpDetect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity" title="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity</span></code></a></p>
-<p>class with routines to make sensitivity maps</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect.iterate_position">
-<code class="descname">iterate_position</code><span class="sig-paren">(</span><em>phi_E_clump</em>, <em>r_trunc</em>, <em>x_clump</em>, <em>y_clump</em>, <em>compute_bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/clump_detection.html#ClumpDetect.iterate_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect.iterate_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>phi_E_clump</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>x_clump</strong> – </li>
-<li><strong>y_clump</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect.relative_chi2">
-<code class="descname">relative_chi2</code><span class="sig-paren">(</span><em>phi_E_clump</em>, <em>r_trunc</em>, <em>x_clump</em>, <em>y_clump</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/clump_detection.html#ClumpDetect.relative_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.clump_detection.ClumpDetect.relative_chi2" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>phi_E</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>x_clump</strong> – </li>
-<li><strong>y_clump</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-sensitivity-clump-detection-module">
+<h2>lenstronomy.Extensions.Sensitivity.clump_detection module<a class="headerlink" href="#lenstronomy-extensions-sensitivity-clump-detection-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Sensitivity.sensitivity">
-<span id="lenstronomy-extensions-sensitivity-sensitivity-module"></span><h2>lenstronomy.Extensions.Sensitivity.sensitivity module<a class="headerlink" href="#module-lenstronomy.Extensions.Sensitivity.sensitivity" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Sensitivity.sensitivity.</code><code class="descname">Sensitivity</code><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class to analyse the sensitivity of the data to find substructure in the lens model</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.detect_sensitivity">
-<code class="descname">detect_sensitivity</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>x_clump</em>, <em>y_clump</em>, <em>phi_E_clump</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.detect_sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.detect_sensitivity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.detection">
-<code class="descname">detection</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>x_clump</em>, <em>y_clump</em>, <em>phi_E_clump</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.detection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.detection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.kappa_map">
-<code class="descname">kappa_map</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_else</em>, <em>x_clump</em>, <em>y_clump</em>, <em>phi_E_clump</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.kappa_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.kappa_map" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>kwargs_data</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.make_image_fixed_source">
-<code class="descname">make_image_fixed_source</code><span class="sig-paren">(</span><em>param</em>, <em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>add_noise=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.make_image_fixed_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.make_image_fixed_source" title="Permalink to this definition">¶</a></dt>
-<dd><p>make an image with fixed source parameters
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_psf:
-:param kwargs_lens_light:
-:param kwargs_else:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.make_mock_image">
-<code class="descname">make_mock_image</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>add_noise=False</em>, <em>noMask=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.make_mock_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.make_mock_image" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">mock image, without substructure</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.num_bands">
-<code class="descname">num_bands</code><span class="sig-paren">(</span><em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.num_bands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.num_bands" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_data</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.perturbation_sensitivity">
-<code class="descname">perturbation_sensitivity</code><span class="sig-paren">(</span><em>param</em>, <em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>alpha_x_perturb</em>, <em>alpha_y_perturb</em>, <em>recalc=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity.html#Sensitivity.perturbation_sensitivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity.perturbation_sensitivity" title="Permalink to this definition">¶</a></dt>
-<dd><p>makes residual maps for a perturbation provided by fixed deflection maps
-:param kwargs_options:
-:param kwargs_data:
-:param kwargs_lens:
-:param kwargs_source:
-:param kwargs_psf:
-:param kwargs_lens_light:
-:param kwargs_else:
-:param alpha_x_perturb:
-:param alpha_y_perturb:
-:return:</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-sensitivity-sensitivity-module">
+<h2>lenstronomy.Extensions.Sensitivity.sensitivity module<a class="headerlink" href="#lenstronomy-extensions-sensitivity-sensitivity-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Sensitivity.sensitivity_map">
-<span id="lenstronomy-extensions-sensitivity-sensitivity-map-module"></span><h2>lenstronomy.Extensions.Sensitivity.sensitivity_map module<a class="headerlink" href="#module-lenstronomy.Extensions.Sensitivity.sensitivity_map" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap">
-<em class="property">class </em><code class="descclassname">lenstronomy.Extensions.Sensitivity.sensitivity_map.</code><code class="descname">SensitivityMap</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_data</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_psf</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity_map.html#SensitivityMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity" title="lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.Extensions.Sensitivity.sensitivity.Sensitivity</span></code></a></p>
-<p>class with routines to make sensitivity maps</p>
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap.iterate_position">
-<code class="descname">iterate_position</code><span class="sig-paren">(</span><em>phi_E_clump</em>, <em>r_trunc</em>, <em>x_clump</em>, <em>y_clump</em>, <em>compute_bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity_map.html#SensitivityMap.iterate_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap.iterate_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>phi_E_clump</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>x_clump</strong> – </li>
-<li><strong>y_clump</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap.relative_chi2">
-<code class="descname">relative_chi2</code><span class="sig-paren">(</span><em>phi_E_clump</em>, <em>r_trunc</em>, <em>x_clump</em>, <em>y_clump</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Extensions/Sensitivity/sensitivity_map.html#SensitivityMap.relative_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Extensions.Sensitivity.sensitivity_map.SensitivityMap.relative_chi2" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>phi_E</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>x_clump</strong> – </li>
-<li><strong>y_clump</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-extensions-sensitivity-sensitivity-map-module">
+<h2>lenstronomy.Extensions.Sensitivity.sensitivity_map module<a class="headerlink" href="#lenstronomy-extensions-sensitivity-sensitivity-map-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.Extensions.Sensitivity">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Extensions.Sensitivity" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -280,20 +73,14 @@
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.Extensions.Sensitivity package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Sensitivity.clump_detection">lenstronomy.Extensions.Sensitivity.clump_detection module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Sensitivity.sensitivity">lenstronomy.Extensions.Sensitivity.sensitivity module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Sensitivity.sensitivity_map">lenstronomy.Extensions.Sensitivity.sensitivity_map module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Extensions.Sensitivity">Module contents</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-sensitivity-clump-detection-module">lenstronomy.Extensions.Sensitivity.clump_detection module</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-sensitivity-sensitivity-module">lenstronomy.Extensions.Sensitivity.sensitivity module</a></li>
+<li><a class="reference internal" href="#lenstronomy-extensions-sensitivity-sensitivity-map-module">lenstronomy.Extensions.Sensitivity.sensitivity_map module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.Scripts.html"
-                        title="previous chapter">lenstronomy.Extensions.Scripts package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.Extensions.SimulationAPI.html"
-                        title="next chapter">lenstronomy.Extensions.SimulationAPI package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -324,15 +111,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.SimulationAPI.html" title="lenstronomy.Extensions.SimulationAPI package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="lenstronomy.Extensions.Scripts.html" title="lenstronomy.Extensions.Scripts package"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.Extensions.html" >lenstronomy.Extensions package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

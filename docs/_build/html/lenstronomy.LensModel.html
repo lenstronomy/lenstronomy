@@ -61,7 +61,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html">lenstronomy.LensModel.Profiles package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.barkana_integrals">lenstronomy.LensModel.Profiles.barkana_integrals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-barkana-integrals-module">lenstronomy.LensModel.Profiles.barkana_integrals module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.composite_sersic_nfw">lenstronomy.LensModel.Profiles.composite_sersic_nfw module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.external_shear">lenstronomy.LensModel.Profiles.external_shear module</a></li>
@@ -82,8 +82,8 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_double">lenstronomy.LensModel.Profiles.sersic_double module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_ellipse">lenstronomy.LensModel.Profiles.sersic_ellipse module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_utils">lenstronomy.LensModel.Profiles.sersic_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.shapelet_pot">lenstronomy.LensModel.Profiles.shapelet_pot module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.shapelet_pot_2">lenstronomy.LensModel.Profiles.shapelet_pot_2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-shapelet-pot-module">lenstronomy.LensModel.Profiles.shapelet_pot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-shapelet-pot-2-module">lenstronomy.LensModel.Profiles.shapelet_pot_2 module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-sie-module">lenstronomy.LensModel.Profiles.sie module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis">lenstronomy.LensModel.Profiles.sis module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis_truncate">lenstronomy.LensModel.Profiles.sis_truncate module</a></li>
@@ -342,6 +342,22 @@ A = 1 - d^2phi/d_ij
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius">
+<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the radius with mean convergence=1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite">
 <code class="descname">magnification_finite</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_lens</em>, <em>kwargs_else=None</em>, <em>source_sigma=0.003</em>, <em>window_size=0.1</em>, <em>grid_number=100</em>, <em>shape='GAUSSIAN'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.magnification_finite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the magnification of an extended source with Gaussian light profile
@@ -354,6 +370,11 @@ A = 1 - d^2phi/d_ij
 :param grid_number: number of grid cells per axis in the window to numerically comute the flux
 :return: numerically computed brightness of the sources</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope">
+<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em>, <em>lens_model_internal_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

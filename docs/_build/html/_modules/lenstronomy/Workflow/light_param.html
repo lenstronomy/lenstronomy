@@ -320,10 +320,6 @@
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Re&#39;</span><span class="p">])</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;phi_G_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;q_2&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phi_G_2&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;q_2&#39;</span><span class="p">])</span>
-                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
-                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BULDGE_DISK&#39;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;I0_b&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;I0_b&#39;</span><span class="p">])</span>
@@ -607,7 +603,7 @@
                     <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;mean_sigma&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span></div>
 
-<div class="viewcode-block" id="LightParam.param_bound"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.light_param.LightParam.param_bound">[docs]</a>    <span class="k">def</span> <span class="nf">param_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LightParam.param_bounds"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.light_param.LightParam.param_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">param_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>

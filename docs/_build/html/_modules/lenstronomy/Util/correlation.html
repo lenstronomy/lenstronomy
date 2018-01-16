@@ -73,16 +73,6 @@
     <span class="c1"># Calculate the azimuthally averaged 1D power spectrum</span>
     <span class="n">psd1D</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">azimuthalAverage</span><span class="p">(</span><span class="n">psd2D</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">psd1D</span><span class="p">,</span> <span class="n">psd2D</span></div>
-
-
-<div class="viewcode-block" id="random_1D"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.random_1D">[docs]</a><span class="k">def</span> <span class="nf">random_1D</span><span class="p">(</span><span class="n">numPix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    same as corr1D put with a random distribution with mean 0 and sigma=1</span>
-<span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">noise</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">numPix</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">psd1D_noise</span><span class="p">,</span> <span class="n">psd2D_noise</span> <span class="o">=</span> <span class="n">correlation_2D</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">psd1D_noise</span><span class="p">,</span> <span class="n">psd2D_noise</span></div>
 </pre></div>
 
           </div>

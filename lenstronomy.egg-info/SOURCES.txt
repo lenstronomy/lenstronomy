@@ -35,6 +35,7 @@ docs/lenstronomy.LensModel.rst
 docs/lenstronomy.LightModel.Profiles.rst
 docs/lenstronomy.LightModel.rst
 docs/lenstronomy.MCMC.rst
+docs/lenstronomy.SimulationAPI.rst
 docs/lenstronomy.Util.rst
 docs/lenstronomy.Workflow.rst
 docs/lenstronomy.rst

@@ -59,7 +59,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">precalc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">precalc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        load interpolation of the Hermite polynomials in a range [-30,30] in order n&lt;= 50</span>
 <span class="sd">        :return:</span>
@@ -152,42 +152,15 @@
             <span class="n">n_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">H_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
             <span class="n">H_y</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span></div>
+        <span class="k">return</span> <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span></div></div>
 
-<div class="viewcode-block" id="Shapelets.get_shapelet_set"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.get_shapelet_set">[docs]</a>    <span class="k">def</span> <span class="nf">get_shapelet_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_order</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param num_order: max shapelet order</span>
-<span class="sd">        :param beta: shapelet scale</span>
-<span class="sd">        :param numPix: number of pixel of the grid</span>
-<span class="sd">        :return: list of shapelets drawn on pixel grid, centered.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num_order</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">num_order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_calc</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">num_order</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_param</span><span class="p">):</span>
-            <span class="k">if</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># n1 % 2 == 0 and n2 % 2 == 0:</span>
-                <span class="n">kwargs_source_shapelet</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="n">n1</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="n">n2</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
-                <span class="n">kernel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">n1</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">n1</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">n2</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">kernel_list</span></div></div>
 
 <div class="viewcode-block" id="ShapeletSet"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet">[docs]</a><span class="k">class</span> <span class="nc">ShapeletSet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to operate on entire shapelet set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span> <span class="o">=</span> <span class="n">Shapelets</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span> <span class="o">=</span> <span class="n">Shapelets</span><span class="p">(</span><span class="n">precalc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ShapeletSet.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -233,6 +206,33 @@
                 <span class="n">n2</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
+<div class="viewcode-block" id="ShapeletSet.shapelet_basis_2d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.shapelet_basis_2d">[docs]</a>    <span class="k">def</span> <span class="nf">shapelet_basis_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_order</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param num_order: max shapelet order</span>
+<span class="sd">        :param beta: shapelet scale</span>
+<span class="sd">        :param numPix: number of pixel of the grid</span>
+<span class="sd">        :return: list of shapelets drawn on pixel grid, centered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num_order</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">num_order</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">pre_calc</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">num_order</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_param</span><span class="p">):</span>
+            <span class="n">kwargs_source_shapelet</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="n">n1</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="n">n2</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
+            <span class="n">kernel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+            <span class="n">kernel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">n1</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n1</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">n2</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">kernel_list</span></div>
+
 <div class="viewcode-block" id="ShapeletSet.decomposition"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        decomposes an image into the shapelet coefficients in same order as for the function call</span>
@@ -255,44 +255,6 @@
             <span class="n">kwargs_source_shapelet</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">center_x</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">center_y</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="n">n1</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="n">n2</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">amp_norm</span><span class="p">}</span>
             <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
             <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image</span><span class="o">*</span><span class="n">base</span><span class="p">)</span>
-            <span class="n">param_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span>
-            <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">n1</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">n1</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="n">n2</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">param_list</span></div></div>
-
-<div class="viewcode-block" id="Decompose"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Decompose">[docs]</a><span class="k">class</span> <span class="nc">Decompose</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to decompose image into shapelets</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span> <span class="o">=</span> <span class="n">Shapelets</span><span class="p">(</span><span class="n">precalc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Decompose.decomposition"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Decompose.decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        decomposes an image into the shapelet coefficients in same order as for the function call</span>
-<span class="sd">        :param image:</span>
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param n_max:</span>
-<span class="sd">        :param beta:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">param_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_param</span><span class="p">)</span>
-        <span class="n">amp_norm</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">beta</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">deltaPix</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_param</span><span class="p">):</span>
-            <span class="n">kwargs_source_shapelet</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">center_x</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">center_y</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="n">n1</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="n">n2</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span>
-                                      <span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">amp_norm</span><span class="p">}</span>
-            <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
-            <span class="n">param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image</span> <span class="o">*</span> <span class="n">base</span><span class="p">)</span>
             <span class="n">param_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span>
             <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">n1</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">+</span> <span class="mi">1</span>

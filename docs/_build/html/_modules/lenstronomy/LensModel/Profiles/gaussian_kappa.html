@@ -155,6 +155,18 @@
         <span class="n">c</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">amp2d</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">c</span> <span class="o">*</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="GaussianKappa.mass_2d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_kappa.GaussianKappa.mass_2d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param R:</span>
+<span class="sd">        :param amp:</span>
+<span class="sd">        :param sigma_x:</span>
+<span class="sd">        :param sigma_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">amp_density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_amp2d_to_3d</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_2d</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">amp_density</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="GaussianKappa.alpha_abs"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_kappa.GaussianKappa.alpha_abs">[docs]</a>    <span class="k">def</span> <span class="nf">alpha_abs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        absolute value of the deflection</span>

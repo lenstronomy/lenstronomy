@@ -16,7 +16,7 @@ lenstronomy
         :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=master
 
 
-This package is designed to model strong lens systems.
+The model package for gravitational strong lens images.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`__  and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
@@ -29,7 +29,7 @@ the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>
 
 Installation
 --------
-* see INSTALLATION.rst
+* pip install lenstronomy
 
 
 Requirements
@@ -62,10 +62,16 @@ Analysis tools
 -------
 * Standardized fitting procedures for lens modelling
 * Modular build up to design plugins by users
-* Interactive jupyter notebooks
 * Pre-defined plotting and illustration routines
 * Particle swarm optimization for parameter fitting
 * MCMC (emcee from CosmoHammer) for parameter inferences
 * Kinematic modelling
 * Cosmographic inference tools
 
+
+
+Example notebooks
+------
+We have made an extension module available at `GitHub <http://github.com/sibirrer/lenstronomy_extensions>`__ .
+You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
+line-of-sight analysis and source reconstructions.

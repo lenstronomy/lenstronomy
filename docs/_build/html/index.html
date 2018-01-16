@@ -50,40 +50,33 @@
             
   <div class="section" id="lenstronomy">
 <h1>lenstronomy<a class="headerlink" href="#lenstronomy" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="http://badge.fury.io/py/lenstronomy"><img alt="https://badge.fury.io/py/lenstronomy.png" src="https://badge.fury.io/py/lenstronomy.png" /></a>
 <a class="reference external image-reference" href="https://travis-ci.org/sibirrer/lenstronomy"><img alt="https://travis-ci.org/sibirrer/lenstronomy.png?branch=master" src="https://travis-ci.org/sibirrer/lenstronomy.png?branch=master" /></a>
 <a class="reference external image-reference" href="http://lenstronomy.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/lenstronomy/badge/?version=latest" /></a>
-<p>This package is designed to model strong lens systems.
-The software is based on Birrer et al 2015, <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">http://adsabs.harvard.edu/abs/2015ApJ…813..102B</a> and finds application in
+<a class="reference external image-reference" href="https://coveralls.io/github/sibirrer/lenstronomy?branch=master"><img alt="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master" src="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master" /></a>
+<p>The model package for gravitational strong lens images.
+The software is based on <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>  and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.</p>
+<p>The development is coordinated on <a class="reference external" href="http://github.com/sibirrer/lenstronomy">GitHub</a> and contributions are welcome.
+The documentation of <strong>lenstronomy</strong> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
+the package is distributed over <a class="reference external" href="https://pypi.python.org/pypi/lenstronomy">PyPI</a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>check out the github repository</li>
+<li>pip install lenstronomy</li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cd</span> <span class="n">lenstronomy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
-<span class="go">or in development mode</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">develop</span>
-<span class="go">* it is recommended to check out and install the dependency fastell4py independently.</span>
-<span class="go">* run the test functions to see whether the installation was successful.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cd</span> <span class="n">lenstronomy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">py</span><span class="o">.</span><span class="n">test</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>to run the lens models from Barkana (fastell), also requires githug/sibirrer/fastell4py (needs a fortran compiler)</li>
-<li>CosmoHammer (through PyPi)</li>
-<li>standard python libraries (numpy, scipy)</li>
-</ul>
+<p>To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
+is also required and can be cloned from: <a class="reference external" href="http://github/sibirrer/fastell4py">GitHub</a> (needs a fortran compiler)
+* CosmoHammer (through PyPi)
+* standard python libraries (numpy, scipy)</p>
 </div>
 <div class="section" id="bug-reporting-and-contributions">
 <h2>Bug reporting and contributions<a class="headerlink" href="#bug-reporting-and-contributions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>see CONTRIBUTING.rst</li>
-<li>you can also directly contact the lead developer, Simon Birrer</li>
 </ul>
 </div>
 <div class="section" id="modelling-features">
@@ -101,15 +94,20 @@ e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for le
 <div class="section" id="analysis-tools">
 <h2>Analysis tools<a class="headerlink" href="#analysis-tools" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Standardized fitting procedures for some lens systems</li>
+<li>Standardized fitting procedures for lens modelling</li>
 <li>Modular build up to design plugins by users</li>
-<li>Interactive jupyter notebooks</li>
 <li>Pre-defined plotting and illustration routines</li>
 <li>Particle swarm optimization for parameter fitting</li>
 <li>MCMC (emcee from CosmoHammer) for parameter inferences</li>
 <li>Kinematic modelling</li>
 <li>Cosmographic inference tools</li>
 </ul>
+</div>
+<div class="section" id="example-notebooks">
+<h2>Example notebooks<a class="headerlink" href="#example-notebooks" title="Permalink to this headline">¶</a></h2>
+<p>We have made an extension module available at <a class="reference external" href="http://github.com/sibirrer/lenstronomy_extensions">GitHub</a> .
+You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
+line-of-sight analysis and source reconstructions.</p>
 <div class="section" id="contents">
 <h3>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
@@ -133,7 +131,7 @@ e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for le
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.1.0 (2014-05-26)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id1">0.0.1 (2018-01-09)</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +159,8 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#bug-reporting-and-contributions">Bug reporting and contributions</a></li>
 <li><a class="reference internal" href="#modelling-features">Modelling Features</a></li>
-<li><a class="reference internal" href="#analysis-tools">Analysis tools</a><ul>
+<li><a class="reference internal" href="#analysis-tools">Analysis tools</a></li>
+<li><a class="reference internal" href="#example-notebooks">Example notebooks</a><ul>
 <li><a class="reference internal" href="#contents">Contents:</a></li>
 <li><a class="reference internal" href="#feedback">Feedback</a></li>
 </ul>

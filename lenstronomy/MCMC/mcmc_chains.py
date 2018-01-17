@@ -155,9 +155,7 @@ class MCMC_chain(object):
         penalty = 0
         for i in range(0, len(args)):
             if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
-                penalty = 10**15#np.NaN #10**10
-                #print(i, args[i], lowerLimit[i], upperLimit[i])
-                #print("warning!!!")
+                penalty = 10**15
         return penalty
 
     def logL_delay(self, kwargs_lens, kwargs_else):

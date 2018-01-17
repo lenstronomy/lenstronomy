@@ -12,4 +12,4 @@ Contributors
 
 * Adam Amara
 * Joel Akeret
-* Anowar Shaijb
+* Anowar Shajib

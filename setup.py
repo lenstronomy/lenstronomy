@@ -29,8 +29,6 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-
-
 readme = open('README.rst').read()
 doclink = """
 Documentation
@@ -40,21 +38,21 @@ The full documentation can be generated with Sphinx"""
 
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-requires = ['numpy>=1.13', 'scipy>=0.14.0', "configparser"] #during runtime , "configparser", 'astropy', "PyCosmo", 'numpy>=1.7'
-tests_require=['pytest>=2.3', "mock"] #for testing
+requires = ['numpy>=1.13', 'scipy>=0.14.0', "configparser"]
+tests_require=['pytest>=2.3', "mock"]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 
 setup(
     name='lenstronomy',
-    version='0.0.2',
+    version='0.0.3',
     description='Strong lens modeling package.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
     url='https://github.com/sibirrer/lenstronomy',
-    download_url='https://github.com/sibirrer/lenstronomy/archive/0.0.2.tar.gz',
+    download_url='https://github.com/sibirrer/lenstronomy/archive/0.0.3.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,

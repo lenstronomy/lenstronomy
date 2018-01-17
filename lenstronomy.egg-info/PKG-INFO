@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.0.2
+Version: 0.0.3
 Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
-Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.2.tar.gz
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.3.tar.gz
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy
@@ -102,6 +102,11 @@ Description: =============================
         ++++++++++++++++++
         
         * First release on PyPI.
+        
+        0.0.2 (2018-01-16)
+        ++++++++++++++++++
+        
+        * Improved testing and stability
 Keywords: lenstronomy
 Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha

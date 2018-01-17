@@ -49,9 +49,10 @@ class Data(object):
             print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
             exp_map = 1.
             f = exp_map
+        self._f = f
         self._exp_map = exp_map
         self._data = data
-        self.C_D_response = self.covariance_matrix(self.image2array(data), self._sigma_b, f)
+        self.C_D_response = self.covariance_matrix(self.image2array(data), self._sigma_b, self._f)
         self.C_D = self.covariance_matrix(data, self._sigma_b, exp_map)
 
         if 'mask' in kwargs_data:
@@ -235,7 +236,8 @@ class Data(object):
         :param error_map:
         :return:
         """
-        X2 = (model - self._data)**2 / (self.C_D + np.abs(error_map))* self.mask
+        C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
+        X2 = (model - self._data)**2 / (C_D + np.abs(error_map))* self.mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL

@@ -1,5 +1,5 @@
 =============================
-lenstronomy
+lenstronomy - the gravitational lensing software package
 =============================
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
@@ -15,6 +15,9 @@ lenstronomy
 .. image:: https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master
         :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=master
 
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+    :target: https://github.com/sibirrer/lenstronomy/blob/master/LICENSE
+
 
 The model package for gravitational strong lens images.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`__  and finds application in
@@ -29,7 +32,10 @@ the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>
 
 Installation
 --------
-* pip install lenstronomy
+
+.. code-block:: bash
+
+    $ pip install lenstronomy
 
 
 Requirements

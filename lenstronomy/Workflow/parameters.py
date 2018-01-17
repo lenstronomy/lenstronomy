@@ -231,24 +231,14 @@ class Param(object):
         if self.kwargs_options.get('image_plane_source', False):
             x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
             for i, kwargs_source in enumerate(kwargs_source_list):
-                if self.kwargs_options.get('joint_center', False):
-                    kwargs_source_list[i]['center_x'] = np.mean(x_mapped)
-                    kwargs_source_list[i]['center_y'] = np.mean(y_mapped)
-                else:
-                    kwargs_source_list[i]['center_x'] = x_mapped[i]
-                    kwargs_source_list[i]['center_y'] = y_mapped[i]
+                kwargs_source_list[i]['center_x'] = x_mapped[i]
+                kwargs_source_list[i]['center_y'] = y_mapped[i]
         if self.kwargs_options.get('solver', False):
             x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
-            if self.kwargs_options.get('joint_center', False):
-                for i in range(len(kwargs_source_list)):
-                    if 'center_x' in kwargs_source_list[i]:
-                        kwargs_source_list[i]['center_x'] = np.mean(x_mapped)
-                        kwargs_source_list[i]['center_y'] = np.mean(y_mapped)
-            else:
-                if 'center_x' in kwargs_source_list[0]:
-                    kwargs_source_list[0]['center_x'] = np.mean(x_mapped)
-                    kwargs_source_list[0]['center_y'] = np.mean(y_mapped)
-        if self.kwargs_options.get('joint_center'):
+            if 'center_x' in kwargs_source_list[0]:
+                kwargs_source_list[0]['center_x'] = np.mean(x_mapped)
+                kwargs_source_list[0]['center_y'] = np.mean(y_mapped)
+        if self.kwargs_options.get('joint_center_source'):
             for i in range(1, len(kwargs_source_list)):
                 kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
                 kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']

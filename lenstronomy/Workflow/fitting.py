@@ -200,10 +200,14 @@ class Fitting(object):
                 kwargs_fixed = {}
             if type == 'source_light_model_list':
                 if kwargs_options.get('solver', False) or kwargs_options.get('image_plane_source', False):
-                    if kwargs_options.get('joint_center', False) or i == 0:
+                    if i == 0:
                         kwargs_fixed['center_x'] = 0
                         kwargs_fixed['center_y'] = 0
-                if kwargs_options.get('joint_center', False) and i != 0:
+                if kwargs_options.get('joint_center_source', False) and i != 0:
+                    kwargs_fixed['center_x'] = 0
+                    kwargs_fixed['center_y'] = 0
+            if type == 'lens_light_model_list':
+                if kwargs_options.get('joint_center_lens_light', False) and i != 0:
                     kwargs_fixed['center_x'] = 0
                     kwargs_fixed['center_y'] = 0
             kwargs_fixed_list.append(kwargs_fixed)

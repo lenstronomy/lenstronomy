@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
 
 import numpy as np
+import numpy.testing as npt
 import pytest
 
 class TestP_JAFFW(object):
@@ -79,7 +80,7 @@ class TestP_JAFFW(object):
 
     def test_mass_3d_lens(self):
         mass = self.profile.mass_3d_lens(r=1, sigma0=1, Ra=0.5, Rs=0.8, q=1, phi_G=0)
-        assert mass == 0.87077306005349242
+        npt.assert_almost_equal(mass, 0.87077306005349242, decimal=8)
 
 
 if __name__ == '__main__':

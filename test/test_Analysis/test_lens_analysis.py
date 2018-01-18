@@ -45,7 +45,7 @@ class TestLensAnalysis(object):
         amplitudes, sigma = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20)
         mge = MultiGaussian()
         flux = mge.function(1., 1, amp=amplitudes, sigma=sigma)
-        assert flux == 0.04604026574172369
+        npt.assert_almost_equal(flux,0.04604026574172369, decimal=8)
 
 
 if __name__ == '__main__':

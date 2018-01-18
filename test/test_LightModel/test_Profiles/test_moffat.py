@@ -16,8 +16,8 @@ class TestMoffat(object):
         :return:
         """
         profile = Moffat()
-        output = profile.function(x=1, y=1, amp=1, alpha=2, beta=1, center_x=0, center_y=0)
-        assert output == 1.
+        output = profile.function(x=1., y=1., amp=1., alpha=2., beta=1., center_x=0, center_y=0)
+        assert output == 0.6666666666666666
 
 
 if __name__ == '__main__':

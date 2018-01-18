@@ -13,4 +13,4 @@ class Moffat(object):
         """
         x_shift = x - center_x
         y_shift = y - center_y
-        return amp * (1 +(x_shift**2+y_shift**2)/alpha**2)**(-beta)
+        return amp * (1. + (x_shift**2+y_shift**2)/alpha**2)**(-beta)

@@ -555,6 +555,17 @@ class LightParam(object):
                     sigma.append(kwargs_mean['mean_sigma'])
         return mean, sigma
 
+    def param_bounds_new(self, kwargs_lower, kwargs_upper):
+        """
+
+        :param kwargs_lower:
+        :param kwargs_upper:
+        :return:
+        """
+        low = self.setParams(kwargs_lower)
+        high = self.setParams(kwargs_upper)
+        return low, high
+
     def param_bounds(self):
         """
 

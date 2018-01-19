@@ -34,7 +34,7 @@ class MCMC_sampler(object):
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
         if lowerLimit is None or upperLimit is None:
-            lowerLimit, upperLimit = self.chain.param.param_bounds()
+            lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
             print("PSO initialises its particles with default values")
         if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
@@ -98,7 +98,7 @@ class MCMC_sampler(object):
         runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
         returns the chain
         """
-        lowerLimit, upperLimit = self.chain.param.param_bounds()
+        lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
         chain = LikelihoodComputationChain(

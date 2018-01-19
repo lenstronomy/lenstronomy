@@ -34,10 +34,6 @@ class TestParam(object):
         mean, sigma = self.param.param_init(self.kwargs_mean)
         assert mean[0] == 0
 
-    def test_param_bounds(self):
-        low, high = self.param.param_bounds()
-        assert low[0] == -60
-
     def test_num_params(self):
         num, list = self.param.num_param()
         assert num == 16

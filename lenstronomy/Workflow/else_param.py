@@ -164,45 +164,6 @@ class ElseParam(object):
                 sigma.append(kwargs_mean['mass2light_sigma'])
         return mean, sigma
 
-    def param_bounds(self):
-        """
-
-        :return:
-        """
-        low, high = [], []
-        if self._num_images > 0:
-            if not 'ra_pos' in self.kwargs_fixed:
-                pos_low = -60
-                pos_high = 60
-                for i in range(self._num_images):
-                    low.append(pos_low)
-                    high.append(pos_high)
-            if not 'dec_pos' in self.kwargs_fixed:
-                pos_low = -60
-                pos_high = 60
-                for i in range(self._num_images):
-                    low.append(pos_low)
-                    high.append(pos_high)
-            if not 'point_amp' in self.kwargs_fixed:
-                for i in range(self._num_images):
-                    low.append(0)
-                    high.append(100)
-        if self._foreground_shear:
-            if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
-                low.append(-0.8)
-                high.append(0.8)
-                low.append(-0.8)
-                high.append(0.8)
-        if self._time_delay is True:
-            if not 'delay_dist' in self.kwargs_fixed:
-                low.append(0)
-                high.append(10000)
-        if self._mass2light:
-            if not 'mass2light' in self.kwargs_fixed:
-                low.append(0)
-                high.append(1000)
-        return low, high
-
     def num_param(self):
         """
 

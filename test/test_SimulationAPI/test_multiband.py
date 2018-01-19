@@ -56,7 +56,7 @@ class TestMultiband(object):
         # 'NONE': no lens
         kwargs_none = {}
 
-        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         kwargs_lens_list = [kwargs_spep, kwargs_shear]
 
         # list of light profiles (for lens and source)

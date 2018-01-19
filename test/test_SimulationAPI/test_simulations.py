@@ -35,7 +35,7 @@ class TestSimulation(object):
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
 
-        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
 
         # list of light profiles (for lens and source)
@@ -72,7 +72,7 @@ class TestSimulation(object):
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
 
-        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
 
         # list of light profiles (for lens and source)
@@ -106,7 +106,7 @@ class TestSimulation(object):
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
 
-        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
 
         # list of light profiles (for lens and source)
@@ -155,7 +155,7 @@ class TestSimulation(object):
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
 
-        lens_model_list = ['SPEP', 'EXTERNAL_SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
 
         # list of light profiles (for lens and source)

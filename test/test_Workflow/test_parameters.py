@@ -10,8 +10,7 @@ class TestParam(object):
 
     def setup(self):
         kwargs_options = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'], 'lens_light_model_list': ['DOUBLE_SERSIC'], 'point_source': True
-            , 'subgrid_res': 2, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'X2_compare': 'standard', 'X2_type': 'catalogue', 'deltaPix': 0.1
-            , 'external_shear': False}
+            , 'subgrid_res': 2, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'X2_compare': 'standard', 'X2_type': 'catalogue'}
         kwargs_fixed_lens = [{'gamma': 1.9}] #for SPEP lens
         kwargs_fixed_source = [{'amp': 1, 'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y':0.2}]
         kwargs_fixed_else = {'point_amp': 1, 'ra_pos': [-1, 1], 'dec_pos': [-1, 1], 'shapelet_beta': 1}

@@ -23,7 +23,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if not 'e1' in kwargs_fixed:
                     kwargs['e1'] = args[i]
                     i += 1
@@ -256,7 +256,7 @@ class LensParam(object):
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list):
+    def setParams(self, kwargs_list, bounds=None):
         """
 
         :param kwargs:
@@ -266,7 +266,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if not 'e1' in kwargs_fixed:
                     args.append(kwargs['e1'])
                 if not 'e2' in kwargs_fixed:
@@ -300,7 +300,7 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
                     args.append(e1)
                     args.append(e2)
 
@@ -344,12 +344,12 @@ class LensParam(object):
                 if not 'n_2' in kwargs_fixed:
                     args.append(kwargs['n_2'])
                 if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_2'], kwargs['q_2'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
                     args.append(e1)
                     args.append(e2)
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_s'], kwargs['q_s'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_s'], kwargs['q_s'], bounds)
                     args.append(e1)
                     args.append(e2)
                 if not 'mass_light' in kwargs_fixed:
@@ -387,7 +387,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if 'e1' in kwargs_fixed:
                     fix_return['e1'] = kwargs_fixed['e1']
                 if 'e2' in kwargs_fixed:
@@ -508,7 +508,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if not 'e1' in kwargs_fixed:
                     mean.append(kwargs_mean['e1'])
                     sigma.append(kwargs_mean['shear_sigma'])
@@ -677,7 +677,7 @@ class LensParam(object):
         high = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if not 'e1' in kwargs_fixed:
                     low.append(-0.5)
                     high.append(0.5)
@@ -833,7 +833,7 @@ class LensParam(object):
         list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'EXTERNAL_SHEAR':
+            if model == 'SHEAR':
                 if not 'e1' in kwargs_fixed:
                     num += 1
                     list.append('e1')

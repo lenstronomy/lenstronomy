@@ -13,17 +13,23 @@ class MCMC_chain(object):
     """
     this class contains the routines to run a MCMC process with one single image
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=None):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, kwargs_lower, kwargs_upper, compute_bool=None):
         """
         initializes all the classes needed for the chain
         """
         # print('initialized on cpu', threading.current_thread())
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = kwargs_fixed
         self._source_marg = kwargs_options.get('source_marg', False) # whether to fully invert the covariance matrix for marginalization
         self._sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf, compute_bool=compute_bool)
         self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
-        self.lowerLimit, self.upperLimit = self.param.param_bounds()
+        #self.lowerLimit, self.upperLimit = self.param.param_bounds()
+        kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower = kwargs_lower
+        kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_else_upper = kwargs_upper
+        self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower, bounds='lower')
+        self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
+                                           kwargs_else_upper, bounds='upper')
         self.timeDelay = TimeDelaySampling()
         self.time_delay = kwargs_options.get('time_delay', False)
         if self.time_delay is True:
@@ -57,7 +63,7 @@ class MCMC_chain(object):
         logL = self.makeImageMultiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=self._source_marg)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_source, kwargs_else, self._position_sigma)
-        logL -= self.check_bounds(args, self.lowerLimit, self.upperLimit)
+        logL -= self.check_bounds(args, self.lower_limit, self.upper_limit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
             logL += self.logL_delay(kwargs_lens, kwargs_else)
@@ -81,7 +87,7 @@ class MCMC_chain(object):
         x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
         #compute X^2
         X2 = util.compare_distance(x_mapped, y_mapped) * 1000
-        X2 += self.check_bounds(args, self.lowerLimit, self.upperLimit)
+        X2 += self.check_bounds(args, self.lower_limit, self.upper_limit)
         if self.priors_bool:
             X2 -= self.priors(kwargs_lens, self.kwargs_priors)
         return -X2, None
@@ -98,7 +104,7 @@ class MCMC_chain(object):
                                                                        kwargs_lens, kwargs_else)
             dist = np.sqrt((source_x - source_x[0])**2 + (source_y - source_y[0])**2)
             if np.max(dist) > tolerance:
-                return 10**5
+                return np.sum(dist) * 10**10
         return 0
 
     def check_additional_images(self, kwargs_else):

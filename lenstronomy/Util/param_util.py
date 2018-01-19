@@ -70,7 +70,7 @@ def phi_q2_elliptisity(phi, q):
     return e1, e2
 
 
-def elliptisity2phi_q(e1,e2):
+def elliptisity2phi_q(e1, e2):
     """
     :param e1:
     :param e2:
@@ -80,3 +80,23 @@ def elliptisity2phi_q(e1,e2):
     c = np.sqrt(e1**2+e2**2)
     q = (1-c)/(1+c)
     return phi, q
+
+
+def phi_q2_elliptisity_bounds(phi, q, bounds=None):
+    """
+
+    :param phi:
+    :param q:
+    :param bounds:
+    :return:
+    """
+    e1, e2 = phi_q2_elliptisity(phi, q)
+    if bounds in ['lower', 'upper']:
+        e = max(abs(e1), abs(e2))
+        if bounds == 'lower':
+            e1, e2 = -e, -e
+        elif bounds == 'upper':
+            e1, e2 = e, e
+        else:
+            raise ValueError("bounds %s keyword not valid" %bounds)
+    return e1, e2

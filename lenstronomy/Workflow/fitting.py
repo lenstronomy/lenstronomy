@@ -12,17 +12,20 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_lens_fixed=[], kwargs_source_fixed=[], kwargs_lens_light_fixed=[], kwargs_else_fixed={}):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_fixed, kwargs_lower, kwargs_upper):
         """
 
         :return:
         """
+        kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_else_fixed = kwargs_fixed
         self.kwargs_data = kwargs_data
         self.kwargs_psf = kwargs_psf
         self.kwargs_lens_fixed = kwargs_lens_fixed # always fixed parameters
         self.kwargs_source_fixed = kwargs_source_fixed  # always fixed parameters
         self.kwargs_lens_light_fixed = kwargs_lens_light_fixed  # always fixed parameters
         self.kwargs_else_fixed = kwargs_else_fixed  # always fixed parameters
+        self.kwargs_lower = kwargs_lower
+        self.kwargs_upper = kwargs_upper
 
     def _run_pso(self, n_particles, n_iterations, kwargs_options, kwargs_data, kwargs_psf,
                  kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,
@@ -61,8 +64,8 @@ class Fitting(object):
         init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source,
                                          kwargs_mean_lens_light, kwargs_mean_else)
         # run PSO
-        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                                kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=compute_bool)
+        kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
+        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
         lens_result, source_result, lens_light_result, else_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -130,8 +133,8 @@ class Fitting(object):
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
-        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                                kwargs_fixed_lens_light, kwargs_fixed_else, compute_bool=compute_bool)
+        kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
+        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_else)
         num_param, param_list = param_class.num_param()
@@ -252,7 +255,7 @@ class Fitting(object):
                                 raise ValueError("solver_type %s not valid for lens model %s" % (kwargs_options['solver_type'], lens_model))
                         elif lens_model == "SHAPELETS_CART":
                             kwargs_fixed_lens = {}
-                        elif lens_model == 'EXTERNAL_SHEAR':
+                        elif lens_model == 'SHEAR':
                             kwargs_fixed_lens = {'e1': kwargs_lens['e1'], 'e2': kwargs_lens['e2']}
                         else:
                             raise ValueError("%s is not a valid option for solver_type in combination with lens model %s" % (kwargs_options['solver_type'], lens_model))

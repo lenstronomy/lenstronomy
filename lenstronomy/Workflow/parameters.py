@@ -75,16 +75,16 @@ class Param(object):
         kwargs_else, i = self.elseParams.getParams(args, i)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
+    def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, bounds=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
         :param kwargs_source: keyword arguments depending on model options
         :return: tuple of parameters
         """
-        args = self.lensParams.setParams(kwargs_lens)
-        args += self.souceParams.setParams(kwargs_source)
-        args += self.lensLightParams.setParams(kwargs_lens_light)
+        args = self.lensParams.setParams(kwargs_lens, bounds=bounds)
+        args += self.souceParams.setParams(kwargs_source, bounds=bounds)
+        args += self.lensLightParams.setParams(kwargs_lens_light, bounds=bounds)
         args += self.elseParams.setParams(kwargs_else)
         return args
 

@@ -9,7 +9,7 @@ class TestParam(object):
 
     def setup(self):
         #TODO test 'MULTI_GAUSSIAN and 'DIPOLE'
-        self.lens_model_list = ['SPEP', 'EXTERNAL_SHEAR', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
+        self.lens_model_list = ['SPEP', 'SHEAR', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
                                 'NFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
                                 'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART'

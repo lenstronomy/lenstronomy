@@ -15,7 +15,7 @@ class TestLensProp(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_data = {}
-        kwargs_options = {'lens_model_list': ['SPEP', 'EXTERNAL_SHEAR', 'SIS', 'SIS', 'SIS'],
+        kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
                          'foreground_shear': False, 'lens_model_internal_bool': [True, False, False, False, False],
                           'lens_light_model_internal_bool': [True], 'lens_light_model_list': ['DOUBLE_SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)

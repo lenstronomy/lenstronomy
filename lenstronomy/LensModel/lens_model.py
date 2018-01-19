@@ -19,15 +19,12 @@ class LensModel(object):
         from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
         self.shear = ExternalShear()
         for lens_type in lens_model_list:
-            if lens_type == 'EXTERNAL_SHEAR':
+            if lens_type == 'SHEAR':
                 from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
             elif lens_type == 'FLEXION':
                 from lenstronomy.LensModel.Profiles.flexion import Flexion
                 self.func_list.append(Flexion())
-            elif lens_type == 'GAUSSIAN':
-                from lenstronomy.LensModel.Profiles.gaussian import Gaussian
-                self.func_list.append(Gaussian())
             elif lens_type == 'SIS':
                 from lenstronomy.LensModel.Profiles.sis import SIS
                 self.func_list.append(SIS())

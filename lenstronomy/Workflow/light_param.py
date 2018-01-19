@@ -217,10 +217,11 @@ class LightParam(object):
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list):
+    def setParams(self, kwargs_list, bounds=None):
         """
 
-        :param kwargs:
+        :param kwargs_list:
+        :param bounds: bool, if True, ellitpicity of min/max
         :return:
         """
         args = []
@@ -253,7 +254,7 @@ class LightParam(object):
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G'], kwargs['q'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
                     args.append(e1)
                     args.append(e2)
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
@@ -264,7 +265,7 @@ class LightParam(object):
                 if not 'n_2' in kwargs_fixed:
                     args.append(kwargs['n_2'])
                 if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_2'], kwargs['q_2'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
                     args.append(e1)
                     args.append(e2)
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
@@ -278,7 +279,7 @@ class LightParam(object):
                 if not 'R_b' in kwargs_fixed:
                     args.append(kwargs['R_b'])
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_b'], kwargs['q_b'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_b'], kwargs['q_b'], bounds)
                     args.append(e1)
                     args.append(e2)
                 if not 'I0_d' in kwargs_fixed:
@@ -286,7 +287,7 @@ class LightParam(object):
                 if not 'R_d' in kwargs_fixed:
                     args.append(kwargs['R_b'])
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity(kwargs['phi_G_d'], kwargs['q_d'])
+                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_d'], kwargs['q_d'], bounds)
                     args.append(e1)
                     args.append(e2)
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:

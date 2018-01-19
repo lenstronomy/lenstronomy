@@ -6,7 +6,7 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherite the Fitting class
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper):
         self.kwargs_data = kwargs_data
         self.kwargs_psf = kwargs_psf
         self.kwargs_options = kwargs_options
@@ -14,10 +14,7 @@ class FittingSequence(object):
         self._lens_sigma, self._source_sigma, self._lens_light_sigma, self._else_sigma = kwargs_sigma
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
 
-        self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_lens_fixed=self._lens_fixed,
-                          kwargs_source_fixed=self._source_fixed, kwargs_lens_light_fixed=self._lens_light_fixed,
-                          kwargs_else_fixed=self._else_fixed)
-
+        self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_fixed=kwargs_fixed, kwargs_lower=kwargs_lower, kwargs_upper=kwargs_upper)
         self.psf_iter = PSF_iterative()
 
     def fit_sequence(self, fitting_kwargs_list):

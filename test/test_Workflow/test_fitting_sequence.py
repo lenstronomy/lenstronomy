@@ -63,7 +63,7 @@ class TestFittingSequence(object):
         lens_light_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
         kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, {}]
         kwargs_fixed = [[{}], [{}], [{}], {}]
-        fittingSequence = FittingSequence(self.kwargs_data, self.kwargs_psf, self.kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed)
+        fittingSequence = FittingSequence(self.kwargs_data, self.kwargs_psf, self.kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower=kwargs_init, kwargs_upper=kwargs_init)
         n_p = 2
         n_i = 2
         fitting_kwargs_list = [

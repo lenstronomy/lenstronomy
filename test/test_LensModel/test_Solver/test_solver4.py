@@ -1,9 +1,11 @@
 __author__ = 'sibirrer'
 
+import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.Solver.solver4point import Solver4Point
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 class TestSolver4Point(object):
@@ -46,12 +48,17 @@ class TestSolver4Point(object):
         npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens_new_2[0]['center_y'], decimal=3)
 
         npt.assert_almost_equal(kwargs_lens_new[0]['theta_E'], 1., decimal=3)
-
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        x_source_new, y_source_new = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
+        dist = np.sqrt((x_source_new - x_source_new[0]) ** 2 + (y_source_new - y_source_new[0]) ** 2)
+        print(dist)
+        assert np.max(dist) < 0.000001
 
     def test_solver_spep(self):
         lens_model_list = ['SPEP']
         solver = Solver4Point(lens_model_list=lens_model_list)
         lensEquationSolver = LensEquationSolver(lens_model_list)
+
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         deltapix = 0.05
@@ -67,6 +74,11 @@ class TestSolver4Point(object):
         npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens[0]['center_y'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['theta_E'], 1., decimal=3)
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        x_source_new, y_source_new = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
+        dist = np.sqrt((x_source_new - x_source_new[0]) ** 2 + (y_source_new - y_source_new[0]) ** 2)
+        print(dist)
+        assert np.max(dist) < 0.000001
 
     def test_solver_nfw(self):
         lens_model_list = ['NFW_ELLIPSE', 'SIS']

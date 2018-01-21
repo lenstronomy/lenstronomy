@@ -203,7 +203,7 @@ class TestGalkin(object):
 
         # Hernquist fit to Sersic profile
         lens_analysis = LensAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': ['NONE']}, {})
-        r_eff = lens_analysis.half_light_radius(kwargs_light)
+        r_eff = lens_analysis.half_light_radius_lens(kwargs_light)
         print(r_eff)
         light_profile_list_hernquist = ['HERNQUIST']
         kwargs_light_hernquist = [{'Rs': r_eff*0.551, 'sigma0': 1.}]

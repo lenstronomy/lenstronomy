@@ -2,6 +2,7 @@ import numpy as np
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.util as util
 import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.param_util as param_util
 
 
 class LensModelExtensions(LensModel):
@@ -136,3 +137,17 @@ class LensModelExtensions(LensModel):
         slope = np.log(alpha_E_dr_x / alpha_E_x) / np.log((theta_E + dr) / theta_E)
         gamma = -slope + 2
         return gamma
+
+    def external_shear(self, kwargs_lens_list):
+        """
+
+        :param kwargs_lens_list:
+        :return:
+        """
+        for i, model in enumerate(self._model_list):
+            if model == 'SHEAR':
+                e1 = kwargs_lens_list[i]['e1']
+                e2 = kwargs_lens_list[i]['e2']
+                phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)
+                return phi, gamma
+        return 0, 0

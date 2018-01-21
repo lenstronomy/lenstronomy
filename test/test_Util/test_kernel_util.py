@@ -51,6 +51,26 @@ def test_cutout_source():
     npt.assert_almost_equal(kernel_new[2, 2], kernel[2, 2], decimal=2)
 
 
+def test_cutout_source_border():
+    kernel_size = 7
+    image = np.zeros((10, 10))
+    kernel = np.zeros((kernel_size, kernel_size))
+    kernel[2, 2] = 1
+    shift_x = +0.1
+    shift_y = 0
+    x_c, y_c = 2, 5
+    x_pos = x_c + shift_x
+    y_pos = y_c + shift_y
+    #kernel_shifted = interp.shift(kernel, [shift_y, shift_x], order=1)
+    image = image_util.add_layer2image(image, x_pos, y_pos, kernel, order=1)
+    kernel_new = kernel_util.cutout_source(x_pos=x_pos, y_pos=y_pos, image=image, kernelsize=kernel_size)
+    nx_new, ny_new = np.shape(kernel_new)
+    print(kernel_new)
+    assert nx_new == kernel_size
+    assert ny_new == kernel_size
+    npt.assert_almost_equal(kernel_new[2, 2], kernel[2, 2], decimal=2)
+
+
 def test_cut_psf():
     image = np.ones((7, 7))
     psf_cut = kernel_util.cut_psf(image, 5)
@@ -71,6 +91,18 @@ def test_de_shift():
 
     kernel_size = 5
     kernel = np.zeros((kernel_size, kernel_size))
+    kernel[2, 2] = 2
+    shift_x = 1.48
+    shift_y = 0.2
+    kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=1)
+    kernel_de_shifted = kernel_util.de_shift_kernel(kernel_shifted, shift_x, shift_y, iterations=50)
+    delta_max = np.max(kernel - kernel_de_shifted)
+    assert delta_max < 0.01
+    npt.assert_almost_equal(kernel_de_shifted[2, 2], kernel[2, 2], decimal=2)
+
+    kernel_size_x = 5
+    kernel_size_y = 4
+    kernel = np.zeros((kernel_size_x, kernel_size_y))
     kernel[2, 2] = 2
     shift_x = 1.48
     shift_y = 0.2

@@ -16,8 +16,8 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
     :param shift_y:
     :return:
     """
-    n = len(kernel)
-    kernel_new = np.zeros((n+2, n+2)) + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.
+    nx, ny = np.shape(kernel)
+    kernel_new = np.zeros((nx+2, ny+2)) + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.
     kernel_new[1:-1, 1:-1] = kernel
     int_shift_x = int(round(shift_x))
     frac_x_shift = shift_x - int_shift_x
@@ -53,14 +53,19 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
     :param subgrid_res: subgrid resolution required
     :return: kernel with higher resolution (larger)
         """
-    numPix = len(kernel)
-    x_in = np.linspace(0, 1, numPix)
-    numPix_new = numPix * subgrid_res
+    nx, ny = np.shape(kernel)
+    x_in = np.linspace(0, 1, nx)
+    y_in = np.linspace(0, 1, ny)
+    nx_new = nx * subgrid_res
+    ny_new = ny * subgrid_res
     if odd is True:
-        if numPix_new % 2 == 0:
-            numPix_new -= 1
-    x_out = np.linspace(0, 1, numPix_new)
-    out_values = image_util.re_size_array(x_in, x_in, kernel, x_out, x_out)
+        if nx_new % 2 == 0:
+            nx_new -= 1
+        if ny_new % 2 == 0:
+            ny_new -= 1
+    x_out = np.linspace(0, 1, nx_new)
+    y_out = np.linspace(0, 1, ny_new)
+    out_values = image_util.re_size_array(x_in, y_in, kernel, x_out, y_out)
     kernel_subgrid = out_values
     kernel_subgrid = kernel_norm(kernel_subgrid)
     return kernel_subgrid
@@ -125,7 +130,7 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     :param kernelsize:
     :return:
     """
-    if kernelsize%2 == 0:
+    if kernelsize % 2 == 0:
         raise ValueError("even pixel number kernel size not supported!")
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
@@ -139,9 +144,20 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
     if shift is True:
-        kernel_final = de_shift_kernel(image_cut, shift_x, shift_y)
+        kernel_shift = de_shift_kernel(image_cut, shift_x, shift_y)
     else:
-        kernel_final = image_cut
+        kernel_shift = image_cut
+    kernel_final = np.zeros((kernelsize, kernelsize))
+
+    k_l2_x = int((kernelsize - 1) / 2)
+    k_l2_y = int((kernelsize - 1) / 2)
+
+    xk_min = np.maximum(0, -x_int + k_l2_x)
+    yk_min = np.maximum(0, -y_int + k_l2_y)
+    xk_max = np.minimum(kernelsize, -x_int + k_l2_x + n)
+    yk_max = np.minimum(kernelsize, -y_int + k_l2_y + n)
+
+    kernel_final[yk_min:yk_max, xk_min:xk_max] = kernel_shift
     return kernel_final
 
 

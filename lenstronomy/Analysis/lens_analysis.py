@@ -23,7 +23,7 @@ class LensAnalysis(object):
         self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
         self.gaussian = Gaussian()
 
-    def half_light_radius(self, kwargs_lens_light, deltaPix=None, numPix=None):
+    def half_light_radius_lens(self, kwargs_lens_light, deltaPix=None, numPix=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
 
@@ -37,6 +37,22 @@ class LensAnalysis(object):
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         lens_light = self._lens_light_internal(x_grid, y_grid, kwargs_lens_light)
         R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid)
+        return R_h
+
+    def half_light_radius_source(self, kwargs_source, deltaPix=None, numPix=None):
+        """
+        computes numerically the half-light-radius of the deflector light and the total photon flux
+
+        :param kwargs_lens_light:
+        :return:
+        """
+        if numPix is None:
+            numPix = 1000
+        if deltaPix is None:
+            deltaPix = 0.005
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        source_light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_source)
+        R_h = analysis_util.half_light_radius(source_light, x_grid, y_grid, center_x=kwargs_source[0]['center_x'], center_y=kwargs_source[0]['center_y'])
         return R_h
 
     def _lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
@@ -66,7 +82,7 @@ class LensAnalysis(object):
         :param n_comp:
         :return:
         """
-        r_h = self.half_light_radius(kwargs_lens_light)
+        r_h = self.half_light_radius_lens(kwargs_lens_light)
         r_array = np.logspace(-2, 1, 50) * r_h
         flux_r = self._lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)

@@ -48,7 +48,7 @@ class LensProp(object):
         gamma = kwargs_lens['gamma']
         # equation (14) in Suyu+ 2010
         if r_eff is None:
-            r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
+            r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
         rho0_r0_gamma = self._rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         r_ani = r_ani_scaling * r_eff
         sigma2_center = self.dispersion.sigma_r2(r, 0.551*r_eff, gamma, rho0_r0_gamma, r_ani)
@@ -57,7 +57,7 @@ class LensProp(object):
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_else, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
-            r_eff = self.lens_analysis.half_light_radius(kwargs_lens_light)
+            r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
         #theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else, k=0)
         theta_E = kwargs_lens[0]['theta_E']
         #rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)

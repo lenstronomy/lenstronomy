@@ -20,7 +20,7 @@ class TestLensAnalysis(object):
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options, {})
         r_eff_true = 0.282786143932
-        r_eff = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.05)
+        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=1000, deltaPix=0.05)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
 
@@ -30,7 +30,7 @@ class TestLensAnalysis(object):
         kwargs_options = {'lens_model_list': ['NONE'], 'lens_light_model_list': ['HERNQUIST']}
         lensAnalysis = LensAnalysis(kwargs_options, {})
         r_eff_true = Rs / 0.551
-        r_eff = lensAnalysis.half_light_radius(kwargs_profile, numPix=2000, deltaPix=0.05)
+        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=2000, deltaPix=0.05)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
 

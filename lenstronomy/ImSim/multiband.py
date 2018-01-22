@@ -8,7 +8,7 @@ class MakeImageMultiband(object):
     joint non-linear parameters and decoupled linear parameters.
     """
 
-    def __init__(self, kwargs_options, kwargs_data_list=[], kwargs_psf_list=[], compute_bool=None):
+    def __init__(self, kwargs_options, kwargs_data_list, kwargs_psf_list, compute_bool=None):
         self._num_bands = len(kwargs_data_list)
         if self._num_bands != len(kwargs_psf_list):
             raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))

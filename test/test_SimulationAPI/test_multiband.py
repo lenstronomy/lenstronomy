@@ -93,8 +93,8 @@ class TestMultiband(object):
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }
         source_colour = [1., 0.01]
-        lens_colour = [ 0.1, 1]
-        quasar_colour = [ 1, 1]
+        lens_colour = [0.1, 1]
+        quasar_colour = [1, 1]
         self.image_list = self.MB.simulate_bands(kwargs_options, kwargs_lens_list, kwargs_source_list, kwargs_lens_light_list,
                                        kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False,
                                        source_add=True, lens_light_add=True, point_source_add=True)

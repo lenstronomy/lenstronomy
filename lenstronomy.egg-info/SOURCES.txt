@@ -6,6 +6,7 @@ MANIFEST.in
 Makefile
 README.rst
 requirements.txt
+setup.cfg
 setup.py
 docs/.coverage
 docs/Makefile

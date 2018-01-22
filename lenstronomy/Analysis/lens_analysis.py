@@ -185,3 +185,25 @@ class LensAnalysis(object):
                 shear1 += 1./2 * (f_xx - f_yy)
                 shear2 += f_xy
         return alpha0_x, alpha0_y, kappa_ext, shear1, shear2
+
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+        """
+        variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+        of the basis set.
+
+        :param kwargs_source: keyword arguments of source model
+        :param x_grid: x-axis of positions to compute error map
+        :param y_grid: y-axis of positions to compute error map
+        :param cov_param: covariance matrix of liner inversion parameters
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
+        """
+
+        error_map = np.zeros_like(x_grid)
+        basis_functions, n_source = self.SourceModel.lightModel.functions_split(x_grid, y_grid, kwargs_source)
+        basis_functions = np.array(basis_functions)
+
+        if cov_param is not None:
+            for i in range(len(error_map)):
+                error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
+        return error_map

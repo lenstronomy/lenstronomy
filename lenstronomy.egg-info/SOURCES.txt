@@ -73,9 +73,9 @@ lenstronomy/GalKin/velocity_util.py
 lenstronomy/ImSim/__init__.py
 lenstronomy/ImSim/de_lens.py
 lenstronomy/ImSim/image_model.py
-lenstronomy/ImSim/iterative_psf.py
 lenstronomy/ImSim/multiband.py
 lenstronomy/ImSim/point_source.py
+lenstronomy/ImSim/psf_fitting.py
 lenstronomy/LensModel/__init__.py
 lenstronomy/LensModel/lens_model.py
 lenstronomy/LensModel/lens_model_extensions.py
@@ -177,7 +177,9 @@ test/test_GalKin/test_multi_gauss_expansion.py
 test/test_ImSim/__init__.py
 test/test_ImSim/test_de_lens.py
 test/test_ImSim/test_image_model.py
+test/test_ImSim/test_multiband.py
 test/test_ImSim/test_point_source.py
+test/test_ImSim/test_psf_fitting.py
 test/test_LensModel/__init__.py
 test/test_LensModel/test_convergence_integrals.py
 test/test_LensModel/test_lens_model.py

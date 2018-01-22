@@ -168,7 +168,6 @@ class LensModelExtensions(LensModel):
             if not lens_model_internal_bool[i]:
                 f_x, f_y = self.alpha(0, 0, kwargs_lens, kwargs_else, k=i)
                 f_xx, f_xy, f_yy = self.hessian(0, 0, kwargs_lens, kwargs_else, k=i)
-                print(f_xx, f_yy, f_xy, 'test')
                 alpha0_x += f_x
                 alpha0_y += f_y
                 kappa_ext += (f_xx + f_yy)/2.

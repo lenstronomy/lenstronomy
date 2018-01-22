@@ -6,6 +6,7 @@ import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sis import SIS
 from lenstronomy.LensModel.Profiles.interpol import Interpol_func
 
+
 class TestInterpol(object):
 
     def test_do_interpol(self):

@@ -164,28 +164,6 @@ class LensAnalysis(object):
         light_buldge = np.sum(light_grid)
         return light_tot, light_buldge
 
-    def external_lensing_effect(self, kwargs_lens, kwargs_else):
-        """
-        computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
-
-        :param kwargs_lens:
-        :return:
-        """
-        alpha0_x, alpha0_y = 0, 0
-        kappa_ext = 0
-        shear1, shear2 = 0, 0
-        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
-        for i, kwargs in enumerate(kwargs_lens):
-            if not lens_model_internal_bool[i]:
-                f_x, f_y = self.LensModel.alpha(0, 0, kwargs_lens, kwargs_else, k=i)
-                f_xx, f_yy, f_xy = self.LensModel.hessian(0, 0, kwargs_lens, kwargs_else, k=i)
-                alpha0_x += f_x
-                alpha0_y += f_y
-                kappa_ext += (f_xx + f_yy)/2.
-                shear1 += 1./2 * (f_xx - f_yy)
-                shear2 += f_xy
-        return alpha0_x, alpha0_y, kappa_ext, shear1, shear2
-
     def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
         """
         variance of the linear source reconstruction in the source plane coordinates,

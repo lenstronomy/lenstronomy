@@ -151,3 +151,27 @@ class LensModelExtensions(LensModel):
                 phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)
                 return phi, gamma
         return 0, 0
+
+    def external_lensing_effect(self, kwargs_lens, kwargs_else, lens_model_internal_bool=None):
+        """
+        computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
+
+        :param kwargs_lens:
+        :return:
+        """
+        alpha0_x, alpha0_y = 0, 0
+        kappa_ext = 0
+        shear1, shear2 = 0, 0
+        if lens_model_internal_bool is None:
+            lens_model_internal_bool = [True] * len(kwargs_lens)
+        for i, kwargs in enumerate(kwargs_lens):
+            if not lens_model_internal_bool[i]:
+                f_x, f_y = self.alpha(0, 0, kwargs_lens, kwargs_else, k=i)
+                f_xx, f_xy, f_yy = self.hessian(0, 0, kwargs_lens, kwargs_else, k=i)
+                print(f_xx, f_yy, f_xy, 'test')
+                alpha0_x += f_x
+                alpha0_y += f_y
+                kappa_ext += (f_xx + f_yy)/2.
+                shear1 += 1./2 * (f_xx - f_yy)
+                shear2 += f_xy
+        return alpha0_x, alpha0_y, kappa_ext, shear1, shear2

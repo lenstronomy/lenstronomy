@@ -87,6 +87,18 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(phi, 0.049834326245581012, decimal=8)
         npt.assert_almost_equal(gamma, 0.10049875621120891, decimal=8)
 
+    def test_external_lensing_effect(self):
+        lens_model_list = ['SHEAR']
+        kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
+        lensModel = LensModelExtensions(lens_model_list)
+        alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.external_lensing_effect(kwargs_lens, kwargs_else=None, lens_model_internal_bool=[False])
+        print(alpha0_x, alpha0_y, kappa_ext, shear1, shear2)
+        assert alpha0_x == 0
+        assert alpha0_y == 0
+        assert shear1 == 0.1
+        assert shear2 == 0.01
+        assert kappa_ext == 0
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

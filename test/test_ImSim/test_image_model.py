@@ -114,6 +114,12 @@ class TestImageModel(object):
                                                            self.kwargs_else, source_marg=True)
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
 
+    def test_reduced_residuals(self):
+        model = self.SimAPI.im_sim(self.kwargs_options, self.kwargs_data, self.kwargs_psf, self.kwargs_lens, self.kwargs_source,
+                                  self.kwargs_lens_light, self.kwargs_else, no_noise=True)
+        residuals = self.imageModel.reduced_residuals(model, error_map=0)
+        npt.assert_almost_equal(np.std(residuals), 1.01, decimal=1)
+
     def test_numData_evaluate(self):
         numData = self.imageModel.numData_evaluate
         assert numData == 10000

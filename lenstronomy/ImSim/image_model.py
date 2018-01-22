@@ -159,8 +159,19 @@ class ImageModel(object):
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             #if marg_const + logL > 0:
-            logL -= marg_const
+            #logL = np.log(np.exp(logL) + np.exp(marg_const))
+            logL += marg_const
         return logL
+
+    def reduced_residuals(self, model, error_map=0):
+        """
+
+        :param model:
+        :return:
+        """
+        mask = self.Data.mask
+        residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
+        return residual
 
     @property
     def numData_evaluate(self):

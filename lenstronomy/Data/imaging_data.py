@@ -204,27 +204,6 @@ class Data(object):
         sigma = d_pos/f + sigma_b**2
         return sigma
 
-    def add_noise2image(self, image):
-        """
-        adds Poisson and Gaussian noise to the modeled image
-        :param image:
-        :return:
-        """
-        gaussian = image_util.add_background(image, self._sigma_b)
-        poisson = image_util.add_poisson(image, self._exp_map)
-        image_noisy = image + gaussian + poisson
-        return image_noisy
-
-    def reduced_residuals(self, model, error_map=0):
-        """
-
-        :param model:
-        :return:
-        """
-        mask = self.mask
-        residual = (model - self._data)/np.sqrt(self.C_D+np.abs(error_map))*mask
-        return residual
-
     def log_likelihood(self, model, error_map=0):
         """
         returns reduced residual map

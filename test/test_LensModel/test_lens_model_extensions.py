@@ -79,9 +79,14 @@ class TestLensModelExtensions(object):
         gamma_out = lens_model.profile_slope(kwargs_lens, kwargs_else={})
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
+    def test_external_shear(self):
+        lens_model_list = ['SHEAR']
+        kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
+        lensModel = LensModelExtensions(lens_model_list)
+        phi, gamma = lensModel.external_shear(kwargs_lens)
+        npt.assert_almost_equal(phi, 0.049834326245581012, decimal=8)
+        npt.assert_almost_equal(gamma, 0.10049875621120891, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")
-
-
-

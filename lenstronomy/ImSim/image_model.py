@@ -158,8 +158,8 @@ class ImageModel(object):
         # logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
-            if marg_const + logL > 0:
-                logL -= marg_const
+            #if marg_const + logL > 0:
+            logL -= marg_const
         return logL
 
     @property
@@ -316,24 +316,3 @@ class ImageModel(object):
                 kwargs_else['point_amp'] = param[i:i+n_points]
                 i += n_points
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
-
-    def normalize_flux(self, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor=1):
-        """
-        multiplies the surface brightness amplitudes with a norm_factor
-        aim: mimic different telescopes photon collection area or colours for different imaging bands
-
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_else:
-        :param norm_factor:
-        :return:
-        """
-        kwargs_source = self.SourceModel.lightModel.re_normalize_flux(kwargs_source, norm_factor)
-        kwargs_lens_light = self.LensLightModel.lightModel.re_normalize_flux(kwargs_lens_light, norm_factor)
-        num_images = self._kwargs_options.get('num_images', 0)
-        if num_images > 0 and self._kwargs_options['point_source']:
-            if self._kwargs_options.get('fix_magnification', False):
-                kwargs_else['point_amp'] *= norm_factor
-            else:
-                kwargs_else['point_amp'] *= norm_factor
-        return kwargs_source, kwargs_lens_light, kwargs_else

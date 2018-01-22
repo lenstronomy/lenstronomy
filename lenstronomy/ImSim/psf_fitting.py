@@ -8,7 +8,7 @@ import numpy as np
 import copy
 
 
-class PSF_iterative(object):
+class PSF_fitting(object):
     """
     class to find subsequently a better psf as making use of the point sources in the lens model
     this technique can be dangerous as one might overfit the data

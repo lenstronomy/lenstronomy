@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.iterative_psf import PSF_iterative
+from lenstronomy.ImSim.psf_fitting import PSF_fitting
 from lenstronomy.Workflow.fitting import Fitting
 
 
@@ -15,7 +15,7 @@ class FittingSequence(object):
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
 
         self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_fixed=kwargs_fixed, kwargs_lower=kwargs_lower, kwargs_upper=kwargs_upper)
-        self.psf_iter = PSF_iterative()
+        self.psf_iter = PSF_fitting()
 
     def fit_sequence(self, fitting_kwargs_list):
         """
@@ -82,7 +82,6 @@ class FittingSequence(object):
         sigma_scale = fitting_kwargs.get('sigma_scale', 1)
         n_particles = fitting_kwargs.get('n_particles', 10)
         n_iterations = fitting_kwargs.get('n_iterations', 10)
-        psf_iteration = fitting_kwargs.get('psf_iteration', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True]*len(self.kwargs_data))
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
 

@@ -301,18 +301,6 @@ class Data(object):
         grid_final = self._add_psf(grid_final)
         return grid_final
 
-    def flux_aperture(self, ra_pos, dec_pos, width):
-        """
-        computes the flux within an aperture
-        :param ra_pos: ra position of aperture
-        :param dec_pos: dec position of aperture
-        :param width: width of aperture
-        :return: summed value within the aperture
-        """
-        mask = mask_util.mask_center_2d(ra_pos, dec_pos, width / 2., self._x_grid_all, self._y_grid_all)
-        mask2d = 1. - mask
-        return np.sum(self._data * mask2d)
-
     def psf_fwhm(self, kwargs):
         """
 

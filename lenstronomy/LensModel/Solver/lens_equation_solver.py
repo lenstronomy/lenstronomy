@@ -119,6 +119,8 @@ class LensEquationSolver(object):
         :param kwargs_else:
         :return:
         """
+        if len(x_mins) <= 1:
+            return x_mins, y_mins
         x_source, y_source = self.LensModel.ray_shooting(x_mins, y_mins, kwargs_lens, kwargs_else)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)

@@ -48,7 +48,7 @@ class TestLensCosmo(object):
         assert mass == 761967261292.6725
 
     def test_D_dt_model(self):
-        D_dt = self.lensCosmo.D_dt_model
+        D_dt = self.lensCosmo.D_dt
         assert D_dt == 4965.660384441859
 
 
@@ -69,7 +69,7 @@ class TestFlatLCDM(object):
         assert D_ds == 990.0921481200791
 
     def test_D_dt(self):
-        D_dt = self.cosmo.D_dt_model(H_0=70, Om0=0.3)
+        D_dt = self.cosmo.D_dt(H_0=70, Om0=0.3)
         assert D_dt == 3329.665360925441
 
 

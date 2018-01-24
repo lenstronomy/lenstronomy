@@ -1,13 +1,13 @@
 __author__ = 'sibirrer'
 
-import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.multi_plane import MultiLens
 from lenstronomy.LensModel.lens_model import LensModel
+import lenstronomy.Util.constants as const
 
 
-class TestLensModel(object):
+class TestMultiPlane(object):
     """
     tests the source model routines
     """
@@ -37,6 +37,8 @@ class TestLensModel(object):
         beta_x_multi, beta_y_multi = lensModelMutli.ray_shooting(1, 0, kwargs_lens)
         assert beta_x_simple == beta_x_multi
         assert beta_y_simple == beta_y_multi
+        assert beta_x_simple == 0
+        assert beta_y_simple == 0
 
     def test_sis_hessian(self):
         z_source = 1.5
@@ -70,6 +72,21 @@ class TestLensModel(object):
         mag_simple = lensModel.magnification(0.99, 0, kwargs_lens)
         mag_multi = lensModelMutli.magnification(0.99, 0, kwargs_lens)
         npt.assert_almost_equal(mag_simple, mag_multi, decimal=5)
+
+    def test_sis_travel_time(self):
+        z_source = 1.5
+        z_lens = 0.5
+        lens_model_list = ['SIS']
+        redshift_list = [z_lens]
+        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        grav_delay, geo_delay = lensModelMutli.travel_time(1., 0., kwargs_lens)
+        dt = grav_delay + geo_delay
+        Dt = lensModelMutli._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
+        fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
+        dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
+        npt.assert_almost_equal(dt, dt_simple, decimal=8)
 
 
 if __name__ == '__main__':

@@ -40,6 +40,16 @@ class Background(object):
         D_xy = (self.cosmo.comoving_transverse_distance(z_source) - self.cosmo.comoving_transverse_distance(z_observer))*a_S
         return D_xy.value
 
+    def D_dt(self, z_lens, z_source):
+        """
+        time-delay distance
+
+        :param z_lens: redshift of lens
+        :param z_source: redshift of source
+        :return: time-delay distance in units of Mpc
+        """
+        return self.D_xy(0, z_lens) * self.D_xy(0, z_source) / self.D_xy(z_lens, z_source) * (1 + z_lens)
+
     def T_xy(self, z_observer, z_source):
         """
 

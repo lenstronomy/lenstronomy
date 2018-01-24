@@ -2,11 +2,11 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
-from lenstronomy.MCMC.time_delay_sampling import TimeDelaySampling
 from lenstronomy.ImSim.multiband import MakeImageMultiband
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Workflow.parameters import Param
 import lenstronomy.Util.util as util
+import lenstronomy.Util.constants as const
 
 
 class MCMC_chain(object):
@@ -29,7 +29,6 @@ class MCMC_chain(object):
         self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower, bounds='lower')
         self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
                                            kwargs_else_upper, bounds='upper')
-        self.timeDelay = TimeDelaySampling()
         self.time_delay = kwargs_options.get('time_delay', False)
         if self.time_delay is True:
             self.delays_measured = kwargs_data['time_delays']
@@ -171,9 +170,23 @@ class MCMC_chain(object):
         """
         delay_arcsec = self.makeImageMultiband.fermat_potential(kwargs_lens, kwargs_else)
         D_dt_model = kwargs_else['delay_dist']
-        delay_days = self.timeDelay.days_D_model(delay_arcsec, D_dt_model)
-        logL = self.timeDelay.logL_delays(delay_days, self.delays_measured, self.delays_errors)
+        delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
+        logL = self._logL_delays(delay_days, self.delays_measured, self.delays_errors)
         return logL
+
+    def _logL_delays(self, delays_model, delays_measured, delays_errors):
+        """
+        log likelihoood of modeled delays vs measured time delays under considerations of errors
+
+        :param delays_model: n delays of the model (not relative delays)
+        :param delays_measured: relative delays (1-2,1-3,1-4) relative to the first in the list
+        :param delays_errors: gaussian errors on the measured delays
+        :return: log likelihood of data given model
+        """
+        delta_t_model = np.array(delays_model[1:]) - delays_model[0]
+        logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
+        return logL
+
 
     def effectiv_numData_points(self):
         """

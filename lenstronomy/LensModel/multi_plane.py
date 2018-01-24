@@ -1,6 +1,7 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.lens_model import LensModel
+import lenstronomy.Util.constants as const
 
 
 class MultiLens(object):
@@ -52,9 +53,40 @@ class MultiLens(object):
         beta_x, beta_y = self._co_moving2angle(x, y, self._z_source)
         return beta_x, beta_y
 
+    def travel_time(self, theta_x, theta_y, kwargs_lens):
+        """
+        light travel time relative to a straight path through the coordinate (0,0)
+        Negative sign means earlier arrival time
+
+        :param theta_x: angle in x-direction on the image
+        :param theta_y: angle in y-direction on the image
+        :param kwargs_lens:
+        :return: travel time in unit of days
+        """
+        dt_grav = np.zeros_like(theta_x)
+        dt_geo = np.zeros_like(theta_x)
+        x = np.zeros_like(theta_x)
+        y = np.zeros_like(theta_y)
+        z_before = 0
+        alpha_x = theta_x
+        alpha_y = theta_y
+        for idex in self._sorted_redshift_index:
+            z_lens = self._redshift_list[idex]
+            delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+            dt_geo_new = self._geometrical_delay(alpha_x, alpha_y, delta_T)
+            x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+            dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, idex, z_lens)
+            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, idex, z_lens)
+            dt_geo = dt_geo + dt_geo_new
+            dt_grav = dt_grav + dt_grav_new
+            z_before = z_lens
+        delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
+        dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
+        return dt_grav, dt_geo
+
     def alpha(self, theta_x, theta_y, kwargs_lens):
         """
-        reduced deflection angle computation
+        reduced deflection angle
 
         :param theta_x: angle in x-direction
         :param theta_y: angle in y-direction
@@ -171,6 +203,46 @@ class MultiLens(object):
         """
         factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
         return alpha_reduced * factor
+
+    def _gravitational_delay(self, x, y, kwargs_lens, idex, z_lens):
+        """
+
+        :param x: co-moving coordinate at the lens plane
+        :param y: co-moving coordinate at the lens plane
+        :param kwargs_lens: lens model keyword arguments
+        :param z_lens: redshift of the deflector
+        :param idex: index of the lens model
+        :return: gravitational delay in units of days as seen at z=0
+        """
+        theta_x, theta_y = self._co_moving2angle(x, y, z_lens)
+        potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=idex)
+        delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source)
+        return -delay_days
+
+    def _geometrical_delay(self, alpha_x, alpha_y, delta_T):
+        """
+        geometrical delay (evaluated at z=0) of a light ray with an angle relative to the shortest path
+
+        :param alpha_x: angle relative to a straight path
+        :param alpha_y: angle relative to a straight path
+        :param delta_T: transversal diameter distance between the start and end of the ray
+        :return: geometrical delay in units of days
+        """
+        dt_days = (alpha_x**2 + alpha_y**2) / 2. * delta_T * const.Mpc / const.c / const.day_s * const.arcsec**2
+        return dt_days
+
+    def _lensing_potential2time_delay(self, potential, z_lens, z_source):
+        """
+        transforms the lensing potential (in units arcsec^2) to a gravitational time-delay as measured at z=0
+
+        :param potential: lensing potential
+        :param z_lens: redshift of the deflector
+        :param z_source: redshift of source for the definition of the lensing quantities
+        :return: gravitational time-delay in units of days
+        """
+        D_dt = self._cosmo_bkg.D_dt(z_lens, z_source)
+        delay_days = const.delay_arcsec2days(potential, D_dt)
+        return delay_days
 
     def _co_moving2angle(self, x, y, z_lens):
         """

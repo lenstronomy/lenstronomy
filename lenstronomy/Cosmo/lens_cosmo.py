@@ -49,7 +49,7 @@ class LensCosmo(object):
         return self.background.D_xy(self.z_lens, self.z_source)
 
     @property
-    def D_dt_model(self):
+    def D_dt(self):
         """
 
         :return: time delay distance [Mpc]
@@ -132,11 +132,11 @@ class LensCosmo(object):
     def time_delay_units(self, fermat_pot, kappa_ext=0):
         """
 
-        :param delay_unitless: in units of arcsec^2 (Fermat potential)
-        :param kappa_ext: unit less
+        :param delay_unitless: in units of arcsec^2 (e.g. Fermat potential)
+        :param kappa_ext: unit-less
         :return: time delay in days
         """
-        D_dt = self.D_dt_model/(1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
+        D_dt = self.D_dt / (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
 
 
@@ -187,7 +187,7 @@ class FlatLCDM(object):
         lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
         return lensCosmo.D_ds
 
-    def D_dt_model(self, H_0, Om0):
+    def D_dt(self, H_0, Om0):
         """
         time delay distance
         :param H_0: Hubble parameter [km/s/Mpc]
@@ -196,4 +196,4 @@ class FlatLCDM(object):
         """
         cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
         lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
-        return lensCosmo.D_dt_model
+        return lensCosmo.D_dt

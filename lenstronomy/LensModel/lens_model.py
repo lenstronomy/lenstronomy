@@ -128,6 +128,7 @@ class LensModel(object):
 
     def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens):
         """
+        fermat potential (negative sign means earlier arrival time)
 
         :param x_image: image position
         :param y_image: image position
@@ -138,8 +139,9 @@ class LensModel(object):
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens)
-        geometry = (x_image - x_source)**2 + (y_image - y_source)**2
-        return geometry/2 - potential
+        geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
+        print(geometry/potential)
+        return geometry - potential
 
     def mass(self, x, y, epsilon_crit, kwargs):
         """

@@ -93,16 +93,15 @@ class MakeImageMultiband(object):
             error_map_list.append(error_map)
         return image_list, error_map_list
 
-    def image_positions(self, kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y):
+    def image_positions(self, kwargs_lens, sourcePos_x, sourcePos_y):
         """
         lens equation solver for image positions given lens model and source position
         :param kwargs_lens: keyword arguments of lens models (as list)
-        :param kwargs_else: keyword arguments of other parameters
         :param sourcePos_x: source position in relative arc sec
         :param sourcePos_y: source position in relative arc sec
         :return: x_coords, y_coords of image positions
         """
-        x_mins, y_mins = self._makeImage_list[0].image_positions(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
+        x_mins, y_mins = self._makeImage_list[0].image_positions(kwargs_lens, sourcePos_x, sourcePos_y)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):

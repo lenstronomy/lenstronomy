@@ -98,7 +98,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_image_positions(self):
-        x_im, y_im = self.imageModel.image_positions(self.kwargs_lens, self.kwargs_else, self.kwargs_else['sourcePos_x'], self.kwargs_else['sourcePos_y'])
+        x_im, y_im = self.imageModel.image_positions(self.kwargs_lens, self.kwargs_else['sourcePos_x'], self.kwargs_else['sourcePos_y'])
         npt.assert_almost_equal(x_im[0], self.kwargs_else['ra_pos'][0], decimal=4)
         npt.assert_almost_equal(x_im[1], self.kwargs_else['ra_pos'][1], decimal=4)
         npt.assert_almost_equal(x_im[2], self.kwargs_else['ra_pos'][2], decimal=4)

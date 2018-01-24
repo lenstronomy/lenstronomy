@@ -14,13 +14,12 @@ class LensAnalysis(object):
     """
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
-    def __init__(self, kwargs_options, kwargs_data):
+    def __init__(self, kwargs_options):
         self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
         self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        #self.kwargs_data = kwargs_data
+        self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
         self.kwargs_options = kwargs_options
-        self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'])
         self.gaussian = Gaussian()
 
     def half_light_radius_lens(self, kwargs_lens_light, deltaPix=None, numPix=None):
@@ -88,7 +87,7 @@ class LensAnalysis(object):
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
         return amplitudes, sigmas
 
-    def multi_gaussian_lens(self, kwargs_lens, kwargs_else, n_comp=20):
+    def multi_gaussian_lens(self, kwargs_lens, n_comp=20):
         """
         multi-gaussian lens model in convergence space
 
@@ -102,7 +101,7 @@ class LensAnalysis(object):
             center_y = kwargs_lens_copy[0]['center_y']
         else:
             raise ValueError('no keyword center_x defined!')
-        theta_E = self.LensModel.effective_einstein_radius(kwargs_lens, kwargs_else)
+        theta_E = self.LensModel.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-2, 1, 50) * theta_E
         lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         kappa_s = np.zeros_like(r_array)
@@ -111,7 +110,7 @@ class LensAnalysis(object):
                 if 'center_x' in kwargs_lens_copy[0]:
                     kwargs_lens_copy[i]['center_x'] -= center_x
                     kwargs_lens_copy[i]['center_y'] -= center_y
-                kappa_s += self.LensModel.kappa(r_array, np.zeros_like(r_array), kwargs_lens_copy, kwargs_else, k=i)
+                kappa_s += self.LensModel.kappa(r_array, np.zeros_like(r_array), kwargs_lens_copy, k=i)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 

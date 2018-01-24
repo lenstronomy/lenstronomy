@@ -23,7 +23,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'SHEAR':
+            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if not 'e1' in kwargs_fixed:
                     kwargs['e1'] = args[i]
                     i += 1
@@ -266,7 +266,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'SHEAR':
+            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if not 'e1' in kwargs_fixed:
                     args.append(kwargs['e1'])
                 if not 'e2' in kwargs_fixed:
@@ -387,7 +387,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = kwargs_fixed_list[k]
             fix_return = {}
-            if model == 'SHEAR':
+            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if 'e1' in kwargs_fixed:
                     fix_return['e1'] = kwargs_fixed['e1']
                 if 'e2' in kwargs_fixed:
@@ -508,7 +508,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'SHEAR':
+            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if not 'e1' in kwargs_fixed:
                     mean.append(kwargs_mean['e1'])
                     sigma.append(kwargs_mean['shear_sigma'])
@@ -677,7 +677,7 @@ class LensParam(object):
         list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'SHEAR':
+            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if not 'e1' in kwargs_fixed:
                     num += 1
                     list.append('e1')

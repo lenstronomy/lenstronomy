@@ -36,7 +36,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 16
+        assert num == 14
 
 
 if __name__ == '__main__':

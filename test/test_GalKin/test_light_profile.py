@@ -76,7 +76,7 @@ class TestLightProfile(object):
             'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
-        lensAnalysis = LensAnalysis(kwargs_options, {})
+        lensAnalysis = LensAnalysis(kwargs_options)
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile)
         kwargs_profile[0]['q'] = 1
         kwargs_profile[1]['q'] = 1

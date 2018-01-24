@@ -9,7 +9,6 @@ class ElseParam(object):
     def __init__(self, kwargs_options, kwargs_fixed):
         self.kwargs_fixed = kwargs_fixed
         self._num_images = kwargs_options.get('num_images', 0)
-        self._foreground_shear = kwargs_options.get('foreground_shear', False)
         self._mass2light = kwargs_options.get('mass2light_fixed', False)
         self._time_delay = kwargs_options.get('time_delay', False)
 
@@ -37,14 +36,6 @@ class ElseParam(object):
                 i += self._num_images
             else:
                 kwargs['point_amp'] = self.kwargs_fixed['point_amp']
-        if self._foreground_shear:
-            if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
-                kwargs['gamma1_foreground'] = args[i]
-                kwargs['gamma2_foreground'] = args[i+1]
-                i += 2
-            else:
-                kwargs['gamma1_foreground'] = self.kwargs_fixed['gamma1_foreground']
-                kwargs['gamma2_foreground'] = self.kwargs_fixed['gamma2_foreground']
         if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 kwargs['delay_dist'] = args[i]
@@ -79,10 +70,6 @@ class ElseParam(object):
                 point_amp = kwargs['point_amp']
                 for i in point_amp:
                     args.append(i)
-        if self._foreground_shear:
-            if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
-                args.append(kwargs['gamma1_foreground'])
-                args.append(kwargs['gamma2_foreground'])
         if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 args.append(kwargs['delay_dist'])
@@ -105,11 +92,6 @@ class ElseParam(object):
                 fix_return['dec_pos'] = kwargs_fixed['dec_pos']
             if 'point_amp' in kwargs_fixed:
                 fix_return['point_amp'] = kwargs_fixed['point_amp']
-        if self._foreground_shear:
-            if 'gamma1_foreground' in kwargs_fixed:
-                fix_return['gamma1_foreground'] = kwargs_fixed['gamma1_foreground']
-            if 'gamma2_foreground' in kwargs_fixed:
-                fix_return['gamma2_foreground'] = kwargs_fixed['gamma2_foreground']
 
         if 'delay_dist' in kwargs_fixed:
             fix_return['delay_dist'] = kwargs_fixed['delay_dist']
@@ -147,13 +129,7 @@ class ElseParam(object):
                 for i in point_amp:
                     mean.append(i)
                     sigma.append(point_amp_sigma)
-        if self._foreground_shear:
-            if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
-                mean.append(kwargs_mean['gamma1_foreground'])
-                mean.append(kwargs_mean['gamma2_foreground'])
-                shear_sigma = kwargs_mean['shear_foreground_sigma']
-                sigma.append(shear_sigma)
-                sigma.append(shear_sigma)
+
         if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 mean.append(kwargs_mean['delay_dist'])
@@ -184,11 +160,6 @@ class ElseParam(object):
                 num += self._num_images
                 for i in range(self._num_images):
                     list.append('point_amp')
-        if self._foreground_shear:
-            if not 'gamma1_foreground' in self.kwargs_fixed or not 'gamma2_foreground' in self.kwargs_fixed:
-                num += 2
-                list.append('shear_foreground_1')
-                list.append('shear_foreground_2')
         if self._time_delay is True:
             if not 'delay_dist' in self.kwargs_fixed:
                 num += 1

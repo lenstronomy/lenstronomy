@@ -11,12 +11,12 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lens_model_list=['SPEP'], foreground_shear=False, decoupling=True):
+    def __init__(self, lens_model_list=['SPEP'], decoupling=True):
         self._lens_mode_list = lens_model_list
-        self.lensModel = LensModel(lens_model_list, foreground_shear)
+        self.lensModel = LensModel(lens_model_list)
         self._decoupling = decoupling
 
-    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, kwargs_else=None, xtol=1.49012e-10):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-10):
         """
 
         :param x_pos: list of image positions (x-axis)
@@ -27,27 +27,27 @@ class Solver4Point(object):
         """
         init = self._extract_array(kwargs_list)
         if self._decoupling:
-            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, kwargs_else)
-            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, kwargs_else, k=0)
+            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list)
+            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=0)
             x_sub = alpha_1_x - alpha_0_x
             y_sub = alpha_1_y - alpha_0_y
         else:
             x_sub, y_sub = np.zeros(4), np.zeros(4)
         a = self._subtract_constraint(x_sub, y_sub)
-        x = self.solve(x_pos, y_pos, init, kwargs_list, kwargs_else, a, xtol)
+        x = self.solve(x_pos, y_pos, init, kwargs_list, a, xtol)
         kwargs_list = self._update_kwargs(x, kwargs_list)
         return kwargs_list
 
-    def solve(self, x_pos, y_pos, init, kwargs_list, kwargs_else, a, xtol=1.49012e-10):
-        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, kwargs_else, a), xtol=xtol)#, factor=0.1)
+    def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-10):
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)#, factor=0.1)
         return x
 
-    def _F(self, x, x_pos, y_pos, kwargs_list, kwargs_else, a=0):
+    def _F(self, x, x_pos, y_pos, kwargs_list, a=0):
         kwargs_list = self._update_kwargs(x, kwargs_list)
         if self._decoupling:
-            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, kwargs_else, k=0)
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, k=0)
         else:
-            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, kwargs_else)
+            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list)
         y = np.zeros(6)
         y[0] = beta_x[0] - beta_x[1]
         y[1] = beta_x[0] - beta_x[2]

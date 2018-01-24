@@ -30,7 +30,6 @@ class TestLensProp(object):
                               'center_x': -0.019674496231393473, 'n_2': 1.90000008624093865,
                               'q': 0.79703498156919605, 'I0_sersic': 1.1091367792010356, 'center_y': 0.076914975081560991,
                               'phi_G': -0.52624727893702705, 'R_sersic': 0.42691611878867058}]
-        kwargs_else = {}
         r_ani = 0.62
         kwargs_anisotropy = {'r_ani': r_ani}
         R_slit = 3.8
@@ -40,9 +39,9 @@ class TestLensProp(object):
         psf_fwhm = 0.7
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.211919902322
-        v_sigma = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_else, kwargs_anisotropy, kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, r_eff=r_eff)
+        v_sigma = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, r_eff=r_eff)
 
-        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_else={}, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=10000)
+        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=10000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma/vel_disp_temp, 1, decimal=1)

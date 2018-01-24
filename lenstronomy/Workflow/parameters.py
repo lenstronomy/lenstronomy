@@ -34,10 +34,10 @@ class Param(object):
         self.kwargs_fixed_lens_light = kwargs_fixed_lens_light
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
-        self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        self.ImagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        self._foreground_shear = kwargs_options.get('foreground_shear', False)
-        if self._foreground_shear:
+        self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
+        self.ImagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
+
+        if 'FOREGROUND_SHEAR' in kwargs_options['lens_model_list']:
             decoupling = False
         else:
             decoupling = True
@@ -49,10 +49,10 @@ class Param(object):
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
-                self.solver4points = Solver4Point(lens_model_list=self.kwargs_options['lens_model_list'], decoupling=decoupling, foreground_shear=self._foreground_shear)
+                self.solver4points = Solver4Point(lens_model_list=self.kwargs_options['lens_model_list'], decoupling=decoupling)
             elif self. _num_images == 2:
                 self.solver2points = Solver2Point(lens_model_list=self.kwargs_options['lens_model_list'],
-                                                  decoupling=decoupling, solver_type=self.solver_type, foreground_shear=self._foreground_shear)
+                                                  decoupling=decoupling, solver_type=self.solver_type)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
         else:
@@ -167,7 +167,7 @@ class Param(object):
         :param kwargs_else:
         :return:
         """
-        mag = self.lensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+        mag = self.lensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)
         kwargs_else['point_amp'] = np.abs(mag)
         return kwargs_else
 
@@ -193,7 +193,7 @@ class Param(object):
             sourcePos_y = kwargs_source[0]['center_y']
             min_distance = 0.05
             search_window = 10
-            x_pos, y_pos = self.ImagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
+            x_pos, y_pos = self.ImagePosition.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window)
             kwargs_else['ra_pos'] = x_pos
             kwargs_else['dec_pos'] = y_pos
         else:
@@ -204,19 +204,19 @@ class Param(object):
         if self.kwargs_options.get('solver', False):
             x_, y_ = kwargs_else['ra_pos'], kwargs_else['dec_pos']
             if self._num_images == 4:
-                kwargs_lens_list = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens_list, kwargs_else)
+                kwargs_lens_list = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens_list)
             elif self._num_images == 2:
-                kwargs_lens_list = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens_list, kwargs_else)
+                kwargs_lens_list = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens_list)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
 
         if self.kwargs_options.get('image_plane_source', False):
-            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list)
             for i, kwargs_source in enumerate(kwargs_source_list):
                 kwargs_source_list[i]['center_x'] = x_mapped[i]
                 kwargs_source_list[i]['center_y'] = y_mapped[i]
         if self.kwargs_options.get('solver', False):
-            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list, kwargs_else)
+            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens_list)
             if 'center_x' in kwargs_source_list[0]:
                 kwargs_source_list[0]['center_x'] = np.mean(x_mapped)
                 kwargs_source_list[0]['center_y'] = np.mean(y_mapped)

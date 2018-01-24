@@ -22,9 +22,9 @@ class LensProp(object):
         self.z_d = z_lens
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
-        self.lens_analysis = LensAnalysis(kwargs_options, kwargs_data)
+        self.lens_analysis = LensAnalysis(kwargs_options)
         self.image_model = ImageModel(kwargs_options, kwargs_data)
-        self.lens_model = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.lens_model = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
         self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
@@ -35,12 +35,12 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def _rho0_r0_gamma(self, kwargs_lens, kwargs_else, gamma, kappa_ext=0):
+    def _rho0_r0_gamma(self, kwargs_lens, gamma, kappa_ext=0):
         # equation (14) in Suyu+ 2010
-        theta_E = self.lens_model.effective_einstein_radius(kwargs_lens, kwargs_else)
-        return (kappa_ext - 1) * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / self.lensCosmo.arcsec2phys_lens(theta_E) * self.lensCosmo.cosmoProp.epsilon_crit * const.M_sun / const.Mpc ** 3  # units kg/m^3
+        theta_E = self.lens_model.effective_einstein_radius(kwargs_lens)
+        return (kappa_ext - 1) * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / self.lensCosmo.arcsec2phys_lens(theta_E) * self.lensCosmo.epsilon_crit * const.M_sun / const.Mpc ** 3  # units kg/m^3
 
-    def v_sigma(self, kwargs_lens, kwargs_lens_light, kwargs_else, r_ani_scaling=1, r_eff=None, r=0.01):
+    def v_sigma(self, kwargs_lens, kwargs_lens_light, r_ani_scaling=1, r_eff=None, r=0.01):
         """
         returns LOL central velocity dispersion in units of km/s
         :return:
@@ -49,25 +49,22 @@ class LensProp(object):
         # equation (14) in Suyu+ 2010
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
-        rho0_r0_gamma = self._rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
+        rho0_r0_gamma = self._rho0_r0_gamma(kwargs_lens, gamma)
         r_ani = r_ani_scaling * r_eff
         sigma2_center = self.dispersion.sigma_r2(r, 0.551*r_eff, gamma, rho0_r0_gamma, r_ani)
         return np.sqrt(sigma2_center) * self.lensCosmo.arcsec2phys_lens(1.) * const.Mpc / 1000
 
-    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_else, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
+    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
-        #theta_E = self.lens_analysis.effective_einstein_radius(kwargs_lens, kwargs_else, k=0)
         theta_E = kwargs_lens[0]['theta_E']
-        #rho0_r0_gamma = self.rho0_r0_gamma(kwargs_lens, kwargs_else, gamma)
         if self.dispersion.beta_const is False:
             aniso_param *= r_eff
         sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return sigma2
-        #return np.sqrt(sigma2) * self.unitManager.arcsec2phys_lens(1.) * const.Mpc/1000
 
-    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_else, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
         """
 
@@ -89,7 +86,7 @@ class LensProp(object):
 
         if MGE_mass is True:
             massModel = LensModelExtensions(lens_model_list=mass_profile_list)
-            theta_E = massModel.effective_einstein_radius(kwargs_lens, kwargs_else)
+            theta_E = massModel.effective_einstein_radius(kwargs_lens)
             r_array = np.logspace(-2, 1, 100) * theta_E
             mass_r = massModel.kappa(r_array, 0, kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=10)

@@ -22,7 +22,7 @@ class MCMC_chain(object):
         self._source_marg = kwargs_options.get('source_marg', False) # whether to fully invert the covariance matrix for marginalization
         self._sampling_option = kwargs_options.get('X2_type', 'image')
         self.makeImageMultiband = MakeImageMultiband(kwargs_options, kwargs_data, kwargs_psf, compute_bool=compute_bool)
-        self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
         self.param = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else)
         kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower = kwargs_lower
         kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_else_upper = kwargs_upper
@@ -83,7 +83,7 @@ class MCMC_chain(object):
         #extract parameters
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else = self.param.get_all_params(args)
         #generate image
-        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens, kwargs_else)
+        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)
         #compute X^2
         X2 = util.compare_distance(x_mapped, y_mapped) * 1000
         X2 += self.check_bounds(args, self.lower_limit, self.upper_limit)
@@ -100,7 +100,7 @@ class MCMC_chain(object):
         """
         if 'ra_pos' in kwargs_else:
             source_x, source_y = self.lensModel.ray_shooting(kwargs_else['ra_pos'], kwargs_else['dec_pos'],
-                                                                       kwargs_lens, kwargs_else)
+                                                                       kwargs_lens)
             dist = np.sqrt((source_x - source_x[0])**2 + (source_y - source_y[0])**2)
             if np.max(dist) > tolerance:
                 return np.sum(dist) * 10**10
@@ -131,7 +131,7 @@ class MCMC_chain(object):
         sourcePos_y = kwargs_source[0]['center_y']
         x_image = kwargs_else['ra_pos']
         y_image = kwargs_else['dec_pos']
-        x_lens_model, y_lens_model = self.makeImageMultiband.image_positions(kwargs_lens, kwargs_else, sourcePos_x, sourcePos_y)
+        x_lens_model, y_lens_model = self.makeImageMultiband.image_positions(kwargs_lens, sourcePos_x, sourcePos_y)
         num_image = len(x_lens_model)
         if num_image != len(x_image):
             return -10**15

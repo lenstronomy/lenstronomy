@@ -29,7 +29,7 @@ class TestSolver4Point(object):
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 0.1, 'center_x': 0.5, 'center_y': 0}]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma,'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0}, {'theta_E': 0.1, 'center_x': 0.5, 'center_y': 0}]
         kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         kwargs_lens_new_2 = solver_decoupled.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
@@ -65,7 +65,7 @@ class TestSolver4Point(object):
         numPix = 150
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1}]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma,'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0}]
         kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         npt.assert_almost_equal(kwargs_lens_new[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
@@ -91,7 +91,7 @@ class TestSolver4Point(object):
         Rs = 4.
         kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else=None, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         kwargs_lens_init = [{'theta_Rs': 0.5, 'Rs': Rs,'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
         kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         npt.assert_almost_equal(kwargs_lens_new[0]['theta_Rs'], kwargs_lens[0]['theta_Rs'], decimal=3)

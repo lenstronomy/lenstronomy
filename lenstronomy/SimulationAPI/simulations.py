@@ -123,8 +123,8 @@ class Simulation(object):
         :param kwargs_else:
         :return:
         """
-        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
-        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
+        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
         if kwargs_options.get('point_source', False):
             data = Data(kwargs_data)
             deltaPix = data.deltaPix
@@ -132,7 +132,7 @@ class Simulation(object):
             search_window = len(kwargs_data['image_data'])*deltaPix
             sourcePos_x = kwargs_else['sourcePos_x']
             sourcePos_y = kwargs_else['sourcePos_y']
-            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
+            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window)
             n = len(x_mins)
             mag_list = np.zeros(n)
             for i in range(n):
@@ -195,14 +195,14 @@ class Simulation(object):
         :param no_noise:
         :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
         """
-        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
         if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
             ra_pos = kwargs_else['ra_pos']
             dec_pos = kwargs_else['dec_pos']
         else:
             raise ValueError('No point source positions assigned')
-        ra_source, dec_source = lensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens, kwargs_else)
+        ra_source, dec_source = lensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
-        fermat_pot = lensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens, kwargs_else)
+        fermat_pot = lensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
         return fermat_pot

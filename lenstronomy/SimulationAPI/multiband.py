@@ -103,13 +103,13 @@ class MultiBand(object):
 
     def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
         lensModel = LensModel(kwargs_options.get('lens_model_list', ['NONE']))
-        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'], foreground_shear=kwargs_options.get("foreground_shear", False))
+        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
         if kwargs_options.get('point_source', False):
             min_distance = 0.05
             search_window = 10
             sourcePos_x = kwargs_else['sourcePos_x']
             sourcePos_y = kwargs_else['sourcePos_y']
-            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, kwargs_else, min_distance=min_distance, search_window=search_window)
+            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window)
             n = len(x_mins)
             mag_list = np.zeros(n)
             for i in range(n):

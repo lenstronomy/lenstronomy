@@ -10,14 +10,13 @@ class LensModelExtensions(LensModel):
     class with extension routines not part of the LensModel core routines
     """
 
-    def magnification_finite(self, x_pos, y_pos, kwargs_lens, kwargs_else=None, source_sigma=0.003, window_size=0.1, grid_number=100,
+    def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
                              shape="GAUSSIAN"):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param x_pos: x-axis positons of point sources
         :param y_pos: y-axis position of point sources
         :param kwargs_lens: lens model kwargs
-        :param kwargs_else: kwargs of image positions
         :param source_sigma: Gaussian sigma in arc sec in source
         :param window_size: size of window to compute the finite flux
         :param grid_number: number of grid cells per axis in the window to numerically comute the flux
@@ -36,17 +35,16 @@ class LensModelExtensions(LensModel):
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
         for i in range(len(x_pos)):
             ra, dec = x_pos[i], y_pos[i]
-            center_x, center_y = self.ray_shooting(ra, dec, kwargs_lens, kwargs_else)
-            x_source, y_source = self.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens, kwargs_else)
+            center_x, center_y = self.ray_shooting(ra, dec, kwargs_lens)
+            x_source, y_source = self.ray_shooting(x_grid + ra, y_grid + dec, kwargs_lens)
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2
         return mag_finite
 
-    def critical_curve_caustics(self, kwargs_lens, kwargs_else, compute_window=5, grid_scale=0.01):
+    def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01):
         """
 
         :param kwargs_lens: lens model kwargs
-        :param kwargs_else: other kwargs
         :param compute_window: window size in arcsec where the critical curve is computed
         :param grid_scale: numerical grid spacing of the computation of the critical curves
         :return: lists of ra and dec arrays corresponding to different disconnected critical curves
@@ -55,7 +53,7 @@ class LensModelExtensions(LensModel):
 
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
-        mag_high_res = util.array2image(self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
+        mag_high_res = util.array2image(self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
 
         #import numpy.ma as ma
         #z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.
@@ -84,13 +82,12 @@ class LensModelExtensions(LensModel):
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
 
-            ra_caustics, dec_caustics = self.ray_shooting(ra_points, dec_points, kwargs_lens,
-                                                                         kwargs_else)
+            ra_caustics, dec_caustics = self.ray_shooting(ra_points, dec_points, kwargs_lens)
             ra_caustic_list.append(ra_caustics)
             dec_caustic_list.append(dec_caustics)
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
-    def effective_einstein_radius(self, kwargs_lens_list, kwargs_else, k=None):
+    def effective_einstein_radius(self, kwargs_lens_list, k=None):
         """
         computes the radius with mean convergence=1
 
@@ -104,7 +101,7 @@ class LensModelExtensions(LensModel):
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
-        kappa = self.kappa(x_grid, y_grid, kwargs_lens_list, kwargs_else, k=k)
+        kappa = self.kappa(x_grid, y_grid, kwargs_lens_list, k=k)
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:
@@ -117,8 +114,8 @@ class LensModelExtensions(LensModel):
         print(kwargs_lens_list, "Warning, no Einstein radius computed!")
         return r_array[-1]
 
-    def profile_slope(self, kwargs_lens_list, kwargs_else, lens_model_internal_bool=None):
-        theta_E = self.effective_einstein_radius(kwargs_lens_list, kwargs_else)
+    def profile_slope(self, kwargs_lens_list, lens_model_internal_bool=None):
+        theta_E = self.effective_einstein_radius(kwargs_lens_list)
         x0 = kwargs_lens_list[0]['center_x']
         y0 = kwargs_lens_list[0]['center_y']
         dr = 0.01
@@ -127,8 +124,8 @@ class LensModelExtensions(LensModel):
         alpha_E_x, alpha_E_y, alpha_E_dr_x, alpha_E_dr_y = 0, 0, 0, 0
         for i in range(len(kwargs_lens_list)):
             if lens_model_internal_bool[i]:
-                alpha_E_x_i, alpha_E_y_i = self.alpha(x0 + theta_E, y0, kwargs_lens_list, kwargs_else)
-                alpha_E_dr_x_i, alpha_E_dr_y_i = self.alpha(x0 + theta_E + dr, y0, kwargs_lens_list, kwargs_else)
+                alpha_E_x_i, alpha_E_y_i = self.alpha(x0 + theta_E, y0, kwargs_lens_list)
+                alpha_E_dr_x_i, alpha_E_dr_y_i = self.alpha(x0 + theta_E + dr, y0, kwargs_lens_list)
                 alpha_E_dr_x += alpha_E_dr_x_i
                 alpha_E_dr_y += alpha_E_dr_y_i
                 alpha_E_x += alpha_E_x_i
@@ -151,7 +148,7 @@ class LensModelExtensions(LensModel):
                 return phi, gamma
         return 0, 0
 
-    def external_lensing_effect(self, kwargs_lens, kwargs_else, lens_model_internal_bool=None):
+    def external_lensing_effect(self, kwargs_lens, lens_model_internal_bool=None):
         """
         computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector
 
@@ -165,8 +162,8 @@ class LensModelExtensions(LensModel):
             lens_model_internal_bool = [True] * len(kwargs_lens)
         for i, kwargs in enumerate(kwargs_lens):
             if not lens_model_internal_bool[i]:
-                f_x, f_y = self.alpha(0, 0, kwargs_lens, kwargs_else, k=i)
-                f_xx, f_xy, f_yy = self.hessian(0, 0, kwargs_lens, kwargs_else, k=i)
+                f_x, f_y = self.alpha(0, 0, kwargs_lens, k=i)
+                f_xx, f_xy, f_yy = self.hessian(0, 0, kwargs_lens, k=i)
                 alpha0_x += f_x
                 alpha0_y += f_y
                 kappa_ext += (f_xx + f_yy)/2.

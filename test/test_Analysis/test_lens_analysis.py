@@ -19,7 +19,7 @@ class TestLensAnalysis(object):
             'center_y': 0.9, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
-        lensAnalysis = LensAnalysis(kwargs_options, {})
+        lensAnalysis = LensAnalysis(kwargs_options)
         r_eff_true = 0.282786143932
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=1000, deltaPix=0.05)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
@@ -29,7 +29,7 @@ class TestLensAnalysis(object):
         Rs = 1.
         kwargs_profile = [{'Rs': Rs, 'sigma0': 1.}]
         kwargs_options = {'lens_model_list': ['NONE'], 'lens_light_model_list': ['HERNQUIST']}
-        lensAnalysis = LensAnalysis(kwargs_options, {})
+        lensAnalysis = LensAnalysis(kwargs_options)
         r_eff_true = Rs / 0.551
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=2000, deltaPix=0.05)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
@@ -42,7 +42,7 @@ class TestLensAnalysis(object):
             'center_y': 0, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['NONE'], 'source_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
-        lensAnalysis = LensAnalysis(kwargs_options, {})
+        lensAnalysis = LensAnalysis(kwargs_options)
         r_eff_true = 0.282786143932
         r_eff = lensAnalysis.half_light_radius_source(kwargs_profile, numPix=1000, deltaPix=0.05)
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
@@ -54,7 +54,7 @@ class TestLensAnalysis(object):
             'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
-        lensAnalysis = LensAnalysis(kwargs_options, {})
+        lensAnalysis = LensAnalysis(kwargs_options)
         amplitudes, sigma = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20)
         mge = MultiGaussian()
         flux = mge.function(1., 1, amp=amplitudes, sigma=sigma)
@@ -63,8 +63,8 @@ class TestLensAnalysis(object):
     def test_multi_gaussian_lens(self):
         kwargs_options = {'lens_model_list': ['SPEP']}
         kwargs_lens = [{'gamma': 1.8, 'theta_E': 0.6, 'q': 0.9, 'phi_G': 0, 'center_x': 0.5, 'center_y': -0.1}]
-        lensAnalysis = LensAnalysis(kwargs_options, {})
-        amplitudes, sigmas, center_x, center_y = lensAnalysis.multi_gaussian_lens(kwargs_lens, kwargs_else={}, n_comp=20)
+        lensAnalysis = LensAnalysis(kwargs_options)
+        amplitudes, sigmas, center_x, center_y = lensAnalysis.multi_gaussian_lens(kwargs_lens, n_comp=20)
         model = MultiGaussian_kappa()
         x = np.logspace(-2, 0.5, 10) + 0.5
         y = np.zeros_like(x) - 0.1

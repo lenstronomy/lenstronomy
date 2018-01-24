@@ -79,6 +79,7 @@ lenstronomy/ImSim/psf_fitting.py
 lenstronomy/LensModel/__init__.py
 lenstronomy/LensModel/lens_model.py
 lenstronomy/LensModel/lens_model_extensions.py
+lenstronomy/LensModel/multi_plane.py
 lenstronomy/LensModel/numeric_lens_differentials.py
 lenstronomy/LensModel/numerical_profile_integrals.py
 lenstronomy/LensModel/Profiles/__init__.py
@@ -184,6 +185,7 @@ test/test_LensModel/__init__.py
 test/test_LensModel/test_convergence_integrals.py
 test/test_LensModel/test_lens_model.py
 test/test_LensModel/test_lens_model_extensions.py
+test/test_LensModel/test_multi_plane.py
 test/test_LensModel/test_numeric_lens_differentials.py
 test/test_LensModel/test_numerical_profile_integrals.py
 test/test_LensModel/test_Profiles/__init__.py

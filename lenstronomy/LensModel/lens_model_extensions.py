@@ -55,8 +55,7 @@ class LensModelExtensions(LensModel):
 
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
-        mag_high_res = util.array2image(
-            self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
+        mag_high_res = util.array2image(self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else))
 
         #import numpy.ma as ma
         #z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.

@@ -27,14 +27,14 @@ class SPEMD_SMOOTH(object):
         """
         if s_scale < 0.00000001:
             s_scale = 0.00000001
-        if gamma < 1.4:
-            gamma = 1.4
+        if gamma < 1.2:
+            gamma = 1.2
             theta_E = 0
         if gamma > 2.9:
             gamma = 2.9
             theta_E = 0
-        if q < 0.5:
-            q = 0.5
+        if q < 0.1:
+            q = 0.1
             theta_E = 0
         if q > 1:
             q = 1.

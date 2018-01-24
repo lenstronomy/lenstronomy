@@ -43,6 +43,12 @@ def test_add_layer2image_odd_odd():
     added = image_util.add_layer2image(grid2d, x_pos, y_pos, kernel, order=0)
     assert added[100, 20] == 1
 
+    x_pos = 20.5
+    y_pos = 100
+    added = image_util.add_layer2image(grid2d, x_pos, y_pos, kernel, order=1)
+    assert added[100, 20] == 0.5
+    assert added[100, 21] == 0.5
+
 
 def test_add_background():
     image = np.ones((10, 10))

@@ -77,7 +77,6 @@ class PointSource(object):
         data = self.Data.data
         psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
-        numPix = len(data)
         error_map = np.zeros_like(data)
         if self._error_map:
             for i in range(0, n_points):

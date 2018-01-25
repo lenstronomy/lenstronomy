@@ -1,12 +1,12 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 
 
 class MultiLens(object):
     """
-    Multi-plnae lensing class
+    Multi-plane lensing class
     """
 
     def __init__(self, z_source, lens_model_list, redshift_list, cosmo=None):
@@ -26,9 +26,9 @@ class MultiLens(object):
         self._lens_model_list = lens_model_list
         self._redshift_list = redshift_list
         self._sorted_redshift_index = self._index_ordering(redshift_list)
-        self._lens_model = LensModel(lens_model_list)
+        self._lens_model = SinglePlane(lens_model_list)
 
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens):
+    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         ray-tracing (backwards light cone)
 
@@ -53,7 +53,7 @@ class MultiLens(object):
         beta_x, beta_y = self._co_moving2angle(x, y, self._z_source)
         return beta_x, beta_y
 
-    def travel_time(self, theta_x, theta_y, kwargs_lens):
+    def travel_time(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time
@@ -84,7 +84,7 @@ class MultiLens(object):
         dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
         return dt_grav, dt_geo
 
-    def alpha(self, theta_x, theta_y, kwargs_lens):
+    def alpha(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         reduced deflection angle
 
@@ -98,7 +98,7 @@ class MultiLens(object):
         alpha_y = theta_y - beta_y
         return alpha_x, alpha_y
 
-    def hessian(self, theta_x, theta_y, kwargs_lens, diff=0.000001):
+    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.000001):
         """
         computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
 
@@ -126,59 +126,6 @@ class MultiLens(object):
         f_xy = dalpha_radec
         f_yx = dalpha_decra
         return f_xx, f_xy, f_yy
-
-    def kappa(self, theta_x, theta_y, kwargs_lens):
-        """
-        lensing convergence k = 1/2 laplacian(phi)
-
-        :param theta_x: x-position (preferentially arcsec)
-        :type theta_x: numpy array
-        :param theta_y: y-position (preferentially arcsec)
-        :type theta_y: numpy array
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: lensing convergence
-        """
-
-        f_xx, f_xy, f_yy = self.hessian(theta_x, theta_y, kwargs_lens)
-        kappa = 1./2 * (f_xx + f_yy)  # attention on units
-        return kappa
-
-    def gamma(self, theta_x, theta_y, kwargs_lens):
-        """
-        shear computation
-        g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
-        g2 = d^2phi/dxdy
-
-        :param theta_x: x-position (preferentially arcsec)
-        :type theta_x: numpy array
-        :param theta_y: y-position (preferentially arcsec)
-        :type theta_y: numpy array
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: gamma1, gamma2
-        """
-
-        f_xx, f_xy, f_yy = self.hessian(theta_x, theta_y, kwargs_lens)
-        gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
-        gamma2 = f_xy  # attention on units
-        return gamma1, gamma2
-
-    def magnification(self, theta_x, theta_y, kwargs_lens):
-        """
-        magnification
-        mag = 1/det(A)
-        A = 1 - d^2phi/d_ij
-
-        :param theta_x: x-position (preferentially arcsec)
-        :type theta_x: numpy array
-        :param theta_y: y-position (preferentially arcsec)
-        :type theta_y: numpy array
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: magnification
-        """
-
-        f_xx, f_xy, f_yy = self.hessian(theta_x, theta_y, kwargs_lens)
-        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy
-        return 1./det_A  # attention, if dividing by zero
 
     def _index_ordering(self, redshift_list):
         """

@@ -6,6 +6,7 @@ from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 

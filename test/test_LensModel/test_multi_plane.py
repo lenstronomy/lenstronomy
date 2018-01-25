@@ -57,7 +57,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = LensModel(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list, multi_plane=True)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         kappa_simple = lensModel.kappa(1, 0, kwargs_lens)

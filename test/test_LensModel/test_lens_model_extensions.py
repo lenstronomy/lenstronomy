@@ -4,6 +4,8 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.multi_plane import MultiLens
 
 
 class TestLensModelExtensions(object):

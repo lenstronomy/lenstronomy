@@ -14,7 +14,6 @@ class TestGaussian(object):
     def setup(self):
         self.Gaussian = Gaussian()
 
-
     def test_function(self):
         x = 1
         y = 2

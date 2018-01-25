@@ -27,7 +27,7 @@ class ImageModel(object):
                                        fix_error_map=kwargs_options.get('fix_error_map', False))
         self._kwargs_options = kwargs_options
         self._kwargs_psf = kwargs_psf
-        self.imagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
+        self.imagePosition = LensEquationSolver(self.LensModel)
 
     def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
         """

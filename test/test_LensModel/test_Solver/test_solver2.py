@@ -17,7 +17,8 @@ class TestSolver(object):
         pass
 
     def test_subtract(self):
-        solver_spep_center = Solver2Point(['SPEP'], solver_type='CENTER')
+        lensModel = LensModel(['SPEP'])
+        solver_spep_center = Solver2Point(lensModel, solver_type='CENTER')
         x_cat = np.array([0, 0])
         y_cat = np.array([1, 2])
         a = solver_spep_center._subtract_constraint(x_cat, y_cat)
@@ -25,9 +26,10 @@ class TestSolver(object):
         assert a[1] == 1
 
     def test_all_spep(self):
-        solver_spep_center = Solver2Point(['SPEP'], solver_type='CENTER')
-        solver_spep_ellipse = Solver2Point(['SPEP'], solver_type='ELLIPSE')
-        image_position_spep = LensEquationSolver(['SPEP'])
+        lensModel = LensModel(['SPEP'])
+        solver_spep_center = Solver2Point(lensModel, solver_type='CENTER')
+        solver_spep_ellipse = Solver2Point(lensModel, solver_type='ELLIPSE')
+        image_position_spep = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
         gamma = 1.9
@@ -51,10 +53,12 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out_ellipse[0]['q'], 0.8, decimal=3)
 
     def test_all_nfw(self):
-        solver_nfw_ellipse = Solver2Point(['SPEP'], solver_type='ELLIPSE')
-        solver_nfw_center = Solver2Point(['SPEP'], solver_type='CENTER')
+        lensModel = LensModel(['SPEP'])
+        solver_nfw_ellipse = Solver2Point(lensModel, solver_type='ELLIPSE')
+        solver_nfw_center = Solver2Point(lensModel, solver_type='CENTER')
         spep = LensModel(['SPEP'])
-        image_position_nfw = LensEquationSolver(['SPEP', 'NFW'])
+
+        image_position_nfw = LensEquationSolver(LensModel(['SPEP', 'NFW']))
         sourcePos_x = 0.1
         sourcePos_y = 0.03
         deltapix = 0.05
@@ -93,10 +97,11 @@ class TestSolver(object):
 
 
     def test_all_spep_sis(self):
-        solver_ellipse = Solver2Point(['SPEP', 'SIS'], solver_type='ELLIPSE')
-        solver_center = Solver2Point(['SPEP', 'SIS'], solver_type='CENTER')
+        lensModel = LensModel(['SPEP', 'SIS'])
+        solver_ellipse = Solver2Point(lensModel, solver_type='ELLIPSE')
+        solver_center = Solver2Point(lensModel, solver_type='CENTER')
         spep = LensModel(['SPEP', 'SIS'])
-        image_position = LensEquationSolver(['SPEP', 'SIS'])
+        image_position = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
         deltapix = 0.05
@@ -132,9 +137,9 @@ class TestSolver(object):
 
     def test_shapelet_cart(self):
         lens_model_list = ['SHAPELETS_CART', 'SIS']
-        solver = Solver2Point(lens_model_list)
         lens = LensModel(lens_model_list)
-        image_position = LensEquationSolver(lens_model_list)
+        solver = Solver2Point(lens)
+        image_position = LensEquationSolver(lens)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
         deltapix = 0.05

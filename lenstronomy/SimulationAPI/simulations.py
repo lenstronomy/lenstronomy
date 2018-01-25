@@ -124,7 +124,7 @@ class Simulation(object):
         :return:
         """
         lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
-        imPos = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
+        imPos = LensEquationSolver(lensModel)
         if kwargs_options.get('point_source', False):
             data = Data(kwargs_data)
             deltaPix = data.deltaPix

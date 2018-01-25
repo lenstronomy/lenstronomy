@@ -19,9 +19,10 @@ class TestSolver4Point(object):
 
     def test_decoupling(self):
         lens_model_list = ['SPEP', 'SIS']
-        solver = Solver4Point(lens_model_list=lens_model_list, decoupling=False)
-        solver_decoupled = Solver4Point(lens_model_list=lens_model_list, decoupling=True)
-        lensEquationSolver = LensEquationSolver(lens_model_list)
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel, decoupling=False)
+        solver_decoupled = Solver4Point(lensModel, decoupling=True)
+        lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         deltapix = 0.05
@@ -56,8 +57,9 @@ class TestSolver4Point(object):
 
     def test_solver_spep(self):
         lens_model_list = ['SPEP']
-        solver = Solver4Point(lens_model_list=lens_model_list)
-        lensEquationSolver = LensEquationSolver(lens_model_list)
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel)
 
         sourcePos_x = 0.1
         sourcePos_y = -0.1
@@ -82,8 +84,9 @@ class TestSolver4Point(object):
 
     def test_solver_nfw(self):
         lens_model_list = ['NFW_ELLIPSE', 'SIS']
-        solver = Solver4Point(lens_model_list=lens_model_list)
-        lensEquationSolver = LensEquationSolver(lens_model_list)
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         deltapix = 0.05

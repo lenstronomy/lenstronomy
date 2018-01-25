@@ -44,7 +44,6 @@ class TestShapelet(object):
         x, y = util.make_grid(100, deltaPix, 1)
         input = self.shapeletSet.function(x, y, amp, n_max, beta, center_x=0, center_y=0)
         amp_out = self.shapeletSet.decomposition(input, x, y, n_max, beta, deltaPix, center_x=0, center_y=0)
-        print(amp_out)
         for i in range(len(amp)):
             npt.assert_almost_equal(amp_out[i], amp[i], decimal=4)
 

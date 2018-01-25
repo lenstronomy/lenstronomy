@@ -140,7 +140,7 @@ class LensModelExtensions(LensModel):
         :param kwargs_lens_list:
         :return:
         """
-        for i, model in enumerate(self._model_list):
+        for i, model in enumerate(self.lens_model_list):
             if model == 'SHEAR':
                 e1 = kwargs_lens_list[i]['e1']
                 e2 = kwargs_lens_list[i]['e2']

@@ -19,7 +19,6 @@ class TestCoordinates(object):
         assert ra == ra_0
         assert dec == dec_0
         x, y = coords.map_coord2pix(ra, dec)
-        print(x, y)
         assert ra_0 == ra
         assert dec_0 == dec
         assert x == 0

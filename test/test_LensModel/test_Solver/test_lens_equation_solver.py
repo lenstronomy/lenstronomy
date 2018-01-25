@@ -17,8 +17,8 @@ class TestLensEquationSolver(object):
 
     def test_spep_sis(self):
         lens_model_list = ['SPEP', 'SIS']
-        lensEquationSolver = LensEquationSolver(lens_model_list)
         lensModel = LensModel(lens_model_list)
+        lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         min_distance = 0.05
@@ -33,7 +33,7 @@ class TestLensEquationSolver(object):
     def test_nfw(self):
         lens_model_list = ['NFW_ELLIPSE', 'SIS']
         lensModel = LensModel(lens_model_list)
-        lensEquationSolver = LensEquationSolver(lens_model_list)
+        lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         min_distance = 0.05
@@ -47,8 +47,8 @@ class TestLensEquationSolver(object):
 
     def test_foreground_shear(self):
         lens_model_list = ['SPEP', 'FOREGROUND_SHEAR']
-        lensEquationSolver = LensEquationSolver(lens_model_list)
         lensModel = LensModel(lens_model_list)
+        lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
         min_distance = 0.05

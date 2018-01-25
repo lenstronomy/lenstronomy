@@ -11,11 +11,14 @@ class Solver2Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lens_model_list=['SPEP'], solver_type='CENTER', decoupling=True):
-        self._lens_mode_list = lens_model_list
+    def __init__(self, lensModel, solver_type='CENTER', decoupling=True):
+        self.lensModel = lensModel
+        self._lens_mode_list = lensModel.lens_model_list
         self._solver_type = solver_type
-        self.lensModel = LensModel(lens_model_list)
-        self._decoupling = decoupling
+        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list:
+            self._decoupling = False
+        else:
+            self._decoupling = decoupling
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list):
         """

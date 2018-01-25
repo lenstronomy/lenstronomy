@@ -15,12 +15,12 @@ class LensModel(object):
         :param lens_model_list: list of strings with lens model names
         :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
         """
-        self._multi_plane = multi_plane
+        self.multi_plane = multi_plane
         if multi_plane is True:
             self.lens_model = MultiLens(z_source, lens_model_list, redshift_list, cosmo=cosmo)
         else:
             self.lens_model = SinglePlane(lens_model_list)
-        self._model_list = lens_model_list
+        self.lens_model_list = lens_model_list
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """
@@ -46,7 +46,7 @@ class LensModel(object):
         :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
-        if self._multi_plane:
+        if self.multi_plane:
             raise ValueError("Fermat potential is not defined in multi-plane lensing. Please use single plane lens models.")
         else:
             return self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
@@ -164,7 +164,7 @@ class LensModel(object):
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
-        if self._multi_plane is True:
+        if self.multi_plane is True:
             raise ValueError("mass_3d is not supported for multi-lane lensing. Please use single plane instead.")
         else:
             return self.lens_model.mass_3d(r, kwargs, bool_list=bool_list)
@@ -177,7 +177,7 @@ class LensModel(object):
         :param bool_list: list of bools that are part of the output
         :return: projected mass (in angular units, modulo epsilon_crit)
         """
-        if self._multi_plane is True:
+        if self.multi_plane is True:
             raise ValueError("mass_2d is not supported for multi-lane lensing. Please use single plane instead.")
         else:
             return self.lens_model.mass_2d(r, kwargs, bool_list=bool_list)

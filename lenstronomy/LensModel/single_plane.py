@@ -140,7 +140,6 @@ class SinglePlane(object):
 
         potential = self.potential(x_image, y_image, kwargs_lens)
         geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
-        print(geometry/potential)
         return geometry - potential
 
     def potential(self, x, y, kwargs, k=None):

@@ -1,19 +1,18 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
-from lenstronomy.LensModel.lens_model import LensModel
 
 
 class LensEquationSolver(object):
     """
     class to solve for image positions given lens model and source position
     """
-    def __init__(self, lens_model_list):
+    def __init__(self, lensModel):
         """
 
         :param imsim: imsim class
         """
-        self.LensModel = LensModel(lens_model_list)
+        self.lensModel = lensModel
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
         """
@@ -33,7 +32,7 @@ class LensEquationSolver(object):
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)
         # ray-shoot to find the relative distance to the required source position for each grid point
-        x_mapped, y_mapped = self.LensModel.ray_shooting(x_grid, y_grid, kwargs_lens)
+        x_mapped, y_mapped = self.lensModel.ray_shooting(x_grid, y_grid, kwargs_lens)
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
@@ -67,18 +66,18 @@ class LensEquationSolver(object):
         solver_precision = np.zeros(num_candidates)
         for i in range(len(x_min)):
             l = 0
-            x_mapped, y_mapped = self.LensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
+            x_mapped, y_mapped = self.lensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
             delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-            f_xx, f_xy, f_yy = self.LensModel.hessian(x_min[i], y_min[i], kwargs_lens)
+            f_xx, f_xy, f_yy = self.lensModel.hessian(x_min[i], y_min[i], kwargs_lens)
             DistMatrix = np.array([[1 - f_yy, f_xy], [f_xy, 1 - f_xx]])
             det = (1 - f_xx) * (1 - f_yy) - f_xy * f_xy
             posAngel = np.array([x_min[i], y_min[i]])
             while(delta > precision_limit and l < num_iter_max):
                 deltaVec = np.array([x_mapped - sourcePos_x, y_mapped - sourcePos_y])
                 posAngel = posAngel - DistMatrix.dot(deltaVec)/det
-                x_mapped, y_mapped = self.LensModel.ray_shooting(posAngel[0], posAngel[1], kwargs_lens)
+                x_mapped, y_mapped = self.lensModel.ray_shooting(posAngel[0], posAngel[1], kwargs_lens)
                 delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-                f_xx, f_xy, f_yy = self.LensModel.hessian(posAngel[0], posAngel[1], kwargs_lens)
+                f_xx, f_xy, f_yy = self.lensModel.hessian(posAngel[0], posAngel[1], kwargs_lens)
                 DistMatrix = np.array([[1 - f_yy, f_xy], [f_xy, 1 - f_xx]])
                 det = (1 - f_xx) * (1 - f_yy) - f_xy * f_xy
                 l += 1
@@ -102,7 +101,7 @@ class LensEquationSolver(object):
         x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, precision_limit, num_iter_max)
         mag_list = []
         for i in range(len(x_mins)):
-            mag = self.LensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
+            mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
             mag_list.append(abs(mag))
         mag_list = np.array(mag_list)
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)
@@ -119,10 +118,10 @@ class LensEquationSolver(object):
         """
         if len(x_mins) <= 1:
             return x_mins, y_mins
-        x_source, y_source = self.LensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
+        x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
-        fermat_pot = self.LensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
+        fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
         idx = np.argsort(-fermat_pot)
         x_mins = np.array(x_mins)[idx]
         y_mins = np.array(y_mins)[idx]

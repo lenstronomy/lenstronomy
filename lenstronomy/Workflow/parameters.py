@@ -35,7 +35,7 @@ class Param(object):
         self.kwargs_fixed_else = kwargs_fixed_else
         self.kwargs_options = kwargs_options
         self.lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
-        self.ImagePosition = LensEquationSolver(lens_model_list=kwargs_options['lens_model_list'])
+        self.ImagePosition = LensEquationSolver(lensModel=self.lensModel)
 
         if 'FOREGROUND_SHEAR' in kwargs_options['lens_model_list']:
             decoupling = False
@@ -49,10 +49,9 @@ class Param(object):
         if kwargs_options.get('solver', False):
             self.solver_type = kwargs_options.get('solver_type', 'NONE')
             if self._num_images == 4:
-                self.solver4points = Solver4Point(lens_model_list=self.kwargs_options['lens_model_list'], decoupling=decoupling)
+                self.solver4points = Solver4Point(self.lensModel, decoupling=decoupling)
             elif self. _num_images == 2:
-                self.solver2points = Solver2Point(lens_model_list=self.kwargs_options['lens_model_list'],
-                                                  decoupling=decoupling, solver_type=self.solver_type)
+                self.solver2points = Solver2Point(self.lensModel, decoupling=decoupling, solver_type=self.solver_type)
             else:
                 raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
         else:

@@ -15,9 +15,9 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None):
+    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None, ra_shift=0, dec_shift=0):
         self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1),
-                         psf_subgrid=kwargs_options.get('psf_subgrid', False))
+                         psf_subgrid=kwargs_options.get('psf_subgrid', False), ra_shift=ra_shift, dec_shift=dec_shift)
         self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
         self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
@@ -170,6 +170,15 @@ class ImageModel(object):
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
+    def reduced_chi2(self, model, error_map=0):
+        """
+        returns reduced chi2
+        :param model:
+        :param error_map:
+        :return:
+        """
+        return self.Data.reduced_chi2(model, error_map)
+
     @property
     def numData_evaluate(self):
         """
@@ -311,7 +320,7 @@ class ImageModel(object):
             if model in ['UNIFORM']:
                 kwargs_lens_light[k]['mean'] = param[i]
                 i += 1
-        num_images = self._kwargs_options.get('num_images', 0)
+        num_images = self._kwargs_options.get('num_point_sources', 0)
         if num_images > 0 and self._kwargs_options['point_source']:
             if self._kwargs_options.get('fix_magnification', False):
                 mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)

@@ -52,7 +52,7 @@ class Fitting(object):
         kwargs_prior_else.update(kwargs_sigma_else)
         # initialise mcmc classes
 
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._update_fixed(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._update_fixed(kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
@@ -76,14 +76,11 @@ class Fitting(object):
                                                                                                        print_key=print_key)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def _update_fixed(self, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
+    def _update_fixed(self, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else):
-        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                            kwargs_fixed_lens_light, kwargs_fixed_else)
-        lens_fix, source_fix, lens_light_fix, else_fix = param_class.add_to_fixed(self.kwargs_lens_fixed,
-                                                                                           self.kwargs_source_fixed,
-                                                                                           self.kwargs_lens_light_fixed,
-                                                                                           self.kwargs_else_fixed)
+
+        lens_fix, source_fix, lens_light_fix, else_fix = self.kwargs_lens_fixed, self.kwargs_source_fixed, self.kwargs_lens_light_fixed, self.kwargs_else_fixed
+
         kwargs_fixed_lens_updated = []
         for k in range(len(lens_fix)):
             kwargs_fixed_lens_updated_k = kwargs_fixed_lens[k].copy()
@@ -129,8 +126,8 @@ class Fitting(object):
         kwargs_prior_else.update(kwargs_sigma_else)
         # initialise mcmc classes
 
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._update_fixed(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
-                            kwargs_fixed_lens_light, kwargs_fixed_else)
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._update_fixed(kwargs_fixed_lens, kwargs_fixed_source,
+                           kwargs_fixed_lens_light, kwargs_fixed_else)
         param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else)
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
@@ -155,7 +152,7 @@ class Fitting(object):
         :param kwargs_else:
         :return:
         """
-        num_images = kwargs_options.get('num_images', 0)
+        num_images = kwargs_options.get('num_point_sources', 0)
         if num_images > 0:
             kwargs_fixed = {'point_amp': np.ones(num_images)}
         else:
@@ -229,7 +226,7 @@ class Fitting(object):
                 if kwargs_options.get('solver', False) is True:
                     lens_model = kwargs_options['lens_model_list'][0]
                     kwargs_lens = kwargs_lens_list[0]
-                    if kwargs_options['num_images'] == 4:
+                    if kwargs_options['num_point_sources'] == 4:
                         if lens_model in ['SPEP', 'SPEMD']:
                             kwargs_fixed_lens = {'theta_E': kwargs_lens['theta_E'], 'q': kwargs_lens['q'],
                                              'phi_G': kwargs_lens['phi_G'], 'center_x': kwargs_lens['center_x'],
@@ -244,7 +241,7 @@ class Fitting(object):
                             kwargs_fixed_lens = {}
                         else:
                             raise ValueError("%s is not a valid option. Choose from 'PROFILE', 'COMPOSITE', 'NFW_PROFILE', 'SHAPELETS'" % kwargs_options['solver_type'])
-                    elif kwargs_options['num_images'] == 2:
+                    elif kwargs_options['num_point_sources'] == 2:
                         if lens_model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE', 'COMPOSITE']:
                             if kwargs_options['solver_type'] in ['CENTER']:
                                 kwargs_fixed_lens = {'center_x': kwargs_lens['center_x'],
@@ -260,7 +257,7 @@ class Fitting(object):
                         else:
                             raise ValueError("%s is not a valid option for solver_type in combination with lens model %s" % (kwargs_options['solver_type'], lens_model))
                     else:
-                        raise ValueError("%s is not a valid number of points" % kwargs_options['num_images'])
+                        raise ValueError("%s is not a valid number of points" % kwargs_options['num_point_sources'])
                 else:
                     kwargs_fixed_lens = {}
             else:

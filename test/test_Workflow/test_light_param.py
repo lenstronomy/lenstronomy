@@ -84,10 +84,6 @@ class TestParam(object):
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-    def test_add2fixed(self):
-        kwargs_fixed_used = self.param.add2fix(self.kwargs)
-        assert kwargs_fixed_used[0]['amp'] == self.kwargs[0]['amp']
-
     def test_param_init(self):
         mean, sigma = self.param.param_init(self.kwargs_mean)
         assert mean[0] == 0

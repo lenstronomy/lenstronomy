@@ -41,7 +41,7 @@ class Param(object):
             decoupling = False
         else:
             decoupling = True
-        self._num_images = kwargs_options.get('num_images', 4)
+        self._num_images = kwargs_options.get('num_point_sources', 0)
 
         self._fix_mass2light = kwargs_options.get('mass2light_fixed', False)
         self._fix_magnification = kwargs_options.get('fix_magnification', False)
@@ -86,21 +86,6 @@ class Param(object):
         args += self.lensLightParams.setParams(kwargs_lens_light, bounds=bounds)
         args += self.elseParams.setParams(kwargs_else)
         return args
-
-    def add_to_fixed(self, lens_fixed, source_fixed, lens_light_fixed, else_fixed):
-        """
-        changes the kwargs fixed with the inputs, if options are chosen such that it is modeled
-        :param lens_fixed:
-        :param source_fixed:
-        :param lens_light_fixed:
-        :param else_fixed:
-        :return:
-        """
-        lens_fix = self.lensParams.add2fix(lens_fixed)
-        source_fix = self.souceParams.add2fix(source_fixed)
-        lens_light_fix = self.lensLightParams.add2fix(lens_light_fixed)
-        else_fix = self.elseParams.add2fix(else_fixed)
-        return lens_fix, source_fix, lens_light_fix, else_fix
 
     def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_else):
         """

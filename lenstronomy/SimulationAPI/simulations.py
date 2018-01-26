@@ -39,12 +39,30 @@ class Simulation(object):
             'sigma_background': sigma_bkg, 'mean_background': mean
             , 'exp_time': exposure_time, 'exposure_map': exposure_map
             , 'x_coords': x_grid, 'y_coords': y_grid
-            , 'x_at_radec_0': x_at_radec_0, 'y_at_radec_0': y_at_radec_0, 'transform_angle2pix': Mcoord2pix
             , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
             , 'mask': mask
             , 'image_data': np.zeros_like(mask)
             }
         return kwargs_data
+
+    def shift_coordinate_grid(self, kwargs_data, x_shift, y_shift, pixel_units=False):
+        """
+        re-configures data keyword arguments with a coordinate grid shifted
+
+        :param kwargs_data:
+        :return:
+        """
+        if pixel_units:
+            M = kwargs_data['transform_pix2angle']
+            ra_shift, dec_shift = M.dot(np.array([x_shift, y_shift]))
+        else:
+            ra_shift, dec_shift = x_shift, y_shift
+        kwargs_data_new = copy.deepcopy(kwargs_data)
+        kwargs_data_new['x_coords'] += ra_shift
+        kwargs_data_new['y_coords'] += dec_shift
+        kwargs_data_new['ra_at_xy_0'] += ra_shift
+        kwargs_data_new['dec_at_xy_0'] += dec_shift
+        return kwargs_data_new
 
     def psf_configure(self, psf_type="gaussian", fwhm=1, kernelsize=11, deltaPix=1, truncate=6, kernel=None):
         """
@@ -141,7 +159,7 @@ class Simulation(object):
             kwargs_else['ra_pos'] = x_mins
             kwargs_else['dec_pos'] = y_mins
             kwargs_else['point_amp'] = mag_list * kwargs_else['quasar_amp']
-            kwargs_options['num_images'] = len(x_mins)
+            kwargs_options['num_point_sources'] = len(x_mins)
 
         # update kwargs_else
         image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)

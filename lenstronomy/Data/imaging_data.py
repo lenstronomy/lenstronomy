@@ -5,7 +5,6 @@ import scipy.signal as signal
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.kernel_util as kernel_util
-import lenstronomy.Util.mask as mask_util
 import lenstronomy.Util.fft_convolve as fft
 from lenstronomy.Data.coord_transforms import Coordinates
 
@@ -14,8 +13,10 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
-    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False):
+    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, ra_shift=0, dec_shift=0):
         self._subgrid_res = subgrid_res
+        self._ra_shift = ra_shift
+        self._dec_shift = dec_shift
 
         if 'image_data' in kwargs_data:
             data = kwargs_data['image_data']
@@ -70,6 +71,8 @@ class Data(object):
             y_grid = kwargs_data['y_coords']
         else:
             x_grid, y_grid = util.make_grid(np.sqrt(self.nx * self.ny), 1, subgrid_res=1, left_lower=False)
+        x_grid += self._ra_shift
+        y_grid += self._dec_shift
         self._x_grid_all, self._y_grid_all = x_grid, y_grid
         self.x_grid = x_grid[self._idex_mask == 1]
         self.y_grid = y_grid[self._idex_mask == 1]
@@ -78,7 +81,9 @@ class Data(object):
         self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
         self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
         self._psf_subgrid = psf_subgrid
-        self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])), ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0), dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0))
+        self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])),
+                                   ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0) + self._ra_shift,
+                                   dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0) + self._dec_shift)
 
     @property
     def data(self):

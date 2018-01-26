@@ -15,7 +15,7 @@ class LensParam(object):
         self.kwargs_options = kwargs_options
         self.model_list = kwargs_options['lens_model_list']
         self.kwargs_fixed = kwargs_fixed
-        self.num_images = kwargs_options.get('num_images', 4)
+        self.num_images = kwargs_options.get('num_point_sources', 0)
         self.solver_type = kwargs_options.get('solver_type', 'NONE')
 
     def getParams(self, args, i):
@@ -376,126 +376,6 @@ class LensParam(object):
                 if not 'scale_factor' in kwargs_fixed:
                     args.append(kwargs['scale_factor'])
         return args
-
-    def add2fix(self, kwargs_fixed_list):
-        """
-
-        :param kwargs_fixed:
-        :return:
-        """
-        fix_return_list = []
-        for k, model in enumerate(self.model_list):
-            kwargs_fixed = kwargs_fixed_list[k]
-            fix_return = {}
-            if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if 'e1' in kwargs_fixed:
-                    fix_return['e1'] = kwargs_fixed['e1']
-                if 'e2' in kwargs_fixed:
-                    fix_return['e2'] = kwargs_fixed['e2']
-            if model == 'FLEXION':
-                if 'g1' in kwargs_fixed:
-                    fix_return['g1'] = kwargs_fixed['g1']
-                if 'g2' in kwargs_fixed:
-                    fix_return['g2'] = kwargs_fixed['g2']
-                if 'g3' in kwargs_fixed:
-                    fix_return['g3'] = kwargs_fixed['g3']
-                if 'g4' in kwargs_fixed:
-                    fix_return['g4'] = kwargs_fixed['g4']
-            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA']:
-                if 'amp' in kwargs_fixed:
-                    fix_return['amp'] = kwargs_fixed['amp']
-            if model in ['GAUSSIAN']:
-                if 'sigma_x' in kwargs_fixed:
-                    fix_return['sigma_x'] = kwargs_fixed['sigma_x']
-                if 'sigma_y' in kwargs_fixed:
-                    fix_return['sigma_y'] = kwargs_fixed['sigma_y']
-            if model in ['GAUSSIAN_KAPPA']:
-                if 'sigma' in kwargs_fixed:
-                    fix_return['sigma'] = kwargs_fixed['sigma']
-
-            if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP', 'COMPOSITE']:
-                if 'theta_E' in kwargs_fixed:
-                    fix_return['theta_E'] = kwargs_fixed['theta_E']
-            if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SPP']:
-                if 'gamma' in kwargs_fixed:
-                    fix_return['gamma'] = kwargs_fixed['gamma']
-            if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
-                if 'q' in kwargs_fixed and 'phi_G' in kwargs_fixed:
-                    fix_return['phi_G'] = kwargs_fixed['phi_G']
-                    fix_return['q'] = kwargs_fixed['q']
-
-            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
-                if 'Rs' in kwargs_fixed:
-                    fix_return['Rs'] = kwargs_fixed['Rs']
-            if model in ['NFW', 'NFW_ELLIPSE']:
-                if 'theta_Rs' in kwargs_fixed:
-                    fix_return['theta_Rs'] = kwargs_fixed['theta_Rs']
-
-            if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
-                if 'beta' in kwargs_fixed:
-                    fix_return['beta'] = kwargs_fixed['beta']
-                if 'coeffs' in kwargs_fixed:
-                    fix_return['coeffs'] = kwargs_fixed['coeffs']
-
-            if model in ['DIPOLE']:
-                if 'coupling' in kwargs_fixed:
-                    fix_return['coupling'] = kwargs_fixed['coupling']
-                if 'phi_dipole' in kwargs_fixed:
-                    fix_return['phi_dipole'] = kwargs_fixed['phi_dipole']
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
-                if 'n_sersic' in kwargs_fixed:
-                    fix_return['n_sersic'] = kwargs_fixed['n_sersic']
-                if 'r_eff' in kwargs_fixed:
-                    fix_return['r_eff'] = kwargs_fixed['r_eff']
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE']:
-                if 'k_eff' in kwargs_fixed:
-                    fix_return['k_eff'] = kwargs_fixed['k_eff']
-            if model in ['SERSIC_DOUBLE']:
-                if 'flux_ratio' in kwargs_fixed:
-                    fix_return['flux_ratio'] = kwargs_fixed['flux_ratio']
-                if 'R_2' in kwargs_fixed:
-                    fix_return['R_2'] = kwargs_fixed['R_2']
-                if 'n_2' in kwargs_fixed:
-                    fix_return['n_2'] = kwargs_fixed['n_2']
-                if 'q_2' in kwargs_fixed and 'phi_G_2' in kwargs_fixed:
-                    fix_return['phi_G_2'] = kwargs_fixed['phi_G_2']
-                    fix_return['q_2'] = kwargs_fixed['q_2']
-            if model in ['COMPOSITE']:
-                if 'q_s' in kwargs_fixed and 'phi_G_s' in kwargs_fixed:
-                    fix_return['phi_G_s'] = kwargs_fixed['phi_G_s']
-                    fix_return['q_s'] = kwargs_fixed['q_s']
-                if 'mass_light' in kwargs_fixed:
-                    fix_return['mass_light'] = kwargs_fixed['mass_light']
-            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
-                if 'sigma0' in kwargs_fixed:
-                    fix_return['sigma0'] = kwargs_fixed['sigma0']
-                if 'Rs' in kwargs_fixed:
-                    fix_return['Rs'] = kwargs_fixed['Rs']
-            if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
-                if 'Ra' in kwargs_fixed:
-                    fix_return['Ra'] = kwargs_fixed['Ra']
-            if model in ['SPEMD_SMOOTH']:
-                if 's_scale' in kwargs_fixed:
-                    fix_return['s_scale'] = kwargs_fixed['s_scale']
-            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
-                                 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE',
-                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
-                if 'center_x' in kwargs_fixed:
-                    fix_return['center_x'] = kwargs_fixed['center_x']
-                if 'center_y' in kwargs_fixed:
-                    fix_return['center_y'] = kwargs_fixed['center_y']
-            if model in ['INTERPOL', 'INTERPOL_SCALED']:
-                #grid_interp_x = None, grid_interp_y = None, f_ = None, f_x = None, f_y = None, f_xx = None, f_yy = None, f_xy = None
-                fix_return['grid_interp_x'] = kwargs_fixed['grid_interp_x']
-                fix_return['grid_interp_y'] = kwargs_fixed['grid_interp_y']
-                fix_return['f_x'] = kwargs_fixed['f_x']
-                fix_return['f_y'] = kwargs_fixed['f_y']
-            if model in ['INTERPOL_SCALED']:
-                if 'scale_factor' in kwargs_fixed:
-                    fix_return['scale_factor'] = kwargs_fixed['scale_factor']
-            fix_return_list.append(fix_return)
-        return fix_return_list
 
     def param_init(self, kwargs_mean_list):
         """

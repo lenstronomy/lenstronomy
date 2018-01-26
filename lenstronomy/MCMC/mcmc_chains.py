@@ -47,7 +47,7 @@ class MCMC_chain(object):
             self._force_no_add_image = kwargs_options.get('force_no_add_image', False)
         else:
             self._force_no_add_image = False
-        self._num_images = kwargs_options.get('num_images', 0)
+        self._num_images = kwargs_options.get('num_point_sources', 0)
         self._point_source_likelihood = kwargs_options.get('point_source_likelihood', False)
         self._position_sigma = kwargs_options.get('position_uncertainty', 0.004)
 

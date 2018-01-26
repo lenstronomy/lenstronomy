@@ -59,6 +59,13 @@ class TestGaussianKappa(object):
         npt.assert_almost_equal(kappa[1], density_2d[1], decimal=5)
         npt.assert_almost_equal(kappa[2], density_2d[2], decimal=5)
 
+    def test_density(self):
+        amp = [1.*2*np.pi]
+
+        sigma = [1.]
+        density = self.gaussian_kappa.density(1., amp, sigma)
+        npt.assert_almost_equal(density, 0.6065306597126334, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main()

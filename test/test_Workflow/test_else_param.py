@@ -9,7 +9,7 @@ from lenstronomy.Workflow.else_param import ElseParam
 class TestParam(object):
 
     def setup(self):
-        kwargs_options = {'num_images': 4, 'foreground_shear': True, 'mass2light_fixed': True, 'time_delay': True}
+        kwargs_options = {'num_point_sources': 4, 'foreground_shear': True, 'mass2light_fixed': True, 'time_delay': True}
         self.param = ElseParam(kwargs_options=kwargs_options, kwargs_fixed={})
         self.kwargs = {'ra_pos': np.array([0, 0, 0, 0]), 'dec_pos': np.array([0 , 0, 0, 0]),
                        'point_amp': np.array([1, 1, 1, 1]), 'gamma1_foreground': 0.1, 'gamma2_foreground': 0.1,
@@ -25,10 +25,6 @@ class TestParam(object):
         args_new = self.param.setParams(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
-
-    def test_add2fixed(self):
-        kwargs_fixed_used = self.param.add2fix(self.kwargs)
-        assert kwargs_fixed_used['delay_dist'] == self.kwargs['delay_dist']
 
     def test_param_init(self):
         mean, sigma = self.param.param_init(self.kwargs_mean)

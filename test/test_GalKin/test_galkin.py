@@ -54,11 +54,11 @@ class TestGalkin(object):
 
         galkin = GalKin_analytic(aperture=aperture_type, mass_profile=mass_profile, light_profile=light_profile,
                                  anisotropy_type=anisotropy_type, psf_fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=1000)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=2000)
 
         los_disp = Velocity_dispersion(beta_const=False, b_prior=False, kwargs_cosmo=kwargs_cosmo)
         sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, aniso_param=r_ani, R_slit=length, dR_slit=width,
-                                     FWHM=psf_fwhm, num=1000)
+                                     FWHM=psf_fwhm, num=2000)
         npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
 
     def test_log_linear_integral(self):

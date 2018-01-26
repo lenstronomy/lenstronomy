@@ -16,7 +16,7 @@ class TestLightProfile(object):
     def test_draw_light(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
         kwargs_profile = [{'sigma0': 1., 'Rs': 0.8}]
-        r_list = lightProfile.draw_light_2d(kwargs_profile, n=200000)
+        r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
         bins = np.linspace(0., 1, 20)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)

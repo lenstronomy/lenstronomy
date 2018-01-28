@@ -5,7 +5,6 @@ import scipy.signal as signal
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.kernel_util as kernel_util
-import lenstronomy.Util.fft_convolve as fft
 from lenstronomy.Data.coord_transforms import Coordinates
 
 
@@ -256,14 +255,7 @@ class Data(object):
                 kernel = self._subgrid_kernel(kwargs)
             else:
                 kernel = kwargs['kernel_pixel']
-            if 'kernel_fft' in kwargs:
-                kernel_fft = kwargs['kernel_pixel_fft']
-                try:
-                    img_conv1 = fft.fftconvolve(grid, kernel, kernel_fft, mode='same')
-                except:
-                    img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
-            else:
-                img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
+            img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
             return img_conv1
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)

@@ -11,9 +11,6 @@ class ElseParam(object):
         self._num_point_sources = kwargs_options.get('num_point_sources', 0)
         self._mass2light = kwargs_options.get('mass2light_fixed', False)
         self._time_delay = kwargs_options.get('time_delay', False)
-        self._shift_coordinates = kwargs_options.get('shift_coordinates', False)
-        self._num_bands = int(kwargs_options.get('num_bands', 1))
-        self._shift_band = kwargs_options.get('shift_band', [False] * self._num_bands)
 
     def getParams(self, args, i):
         """
@@ -51,22 +48,6 @@ class ElseParam(object):
                 i += 1
             else:
                 kwargs['mass2light'] = self.kwargs_fixed['mass2light']
-        if self._shift_coordinates:
-
-            ra_shift_fixed = self.kwargs_fixed.get('ra_shift', [0]*self._num_bands)
-            dec_shift_fixed = self.kwargs_fixed.get('dec_shift', [0]*self._num_bands)
-            ra_shift = []
-            dec_shift = []
-            for k in range(self._num_bands):
-                if self._shift_band[k]:
-                    ra_shift.append(args[i])
-                    dec_shift.append(args[i + 1])
-                    i += 2
-                else:
-                    ra_shift.append(ra_shift_fixed[k])
-                    dec_shift.append(dec_shift_fixed[k])
-            kwargs['ra_shift'] = ra_shift
-            kwargs['dec_shift'] = dec_shift
 
         return kwargs, i
 
@@ -96,12 +77,6 @@ class ElseParam(object):
         if self._mass2light:
             if not 'mass2light' in self.kwargs_fixed:
                 args.append(kwargs['mass2light'])
-        if self._shift_coordinates:
-            n = max(self._num_bands - 1, 0)
-            for k in range(n):
-                if self._shift_band[k]:
-                    args.append(kwargs['ra_shift'][k])
-                    args.append(kwargs['dec_shift'][k])
         return args
 
     def param_init(self, kwargs_mean):

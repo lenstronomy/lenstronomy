@@ -1,6 +1,6 @@
 from lenstronomy.ImSim.psf_fitting import PSF_fitting
 from lenstronomy.Workflow.fitting import Fitting
-
+from lenstronomy.MCMC.alignment_matching import AlignmentFitting
 
 class FittingSequence(object):
     """
@@ -128,6 +128,17 @@ class FittingSequence(object):
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
             chain, param_list = [], []
             print('PSF fitting completed')
+        elif fitting_routine == 'align_images':
+            print('Align images...')
+            lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
+            param_list = []
+            alignmentFitting = AlignmentFitting(self.kwargs_data, self.kwargs_psf, self.kwargs_options, lens_input, source_input,
+                                                                    lens_light_input, else_input, compute_bool=compute_bool)
+            lowerLimit = fitting_kwargs.get('lower_limit_shift', -0.1)
+            upperLimit = fitting_kwargs.get('upper_limit_shift', 0.1)
+            self.kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit, threadCount=1, mpi=mpi, print_key='Alignment fitting')
+            self.fitting.kwargs_data = self.kwargs_data
+
         else:
             raise ValueError("%s is not a valid fitting routine" %fitting_routine)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list

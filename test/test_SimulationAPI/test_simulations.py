@@ -1,7 +1,9 @@
 # import main simulation class of lenstronomy
 from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.Data.imaging_data import Data
 import numpy.testing as npt
 import numpy as np
+import copy
 import pytest
 
 
@@ -188,6 +190,31 @@ class TestSimulation(object):
         fermat_pot = self.SimAPI.fermat_potential(kwargs_options, kwargs_lens_list, kwargs_else)
         assert fermat_pot[0] == -0.27197369737141391
         assert len(fermat_pot) == 4
+
+    def shift_coordinate_grid(self):
+        x_shift = 0.05
+        y_shift = 0
+        kwargs_data_shifted = self.SimAPI.shift_coordinate_grid(self.kwargs_data, x_shift, y_shift, pixel_units=False)
+        kwargs_data_new = copy.deepcopy(self.kwargs_data)
+        kwargs_data_new['ra_shift'] = x_shift
+        kwargs_data_new['dec_shift'] = y_shift
+        data = Data(kwargs_data=kwargs_data_shifted)
+        data_new = Data(kwargs_data=kwargs_data_new)
+        ra, dec = 0, 0
+        x, y = data.map_coord2pix(ra, dec)
+        x_new, y_new = data_new.map_coord2pix(ra, dec)
+        npt.assert_almost_equal(x, x_new, decimal=10)
+        npt.assert_almost_equal(y, y_new, decimal=10)
+
+        ra, dec = data.map_pix2coord(x, y)
+        ra_new, dec_new = data_new.map_pix2coord(x, y)
+        npt.assert_almost_equal(ra, ra_new, decimal=10)
+        npt.assert_almost_equal(dec, dec_new, decimal=10)
+
+        x_coords, y_coords = data.coordinates
+        x_coords_new, y_coords_new = data_new.coordinates
+        npt.assert_almost_equal(x_coords[0], x_coords_new[0], decimal=10)
+        npt.assert_almost_equal(y_coords[0], y_coords_new[0], decimal=10)
 
 
 if __name__ == '__main__':

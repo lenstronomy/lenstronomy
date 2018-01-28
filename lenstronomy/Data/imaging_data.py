@@ -13,10 +13,10 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
-    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False, ra_shift=0, dec_shift=0):
+    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False):
         self._subgrid_res = subgrid_res
-        self._ra_shift = ra_shift
-        self._dec_shift = dec_shift
+        self._ra_shift = kwargs_data.get('ra_shift', 0)
+        self._dec_shift = kwargs_data.get('dec_shift', 0)
 
         if 'image_data' in kwargs_data:
             data = kwargs_data['image_data']
@@ -67,12 +67,12 @@ class Data(object):
             self._mask_lens_light = np.ones_like(self._data)
         self._mask_lens_light[self._idex_mask_2d == 0] = 0
         if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
-            x_grid = kwargs_data['x_coords']
-            y_grid = kwargs_data['y_coords']
+            x_coords = kwargs_data['x_coords']
+            y_coords = kwargs_data['y_coords']
         else:
-            x_grid, y_grid = util.make_grid(np.sqrt(self.nx * self.ny), 1, subgrid_res=1, left_lower=False)
-        x_grid += self._ra_shift
-        y_grid += self._dec_shift
+            x_coords, y_coords = util.make_grid(np.sqrt(self.nx * self.ny), 1, subgrid_res=1, left_lower=False)
+        x_grid = x_coords + self._ra_shift
+        y_grid = y_coords + self._dec_shift
         self._x_grid_all, self._y_grid_all = x_grid, y_grid
         self.x_grid = x_grid[self._idex_mask == 1]
         self.y_grid = y_grid[self._idex_mask == 1]

@@ -15,9 +15,9 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None, ra_shift=0, dec_shift=0):
+    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None):
         self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1),
-                         psf_subgrid=kwargs_options.get('psf_subgrid', False), ra_shift=ra_shift, dec_shift=dec_shift)
+                         psf_subgrid=kwargs_options.get('psf_subgrid', False))
         self.LensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
         self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
@@ -152,7 +152,6 @@ class ImageModel(object):
                                                                                    inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, model_error)
-        # logL = self.compare.get_log_likelihood(X, cov_matrix=cov_matrix)
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             #if marg_const + logL > 0:

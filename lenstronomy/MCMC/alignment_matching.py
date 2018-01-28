@@ -94,10 +94,6 @@ class AlignmentChain(object):
     def likelihood(self, a):
         return self.X2_chain_image(a)
 
-    def computeLikelihood(self, ctx):
-        likelihood, _ = self.X2_chain_image(ctx.getParams())
-        return likelihood
-
     def setup(self):
         pass
 

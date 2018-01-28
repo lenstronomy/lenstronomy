@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from lenstronomy.LightModel.light_model import LensLightModel
+from lenstronomy.LightModel.light_model import LightModel
 
 
 class TestLensLightModel(object):
@@ -13,6 +14,11 @@ class TestLensLightModel(object):
     def setup(self):
         self.lensLightModel = LensLightModel(light_model_list=['GAUSSIAN'])
         self.kwargs = [{'amp': 1., 'center_x': 0., 'center_y': 0., 'sigma_x': 2., 'sigma_y': 2.}]
+
+    def test_init(self):
+        model_list = ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC', 'BULDGE_DISK', 'SHAPELETS', 'UNIFORM']
+        lightModel = LightModel(profile_type_list=model_list)
+        assert len(lightModel.profile_type_list) == len(model_list)
 
     def test_surface_brightness(self):
         output = self.lensLightModel.surface_brightness(x=1, y=1, kwargs_lens_light_list=self.kwargs)

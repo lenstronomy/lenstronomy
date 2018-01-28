@@ -120,6 +120,9 @@ class TestImageModel(object):
         residuals = self.imageModel.reduced_residuals(model, error_map=0)
         npt.assert_almost_equal(np.std(residuals), 1.01, decimal=1)
 
+        chi2 = self.imageModel.reduced_chi2(model, error_map=0)
+        npt.assert_almost_equal(chi2, 1, decimal=1)
+
     def test_numData_evaluate(self):
         numData = self.imageModel.numData_evaluate
         assert numData == 10000

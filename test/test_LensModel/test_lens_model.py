@@ -14,6 +14,13 @@ class TestLensModel(object):
         self.lensModel = LensModel(['GAUSSIAN'])
         self.kwargs = [{'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
+    def test_init(self):
+        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SIE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
+                           'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
+                           'SHAPELETS_POLAR', 'DIPOLE']
+        lensModel = LensModel(lens_model_list)
+        assert len(lensModel.lens_model_list) == len(lens_model_list)
+
     def test_mass(self):
         output = self.lensModel.mass(x=1., y=1., epsilon_crit=1.9e+15, kwargs=self.kwargs)
         npt.assert_almost_equal(output, -11039296368203.469, decimal=5)

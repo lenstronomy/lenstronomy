@@ -82,6 +82,7 @@ lenstronomy/LensModel/lens_model_extensions.py
 lenstronomy/LensModel/multi_plane.py
 lenstronomy/LensModel/numeric_lens_differentials.py
 lenstronomy/LensModel/numerical_profile_integrals.py
+lenstronomy/LensModel/single_plane.py
 lenstronomy/LensModel/Profiles/__init__.py
 lenstronomy/LensModel/Profiles/composite_sersic_nfw.py
 lenstronomy/LensModel/Profiles/dipole.py
@@ -94,6 +95,7 @@ lenstronomy/LensModel/Profiles/hernquist_ellipse.py
 lenstronomy/LensModel/Profiles/interpol.py
 lenstronomy/LensModel/Profiles/multi_gaussian_kappa.py
 lenstronomy/LensModel/Profiles/nfw.py
+lenstronomy/LensModel/Profiles/nfwT.py
 lenstronomy/LensModel/Profiles/nfw_ellipse.py
 lenstronomy/LensModel/Profiles/no_lens.py
 lenstronomy/LensModel/Profiles/p_jaffe.py
@@ -128,11 +130,11 @@ lenstronomy/LightModel/Profiles/shapelets.py
 lenstronomy/LightModel/Profiles/torus.py
 lenstronomy/LightModel/Profiles/uniform.py
 lenstronomy/MCMC/__init__.py
+lenstronomy/MCMC/alignment_matching.py
 lenstronomy/MCMC/initialise_from_chain.py
 lenstronomy/MCMC/mcmc.py
 lenstronomy/MCMC/mcmc_chains.py
 lenstronomy/MCMC/reinitialize.py
-lenstronomy/MCMC/time_delay_sampling.py
 lenstronomy/SimulationAPI/__init__.py
 lenstronomy/SimulationAPI/multiband.py
 lenstronomy/SimulationAPI/simulations.py
@@ -141,7 +143,6 @@ lenstronomy/Util/analysis_util.py
 lenstronomy/Util/constants.py
 lenstronomy/Util/correlation.py
 lenstronomy/Util/derivative_util.py
-lenstronomy/Util/fft_convolve.py
 lenstronomy/Util/image_util.py
 lenstronomy/Util/kernel_util.py
 lenstronomy/Util/mask.py
@@ -188,6 +189,7 @@ test/test_LensModel/test_lens_model_extensions.py
 test/test_LensModel/test_multi_plane.py
 test/test_LensModel/test_numeric_lens_differentials.py
 test/test_LensModel/test_numerical_profile_integrals.py
+test/test_LensModel/test_single_plane.py
 test/test_LensModel/test_Profiles/__init__.py
 test/test_LensModel/test_Profiles/test_composite.py
 test/test_LensModel/test_Profiles/test_dipole.py
@@ -196,8 +198,10 @@ test/test_LensModel/test_Profiles/test_flexion.py
 test/test_LensModel/test_Profiles/test_gaussian.py
 test/test_LensModel/test_Profiles/test_hernquist.py
 test/test_LensModel/test_Profiles/test_interpol.py
+test/test_LensModel/test_Profiles/test_multi_gaussian_kappa.py
 test/test_LensModel/test_Profiles/test_nfw.py
 test/test_LensModel/test_Profiles/test_nfw_ellipse.py
+test/test_LensModel/test_Profiles/test_nfwt.py
 test/test_LensModel/test_Profiles/test_no_lens.py
 test/test_LensModel/test_Profiles/test_p_jaffe.py
 test/test_LensModel/test_Profiles/test_p_jaffe_ellipse.py

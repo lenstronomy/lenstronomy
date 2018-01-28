@@ -1,13 +1,17 @@
 __author__ = 'sibirrer'
 import pytest
 import numpy as np
+import numpy.testing as npt
 
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sis import SIS
-from lenstronomy.LensModel.Profiles.interpol import Interpol_func
+from lenstronomy.LensModel.Profiles.interpol import Interpol_func, Interpol_func_scaled
 
 
 class TestInterpol(object):
+
+    def setup(self):
+        pass
 
     def test_do_interpol(self):
         numPix = 101
@@ -80,6 +84,34 @@ class TestInterpol(object):
         x, y = 1., 1.
         alpha_x, alpha_y = interp_func.derivatives(x, y, **kwargs_interp)
         assert alpha_x == 0.31622776601683794
+
+        f_ = interp_func.function(x, y, **kwargs_interp)
+        npt.assert_almost_equal(f_, 1.5811388300841898)
+
+    def test_interp_func_scaled(self):
+
+        numPix = 101
+        deltaPix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(numPix,deltaPix)
+        sis = SIS()
+        kwargs_SIS = {'theta_E':1., 'center_x': 0.5, 'center_y': -0.5}
+        f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
+        kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis), 'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis), 'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis), 'f_xy': util.array2image(f_xy_sis)}
+        interp_func = Interpol_func_scaled(grid=False)
+        x, y = 1., 1.
+        alpha_x, alpha_y = interp_func.derivatives(x, y, scale_factor=1, **kwargs_interp)
+        assert alpha_x == 0.31622776601683794
+
+        f_ = interp_func.function(x, y, scale_factor=1., **kwargs_interp)
+        npt.assert_almost_equal(f_, 1.5811388300841898)
+
+        f_xx, f_yy, f_xy = interp_func.hessian(x, y, scale_factor=1., **kwargs_interp)
+        npt.assert_almost_equal(f_xx, 0.56920997883030822, decimal=8)
+        npt.assert_almost_equal(f_yy, 0.063245553203367583, decimal=8)
+        npt.assert_almost_equal(f_xy, -0.18973665961010275, decimal=8)
 
 
 if __name__ == '__main__':

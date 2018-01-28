@@ -191,7 +191,7 @@ class TestSimulation(object):
         assert fermat_pot[0] == -0.27197369737141391
         assert len(fermat_pot) == 4
 
-    def shift_coordinate_grid(self):
+    def test_shift_coordinate_grid(self):
         x_shift = 0.05
         y_shift = 0
         kwargs_data_shifted = self.SimAPI.shift_coordinate_grid(self.kwargs_data, x_shift, y_shift, pixel_units=False)

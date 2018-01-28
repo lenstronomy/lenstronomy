@@ -76,9 +76,23 @@ class TestP_JAFFW(object):
         assert values[1][1] == 0.052668405375961035
         assert values[2][1] == -0.033723449997241584
 
+    def test_mass_tot(self):
+        rho0 = 1.
+        Ra, Rs = 0.5, 0.8
+        values = self.profile.mass_tot(rho0, Ra, Rs)
+        npt.assert_almost_equal(values, 2.429441083345073, decimal=10)
+
     def test_mass_3d_lens(self):
         mass = self.profile.mass_3d_lens(r=1, sigma0=1, Ra=0.5, Rs=0.8)
         npt.assert_almost_equal(mass, 0.87077306005349242, decimal=8)
+
+    def test_grav_pot(self):
+        x = 1
+        y = 2
+        rho0 = 1.
+        Ra, Rs = 0.5, 0.8
+        grav_pot = self.profile.grav_pot(x, y, rho0, Ra, Rs, center_x=0, center_y=0)
+        npt.assert_almost_equal(grav_pot, 0.89106542283974155, decimal=10)
 
 
 if __name__ == '__main__':

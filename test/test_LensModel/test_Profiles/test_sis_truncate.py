@@ -14,12 +14,12 @@ class TestSIS_truncate(object):
 
 
     def test_function(self):
-        x = np.array([1])
-        y = np.array([0])
+        x = 1
+        y = 0
         phi_E = 1.
         r_trunc = 2
         values = self.SIS.function(x, y, phi_E, r_trunc)
-        assert values[0] == 1
+        assert values == 1
         x = np.array([0])
         y = np.array([0])
         phi_E = 1.
@@ -34,13 +34,13 @@ class TestSIS_truncate(object):
         assert values[2] == 3
 
     def test_derivatives(self):
-        x = np.array([1])
-        y = np.array([2])
+        x = 1
+        y = 2
         phi_E = 1.
         r_trunc = 2
         f_x, f_y = self.SIS.derivatives(x, y, phi_E, r_trunc)
-        assert f_x[0] == 0.39442719099991586
-        assert f_y[0] == 0.78885438199983171
+        assert f_x == 0.39442719099991586
+        assert f_y == 0.78885438199983171
         x = np.array([0])
         y = np.array([0])
         f_x, f_y = self.SIS.derivatives(x, y, phi_E, r_trunc)
@@ -56,14 +56,14 @@ class TestSIS_truncate(object):
         assert values[1][1] == 0.13245553203367583
 
     def test_hessian(self):
-        x = np.array([1])
-        y = np.array([0])
+        x = 1
+        y = 0
         phi_E = 1.
         r_trunc = 2
         f_xx, f_yy,f_xy = self.SIS.hessian(x, y, phi_E, r_trunc)
-        assert f_xx[0] == 0
-        assert f_yy[0] == 1
-        assert f_xy[0] == 0
+        assert f_xx == 0
+        assert f_yy == 1
+        assert f_xy == 0
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.SIS.hessian(x, y, phi_E, r_trunc)

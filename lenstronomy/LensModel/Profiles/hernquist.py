@@ -228,15 +228,6 @@ class Hernquist(object):
 
         return f_xx, f_yy, f_xy
 
-    def _f_A20(self, r_a, r_s):
-        """
-        equation A20 in Eliasdottir (2013)
-        :param r_a:
-        :param r_s:
-        :return:
-        """
-        return r_a/(1+np.sqrt(1 + r_a**2)) - r_s/(1+np.sqrt(1 + r_s**2))
-
     def rho2sigma(self, rho0, Rs):
         """
         converts 3d density into 2d projected density parameter

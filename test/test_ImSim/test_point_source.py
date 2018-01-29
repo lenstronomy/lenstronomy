@@ -10,10 +10,9 @@ class TestPointSource(object):
     def setup(self):
         self.PointSource = PointSource({'point_source': True}, None)
 
-
     def test_estimate_amp(self):
         data = np.ones((20, 20))
-        psf_kernel = np.ones((20, 20) ) /10.
+        psf_kernel = np.ones((20, 20)) /10.
         x_pos = 9
         y_pos = 9.5
         mag = self.PointSource.estimate_amp(data, x_pos, y_pos, psf_kernel)

@@ -16,15 +16,6 @@ class Velocity_dispersion(object):
         self.b_prior = b_prior
         self.cosmo = Cosmo(kwargs_cosmo)
 
-    def anisotropy_set_up(self, beta_const=False, b_prior=False):
-        """
-
-        :param beta_const:
-        :return:
-        """
-        self.beta_const = beta_const
-        self.b_prior = b_prior
-
     def vel_disp(self, gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM, num=100):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)

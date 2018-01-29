@@ -25,10 +25,7 @@ class SPP(object):
         :returns:  function
         :raises: AttributeError, KeyError
         """
-        if gamma < 1.6:
-            gamma = 1.6
-        if gamma > 2.9:
-            gamma = 2.9
+        gamma = self._gamma_limit(gamma)
 
         x_ = x - center_x
         y_ = y - center_y
@@ -47,10 +44,7 @@ class SPP(object):
         #     fac = 1./eta*(a/(E*E))**(eta/2-1)*2
         #     dx[:] = fac*xt1
         #     dy[:] = fac*xt2/(q*q)
-        if gamma < 1.6:
-            gamma = 1.6
-        if gamma > 2.9:
-            gamma = 2.9
+        gamma = self._gamma_limit(gamma)
 
         xt1 = x - center_x
         xt2 = y - center_y
@@ -73,11 +67,7 @@ class SPP(object):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, center_x=0., center_y=0.):
-        if gamma < 1.6:
-            gamma = 1.6
-        if gamma > 2.9:
-            gamma = 2.9
-
+        gamma = self._gamma_limit(gamma)
         xt1 = x - center_x
         xt2 = y - center_y
         E = theta_E / ((3 - gamma) / 2.) ** (1. / (1 - gamma))
@@ -174,18 +164,6 @@ class SPP(object):
         rho0 = self.theta2rho(theta_E, gamma)
         return self.mass_2d(r, rho0, gamma)
 
-    def mass_tot(self, rho0, alpha):
-        """
-        total mass within the profile
-        :param rho0:
-        :param a:
-        :param s:
-        :return:
-        """
-        # mass enclosed is infinite
-        m_tot = 0
-        return m_tot
-
     def grav_pot(self, x, y, rho0, gamma, center_x=0, center_y=0):
         """
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
@@ -235,3 +213,16 @@ class SPP(object):
         r = np.sqrt(x_**2 + y_**2)
         sigma = np.sqrt(np.pi) * special.gamma(1./2*(-1+gamma))/special.gamma(gamma/2.) * r**(1-gamma) * rho0
         return sigma
+
+    def _gamma_limit(self, gamma):
+        """
+        limits the power-law slope to certain bounds
+
+        :param gamma: power-law slope
+        :return: bounded power-law slopte
+        """
+        if gamma < 1.5:
+            gamma = 1.5
+        if gamma > 2.9:
+            gamma = 2.9
+        return gamma

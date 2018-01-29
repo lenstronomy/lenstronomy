@@ -32,6 +32,9 @@ class TestData(object):
         assert result[0] == 1.1
         assert result[1] == 1.2
 
+    def test_numData(self):
+        assert self.Data.numData == 16
+
     def test_psf_cutout(self):
         idex_mask = np.zeros((5, 5))
         idex_mask[3, 2] = 1

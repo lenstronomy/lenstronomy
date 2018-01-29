@@ -105,7 +105,8 @@ class NFW(object):
         :param Rs:
         :return:
         """
-        m_3d = 4 * np.pi * rho0 * Rs**3 *(np.log((Rs + R)/Rs) - R/(Rs + R))
+        Rs = float(Rs)
+        m_3d = 4. * np.pi * rho0 * Rs**3 *(np.log((Rs + R)/Rs) - R/(Rs + R))
         return m_3d
 
     def mass_3d_lens(self, R, Rs, theta_Rs):
@@ -132,34 +133,6 @@ class NFW(object):
         gx = self._g(x)
         m_2d = 4*rho0*Rs*R**2*gx/x**2 * np.pi
         return m_2d
-
-    def nfw2D_smoothed(self, R, Rs, rho0, pixscale):
-        """
-        projected two dimenstional NFW profile with smoothing around the pixel scale
-        this routine is ment to better compare outputs to N-body simulations (not ment ot do lensemodelling with it)
-
-        :param R: radius of interest
-        :type R: float/numpy array
-        :param Rs: scale radius
-        :type Rs: float
-        :param rho0: density normalization (characteristic density)
-        :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
-        :param pixscale: pixel scale (same units as R,Rs)
-        :type pixscale: float>0
-        :return: Epsilon(R) projected density at radius R
-        """
-        x = R/Rs
-        d = pixscale/(2*Rs)
-        a = np.empty_like(x)
-        x_ = x[x > d]
-        upper = x_+d
-        lower = x_-d
-
-        a[x > d] = 4*rho0*Rs**3*(self._g(upper) - self._g(lower)) / (2 * x_ * Rs * pixscale)
-        a[x < d] = 4*rho0*Rs**3*self._g(d) / ((pixscale / 2) ** 2)
-        return a
 
     def nfwPot(self, R, Rs, rho0):
         """
@@ -324,7 +297,7 @@ class NFW(object):
         """
         convert angle at Rs into rho0
         """
-        rho0 = theta_Rs / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
         return rho0
 
     def _rho02alpha(self, rho0, Rs):

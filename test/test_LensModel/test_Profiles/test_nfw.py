@@ -15,7 +15,6 @@ class TestNFW(object):
     def setup(self):
         self.nfw = NFW()
 
-
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
@@ -87,6 +86,13 @@ class TestNFW(object):
         npt.assert_almost_equal(values[1][1], 0.30577812878681554, decimal=5)
         npt.assert_almost_equal(values[2][1], -0.13205836172334798, decimal=5)
 
+    def test_mass_3d_lens(self):
+        R = 1
+        Rs = 3
+        theta_Rs = 1
+        m_3d = self.nfw.mass_3d_lens(R, Rs, theta_Rs)
+        npt.assert_almost_equal(m_3d, 1.1573795105019022, decimal=8)
+
 
 class TestMassAngleConversion(object):
     """
@@ -111,7 +117,6 @@ class TestMassAngleConversion(object):
         rho0 = self.nfw._alpha2rho0(theta_Rs=theta_Rs_in, Rs=Rs)
         theta_Rs_out = self.nfw._rho02alpha(rho0, Rs)
         assert theta_Rs_in == theta_Rs_out
-
 
 
 if __name__ == '__main__':

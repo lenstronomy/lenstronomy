@@ -17,7 +17,6 @@ class TestSPEP(object):
         self.SPP = SPP()
         self.SIS = SIS()
 
-
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
@@ -125,6 +124,21 @@ class TestSPEP(object):
         rho0 = self.SPP.theta2rho(theta_E, gamma)
         theta_E_out = self.SPP.rho2theta(rho0, gamma)
         assert theta_E == theta_E_out
+
+    def test_mass_2d_lens(self):
+        r = 1
+        theta_E = 1
+        gamma = 2
+        m_2d = self.SPP.mass_2d_lens(r, theta_E, gamma)
+        npt.assert_almost_equal(m_2d, 3.1415926535897931, decimal=8)
+
+    def test_grav_pot(self):
+        x, y = 1, 0
+        rho0 = 1
+        gamma = 2
+        grav_pot = self.SPP.grav_pot(x, y, rho0, gamma, center_x=0, center_y=0)
+        npt.assert_almost_equal(grav_pot, 12.566370614359172, decimal=8)
+
 
 if __name__ == '__main__':
    pytest.main()

@@ -60,11 +60,6 @@ class Data(object):
         else:
             self._mask = np.ones_like(self._data)
         self._mask[self._idex_mask_2d == 0] = 0
-        if 'mask_lens_light' in kwargs_data:
-            self._mask_lens_light = kwargs_data['mask_lens_light']
-        else:
-            self._mask_lens_light = np.ones_like(self._data)
-        self._mask_lens_light[self._idex_mask_2d == 0] = 0
         if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
             x_coords = kwargs_data['x_coords']
             y_coords = kwargs_data['y_coords']

@@ -58,6 +58,19 @@ class TestHernquist(object):
         npt.assert_almost_equal(f_yy[0], -0.023212946451134361, decimal=8)
         npt.assert_almost_equal(f_xy[0], -0.067409341317214988, decimal=8)
 
+    def test_mass_tot(self):
+        rho0 = 1
+        Rs = 3
+        m_tot = self.profile.mass_tot(rho0, Rs)
+        npt.assert_almost_equal(m_tot, 169.64600329384882, decimal=8)
+
+    def test_grav_pot(self):
+        x, y = 1, 0
+        rho0 = 1
+        Rs = 3
+        grav_pot = self.profile.grav_pot(x, y, rho0, Rs, center_x=0, center_y=0)
+        npt.assert_almost_equal(grav_pot, 42.411500823462205, decimal=8)
+
 
 class TestHernquistEllipse(object):
 

@@ -59,6 +59,14 @@ class TestShapelet(object):
         print(np.shape(test_flux))
         assert function_set[0][10] == test_flux[10]
 
+    def test_interpolate(self):
+        shapeletsInterp = Shapelets(interpolation=True)
+        x, y = 0.99, 0
+        beta = 0.5
+        flux_full = self.shapelets.function(x, y, amp=1., n1=0, n2=0, beta=beta, center_x=0, center_y=0)
+        flux_interp = shapeletsInterp.function(x, y, amp=1., n1=0, n2=0, beta=beta, center_x=0, center_y=0)
+        npt.assert_almost_equal(flux_interp, flux_full, decimal=10)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -27,7 +27,6 @@ class Shapelets(object):
                 n_array[k] = 1
                 values = hermite.hermval(self.x_grid, n_array)
                 self.H_interp[k] = values
-            print('H interpolated')
 
     def function(self, x, y, amp, beta, n1, n2, center_x, center_y):
         """

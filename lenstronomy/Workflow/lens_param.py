@@ -147,10 +147,11 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['coupling'] = kwargs_fixed['coupling']
-                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
+                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     kwargs['phi_dipole'] = args[i]
                     i += 1
                 else:
+                    print(kwargs_fixed, 'test')
                     kwargs['phi_dipole'] = kwargs_fixed['phi_dipole']
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'SERSIC_DOUBLE']:
                 if not 'n_sersic' in kwargs_fixed:
@@ -326,7 +327,7 @@ class LensParam(object):
             if model in ['DIPOLE']:
                 if not 'coupling' in kwargs_fixed:
                     args.append(kwargs['coupling'])
-                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
+                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     args.append(kwargs['phi_dipole'])
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
@@ -472,7 +473,7 @@ class LensParam(object):
                 if not 'coupling' in kwargs_fixed:
                     mean.append(kwargs_mean['coupling'])
                     sigma.append(kwargs_mean['coupling_sigma'])
-                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
+                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     mean.append(kwargs_mean['phi_dipole'])
                     sigma.append(kwargs_mean['phi_dipole_sigma'])
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
@@ -633,7 +634,7 @@ class LensParam(object):
                 if not 'coupling' in kwargs_fixed:
                     num += 1
                     list.append('coupling')
-                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options['phi_dipole_decoupling'] is True:
+                if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     num += 1
                     list.append('phi_dipole')
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:

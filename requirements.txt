@@ -3,5 +3,6 @@ astropy>=2.0
 scipy>=0.19.1
 mpmath
 cosmohammer
+emcee
 matplotlib
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

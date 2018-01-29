@@ -172,6 +172,7 @@ test/test_Data/test_coord_transforms.py
 test/test_Data/test_imaging_data.py
 test/test_GalKin/__init__.py
 test/test_GalKin/test_anisotropy.py
+test/test_GalKin/test_aperture.py
 test/test_GalKin/test_galkin.py
 test/test_GalKin/test_light_profile.py
 test/test_GalKin/test_mass_profile.py
@@ -225,6 +226,7 @@ test/test_LightModel/test_lens_light_model.py
 test/test_LightModel/test_light3d.py
 test/test_LightModel/test_source_model.py
 test/test_LightModel/test_Profiles/__init__.py
+test/test_LightModel/test_Profiles/test_gaussian.py
 test/test_LightModel/test_Profiles/test_moffat.py
 test/test_LightModel/test_Profiles/test_sersic.py
 test/test_LightModel/test_Profiles/test_shapelets.py

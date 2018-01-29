@@ -62,7 +62,7 @@ class SPEP(object):
         y_shift = y - center_y
         E = phi_E_new / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
         # E = phi_E
-        eta = -gamma+3
+        eta = float(-gamma+3)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
 
@@ -97,7 +97,7 @@ class SPEP(object):
         y_shift = y - center_y
         E = phi_E_new / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
         # E = phi_E
-        eta = -gamma+3
+        eta = float(-gamma+3)
         xt1 = np.cos(phi_G)*x_shift+np.sin(phi_G)*y_shift
         xt2 = -np.sin(phi_G)*x_shift+np.cos(phi_G)*y_shift
         P2 = xt1**2+xt2**2/q**2

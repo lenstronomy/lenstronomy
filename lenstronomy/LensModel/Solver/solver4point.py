@@ -102,7 +102,7 @@ class Solver4Point(object):
             kwargs_list[0]['phi_G'] = phi_G
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
-        elif lens_model in ['SHAPELET_CART']:
+        elif lens_model in ['SHAPELETS_CART']:
             [c00, c10, c01, c20, c11, c02] = x
             coeffs = list(kwargs_list[0]['coeffs'])
             coeffs[1: 6] = [c10, c01, c20, c11, c02]

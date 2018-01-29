@@ -103,6 +103,27 @@ class TestSolver4Point(object):
         npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens[0]['center_y'], decimal=3)
 
+    def test_solver_shapelets(self):
+        lens_model_list = ['SHAPELETS_CART', 'SPEP']
+        lensModel = LensModel(lens_model_list)
+        solver = Solver4Point(lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.
+        deltapix = 0.05
+        numPix = 150
+        coeffs = np.array([0, 0.1, 0.1, 0, 0, -0.1])
+        kwargs_lens = [{'beta': 1., 'coeffs': coeffs, 'center_x': 0., 'center_y': 0.},
+                       {'theta_E': 1., 'gamma': 2, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0}]
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
+        print(x_pos, y_pos)
+        kwargs_lens_init = [{'beta': 1, 'coeffs': np.zeros_like(coeffs), 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
+        kwargs_lens_new = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
+        npt.assert_almost_equal(kwargs_lens_new[0]['beta'], kwargs_lens[0]['beta'], decimal=3)
+        coeffs_new = kwargs_lens_new[0]['coeffs']
+        for i in range(len(coeffs)):
+            npt.assert_almost_equal(coeffs_new[i], coeffs[i], decimal=3)
+
 
 if __name__ == '__main__':
     pytest.main()

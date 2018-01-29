@@ -132,4 +132,4 @@ class SPEP(object):
             gamma = 2.9
         if q < 0.3:
             q = 0.3
-        return gamma, q
+        return float(gamma), q

@@ -58,7 +58,7 @@ class TestLensAnalysis(object):
         amplitudes, sigma = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20)
         mge = MultiGaussian()
         flux = mge.function(1., 1, amp=amplitudes, sigma=sigma)
-        npt.assert_almost_equal(flux,0.04604026574172369, decimal=8)
+        npt.assert_almost_equal(flux, 0.04531989512955493, decimal=8)
 
     def test_multi_gaussian_lens(self):
         kwargs_options = {'lens_model_list': ['SPEP']}
@@ -74,6 +74,21 @@ class TestLensAnalysis(object):
         print(kappa_true/kappa_mge)
         for i in range(len(x)):
             npt.assert_almost_equal(kappa_mge[i]/kappa_true[i], 1, decimal=1)
+
+    def test_flux_components(self):
+        kwargs_profile = [{'Rs': 0.16350224766074103, 'q': 0.4105628122365978, 'center_x': -0.019983826426838536,
+                           'center_y': 0.90000011282957304, 'phi_G': 0.14944144075912402, 'sigma0': 1.3168943578511678},
+                          {'Rs': 0.29187068596715743, 'q': 0.70799587973181288, 'center_x': -0.01,
+                           'center_y': 0.9, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
+                           'sigma0': 85.948773973262391}]
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True],
+                          'lens_light_model_internal_bool': [True, True],
+                          'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
+        lensAnalysis = LensAnalysis(kwargs_options)
+        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, type="lens")
+        assert len(flux_list) == 2
+        npt.assert_almost_equal(flux_list[0], 0.23898248741810812, decimal=8)
+        npt.assert_almost_equal(flux_list[1], 3.0565768930826662, decimal=8)
 
 
 if __name__ == '__main__':

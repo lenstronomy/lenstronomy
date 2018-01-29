@@ -6,7 +6,6 @@ from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
-from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 
@@ -83,7 +82,8 @@ class LensAnalysis(object):
         :return:
         """
         r_h = self.half_light_radius_lens(kwargs_lens_light)
-        r_array = np.logspace(-2, 1, 50) * r_h
+        r_array = np.logspace(-3, 2, 200) * r_h * 2
+        #r_array = np.logspace(-2, 1, 50) * r_h
         flux_r = self._lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
         return amplitudes, sigmas
@@ -103,7 +103,8 @@ class LensAnalysis(object):
         else:
             raise ValueError('no keyword center_x defined!')
         theta_E = self.LensModel.effective_einstein_radius(kwargs_lens)
-        r_array = np.logspace(-2, 1, 50) * theta_E
+        r_array = np.logspace(-4, 2, 200) * theta_E
+        #r_array = np.logspace(-2, 1, 50) * theta_E
         lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         kappa_s = np.zeros_like(r_array)
         for i in range(len(kwargs_lens_copy)):

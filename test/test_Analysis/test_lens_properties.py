@@ -62,9 +62,9 @@ class TestLensProp(object):
 
         lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)
         delays = lensProp.time_delays(kwargs_lens, kwargs_else=kwargs_else, kappa_ext=0)
-        npt.assert_almost_equal(delays[0], 14.128782391780096, decimal=8)
-        npt.assert_almost_equal(delays[1], -32.967158914153536, decimal=8)
-        npt.assert_almost_equal(delays[2], 14.128782391780096, decimal=8)
+        npt.assert_almost_equal(delays[0], -31.710641699405745, decimal=8)
+        npt.assert_almost_equal(delays[1], 0, decimal=8)
+        npt.assert_almost_equal(delays[2], -31.710641699405745, decimal=8)
 
 
 if __name__ == '__main__':

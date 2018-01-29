@@ -40,14 +40,32 @@ class TestLensProp(object):
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.211919902322
         v_sigma = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, r_eff=r_eff)
-
+        v_sigma_mge_lens = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
+                                                  psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                  r_eff=r_eff)
         vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=10000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
-        npt.assert_almost_equal(v_sigma/vel_disp_temp, 1, decimal=1)
+        npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
+        npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         kwargs_numerics = {}
 
         kwargs_lens_light = {'n_sersic': 2.474840710884247, 'R_2': 0.03534390928460919, 'I0_2': 48.50620123542663, 'center_x': -0.041110651331184814, 'n_2': 6.441956631512987, 'q': 0.815610540458232, 'I0_sersic': 0.50907639871167998, 'center_y': 0.094280889324232287, 'phi_G': -0.41067986340454093, 'R_sersic': 0.59310620263893432}
+
+    def test_time_delays(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_data = {}
+        kwargs_options = {'lens_model_list': ['SPEP']}
+        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'q': 0.7, 'phi_G': 0}]
+        kwargs_else = {'ra_pos': [-1, 0, 1], 'dec_pos': [0, 0, 0]}
+
+        lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)
+        delays = lensProp.time_delays(kwargs_lens, kwargs_else=kwargs_else, kappa_ext=0)
+        npt.assert_almost_equal(delays[0], 14.128782391780096, decimal=8)
+        npt.assert_almost_equal(delays[1], -32.967158914153536, decimal=8)
+        npt.assert_almost_equal(delays[2], 14.128782391780096, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main()

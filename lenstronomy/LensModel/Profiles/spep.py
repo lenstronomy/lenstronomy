@@ -26,12 +26,7 @@ class SPEP(object):
         :returns:  function
         :raises: AttributeError, KeyError
         """
-        if gamma < 1.4:
-            gamma = 1.4
-        if gamma > 2.9:
-            gamma = 2.9
-        if q < 0.3:
-            q = 0.3
+        gamma, q = self._param_bounds(gamma, q)
         theta_E *= q
         x_shift = x - center_x
         y_shift = y - center_y
@@ -51,12 +46,7 @@ class SPEP(object):
         #     fac = 1./eta*(a/(E*E))**(eta/2-1)*2
         #     dx[:] = fac*xt1
         #     dy[:] = fac*xt2/(q*q)
-        if gamma < 1.4:
-            gamma = 1.4
-        if gamma > 2.9:
-            gamma = 2.9
-        if q < 0.3:
-            q = 0.3
+        gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
         x_shift = x - center_x
         y_shift = y - center_y
@@ -86,12 +76,7 @@ class SPEP(object):
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
-        if gamma < 1.4:
-            gamma = 1.4
-        if gamma > 2.9:
-            gamma = 2.9
-        if q < 0.3:
-            q = 0.3
+        gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
         x_shift = x - center_x
         y_shift = y - center_y
@@ -132,3 +117,19 @@ class SPEP(object):
         :return:
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def _param_bounds(self, gamma, q):
+        """
+        bounds parameters
+
+        :param gamma:
+        :param q:
+        :return:
+        """
+        if gamma < 1.4:
+            gamma = 1.4
+        if gamma > 2.9:
+            gamma = 2.9
+        if q < 0.3:
+            q = 0.3
+        return gamma, q

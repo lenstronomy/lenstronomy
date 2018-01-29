@@ -35,25 +35,6 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def _rho0_r0_gamma(self, kwargs_lens, gamma, kappa_ext=0):
-        # equation (14) in Suyu+ 2010
-        theta_E = self.lens_model.effective_einstein_radius(kwargs_lens)
-        return (kappa_ext - 1) * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / self.lensCosmo.arcsec2phys_lens(theta_E) * self.lensCosmo.epsilon_crit * const.M_sun / const.Mpc ** 3  # units kg/m^3
-
-    def v_sigma(self, kwargs_lens, kwargs_lens_light, r_ani_scaling=1, r_eff=None, r=0.01):
-        """
-        returns LOL central velocity dispersion in units of km/s
-        :return:
-        """
-        gamma = kwargs_lens['gamma']
-        # equation (14) in Suyu+ 2010
-        if r_eff is None:
-            r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
-        rho0_r0_gamma = self._rho0_r0_gamma(kwargs_lens, gamma)
-        r_ani = r_ani_scaling * r_eff
-        sigma2_center = self.dispersion.sigma_r2(r, 0.551*r_eff, gamma, rho0_r0_gamma, r_ani)
-        return np.sqrt(sigma2_center) * self.lensCosmo.arcsec2phys_lens(1.) * const.Mpc / 1000
-
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
@@ -87,9 +68,9 @@ class LensProp(object):
         if MGE_mass is True:
             massModel = LensModelExtensions(lens_model_list=mass_profile_list)
             theta_E = massModel.effective_einstein_radius(kwargs_lens)
-            r_array = np.logspace(-2, 1, 100) * theta_E
+            r_array = np.logspace(-4, 2, 200) * theta_E
             mass_r = massModel.kappa(r_array, 0, kwargs_profile)
-            amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=10)
+            amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
 
@@ -106,7 +87,7 @@ class LensProp(object):
 
         if MGE_light is True:
             lightModel = LightModel(light_profile_list)
-            r_array = np.logspace(-3, 2, 100) * r_eff * 2
+            r_array = np.logspace(-3, 2, 200) * r_eff * 2
             flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
             amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
             light_profile_list = ['MULTI_GAUSSIAN']
@@ -116,28 +97,3 @@ class LensProp(object):
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, r_eff=r_eff)
         return sigma_v
-
-    def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
-        """
-
-        :return:
-        """
-        sigma_v2_model = sigma_v_model**2
-        Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model * self.lensCosmo.D_ds / self.lensCosmo.D_s)
-        D_d = D_dt_model/(1+z_d)/Ds_Dds/(1-kappa_ext)
-        return D_d, Ds_Dds
-
-    def angular_distances(self, sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled, fermat_pot):
-        """
-
-        :param sigma_v_measured: velocity dispersion measured [km/s]
-        :param time_delay_measured: time delay measured [d]
-        :param kappa_ext: external convergence estimated []
-        :param sigma_v_modeled: lens model velocity dispersion with default cosmology and without external convergence [km/s]
-        :param fermat_pot: fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]
-        :return: D_d and D_d*D_s/D_ds, units in Mpc physical
-        """
-
-        Ds_Dds = (sigma_v_measured/sigma_v_modeled) ** 2 / (self.lensCosmo.D_ds / self.lensCosmo.D_s) / (1 - kappa_ext)
-        DdDs_Dds = 1./(1+self.z_d)/(1-kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
-        return Ds_Dds, DdDs_Dds

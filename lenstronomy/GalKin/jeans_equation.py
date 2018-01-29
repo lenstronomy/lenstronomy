@@ -15,14 +15,6 @@ class Jeans_solver(object):
         self._light_profile = light_profile
         self._anisotropy_type = anisotropy_type
 
-    def numerical_solver(self, r):
-        """
-
-        :param r:
-        :return:
-        """
-        return 0
-
     def power_law_anisotropy(self, r, kwargs_profile, kwargs_anisotropy, kwargs_light):
         """
         equation (19) in Suyu+ 2010

@@ -29,13 +29,12 @@ class ImageModel(object):
         self._kwargs_psf = kwargs_psf
         self.imagePosition = LensEquationSolver(self.LensModel)
 
-    def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
         computes the source surface brightness distribution
 
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :return: 1d array of surface brightness pixels
@@ -45,11 +44,11 @@ class ImageModel(object):
             x_source, y_source = self.Data.x_grid_sub, self.Data.y_grid_sub
         else:
             x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens)
-        source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source)
+        source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
         source_light_final = self.Data.re_size_convolve(source_light, self._kwargs_psf, unconvolved=unconvolved)
         return source_light_final
 
-    def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
+    def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """
         computes the lens surface brightness distribution
 
@@ -57,7 +56,7 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
         """
-        lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light)
+        lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light, k=k)
         lens_light_final = self.Data.re_size_convolve(lens_light, self._kwargs_psf, unconvolved=unconvolved)
         return lens_light_final
 
@@ -98,7 +97,7 @@ class ImageModel(object):
         :return: 1d array of surface brightness pixels of the simulation
         """
         if source_add:
-            source_light = self.source_surface_brightness(kwargs_lens, kwargs_source, kwargs_else, unconvolved=unconvolved)
+            source_light = self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
         else:
             source_light = np.zeros_like(self.Data.data)
         if lens_light_add:

@@ -153,7 +153,8 @@
 <span class="sd">        :param Rs:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">m_3d</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span><span class="o">/</span><span class="n">Rs</span><span class="p">)</span> <span class="o">-</span> <span class="n">R</span><span class="o">/</span><span class="p">(</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">R</span><span class="p">))</span>
+        <span class="n">Rs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Rs</span><span class="p">)</span>
+        <span class="n">m_3d</span> <span class="o">=</span> <span class="mf">4.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span><span class="o">/</span><span class="n">Rs</span><span class="p">)</span> <span class="o">-</span> <span class="n">R</span><span class="o">/</span><span class="p">(</span><span class="n">Rs</span> <span class="o">+</span> <span class="n">R</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">m_3d</span></div>
 
 <div class="viewcode-block" id="NFW.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">):</span>
@@ -180,34 +181,6 @@
         <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">m_2d</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
         <span class="k">return</span> <span class="n">m_2d</span></div>
-
-<div class="viewcode-block" id="NFW.nfw2D_smoothed"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.nfw2D_smoothed">[docs]</a>    <span class="k">def</span> <span class="nf">nfw2D_smoothed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        projected two dimenstional NFW profile with smoothing around the pixel scale</span>
-<span class="sd">        this routine is ment to better compare outputs to N-body simulations (not ment ot do lensemodelling with it)</span>
-
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
-<span class="sd">        :param Rs: scale radius</span>
-<span class="sd">        :type Rs: float</span>
-<span class="sd">        :param rho0: density normalization (characteristic density)</span>
-<span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
-<span class="sd">        :param pixscale: pixel scale (same units as R,Rs)</span>
-<span class="sd">        :type pixscale: float&gt;0</span>
-<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span><span class="o">/</span><span class="n">Rs</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">pixscale</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Rs</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">]</span>
-        <span class="n">upper</span> <span class="o">=</span> <span class="n">x_</span><span class="o">+</span><span class="n">d</span>
-        <span class="n">lower</span> <span class="o">=</span> <span class="n">x_</span><span class="o">-</span><span class="n">d</span>
-
-        <span class="n">a</span><span class="p">[</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">(</span><span class="n">lower</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">)</span>
-        <span class="n">a</span><span class="p">[</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_g</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">pixscale</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">a</span></div>
 
 <div class="viewcode-block" id="NFW.nfwPot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.nfwPot">[docs]</a>    <span class="k">def</span> <span class="nf">nfwPot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -372,7 +345,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        convert angle at Rs into rho0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)))</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">rho0</span>
 
     <span class="k">def</span> <span class="nf">_rho02alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>

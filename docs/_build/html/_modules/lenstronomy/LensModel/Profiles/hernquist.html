@@ -276,15 +276,6 @@
 
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
 
-    <span class="k">def</span> <span class="nf">_f_A20</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_a</span><span class="p">,</span> <span class="n">r_s</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        equation A20 in Eliasdottir (2013)</span>
-<span class="sd">        :param r_a:</span>
-<span class="sd">        :param r_s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">r_a</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">r_a</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">r_s</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">r_s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-
 <div class="viewcode-block" id="Hernquist.rho2sigma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.rho2sigma">[docs]</a>    <span class="k">def</span> <span class="nf">rho2sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        converts 3d density into 2d projected density parameter</span>

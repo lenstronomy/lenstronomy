@@ -65,21 +65,6 @@
 <em class="property">class </em><code class="descclassname">lenstronomy.Workflow.else_param.</code><code class="descname">ElseParam</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_fixed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/else_param.html#ElseParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.else_param.ElseParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.Workflow.else_param.ElseParam.add2fix">
-<code class="descname">add2fix</code><span class="sig-paren">(</span><em>kwargs_fixed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/else_param.html#ElseParam.add2fix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.else_param.ElseParam.add2fix" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_fixed</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Workflow.else_param.ElseParam.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/else_param.html#ElseParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.else_param.ElseParam.getParams" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -102,19 +87,6 @@
 <dl class="method">
 <dt id="lenstronomy.Workflow.else_param.ElseParam.num_param">
 <code class="descname">num_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/else_param.html#ElseParam.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.else_param.ElseParam.num_param" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Workflow.else_param.ElseParam.param_bounds">
-<code class="descname">param_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/else_param.html#ElseParam.param_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.else_param.ElseParam.param_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -162,7 +134,7 @@
 <span id="lenstronomy-workflow-fitting-module"></span><h2>lenstronomy.Workflow.fitting module<a class="headerlink" href="#module-lenstronomy.Workflow.fitting" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Workflow.fitting.Fitting">
-<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.fitting.</code><code class="descname">Fitting</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_lens_fixed=[]</em>, <em>kwargs_source_fixed=[]</em>, <em>kwargs_lens_light_fixed=[]</em>, <em>kwargs_else_fixed={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.fitting.</code><code class="descname">Fitting</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on</p>
 <dl class="method">
@@ -226,7 +198,7 @@
 <span id="lenstronomy-workflow-fitting-sequence-module"></span><h2>lenstronomy.Workflow.fitting_sequence module<a class="headerlink" href="#module-lenstronomy.Workflow.fitting_sequence" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence">
-<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.fitting_sequence.</code><code class="descname">FittingSequence</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_options</em>, <em>kwargs_init</em>, <em>kwargs_sigma</em>, <em>kwargs_fixed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.fitting_sequence.</code><code class="descname">FittingSequence</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_options</em>, <em>kwargs_init</em>, <em>kwargs_sigma</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to define a sequence of fitting applied, inherite the Fitting class</p>
 <dl class="method">
@@ -301,21 +273,6 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle the lens model parameter</p>
 <dl class="method">
-<dt id="lenstronomy.Workflow.lens_param.LensParam.add2fix">
-<code class="descname">add2fix</code><span class="sig-paren">(</span><em>kwargs_fixed_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.add2fix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.add2fix" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_fixed</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Workflow.lens_param.LensParam.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.getParams" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -323,19 +280,6 @@
 <dl class="method">
 <dt id="lenstronomy.Workflow.lens_param.LensParam.num_param">
 <code class="descname">num_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.num_param" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Workflow.lens_param.LensParam.param_bounds">
-<code class="descname">param_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.param_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.param_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -363,7 +307,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.lens_param.LensParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.setParams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/lens_param.html#LensParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.lens_param.LensParam.setParams" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -385,21 +329,6 @@
 <dt id="lenstronomy.Workflow.light_param.LightParam">
 <em class="property">class </em><code class="descclassname">lenstronomy.Workflow.light_param.</code><code class="descname">LightParam</code><span class="sig-paren">(</span><em>kwargs_options</em>, <em>kwargs_fixed</em>, <em>type='lens_light'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="lenstronomy.Workflow.light_param.LightParam.add2fix">
-<code class="descname">add2fix</code><span class="sig-paren">(</span><em>kwargs_fixed_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.add2fix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.add2fix" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_fixed</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="lenstronomy.Workflow.light_param.LightParam.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.getParams" title="Permalink to this definition">¶</a></dt>
@@ -434,19 +363,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Workflow.light_param.LightParam.param_bounds">
-<code class="descname">param_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.param_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.param_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Workflow.light_param.LightParam.param_init">
 <code class="descname">param_init</code><span class="sig-paren">(</span><em>kwargs_mean_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.param_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.param_init" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -463,14 +379,19 @@
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.light_param.LightParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_list</strong> – </li>
+<li><strong>bounds</strong> – bool, if True, ellitpicity of min/max</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -493,17 +414,6 @@ NFW: to do
 SIS:  phi_E, (center_x, center_y as options)
 SPEMD: to do
 SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)</p>
-<dl class="method">
-<dt id="lenstronomy.Workflow.parameters.Param.add_to_fixed">
-<code class="descname">add_to_fixed</code><span class="sig-paren">(</span><em>lens_fixed</em>, <em>source_fixed</em>, <em>lens_light_fixed</em>, <em>else_fixed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.add_to_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.add_to_fixed" title="Permalink to this definition">¶</a></dt>
-<dd><p>changes the kwargs fixed with the inputs, if options are chosen such that it is modeled
-:param lens_fixed:
-:param source_fixed:
-:param lens_light_fixed:
-:param else_fixed:
-:return:</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.getParams" title="Permalink to this definition">¶</a></dt>
@@ -538,19 +448,6 @@ SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Workflow.parameters.Param.param_bounds">
-<code class="descname">param_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.param_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.param_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">hard bounds on the parameter space</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.param_init">
 <code class="descname">param_init</code><span class="sig-paren">(</span><em>kwarg_mean_lens</em>, <em>kwarg_mean_source</em>, <em>kwarg_mean_lens_light</em>, <em>kwarg_mean_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.param_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.param_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting
@@ -560,7 +457,7 @@ might be migrated to the param class</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.setParams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.setParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>inverse of getParam function
 :param kwargs_lens: keyword arguments depending on model options
 :param kwargs_source: keyword arguments depending on model options

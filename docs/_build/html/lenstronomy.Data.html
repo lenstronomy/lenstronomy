@@ -130,14 +130,6 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
 <dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.add_noise2image">
-<code class="descname">add_noise2image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.add_noise2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.add_noise2image" title="Permalink to this definition">¶</a></dt>
-<dd><p>adds Poisson and Gaussian noise to the modeled image
-:param image:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.array2image">
 <code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.array2image" title="Permalink to this definition">¶</a></dt>
 <dd><p>maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
@@ -172,16 +164,6 @@
 <dt id="lenstronomy.Data.imaging_data.Data.deltaPix">
 <code class="descname">deltaPix</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.deltaPix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.flux_aperture">
-<code class="descname">flux_aperture</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>width</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.flux_aperture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.flux_aperture" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the flux within an aperture
-:param ra_pos: ra position of aperture
-:param dec_pos: dec position of aperture
-:param width: width of aperture
-:return: summed value within the aperture</p>
-</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.image2array">
@@ -316,21 +298,6 @@
 :param model:
 :param error_map:
 :return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.reduced_residuals">
-<code class="descname">reduced_residuals</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.reduced_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.reduced_residuals" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>

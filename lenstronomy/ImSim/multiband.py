@@ -23,19 +23,18 @@ class MakeImageMultiband(object):
                 raise ValueError('compute_bool statement has not the same range as number of bands available!')
             self._compute_bool = compute_bool
 
-    def source_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_else, unconvolved=False, de_lensed=False):
+    def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
         """
         computes the source surface brightness distribution
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :return: list of 1d arrays of surface brightness pixels (for each band)
         """
         source_light_final_list = []
         for i in range(self._num_bands):
-            source_light_final = self._makeImage_list[i].source_surface_brightness(kwargs_lens, kwargs_source, kwargs_else, unconvolved=unconvolved, de_lensed=de_lensed)
+            source_light_final = self._makeImage_list[i].source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved, de_lensed=de_lensed)
             source_light_final_list.append(source_light_final)
         return source_light_final_list
 

@@ -70,11 +70,11 @@ class TestImageModel(object):
         self.imageModel = ImageModel(self.kwargs_options, self.kwargs_data, self.kwargs_psf)
 
     def test_source_surface_brightness(self):
-        source_model = self.imageModel.source_surface_brightness(self.kwargs_lens, self.kwargs_source, self.kwargs_else, unconvolved=False, de_lensed=False)
+        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
         npt.assert_almost_equal(source_model[10, 10], 0.13646500032614567, decimal=8)
 
-        source_model = self.imageModel.source_surface_brightness(self.kwargs_lens, self.kwargs_source, self.kwargs_else, unconvolved=True, de_lensed=False)
+        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model) == 100
         npt.assert_almost_equal(source_model[10, 10], 0.13162651658058167, decimal=8)
 

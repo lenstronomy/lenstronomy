@@ -56,8 +56,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_options</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_images&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;foreground_shear&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_point_sources&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mass2light</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mass2light_fixed&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="o">=</span> <span class="n">kwargs_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_delay&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -69,30 +68,22 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">])</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">])</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;point_amp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">])</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">]</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -105,6 +96,7 @@
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">]</span>
+
         <span class="k">return</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">i</span></div>
 
 <div class="viewcode-block" id="ElseParam.setParams"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.else_param.ElseParam.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
@@ -114,23 +106,19 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">x_pos</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">]</span>
+                <span class="n">x_pos</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_pos</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">]</span>
+                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_pos</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;point_amp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
                 <span class="n">point_amp</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">point_amp</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">])</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">])</span>
@@ -139,36 +127,6 @@
                 <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">args</span></div>
 
-<div class="viewcode-block" id="ElseParam.add2fix"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.else_param.ElseParam.add2fix">[docs]</a>    <span class="k">def</span> <span class="nf">add2fix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param kwargs_fixed:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fix_return</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s1">&#39;point_amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-            <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass2light</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;mass2light&#39;</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">fix_return</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;mass2light&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">fix_return</span></div>
-
 <div class="viewcode-block" id="ElseParam.param_init"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.else_param.ElseParam.param_init">[docs]</a>    <span class="k">def</span> <span class="nf">param_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mean</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -176,15 +134,15 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">x_pos_mean</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">]</span>
+                <span class="n">x_pos_mean</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">]</span>
                 <span class="n">pos_sigma</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;pos_sigma&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x_pos_mean</span><span class="p">:</span>
                     <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                     <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_sigma</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">y_pos_mean</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">]</span>
+                <span class="n">y_pos_mean</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">]</span>
                 <span class="n">pos_sigma</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;pos_sigma&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">y_pos_mean</span><span class="p">:</span>
                     <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -195,13 +153,7 @@
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">point_amp</span><span class="p">:</span>
                     <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                     <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_amp_sigma</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;gamma1_foreground&#39;</span><span class="p">])</span>
-                <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;gamma2_foreground&#39;</span><span class="p">])</span>
-                <span class="n">shear_sigma</span> <span class="o">=</span> <span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;shear_foreground_sigma&#39;</span><span class="p">]</span>
-                <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shear_sigma</span><span class="p">)</span>
-                <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shear_sigma</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
                 <span class="n">mean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;delay_dist&#39;</span><span class="p">])</span>
@@ -212,45 +164,6 @@
                 <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_mean</span><span class="p">[</span><span class="s1">&#39;mass2light_sigma&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span></div>
 
-<div class="viewcode-block" id="ElseParam.param_bounds"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.else_param.ElseParam.param_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">param_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">pos_low</span> <span class="o">=</span> <span class="o">-</span><span class="mi">60</span>
-                <span class="n">pos_high</span> <span class="o">=</span> <span class="mi">60</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
-                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_low</span><span class="p">)</span>
-                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_high</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">pos_low</span> <span class="o">=</span> <span class="o">-</span><span class="mi">60</span>
-                <span class="n">pos_high</span> <span class="o">=</span> <span class="mi">60</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
-                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_low</span><span class="p">)</span>
-                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos_high</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;point_amp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
-                    <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">)</span>
-                <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
-                <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">)</span>
-                <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mass2light</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;mass2light&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">low</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">high</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span></div>
-
 <div class="viewcode-block" id="ElseParam.num_param"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.else_param.ElseParam.num_param">[docs]</a>    <span class="k">def</span> <span class="nf">num_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -258,24 +171,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;ra_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>  <span class="c1"># Warning: must be 4 point source positions!!!</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
+                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>  <span class="c1"># Warning: must be 4 point source positions!!!</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">):</span>
                     <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ra_pos&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;dec_pos&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
+                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">):</span>
                     <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;dec_pos&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;point_amp&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">):</span>
+                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_point_sources</span><span class="p">):</span>
                     <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;point_amp&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;gamma1_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="s1">&#39;gamma2_foreground&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
-                <span class="n">num</span> <span class="o">+=</span> <span class="mi">2</span>
-                <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;shear_foreground_1&#39;</span><span class="p">)</span>
-                <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;shear_foreground_2&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;delay_dist&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">:</span>
                 <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>

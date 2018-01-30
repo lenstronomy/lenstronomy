@@ -66,6 +66,27 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to compute cosmological distances</p>
 <dl class="method">
+<dt id="lenstronomy.Cosmo.background.Background.D_dt">
+<code class="descname">D_dt</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/background.html#Background.D_dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.background.Background.D_dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>time-delay distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>z_lens</strong> – redshift of lens</li>
+<li><strong>z_source</strong> – redshift of source</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time-delay distance in units of Mpc</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Cosmo.background.Background.D_xy">
 <code class="descname">D_xy</code><span class="sig-paren">(</span><em>z_observer</em>, <em>z_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/background.html#Background.D_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.background.Background.D_xy" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -152,8 +173,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt_model">
-<code class="descname">D_dt_model</code><span class="sig-paren">(</span><em>H_0</em>, <em>Om0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#FlatLCDM.D_dt_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt_model" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt">
+<code class="descname">D_dt</code><span class="sig-paren">(</span><em>H_0</em>, <em>Om0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#FlatLCDM.D_dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>time delay distance
 :param H_0: Hubble parameter [km/s/Mpc]
 :param Om0: normalized matter density at present time
@@ -203,8 +224,8 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.D_dt_model">
-<code class="descname">D_dt_model</code><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.D_dt_model" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.D_dt">
+<code class="descname">D_dt</code><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.D_dt" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -223,6 +244,42 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">angular diameter distance to the source [Mpc]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_diameter_relations">
+<code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em>, <em>z_d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_distances">
+<code class="descname">angular_distances</code><span class="sig-paren">(</span><em>sigma_v_measured</em>, <em>time_delay_measured</em>, <em>kappa_ext</em>, <em>sigma_v_modeled</em>, <em>fermat_pot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.angular_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_distances" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sigma_v_measured</strong> – velocity dispersion measured [km/s]</li>
+<li><strong>time_delay_measured</strong> – time delay measured [d]</li>
+<li><strong>kappa_ext</strong> – external convergence estimated []</li>
+<li><strong>sigma_v_modeled</strong> – lens model velocity dispersion with default cosmology and without external convergence [km/s]</li>
+<li><strong>fermat_pot</strong> – fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">D_d and D_d*D_s/D_ds, units in Mpc physical</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -306,8 +363,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>delay_unitless</strong> – in units of arcsec^2 (Fermat potential)</li>
-<li><strong>kappa_ext</strong> – unit less</li>
+<li><strong>delay_unitless</strong> – in units of arcsec^2 (e.g. Fermat potential)</li>
+<li><strong>kappa_ext</strong> – unit-less</li>
 </ul>
 </td>
 </tr>

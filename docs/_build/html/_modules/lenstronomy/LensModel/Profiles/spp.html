@@ -73,10 +73,7 @@
 <span class="sd">        :returns:  function</span>
 <span class="sd">        :raises: AttributeError, KeyError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mf">1.6</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.6</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&gt;</span> <span class="mf">2.9</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">2.9</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_limit</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
 
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
@@ -95,10 +92,7 @@
         <span class="c1">#     fac = 1./eta*(a/(E*E))**(eta/2-1)*2</span>
         <span class="c1">#     dx[:] = fac*xt1</span>
         <span class="c1">#     dy[:] = fac*xt2/(q*q)</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mf">1.6</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.6</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&gt;</span> <span class="mf">2.9</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">2.9</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_limit</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
 
         <span class="n">xt1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">xt2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
@@ -121,11 +115,7 @@
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
 <div class="viewcode-block" id="SPP.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.spp.SPP.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mf">1.6</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.6</span>
-        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&gt;</span> <span class="mf">2.9</span><span class="p">:</span>
-            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">2.9</span>
-
+        <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_limit</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
         <span class="n">xt1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">xt2</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">E</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="p">((</span><span class="mi">3</span> <span class="o">-</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span><span class="p">))</span>
@@ -222,18 +212,6 @@
         <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2rho</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SPP.mass_tot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.spp.SPP.mass_tot">[docs]</a>    <span class="k">def</span> <span class="nf">mass_tot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        total mass within the profile</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># mass enclosed is infinite</span>
-        <span class="n">m_tot</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="n">m_tot</span></div>
-
 <div class="viewcode-block" id="SPP.grav_pot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.spp.SPP.grav_pot">[docs]</a>    <span class="k">def</span> <span class="nf">grav_pot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        gravitational potential (modulo 4 pi G and rho0 in appropriate units)</span>
@@ -282,7 +260,20 @@
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho0</span>
-        <span class="k">return</span> <span class="n">sigma</span></div></div>
+        <span class="k">return</span> <span class="n">sigma</span></div>
+
+    <span class="k">def</span> <span class="nf">_gamma_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        limits the power-law slope to certain bounds</span>
+
+<span class="sd">        :param gamma: power-law slope</span>
+<span class="sd">        :return: bounded power-law slopte</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mf">1.5</span><span class="p">:</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="k">if</span> <span class="n">gamma</span> <span class="o">&gt;</span> <span class="mf">2.9</span><span class="p">:</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">2.9</span>
+        <span class="k">return</span> <span class="n">gamma</span></div>
 </pre></div>
 
           </div>

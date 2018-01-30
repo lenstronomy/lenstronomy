@@ -121,6 +121,27 @@ fracitonal pixels).</div></blockquote>
 </div>
 <div class="section" id="module-lenstronomy.Util.constants">
 <span id="lenstronomy-util-constants-module"></span><h2>lenstronomy.Util.constants module<a class="headerlink" href="#module-lenstronomy.Util.constants" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.constants.delay_arcsec2days">
+<code class="descclassname">lenstronomy.Util.constants.</code><code class="descname">delay_arcsec2days</code><span class="sig-paren">(</span><em>delay_arcsec</em>, <em>D_dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/constants.html#delay_arcsec2days"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.constants.delay_arcsec2days" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a delay in arcsec^2 and a Delay distance, the delay is computed in days</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>delay_arc_sec</strong> – gravitational delay in units of arcsec^2 (e.g. Fermat potential)</li>
+<li><strong>D_dt</strong> – Time delay distance (in units of Mpc)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time-delay in units of days</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.Util.correlation">
 <span id="lenstronomy-util-correlation-module"></span><h2>lenstronomy.Util.correlation module<a class="headerlink" href="#module-lenstronomy.Util.correlation" title="Permalink to this headline">¶</a></h2>
@@ -209,61 +230,8 @@ fracitonal pixels).</div></blockquote>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.Util.fft_convolve">
-<span id="lenstronomy-util-fft-convolve-module"></span><h2>lenstronomy.Util.fft_convolve module<a class="headerlink" href="#module-lenstronomy.Util.fft_convolve" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Util.fft_convolve.FFT">
-<em class="property">class </em><code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">FFT</code><span class="sig-paren">(</span><em>image</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#FFT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.FFT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class for fast convolution computation with given image size and fixed kernel</p>
-<dl class="method">
-<dt id="lenstronomy.Util.fft_convolve.FFT.fft_convolve">
-<code class="descname">fft_convolve</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#FFT.fft_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.FFT.fft_convolve" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – 2d array to match “shape”/rfftn kernel</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.fft_convolve.fftconvolve">
-<code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">fftconvolve</code><span class="sig-paren">(</span><em>in1</em>, <em>in2</em>, <em>int2_fft</em>, <em>mode='same'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#fftconvolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.fftconvolve" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>in1</strong> – </li>
-<li><strong>in2</strong> – </li>
-<li><strong>int2_fft</strong> – </li>
-<li><strong>mode</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.Util.fft_convolve.fftn">
-<code class="descclassname">lenstronomy.Util.fft_convolve.</code><code class="descname">fftn</code><span class="sig-paren">(</span><em>image</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/fft_convolve.html#fftn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.fft_convolve.fftn" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the fourier transpose of the kernel in same modes as image
-:param image:
-:param kernel:
-:return:</p>
-</dd></dl>
-
+<div class="section" id="lenstronomy-util-fft-convolve-module">
+<h2>lenstronomy.Util.fft_convolve module<a class="headerlink" href="#lenstronomy-util-fft-convolve-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-lenstronomy.Util.image_util">
 <span id="lenstronomy-util-image-util-module"></span><h2>lenstronomy.Util.image_util module<a class="headerlink" href="#module-lenstronomy.Util.image_util" title="Permalink to this headline">¶</a></h2>
@@ -728,6 +696,27 @@ center is well defined for odd pixel sizes.
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.param_util.phi_q2_elliptisity_bounds">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">phi_q2_elliptisity_bounds</code><span class="sig-paren">(</span><em>phi</em>, <em>q</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#phi_q2_elliptisity_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.phi_q2_elliptisity_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phi</strong> – </li>
+<li><strong>q</strong> – </li>
+<li><strong>bounds</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.param_util.polar2cart">
 <code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">polar2cart</code><span class="sig-paren">(</span><em>r</em>, <em>phi</em>, <em>center</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#polar2cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.polar2cart" title="Permalink to this definition">¶</a></dt>
 <dd><p>transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the lense center</p>
@@ -1174,7 +1163,7 @@ into pixel coordinates in an image
 <li><a class="reference internal" href="#module-lenstronomy.Util.constants">lenstronomy.Util.constants module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.correlation">lenstronomy.Util.correlation module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.derivative_util">lenstronomy.Util.derivative_util module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.Util.fft_convolve">lenstronomy.Util.fft_convolve module</a></li>
+<li><a class="reference internal" href="#lenstronomy-util-fft-convolve-module">lenstronomy.Util.fft_convolve module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.image_util">lenstronomy.Util.image_util module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.kernel_util">lenstronomy.Util.kernel_util module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.mask">lenstronomy.Util.mask module</a></li>

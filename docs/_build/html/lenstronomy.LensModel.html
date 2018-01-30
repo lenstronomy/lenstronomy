@@ -113,27 +113,27 @@
 <span id="lenstronomy-lensmodel-lens-model-module"></span><h2>lenstronomy.LensModel.lens_model module<a class="headerlink" href="#module-lenstronomy.LensModel.lens_model" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.lens_model.LensModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>foreground_shear=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_source=None</em>, <em>redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle an arbitrary list of lens models</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.alpha">
-<code class="descname">alpha</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.alpha" title="Permalink to this definition">¶</a></dt>
+<code class="descname">alpha</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>deflection angles
 :param x: x-position (preferentially arcsec)
 :type x: numpy array
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: deflection angles in units of arcsec</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.fermat_potential">
-<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>x_image</em>, <em>y_image</em>, <em>x_source</em>, <em>y_source</em>, <em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.fermat_potential" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>x_image</em>, <em>y_image</em>, <em>x_source</em>, <em>y_source</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.fermat_potential" title="Permalink to this definition">¶</a></dt>
+<dd><p>fermat potential (negative sign means earlier arrival time)</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -143,7 +143,6 @@
 <li><strong>x_source</strong> – source position</li>
 <li><strong>y_source</strong> – source position</li>
 <li><strong>kwargs_lens</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
-<li><strong>kwargs_else</strong> – </li>
 </ul>
 </td>
 </tr>
@@ -156,7 +155,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.gamma">
-<code class="descname">gamma</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.gamma" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gamma</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>shear computation
 g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
 g2 = d^2phi/dxdy
@@ -165,67 +164,39 @@ g2 = d^2phi/dxdy
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: gamma1, gamma2</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>hessian matrix
 :param x: x-position (preferentially arcsec)
 :type x: numpy array
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: f_xx, f_xy, f_yy components</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.lens_model.LensModel.hessian_differential">
-<code class="descname">hessian_differential</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>diff=1e-07</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.hessian_differential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.hessian_differential" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
-<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
-<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
-<li><strong>kwargs_else</strong> – keyword arguments, necessary for foreground shear values only</li>
-<li><strong>diff</strong> – numerical differential step (float)</li>
-<li><strong>k</strong> – only evaluate the k-th lens model</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f_xx, f_xy, f_yx, f_yy</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.kappa">
-<code class="descname">kappa</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.kappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.kappa" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kappa</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.kappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.kappa" title="Permalink to this definition">¶</a></dt>
 <dd><p>lensing convergence k = 1/2 laplacian(phi)
 :param x: x-position (preferentially arcsec)
 :type x: numpy array
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: lensing convergence</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.magnification">
-<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.magnification" title="Permalink to this definition">¶</a></dt>
+<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.magnification" title="Permalink to this definition">¶</a></dt>
 <dd><p>mag = 1/det(A)
 A = 1 - d^2phi/d_ij
 :param x: x-position (preferentially arcsec)
@@ -233,7 +204,6 @@ A = 1 - d^2phi/d_ij
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: magnification</p>
 </dd></dl>
@@ -282,28 +252,26 @@ A = 1 - d^2phi/d_ij
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.potential">
-<code class="descname">potential</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.potential" title="Permalink to this definition">¶</a></dt>
+<code class="descname">potential</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.potential" title="Permalink to this definition">¶</a></dt>
 <dd><p>lensing potential
 :param x: x-position (preferentially arcsec)
 :type x: numpy array
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: lensing potential in units of arcsec^2</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd><p>maps image to source position (inverse deflection)
 :param x: x-position (preferentially arcsec)
 :type x: numpy array
 :param y: y-position (preferentially arcsec)
 :type y: numpy array
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param kwargs_else: keyword arguments, necessary for foreground shear values only
 :param k: only evaluate the k-th lens model
 :return: source plane positions corresponding to (x, y) in the image plane</p>
 </dd></dl>
@@ -315,19 +283,18 @@ A = 1 - d^2phi/d_ij
 <span id="lenstronomy-lensmodel-lens-model-extensions-module"></span><h2>lenstronomy.LensModel.lens_model_extensions module<a class="headerlink" href="#module-lenstronomy.LensModel.lens_model_extensions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model_extensions.</code><code class="descname">LensModelExtensions</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>foreground_shear=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model_extensions.</code><code class="descname">LensModelExtensions</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_source=None</em>, <em>redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.lens_model.LensModel" title="lenstronomy.LensModel.lens_model.LensModel"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.lens_model.LensModel</span></code></a></p>
 <p>class with extension routines not part of the LensModel core routines</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics">
-<code class="descname">critical_curve_caustics</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>compute_window=5</em>, <em>grid_scale=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_caustics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics" title="Permalink to this definition">¶</a></dt>
+<code class="descname">critical_curve_caustics</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>compute_window=5</em>, <em>grid_scale=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_caustics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kwargs_lens</strong> – lens model kwargs</li>
-<li><strong>kwargs_else</strong> – other kwargs</li>
 <li><strong>compute_window</strong> – window size in arcsec where the critical curve is computed</li>
 <li><strong>grid_scale</strong> – numerical grid spacing of the computation of the critical curves</li>
 </ul>
@@ -343,7 +310,7 @@ A = 1 - d^2phi/d_ij
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius">
-<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
+<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the radius with mean convergence=1</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -358,13 +325,43 @@ A = 1 - d^2phi/d_ij
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_lensing_effect">
+<code class="descname">external_lensing_effect</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>lens_model_internal_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.external_lensing_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_lensing_effect" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes deflection, shear and convergence at (0,0) for those part of the lens model not included in the main deflector</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_shear">
+<code class="descname">external_shear</code><span class="sig-paren">(</span><em>kwargs_lens_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.external_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_shear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens_list</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite">
-<code class="descname">magnification_finite</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_lens</em>, <em>kwargs_else=None</em>, <em>source_sigma=0.003</em>, <em>window_size=0.1</em>, <em>grid_number=100</em>, <em>shape='GAUSSIAN'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.magnification_finite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite" title="Permalink to this definition">¶</a></dt>
+<code class="descname">magnification_finite</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_lens</em>, <em>source_sigma=0.003</em>, <em>window_size=0.1</em>, <em>grid_number=100</em>, <em>shape='GAUSSIAN'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.magnification_finite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.magnification_finite" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the magnification of an extended source with Gaussian light profile
 :param x_pos: x-axis positons of point sources
 :param y_pos: y-axis position of point sources
 :param kwargs_lens: lens model kwargs
-:param kwargs_else: kwargs of image positions
 :param source_sigma: Gaussian sigma in arc sec in source
 :param window_size: size of window to compute the finite flux
 :param grid_number: number of grid cells per axis in the window to numerically comute the flux
@@ -373,7 +370,7 @@ A = 1 - d^2phi/d_ij
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope">
-<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>kwargs_else</em>, <em>lens_model_internal_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope" title="Permalink to this definition">¶</a></dt>
+<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>lens_model_internal_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -383,7 +380,7 @@ A = 1 - d^2phi/d_ij
 <span id="lenstronomy-lensmodel-numeric-lens-differentials-module"></span><h2>lenstronomy.LensModel.numeric_lens_differentials module<a class="headerlink" href="#module-lenstronomy.LensModel.numeric_lens_differentials" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>foreground_shear=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_source=None</em>, <em>redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.lens_model.LensModel" title="lenstronomy.LensModel.lens_model.LensModel"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.lens_model.LensModel</span></code></a></p>
 <p>this class computes numerical differentials of lens model quantities</p>
 <dl class="attribute">
@@ -393,28 +390,28 @@ A = 1 - d^2phi/d_ij
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens.gamma">
-<code class="descname">gamma</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.gamma" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gamma</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the shear
 :return: gamma1, gamma2</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the differentials f_xx, f_yy, f_xy from f_x and f_y
 :return: f_xx, f_xy, f_yx, f_yy</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens.kappa">
-<code class="descname">kappa</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.kappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.kappa" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kappa</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.kappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.kappa" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the convergence
 :return: kappa</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens.magnification">
-<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>kwargs_else=None</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.magnification" title="Permalink to this definition">¶</a></dt>
+<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>diff=1e-07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.magnification" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the magnification
 :return: potential</p>
 </dd></dl>

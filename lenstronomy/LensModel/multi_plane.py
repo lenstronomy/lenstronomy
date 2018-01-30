@@ -82,7 +82,7 @@ class MultiLens(object):
             z_before = z_lens
         delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
         dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
-        return dt_grav, dt_geo
+        return dt_grav + dt_geo
 
     def alpha(self, theta_x, theta_y, kwargs_lens, k=None):
         """

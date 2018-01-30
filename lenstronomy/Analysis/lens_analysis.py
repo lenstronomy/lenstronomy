@@ -133,6 +133,7 @@ class LensAnalysis(object):
             kwargs_copy[k]['center_x'] = 0
             kwargs_copy[k]['center_y'] = 0
             if type == 'lens':
+                if self.LensLightModel._
                 light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
             elif type == 'source':
                 light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)

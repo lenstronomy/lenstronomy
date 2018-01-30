@@ -21,10 +21,12 @@ class Galkin(object):
         self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
         self.FWHM = fwhm
         self.cosmo = Cosmo(kwargs_cosmo)
-        self._num_sampling = kwargs_numerics.get('sampling_number', 1000)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
+        #kwargs_numerics = {'sampling_number': 10000, 'interpol_grid_num': 5000, 'log_integration': False,
+        #                   'max_integrate': 500}
+        self._num_sampling = kwargs_numerics.get('sampling_number', 10000)
+        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 5000)
         self._log_int = kwargs_numerics.get('log_integration', False)
-        self._max_integrate = kwargs_numerics.get('max_integrate', 100)  # maximal integration (and interpolation) in units of arcsecs
+        self._max_integrate = kwargs_numerics.get('max_integrate', 500)  # maximal integration (and interpolation) in units of arcsecs
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur, r_eff=1.):
         """

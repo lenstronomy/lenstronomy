@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy.testing as npt
+import numpy as np
 import pytest
 from lenstronomy.LensModel.multi_plane import MultiLens
 from lenstronomy.LensModel.lens_model import LensModel
@@ -81,12 +82,29 @@ class TestMultiPlane(object):
         lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        grav_delay, geo_delay = lensModelMutli.arrival_time(1., 0., kwargs_lens)
-        dt = grav_delay + geo_delay
+        dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
         Dt = lensModelMutli._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
         fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
         dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
         npt.assert_almost_equal(dt, dt_simple, decimal=8)
+
+    def test_sis_ray_shooting(self):
+        z_source = 1.5
+        z_lens = 0.5
+        lens_model_list = ['SIS']
+        redshift_list = [z_lens]
+        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        beta_x, beta_y = lensModelMutli.ray_shooting(1., 0., kwargs_lens)
+        beta_x_single, beta_y_single = lensModel.ray_shooting(1, 0., kwargs_lens)
+        npt.assert_almost_equal(beta_x, beta_x_single, decimal=8)
+        npt.assert_almost_equal(beta_y, beta_y_single, decimal=8)
+        x, y = np.array([1.]), np.array([2.])
+        beta_x, beta_y = lensModelMutli.ray_shooting(x, y, kwargs_lens)
+        beta_x_single, beta_y_single = lensModel.ray_shooting(x, y, kwargs_lens)
+        npt.assert_almost_equal(beta_x, beta_x_single, decimal=8)
+        npt.assert_almost_equal(beta_y, beta_y_single, decimal=8)
 
 
 if __name__ == '__main__':

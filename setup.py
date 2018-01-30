@@ -38,6 +38,7 @@ The full documentation can be generated with Sphinx"""
 
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+desc = open("README.rst").read()
 requires = ['numpy>=1.13', 'scipy>=0.14.0', "configparser"]
 tests_require=['pytest>=2.3', "mock"]
 
@@ -48,7 +49,7 @@ setup(
     name='lenstronomy',
     version='0.0.5',
     description='Strong lens modeling package.',
-    long_description=readme + '\n\n' + doclink + '\n\n' + history,
+    long_description=desc,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
     url='https://github.com/sibirrer/lenstronomy',

@@ -212,5 +212,14 @@ class MCMC_chain(object):
         else:
             raise ValueError('option %s not valid!' % self._sampling_option)
 
+    def computeLikelihood(self, ctx):
+        if self._sampling_option == 'image':
+            logL, _ = self.X2_chain_image(ctx.getParams())
+        elif self._sampling_option == 'catalogue':
+            logL, _ = self.X2_chain_catalogue(ctx.getParams())
+        else:
+            raise ValueError('option %s not valid!' % self._sampling_option)
+        return logL
+
     def setup(self):
         pass

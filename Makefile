@@ -50,3 +50,6 @@ sdist: clean
 	pip freeze > requirements.rst
 	python setup.py sdist
 	ls -l dist
+
+pypi-upload:
+    python setup.py sdist upload

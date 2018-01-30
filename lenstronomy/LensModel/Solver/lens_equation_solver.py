@@ -121,8 +121,12 @@ class LensEquationSolver(object):
         x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
-        fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
-        idx = np.argsort(-fermat_pot)
+        if self.lensModel.multi_plane:
+            arrival_time = self.lensModel.lens_model.arrival_time(x_mins, y_mins, kwargs_lens)
+        else:
+            fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
+            arrival_time = -fermat_pot
+        idx = np.argsort(arrival_time)
         x_mins = np.array(x_mins)[idx]
         y_mins = np.array(y_mins)[idx]
         return x_mins, y_mins

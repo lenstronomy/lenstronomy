@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.0.6
+Version: 0.0.7
 Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
-Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.6.tar.gz
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.7.tar.gz
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy - the gravitational lensing software package

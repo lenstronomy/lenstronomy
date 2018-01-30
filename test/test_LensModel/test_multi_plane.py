@@ -81,7 +81,7 @@ class TestMultiPlane(object):
         lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        grav_delay, geo_delay = lensModelMutli.travel_time(1., 0., kwargs_lens)
+        grav_delay, geo_delay = lensModelMutli.arrival_time(1., 0., kwargs_lens)
         dt = grav_delay + geo_delay
         Dt = lensModelMutli._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
         fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)

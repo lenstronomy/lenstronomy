@@ -63,7 +63,7 @@ setup(
     zip_safe=False,
     keywords='lenstronomy',
     classifiers=[
-        "Development Status :: 2 - Beta",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Science/Research",
         "Natural Language :: English",
         "Operating System :: OS Independent",

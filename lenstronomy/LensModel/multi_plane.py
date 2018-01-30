@@ -53,7 +53,7 @@ class MultiLens(object):
         beta_x, beta_y = self._co_moving2angle(x, y, self._z_source)
         return beta_x, beta_y
 
-    def travel_time(self, theta_x, theta_y, kwargs_lens, k=None):
+    def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time

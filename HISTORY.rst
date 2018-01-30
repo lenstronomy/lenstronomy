@@ -12,3 +12,9 @@ History
 ++++++++++++++++++
 
 * Improved testing and stability
+
+
+0.0.6 (2018-01-29)
+++++++++++++++++++
+
+* Added feature to align coordinate system of different images

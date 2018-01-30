@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.0.5
+Version: 0.0.6
 Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
-Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.5.tar.gz
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.6.tar.gz
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy - the gravitational lensing software package
@@ -92,27 +92,6 @@ Description: =============================
         You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
         line-of-sight analysis and source reconstructions.
         
-        
-        
-        Documentation
-        -------------
-        
-        The full documentation can be generated with Sphinx
-        
-        
-        
-        History
-        -------
-        
-        0.0.1 (2018-01-09)
-        ++++++++++++++++++
-        
-        * First release on PyPI.
-        
-        0.0.2 (2018-01-16)
-        ++++++++++++++++++
-        
-        * Improved testing and stability
 Keywords: lenstronomy
 Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha

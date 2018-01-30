@@ -130,8 +130,9 @@ class LensAnalysis(object):
         x_grid, y_grid = util.make_grid(numPix=n_grid, deltapix=delta_grid)
         kwargs_copy = copy.deepcopy(kwargs_light)
         for k, kwargs in enumerate(kwargs_light):
-            kwargs_copy[k]['center_x'] = 0
-            kwargs_copy[k]['center_y'] = 0
+            if 'center_x' in kwargs_copy[k]:
+                kwargs_copy[k]['center_x'] = 0
+                kwargs_copy[k]['center_y'] = 0
             if type == 'lens':
                 light = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
             elif type == 'source':
@@ -146,7 +147,8 @@ class LensAnalysis(object):
 
     def buldge_disk_ratio(self, kwargs_buldge_disk):
         """
-        computes the buldge-to-disk ratio of the luminosity
+        computes the buldge-to-disk ratio of the
+
         :param kwargs_buldge_disk: kwargs of the buldge2disk function
         :return:
         """

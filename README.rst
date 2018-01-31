@@ -41,7 +41,7 @@ Installation
 Requirements
 -------
 To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`__ (needs a fortran compiler)
+is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`_ (needs a fortran compiler)
 * CosmoHammer (through PyPi)
 * standard python libraries (numpy, scipy)
 

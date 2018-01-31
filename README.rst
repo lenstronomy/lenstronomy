@@ -1,6 +1,6 @@
-=============================
+========================================================
 lenstronomy - the gravitational lensing software package
-=============================
+========================================================
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: http://badge.fury.io/py/lenstronomy
@@ -31,7 +31,7 @@ the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>
 
 
 Installation
---------
+------------
 
 .. code-block:: bash
 
@@ -39,7 +39,7 @@ Installation
 
 
 Requirements
--------
+------------
 To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
 is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
 * CosmoHammer (through PyPi)
@@ -47,12 +47,12 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
 
 
 Bug reporting and contributions
--------
+-------------------------------
 * see CONTRIBUTING.rst
 
 
 Modelling Features
---------
+------------------
 
 * Extended source reconstruction with basis sets (shapelets)
 * Analytic light profiles for lens and source as options
@@ -65,7 +65,8 @@ Modelling Features
 
 
 Analysis tools
--------
+--------------
+
 * Standardized fitting procedures for lens modelling
 * Modular build up to design plugins by users
 * Pre-defined plotting and illustration routines
@@ -77,7 +78,8 @@ Analysis tools
 
 
 Example notebooks
-------
+-----------------
+
 We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <https://github.com/sibirrer/lenstronomy_extensions>`_ .
 You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
 line-of-sight analysis and source reconstructions.

@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.0.8
+Version: 0.0.9
 Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
-Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.8.tar.gz
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.0.9.tar.gz
 Description-Content-Type: UNKNOWN
 Description: =============================
         lenstronomy - the gravitational lensing software package
@@ -34,7 +34,7 @@ Description: =============================
         e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
         
         
-        The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+        The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
         The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
         the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
         
@@ -51,7 +51,7 @@ Description: =============================
         Requirements
         -------
         To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-        is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`__ (needs a fortran compiler)
+        is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
         * CosmoHammer (through PyPi)
         * standard python libraries (numpy, scipy)
         
@@ -88,7 +88,7 @@ Description: =============================
         
         Example notebooks
         ------
-        We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <http://github.com/sibirrer/lenstronomy_extensions>`_ .
+        We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <https://github.com/sibirrer/lenstronomy_extensions>`_ .
         You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
         line-of-sight analysis and source reconstructions.
         

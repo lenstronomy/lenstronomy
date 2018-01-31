@@ -20,13 +20,13 @@ lenstronomy - the gravitational lensing software package
 
 
 The model package for gravitational strong lens images.
-The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`__  and finds application in
+The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
 
-The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`__ and contributions are welcome.
-The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`__ and
-the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`__.
+The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
+the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
 
 
 
@@ -78,6 +78,6 @@ Analysis tools
 
 Example notebooks
 ------
-We have made an extension module available at `GitHub <http://github.com/sibirrer/lenstronomy_extensions>`__ .
+We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <http://github.com/sibirrer/lenstronomy_extensions>`_ .
 You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
 line-of-sight analysis and source reconstructions.

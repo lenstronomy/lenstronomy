@@ -78,6 +78,6 @@ Analysis tools
 
 Example notebooks
 ------
-We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <http:/s/github.com/sibirrer/lenstronomy_extensions>`_ .
+We have made an extension module available at `http://github.com/sibirrer/lenstronomy_extensions <https://github.com/sibirrer/lenstronomy_extensions>`_ .
 You can find examle notebooks for various cases, such as time-delay cosmography, substructure lensing,
 line-of-sight analysis and source reconstructions.

@@ -24,7 +24,7 @@ The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015A
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
 
-The development is coordinated on `GitHub <http://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
+The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
 The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
 the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
 
@@ -41,7 +41,7 @@ Installation
 Requirements
 -------
 To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-is also required and can be cloned from: `GitHub <http://github/sibirrer/fastell4py>`_ (needs a fortran compiler)
+is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
 * CosmoHammer (through PyPi)
 * standard python libraries (numpy, scipy)
 

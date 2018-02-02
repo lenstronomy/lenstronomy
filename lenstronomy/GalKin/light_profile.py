@@ -13,10 +13,10 @@ class LightProfile(object):
 
         :param profile_list:
         """
-        self.light_model = LightModel(profile_type_list=profile_list, smoothing=0.001)
+        self.light_model = LightModel(profile_type_list=profile_list, smoothing=0.000001)
         self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
-        self._max_interpolate = kwargs_numerics.get('max_interpolate', 100)
-        self._min_interpolate = kwargs_numerics.get('min_interpolate', 0.0002)
+        self._max_interpolate = kwargs_numerics.get('max_integrate', 100)
+        self._min_interpolate = kwargs_numerics.get('min_integrate', 0.001)
 
     def light_3d(self, r, kwargs_list):
         """
@@ -63,7 +63,7 @@ class LightProfile(object):
         :return:
         """
         if not hasattr(self, '_light_cdf') or new_compute is True:
-            r_array = np.linspace(0., self._max_interpolate, self._interp_grid_num)
+            r_array = np.linspace(self._min_interpolate, self._max_interpolate, self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
             sum = 0
             for i, r in enumerate(r_array):

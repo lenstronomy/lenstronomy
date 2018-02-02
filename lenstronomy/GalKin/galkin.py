@@ -15,8 +15,8 @@ class Galkin(object):
     """
     def __init__(self, mass_profile_list, light_profile_list, aperture_type='slit', anisotropy_model='isotropic',
                  fwhm=0.7, kwargs_numerics={}, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
-        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo)
-        self.lightProfile = LightProfile(light_profile_list)
+        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, kwargs_numerics=kwargs_numerics)
+        self.lightProfile = LightProfile(light_profile_list, kwargs_numerics=kwargs_numerics)
         self.aperture = Aperture(aperture_type)
         self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
         self.FWHM = fwhm
@@ -24,9 +24,11 @@ class Galkin(object):
         #kwargs_numerics = {'sampling_number': 10000, 'interpol_grid_num': 5000, 'log_integration': False,
         #                   'max_integrate': 500}
         self._num_sampling = kwargs_numerics.get('sampling_number', 10000)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 5000)
+        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
         self._log_int = kwargs_numerics.get('log_integration', False)
-        self._max_integrate = kwargs_numerics.get('max_integrate', 500)  # maximal integration (and interpolation) in units of arcsecs
+        self._max_integrate = kwargs_numerics.get('max_integrate', 100)  # maximal integration (and interpolation) in units of arcsecs
+        self._min_integrate = kwargs_numerics.get('min_integrate', 0.001)  # min integration (and interpolation) in units of arcsecs
+
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur, r_eff=1.):
         """
@@ -91,15 +93,16 @@ class Galkin(object):
         :param kwargs_anisotropy:
         :return:
         """
+        R = max(R, self._min_integrate)
         if self._log_int is True:
-            min_log = np.log10(R+0.0001)
+            min_log = np.log10(R+0.001)
             max_log = np.log10(self._max_integrate)
             r_array = np.logspace(min_log, max_log, self._interp_grid_num)
-            dlog_r = (np.log10(r_array[1]) - np.log10(r_array[0])) * np.log(10)
+            dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dlog_r * r_array
         else:
-            r_array = np.linspace(R + 0.0001, self._max_integrate, self._interp_grid_num)
-            dr = r_array[1] - r_array[0]
+            r_array = np.linspace(R+0.001, self._max_integrate, self._interp_grid_num)
+            dr = r_array[2] - r_array[1]
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dr
         IR_sigma2 = np.sum(IR_sigma2_dr)
         return IR_sigma2

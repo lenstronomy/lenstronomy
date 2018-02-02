@@ -83,10 +83,10 @@ class TestGalkin(object):
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
-        kwargs_numerics_linear = {'sampling_number': 5000, 'interpol_grid_num': 5000, 'log_integration': False,
-                           'max_integrate': 50}
-        kwargs_numerics_log = {'sampling_number': 5000, 'interpol_grid_num': 5000, 'log_integration': True,
-                           'max_integrate': 50}
+        kwargs_numerics_linear = {'sampling_number': 5000, 'interpol_grid_num': 500, 'log_integration': False,
+                           'max_integrate': 10, 'min_integrate': 0.001}
+        kwargs_numerics_log = {'sampling_number': 5000, 'interpol_grid_num': 500, 'log_integration': True,
+                           'max_integrate': 10, 'min_integrate': 0.001}
         galkin_linear = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics_linear)
         galkin_log = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
@@ -148,7 +148,7 @@ class TestGalkin(object):
         """
         # light profile
         light_profile_list = ['HERNQUIST']
-        r_eff = .5
+        r_eff = 1.5
         kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
@@ -170,15 +170,20 @@ class TestGalkin(object):
 
         psf_fwhm = 1.  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
-        kwargs_numerics = {'sampling_number': 10000, 'interpol_grid_num': 5000, 'log_integration': False,
-                           'max_integrate': 500}
+        kwargs_numerics = {'sampling_number': 5000, 'interpol_grid_num': 5000, 'log_integration': True,
+                           'max_integrate': 100}
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
 
+        kwargs_numerics = {'sampling_number': 5000, 'interpol_grid_num': 5000, 'log_integration': False,
+                           'max_integrate': 100, 'min_integrate': 0.001}
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
+        sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+
         los_disp = Velocity_dispersion(beta_const=False, b_prior=False, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, aniso_param=r_ani, R_slit=length, dR_slit=width,
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff/0.551, aniso_param=r_ani, R_slit=length, dR_slit=width,
                                      FWHM=psf_fwhm, num=10000)
-        print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v los dispersion')
+        print(sigma_v, sigma_v_lin, sigma_v2, 'sigma_v Galkin (log and linear), sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)
 
     def test_projected_light_integral_hernquist(self):

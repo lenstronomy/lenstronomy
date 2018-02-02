@@ -24,6 +24,9 @@ class SinglePlane(object):
             elif lens_type == 'FLEXION':
                 from lenstronomy.LensModel.Profiles.flexion import Flexion
                 self.func_list.append(Flexion())
+            elif lens_type == 'POINT_MASS':
+                from lenstronomy.LensModel.Profiles.point_mass import PointMass
+                self.func_list.append(PointMass())
             elif lens_type == 'SIS':
                 from lenstronomy.LensModel.Profiles.sis import SIS
                 self.func_list.append(SIS())

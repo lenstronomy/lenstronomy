@@ -18,8 +18,8 @@ class MassProfile(object):
         self.model = LensModel(profile_list)
         self.cosmo = Cosmo(kwargs_cosmo)
         self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
-        self._max_interpolate = kwargs_numerics.get('max_interpolate', 100)
-        self._min_interpolate = kwargs_numerics.get('min_interpolate', 0.0001)
+        self._max_interpolate = kwargs_numerics.get('max_integrate', 100)
+        self._min_interpolate = kwargs_numerics.get('min_integrate', 0.0001)
 
     def mass_3d_interp(self, r, kwargs, new_compute=False):
         """

@@ -35,11 +35,14 @@ class TestLightProfile(object):
         bins = np.linspace(0., 1, 20)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)
+        light2d_upper = lightProfile.light_2d(R=bins_hist[1:], kwargs_list=kwargs_profile) * bins_hist[1:]
+        light2d_lower = lightProfile.light_2d(R=bins_hist[:-1], kwargs_list=kwargs_profile) * bins_hist[:-1]
         light2d *= (bins_hist[1:] + bins_hist[:-1]) / 2.
+        print((light2d_upper - light2d_lower)/(light2d_upper + light2d_lower) * 2)
         light2d /= np.sum(light2d)
         hist /= np.sum(hist)
         print(light2d / hist)
-        for i in range(1, len(hist)):
+        for i in range(2, len(hist)):
             print(bins_hist[i], i, light2d[i] / hist[i])
             npt.assert_almost_equal(light2d[i] / hist[i], 1, decimal=1)
 

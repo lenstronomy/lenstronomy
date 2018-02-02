@@ -116,7 +116,7 @@ class LensAnalysis(object):
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 
-    def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01, type="lens"):
+    def flux_components(self, kwargs_light, n_grid=400, delta_grid=0.01, deltaPix=0.05, type="lens"):
         """
         computes the total flux in each component of the model
 
@@ -139,7 +139,7 @@ class LensAnalysis(object):
                 light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
             else:
                 raise ValueError("type %s not supported!" % type)
-            flux = np.sum(light)*delta_grid**2
+            flux = np.sum(light)*delta_grid**2/ deltaPix**2
             R_h = analysis_util.half_light_radius(light, x_grid, y_grid)
             flux_list.append(flux)
             R_h_list.append(R_h)

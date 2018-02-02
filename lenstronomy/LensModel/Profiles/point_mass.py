@@ -3,12 +3,13 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
+
 class PointMass(object):
     """
     class to compute the physical deflection angle of a point mass, given as an Einstein radius
     """
     def __init__(self):
-        self.r_min = 10**(-8)
+        self.r_min = 10**(-20)
         # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)
 
     def function(self, x, y, theta_E, center_x=0, center_y=0):
@@ -64,7 +65,7 @@ class PointMass(object):
         C = theta_E
         a = x_**2 + y_**2
         if isinstance(a, int) or isinstance(a, float):
-            r2 = max(0.000000001, a)
+            r2 = max(self.r_min, a)
         else:
             r2 = np.empty_like(a)
             r2[a > self.r_min] = a[a > self.r_min]  #in the SIS regime

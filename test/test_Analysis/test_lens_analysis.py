@@ -85,7 +85,7 @@ class TestLensAnalysis(object):
                           'lens_light_model_internal_bool': [True, True],
                           'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
-        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, type="lens")
+        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="lens")
         assert len(flux_list) == 2
         npt.assert_almost_equal(flux_list[0], 0.23898248741810812, decimal=8)
         npt.assert_almost_equal(flux_list[1], 3.0565768930826662, decimal=8)
@@ -93,7 +93,7 @@ class TestLensAnalysis(object):
         kwargs_profile = [{'mean': 1.}]
         kwargs_options = {'lens_light_model_list': ['UNIFORM'], 'lens_model_list': ['NONE']}
         lensAnalysis = LensAnalysis(kwargs_options)
-        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, type="lens")
+        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="lens")
         assert len(flux_list) == 1
         npt.assert_almost_equal(flux_list[0], 16, decimal=8)
 

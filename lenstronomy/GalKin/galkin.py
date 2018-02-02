@@ -23,10 +23,10 @@ class Galkin(object):
         self.cosmo = Cosmo(kwargs_cosmo)
         #kwargs_numerics = {'sampling_number': 10000, 'interpol_grid_num': 5000, 'log_integration': False,
         #                   'max_integrate': 500}
-        self._num_sampling = kwargs_numerics.get('sampling_number', 10000)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
+        self._num_sampling = kwargs_numerics.get('sampling_number', 1000)
+        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 500)
         self._log_int = kwargs_numerics.get('log_integration', False)
-        self._max_integrate = kwargs_numerics.get('max_integrate', 100)  # maximal integration (and interpolation) in units of arcsecs
+        self._max_integrate = kwargs_numerics.get('max_integrate', 10)  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = kwargs_numerics.get('min_integrate', 0.001)  # min integration (and interpolation) in units of arcsecs
 
 

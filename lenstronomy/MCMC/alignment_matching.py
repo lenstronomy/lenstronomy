@@ -72,10 +72,12 @@ class AlignmentChain(object):
         # print('initialized on cpu', threading.current_thread())
 
         self._kwargs_data_init = kwargs_data
-        self._kwargs_options = kwargs_options
         self._kwargs_psf = kwargs_psf
         self._compute_bool = compute_bool
         self._source_marg = kwargs_options.get('source_marg', False)
+        kwargs_options_copy = copy.deepcopy(kwargs_options)
+        kwargs_options_copy['error_map'] = False
+        self._kwargs_options = kwargs_options_copy
         self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else = kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def X2_chain_image(self, args):

@@ -25,6 +25,7 @@ class LensModel(object):
     def ray_shooting(self, x, y, kwargs, k=None):
         """
         maps image to source position (inverse deflection)
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -51,6 +52,20 @@ class LensModel(object):
         else:
             return self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
 
+    def arrival_time(self, x_image, y_image, kwargs_lens):
+        """
+
+        :param x_image:
+        :param y_image:
+        :param kwargs_lens:
+        :return:
+        """
+        if self.multi_plane:
+            return self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+        else:
+            raise ValueError(
+                "arrival_time routine not defined for single plane lensing. Please use Fermat potential instead")
+
     def mass(self, x, y, epsilon_crit, kwargs):
         """
 
@@ -67,6 +82,7 @@ class LensModel(object):
     def potential(self, x, y, kwargs, k=None):
         """
         lensing potential
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -80,6 +96,7 @@ class LensModel(object):
     def alpha(self, x, y, kwargs, k=None):
         """
         deflection angles
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -93,6 +110,7 @@ class LensModel(object):
     def kappa(self, x, y, kwargs, k=None):
         """
         lensing convergence k = 1/2 laplacian(phi)
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -111,6 +129,7 @@ class LensModel(object):
         shear computation
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
         g2 = d^2phi/dxdy
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -130,6 +149,7 @@ class LensModel(object):
         magnification
         mag = 1/det(A)
         A = 1 - d^2phi/d_ij
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -146,6 +166,7 @@ class LensModel(object):
     def hessian(self, x, y, kwargs, k=None):
         """
         hessian matrix
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -159,6 +180,7 @@ class LensModel(object):
     def mass_3d(self, r, kwargs, bool_list=None):
         """
         computes the mass within a 3d sphere of radius r
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output
@@ -172,6 +194,7 @@ class LensModel(object):
     def mass_2d(self, r, kwargs, bool_list=None):
         """
         computes the mass enclosed a projected (2d) radius r
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output

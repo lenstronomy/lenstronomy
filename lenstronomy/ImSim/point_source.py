@@ -25,7 +25,7 @@ class PointSource(object):
             n_points = 0
         return n_points
 
-    def point_source_response(self, kwargs_psf, kwargs_else, kwargs_lens):
+    def point_source_response(self, kwargs_else, kwargs_lens):
         """
 
         :param n_points:
@@ -40,6 +40,7 @@ class PointSource(object):
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
         data = self.Data.data
+        kwargs_psf = self.Data._kwargs_psf
         psf_point_source = kwargs_psf['kernel_point_source']
         if self.fix_magnification_bool:
             mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)
@@ -89,12 +90,11 @@ class PointSource(object):
                 i += n_points
         return kwargs_else, i
 
-    def point_source(self, kwargs_psf, kwargs_else):
+    def point_source(self, kwargs_else):
         """
         returns the psf estimates from the different basis sets
         only analysis function
-        :param param:
-        :param kwargs_psf:
+        :param kwargs_else:
         :return:
         """
         ra_pos = kwargs_else['ra_pos']
@@ -102,6 +102,7 @@ class PointSource(object):
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
         data = self.Data.data
+        kwargs_psf = self.Data._kwargs_psf
         psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
         error_map = np.zeros_like(data)
@@ -114,10 +115,9 @@ class PointSource(object):
         point_source = grid2d
         return point_source, error_map
 
-    def point_source_list(self, kwargs_psf, kwargs_else):
+    def point_source_list(self, kwargs_else):
         """
 
-        :param kwargs_psf:
         :param kwargs_else:
         :return: list of point source models (in 2d image pixels)
         """
@@ -125,6 +125,7 @@ class PointSource(object):
         dec_pos = kwargs_else['dec_pos']
         x_pos, y_pos = self.Data.map_coord2pix(ra_pos, dec_pos)
         n_points = len(x_pos)
+        kwargs_psf = self.Data._kwargs_psf
         psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
 

@@ -193,7 +193,7 @@ class LensAnalysis(object):
         """
 
         error_map = np.zeros_like(x_grid)
-        basis_functions, n_source = self.SourceModel.lightModel.functions_split(x_grid, y_grid, kwargs_source)
+        basis_functions, n_source = self.SourceModel.functions_split(x_grid, y_grid, kwargs_source)
         basis_functions = np.array(basis_functions)
 
         if cov_param is not None:

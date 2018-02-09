@@ -12,7 +12,7 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
-    def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False):
+    def __init__(self, kwargs_data, kwargs_psf={}, subgrid_res=1, psf_subgrid=False):
         """
 
 
@@ -46,6 +46,8 @@ class Data(object):
         :param psf_subgrid:
         """
         self._subgrid_res = subgrid_res
+        self._kwargs_psf = kwargs_psf
+        self._psf_type = kwargs_psf.get('psf_type', 'NONE')
 
         if not 'image_data' in kwargs_data:
             raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array!")
@@ -286,11 +288,12 @@ class Data(object):
         chi2 = (model - self._data)**2 * self.mask / (self.C_D+np.abs(error_map))
         return np.sum(chi2) / self.numData_evaluate
 
-    def psf_convolution(self, grid, grid_scale, **kwargs):
+    def psf_convolution(self, grid, grid_scale):
         """
         convolves a given pixel grid with a PSF
         """
-        psf_type = kwargs.get('psf_type', 'NONE')
+        kwargs = self._kwargs_psf
+        psf_type = self._psf_type
         if psf_type == 'NONE':
             return grid
         elif psf_type == 'gaussian':
@@ -303,7 +306,7 @@ class Data(object):
             return img_conv
         elif psf_type == 'pixel':
             if self._psf_subgrid:
-                kernel = self._subgrid_kernel(kwargs)
+                kernel = self._subgrid_kernel()
             else:
                 kernel = kwargs['kernel_pixel']
             img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
@@ -311,11 +314,12 @@ class Data(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
 
-    def _subgrid_kernel(self, kwargs):
+    def _subgrid_kernel(self):
         """
 
         :return:
         """
+        kwargs = self._kwargs_psf
         if not hasattr(self, '_subgrid_kernel_out'):
             kernel = kernel_util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
             n = len(kwargs['kernel_pixel'])
@@ -325,7 +329,7 @@ class Data(object):
             self._subgrid_kernel_out = kernel_util.cut_psf(kernel, psf_size=n_new)
         return self._subgrid_kernel_out
 
-    def re_size_convolve(self, array, kwargs_psf, unconvolved=False):
+    def re_size_convolve(self, array, unconvolved=False):
         """
 
         :param array: 1d data vector (can also be higher resolution binned)
@@ -333,6 +337,7 @@ class Data(object):
         :param unconvolved: bool, if True, no convlolution performed, only re-binning
         :return: array with convolved and re-binned data/model
         """
+        kwargs_psf = self._kwargs_psf
         image = self.array2image(array, self._subgrid_res)
         image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
@@ -340,11 +345,11 @@ class Data(object):
             grid_final = grid_re_sized
         else:
             gridScale = self.deltaPix/float(self._subgrid_res)
-            if kwargs_psf == 'pixel' and not self._psf_subgrid:
+            if kwargs_psf['psf_type'] == 'pixel' and not self._psf_subgrid:
                 grid_re_sized = image_util.re_size(image, self._subgrid_res)
-                grid_final = self.psf_convolution(grid_re_sized, gridScale, **kwargs_psf)
+                grid_final = self.psf_convolution(grid_re_sized, gridScale)
             else:
-                grid_conv = self.psf_convolution(image, gridScale, **kwargs_psf)
+                grid_conv = self.psf_convolution(image, gridScale)
                 grid_final = image_util.re_size(grid_conv, self._subgrid_res)
         grid_final = self._add_psf(grid_final)
         return grid_final

@@ -15,7 +15,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data, kwargs_psf=None):
+    def __init__(self, kwargs_options, kwargs_data, kwargs_psf={}):
         """
 
 
@@ -26,7 +26,7 @@ class ImageModel(object):
         :param kwargs_data: keywords of the data, see Data() class for further information
         :param kwargs_psf: keywords of the PSF convolution, see PSF() class for further information
         """
-        self.Data = Data(kwargs_data, subgrid_res=kwargs_options.get('subgrid_res', 1),
+        self.Data = Data(kwargs_data, kwargs_psf, subgrid_res=kwargs_options.get('subgrid_res', 1),
                          psf_subgrid=kwargs_options.get('psf_subgrid', False))
         self.LensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']),
                                    z_source=kwargs_options.get('z_source', None),
@@ -40,7 +40,6 @@ class ImageModel(object):
                                        error_map=kwargs_options.get('error_map', False),
                                        fix_error_map=kwargs_options.get('fix_error_map', False))
         self.imagePosition = LensEquationSolver(self.LensModel)
-        self._kwargs_psf = kwargs_psf
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
@@ -58,7 +57,7 @@ class ImageModel(object):
         else:
             x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
-        source_light_final = self.Data.re_size_convolve(source_light, self._kwargs_psf, unconvolved=unconvolved)
+        source_light_final = self.Data.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
@@ -70,7 +69,7 @@ class ImageModel(object):
         :return: 1d array of surface brightness pixels
         """
         lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light, k=k)
-        lens_light_final = self.Data.re_size_convolve(lens_light, self._kwargs_psf, unconvolved=unconvolved)
+        lens_light_final = self.Data.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
@@ -118,7 +117,7 @@ class ImageModel(object):
         else:
             lens_light = np.zeros_like(self.Data.data)
         if point_source_add and self.PointSource.point_source_bool:
-            point_source, error_map = self.PointSource.point_source(self._kwargs_psf, kwargs_else)
+            point_source, error_map = self.PointSource.point_source(kwargs_else)
         else:
             point_source = np.zeros_like(self.Data.data)
             error_map = np.zeros_like(self.Data.data)
@@ -131,7 +130,7 @@ class ImageModel(object):
         :param kwargs_else:
         :return: list of images containing only single point sources
         """
-        return self.PointSource.point_source_list(self._kwargs_psf, kwargs_else)
+        return self.PointSource.point_source_list(kwargs_else)
 
     def image_positions(self, kwargs_lens, sourcePos_x, sourcePos_y):
         """
@@ -232,7 +231,6 @@ class ImageModel(object):
         :param unconvolved:
         :return:
         """
-        kwargs_psf = self._kwargs_psf
         source_light_response, n_source = self.SourceModel.functions_split(x_source, y_source, kwargs_source)
         lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid,
                                                                                            kwargs_lens_light)
@@ -246,18 +244,18 @@ class ImageModel(object):
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-            image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = self.Data.image2array(image)
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.Data.re_size_convolve(image, kwargs_psf, unconvolved=unconvolved)
+            image = self.Data.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = self.Data.image2array(image)
             n += 1
         # response of point sources
         if self.PointSource.point_source_bool:
-            A_point, error_map = self.PointSource.point_source_response(kwargs_psf, kwargs_else, kwargs_lens)
+            A_point, error_map = self.PointSource.point_source_response(kwargs_else, kwargs_lens)
             A[n:n+n_points, :] = A_point
             n += n_points
         A = self._add_mask(A, mask)

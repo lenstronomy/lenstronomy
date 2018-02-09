@@ -11,6 +11,8 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 class SPEMD_SMOOTH(object):
     """
     class for smooth power law ellipse mass density profile
+    The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
+    (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
     """
     def __init__(self):
         self.spp = SPP()

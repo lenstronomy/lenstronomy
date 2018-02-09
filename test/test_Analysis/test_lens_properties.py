@@ -14,11 +14,10 @@ class TestLensProp(object):
     def test_velocity_dispersion_new(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_data = {}
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
                          'foreground_shear': False, 'lens_model_internal_bool': [True, False, False, False, False],
                           'lens_light_model_internal_bool': [True], 'lens_light_model_list': ['DOUBLE_SERSIC']}
-        lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)
+        lensProp = LensProp(z_lens, z_source, kwargs_options)
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'q': 0.96286768452645233, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'phi_G': 0.46030738644964475, 'gamma': 1.8},
                        {'Rs': 3.3343851394796515, 'q': 0.71808978862755635, 'center_x': 0, 'center_y': 0, 'Ra': 1.3113719625383848,
                         'phi_G': 1.2119791682610044, 'sigma0': 0.3405563712096914}, {'e1': -0.050871696555354479,
@@ -55,12 +54,11 @@ class TestLensProp(object):
     def test_time_delays(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_data = {}
         kwargs_options = {'lens_model_list': ['SPEP']}
         kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'q': 0.7, 'phi_G': 0}]
         kwargs_else = {'ra_pos': [-1, 0, 1], 'dec_pos': [0, 0, 0]}
 
-        lensProp = LensProp(z_lens, z_source, kwargs_options, kwargs_data)
+        lensProp = LensProp(z_lens, z_source, kwargs_options)
         delays = lensProp.time_delays(kwargs_lens, kwargs_else=kwargs_else, kappa_ext=0)
         npt.assert_almost_equal(delays[0], -31.710641699405745, decimal=8)
         npt.assert_almost_equal(delays[1], 0, decimal=8)

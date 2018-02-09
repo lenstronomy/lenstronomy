@@ -55,3 +55,11 @@ class Coordinates(object):
         """
         return np.sqrt(self.pixel_area)
 
+    def coordinate_grid(self, numPix):
+        """
+
+        :param numPix:
+        :return:
+        """
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(numPix, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        return ra_coords, dec_coords

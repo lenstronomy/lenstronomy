@@ -13,18 +13,52 @@ class Data(object):
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
     def __init__(self, kwargs_data, subgrid_res=1, psf_subgrid=False):
-        self._subgrid_res = subgrid_res
-        self._ra_shift = kwargs_data.get('ra_shift', 0)
-        self._dec_shift = kwargs_data.get('dec_shift', 0)
+        """
 
-        if 'image_data' in kwargs_data:
-            data = kwargs_data['image_data']
-        else:
-            print('Warning: image_data not specified in kwargs_data!')
-            data = np.ones((4, 4))
+
+        kwargs_data must contain:
+        'image_data': 2d numpy array of the image data
+        'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift
+        (x, y) -> (ra, dec)
+        'ra_at_xy_0' RA coordinate of pixel (0,0)
+        'dec_at_xy_0' DEC coordinate of pixel (0,0)
+
+        optional keywords for noise properties:
+        'sigma_background': rms value of the background noise
+        'exp_time: float, exposure time to compute the Poisson noise contribution
+        'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
+
+        optional keywords for masking purposes:
+        'mask': 2d numpy array consists of zeros or ones. Pixels with mask[i,j]==1 are evaluated in the likelihood process.
+        Pixel with mask[i,j]==0 are ignored
+        'idex_mask': ignores any computation on the pixels with idex_mask[i,j]==0. Will not be stored in memory during linear inversions.
+        Difference to 'mask': Pixels with mask[i,j]==0 will be ray-traced, evaluated and their flux value being
+        convolved to enable an impact on other pixels.
+
+        optional keywords for shifts in the coordinate system:
+        'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
+        'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
+
+
+
+        :param kwargs_data:
+        :param subgrid_res:
+        :param psf_subgrid:
+        """
+        self._subgrid_res = subgrid_res
+
+        if not 'image_data' in kwargs_data:
+            raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array!")
+        data = kwargs_data['image_data']
         self.nx, self.ny = np.shape(data)
         if self.nx != self.ny:
-            print("Warning: non-rectangular shape of image data might result in an error!")
+            raise ValueError("'image_data' with non-equal pixel number in x- and y-axis not yet supported!")
+
+        ra_at_xy_0 = kwargs_data.get('ra_at_xy_0', 0) + kwargs_data.get('ra_shift', 0)
+        dec_at_xy_0 = kwargs_data.get('dec_at_xy_0', 0) + kwargs_data.get('dec_shift', 0)
+        transform_pix2angle = kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]]))
+        self._coords = Coordinates( transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
+                                    dec_at_xy_0=dec_at_xy_0)
 
         if 'idex_mask' in kwargs_data:
             self._idex_mask_2d = kwargs_data['idex_mask']
@@ -33,40 +67,27 @@ class Data(object):
             self._idex_mask_2d = np.ones_like(data)
             self._idex_mask_bool = False
         self._idex_mask = util.image2array(self._idex_mask_2d)
-        if 'sigma_background' in kwargs_data:
-            self._sigma_b = kwargs_data['sigma_background']
-        else:
-            print('Warning: sigma_background not specified in kwargs_data. Default is set to 1!')
-            self._sigma_b = 1
-        if 'exposure_map' in kwargs_data:
-            exp_map = kwargs_data['exposure_map']
-            exp_map[exp_map <= 0] = 10**(-3)
-            f = util.image2array(exp_map)[self._idex_mask == 1]
-        elif 'exp_time' in kwargs_data:
-            exp_map = kwargs_data['exp_time']
-            f = exp_map
-        else:
-            print('Warning: exp_time nor exposure_map are specified in kwargs_data. Default is set to 1!')
-            exp_map = 1.
-            f = exp_map
-        self._f = f
-        self._exp_map = exp_map
-        self._data = data
-        self.C_D_response = self.covariance_matrix(self.image2array(data), self._sigma_b, self._f)
-        self.C_D = self.covariance_matrix(data, self._sigma_b, exp_map)
 
         if 'mask' in kwargs_data:
             self._mask = kwargs_data['mask']
         else:
-            self._mask = np.ones_like(self._data)
+            self._mask = np.ones_like(data)
         self._mask[self._idex_mask_2d == 0] = 0
-        if 'x_coords' in kwargs_data and 'y_coords' in kwargs_data:
-            x_coords = kwargs_data['x_coords']
-            y_coords = kwargs_data['y_coords']
+
+        if 'exposure_map' in kwargs_data:
+            exp_map = kwargs_data['exposure_map']
+            exp_map[exp_map <= 0] = 10**(-10)
+            f = util.image2array(exp_map)[self._idex_mask == 1]
         else:
-            x_coords, y_coords = util.make_grid(np.sqrt(self.nx * self.ny), 1, subgrid_res=1, left_lower=False)
-        x_grid = x_coords + self._ra_shift
-        y_grid = y_coords + self._dec_shift
+            exp_map = kwargs_data.get('exp_time', None)
+            f = exp_map
+
+        self._f = f
+        self._exp_map = exp_map
+        self._data = data
+        self._sigma_b = kwargs_data.get('sigma_background', None)
+
+        x_grid, y_grid = self._coords.coordinate_grid(self.nx)
         self._x_grid_all, self._y_grid_all = x_grid, y_grid
         self.x_grid = x_grid[self._idex_mask == 1]
         self.y_grid = y_grid[self._idex_mask == 1]
@@ -75,17 +96,52 @@ class Data(object):
         self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
         self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
         self._psf_subgrid = psf_subgrid
-        self._coords = Coordinates(transform_pix2angle=kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]])),
-                                   ra_at_xy_0=kwargs_data.get('ra_at_xy_0', 0) + self._ra_shift,
-                                   dec_at_xy_0=kwargs_data.get('dec_at_xy_0', 0) + self._dec_shift)
 
     @property
     def data(self):
+        """
+
+        :return: 2d numpy array of data
+        """
         return self._data
 
     @property
     def deltaPix(self):
+        """
+
+        :return: pixel size (in units of arcsec)
+        """
         return self._coords.pixel_size
+
+    @property
+    def background_rms(self):
+        """
+
+        :return: rms value of background noise
+        """
+        if self._sigma_b is None:
+            raise ValueError("rms background value as 'simga_background' not specified!")
+        return self._sigma_b
+
+    @property
+    def C_D(self):
+        """
+
+        :return: covariance matrix of all pixel values in 2d numpy array
+        """
+        if not hasattr(self, '_C_D'):
+            self._C_D = self.covariance_matrix(self.data, self.background_rms, self._exp_map)
+        return self._C_D
+
+    @property
+    def C_D_response(self):
+        """
+
+        :return: covariance matrix of pixels within index_mask as a 1d array
+        """
+        if not hasattr(self, '_C_D_response'):
+            self._C_D_response = self.covariance_matrix(self.image2array(self.data), self.background_rms, self._f)
+        return self._C_D_response
 
     @property
     def num_response(self):
@@ -272,7 +328,7 @@ class Data(object):
     def re_size_convolve(self, array, kwargs_psf, unconvolved=False):
         """
 
-        :param array: 2d image (can also be higher resolution binned
+        :param array: 1d data vector (can also be higher resolution binned)
         :param kwargs_psf: kwargs of psf modelling
         :param unconvolved: bool, if True, no convlolution performed, only re-binning
         :return: array with convolved and re-binned data/model

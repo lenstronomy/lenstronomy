@@ -117,7 +117,7 @@ class Solver2Point(object):
                 e1, e2 = param_util.phi_q2_elliptisity(phi_G, q)
                 x = [e1, e2]
             else:
-                raise ValueError("Solver type %s not valid for lens model %s" % (self._solver_type, lens_model))
+                raise ValueError("Solver type %s not valid for lens model %s. Supported are 'ELLIPSE' and 'CENTER'." % (self._solver_type, lens_model))
         elif lens_model in ['SHAPELETS_CART']:
             coeffs = list(kwargs_list[0]['coeffs'])
             [c10, c01] = coeffs[1: 3]

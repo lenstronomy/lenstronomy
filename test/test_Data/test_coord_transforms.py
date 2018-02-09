@@ -3,6 +3,7 @@ import numpy as np
 import numpy.testing as npt
 
 from lenstronomy.Data.coord_transforms import Coordinates
+import lenstronomy.Util.util as util
 
 
 class TestCoordinates(object):
@@ -92,6 +93,22 @@ class TestCoordinates(object):
         ra, dec = coords.map_pix2coord(2, 3)
         npt.assert_almost_equal(ra, x_2d[3, 2], decimal=10)
         npt.assert_almost_equal(dec, y_2d[3, 2], decimal=10)
+
+    def test_coordinate_grid(self):
+        deltaPix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        ra_0 = 1.
+        dec_0 = 1.
+        coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
+        ra_grid, dec_grid = coords.coordinate_grid(numPix=10)
+        ra_grid_2d = util.array2image(ra_grid)
+        dec_grid_2d = util.array2image(dec_grid)
+        assert ra_grid[0] == ra_0
+        assert dec_grid[0] == dec_0
+        x_pos, y_pos = 1, 2
+        ra, dec = coords.map_pix2coord(x_pos, y_pos)
+        npt.assert_almost_equal(ra_grid_2d[int(y_pos), int(x_pos)], ra, decimal=8)
+        npt.assert_almost_equal(dec_grid_2d[int(y_pos), int(x_pos)], dec, decimal=8)
 
 
 if __name__ == '__main__':

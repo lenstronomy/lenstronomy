@@ -5,41 +5,15 @@ __author__ = 'sibirrer'
 import numpy as np
 
 
-class LensLightModel(object):
-
-    def __init__(self, light_model_list=['NONE']):
-        self.lightModel = LightModel(light_model_list, smoothing=0.001)
-
-    def surface_brightness(self, x, y, kwargs_lens_light_list, k=None):
-        """
-        :param x: coordinate in units of arcsec relative to the center of the image
-        :type x: set or single 1d numpy array
-        """
-        return self.lightModel.surface_brightness(x, y, kwargs_lens_light_list, k=k)
-
-
-class SourceModel(object):
-
-    def __init__(self, light_model_list=['NONE']):
-        self.lightModel = LightModel(light_model_list, smoothing=0.00001)
-
-    def surface_brightness(self, x, y, kwargs_source_list, k=None):
-        """
-        :param x: coordinate in units of arcsec relative to the center of the image
-        :type x: set or single 1d numpy array
-        """
-        return self.lightModel.surface_brightness(x, y, kwargs_source_list, k=k)
-
-
 class LightModel(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, profile_type_list, smoothing=0.001):
-        self.profile_type_list = profile_type_list
+    def __init__(self, light_model_list, smoothing=0.0000001):
+        self.profile_type_list = light_model_list
         self.func_list = []
-        self.valid_list = []
-        for profile_type in profile_type_list:
+        self._valid_list = []
+        for profile_type in light_model_list:
             valid = True
             if profile_type == 'GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -86,9 +60,8 @@ class LightModel(object):
             elif profile_type == 'NONE':
                 valid = False
             else:
-                valid = False
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
-            self.valid_list.append(valid)
+            self._valid_list.append(valid)
 
     def surface_brightness(self, x, y, kwargs_list, k=None):
         """
@@ -99,7 +72,7 @@ class LightModel(object):
         y = np.array(y, dtype=float)
         flux = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
-            if self.valid_list[i]:
+            if self._valid_list[i]:
                 if k == None or k == i:
                     flux += func.function(x, y, **kwargs_list[i])
         return flux
@@ -113,7 +86,7 @@ class LightModel(object):
         r = np.array(r, dtype=float)
         flux = np.zeros_like(r)
         for i, func in enumerate(self.func_list):
-            if self.valid_list[i]:
+            if self._valid_list[i]:
                 if k == None or k == i:
                     kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
                     if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'GAUSSIAN', 'MULTI_GAUSSIAN']:
@@ -191,6 +164,39 @@ class LightModel(object):
             else:
                 raise ValueError('model type %s not valid!' % model)
         return response, n
+
+    def update_linear(self, param, i, kwargs_list):
+        """
+
+        :param param:
+        :param i:
+        :param kwargs_list:
+        :return:
+        """
+        for k, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+                kwargs_list[k]['I0_sersic'] = param[i]
+                i += 1
+            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+                kwargs_list[k]['I0_2'] = param[i]
+                i += 1
+            if model in ['BULDGE_DISK']:
+                kwargs_list[k]['I0_b'] = param[i]
+                i += 1
+                kwargs_list[k]['I0_d'] = param[i]
+                i += 1
+            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_list[k]['sigma0'] = param[i]
+                i += 1
+            if model in ['SHAPELETS']:
+                n_max = kwargs_list[k]['n_max']
+                num_param = (n_max + 1) * (n_max + 2) / 2
+                kwargs_list[k]['amp'] = param[i:i+num_param]
+                i += num_param
+            if model in ['UNIFORM']:
+                kwargs_list[k]['mean'] = param[i]
+                i += 1
+            return kwargs_list, i
 
     def re_normalize_flux(self, kwargs_list, norm_factor=1):
         """

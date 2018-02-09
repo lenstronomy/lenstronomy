@@ -93,6 +93,7 @@ def make_grid_transformed(numPix, Mpix2Angle):
 def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=False):
     """
     same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel
+
     :param numPix:
     :param deltapix:
     :param subgrid_res:
@@ -119,6 +120,26 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=Fa
     Mpix2coord = np.array([[deltapix_eff, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
     return x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
+
+
+def grid_from_coordinate_transform(numPix, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
+    """
+    return a grid in x and y coordinates that satisfy the coordinate system
+
+
+    :param numPix:
+    :param Mpix2coord:
+    :param ra_at_xy_0:
+    :param dec_at_xy_0:
+    :return:
+    """
+    a = np.arange(numPix)
+    matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
+    x_grid = matrix[:, 0]
+    y_grid = matrix[:, 1]
+    ra_grid = x_grid * Mpix2coord[0, 0] + y_grid * Mpix2coord[0, 1] + ra_at_xy_0
+    dec_grid = x_grid * Mpix2coord[1, 0] + y_grid * Mpix2coord[1, 1] + dec_at_xy_0
+    return ra_grid, dec_grid
 
 
 def get_axes(x, y):

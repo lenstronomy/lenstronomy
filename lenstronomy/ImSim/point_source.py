@@ -7,16 +7,17 @@ class PointSource(object):
     """
     class to handle point sources
     """
-    def __init__(self, data, point_source=True, fix_magnification=False, error_map=False, fix_error_map=False):
+    def __init__(self, data, lensModel, point_source=True, fix_magnification=False, error_map=False, fix_error_map=False):
         self.Data = data
-        self._point_source = point_source
-        self._fix_magnification = fix_magnification
-        self._error_map = error_map
+        self.LensModel = lensModel
+        self.point_source_bool = point_source
+        self.fix_magnification_bool = fix_magnification
+        self._error_map_bool = error_map
         self._fix_error_map = fix_error_map
 
     def num_basis(self, kwargs_else):
-        if self._point_source:
-            if self._fix_magnification:
+        if self.point_source_bool:
+            if self.fix_magnification_bool:
                 n_points = 1
             else:
                 n_points = len(kwargs_else['ra_pos'])
@@ -24,7 +25,7 @@ class PointSource(object):
             n_points = 0
         return n_points
 
-    def point_source_response(self, kwargs_psf, kwargs_else, point_amp=None, map_error=False):
+    def point_source_response(self, kwargs_psf, kwargs_else, kwargs_lens):
         """
 
         :param n_points:
@@ -40,17 +41,22 @@ class PointSource(object):
         n_points = len(x_pos)
         data = self.Data.data
         psf_point_source = kwargs_psf['kernel_point_source']
+        if self.fix_magnification_bool:
+            mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)
+        else:
+            mag = np.ones_like(kwargs_else['ra_pos'])
+        point_amp = mag
         if point_amp is None:
             point_amp = np.ones_like(n_points)
         #point_amp = kwargs_else['point_amp']
         num_response = self.Data.num_response
         error_map = np.zeros_like(data)
-        if map_error is True:
+        if self._error_map_bool is True:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         A = np.zeros((num_param, num_response))
 
-        if self._fix_magnification:
+        if self.fix_magnification_bool:
             grid2d = np.zeros_like(data)
             for i in range(n_points):
                 grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], point_amp[i] * psf_point_source)
@@ -61,6 +67,27 @@ class PointSource(object):
                 point_source = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], psf_point_source)
                 A[i, :] = self.Data.image2array(point_source)
         return A, self.Data.image2array(error_map)
+
+    def update_linear(self, param, i, kwargs_else, kwargs_lens):
+        """
+
+        :param param:
+        :param i:
+        :param kwargs_else:
+        :param kwargs_lens:
+        :return:
+        """
+        num_images = self.num_basis(kwargs_else)
+        if num_images > 0:
+            if self.fix_magnification_bool:
+                mag = self.LensModel.magnification(kwargs_else['ra_pos'], kwargs_else['dec_pos'], kwargs_lens)
+                kwargs_else['point_amp'] = np.abs(mag) * param[i]
+                i += 1
+            else:
+                n_points = len(kwargs_else['ra_pos'])
+                kwargs_else['point_amp'] = param[i:i + n_points]
+                i += n_points
+        return kwargs_else, i
 
     def point_source(self, kwargs_psf, kwargs_else):
         """
@@ -78,7 +105,7 @@ class PointSource(object):
         psf_point_source = kwargs_psf['kernel_point_source']
         point_amp = kwargs_else['point_amp']
         error_map = np.zeros_like(data)
-        if self._error_map:
+        if self._error_map_bool:
             for i in range(0, n_points):
                 error_map = self.get_error_map(data, x_pos[i], y_pos[i], psf_point_source, point_amp[i], error_map, kwargs_psf['error_map'])
         grid2d = np.zeros_like(data)

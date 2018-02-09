@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 
-from lenstronomy.LightModel.light_model import SourceModel
+from lenstronomy.LightModel.light_model import LightModel
 
 
 class TestSourceModel(object):
@@ -10,11 +10,11 @@ class TestSourceModel(object):
     tests the source model routines
     """
     def setup(self):
-        self.sourceModel = SourceModel(light_model_list=['GAUSSIAN'])
+        self.sourceModel = LightModel(light_model_list=['GAUSSIAN'])
         self.kwargs = [{'amp': 1., 'center_x': 0, 'center_y': 0, 'sigma_x': 2, 'sigma_y': 2}]
 
     def test_surface_brightness(self):
-        output = self.sourceModel.surface_brightness(x=1., y=1., kwargs_source_list=self.kwargs)
+        output = self.sourceModel.surface_brightness(x=1., y=1., kwargs_list=self.kwargs)
         assert output == 0.030987498577413244
 
 

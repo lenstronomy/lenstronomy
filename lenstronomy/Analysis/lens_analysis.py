@@ -5,7 +5,7 @@ import lenstronomy.Util.analysis_util as analysis_util
 from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
-from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
+from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 
@@ -15,12 +15,24 @@ class LensAnalysis(object):
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
     def __init__(self, kwargs_options):
-        self.LensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        self.SourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        self.LensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        self.SourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
         self.kwargs_options = kwargs_options
         self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'])
         self.gaussian = Gaussian()
+
+    def fermat_potential(self, kwargs_lens, kwargs_else):
+        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
+            ra_pos = kwargs_else['ra_pos']
+            dec_pos = kwargs_else['dec_pos']
+        else:
+            raise ValueError('No point source positions assigned')
+        ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
+        ra_source = np.mean(ra_source)
+        dec_source = np.mean(dec_source)
+        fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
+        return fermat_pot
 
     def half_light_radius_lens(self, kwargs_lens_light, deltaPix=None, numPix=None):
         """

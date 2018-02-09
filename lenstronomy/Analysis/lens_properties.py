@@ -1,13 +1,10 @@
 __author__ = 'sibirrer'
 
-import math
 import numpy as np
 from lenstronomy.GalKin.LOS_dispersion import Velocity_dispersion
 from lenstronomy.GalKin.galkin import Galkin
-import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
-from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.multi_gauss_expansion as mge
@@ -18,20 +15,18 @@ class LensProp(object):
     this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model
     """
 
-    def __init__(self, z_lens, z_source, kwargs_options, kwargs_data, cosmo=None):
+    def __init__(self, z_lens, z_source, kwargs_options, cosmo=None):
         self.z_d = z_lens
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_options)
-        self.image_model = ImageModel(kwargs_options, kwargs_data)
         self.lens_model = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
-        self.kwargs_data = kwargs_data
         self.kwargs_options = kwargs_options
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_else, kappa_ext=0):
-        fermat_pot = self.image_model.fermat_potential(kwargs_lens, kwargs_else)
+        fermat_pot = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_else)
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 

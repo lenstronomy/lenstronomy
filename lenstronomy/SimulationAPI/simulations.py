@@ -1,6 +1,6 @@
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LightModel.light_model import LensLightModel, SourceModel
+from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import Data
 import lenstronomy.Util.util as util
@@ -19,8 +19,9 @@ class Simulation(object):
     def __init__(self):
         self.gaussian = Gaussian()
 
-    def data_configure(self, numPix, deltaPix, exposure_time, sigma_bkg):
+    def data_configure(self, numPix, deltaPix, exposure_time=1, sigma_bkg=1):
         """
+        configures the data keyword arguments with a coordinate grid centered at zero.
 
         :param numPix: number of pixel (numPix x numPix)
         :param deltaPix: pixel size
@@ -105,13 +106,13 @@ class Simulation(object):
         :param norm_factor:
         :return:
         """
-        lensLightModel = LensLightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
         kwargs_source_updated = copy.deepcopy(kwargs_source)
         kwargs_lens_light_updated = copy.deepcopy(kwargs_lens_light)
         kwargs_else_updated = copy.deepcopy(kwargs_else)
-        kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
-        kwargs_lens_light_updated = lensLightModel.lightModel.re_normalize_flux(kwargs_lens_light_updated, norm_factor_lens_light)
+        kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
+        kwargs_lens_light_updated = lensLightModel.re_normalize_flux(kwargs_lens_light_updated, norm_factor_lens_light)
         if 'point_amp' in kwargs_else:
                 kwargs_else_updated['point_amp'] *= norm_factor_point_source
         return kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated
@@ -125,8 +126,8 @@ class Simulation(object):
         :return:
         """
         kwargs_source_updated = copy.deepcopy(kwargs_source)
-        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        kwargs_source_updated = sourceModel.lightModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
     def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
@@ -199,8 +200,8 @@ class Simulation(object):
         :return:
         """
         x, y = util.make_grid(numPix, deltaPix)
-        sourceModel = SourceModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        image1d = sourceModel.surface_brightness(x, y, kwargs_source_list=kwargs_source)
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        image1d = sourceModel.surface_brightness(x, y, kwargs_source)
         image2d = util.array2image(image1d)
         return image2d
 

@@ -8,11 +8,12 @@ import lenstronomy.Util.util as util
 
 class TestData(object):
     def setup(self):
-        kwargs_data = {}
+        self.numPix = 10
+        kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix))}
         self.Data = Data(kwargs_data)
 
     def test_idex_subgrid(self):
-        idex_mask = np.zeros(100)
+        idex_mask = np.zeros(self.numPix**2)
         n = 8
         nx, ny = int(np.sqrt(len(idex_mask))), int(np.sqrt(len(idex_mask)))
         idex_mask[n] = 1
@@ -33,7 +34,7 @@ class TestData(object):
         assert result[1] == 1.2
 
     def test_numData(self):
-        assert self.Data.numData == 16
+        assert self.Data.numData == self.numPix**2
 
     def test_psf_cutout(self):
         idex_mask = np.zeros((5, 5))
@@ -63,7 +64,7 @@ class TestData(object):
         x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
         # mask (1= model this pixel, 0= leave blanck)
 
-        kwargs_data = {'x_coords': x_grid, 'y_coords': y_grid, 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
+        kwargs_data = {'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': Mpix2coord, 'image_data': np.ones((numPix, numPix))}
         data = Data(kwargs_data, subgrid_res=3)
 
@@ -86,7 +87,6 @@ class TestData(object):
         x_new, y_new = data_shift.map_coord2pix(ra_shift, dec_shift)
         npt.assert_almost_equal(x, x_new, decimal=10)
         npt.assert_almost_equal(y, y_new, decimal=10)
-
 
 
 if __name__ == '__main__':

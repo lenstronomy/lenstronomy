@@ -179,3 +179,27 @@ def fwhm_kernel(kernel):
             fwhm_2 = (I_2 - I_r[i-1])/(I_r[i] - I_r[i-1]) + r[i-1]
             return fwhm_2 * 2
     raise ValueError('The kernel did not drop to half the max value - fwhm not determined!')
+
+
+def estimate_amp(data, x_pos, y_pos, psf_kernel):
+    """
+    estimates the amplitude of a point source located at x_pos, y_pos
+    :param data:
+    :param x_pos:
+    :param y_pos:
+    :param deltaPix:
+    :return:
+    """
+    numPix_x, numPix_y = np.shape(data)
+    #data_center = int((numPix-1.)/2)
+    x_int = int(round(x_pos-0.49999))#+data_center
+    y_int = int(round(y_pos-0.49999))#+data_center
+    if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
+        mean_image = max(np.sum(data[y_int-2:y_int+3, x_int-2:x_int+3]), 0)
+        num = len(psf_kernel)
+        center = int((num-0.5)/2)
+        mean_kernel = np.sum(psf_kernel[center-2:center+3, center-2:center+3])
+        amp_estimated = mean_image/mean_kernel
+    else:
+        amp_estimated = 0
+    return amp_estimated

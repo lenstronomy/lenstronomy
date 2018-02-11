@@ -21,12 +21,12 @@ class TestImageModel(object):
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
-        psf_type = 'pixel'  # 'gaussian', 'pixel', 'NONE'
+        psf_type = 'PIXEL'  # 'gaussian', 'pixel', 'NONE'
 
         # PSF specification
 
         kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='gaussian', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
         kwargs_psf = self.SimAPI.psf_configure(psf_type=psf_type, fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=6,
@@ -59,7 +59,7 @@ class TestImageModel(object):
         self.kwargs_options = {'lens_model_list': lens_model_list,
                           'lens_light_model_list': lens_light_model_list,
                           'source_light_model_list': source_model_list,
-                          'psf_type': 'pixel',
+                          'psf_type': 'PIXEL',
                           'point_source': True
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }
@@ -89,12 +89,12 @@ class TestImageModel(object):
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else, inv_bool=False)
-        chi2_reduced = self.imageModel._makeImage_list[0].Data.reduced_chi2(model[0], error_map[0])
+        chi2_reduced = self.imageModel._makeImage_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_image_with_params(self):
         model, error_map = self.imageModel.image_with_params(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
-        chi2_reduced = self.imageModel._makeImage_list[0].Data.reduced_chi2(model[0], error_map[0])
+        chi2_reduced = self.imageModel._makeImage_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_image_positions(self):

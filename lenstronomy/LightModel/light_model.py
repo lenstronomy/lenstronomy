@@ -196,7 +196,7 @@ class LightModel(object):
             if model in ['UNIFORM']:
                 kwargs_list[k]['mean'] = param[i]
                 i += 1
-            return kwargs_list, i
+        return kwargs_list, i
 
     def re_normalize_flux(self, kwargs_list, norm_factor=1):
         """

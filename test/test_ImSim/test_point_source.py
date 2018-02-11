@@ -8,7 +8,7 @@ from lenstronomy.ImSim.point_source import PointSource
 class TestPointSource(object):
 
     def setup(self):
-        self.PointSource = PointSource({'point_source': True}, None)
+        self.PointSource = PointSource({'point_source': True}, None, None, None)
 
     def test_estimate_amp(self):
         data = np.ones((20, 20))

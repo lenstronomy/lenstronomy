@@ -1,10 +1,5 @@
 import numpy as np
-import scipy.ndimage as ndimage
-import scipy.signal as signal
 
-import lenstronomy.Util.util as util
-import lenstronomy.Util.image_util as image_util
-import lenstronomy.Util.kernel_util as kernel_util
 from lenstronomy.Data.coord_transforms import Coordinates
 
 
@@ -12,16 +7,20 @@ class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
     """
-    def __init__(self, kwargs_data, kwargs_psf={}, subgrid_res=1, psf_subgrid=False):
+    def __init__(self, kwargs_data):
         """
 
-
         kwargs_data must contain:
+
         'image_data': 2d numpy array of the image data
         'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift
         (x, y) -> (ra, dec)
         'ra_at_xy_0' RA coordinate of pixel (0,0)
         'dec_at_xy_0' DEC coordinate of pixel (0,0)
+
+        optional keywords for shifts in the coordinate system:
+        'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
+        'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
 
         optional keywords for noise properties:
         'sigma_background': rms value of the background noise
@@ -35,19 +34,11 @@ class Data(object):
         Difference to 'mask': Pixels with mask[i,j]==0 will be ray-traced, evaluated and their flux value being
         convolved to enable an impact on other pixels.
 
-        optional keywords for shifts in the coordinate system:
-        'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
-        'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
-
-
 
         :param kwargs_data:
         :param subgrid_res:
         :param psf_subgrid:
         """
-        self._subgrid_res = subgrid_res
-        self._kwargs_psf = kwargs_psf
-        self._psf_type = kwargs_psf.get('psf_type', 'NONE')
 
         if not 'image_data' in kwargs_data:
             raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array!")
@@ -62,42 +53,17 @@ class Data(object):
         self._coords = Coordinates( transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
                                     dec_at_xy_0=dec_at_xy_0)
 
-        if 'idex_mask' in kwargs_data:
-            self._idex_mask_2d = kwargs_data['idex_mask']
-            self._idex_mask_bool = True
-        else:
-            self._idex_mask_2d = np.ones_like(data)
-            self._idex_mask_bool = False
-        self._idex_mask = util.image2array(self._idex_mask_2d)
-
-        if 'mask' in kwargs_data:
-            self._mask = kwargs_data['mask']
-        else:
-            self._mask = np.ones_like(data)
-        self._mask[self._idex_mask_2d == 0] = 0
-
+        self._x_grid, self._y_grid = self._coords.coordinate_grid(self.nx)
         if 'exposure_map' in kwargs_data:
             exp_map = kwargs_data['exposure_map']
             exp_map[exp_map <= 0] = 10**(-10)
-            f = util.image2array(exp_map)[self._idex_mask == 1]
         else:
             exp_map = kwargs_data.get('exp_time', None)
-            f = exp_map
-
-        self._f = f
         self._exp_map = exp_map
         self._data = data
         self._sigma_b = kwargs_data.get('sigma_background', None)
 
         x_grid, y_grid = self._coords.coordinate_grid(self.nx)
-        self._x_grid_all, self._y_grid_all = x_grid, y_grid
-        self.x_grid = x_grid[self._idex_mask == 1]
-        self.y_grid = y_grid[self._idex_mask == 1]
-        x_grid_sub, y_grid_sub = util.make_subgrid(x_grid, y_grid, self._subgrid_res)
-        self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self.nx, self.ny)
-        self.x_grid_sub = x_grid_sub[self._idex_mask_sub == 1]
-        self.y_grid_sub = y_grid_sub[self._idex_mask_sub == 1]
-        self._psf_subgrid = psf_subgrid
 
     @property
     def data(self):
@@ -126,48 +92,33 @@ class Data(object):
         return self._sigma_b
 
     @property
+    def exposure_map(self):
+        """
+
+        :return:
+        """
+        if self._exp_map is None:
+            raise ValueError("Exposure map has not been specified in Data() class!")
+        else:
+            return self._exp_map
+
+    @property
     def C_D(self):
         """
 
         :return: covariance matrix of all pixel values in 2d numpy array
         """
         if not hasattr(self, '_C_D'):
-            self._C_D = self.covariance_matrix(self.data, self.background_rms, self._exp_map)
+            self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
         return self._C_D
 
     @property
-    def C_D_response(self):
-        """
-
-        :return: covariance matrix of pixels within index_mask as a 1d array
-        """
-        if not hasattr(self, '_C_D_response'):
-            self._C_D_response = self.covariance_matrix(self.image2array(self.data), self.background_rms, self._f)
-        return self._C_D_response
-
-    @property
-    def num_response(self):
-        """
-        number of pixels as part of the response array
-        :return:
-        """
-        return int(np.sum(self._idex_mask))
-
-    @property
     def numData(self):
-        return len(self.x_grid)
-
-    @property
-    def mask(self):
-        return self._mask
-
-    @property
-    def numData_evaluate(self):
-        return int(np.sum(self.mask))
+        return len(self._x_grid)
 
     @property
     def coordinates(self):
-        return self._x_grid_all, self._y_grid_all
+        return self._x_grid, self._y_grid
 
     def map_coord2pix(self, ra, dec):
         """
@@ -186,56 +137,6 @@ class Data(object):
         :return:
         """
         return self._coords.map_pix2coord(x, y)
-
-    def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
-        """
-
-        :param idex_mask: 1d array of mask of data
-        :param subgrid_res: subgrid resolution
-        :return: 1d array of equivalent mask in subgrid resolution
-        """
-        idex_sub = np.repeat(idex_mask, subgrid_res, axis=0)
-        idex_sub = util.array2image(idex_sub, nx=nx, ny=ny*subgrid_res)
-        idex_sub = np.repeat(idex_sub, subgrid_res, axis=0)
-        idex_sub = util.image2array(idex_sub)
-        return idex_sub
-
-    def array2image(self, array, subgrid_res=1):
-        """
-        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
-        :param array: 1d array
-        :param idex_mask: 1d array of length nx*ny
-        :param nx: x-axis of 2d grid
-        :param ny: y-axis of 2d grid
-        :return:
-        """
-        nx, ny = self.nx * subgrid_res, self.ny * subgrid_res
-        if self._idex_mask_bool is True:
-            idex_mask = self._idex_mask
-            grid1d = np.zeros((nx * ny))
-            if subgrid_res > 1:
-                idex_mask_subgrid = self._idex_mask_sub
-            else:
-                idex_mask_subgrid = idex_mask
-            grid1d[idex_mask_subgrid == 1] = array
-        else:
-            grid1d = array
-        grid2d = util.array2image(grid1d, nx, ny)
-        return grid2d
-
-    def image2array(self, image):
-        """
-        returns 1d array of values in image in idex_mask
-        :param image:
-        :param idex_mask:
-        :return:
-        """
-        idex_mask = self._idex_mask
-        array = util.image2array(image)
-        if self._idex_mask_bool is True:
-            return array[idex_mask == 1]
-        else:
-            return array
 
     def covariance_matrix(self, d, sigma_b, f):
         """
@@ -261,7 +162,7 @@ class Data(object):
         sigma = d_pos/f + sigma_b**2
         return sigma
 
-    def log_likelihood(self, model, error_map=0):
+    def log_likelihood(self, model, mask, error_map=0):
         """
         returns reduced residual map
         :param model:
@@ -272,138 +173,10 @@ class Data(object):
         :param error_map:
         :return:
         """
-        C_D = self.covariance_matrix(model, self._sigma_b, self._exp_map)
-        X2 = (model - self._data)**2 / (C_D + np.abs(error_map))* self.mask
+        C_D = self.covariance_matrix(model, self._sigma_b, self.exposure_map)
+        X2 = (model - self._data)**2 / (C_D + np.abs(error_map)) * mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
 
-    def reduced_chi2(self, model, error_map=0):
-        """
-        returns reduced chi2
-        :param model:
-        :param error_map:
-        :return:
-        """
-        chi2 = (model - self._data)**2 * self.mask / (self.C_D+np.abs(error_map))
-        return np.sum(chi2) / self.numData_evaluate
 
-    def psf_convolution(self, grid, grid_scale):
-        """
-        convolves a given pixel grid with a PSF
-        """
-        kwargs = self._kwargs_psf
-        psf_type = self._psf_type
-        if psf_type == 'NONE':
-            return grid
-        elif psf_type == 'gaussian':
-            sigma = kwargs['sigma']/grid_scale
-            if 'truncate' in kwargs:
-                sigma_truncate = kwargs['truncate']/grid_scale
-            else:
-                sigma_truncate = 3./grid_scale
-            img_conv = ndimage.filters.gaussian_filter(grid, sigma, mode='nearest', truncate=sigma_truncate*sigma)
-            return img_conv
-        elif psf_type == 'pixel':
-            if self._psf_subgrid:
-                kernel = self._subgrid_kernel()
-            else:
-                kernel = kwargs['kernel_pixel']
-            img_conv1 = signal.fftconvolve(grid, kernel, mode='same')
-            return img_conv1
-        else:
-            raise ValueError('PSF type %s not valid!' % psf_type)
-
-    def _subgrid_kernel(self):
-        """
-
-        :return:
-        """
-        kwargs = self._kwargs_psf
-        if not hasattr(self, '_subgrid_kernel_out'):
-            kernel = kernel_util.subgrid_kernel(kwargs['kernel_point_source'], self._subgrid_res, odd=True)
-            n = len(kwargs['kernel_pixel'])
-            n_new = n * self._subgrid_res
-            if n_new % 2 == 0:
-                n_new -= 1
-            self._subgrid_kernel_out = kernel_util.cut_psf(kernel, psf_size=n_new)
-        return self._subgrid_kernel_out
-
-    def re_size_convolve(self, array, unconvolved=False):
-        """
-
-        :param array: 1d data vector (can also be higher resolution binned)
-        :param kwargs_psf: kwargs of psf modelling
-        :param unconvolved: bool, if True, no convlolution performed, only re-binning
-        :return: array with convolved and re-binned data/model
-        """
-        kwargs_psf = self._kwargs_psf
-        image = self.array2image(array, self._subgrid_res)
-        image = self._cutout_psf(image, self._subgrid_res)
-        if unconvolved is True or kwargs_psf['psf_type'] == 'NONE':
-            grid_re_sized = image_util.re_size(image, self._subgrid_res)
-            grid_final = grid_re_sized
-        else:
-            gridScale = self.deltaPix/float(self._subgrid_res)
-            if kwargs_psf['psf_type'] == 'pixel' and not self._psf_subgrid:
-                grid_re_sized = image_util.re_size(image, self._subgrid_res)
-                grid_final = self.psf_convolution(grid_re_sized, gridScale)
-            else:
-                grid_conv = self.psf_convolution(image, gridScale)
-                grid_final = image_util.re_size(grid_conv, self._subgrid_res)
-        grid_final = self._add_psf(grid_final)
-        return grid_final
-
-    def psf_fwhm(self, kwargs):
-        """
-
-        :param kwargs_psf:
-        :return: psf fwhm in units of arcsec
-        """
-        psf_type = kwargs.get('psf_type', 'NONE')
-        if psf_type == 'NONE':
-            fwhm = 0
-        elif psf_type == 'gaussian':
-            sigma = kwargs['sigma']
-            fwhm = util.sigma2fwhm(sigma)
-        elif psf_type == 'pixel':
-            kernel = kwargs['kernel_point_source']
-            fwhm = kernel_util.fwhm_kernel(kernel) * self.deltaPix
-        else:
-            raise ValueError('PSF type %s not valid!' % psf_type)
-        return fwhm
-
-    def _init_mask_psf(self):
-        """
-        smaller frame that encolses all the idex_mask
-        :param idex_mask:
-        :param nx:
-        :param ny:
-        :return:
-        """
-        if not hasattr(self, '_x_min_psf'):
-            idex_2d = self._idex_mask_2d
-            self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
-            self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
-            self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
-            self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
-
-    def _cutout_psf(self, image, subgrid_res):
-        """
-        cutout the part of the image relevant for the psf convolution
-        :param image:
-        :return:
-        """
-        self._init_mask_psf()
-        return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
-
-    def _add_psf(self, image_psf):
-        """
-
-        :param image_psf:
-        :return:
-        """
-        self._init_mask_psf()
-        image = np.zeros((self.nx, self.ny))
-        image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
-        return image

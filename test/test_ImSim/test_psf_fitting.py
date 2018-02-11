@@ -20,12 +20,12 @@ class TestImageModel(object):
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
-        psf_type = 'pixel'  # 'gaussian', 'pixel', 'NONE'
+        psf_type = 'PIXEL'  # 'gaussian', 'pixel', 'NONE'
 
         # PSF specification
 
         kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='gaussian', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
         kwargs_psf = self.SimAPI.psf_configure(psf_type=psf_type, fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=6,
@@ -72,9 +72,9 @@ class TestImageModel(object):
 
     def test_update_psf(self):
         fwhm = 0.3
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='gaussian', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
                                           kernel=None)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='pixel', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
                                                truncate=6,
                                                kernel=kwargs_psf['kernel_point_source'])
 
@@ -90,9 +90,9 @@ class TestImageModel(object):
 
     def test_update_iterative(self):
         fwhm = 0.3
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='gaussian', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
                                           kernel=None)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='pixel', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
                                                truncate=6,
                                                kernel=kwargs_psf['kernel_point_source'])
         kwargs_psf_new = self.psf_fitting.update_iterative(self.kwargs_data, kwargs_psf, self.kwargs_options, self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,

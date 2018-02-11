@@ -4,8 +4,10 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.ImSim.point_source import PointSource
+from lenstronomy.ImSim.image_numerics import ImageNumerics
 import lenstronomy.ImSim.de_lens as de_lens
 from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 
 
 import numpy as np
@@ -26,8 +28,16 @@ class ImageModel(object):
         :param kwargs_data: keywords of the data, see Data() class for further information
         :param kwargs_psf: keywords of the PSF convolution, see PSF() class for further information
         """
-        self.Data = Data(kwargs_data, kwargs_psf, subgrid_res=kwargs_options.get('subgrid_res', 1),
-                         psf_subgrid=kwargs_options.get('psf_subgrid', False))
+        self.PSF = PSF(kwargs_psf)
+        self.Data = Data(kwargs_data)
+        kwargs_numerics = {'subgrid_res': kwargs_options.get('subgrid_res', 1),
+                           'psf_subgrid': kwargs_options.get('psf_subgrid', False)}
+        if 'mask' in kwargs_data:
+            kwargs_numerics['mask'] = kwargs_data['mask']
+        if 'idex_mask' in kwargs_data:
+            kwargs_numerics['idex_mask'] = kwargs_data['idex_mask']
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+
         self.LensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']),
                                    z_source=kwargs_options.get('z_source', None),
                                    redshift_list=kwargs_options.get('redshift_list', None),
@@ -35,7 +45,7 @@ class ImageModel(object):
                                    multi_plane=kwargs_options.get('multi_plane', None))
         self.SourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
         self.LensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        self.PointSource = PointSource(self.Data, self.LensModel, point_source=kwargs_options.get('point_source', False),
+        self.PointSource = PointSource(self.Data, self.PSF, self.ImageNumerics, self.LensModel, point_source=kwargs_options.get('point_source', False),
                                        fix_magnification=kwargs_options.get('fix_magnification', False),
                                        error_map=kwargs_options.get('error_map', False),
                                        fix_error_map=kwargs_options.get('fix_error_map', False))
@@ -53,11 +63,12 @@ class ImageModel(object):
         """
 
         if de_lensed is True:
-            x_source, y_source = self.Data.x_grid_sub, self.Data.y_grid_sub
+            x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
         else:
-            x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens)
+            x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
+                                                             self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
         source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
-        source_light_final = self.Data.re_size_convolve(source_light, unconvolved=unconvolved)
+        source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
@@ -68,8 +79,10 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
         """
-        lens_light = self.LensLightModel.surface_brightness(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens_light, k=k)
-        lens_light_final = self.Data.re_size_convolve(lens_light, unconvolved=unconvolved)
+        lens_light = self.LensLightModel.surface_brightness(self.ImageNumerics.ra_grid_ray_shooting,
+                                                            self.ImageNumerics.dec_grid_ray_shooting,
+                                                            kwargs_lens_light, k=k)
+        lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
@@ -84,14 +97,17 @@ class ImageModel(object):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        x_source, y_source = self.LensModel.ray_shooting(self.Data.x_grid_sub, self.Data.y_grid_sub, kwargs_lens)
-        A, error_map = self._response_matrix(self.Data.x_grid_sub, self.Data.y_grid_sub, x_source, y_source,
-                                             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.Data.mask)
-        d = self.Data.image2array(self.Data.data*self.Data.mask)
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.Data.C_D_response + error_map), d, inv_bool=inv_bool)
+        x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
+                                                         self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
+
+        A, error_map = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
+                                             self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
+                                             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.ImageNumerics.mask)
+        d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
-        model = self.Data.array2image(wls_model)
-        error_map = self.Data.array2image(error_map)
+        model = self.ImageNumerics.array2image(wls_model)
+        error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
     def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
@@ -121,7 +137,7 @@ class ImageModel(object):
         else:
             point_source = np.zeros_like(self.Data.data)
             error_map = np.zeros_like(self.Data.data)
-        model = (source_light + lens_light + point_source) * self.Data.mask
+        model = (source_light + lens_light + point_source) * self.ImageNumerics.mask
         return model, error_map
 
     def point_sources_list(self, kwargs_else):
@@ -163,7 +179,7 @@ class ImageModel(object):
                                                                                    kwargs_lens_light, kwargs_else,
                                                                                    inv_bool=source_marg)
         # compute X^2
-        logL = self.Data.log_likelihood(im_sim, model_error)
+        logL = self.Data.log_likelihood(im_sim, self.ImageNumerics.mask, model_error)
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             #if marg_const + logL > 0:
@@ -177,7 +193,7 @@ class ImageModel(object):
         :param model:
         :return:
         """
-        mask = self.Data.mask
+        mask = self.ImageNumerics.mask
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
@@ -188,7 +204,8 @@ class ImageModel(object):
         :param error_map:
         :return:
         """
-        return self.Data.reduced_chi2(model, error_map)
+        chi2 = self.reduced_residuals(model, error_map)
+        return np.sum(chi2**2) / self.numData_evaluate
 
     @property
     def numData_evaluate(self):
@@ -196,7 +213,7 @@ class ImageModel(object):
         number of data points to be used in the linear solver
         :return:
         """
-        return self.Data.numData_evaluate
+        return self.ImageNumerics.numData_evaluate
 
     def fermat_potential(self, kwargs_lens, kwargs_else):
         """
@@ -237,21 +254,21 @@ class ImageModel(object):
         n_points = self.PointSource.num_basis(kwargs_else)
         num_param = n_points + n_lens_light + n_source
 
-        num_response = self.Data.num_response
+        num_response = self.ImageNumerics.num_response
         A = np.zeros((num_param, num_response))
         error_map = np.zeros(num_response)
         n = 0
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
-            image = self.Data.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.Data.image2array(image)
+            image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
+            A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
-            image = self.Data.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.Data.image2array(image)
+            image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
+            A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         # response of point sources
         if self.PointSource.point_source_bool:
@@ -268,7 +285,7 @@ class ImageModel(object):
         :param mask: 1d vector of 1 or zeros
         :return: column wise multiplication of A*mask
         """
-        return A[:] * self.Data.image2array(mask)
+        return A[:] * self.ImageNumerics.image2array(mask)
 
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """

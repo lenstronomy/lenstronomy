@@ -41,9 +41,9 @@ class PSF_fitting(object):
                                                                                  kwargs_else)
 
         x_, y_ = imageModel.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
-        mask = imageModel.Data.mask
+        mask = imageModel.ImageNumerics.mask
         x_grid, y_grid = imageModel.Data.coordinates
-        fwhm = imageModel.Data.psf_fwhm(kwargs_psf)
+        fwhm = imageModel.PSF.psf_fwhm(kwargs_psf, imageModel.Data.deltaPix)
         radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
         mask_point_source_list = self.mask_point_sources(kwargs_else['ra_pos'], kwargs_else['dec_pos'], x_grid, y_grid, radius)
         point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)
@@ -120,7 +120,7 @@ class PSF_fitting(object):
         model, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,
                                                                 kwargs_lens_light, kwargs_else, point_source_add=True)
         data = makeImage.Data.data
-        mask = makeImage.Data.mask
+        mask = makeImage.ImageNumerics.mask
         point_source_list = makeImage.point_sources_list(kwargs_else)
         n = len(kwargs_else['ra_pos'])
         model_single_source_list = []

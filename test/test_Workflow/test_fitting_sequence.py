@@ -25,7 +25,7 @@ class TestFittingSequence(object):
         lens_light_model_list = ['SERSIC']
         kwargs_lens_light = [{'I0_sersic': 10., 'R_sersic': 0.4, 'n_sersic': 1.5, 'center_x': 0.01, 'center_y': -0.05}]
         kwargs_else = {}
-        kwargs_psf = SimAPI.psf_configure(psf_type='gaussian', fwhm=0.1, kernelsize=3, deltaPix=deltaPix, truncate=5,
+        kwargs_psf = SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=0.1, kernelsize=3, deltaPix=deltaPix, truncate=5,
                                           kernel=None)
 
         kwargs_options = {'lens_model_list': lens_model_list,

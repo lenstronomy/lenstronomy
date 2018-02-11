@@ -124,7 +124,7 @@ class MakeImageMultiband(object):
     def numData_evaluate(self):
         num = 0
         for i in range(self._num_bands):
-            if self._compute_bool:
+            if self._compute_bool[i]:
                 num += self._makeImage_list[i].numData_evaluate
         return num
 

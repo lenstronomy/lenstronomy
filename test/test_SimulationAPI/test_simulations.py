@@ -17,14 +17,13 @@ class TestSimulation(object):
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
-        psf_type = 'pixel'  # 'gaussian', 'pixel', 'NONE'
 
         # PSF specification
 
         self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='gaussian', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='pixel', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=kwargs_psf['kernel_point_source'])
 
@@ -126,7 +125,7 @@ class TestSimulation(object):
         kwargs_options = {'lens_model_list': lens_model_list,
                           'lens_light_model_list': lens_light_model_list,
                           'source_light_model_list': source_model_list,
-                          'psf_type': 'pixel',
+                          'psf_type': 'PIXEL',
                           'point_source': True
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }
@@ -179,7 +178,7 @@ class TestSimulation(object):
         kwargs_options = {'lens_model_list': lens_model_list,
                           'lens_light_model_list': lens_light_model_list,
                           'source_light_model_list': source_model_list,
-                          'psf_type': 'pixel',
+                          'psf_type': 'PIXEL',
                           'point_source': True
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }

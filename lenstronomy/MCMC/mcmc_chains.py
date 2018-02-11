@@ -187,7 +187,6 @@ class MCMC_chain(object):
         logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
         return logL
 
-
     def effectiv_numData_points(self):
         """
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value

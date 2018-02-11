@@ -11,7 +11,7 @@ class TestMultiband(object):
         numPix_DES = 50  # cutout size in number of pixels (numPix x numPix)
         deltaPix_DES = 0.263  # pixel size (in arc seconds)
         readout_noise_DES = 10  # read out noise rms in units of photon counts
-        psf_type_DES = 'gaussian'  # functional (or pixelized) form of PSF
+        psf_type_DES = 'GAUSSIAN'  # functional (or pixelized) form of PSF
 
         # exposure specifics
         name = "DES_g_band"

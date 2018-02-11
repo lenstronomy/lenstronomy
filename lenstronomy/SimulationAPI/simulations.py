@@ -65,7 +65,7 @@ class Simulation(object):
         kwargs_data_new['dec_at_xy_0'] += dec_shift
         return kwargs_data_new
 
-    def psf_configure(self, psf_type="gaussian", fwhm=1, kernelsize=11, deltaPix=1, truncate=6, kernel=None):
+    def psf_configure(self, psf_type="GAUSSIAN", fwhm=1, kernelsize=11, deltaPix=1, truncate=6, kernel=None):
         """
 
         :param psf_type:
@@ -76,7 +76,7 @@ class Simulation(object):
         # psf_type: 'NONE', 'gaussian', 'pixel'
         # 'pixel': kernel, kernel_large
         # 'gaussian': 'sigma', 'truncate'
-        if psf_type == 'gaussian':
+        if psf_type == 'GAUSSIAN':
             sigma = util.fwhm2sigma(fwhm)
             sigma_axis = sigma
             x_grid, y_grid = util.make_grid(kernelsize, deltaPix)
@@ -85,12 +85,12 @@ class Simulation(object):
             kernel_large = util.array2image(kernel_large)
             kernel_pixel = kernel_util.pixel_kernel(kernel_large)
             kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_point_source': kernel_large, 'kernel_pixel': kernel_pixel}
-        elif psf_type == 'pixel':
+        elif psf_type == 'PIXEL':
             kernel_large = copy.deepcopy(kernel)
             kernel_large = kernel_util.cut_psf(kernel_large, psf_size=kernelsize)
             kernel_small = copy.deepcopy(kernel)
             kernel_small = kernel_util.cut_psf(kernel_small, psf_size=kernelsize)
-            kwargs_psf = {'psf_type': "pixel", 'kernel_pixel': kernel_small, 'kernel_point_source': kernel_large}
+            kwargs_psf = {'psf_type': "PIXEL", 'kernel_pixel': kernel_small, 'kernel_point_source': kernel_large}
         elif psf_type == 'NONE':
             kwargs_psf = {'psf_type': 'NONE'}
         else:
@@ -181,7 +181,7 @@ class Simulation(object):
         """
         makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
-        image = makeImage.Data.array2image(image)
+        image = makeImage.ImageNumerics.array2image(image)
         # add noise
         if no_noise:
             return image

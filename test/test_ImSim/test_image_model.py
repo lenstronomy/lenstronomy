@@ -6,6 +6,7 @@ import pytest
 
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
 class TestImageModel(object):
@@ -53,21 +54,23 @@ class TestImageModel(object):
         source_model_list = ['SERSIC_ELLIPSE']
         self.kwargs_source = [kwargs_sersic_ellipse]
 
-        self.kwargs_else = {'sourcePos_x': 0.0, 'sourcePos_y': 0.0,
-                       'quasar_amp': 1.}  # quasar point source position in the source plane and intrinsic brightness
+        self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
+                       'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
 
         self.kwargs_options = {'lens_model_list': lens_model_list,
                           'lens_light_model_list': lens_light_model_list,
                           'source_light_model_list': source_model_list,
+                               'point_source_list': ['SOURCE_POSITION'],
                           'psf_type': 'PIXEL',
-                          'point_source': True
+                          'fixed_magnification': True
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }
 
         image_sim = self.SimAPI.im_sim(self.kwargs_options, self.kwargs_data, self.kwargs_psf, self.kwargs_lens, self.kwargs_source,
-                                  self.kwargs_lens_light, self.kwargs_else)
+                                       self.kwargs_lens_light, self.kwargs_ps)
         self.kwargs_data['image_data'] = image_sim
         self.imageModel = ImageModel(self.kwargs_options, self.kwargs_data, self.kwargs_psf)
+        self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
@@ -86,37 +89,41 @@ class TestImageModel(object):
         npt.assert_almost_equal(lens_flux[50, 50], 4.4297004326559657, decimal=8)
 
     def test_image_linear_solve(self):
-        model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else, inv_bool=False)
+        model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_image_with_params(self):
-        model, error_map = self.imageModel.image_with_params(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
+        model, error_map = self.imageModel.image_with_params(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_point_sources_list(self):
-        point_source_list = self.imageModel.point_sources_list(self.kwargs_else)
+        point_source_list = self.imageModel.point_sources_list(self.kwargs_ps, self.kwargs_lens)
         assert len(point_source_list) == 4
 
     def test_image_positions(self):
-        x_im, y_im = self.imageModel.image_positions(self.kwargs_lens, self.kwargs_else['sourcePos_x'], self.kwargs_else['sourcePos_y'])
-        npt.assert_almost_equal(x_im[0], self.kwargs_else['ra_pos'][0], decimal=4)
-        npt.assert_almost_equal(x_im[1], self.kwargs_else['ra_pos'][1], decimal=4)
-        npt.assert_almost_equal(x_im[2], self.kwargs_else['ra_pos'][2], decimal=4)
-        npt.assert_almost_equal(x_im[3], self.kwargs_else['ra_pos'][3], decimal=4)
+        x_im, y_im = self.imageModel.image_positions(self.kwargs_ps, self.kwargs_lens)
+        ra_pos, dec_pos = self.solver.image_position_from_source(sourcePos_x=self.kwargs_ps[0]['ra_source'],
+                                                                 sourcePos_y=self.kwargs_ps[0]['dec_source'],
+                                                                 kwargs_lens=self.kwargs_lens)
+        ra_pos_new = x_im[0]
+        npt.assert_almost_equal(ra_pos_new[0], ra_pos[0], decimal=8)
+        npt.assert_almost_equal(ra_pos_new[1], ra_pos[1], decimal=8)
+        npt.assert_almost_equal(ra_pos_new[2], ra_pos[2], decimal=8)
+        npt.assert_almost_equal(ra_pos_new[3], ra_pos[3], decimal=8)
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_else, source_marg=False)
+        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
         npt.assert_almost_equal(logL, -5000, decimal=-3)
 
         logLmarg = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
-                                                           self.kwargs_else, source_marg=True)
+                                                               self.kwargs_ps, source_marg=True)
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
 
     def test_reduced_residuals(self):
         model = self.SimAPI.im_sim(self.kwargs_options, self.kwargs_data, self.kwargs_psf, self.kwargs_lens, self.kwargs_source,
-                                  self.kwargs_lens_light, self.kwargs_else, no_noise=True)
+                                   self.kwargs_lens_light, self.kwargs_ps, no_noise=True)
         residuals = self.imageModel.reduced_residuals(model, error_map=0)
         npt.assert_almost_equal(np.std(residuals), 1.01, decimal=1)
 
@@ -128,12 +135,12 @@ class TestImageModel(object):
         assert numData == 10000
 
     def test_fermat_potential(self):
-        phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_else)
+        phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_ps)
         print(phi_fermat)
-        npt.assert_almost_equal(phi_fermat[0], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[1], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[2], -0.51082354, decimal=3)
-        npt.assert_almost_equal(phi_fermat[3], -0.51082354, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][0], -0.2719737, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][1], -0.2719737, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][2], -0.51082354, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][3], -0.51082354, decimal=3)
 
     def test_add_mask(self):
         mask = np.array([[0, 1],[1, 0]])
@@ -149,7 +156,7 @@ class TestImageModel(object):
         numPix = 100
         deltaPix = 0.05
         kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
-        kwargs_options = {'lens_model_list': ['SPEP'], 'point_source': True, 'subgrid_res': 2}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'subgrid_res': 2, 'point_source_list': ['LENSED_POSITION']}
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}
@@ -159,8 +166,8 @@ class TestImageModel(object):
         y_pix = np.array([40, 50, 60, 50])
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
-        kwargs_else = {'ra_pos': ra_pos, 'dec_pos': dec_pos, 'point_amp': np.ones_like(ra_pos)}
-        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_else=kwargs_else)
+        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
+        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
             assert image[y_pix[i], x_pix[i]] == 1
@@ -169,8 +176,8 @@ class TestImageModel(object):
         y_pix = np.array([40, 50, 60, 50])
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
-        kwargs_else = {'ra_pos': ra_pos, 'dec_pos': dec_pos, 'point_amp': np.ones_like(ra_pos)}
-        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_else=kwargs_else)
+        kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
+        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
             print(int(y_pix[i]), int(x_pix[i]+0.5))

@@ -1,8 +1,7 @@
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.PointSource.point_source import PointSource
 import lenstronomy.Util.util as util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
@@ -97,7 +96,7 @@ class Simulation(object):
             raise ValueError("psf type %s not supported!" % psf_type)
         return kwargs_psf
 
-    def normalize_flux(self, kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source=1, norm_factor_lens_light=1, norm_factor_point_source=1.):
+    def normalize_flux(self, kwargs_options, kwargs_source, kwargs_lens_light, kwargs_ps, norm_factor_source=1, norm_factor_lens_light=1, norm_factor_point_source=1.):
         """
         multiplies the surface brightness amplitudes with a norm_factor
         aim: mimic different telescopes photon collection area or colours for different imaging bands
@@ -108,14 +107,17 @@ class Simulation(object):
         """
         lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
         sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
+        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
+                                          lensModel=lensModel, fixed_magnification=kwargs_options.get('fixed_magnification', False),
+                                       additional_images=kwargs_options.get('additional_images', False))
         kwargs_source_updated = copy.deepcopy(kwargs_source)
         kwargs_lens_light_updated = copy.deepcopy(kwargs_lens_light)
-        kwargs_else_updated = copy.deepcopy(kwargs_else)
+        kwargs_ps_updated = copy.deepcopy(kwargs_ps)
         kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         kwargs_lens_light_updated = lensLightModel.re_normalize_flux(kwargs_lens_light_updated, norm_factor_lens_light)
-        if 'point_amp' in kwargs_else:
-                kwargs_else_updated['point_amp'] *= norm_factor_point_source
-        return kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated
+        kwargs_ps_updated = pointSource.re_normalize_flux(kwargs_ps_updated, norm_factor_point_source)
+        return kwargs_source_updated, kwargs_lens_light_updated, kwargs_ps_updated
 
     def normalize_flux_source(self, kwargs_options, kwargs_source, norm_factor_source):
         """
@@ -142,27 +144,6 @@ class Simulation(object):
         :param kwargs_else:
         :return:
         """
-        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
-        imPos = LensEquationSolver(lensModel)
-        if kwargs_options.get('point_source', False):
-            data = Data(kwargs_data)
-            deltaPix = data.deltaPix
-            min_distance = deltaPix/10.
-            search_window = len(kwargs_data['image_data'])*deltaPix
-            sourcePos_x = kwargs_else['sourcePos_x']
-            sourcePos_y = kwargs_else['sourcePos_y']
-            x_mins, y_mins = imPos.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window)
-            n = len(x_mins)
-            mag_list = np.zeros(n)
-            for i in range(n):
-                mag = lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
-                mag_list[i] = abs(mag)
-            kwargs_else['ra_pos'] = x_mins
-            kwargs_else['dec_pos'] = y_mins
-            kwargs_else['point_amp'] = mag_list * kwargs_else['quasar_amp']
-            kwargs_options['num_point_sources'] = len(x_mins)
-
-        # update kwargs_else
         image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)
         return image
 
@@ -205,23 +186,3 @@ class Simulation(object):
         image2d = util.array2image(image1d)
         return image2d
 
-    def fermat_potential(self, kwargs_options, kwargs_lens, kwargs_else):
-        """
-        computes the Fermat potential
-        :param kwargs_options:
-        :param kwargs_lens:
-        :param kwargs_else:
-        :param no_noise:
-        :return: array of Fermat potential for all image positions (in ordering of kwargs_else['ra_pos'])
-        """
-        lensModel = LensModel(lens_model_list=kwargs_options['lens_model_list'])
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
-        ra_source, dec_source = lensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
-        ra_source = np.mean(ra_source)
-        dec_source = np.mean(dec_source)
-        fermat_pot = lensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
-        return fermat_pot

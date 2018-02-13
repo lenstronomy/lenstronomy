@@ -87,20 +87,21 @@ class TestSimulation(object):
         source_model_list = ['SERSIC_ELLIPSE']
         kwargs_source_list = [kwargs_sersic_ellipse]
 
-        kwargs_else = {'sourcePos_x': 0.0, 'sourcePos_y': 0.0,
-                       'quasar_amp': 1.}  # quasar point source position in the source plane and intrinsic brightness
+        kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
+                       'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
 
         kwargs_options = {'lens_model_list': lens_model_list,
                           'lens_light_model_list': lens_light_model_list,
                           'source_light_model_list': source_model_list,
-                          'psf_type': 'pixel',
-                          'point_source': True
-                          # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
+                          'psf_type': 'PIXEL',
+                          'point_source_list': ['SOURCE_POSITION'], 'fixed_magnification': True
+                          # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_ps
                           }
         image_sim = self.SimAPI.im_sim(kwargs_options, self.kwargs_data, self.kwargs_psf, kwargs_lens_list, kwargs_source_list,
-                                  kwargs_lens_light_list, kwargs_else)
-        kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated = self.SimAPI.normalize_flux(kwargs_options, kwargs_source_list, kwargs_lens_light_list, kwargs_else, norm_factor_source=3, norm_factor_lens_light=2, norm_factor_point_source=0.)
-        assert kwargs_else_updated['point_amp'][0] == 0
+                                  kwargs_lens_light_list, kwargs_ps)
+        kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated = self.SimAPI.normalize_flux(kwargs_options, kwargs_source_list, kwargs_lens_light_list, kwargs_ps, norm_factor_source=3, norm_factor_lens_light=2, norm_factor_point_source=0.)
+        print(kwargs_else_updated, 'test')
+        assert kwargs_else_updated[0]['source_amp'] == 0
 
     def test_normalize_flux_source(self):
         # 'EXERNAL_SHEAR': external shear
@@ -151,44 +152,6 @@ class TestSimulation(object):
                           }
         source = self.SimAPI.source_plane(kwargs_options, kwargs_source, numPix, deltaPix)
         assert len(source) == numPix
-
-    def test_fermat_potential(self):
-        kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
-
-        lens_model_list = ['SPEP', 'SHEAR']
-        kwargs_lens_list = [kwargs_spemd, kwargs_shear]
-
-        # list of light profiles (for lens and source)
-        # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
-        # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
-
-
-        lens_light_model_list = ['SERSIC']
-        kwargs_lens_light_list = [kwargs_sersic]
-        source_model_list = ['SERSIC_ELLIPSE']
-        kwargs_source_list = [kwargs_sersic_ellipse]
-
-        kwargs_else = {'sourcePos_x': 0.0, 'sourcePos_y': 0.0,
-                       'quasar_amp': 1.}  # quasar point source position in the source plane and intrinsic brightness
-
-        kwargs_options = {'lens_model_list': lens_model_list,
-                          'lens_light_model_list': lens_light_model_list,
-                          'source_light_model_list': source_model_list,
-                          'psf_type': 'PIXEL',
-                          'point_source': True
-                          # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
-                          }
-
-        image_sim = self.SimAPI.im_sim(kwargs_options, self.kwargs_data, self.kwargs_psf, kwargs_lens_list, kwargs_source_list,
-                                  kwargs_lens_light_list, kwargs_else)
-        _ = self.SimAPI.fermat_potential(kwargs_options, kwargs_lens_list, kwargs_else)
-        fermat_pot = self.SimAPI.fermat_potential(kwargs_options, kwargs_lens_list, kwargs_else)
-        assert fermat_pot[0] == -0.27197369737141391
-        assert len(fermat_pot) == 4
 
     def test_shift_coordinate_grid(self):
         x_shift = 0.05

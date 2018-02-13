@@ -29,6 +29,7 @@ class PSF_fitting(object):
         """
 
         imageModel = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
+        imageModel.PointSource.set_save_cache(True)
         logL_before = imageModel.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_else)
         kernel_old = kwargs_psf["kernel_point_source"]
@@ -36,16 +37,16 @@ class PSF_fitting(object):
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
         kwargs_options_psf = copy.deepcopy(kwargs_options)
-        kwargs_options_psf['error_map'] = False
+        kwargs_options_psf['psf_error_map'] = False
         image_single_point_source_list = self.image_single_point_source(kwargs_data, kwargs_psf, kwargs_options_psf, kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                                  kwargs_else)
-
-        x_, y_ = imageModel.Data.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
+        ra_image, dec_image, amp = imageModel.PointSource.point_source_list(kwargs_else, kwargs_lens)
+        x_, y_ = imageModel.Data.map_coord2pix(ra_image, dec_image)
         mask = imageModel.ImageNumerics.mask
         x_grid, y_grid = imageModel.Data.coordinates
         fwhm = imageModel.PSF.psf_fwhm(kwargs_psf, imageModel.Data.deltaPix)
         radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
-        mask_point_source_list = self.mask_point_sources(kwargs_else['ra_pos'], kwargs_else['dec_pos'], x_grid, y_grid, radius)
+        mask_point_source_list = self.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
         point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))
         for i in range(symmetry):
@@ -101,7 +102,7 @@ class PSF_fitting(object):
         return kwargs_psf_new
 
     def image_single_point_source(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light,
-                                  kwargs_else, verbose=False):
+                                  kwargs_ps, verbose=False):
         """
         return model without including the point source contributions
         :param kwargs_data:
@@ -110,19 +111,19 @@ class PSF_fitting(object):
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
-        :param kwargs_else:
+        :param kwargs_ps:
         :return:
         """
         # reconstructed model with given psf
         makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
         wls_model, error_map, cov_param, param = makeImage.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                              kwargs_lens_light, kwargs_else)
+                                                                              kwargs_lens_light, kwargs_ps)
         model, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source,
-                                                                kwargs_lens_light, kwargs_else, point_source_add=True)
+                                                       kwargs_lens_light, kwargs_ps, point_source_add=True)
         data = makeImage.Data.data
         mask = makeImage.ImageNumerics.mask
-        point_source_list = makeImage.point_sources_list(kwargs_else)
-        n = len(kwargs_else['ra_pos'])
+        point_source_list = makeImage.point_sources_list(kwargs_ps, kwargs_lens)
+        n = len(point_source_list)
         model_single_source_list = []
         for i in range(n):
             model_single_source = (data - model + point_source_list[i]) * mask

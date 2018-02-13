@@ -138,7 +138,7 @@ class Data(object):
         """
         return self._coords.map_pix2coord(x, y)
 
-    def covariance_matrix(self, d, sigma_b, f):
+    def covariance_matrix(self, d, sigma_b, f, verbose=False):
         """
         returns a diagonal matrix for the covariance estimation
         :param d: data array
@@ -152,9 +152,9 @@ class Data(object):
         else:
             mean_exp_time = np.mean(f)
             f[f < mean_exp_time / 10] = mean_exp_time / 10
-
-        if sigma_b * np.max(f) < 1:
-            print("WARNING! sigma_b*f %s >1 may introduce unstable error estimates" % (sigma_b*np.max(f)))
+        if verbose:
+            if sigma_b * np.max(f) < 1:
+                print("WARNING! sigma_b*f %s >1 may introduce unstable error estimates" % (sigma_b*np.max(f)))
         d_pos = np.zeros_like(d)
         #threshold = 1.5*sigma_b
         d_pos[d >= 0] = d[d >= 0]

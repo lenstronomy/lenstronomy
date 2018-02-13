@@ -1,0 +1,214 @@
+import numpy as np
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+
+
+class Unlensed(object):
+    """
+    class of a single point source in the image plane, aka star
+    parameters: ra_image, dec_image, point_amp
+
+    """
+    def __init__(self):
+        pass
+
+    def image_position(self, kwargs_ps, kwargs_lens=None):
+        """
+
+        :param ra_image:
+        :param dec_image:
+        :param point_amp:
+        :return:
+        """
+        ra_image = kwargs_ps['ra_image']
+        dec_image = kwargs_ps['dec_image']
+        return np.array(ra_image), np.array(dec_image)
+
+    def source_position(self, kwargs_ps, kwargs_lens=None):
+        ra_image = kwargs_ps['ra_image']
+        dec_image = kwargs_ps['dec_image']
+        return np.array(ra_image), np.array(dec_image)
+
+    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
+        point_amp = kwargs_ps['point_amp']
+        return np.array(point_amp)
+
+    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
+        point_amp = kwargs_ps['point_amp']
+        return np.array(point_amp)
+
+
+class LensedPositions(object):
+    """
+    class of a single point source in the image plane, aka star
+    parameters: ra_image, dec_image, point_amp
+
+    """
+    def __init__(self, lensModel, fixed_magnification=False, additional_image=False):
+        self._lensModel = lensModel
+        self._solver = LensEquationSolver(lensModel)
+        self._fixed_magnification = fixed_magnification
+        self._additional_image = additional_image
+
+    def image_position(self, kwargs_ps, kwargs_lens):
+        """
+
+        :param ra_image:
+        :param dec_image:
+        :param point_amp:
+        :return:
+        """
+        if self._additional_image:
+            ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)
+            ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens)
+        else:
+            ra_image = kwargs_ps['ra_image']
+            dec_image = kwargs_ps['dec_image']
+        return np.array(ra_image), np.array(dec_image)
+
+    def source_position(self, kwargs_ps, kwargs_lens):
+        ra_image = kwargs_ps['ra_image']
+        dec_image = kwargs_ps['dec_image']
+        x_source, y_source = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
+        x_source = np.mean(x_source)
+        y_source = np.mean(y_source)
+        return np.array(x_source), np.array(y_source)
+
+    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
+        if self._fixed_magnification:
+            ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
+            mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
+            point_amp = kwargs_ps['source_amp'] * mag
+        else:
+            point_amp = kwargs_ps['point_amp']
+        return np.array(point_amp)
+
+    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
+        if self._fixed_magnification:
+            source_amp = kwargs_ps['source_amp']
+        else:
+            ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
+            mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
+            point_amp = kwargs_ps['point_amp']
+            source_amp = np.mean(np.array(point_amp) / np.array(mag))
+        return np.array(source_amp)
+
+
+class SourcePositions(object):
+    """
+    class of a single point source in the image plane, aka star
+    parameters: ra_image, dec_image, point_amp
+
+    """
+    def __init__(self, lensModel, fixed_magnification=True):
+        self._lensModel = lensModel
+        self._solver = LensEquationSolver(lensModel)
+        self._fixed_magnification = fixed_magnification
+
+    def image_position(self, kwargs_ps, kwargs_lens):
+        """
+
+        :param ra_image:
+        :param dec_image:
+        :param point_amp:
+        :return:
+        """
+        ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)
+        ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens)
+        return ra_image, dec_image
+
+    def source_position(self, kwargs_ps, kwargs_lens):
+        ra_source = kwargs_ps['ra_source']
+        dec_source = kwargs_ps['dec_source']
+        return np.array(ra_source), np.array(dec_source)
+
+    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
+        if self._fixed_magnification:
+            ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
+            mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
+            point_amp = kwargs_ps['source_amp'] * mag
+        else:
+            point_amp = kwargs_ps['point_amp']
+        return np.array(point_amp)
+
+    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
+        if self._fixed_magnification:
+            source_amp = kwargs_ps['source_amp']
+        else:
+            ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
+            mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
+            point_amp = kwargs_ps['point_amp']
+            source_amp = np.mean(np.array(point_amp) / np.array(mag))
+        return np.array(source_amp)
+
+
+class PointSourceNone(object):
+    """
+    class of a none point source
+
+    """
+    def __init__(self):
+        pass
+
+    def image_position(self, kwargs_ps=None, kwargs_lens=None):
+        """
+
+        :param ra_image:
+        :param dec_image:
+        :param point_amp:
+        :return:
+        """
+        return [], []
+
+    def source_position(self, kwargs_ps, kwargs_lens=None):
+        return [], []
+
+    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
+        return []
+
+    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
+        []
+
+
+class PointSourceCached(object):
+    """
+
+    """
+    def __init__(self, point_source_model, save_cache=False):
+        self._model = point_source_model
+        self._save_cache = save_cache
+
+    def delete_lens_model_cache(self):
+        if hasattr(self, '_x_image'):
+            del self._x_image
+        if hasattr(self, '_y_image'):
+            del self._y_image
+        if hasattr(self, '_x_source'):
+            del self._x_source
+        if hasattr(self, '_y_source'):
+            del self._y_source
+
+    def set_save_cache(self, bool):
+        self._save_cache = bool
+
+    def image_position(self, kwargs_ps, kwargs_lens=None):
+        """
+
+        :param ra_image:
+        :param dec_image:
+        :param point_amp:
+        :return:
+        """
+        if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
+            self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens)
+        return self._x_image, self._y_image
+
+    def source_position(self, kwargs_ps, kwargs_lens=None):
+        if not self._save_cache or not hasattr(self, '_x_source') or not hasattr(self, '_y_source'):
+            self._x_source, self._y_source = self._model.source_position(kwargs_ps, kwargs_lens)
+        return self._x_source, self._y_source
+
+    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
+        return self._model.image_amplitude(kwargs_ps, kwargs_lens)
+
+    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
+        return self._model.source_amplitude(kwargs_ps, kwargs_lens)

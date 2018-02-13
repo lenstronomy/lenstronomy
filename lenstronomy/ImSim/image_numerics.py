@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
+import lenstronomy.Util.kernel_util as kernel_util
 
 
 class ImageNumerics(object):
@@ -28,6 +29,7 @@ class ImageNumerics(object):
         self._nx, self._ny = np.shape(self._Data.data)
         self._subgrid_res = kwargs_numerics.get('subgrid_res', 1)
         self._psf_subgrid = kwargs_numerics.get('psf_subgrid', False)
+        self._fix_psf_error_map = kwargs_numerics.get('fix_psf_error_map', False)
 
         if 'idex_mask' in kwargs_numerics:
             self._idex_mask_2d = kwargs_numerics['idex_mask']
@@ -213,3 +215,33 @@ class ImageNumerics(object):
         image = np.zeros((self._nx, self._ny))
         image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
         return image
+
+    def point_source_rendering(self, ra_pos, dec_pos, amp):
+        """
+
+        :param n_points:
+        :param x_pos:
+        :param y_pos:
+        :param psf_large:
+        :return: response matrix of point sources
+        """
+        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
+        psf_point_source = self._PSF.kernel_point_source
+        grid2d = np.zeros_like(self._Data.data)
+        for i in range(len(x_pos)):
+            grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], amp[i] * psf_point_source)
+        return grid2d
+
+    def psf_error_map(self, ra_pos, dec_pos, amp):
+        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
+        data = self._Data.data
+        psf_kernel = self._PSF.kernel_point_source
+        psf_error_map = self._PSF.psf_error_map
+        error_map = np.zeros_like(data)
+        for i in range(len(x_pos)):
+            if self._fix_psf_error_map:
+                amp_estimated = amp
+            else:
+                amp_estimated = kernel_util.estimate_amp(data, x_pos, y_pos, psf_kernel)
+            error_map = image_util.add_layer2image(error_map, x_pos, y_pos, psf_error_map * (psf_kernel * amp_estimated) ** 2)
+        return error_map

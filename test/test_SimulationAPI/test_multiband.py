@@ -4,6 +4,7 @@ import numpy as np
 
 
 class TestMultiband(object):
+
     def setup(self):
         MB = MultiBand()
         # telescope and instruments specifics

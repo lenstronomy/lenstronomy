@@ -1,27 +1,40 @@
 from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 
 
-class MakeImageMultiband(object):
+class Multiband(object):
     """
     class to simulate/reconstruct images in multi-band option.
     This class calls functions of image_model.py with different bands with
     joint non-linear parameters and decoupled linear parameters.
     """
 
-    def __init__(self, kwargs_options, kwargs_data_list, kwargs_psf_list, compute_bool=None):
+    def __init__(self, kwargs_data_list, kwargs_psf_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics, compute_bool=None):
         self._num_bands = len(kwargs_data_list)
         if self._num_bands != len(kwargs_psf_list):
             raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))
-        self._makeImage_list = []
+        self._imageModel_list = []
         for i in range(self._num_bands):
-            self._makeImage_list.append(ImageModel(kwargs_options, kwargs_data_list[i], kwargs_psf_list[i]))
-        self.kwargs_options = kwargs_options
+            data_i = Data(kwargs_data=kwargs_data_list[i])
+            psf_i = PSF(kwargs_psf=kwargs_psf_list[i])
+            self._imageModel_list.append(ImageModel(data_i, psf_i, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics))
         if compute_bool is None:
             self._compute_bool = [True] * self._num_bands
         else:
             if not len(compute_bool) == self._num_bands:
                 raise ValueError('compute_bool statement has not the same range as number of bands available!')
             self._compute_bool = compute_bool
+        self._point_source_class = point_source_class
+
+    def reset_point_source_cache(self):
+        """
+        deletes all the cache in the point source class and saves it from then on
+
+        :return:
+        """
+        self._point_source_class.delete_lens_model_cach()
+        self._point_source_class.set_save_cache(True)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
         """
@@ -34,7 +47,7 @@ class MakeImageMultiband(object):
         """
         source_light_final_list = []
         for i in range(self._num_bands):
-            source_light_final = self._makeImage_list[i].source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved, de_lensed=de_lensed)
+            source_light_final = self._imageModel_list[i].source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved, de_lensed=de_lensed)
             source_light_final_list.append(source_light_final)
         return source_light_final_list
 
@@ -47,7 +60,7 @@ class MakeImageMultiband(object):
         """
         lens_light_final_list = []
         for i in range(self._num_bands):
-            lens_light_final = self._makeImage_list[i].lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
+            lens_light_final = self._imageModel_list[i].lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
             lens_light_final_list.append(lens_light_final)
         return lens_light_final_list
 
@@ -64,7 +77,7 @@ class MakeImageMultiband(object):
         """
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
-            wls_model, error_map, cov_param, param = self._makeImage_list[i].image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=inv_bool)
+            wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=inv_bool)
             wls_list.append(wls_model)
             error_map_list.append(error_map)
             cov_param_list.append(cov_param)
@@ -87,7 +100,7 @@ class MakeImageMultiband(object):
         image_list = []
         error_map_list = []
         for i in range(self._num_bands):
-            image, error_map = self._makeImage_list[i].image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=unconvolved, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+            image, error_map = self._imageModel_list[i].image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=unconvolved, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
             image_list.append(image)
             error_map_list.append(error_map)
         return image_list, error_map_list
@@ -100,7 +113,7 @@ class MakeImageMultiband(object):
         :param sourcePos_y: source position in relative arc sec
         :return: x_coords, y_coords of image positions
         """
-        x_mins, y_mins = self._makeImage_list[0].image_positions(kwargs_ps, kwargs_lens)
+        x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
@@ -117,7 +130,7 @@ class MakeImageMultiband(object):
         logL = 0
         for i in range(self._num_bands):
             if self._compute_bool[i]:
-                logL += self._makeImage_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=source_marg)
+                logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=source_marg)
         return logL
 
     @property
@@ -125,7 +138,7 @@ class MakeImageMultiband(object):
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i]:
-                num += self._makeImage_list[i].numData_evaluate
+                num += self._imageModel_list[i].numData_evaluate
         return num
 
     def fermat_potential(self, kwargs_lens, kwargs_else):
@@ -133,4 +146,4 @@ class MakeImageMultiband(object):
 
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
-        return self._makeImage_list[0].fermat_potential(kwargs_lens, kwargs_else)
+        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_else)

@@ -1,12 +1,7 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_numerics import ImageNumerics
 import lenstronomy.ImSim.de_lens as de_lens
-from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
 
 
 import numpy as np
@@ -16,7 +11,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, kwargs_options, kwargs_data, kwargs_psf={}):
+    def __init__(self, data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics={}):
         """
 
 
@@ -27,29 +22,50 @@ class ImageModel(object):
         :param kwargs_data: keywords of the data, see Data() class for further information
         :param kwargs_psf: keywords of the PSF convolution, see PSF() class for further information
         """
-        self.PSF = PSF(kwargs_psf)
-        self.Data = Data(kwargs_data)
-        self._psf_error_map = kwargs_options.get('psf_error_map', False)
-        kwargs_numerics = {'subgrid_res': kwargs_options.get('subgrid_res', 1),
-                           'psf_subgrid': kwargs_options.get('psf_subgrid', False)}
-        if 'mask' in kwargs_data:
-            kwargs_numerics['mask'] = kwargs_data['mask']
-        if 'idex_mask' in kwargs_data:
-            kwargs_numerics['idex_mask'] = kwargs_data['idex_mask']
+        self.PSF = psf_class
+        self.Data = data_class
+        self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
+        self.kwargs_numerics = kwargs_numerics
+        #self._psf_error_map = kwargs_options.get('psf_error_map', False)
+        #kwargs_numerics = {'subgrid_res': kwargs_options.get('subgrid_res', 1),
+        #                   'psf_subgrid': kwargs_options.get('psf_subgrid', False)}
+        #if 'mask' in kwargs_data:
+        #    kwargs_numerics['mask'] = kwargs_data['mask']
+        #if 'idex_mask' in kwargs_data:
+        #    kwargs_numerics['idex_mask'] = kwargs_data['idex_mask']
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
 
-        self.LensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']),
-                                   z_source=kwargs_options.get('z_source', None),
-                                   redshift_list=kwargs_options.get('redshift_list', None),
-                                   cosmo=kwargs_options.get('cosmo', None),
-                                   multi_plane=kwargs_options.get('multi_plane', None))
-        fixed_magnification = kwargs_options.get('fixed_magnification', False)
-        additional_images = kwargs_options.get('additional_images', False)
-        self.PointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
-                                          lensModel=self.LensModel, fixed_magnification=fixed_magnification,
-                                       additional_images=additional_images)
-        self.SourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        self.LensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        self.LensModel = lens_model_class
+        #fixed_magnification = kwargs_options.get('fixed_magnification', False)
+        #additional_images = kwargs_options.get('additional_images', False)
+        #self.PointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
+        #                                  lensModel=self.LensModel, fixed_magnification=fixed_magnification,
+        #                               additional_images=additional_images)
+        self.PointSource = point_source_class
+        self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+        self.SourceModel = source_model_class
+        self.LensLightModel = lens_light_model_class
+
+    def update_psf(self, psf_class):
+        """
+        update the instance of the class with a new instance of PSF() with a potentially different point spread function
+
+        :param psf_class:
+        :return:
+        """
+        self.PSF = psf_class
+        self.ImageNumerics._PSF = psf_class
+
+    def update_numerics(self, kwargs_numerics):
+        """
+        update numerical options
+
+        :param kwargs_numerics:
+        :return:
+        """
+        self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """

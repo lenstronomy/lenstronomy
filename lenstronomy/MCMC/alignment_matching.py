@@ -5,7 +5,8 @@ import copy
 from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import MpiUtil
-from lenstronomy.ImSim.multiband import MakeImageMultiband
+from lenstronomy.ImSim.multiband import Multiband
+import lenstronomy.Util.class_creator as class_creator
 
 
 class AlignmentFitting(object):
@@ -86,7 +87,7 @@ class AlignmentChain(object):
         """
         #generate image and computes likelihood
         kwargs_data = self.update_data(args)
-        makeImageMultiband = MakeImageMultiband(self._kwargs_options, kwargs_data, self._kwargs_psf, compute_bool=self._compute_bool)
+        makeImageMultiband = class_creator.creat_multiband(kwargs_data, self._kwargs_psf, self._kwargs_options, compute_bool=self._compute_bool)
         logL = makeImageMultiband.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
         return logL, None
 

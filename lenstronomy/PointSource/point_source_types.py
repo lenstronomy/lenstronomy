@@ -36,6 +36,9 @@ class Unlensed(object):
         point_amp = kwargs_ps['point_amp']
         return np.array(point_amp)
 
+    def update_lens_model(self, lens_model_class):
+        pass
+
 
 class LensedPositions(object):
     """
@@ -92,6 +95,10 @@ class LensedPositions(object):
             source_amp = np.mean(np.array(point_amp) / np.array(mag))
         return np.array(source_amp)
 
+    def update_lens_model(self, lens_model_class):
+        self._lensModel = lens_model_class
+        self._solver = LensEquationSolver(lens_model_class)
+
 
 class SourcePositions(object):
     """
@@ -140,6 +147,10 @@ class SourcePositions(object):
             source_amp = np.mean(np.array(point_amp) / np.array(mag))
         return np.array(source_amp)
 
+    def update_lens_model(self, lens_model_class):
+        self._lensModel = lens_model_class
+        self._solver = LensEquationSolver(lens_model_class)
+
 
 class PointSourceNone(object):
     """
@@ -168,6 +179,9 @@ class PointSourceNone(object):
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):
         []
 
+    def update_lens_model(self, lens_model_class):
+        pass
+
 
 class PointSourceCached(object):
     """
@@ -189,6 +203,9 @@ class PointSourceCached(object):
 
     def set_save_cache(self, bool):
         self._save_cache = bool
+
+    def update_lens_model(self, lens_model_class):
+        self._model.update_lens_model(lens_model_class)
 
     def image_position(self, kwargs_ps, kwargs_lens=None):
         """

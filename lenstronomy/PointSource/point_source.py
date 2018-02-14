@@ -4,7 +4,7 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 
 class PointSource(object):
 
-    def __init__(self, point_source_type_list, lensModel, fixed_magnification=False, additional_images=False,
+    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification=False, additional_images=False,
                  save_cache=False):
         """
 
@@ -33,6 +33,17 @@ class PointSource(object):
                 pass
             else:
                 raise ValueError("Point-source model %s not available" % model)
+
+    def update_lens_model(self, lens_model_class):
+        """
+
+        :param lens_model_class: instance of LensModel class
+        :return: update instance of lens model class
+        """
+        self.delete_lens_model_cach()
+        self._lensModel = lens_model_class
+        for model in self._point_source_list:
+            model.update_lens_model(lens_model_class=lens_model_class)
 
     def delete_lens_model_cach(self):
         """

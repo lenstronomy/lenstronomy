@@ -1,7 +1,12 @@
 import numpy as np
 from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
+from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.LightModel.light_model import LightModel
 
 
 class MultiBand(object):
@@ -19,7 +24,7 @@ class MultiBand(object):
         self._exposure_list = []
         self._name_list = []
 
-    def add_band(self, name, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type="gaussian", fwhm=1., *args, **kwargs):
+    def add_band(self, name, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type="GAUSSIAN", fwhm=1., *args, **kwargs):
         """
 
         :param name: string, name of exposure e.g. DES-Y_band
@@ -148,6 +153,8 @@ class SingleBand(object):
         kwargs_psf = self.simulation.psf_configure(psf_type, fwhm)
         self._kwargs_psf = kwargs_psf
         self._flux_calibration_factor = collector_area / extinction * deltaPix**2  # transforms intrinsic surface brightness per angular area into the flux normalizations per pixel
+        self._psf = PSF(self._kwargs_psf)
+        self._data = Data(self._kwargs_data)
 
     def simulate(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
@@ -160,12 +167,21 @@ class SingleBand(object):
         :param no_noise:
         :return:
         """
+        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
+        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
+                                  lensModel=lensModel,
+                                  fixed_magnification=kwargs_options.get('fixed_magnification', False),
+                                  additional_images=kwargs_options.get('additional_images', False))
+
         norm_factor_source = self._flux_calibration_factor * source_colour
         norm_factor_lens_light = self._flux_calibration_factor * lens_colour
         norm_factor_point_source = self._flux_calibration_factor * quasar_colour
         kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated = self.simulation.normalize_flux(kwargs_options, kwargs_source, kwargs_lens_light, kwargs_else, norm_factor_source,
                        norm_factor_lens_light, norm_factor_point_source)
-        image = self.simulation.simulate(kwargs_options, self._kwargs_data, self._kwargs_psf, kwargs_lens, kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated, no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        imageModel = ImageModel(self._data, self._psf, lensModel, sourceModel, lensLightModel, pointSource, kwargs_numerics={})
+        image = self.simulation.simulate(imageModel, kwargs_lens, kwargs_source_updated, kwargs_lens_light_updated, kwargs_else_updated, no_noise=no_noise, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         return image
 
     def source_plane(self, kwargs_options, kwargs_source, source_colour, numPix=100, deltaPix=0.01):

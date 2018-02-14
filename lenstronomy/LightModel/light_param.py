@@ -8,18 +8,16 @@ class LightParam(object):
 
     def __init__(self, kwargs_options, kwargs_fixed, type='lens_light'):
         self.kwargs_options = kwargs_options
-        self.kwargs_fixed = kwargs_fixed
         if type == 'lens_light':
             self.model_list = kwargs_options['lens_light_model_list']
             self._joint_center = kwargs_options.get('joint_center_lens_light', False)
-            self._smoothing = 0.005
         elif type == 'source_light':
             self.model_list = kwargs_options['source_light_model_list']
             self._joint_center = kwargs_options.get('joint_center_source', False)
-            self._smoothing = 0.005
         else:
             raise ValueError("type %s not supported." % type)
         self.type = type
+        self.kwargs_fixed = self.add_fixed_linear(kwargs_fixed)
 
     def getParams(self, args, i):
         """
@@ -581,3 +579,28 @@ class LightParam(object):
                     list.append('bkg_mean')
                     num += 1
         return num, list
+
+    def add_fixed_linear(self, kwargs_fixed_list):
+        """
+
+        :param kwargs_light:
+        :param type:
+        :return:
+        """
+        for i, model in enumerate(self.model_list):
+            kwargs_fixed = kwargs_fixed_list[i]
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
+                kwargs_fixed['I0_sersic'] = 1
+            elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+                kwargs_fixed['I0_sersic'] = 1
+                kwargs_fixed['I0_2'] = 1
+            elif model in ['BULDGE_DISK']:
+                kwargs_fixed['I0_b'] = 1
+                kwargs_fixed['I0_d'] = 1
+            elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                kwargs_fixed['sigma0'] = 1
+            elif model in ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SHAPELETS']:
+                kwargs_fixed['amp'] = 1
+            elif model in ['UNIFORM']:
+                kwargs_fixed['mean'] = 1
+        return kwargs_fixed_list

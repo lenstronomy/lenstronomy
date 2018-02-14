@@ -56,6 +56,14 @@ class TestPointSource(object):
         self.PointSource.set_save_cache(False)
         assert self.PointSource._point_source_list[0]._save_cache == False
 
+    def test_update_lens_model(self):
+        lensModel = LensModel(lens_model_list=['SIS'])
+        self.PointSource.update_lens_model(lens_model_class=lensModel)
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        x_image_list, y_image_list = self.PointSource.image_position(kwargs_ps=self.kwargs_ps,
+                                                                     kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(x_image_list[0][0], -0.82654997748011705 , decimal=8)
+
 
 class TestPointSource_fixed_mag(object):
 

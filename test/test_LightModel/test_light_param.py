@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
-from lenstronomy.Workflow.light_param import LightParam
+from lenstronomy.LightModel.light_param import LightParam
 
 
 class TestParam(object):
@@ -90,7 +90,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 93
+        assert num == 76
 
 
 if __name__ == '__main__':

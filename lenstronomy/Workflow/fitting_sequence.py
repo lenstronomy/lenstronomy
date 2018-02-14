@@ -1,6 +1,7 @@
 from lenstronomy.ImSim.psf_fitting import PSF_fitting
 from lenstronomy.Workflow.fitting import Fitting
 from lenstronomy.MCMC.alignment_matching import AlignmentFitting
+import lenstronomy.Util.class_creator as class_creator
 
 class FittingSequence(object):
     """
@@ -14,8 +15,8 @@ class FittingSequence(object):
         self._lens_sigma, self._source_sigma, self._lens_light_sigma, self._else_sigma = kwargs_sigma
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
 
-        self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_fixed=kwargs_fixed, kwargs_lower=kwargs_lower, kwargs_upper=kwargs_upper)
-        self.psf_iter = PSF_fitting()
+        self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_fixed=kwargs_fixed,
+                               kwargs_lower=kwargs_lower, kwargs_upper=kwargs_upper)
 
     def fit_sequence(self, fitting_kwargs_list):
         """
@@ -122,9 +123,14 @@ class FittingSequence(object):
             for i in range(len(self.kwargs_psf)):
                 if compute_bool[i]:
                     psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
-                    self.kwargs_psf[i] = self.psf_iter.update_iterative(self.kwargs_data[i], self.kwargs_psf[i], self.kwargs_options, lens_input, source_input,
-                                                                    lens_light_input, else_input, factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                   symmetry=psf_symmetry, verbose=False)
+                    image_model = class_creator.creat_image_model(kwargs_data=self.kwargs_data[i],
+                                                                  kwargs_psf=self.kwargs_psf[i],
+                                                                  kwargs_options=self.kwargs_options)
+                    psf_iter = PSF_fitting(image_model_class=image_model)
+                    self.kwargs_psf[i] = psf_iter.update_iterative(self.kwargs_psf[i], lens_input, source_input,
+                                                                    lens_light_input, else_input,
+                                                                    factor=psf_iter_factor, num_iter=psf_iter_num,
+                                                                    symmetry=psf_symmetry, verbose=False)
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
             chain, param_list = [], []
             print('PSF fitting completed')

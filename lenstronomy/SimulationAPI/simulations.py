@@ -132,22 +132,7 @@ class Simulation(object):
         kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
-    def im_sim(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False):
-        """
-        simulate image with solving for the point sources, if option choosen
-        :param kwargs_options:
-        :param kwargs_data:
-        :param kwargs_psf:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_else:
-        :return:
-        """
-        image = self.simulate(kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise)
-        return image
-
-    def simulate(self, kwargs_options, kwargs_data, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def simulate(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         simulate image
         :param kwargs_options:
@@ -160,15 +145,14 @@ class Simulation(object):
         :param no_noise:
         :return:
         """
-        makeImage = ImageModel(kwargs_options=kwargs_options, kwargs_data=kwargs_data, kwargs_psf=kwargs_psf)
-        image, error_map = makeImage.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
-        image = makeImage.ImageNumerics.array2image(image)
+        image, error_map = image_model_class.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        #image = makeImage.ImageNumerics.array2image(image)
         # add noise
         if no_noise:
             return image
         else:
-            poisson = image_util.add_poisson(image, exp_time=kwargs_data['exposure_map'])
-            bkg = image_util.add_background(image, sigma_bkd=kwargs_data['sigma_background'])
+            poisson = image_util.add_poisson(image, exp_time=image_model_class.Data.exposure_map)
+            bkg = image_util.add_background(image, sigma_bkd=image_model_class.Data.background_rms)
             return image + bkg + poisson
 
     def source_plane(self, kwargs_options, kwargs_source, numPix, deltaPix):

@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
-from lenstronomy.Workflow.lens_param import LensParam
+from lenstronomy.LensModel.lens_param import LensParam
 
 
 class TestParam(object):

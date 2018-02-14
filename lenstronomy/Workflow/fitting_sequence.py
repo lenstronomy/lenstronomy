@@ -54,16 +54,21 @@ class FittingSequence(object):
         mpi = fitting_kwargs.get('mpi', False)
         sigma_scale = fitting_kwargs['sigma_scale']
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
+        compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.kwargs_data))
         if fitting_kwargs['fitting_routine'] == 'MCMC':
             samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
+                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
+                                  sigma_factor=sigma_scale, gamma_fixed=False, compute_bool=compute_bool, fix_lens=False,
+                                  fix_source=False, fix_lens_light=False, fix_point_source=False)
         elif fitting_kwargs['fitting_routine'] == 'MCMC_source':
-            samples, param, dist = self.fitting.mcmc_source(self.kwargs_options,
+            samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None, sigma_factor=sigma_scale)
+                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
+                                  sigma_factor=sigma_scale, gamma_fixed=False, compute_bool=compute_bool, fix_lens=True,
+                                  fix_source=False, fix_lens_light=True, fix_point_source=True)
         else:
             raise ValueError("%s is not supported as a mcmc routine" % fitting_kwargs['fitting_routine'])
         return samples, param, dist
@@ -87,35 +92,41 @@ class FittingSequence(object):
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
 
         if fitting_routine == 'lens_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_only(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
+                fix_lens=False, fix_source=True, fix_lens_light=True, fix_point_source=False)
         elif fitting_routine == 'source_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_source_only(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
+                fix_lens=True, fix_source=False, fix_lens_light=True, fix_point_source=True)
         elif fitting_routine == 'lens_light_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_light_only(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
+                fix_lens=True, fix_source=True, fix_lens_light=False, fix_point_source=True)
         elif fitting_routine == 'lens_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_fixed_lens(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
+                fix_lens=True, fix_source=False, fix_lens_light=False, fix_point_source=False)
         elif fitting_routine == 'lens_combined_gamma_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, gamma_fixed=True, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=True,
+                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False)
         elif fitting_routine == 'lens_combined':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_lens_combined(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
                 self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
-                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool)
+                n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
+                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False)
         elif fitting_routine == 'psf_iteration':
             print('PSF fitting...')
             psf_iter_factor = fitting_kwargs['psf_iter_factor']

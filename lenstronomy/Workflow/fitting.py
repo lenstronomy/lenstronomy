@@ -190,121 +190,11 @@ class Fitting(object):
             threadCount=1, mpi=mpi, print_key='Catalogue', sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def find_lens_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                       kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                       n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
-        """
-        finds lens model with fixed lens light model, type as specified in input kwargs_optinons
-        :return: constraints of lens model
-        """
-        kwargs_options_special = {'X2_type': 'image'}
-
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-
-        add_fixed_lens = None
-        add_fixed_source = kwargs_source
-        add_fixed_lens_light = kwargs_lens_light
-        add_fixed_ps = None
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light, add_fixed_ps=add_fixed_ps)
-
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens only', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
-
-    def find_lens_light_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                             kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                             n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
-        """
-        finds lens light with fixed lens model
-        :return: constraints of lens model
-        """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = kwargs_lens
-        add_fixed_source = kwargs_source
-        add_fixed_lens_light = None
-        add_fixed_ps = kwargs_ps
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
-            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
-            add_fixed_ps=add_fixed_ps)
-
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens light', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
-
-    def find_source_only(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                         kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                         n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
-        """
-        finds lens light with fixed lens model
-        :return: constraints of lens model
-        """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = kwargs_lens
-        add_fixed_source = None
-        add_fixed_lens_light = kwargs_lens_light
-        add_fixed_ps = kwargs_ps
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
-            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
-            add_fixed_ps=add_fixed_ps)
-
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='source light', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
-
-    def find_fixed_lens(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                        kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                        n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, compute_bool=None):
-        """
-        finds lens light and source light combined with fixed lens model
-        :return: constraints of lens model
-        """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = kwargs_lens
-        add_fixed_source = None
-        add_fixed_lens_light = None
-        add_fixed_ps = None
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
-            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
-            add_fixed_ps=add_fixed_ps)
-
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='lens fixed', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
-
-    def find_lens_combined(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+    def find_model(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                            kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                           n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False, compute_bool=None):
+                           n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False,
+                   compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False,
+                   print_key='find_model'):
         """
         finds lens light and lens model combined fit
         :return: constraints of lens model
@@ -313,10 +203,22 @@ class Fitting(object):
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = kwargs_options.copy()
         kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = None
-        add_fixed_source = None
-        add_fixed_lens_light = None
-        add_fixed_ps = None
+        if fix_lens:
+            add_fixed_lens = kwargs_lens
+        else:
+            add_fixed_lens = None
+        if fix_source:
+            add_fixed_source = kwargs_source
+        else:
+            add_fixed_source = None
+        if fix_lens_light:
+            add_fixed_lens_light = kwargs_lens_light
+        else:
+            add_fixed_lens_light = None
+        if fix_point_source:
+            add_fixed_ps = kwargs_ps
+        else:
+            add_fixed_ps = None
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
             add_fixed_ps=add_fixed_ps)
@@ -330,26 +232,44 @@ class Fitting(object):
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, print_key='combined', sigma_factor=sigma_factor, compute_bool=compute_bool)
+            threadCount=threadCount, mpi=mpi, print_key=print_key, sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
 
-    def mcmc_source(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                    kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                    n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
+    def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                 kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
+                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1,
+                 gamma_fixed=False, compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False,
+                 fix_point_source=False):
         """
         MCMC
         """
-        kwargs_options_special = {'X2_type': 'image', 'solver': False}
+        kwargs_options_special = {'X2_type': 'image'}
         # this are the parameters which are held constant while sampling
         kwargs_options_execute = kwargs_options.copy()
         kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = kwargs_lens
-        add_fixed_source = None
-        add_fixed_lens_light = kwargs_lens_light
-        add_fixed_ps = kwargs_ps
+
+        if fix_lens:
+            add_fixed_lens = kwargs_lens
+        else:
+            add_fixed_lens = None
+        if fix_source:
+            add_fixed_source = kwargs_source
+        else:
+            add_fixed_source = None
+        if fix_lens_light:
+            add_fixed_lens_light = kwargs_lens_light
+        else:
+            add_fixed_lens_light = None
+        if fix_point_source:
+            add_fixed_ps = kwargs_ps
+        else:
+            add_fixed_ps = None
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
             add_fixed_ps=add_fixed_ps)
+        if gamma_fixed:
+            if 'gamma' in kwargs_lens[0]:
+                kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
 
         samples, param_list, dist = self._mcmc_run(
             n_burn, n_run, walkerRatio, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
@@ -359,44 +279,3 @@ class Fitting(object):
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor, compute_bool=compute_bool)
         return samples, param_list, dist
-
-    def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                 kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                 n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
-        """
-        MCMC
-        """
-        kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else = self._mcmc_run_fixed(kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        samples, param_list, dist = self._mcmc_run(
-            n_burn, n_run, walkerRatio, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_else, kwargs_ps, kwargs_ps_sigma,
-            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return samples, param_list, dist
-
-    def _mcmc_run_fixed(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-
-        :param kwargs_options:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
-        """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-
-        add_fixed_lens = None
-        add_fixed_source = None
-        add_fixed_lens_light = kwargs_lens_light
-        add_fixed_ps = None
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
-            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
-            add_fixed_ps=add_fixed_ps)
-
-        return kwargs_options_execute, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps

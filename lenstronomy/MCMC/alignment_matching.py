@@ -5,7 +5,6 @@ import copy
 from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import MpiUtil
-from lenstronomy.ImSim.multiband import Multiband
 import lenstronomy.Util.class_creator as class_creator
 
 

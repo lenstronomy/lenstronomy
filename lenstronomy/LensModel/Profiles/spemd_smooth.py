@@ -106,9 +106,7 @@ class SPEMD_SMOOTH(object):
         if self._fastell4py_bool:
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = np.zeros_like(x1), np.zeros_like(x1), \
-                                                                  np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
-
+            return np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
         n = len(np.atleast_1d(x))
         if n <= 1:
             if np.shape(x) == ():

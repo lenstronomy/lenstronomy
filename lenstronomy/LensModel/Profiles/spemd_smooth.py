@@ -1,12 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-try:
-    from fastell4py import fastell4py
-    fastell4py_bool = True
-except:
-    fastell4py_bool = False
-    print("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
+
 
 
 class SPEMD_SMOOTH(object):
@@ -16,7 +11,13 @@ class SPEMD_SMOOTH(object):
     (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
     """
     def __init__(self):
-        pass
+        try:
+            from fastell4py import fastell4py
+            self._fastell4py_bool = True
+            self.fastell4py = fastell4py
+        except:
+            self._fastell4py_bool = False
+            print("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
 
     def _parameter_constraints(self, theta_E, gamma, q, phi_G, s_scale):
         """
@@ -54,10 +55,10 @@ class SPEMD_SMOOTH(object):
         sin_phi = np.sin(phi_G)
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if fastell4py_bool:
-            potential = fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
+        if self._fastell4py_bool:
+            potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            potential = np.zeros_like(x1)
+            return np.zeros_like(x1)
         n = len(np.atleast_1d(x))
         if n <= 1:
             if np.shape(x) == ():
@@ -77,10 +78,10 @@ class SPEMD_SMOOTH(object):
 
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if fastell4py_bool:
-            f_x_prim, f_y_prim = fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
+        if self._fastell4py_bool:
+            f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            f_x_prim, f_y_prim = np.zeros_like(x1), np.zeros_like(x1)
+            return np.zeros_like(x1), np.zeros_like(x1)
         f_x = cos_phi*f_x_prim - sin_phi*f_y_prim
         f_y = sin_phi*f_x_prim + cos_phi*f_y_prim
         n = len(np.atleast_1d(x))
@@ -102,8 +103,8 @@ class SPEMD_SMOOTH(object):
 
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if fastell4py_bool:
-            f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = fastell4py.fastellmag(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
+        if self._fastell4py_bool:
+            f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = np.zeros_like(x1), np.zeros_like(x1), \
                                                                   np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)

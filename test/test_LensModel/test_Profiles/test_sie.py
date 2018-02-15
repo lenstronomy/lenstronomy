@@ -6,9 +6,11 @@ import pytest
 
 try:
     import fastell4py
+except:
+    print("Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!")
 
 
-    class TestSIE(object):
+class TestSIE(object):
         """
         tests the Gaussian methods
         """
@@ -52,8 +54,6 @@ try:
             assert values[0] == values_spemd[0]
 
 
-    if __name__ == '__main__':
-        pytest.main()
+if __name__ == '__main__':
+    pytest.main()
 
-except:
-    print("Warning: fastell4py not available, tests will be ignored!")

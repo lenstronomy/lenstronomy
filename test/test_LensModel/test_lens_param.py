@@ -8,7 +8,6 @@ from lenstronomy.LensModel.lens_param import LensParam
 class TestParam(object):
 
     def setup(self):
-        #TODO test 'MULTI_GAUSSIAN and 'DIPOLE'
         self.lens_model_list = ['SPEP', 'SHEAR', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
                                 'NFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
@@ -78,10 +77,10 @@ class TestParam(object):
             kwargs_mean_k = self.kwargs[i].copy()
             kwargs_mean_k.update(self.kwargs_sigma[i])
             self.kwargs_mean.append(kwargs_mean_k)
-        self.param = LensParam(kwargs_options={'lens_model_list': self.lens_model_list, 'num_shapelet_lens': 2},
-                               kwargs_fixed=self.kwargs_fixed)
-        self.param_fixed = LensParam(kwargs_options={'lens_model_list': self.lens_model_list, 'num_shapelet_lens': 2},
-                               kwargs_fixed=self.kwargs)
+        self.param = LensParam(lens_model_list=self.lens_model_list,
+                               kwargs_fixed=self.kwargs_fixed, num_images=2, solver_type='NONE', num_shapelet_lens=2)
+        self.param_fixed = LensParam(lens_model_list=self.lens_model_list,
+                               kwargs_fixed=self.kwargs, num_images=2, solver_type='NONE', num_shapelet_lens=2)
 
     def test_get_setParams(self):
         args = self.param.setParams(self.kwargs)

@@ -34,17 +34,17 @@ def test_polar2cart():
 
 def test_phi_q2_elliptisity():
     phi, q = 0, 1
-    e1,e2 = param_util.phi_q2_elliptisity(phi,q)
+    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == 0
     assert e2 == 0
 
     phi, q = 1, 1
-    e1,e2 = param_util.phi_q2_elliptisity(phi,q)
+    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == 0
     assert e2 == 0
 
     phi, q = 2.,0.95
-    e1, e2 = param_util.phi_q2_elliptisity(phi,q)
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == -0.016760092842656733
     assert e2 == -0.019405192187382792
 
@@ -82,26 +82,26 @@ def test_elliptisity2phi_q():
 
 def test_elliptisity2phi_q_symmetry():
     phi,q = 1.5, 0.8
-    e1,e2 = param_util.phi_q2_elliptisity(phi,q)
+    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     phi_new,q_new = param_util.elliptisity2phi_q(e1,e2)
     assert phi == phi_new
     assert q == q_new
 
     phi,q = -1.5, 0.8
-    e1,e2 = param_util.phi_q2_elliptisity(phi,q)
+    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     phi_new,q_new = param_util.elliptisity2phi_q(e1,e2)
     assert phi == phi_new
     assert q == q_new
 
     e1, e2 = 0.1, -0.1
     phi, q = param_util.elliptisity2phi_q(e1, e2)
-    e1_new, e2_new = param_util.phi_q2_elliptisity(phi,q)
+    e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
     npt.assert_almost_equal(e1, e1_new, decimal=10)
     npt.assert_almost_equal(e2, e2_new, decimal=10)
 
     e1, e2 = 2.8, -0.8
     phi, q = param_util.elliptisity2phi_q(e1, e2)
-    e1_new, e2_new = param_util.phi_q2_elliptisity(phi,q)
+    e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
     npt.assert_almost_equal(e1, e1_new, decimal=10)
     npt.assert_almost_equal(e2, e2_new, decimal=10)
 

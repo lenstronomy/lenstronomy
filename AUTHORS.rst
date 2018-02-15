@@ -18,6 +18,7 @@ Contributors
 * Kevin Fusshoeller
 * Cyril Welschen
 * Felix Mayor
+* Brian Nord
 
 SB acknowledges the support by Tommaso Treu (UCLA) and Alexandre Refregier (ETHZ) which made the development and release
 of this software possible.

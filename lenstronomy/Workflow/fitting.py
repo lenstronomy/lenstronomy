@@ -27,7 +27,7 @@ class Fitting(object):
         self.kwargs_lower = kwargs_lower
         self.kwargs_upper = kwargs_upper
 
-    def _run_pso(self, n_particles, n_iterations, kwargs_options, kwargs_data, kwargs_psf,
+    def _run_pso(self, n_particles, n_iterations, kwargs_model, kwargs_param, kwargs_data, kwargs_psf,
                  kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
@@ -55,7 +55,7 @@ class Fitting(object):
             kwargs_prior_ps.append(kwargs_prior_ps_k)
         # initialise mcmc classes
 
-        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_mean_lens)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
@@ -66,7 +66,7 @@ class Fitting(object):
                                          kwargs_mean_lens_light, kwargs_mean_ps)
         # run PSO
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps
-        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
+        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_model, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
         lens_result, source_result, lens_light_result, else_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -145,7 +145,7 @@ class Fitting(object):
             kwargs_prior_ps.append(kwargs_prior_ps_k)
         # initialise mcmc classes
 
-        param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else, kwargs_lens_init=kwargs_mean_lens)
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
         mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)

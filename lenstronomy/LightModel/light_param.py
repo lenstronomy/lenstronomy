@@ -6,17 +6,10 @@ class LightParam(object):
 
     """
 
-    def __init__(self, kwargs_options, kwargs_fixed, type='lens_light'):
-        self.kwargs_options = kwargs_options
-        if type == 'lens_light':
-            self.model_list = kwargs_options['lens_light_model_list']
-            self._joint_center = kwargs_options.get('joint_center_lens_light', False)
-        elif type == 'source_light':
-            self.model_list = kwargs_options['source_light_model_list']
-            self._joint_center = kwargs_options.get('joint_center_source', False)
-        else:
-            raise ValueError("type %s not supported." % type)
-        self.type = type
+    def __init__(self, light_model_list, kwargs_fixed, type='light'):
+
+        self._type = type
+        self.model_list = light_model_list
         self.kwargs_fixed = self.add_fixed_linear(kwargs_fixed)
 
     def getParams(self, args, i):
@@ -31,20 +24,16 @@ class LightParam(object):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
             if not model in ['NONE', 'UNIFORM']:
-                if self._joint_center and k > 0:
-                    kwargs['center_x'] = kwargs_list[0]['center_x']
-                    kwargs['center_y'] = kwargs_list[0]['center_y']
+                if not 'center_x' in kwargs_fixed:
+                    kwargs['center_x'] = args[i]
+                    i += 1
                 else:
-                    if not 'center_x' in kwargs_fixed:
-                        kwargs['center_x'] = args[i]
-                        i += 1
-                    else:
-                        kwargs['center_x'] = kwargs_fixed['center_x']
-                    if not 'center_y' in kwargs_fixed:
-                        kwargs['center_y'] = args[i]
-                        i += 1
-                    else:
-                        kwargs['center_y'] = kwargs_fixed['center_y']
+                    kwargs['center_x'] = kwargs_fixed['center_x']
+                if not 'center_y' in kwargs_fixed:
+                    kwargs['center_y'] = args[i]
+                    i += 1
+                else:
+                    kwargs['center_y'] = kwargs_fixed['center_y']
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     kwargs['beta'] = args[i]
@@ -227,11 +216,10 @@ class LightParam(object):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if not model in ['NONE', 'UNIFORM']:
-                if not (self._joint_center and k > 0):
-                    if not 'center_x' in kwargs_fixed:
-                        args.append(kwargs['center_x'])
-                    if not 'center_y' in kwargs_fixed:
-                        args.append(kwargs['center_y'])
+                if not 'center_x' in kwargs_fixed:
+                    args.append(kwargs['center_x'])
+                if not 'center_y' in kwargs_fixed:
+                    args.append(kwargs['center_y'])
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     args.append(kwargs['beta'])
@@ -327,13 +315,12 @@ class LightParam(object):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if not model in ['NONE', 'UNIFORM']:
-                if not (self._joint_center and k > 0):
-                    if not 'center_x' in kwargs_fixed:
-                        mean.append(kwargs_mean['center_x'])
-                        sigma.append(kwargs_mean['center_x_sigma'])
-                    if not 'center_y' in kwargs_fixed:
-                        mean.append(kwargs_mean['center_y'])
-                        sigma.append(kwargs_mean['center_y_sigma'])
+                if not 'center_x' in kwargs_fixed:
+                    mean.append(kwargs_mean['center_x'])
+                    sigma.append(kwargs_mean['center_x_sigma'])
+                if not 'center_y' in kwargs_fixed:
+                    mean.append(kwargs_mean['center_y'])
+                    sigma.append(kwargs_mean['center_y_sigma'])
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     mean.append(kwargs_mean['beta'])
@@ -359,7 +346,7 @@ class LightParam(object):
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                         phi = kwargs_mean['phi_G']
                         q = kwargs_mean['q']
-                        e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                         mean.append(e1)
                         mean.append(e2)
                         ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -379,7 +366,7 @@ class LightParam(object):
                 if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_2']
                     q = kwargs_mean['q_2']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -403,7 +390,7 @@ class LightParam(object):
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_b']
                     q = kwargs_mean['q_b']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -418,7 +405,7 @@ class LightParam(object):
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_d']
                     q = kwargs_mean['q_d']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -469,102 +456,101 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             if not model in ['NONE', 'UNIFORM']:
-                if not (self._joint_center and k > 0):
-                    if not 'center_x' in kwargs_fixed:
-                        num+=1
-                        list.append(str('center_x_'+self.type))
-                    if not 'center_y' in kwargs_fixed:
-                        num+=1
-                        list.append(str('center_y_'+self.type))
+                if not 'center_x' in kwargs_fixed:
+                    num+=1
+                    list.append(str('center_x_' + self._type))
+                if not 'center_y' in kwargs_fixed:
+                    num+=1
+                    list.append(str('center_y_' + self._type))
             if model in ['SHAPELETS']:
                 if not 'beta' in kwargs_fixed:
                     num += 1
-                    list.append(str('beta_'+self.type))
+                    list.append(str('beta_' + self._type))
                 if not 'n_max' in kwargs_fixed:
                     num += 1
-                    list.append(str('n_max_'+self.type))
+                    list.append(str('n_max_' + self._type))
                 if not 'amp' in kwargs_fixed:
                     raise ValueError('shapelets amplitude must be fixed in the parameter configuration!')
             if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_sersic' in kwargs_fixed:
                     num += 1
-                    list.append(str('I0_sersic_'+self.type))
+                    list.append(str('I0_sersic_' + self._type))
                 if not 'n_sersic' in kwargs_fixed:
                     num += 1
-                    list.append(str('n_sersic_'+self.type))
+                    list.append(str('n_sersic_' + self._type))
                 if not 'R_sersic' in kwargs_fixed:
                     num += 1
-                    list.append(str('R_sersic_'+self.type))
+                    list.append(str('R_sersic_' + self._type))
 
             if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                     num += 2
-                    list.append(str('e1_'+self.type))
-                    list.append(str('e2_' + self.type))
+                    list.append(str('e1_' + self._type))
+                    list.append(str('e2_' + self._type))
 
             if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'I0_2' in kwargs_fixed:
                     num += 1
-                    list.append(str('I2_'+self.type))
+                    list.append(str('I2_' + self._type))
                 if not 'R_2' in kwargs_fixed:
                     num += 1
-                    list.append(str('R_2_'+self.type))
+                    list.append(str('R_2_' + self._type))
                 if not 'n_2' in kwargs_fixed:
                     num += 1
-                    list.append(str('n_2_'+self.type))
+                    list.append(str('n_2_' + self._type))
                 if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
                     num += 2
-                    list.append(str('e1_2_'+self.type))
-                    list.append(str('e2_2_' + self.type))
+                    list.append(str('e1_2_' + self._type))
+                    list.append(str('e2_2_' + self._type))
 
             if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     num += 1
-                    list.append(str('Re_'+self.type))
+                    list.append(str('Re_' + self._type))
                 if not 'gamma' in kwargs_fixed:
                     num += 1
-                    list.append(str('gamma_'+self.type))
+                    list.append(str('gamma_' + self._type))
             if model in ['BULDGE_DISK']:
                 if not 'I0_b' in kwargs_fixed:
                     num += 1
-                    list.append(str('I0_b_'+self.type))
+                    list.append(str('I0_b_' + self._type))
                 if not 'R_b' in kwargs_fixed:
                     num += 1
-                    list.append(str('R_b_'+self.type))
+                    list.append(str('R_b_' + self._type))
                 if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
                     num += 2
-                    list.append(str('e1_b_' + self.type))
-                    list.append(str('e2_b_' + self.type))
+                    list.append(str('e1_b_' + self._type))
+                    list.append(str('e2_b_' + self._type))
                 if not 'I0_d' in kwargs_fixed:
                     num += 1
-                    list.append(str('I0_d_'+self.type))
+                    list.append(str('I0_d_' + self._type))
                 if not 'R_d' in kwargs_fixed:
                     num += 1
-                    list.append(str('R_d_'+self.type))
+                    list.append(str('R_d_' + self._type))
                 if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
                     num += 2
-                    list.append(str('e1_d_' + self.type))
-                    list.append(str('e2_d_' + self.type))
+                    list.append(str('e1_d_' + self._type))
+                    list.append(str('e2_d_' + self._type))
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
-                    list.append(str('sigma0_'+self.type))
+                    list.append(str('sigma0_' + self._type))
                     num += 1
                 if not 'Rs' in kwargs_fixed:
-                    list.append(str('Rs_'+self.type))
+                    list.append(str('Rs_' + self._type))
                     num += 1
             if model in ['PJAFFE', 'PJAFFE_ELLIPSE']:
                 if not 'Ra' in kwargs_fixed:
-                    list.append(str('Ra_'+self.type))
+                    list.append(str('Ra_' + self._type))
                     num += 1
             if model in ['GAUSSIAN']:
                 if not 'amp' in kwargs_fixed:
-                    list.append(str('amp_'+self.type))
+                    list.append(str('amp_' + self._type))
                     num += 1
                 if not 'sigma_x' in kwargs_fixed:
-                    list.append(str('sigma_x_' + self.type))
+                    list.append(str('sigma_x_' + self._type))
                     num += 1
                 if not 'sigma_y' in kwargs_fixed:
-                    list.append(str('sigma_y_' + self.type))
+                    list.append(str('sigma_y_' + self._type))
                     num += 1
             if model in ['MULTI_GAUSSIAN']:
                 if not 'sigma' in kwargs_fixed:
@@ -572,7 +558,7 @@ class LightParam(object):
                 if not 'amp' in kwargs_fixed:
                     n = len(kwargs_fixed['sigma'])
                     for i in range(n):
-                        list.append(str('amp_' + self.type))
+                        list.append(str('amp_' + self._type))
                     num += n
             if model in ['UNIFORM']:
                 if not 'mean' in kwargs_fixed:

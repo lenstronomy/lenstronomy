@@ -58,7 +58,7 @@ def ellipticity2phi_gamma(e1, e2):
     return phi, gamma
 
 
-def phi_q2_elliptisity(phi, q):
+def phi_q2_ellipticity(phi, q):
     """
 
     :param phi:
@@ -90,7 +90,7 @@ def phi_q2_elliptisity_bounds(phi, q, bounds=None):
     :param bounds:
     :return:
     """
-    e1, e2 = phi_q2_elliptisity(phi, q)
+    e1, e2 = phi_q2_ellipticity(phi, q)
     if bounds in ['lower', 'upper']:
         e = max(abs(e1), abs(e2))
         if bounds == 'lower':

@@ -40,13 +40,15 @@ class Solver2Point(object):
         a = self._subtract_constraint(x_sub, y_sub)
         x = self.solve(x_pos, y_pos, init, kwargs_list, a)
         kwargs_list = self._update_kwargs(x, kwargs_list)
-        return kwargs_list
+        y_end = self._F(x, x_pos, y_pos, kwargs_list, a)
+        accuracy = np.sum(y_end ** 2)
+        return kwargs_list, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a):
         x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=1.49012e-10)#, factor=0.1)
         return x
 
-    def _F(self, x, x_pos, y_pos, kwargs_list, a=0):
+    def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(2)):
         kwargs_list = self._update_kwargs(x, kwargs_list)
         if self._decoupling:
             beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, k=0)
@@ -114,7 +116,7 @@ class Solver2Point(object):
             elif self._solver_type == 'ELLIPSE':
                 q = kwargs_list[0]['q']
                 phi_G = kwargs_list[0]['phi_G']
-                e1, e2 = param_util.phi_q2_elliptisity(phi_G, q)
+                e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
                 x = [e1, e2]
             else:
                 raise ValueError("Solver type %s not valid for lens model %s. Supported are 'ELLIPSE' and 'CENTER'." % (self._solver_type, lens_model))

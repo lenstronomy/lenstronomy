@@ -11,10 +11,20 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lensModel, decoupling=True):
+    def __init__(self, lensModel, decoupling=True, solver_type='FOUR_ELLIPSE'):
+        self._solver_type = solver_type  # supported:
+        if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
+            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE', 'COMPOSITE',"
+                             " 'NFW_ELLIPSE', 'SHAPELETS_CART'. Your choice was %s" % solver_type)
+        if not solver_type in ['FOUR_ELLIPSE', 'FOUR_ELLIPSE_SHEAR']:
+            raise ValueError("solver_type %s not supported! Choose from 'FOUR_ELLIPSE', 'FOUR_ELLIPSE_SHEAR'"
+                             % solver_type)
+        if solver_type in ['FOUR_ELLIPSE_SHEAR']:
+            if not lensModel.lens_model_list[1] == 'SHEAR':
+                raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list:
+        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'FOUR_ELLIPSE_SHEAR':
             self._decoupling = False
         else:
             self._decoupling = decoupling
@@ -39,13 +49,15 @@ class Solver4Point(object):
         a = self._subtract_constraint(x_sub, y_sub)
         x = self.solve(x_pos, y_pos, init, kwargs_list, a, xtol)
         kwargs_list = self._update_kwargs(x, kwargs_list)
-        return kwargs_list
+        y_end = self._F(x, x_pos, y_pos, kwargs_list, a)
+        accuracy = np.sum(y_end**2)
+        return kwargs_list, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-10):
         x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)#, factor=0.1)
         return x
 
-    def _F(self, x, x_pos, y_pos, kwargs_list, a=0):
+    def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(6)):
         kwargs_list = self._update_kwargs(x, kwargs_list)
         if self._decoupling:
             beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, k=0)
@@ -85,6 +97,10 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
+        if self._solver_type == 'FOUR_ELLIPSE_SHEAR':
+            phi_G = x[5]
+            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
+            kwargs_list[1]['e1'], kwargs_list[1]['e2'] = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
@@ -103,7 +119,7 @@ class Solver4Point(object):
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
         elif lens_model in ['SHAPELETS_CART']:
-            [c00, c10, c01, c20, c11, c02] = x
+            [c10, c01, c20, c11, c02, no_sens_param] = x
             coeffs = list(kwargs_list[0]['coeffs'])
             coeffs[1: 6] = [c10, c01, c20, c11, c02]
             kwargs_list[0]['coeffs'] = coeffs
@@ -117,27 +133,33 @@ class Solver4Point(object):
         :param kwargs_list:
         :return:
         """
+        if self._solver_type == 'FOUR_ELLIPSE_SHEAR':
+            e1 = kwargs_list[1]['e1']
+            e2 = kwargs_list[1]['e2']
+            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+        else:
+            phi_ext = 0
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
             q = kwargs_list[0]['q']
             phi_G = kwargs_list[0]['phi_G']
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
-            e1, e2 = param_util.phi_q2_elliptisity(phi_G, q)
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             theta_E = kwargs_list[0]['theta_E']
-            x = [theta_E, e1, e2, center_x, center_y, 0]
+            x = [theta_E, e1, e2, center_x, center_y, phi_ext]
         elif lens_model in ['NFW_ELLIPSE']:
             q = kwargs_list[0]['q']
             phi_G = kwargs_list[0]['phi_G']
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
-            e1, e2 = param_util.phi_q2_elliptisity(phi_G, q)
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             theta_Rs = kwargs_list[0]['theta_Rs']
-            x = [theta_Rs, e1, e2, center_x, center_y, 0]
+            x = [theta_Rs, e1, e2, center_x, center_y, phi_ext]
         elif lens_model in ['SHAPELETS_CART']:
             coeffs = list(kwargs_list[0]['coeffs'])
             [c10, c01, c20, c11, c02] = coeffs[1: 6]
-            x = [0, c10, c01, c20, c11, c02]
+            x = [c10, c01, c20, c11, c02, phi_ext]
         else:
             raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
         return x

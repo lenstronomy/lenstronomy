@@ -9,14 +9,14 @@ from lenstronomy.Workflow.parameters import Param
 class TestParam(object):
 
     def setup(self):
-        kwargs_options = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
-                          'lens_light_model_list': ['DOUBLE_SERSIC'], 'point_source_model_list': ['LENSED_POSITION']
-            , 'subgrid_res': 2, 'numPix': 200, 'psf_type': 'GAUSSIAN', 'X2_compare': 'standard', 'X2_type': 'catalogue'}
+        kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
+                          'lens_light_model_list': ['DOUBLE_SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+        kwargs_param = {}
         kwargs_fixed_lens = [{'gamma': 1.9}] #for SPEP lens
         kwargs_fixed_source = [{'amp': 1, 'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
-        self.param_class = Param(kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps)
+        self.param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps)
 
     def test_getParams(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9,'q':0.8,'phi_G':1.5, 'center_x':0., 'center_y':0.}] #for SPEP lens

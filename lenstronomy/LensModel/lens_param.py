@@ -6,17 +6,17 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, kwargs_options, kwargs_fixed):
+    def __init__(self, lens_model_list, kwargs_fixed, num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
         :param kwargs_options:
         :param kwargs_fixed:
         """
-        self.kwargs_options = kwargs_options
-        self.model_list = kwargs_options['lens_model_list']
+        self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
-        self.num_images = kwargs_options.get('num_point_sources', 0)
-        self.solver_type = kwargs_options.get('solver_type', 'NONE')
+        self._num_images = num_images
+        self._solver_type = solver_type
+        self._num_shapelet_lens = num_shapelet_lens
 
     def getParams(self, args, i):
         kwargs_list = []
@@ -122,13 +122,13 @@ class LensParam(object):
                 else:
                     kwargs['beta'] = kwargs_fixed['beta']
                 if not 'coeffs' in kwargs_fixed:
-                    num_coeffs = self.kwargs_options['num_shapelet_lens']
-                    if self.solver_type == 'SHAPELETS':
-                        if self.num_images == 4:
+                    num_coeffs = self._num_shapelet_lens
+                    if self._solver_type == 'SHAPELETS':
+                        if self._num_images == 4:
                             num_coeffs -= 6
                             coeffs = args[i:i+num_coeffs]
                             coeffs = [0,0,0,0,0,0] + list(coeffs[0:])
-                        elif self.num_images == 2:
+                        elif self._num_images == 2:
                             num_coeffs -=3
                             coeffs = args[i:i+num_coeffs]
                             coeffs = [0, 0, 0] + list(coeffs[0:])
@@ -317,10 +317,10 @@ class LensParam(object):
                     args.append(kwargs['beta'])
                 if not 'coeffs' in kwargs_fixed:
                     coeffs = kwargs['coeffs']
-                    if self.solver_type == 'SHAPELETS':
-                        if self.num_images == 4:
+                    if self._solver_type == 'SHAPELETS':
+                        if self._num_images == 4:
                             coeffs = coeffs[6:]
-                        elif self.num_images == 2:
+                        elif self._num_images == 2:
                             coeffs = coeffs[3:]
                     args += list(coeffs)
 
@@ -438,7 +438,7 @@ class LensParam(object):
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
                     phi = kwargs_mean['phi_G']
                     q = kwargs_mean['q']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -460,10 +460,10 @@ class LensParam(object):
                     sigma.append(kwargs_mean['beta_sigma'])
                 if not 'coeffs' in kwargs_fixed:
                     coeffs = kwargs_mean['coeffs']
-                    if self.solver_type == 'SHAPELETS':
-                        if self.num_images == 4:
+                    if self._solver_type == 'SHAPELETS':
+                        if self._num_images == 4:
                             coeffs = coeffs[6:]
-                        elif self.num_images == 2:
+                        elif self._num_images == 2:
                             coeffs = coeffs[3:]
                     for i in range(0, len(coeffs)):
                         mean.append(coeffs[i])
@@ -500,7 +500,7 @@ class LensParam(object):
                 if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
                     phi = kwargs_mean['phi_G']
                     q = kwargs_mean['q']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_sigma']
@@ -510,7 +510,7 @@ class LensParam(object):
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_s']
                     q = kwargs_mean['q_s']
-                    e1, e2 = param_util.phi_q2_elliptisity(phi, q)
+                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
                     mean.append(e1)
                     mean.append(e2)
                     ellipse_sigma = kwargs_mean['ellipse_s_sigma']
@@ -621,11 +621,11 @@ class LensParam(object):
                     num += 1
                     list.append('beta_lens')
                 if not 'coeffs' in kwargs_fixed:
-                    num_coeffs = self.kwargs_options['num_shapelet_lens']
-                    if self.solver_type == 'SHAPELETS':
-                        if self.num_images == 4:
+                    num_coeffs = self._num_shapelet_lens
+                    if self._solver_type == 'SHAPELETS':
+                        if self._num_images == 4:
                             num_coeffs -= 6
-                        elif self.num_images == 2:
+                        elif self._num_images == 2:
                             num_coeffs -= 3
                     num += num_coeffs
                     list += ['coeff']*num_coeffs

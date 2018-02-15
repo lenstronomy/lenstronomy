@@ -11,34 +11,29 @@ from lenstronomy.PointSource.point_source_param import PointSourceParam
 
 class Param(object):
     """
-    this class contains routines to deal with the number of parameters given certain options in a config file
 
-    rule: first come the lens parameters, than the source parameters, psf parameters and at the end (if needed) some more
-
-    list of parameters
-    Gaussian: amp, sigma_x, sigma_y (center_x, center_y as options)
-    NFW: to do
-    SIS:  phi_E, (center_x, center_y as options)
-    SPEMD: to do
-    SPEP:  phi_E,gamma,q,phi_G, (center_x, center_y as options)
     """
 
-    def __init__(self, kwargs_options, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None):
+    def __init__(self, kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None):
         """
 
         :return:
         """
-        self._lens_model_list = kwargs_options.get('lens_model_list', ['NONE'])
-        self.lensModel = LensModel(lens_model_list=self._lens_model_list)
-        self._num_images = kwargs_options.get('num_point_sources', 0)
         n = len(kwargs_fixed_source)
-        self._image_plane_source_list = kwargs_options.get('image_plane_source_list', [False] * n)
-        self._fix_to_point_source_list = kwargs_options.get('fix_to_point_source_list', [False] * n)
-        self._solver = kwargs_options.get('solver', False)
-        self._joint_center_source = kwargs_options.get('joint_center_source', False)
-        self._joint_center_lens_light = kwargs_options.get('joint_center_lens_light', False)
+        num_point_source_list = kwargs_param.get('num_point_source_list', [0]*n)
+        self._image_plane_source_list = kwargs_param.get('image_plane_source_list', [False] * n)
+        self._fix_to_point_source_list = kwargs_param.get('fix_to_point_source_list', [False] * n)
+        self._joint_center_source = kwargs_param.get('joint_center_source_light', False)
+        self._joint_center_lens_light = kwargs_param.get('joint_center_lens_light', False)
+
+        self._lens_model_list = kwargs_model.get('lens_model_list', ['NONE'])
+        self.lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
+                                   redshift_list=kwargs_model.get('redshift_list', None), multi_plane=kwargs_model.get('multi_plane', False))
+        self._num_images = num_point_source_list[0]
+        self._solver = kwargs_model.get('solver', False)
+
         if self._solver:
-            self._solver_type = kwargs_options.get('solver_type', 'CENTER')
+            self._solver_type = kwargs_model.get('solver_type', 'CENTER')
             if self._num_images == 4:
                 self.solver4points = Solver4Point(self.lensModel)
             elif self. _num_images == 2:
@@ -53,11 +48,13 @@ class Param(object):
         self.kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
         self.kwargs_fixed_ps = kwargs_fixed_ps
 
-        self.lensParams = LensParam(kwargs_options, kwargs_fixed_lens)
-        self.souceParams = LightParam(kwargs_options, kwargs_fixed_source, type='source_light')
-
-        self.lensLightParams = LightParam(kwargs_options, kwargs_fixed_lens_light, type='lens_light')
-        self.pointSourceParams = PointSourceParam(kwargs_options, kwargs_fixed_ps)
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=0, solver_type='NONE')
+        source_light_model_list = kwargs_model.get('source_light_model_list', ['NONE'])
+        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source, type='source_light')
+        lens_light_model_list = kwargs_model.get('lens_light_model_list', ['NONE'])
+        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light, type='lens_light')
+        point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
+        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps, num_point_source_list=num_point_source_list)
 
     def getParams(self, args):
         """
@@ -131,9 +128,9 @@ class Param(object):
     def _update_solver(self, kwargs_lens, kwargs_ps):
         x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
         if len(x_) == 4:
-            kwargs_lens = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens)
+            kwargs_lens, precision = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens)
         elif len(x_) == 2:
-            kwargs_lens = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens)
+            kwargs_lens, precision = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens)
         else:
             raise ValueError("Point source number must be either 2 or 4 to be supported by the solver. Your number is:", len(x_))
         return kwargs_lens

@@ -11,7 +11,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics={}):
+    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None, lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
 
 
@@ -26,23 +26,11 @@ class ImageModel(object):
         self.Data = data_class
         self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
         self.kwargs_numerics = kwargs_numerics
-        #self._psf_error_map = kwargs_options.get('psf_error_map', False)
-        #kwargs_numerics = {'subgrid_res': kwargs_options.get('subgrid_res', 1),
-        #                   'psf_subgrid': kwargs_options.get('psf_subgrid', False)}
-        #if 'mask' in kwargs_data:
-        #    kwargs_numerics['mask'] = kwargs_data['mask']
-        #if 'idex_mask' in kwargs_data:
-        #    kwargs_numerics['idex_mask'] = kwargs_data['idex_mask']
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
-
         self.LensModel = lens_model_class
-        #fixed_magnification = kwargs_options.get('fixed_magnification', False)
-        #additional_images = kwargs_options.get('additional_images', False)
-        #self.PointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
-        #                                  lensModel=self.LensModel, fixed_magnification=fixed_magnification,
-        #                               additional_images=additional_images)
         self.PointSource = point_source_class
-        self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+        if self.PointSource is not None:
+            self.PointSource.update_lens_model(lens_model_class=lens_model_class)
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
 
@@ -77,8 +65,9 @@ class ImageModel(object):
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :return: 1d array of surface brightness pixels
         """
-
-        if de_lensed is True:
+        if self.SourceModel is None:
+            return np.zeros_like(self.Data.data)
+        if de_lensed is True or self.LensModel is None:
             x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
         else:
             x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
@@ -95,6 +84,8 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
         """
+        if self.LensLightModel is None:
+            return np.zeros_like(self.Data.data)
         lens_light = self.LensLightModel.surface_brightness(self.ImageNumerics.ra_grid_ray_shooting,
                                                             self.ImageNumerics.dec_grid_ray_shooting,
                                                             kwargs_lens_light, k=k)
@@ -110,7 +101,7 @@ class ImageModel(object):
         :return:
         """
         point_source_image = np.zeros_like(self.Data.data)
-        if unconvolved:
+        if unconvolved or self.PointSource is None:
             return point_source_image
         ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=True, k=k)
         for i in range(n_points):
@@ -166,11 +157,14 @@ class ImageModel(object):
             lens_light = np.zeros_like(self.Data.data)
         if point_source_add:
             point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
-            #TODO error_map
-            error_map = np.zeros_like(self.Data.data)
         else:
             point_source = np.zeros_like(self.Data.data)
-            error_map = np.zeros_like(self.Data.data)
+        error_map = np.zeros_like(self.Data.data)
+        if self._psf_error_map:
+            ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens)
+            for i in range(0, n_points):
+                error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+                error_map += error_map_add
         model = (source_light + lens_light + point_source) * self.ImageNumerics.mask
         return model, error_map
 
@@ -199,7 +193,11 @@ class ImageModel(object):
         """
         deltaPix = self.Data.deltaPix / 2.
         numPix = self.Data.nx * 2
-        x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
+        search_window = deltaPix * numPix
+        min_distance = deltaPix
+        x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
+                                                         search_window=search_window,
+                                                         precision_limit=10**(-10), num_iter_max=100)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):

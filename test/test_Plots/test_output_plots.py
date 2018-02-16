@@ -48,6 +48,7 @@ class TestOutputPlots(object):
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
         lens_model_class = LensModel(lens_model_list=lens_model_list)
+        self.LensModel = lens_model_class
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
@@ -120,10 +121,9 @@ class TestOutputPlots(object):
 
     def test_lens_model_plot(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lens_model_list = ['SPEP', 'SHEAR']
         numPix = 100
         deltaPix = 0.05
-        output_plots.lens_model_plot(ax, lens_model_list, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
+        output_plots.lens_model_plot(ax, self.LensModel, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
 
 
 if __name__ == '__main__':

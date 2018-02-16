@@ -2,7 +2,6 @@ import copy
 
 import lenstronomy.Util.util as util
 import lenstronomy.Util.mask as util_maskl
-import corner
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndimage
@@ -103,7 +102,7 @@ def source_position_plot(ax, coords, kwargs_source):
     return ax
 
 
-def lens_model_plot(ax, lens_model_list, kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=False):
+def lens_model_plot(ax, lensModel, kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -120,8 +119,8 @@ def lens_model_plot(ax, lens_model_list, kwargs_lens, numPix, deltaPix, sourcePo
     _frame_size = numPix * deltaPix
     _coords = data._coords
     x_grid, y_grid = data.coordinates
-    lensModel = LensModelExtensions(lens_model_list=lens_model_list)
-    ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModel.critical_curve_caustics(
+    lensModelExt = class_creator.creat_lens_model_extension(lensModel)
+    ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
         kwargs_lens, compute_window=_frame_size, grid_scale=0.005)
     kappa_result = util.array2image(lensModel.kappa(x_grid, y_grid, kwargs_lens))
     im = ax.matshow(np.log10(kappa_result), origin='lower',
@@ -155,7 +154,7 @@ class LensModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, arrow_size=0.1, cmap_string="gist_heat", high_res=5):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, arrow_size=0.1, cmap_string="gist_heat", high_res=5):
         """
 
         :param kwargs_options:
@@ -189,11 +188,11 @@ class LensModelPlot(object):
         self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModel.critical_curve_caustics(kwargs_lens, compute_window=self._frame_size, grid_scale=0.01)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                      kwargs_lens_light, kwargs_else, inv_bool=True)
+                                                                                 kwargs_lens_light, kwargs_ps, inv_bool=True)
         self._kwargs_lens = kwargs_lens
         self._kwargs_source = kwargs_source
         self._kwargs_lens_light = kwargs_lens_light
-        self._kwargs_else = kwargs_else
+        self._kwargs_else = kwargs_ps
         self._model = model
         self._data = kwargs_data['image_data']
         self._cov_param = cov_param
@@ -634,6 +633,7 @@ def mcmc_output(samples_mcmc, param_mcmc, fitting_kwargs_list, truths=None):
     :param kwargs_fitting_mcmc:
     :return:
     """
+    import corner
     plot = corner.corner(samples_mcmc, labels=param_mcmc, truths=truths)
 
     fitting_kwargs_mcmc = fitting_kwargs_list[-1]

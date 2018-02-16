@@ -15,12 +15,16 @@ class LensModel(object):
         :param lens_model_list: list of strings with lens model names
         :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
         """
+        self.lens_model_list = lens_model_list
+        self.z_source = z_source
+        self.redshift_list = redshift_list
+        self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
             self.lens_model = MultiLens(z_source, lens_model_list, redshift_list, cosmo=cosmo)
         else:
             self.lens_model = SinglePlane(lens_model_list)
-        self.lens_model_list = lens_model_list
+
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """

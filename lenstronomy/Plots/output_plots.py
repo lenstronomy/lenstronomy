@@ -68,7 +68,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     return ax
 
 
-def image_position_plot(ax, coords, kwargs_else):
+def image_position_plot(ax, coords, ra_image, dec_image):
     """
 
     :param ax:
@@ -77,8 +77,8 @@ def image_position_plot(ax, coords, kwargs_else):
     :return:
     """
     deltaPix = coords.pixel_size
-    if 'ra_pos' in kwargs_else:
-        x_image, y_image = coords.map_coord2pix(kwargs_else['ra_pos'], kwargs_else['dec_pos'])
+    if len(ra_image) > 0:
+        x_image, y_image = coords.map_coord2pix(ra_image, dec_image)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix
@@ -258,7 +258,8 @@ class LensModelPlot(object):
 
         plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        image_position_plot(ax, self._coords, self._kwargs_else)
+        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        image_position_plot(ax, self._coords, ra_image[0], dec_image[0])
         source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, v_min=None, v_max=None):
@@ -421,7 +422,8 @@ class LensModelPlot(object):
 
         plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        image_position_plot(ax, self._coords, self._kwargs_else)
+        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        image_position_plot(ax, self._coords, ra_image[0], dec_image[0])
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
@@ -434,8 +436,8 @@ class LensModelPlot(object):
         """
 
         alpha1, alpha2 = self._lensModel.alpha(self._x_grid, self._y_grid, self._kwargs_lens)
-        alpha1 = self._imageModel.Data.array2image(alpha1)
-        alpha2 = self._imageModel.Data.array2image(alpha2)
+        alpha1 = util.array2image(alpha1)
+        alpha2 = util.array2image(alpha2)
         if axis == 0:
             alpha = alpha1
         else:
@@ -455,7 +457,8 @@ class LensModelPlot(object):
 
         plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        image_position_plot(ax, self._coords, self._kwargs_else)
+        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        image_position_plot(ax, self._coords, ra_image[0], dec_image[0])
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
@@ -578,76 +581,3 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
     #f.show()
     return f, ax
-
-
-def psf_iteration_compare(kwargs_psf):
-    """
-
-    :param kwargs_psf:
-    :return:
-    """
-    psf_out = kwargs_psf['kernel_point_source']
-    psf_in = kwargs_psf['kernel_point_source_init']
-    n_kernel = len(psf_in)
-    delta_x = n_kernel/20.
-    delta_y = n_kernel/10.
-    cmap_kernel = 'seismic'
-
-    f, axes = plt.subplots(1, 3, figsize=(15, 5), sharex=False, sharey=False)
-    ax = axes[0]
-    im = ax.matshow(np.log10(psf_in), origin='lower', cmap=cmap_kernel)
-    v_min, v_max = im.get_clim()
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
-
-    ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, cmap=cmap_kernel)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "iterative reconstruction", color="k", fontsize=20, backgroundcolor='w')
-
-    ax = axes[2]
-    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, cmap=cmap_kernel)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    plt.colorbar(im, cax=cax)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "difference", color="k", fontsize=20, backgroundcolor='w')
-    f.tight_layout()
-    return f, axes
-
-
-def mcmc_output(samples_mcmc, param_mcmc, fitting_kwargs_list, truths=None):
-    """
-
-    :param samples_mcmc:
-    :param param_mcmc:
-    :param kwargs_fitting_mcmc:
-    :return:
-    """
-    import corner
-    plot = corner.corner(samples_mcmc, labels=param_mcmc, truths=truths)
-
-    fitting_kwargs_mcmc = fitting_kwargs_list[-1]
-    n_run = fitting_kwargs_mcmc['n_run']
-    walkerRatio = fitting_kwargs_mcmc['walkerRatio']
-    numParam = len(param_mcmc)
-    numWalkers = numParam*walkerRatio
-    x_axis = np.linspace(1,n_run, n_run)
-    means = np.zeros((n_run, numParam))
-    for i in range(0, n_run):
-        means[i] = np.mean(samples_mcmc[:][numWalkers*i:numWalkers*(i+1)], axis=0)
-    f, axes = plt.subplots(1, 1, figsize=(8, 8), sharex=False, sharey=False)
-    ax = axes
-    for i in range(0,numParam):
-        ax.plot(x_axis, means.T[i]/means.T[i][-1], label=param_mcmc[i])
-    ax.legend()
-    return plot, f

@@ -124,6 +124,20 @@ class TestOutputPlots(object):
         lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
         plt.close()
 
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.deflection_plot(ax=ax)
+        plt.close()
+
+        numPix = 100
+        deltaPix_source = 0.01
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.error_map_source_plot(ax, numPix, deltaPix_source)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.absolute_residual_plot(ax=ax)
+        plt.close()
+
     def test_lens_model_plot(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         numPix = 100

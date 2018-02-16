@@ -317,7 +317,8 @@ class ImageModel(object):
         error_map = np.zeros(num_response)
         if self._psf_error_map:
             for i in range(0, n_points):
-                error_map += self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+                error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+                error_map += self.ImageNumerics.image2array(error_map_add)
         return A, error_map
 
     def _add_mask(self, A, mask):

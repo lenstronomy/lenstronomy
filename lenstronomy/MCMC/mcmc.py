@@ -71,12 +71,18 @@ class MCMC_sampler(object):
         else:
             print(pso.gbest.fitness * 2 / (self.chain.effectiv_numData_points()), 'reduced X^2 of best position')
             print(self.chain.effectiv_numData_points(), 'effective number of data points')
+            print('===')
             print(lens_dict, 'lens result')
+            print('===')
             print(source_dict, 'source result')
+            print('===')
             print(lens_light_dict, 'lens light result')
+            print('===')
             print(else_dict, 'else result')
+            print('===')
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
+            print('===================')
         return lens_dict, source_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):

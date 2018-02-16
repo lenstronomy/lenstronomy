@@ -14,12 +14,12 @@ class LensAnalysis(object):
     """
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
-    def __init__(self, kwargs_options):
-        self.LensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        self.SourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        self.LensModel = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
-        self.kwargs_options = kwargs_options
-        self.NumLensModel = NumericLens(lens_model_list=kwargs_options['lens_model_list'])
+    def __init__(self, kwargs_model):
+        self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', ['NONE']))
+        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', ['NONE']))
+        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model['lens_model_list'])
+        self.kwargs_model = kwargs_model
+        self.NumLensModel = NumericLens(lens_model_list=kwargs_model['lens_model_list'])
         self.gaussian = Gaussian()
 
     def fermat_potential(self, kwargs_lens, kwargs_else):
@@ -75,7 +75,7 @@ class LensAnalysis(object):
         :return:
         """
         kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
+        lens_light_model_internal_bool = self.kwargs_model.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
         lens_light = np.zeros_like(x_grid)
         for i, bool in enumerate(lens_light_model_internal_bool):
             if bool is True:
@@ -117,7 +117,7 @@ class LensAnalysis(object):
         theta_E = self.LensModel.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
         #r_array = np.logspace(-2, 1, 50) * theta_E
-        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
+        lens_model_internal_bool = self.kwargs_model.get('lens_model_internal_bool', [True] * len(kwargs_lens))
         kappa_s = np.zeros_like(r_array)
         for i in range(len(kwargs_lens_copy)):
             if lens_model_internal_bool[i]:

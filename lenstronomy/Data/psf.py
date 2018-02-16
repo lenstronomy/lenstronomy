@@ -25,10 +25,10 @@ class PSF(object):
 
     @property
     def psf_error_map(self):
-        if 'error_map' in self._kwargs_psf:
-            return self._kwargs_psf['error_map']
+        if 'psf_error_map' in self._kwargs_psf:
+            return self._kwargs_psf['psf_error_map']
         else:
-            raise ValueError("kwargs_psf has no 'error_map' attribute!")
+            raise ValueError("kwargs_psf has no 'psf_error_map' attribute!")
 
     def psf_convolution(self, grid, grid_scale, psf_subgrid=False, subgrid_res=1):
         """

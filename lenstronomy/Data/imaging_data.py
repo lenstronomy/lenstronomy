@@ -41,8 +41,13 @@ class Data(object):
         """
 
         if not 'image_data' in kwargs_data:
-            raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array!")
-        data = kwargs_data['image_data']
+            if not 'numPix' in kwargs_data:
+                raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array  or at least 'numPix'!")
+            else:
+                numPix = kwargs_data['numPix']
+                data = np.zeros((numPix, numPix))
+        else:
+            data = kwargs_data['image_data']
         self.nx, self.ny = np.shape(data)
         if self.nx != self.ny:
             raise ValueError("'image_data' with non-equal pixel number in x- and y-axis not yet supported!")

@@ -100,7 +100,9 @@ class Solver4Point(object):
         if self._solver_type == 'PROFILE_SHEAR':
             phi_G = x[5]
             phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
-            kwargs_list[1]['e1'], kwargs_list[1]['e2'] = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            kwargs_list[1]['e1'] = e1
+            kwargs_list[1]['e2'] = e2
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x

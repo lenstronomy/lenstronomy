@@ -128,7 +128,7 @@ class TestSolver4Point(object):
     def test_solver_simplified(self):
         lens_model_list = ['SPEP', 'SHEAR']
         lensModel = LensModel(lens_model_list)
-        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
+
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
@@ -144,6 +144,7 @@ class TestSolver4Point(object):
         e1_new, e2_new = param_util.phi_gamma_ellipticity(phi=0., gamma=gamma_ext+0.1)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'q': 0.9, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0},
                             {'e1': e1_new, 'e2': e2_new}]
+        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)

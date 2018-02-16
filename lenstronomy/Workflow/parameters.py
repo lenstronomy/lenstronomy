@@ -126,8 +126,7 @@ class Param(object):
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def _update_solver(self, kwargs_lens, kwargs_ps):
-        x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        kwargs_lens, precision = self._solver_module.constraint_lensmodel(x_, y_, kwargs_lens)
+        kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)
         return kwargs_lens
 
     def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps):

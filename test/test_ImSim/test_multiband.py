@@ -64,21 +64,16 @@ class TestImageModel(object):
         source_model_class = LightModel(light_model_list=source_model_list)
         self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
-        point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification=True)
+        point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
         kwargs_data['image_data'] = image_sim
-        data_class = Data(kwargs_data)
-        self.kwargs_data = [kwargs_data]
-        self.kwargs_psf = [kwargs_psf]
-        self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
-                                     lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
-        self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
-
-        self.imageModel = Multiband(self.kwargs_data, self.kwargs_psf, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics)
+        self.solver = LensEquationSolver(lensModel=lens_model_class)
+        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
+        self.imageModel = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
 
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
@@ -127,7 +122,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-2)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate
+        numData = self.imageModel.numData_evaluate()
         assert numData == 10000
 
     def test_fermat_potential(self):

@@ -14,26 +14,26 @@ class Param(object):
 
     """
 
-    def __init__(self, kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None):
+    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None):
         """
 
         :return:
         """
         n = len(kwargs_fixed_source)
-        num_point_source_list = kwargs_param.get('num_point_source_list', [0]*n)
-        self._image_plane_source_list = kwargs_param.get('image_plane_source_list', [False] * n)
-        self._fix_to_point_source_list = kwargs_param.get('fix_to_point_source_list', [False] * n)
-        self._joint_center_source = kwargs_param.get('joint_center_source_light', False)
-        self._joint_center_lens_light = kwargs_param.get('joint_center_lens_light', False)
+        num_point_source_list = kwargs_constraints.get('num_point_source_list', [0] * n)
+        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n)
+        self._fix_to_point_source_list = kwargs_constraints.get('fix_to_point_source_list', [False] * n)
+        self._joint_center_source = kwargs_constraints.get('joint_center_source_light', False)
+        self._joint_center_lens_light = kwargs_constraints.get('joint_center_lens_light', False)
 
         self._lens_model_list = kwargs_model.get('lens_model_list', ['NONE'])
         self.lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
                                    redshift_list=kwargs_model.get('redshift_list', None), multi_plane=kwargs_model.get('multi_plane', False))
         self._num_images = num_point_source_list[0]
-        self._solver = kwargs_model.get('solver', False)
+        self._solver = kwargs_constraints.get('solver', False)
 
         if self._solver:
-            self._solver_type = kwargs_model.get('solver_type', 'CENTER')
+            self._solver_type = kwargs_constraints.get('solver_type', 'CENTER')
             if self._num_images == 4:
                 self.solver4points = Solver4Point(self.lensModel)
             elif self. _num_images == 2:
@@ -55,6 +55,10 @@ class Param(object):
         self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light, type='lens_light')
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps, num_point_source_list=num_point_source_list)
+
+    @property
+    def num_point_source_images(self):
+        return self._num_images
 
     def getParams(self, args):
         """

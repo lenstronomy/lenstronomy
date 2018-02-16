@@ -23,11 +23,12 @@ class MCMC_sampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, kwargs_lower, kwargs_upper, compute_bool=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper, kwargs_lens_init=None, compute_bool=None):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = MCMC_chain(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, kwargs_lower, kwargs_upper, compute_bool=compute_bool)
+        self.chain = MCMC_chain(multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed,
+                                kwargs_lower, kwargs_upper, kwargs_lens_init=kwargs_lens_init, compute_bool=compute_bool)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):
         """
@@ -82,7 +83,7 @@ class MCMC_sampler(object):
         """
         returns the mcmc analysis of the parameter space
         """
-        sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain_image)
+        sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
         sampler.reset()

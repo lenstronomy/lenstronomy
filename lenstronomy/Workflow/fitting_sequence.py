@@ -7,15 +7,19 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherite the Fitting class
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper):
-        self.kwargs_data = kwargs_data
-        self.kwargs_psf = kwargs_psf
-        self.kwargs_options = kwargs_options
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params):
+        self.multi_band_list = multi_band_list
+        self.kwargs_model = kwargs_model
+        self.kwargs_constraints = kwargs_constraints
+        self.kwargs_likelihood = kwargs_likelihood
+        kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper = kwargs_params
         self._lens_init, self._source_init, self._lens_light_init, self._else_init = kwargs_init
         self._lens_sigma, self._source_sigma, self._lens_light_sigma, self._else_sigma = kwargs_sigma
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
 
-        self.fitting = Fitting(kwargs_data=kwargs_data, kwargs_psf=kwargs_psf, kwargs_fixed=kwargs_fixed,
+        self.fitting = Fitting(multi_band_list=multi_band_list, kwargs_model=kwargs_model,
+                               kwargs_constraints=kwargs_constraints, kwargs_likelihood=kwargs_likelihood,
+                               kwargs_fixed=kwargs_fixed,
                                kwargs_lower=kwargs_lower, kwargs_upper=kwargs_upper)
 
     def fit_sequence(self, fitting_kwargs_list):
@@ -54,16 +58,16 @@ class FittingSequence(object):
         mpi = fitting_kwargs.get('mpi', False)
         sigma_scale = fitting_kwargs['sigma_scale']
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
-        compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.kwargs_data))
+        compute_bool = fitting_kwargs.get('compute_bands', None)
         if fitting_kwargs['fitting_routine'] == 'MCMC':
-            samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
+            samples, param, dist = self.fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
                                   sigma_factor=sigma_scale, gamma_fixed=False, compute_bool=compute_bool, fix_lens=False,
                                   fix_source=False, fix_lens_light=False, fix_point_source=False)
         elif fitting_kwargs['fitting_routine'] == 'MCMC_source':
-            samples, param, dist = self.fitting.mcmc_run(self.kwargs_options,
+            samples, param, dist = self.fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, else_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
@@ -88,75 +92,89 @@ class FittingSequence(object):
         sigma_scale = fitting_kwargs.get('sigma_scale', 1)
         n_particles = fitting_kwargs.get('n_particles', 10)
         n_iterations = fitting_kwargs.get('n_iterations', 10)
-        compute_bool = fitting_kwargs.get('compute_bands', [True]*len(self.kwargs_data))
+        compute_bool = fitting_kwargs.get('compute_bands', [True]*len(self.multi_band_list))
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
 
         if fitting_routine == 'lens_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
-                fix_lens=False, fix_source=True, fix_lens_light=True, fix_point_source=False)
+                fix_lens=False, fix_source=True, fix_lens_light=True, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'source_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
-                fix_lens=True, fix_source=False, fix_lens_light=True, fix_point_source=True)
+                fix_lens=True, fix_source=False, fix_lens_light=True, fix_point_source=True, print_key=fitting_routine)
         elif fitting_routine == 'lens_light_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
-                fix_lens=True, fix_source=True, fix_lens_light=False, fix_point_source=True)
+                fix_lens=True, fix_source=True, fix_lens_light=False, fix_point_source=True, print_key=fitting_routine)
         elif fitting_routine == 'lens_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
-                fix_lens=True, fix_source=False, fix_lens_light=False, fix_point_source=False)
+                fix_lens=True, fix_source=False, fix_lens_light=False, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'lens_combined_gamma_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=True,
-                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False)
+                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'lens_combined':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list, _ = self.fitting.find_model(
-                self.kwargs_options, lens_input, source_input, lens_light_input, else_input,
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+                lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
-                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False)
+                fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'psf_iteration':
             print('PSF fitting...')
             psf_iter_factor = fitting_kwargs['psf_iter_factor']
             psf_iter_num = fitting_kwargs['psf_iter_num']
-            for i in range(len(self.kwargs_psf)):
+            for i in range(len(self.multi_band_list)):
                 if compute_bool[i]:
-                    psf_symmetry = self.kwargs_psf[i].get('psf_symmetry', 1)
-                    image_model = class_creator.creat_image_model(kwargs_data=self.kwargs_data[i],
-                                                                  kwargs_psf=self.kwargs_psf[i],
-                                                                  kwargs_options=self.kwargs_options)
+                    kwargs_data = self.multi_band_list[i][0]
+                    kwargs_psf = self.multi_band_list[i][1]
+                    kwargs_numerics = self.multi_band_list[i][2]
+                    psf_symmetry = kwargs_psf.get('psf_symmetry', 1)
+                    image_model = class_creator.creat_image_model(kwargs_data=kwargs_data,
+                                                                  kwargs_psf=kwargs_psf,
+                                                                  kwargs_numerics=kwargs_numerics,
+                                                                  kwargs_model=self.kwargs_model)
                     psf_iter = PSF_fitting(image_model_class=image_model)
-                    self.kwargs_psf[i] = psf_iter.update_iterative(self.kwargs_psf[i], lens_input, source_input,
+                    kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_input, source_input,
                                                                     lens_light_input, else_input,
                                                                     factor=psf_iter_factor, num_iter=psf_iter_num,
                                                                     symmetry=psf_symmetry, verbose=False)
+                    self.multi_band_list[i][1] = kwargs_psf
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
             chain, param_list = [], []
             print('PSF fitting completed')
         elif fitting_routine == 'align_images':
             print('Align images...')
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
-            param_list = []
-            alignmentFitting = AlignmentFitting(self.kwargs_data, self.kwargs_psf, self.kwargs_options, lens_input, source_input,
+            for i in range(len(self.multi_band_list)):
+                if compute_bool[i]:
+                    kwargs_data = self.multi_band_list[i][0]
+                    kwargs_psf = self.multi_band_list[i][1]
+                    kwargs_numerics = self.multi_band_list[i][2]
+                    alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_input, source_input,
                                                                     lens_light_input, else_input, compute_bool=compute_bool)
-            lowerLimit = fitting_kwargs.get('lower_limit_shift', -0.2)
-            upperLimit = fitting_kwargs.get('upper_limit_shift', 0.2)
-            self.kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit, threadCount=1, mpi=mpi, print_key='Alignment fitting')
-            self.fitting.kwargs_data = self.kwargs_data
+                    lowerLimit = fitting_kwargs.get('lower_limit_shift', -0.2)
+                    upperLimit = fitting_kwargs.get('upper_limit_shift', 0.2)
+                    kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit,
+                                                              threadCount=1, mpi=mpi,
+                                                              print_key='Alignment fitting for band %s ...' % i)
+                    print('Align completed for band %s.' % i)
+                    self.multi_band_list[i][0] = kwargs_data
+            chain, param_list = [], []
         else:
             raise ValueError("%s is not a valid fitting routine" %fitting_routine)
+
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
     def _init_kwargs(self):

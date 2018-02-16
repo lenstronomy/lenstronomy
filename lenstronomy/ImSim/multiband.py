@@ -10,22 +10,18 @@ class Multiband(object):
     joint non-linear parameters and decoupled linear parameters.
     """
 
-    def __init__(self, kwargs_data_list, kwargs_psf_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics, compute_bool=None):
-        self._num_bands = len(kwargs_data_list)
-        if self._num_bands != len(kwargs_psf_list):
-            raise ValueError("Not equal number of PSF and Data configurations provided! %s vs %s" % (self._num_bands, len(kwargs_psf_list)))
+    def __init__(self, multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class):
+        self._num_bands = len(multi_band_list)
+        self.lensModel = lens_model_class
+        self.pointSource = point_source_class
         self._imageModel_list = []
         for i in range(self._num_bands):
-            data_i = Data(kwargs_data=kwargs_data_list[i])
-            psf_i = PSF(kwargs_psf=kwargs_psf_list[i])
+            kwargs_data = multi_band_list[i][0]
+            kwargs_psf = multi_band_list[i][1]
+            kwargs_numerics = multi_band_list[i][2]
+            data_i = Data(kwargs_data=kwargs_data)
+            psf_i = PSF(kwargs_psf=kwargs_psf)
             self._imageModel_list.append(ImageModel(data_i, psf_i, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics))
-        if compute_bool is None:
-            self._compute_bool = [True] * self._num_bands
-        else:
-            if not len(compute_bool) == self._num_bands:
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
-            self._compute_bool = compute_bool
-        self._point_source_class = point_source_class
 
     def reset_point_source_cache(self):
         """
@@ -33,8 +29,8 @@ class Multiband(object):
 
         :return:
         """
-        self._point_source_class.delete_lens_model_cach()
-        self._point_source_class.set_save_cache(True)
+        self.pointSource.delete_lens_model_cach()
+        self.pointSource.set_save_cache(True)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
         """
@@ -116,7 +112,7 @@ class Multiband(object):
         x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False, compute_bool=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -126,18 +122,27 @@ class Multiband(object):
         :param kwargs_else:
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
+        if compute_bool is None:
+            compute_bool = [True] * self._num_bands
+        else:
+            if not len(compute_bool) == self._num_bands:
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         # generate image
         logL = 0
         for i in range(self._num_bands):
-            if self._compute_bool[i]:
+            if compute_bool[i]:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=source_marg)
         return logL
 
-    @property
-    def numData_evaluate(self):
+    def numData_evaluate(self, compute_bool=None):
+        if compute_bool is None:
+            compute_bool = [True] * self._num_bands
+        else:
+            if not len(compute_bool) == self._num_bands:
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         num = 0
         for i in range(self._num_bands):
-            if self._compute_bool[i]:
+            if compute_bool[i]:
                 num += self._imageModel_list[i].numData_evaluate
         return num
 

@@ -12,22 +12,21 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_fixed, kwargs_lower, kwargs_upper):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower,
+                 kwargs_upper):
         """
 
         :return:
         """
-        kwargs_lens_fixed, kwargs_source_fixed, kwargs_lens_light_fixed, kwargs_ps_fixed = kwargs_fixed
-        self.kwargs_data = kwargs_data
-        self.kwargs_psf = kwargs_psf
-        self.kwargs_lens_fixed = kwargs_lens_fixed # always fixed parameters
-        self.kwargs_source_fixed = kwargs_source_fixed  # always fixed parameters
-        self.kwargs_lens_light_fixed = kwargs_lens_light_fixed  # always fixed parameters
-        self.kwargs_ps_fixed = kwargs_ps_fixed  # always fixed parameters
+        self.kwargs_fixed = kwargs_fixed
+        self.multi_band_list = multi_band_list
+        self.kwargs_model = kwargs_model
+        self.kwargs_constraints = kwargs_constraints
+        self.kwargs_likelihood = kwargs_likelihood
         self.kwargs_lower = kwargs_lower
         self.kwargs_upper = kwargs_upper
 
-    def _run_pso(self, n_particles, n_iterations, kwargs_model, kwargs_param, kwargs_data, kwargs_psf,
+    def _run_pso(self, n_particles, n_iterations,
                  kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
@@ -54,8 +53,7 @@ class Fitting(object):
             kwargs_prior_ps_k.update(kwargs_sigma_ps[k])
             kwargs_prior_ps.append(kwargs_prior_ps_k)
         # initialise mcmc classes
-
-        param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_mean_lens)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
@@ -65,8 +63,10 @@ class Fitting(object):
         init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source,
                                          kwargs_mean_lens_light, kwargs_mean_ps)
         # run PSO
-        kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps
-        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_model, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
+        kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps]
+        mcmc_class = MCMC_sampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
+                                  self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
+                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
         lens_result, source_result, lens_light_result, else_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -80,7 +80,7 @@ class Fitting(object):
     def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
                       add_fixed_lens_light=None, add_fixed_ps=None):
 
-        lens_fix, source_fix, lens_light_fix, ps_fix = self.kwargs_lens_fixed, self.kwargs_source_fixed, self.kwargs_lens_light_fixed, self.kwargs_ps_fixed
+        lens_fix, source_fix, lens_light_fix, ps_fix = self.kwargs_fixed
 
         if add_fixed_lens is None:
             kwargs_fixed_lens_updated = lens_fix
@@ -116,7 +116,7 @@ class Fitting(object):
                 kwargs_fixed_ps_updated.append(kwargs_fixed_ps_updated_k)
         return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated, kwargs_fixed_ps_updated
 
-    def _mcmc_run(self, n_burn, n_run, walkerRatio, kwargs_options, kwargs_data, kwargs_psf,
+    def _mcmc_run(self, n_burn, n_run, walkerRatio,
                  kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,
                  kwargs_fixed_source, kwargs_mean_source, kwargs_sigma_source,
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
@@ -145,10 +145,12 @@ class Fitting(object):
             kwargs_prior_ps.append(kwargs_prior_ps_k)
         # initialise mcmc classes
 
-        param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else, kwargs_lens_init=kwargs_mean_lens)
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
-        mcmc_class = MCMC_sampler(kwargs_data, kwargs_psf, kwargs_options, kwargs_fixed, self.kwargs_lower, self.kwargs_upper, compute_bool=compute_bool)
+        mcmc_class = MCMC_sampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
+                                  self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
+                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
         num_param, param_list = param_class.num_param()
@@ -162,35 +164,8 @@ class Fitting(object):
                                            mpi=mpi, init_pos=initpos)
         return samples, param_list, dist
 
-    def find_lens_catalogue(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                            kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
-                            n_particles, n_iterations, mpi=False, sigma_factor=1, compute_bool=None):
-        """
-        finds the positon of a SPEP configuration based on the catalogue level input
-        :return: constraints of lens model
-        """
-        kwargs_options_special = {'lens_model_list': ['ELLIPSE'], 'lens_light_model_list': ['NONE'], 'source_light_model_list': ['NONE'],
-                                  'X2_type': 'catalogue', 'solver': False}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-        add_fixed_lens = kwargs_lens.copy()
-        if 'gamma' in kwargs_lens:
-            add_fixed_lens[0] = {'gamma': kwargs_lens['gamma']}  # for SPEP lens
-        add_fixed_source = kwargs_source
-        add_fixed_lens_light = kwargs_lens_light
-        add_fixed_ps = kwargs_ps
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light, add_fixed_ps=add_fixed_ps)
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
-            kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
-            kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
-            kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
-            kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
-            threadCount=1, mpi=mpi, print_key='Catalogue', sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def find_model(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+    def find_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                            kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
                            n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False,
                    compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False,
@@ -199,10 +174,6 @@ class Fitting(object):
         finds lens light and lens model combined fit
         :return: constraints of lens model
         """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:
@@ -225,17 +196,16 @@ class Fitting(object):
         if gamma_fixed:
             if 'gamma' in kwargs_lens[0]:
                 kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
-
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
-            n_particles, n_iterations, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
+            n_particles, n_iterations,
             kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             threadCount=threadCount, mpi=mpi, print_key=print_key, sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list, kwargs_options_execute
+        return lens_result, source_result, lens_light_result, else_result, chain, param_list
 
-    def mcmc_run(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+    def mcmc_run(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                  kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,
                  n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1,
                  gamma_fixed=False, compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False,
@@ -243,11 +213,6 @@ class Fitting(object):
         """
         MCMC
         """
-        kwargs_options_special = {'X2_type': 'image'}
-        # this are the parameters which are held constant while sampling
-        kwargs_options_execute = kwargs_options.copy()
-        kwargs_options_execute.update(kwargs_options_special)
-
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:
@@ -272,7 +237,7 @@ class Fitting(object):
                 kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
 
         samples, param_list, dist = self._mcmc_run(
-            n_burn, n_run, walkerRatio, kwargs_options_execute, self.kwargs_data, self.kwargs_psf,
+            n_burn, n_run, walkerRatio,
             kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,

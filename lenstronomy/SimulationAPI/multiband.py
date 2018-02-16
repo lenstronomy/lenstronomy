@@ -172,8 +172,8 @@ class SingleBand(object):
         lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
         pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
                                   lensModel=lensModel,
-                                  fixed_magnification=kwargs_options.get('fixed_magnification', False),
-                                  additional_images=kwargs_options.get('additional_images', False))
+                                  fixed_magnification_list=kwargs_options.get('fixed_magnification_list', None),
+                                  additional_images_list=kwargs_options.get('additional_images', None))
 
         norm_factor_source = self._flux_calibration_factor * source_colour
         norm_factor_lens_light = self._flux_calibration_factor * lens_colour

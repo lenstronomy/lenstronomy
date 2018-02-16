@@ -12,11 +12,11 @@ class AlignmentFitting(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = AlignmentChain(kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=compute_bool)
+        self.chain = AlignmentChain(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=compute_bool)
 
     def pso(self, n_particles, n_iterations, lowerLimit, upperLimit, threadCount=1, mpi=False, print_key='default'):
         """
@@ -65,19 +65,20 @@ class AlignmentFitting(object):
 
 class AlignmentChain(object):
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
         """
         initializes all the classes needed for the chain
         """
         # print('initialized on cpu', threading.current_thread())
-
         self._kwargs_data_init = kwargs_data
+        self._kwargs_data_shifted = copy.deepcopy(self._kwargs_data_init)
         self._kwargs_psf = kwargs_psf
+        self._kwargs_model = kwargs_model
         self._compute_bool = compute_bool
-        self._source_marg = kwargs_options.get('source_marg', False)
-        kwargs_options_copy = copy.deepcopy(kwargs_options)
-        kwargs_options_copy['error_map'] = False
-        self._kwargs_options = kwargs_options_copy
+        self._source_marg = False
+        kwargs_numerics_copy = copy.deepcopy(kwargs_numerics)
+        kwargs_numerics_copy['error_map'] = False
+        self._kwargs_numerics = kwargs_numerics_copy
         self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else = kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
     def X2_chain_image(self, args):
@@ -86,8 +87,8 @@ class AlignmentChain(object):
         """
         #generate image and computes likelihood
         kwargs_data = self.update_data(args)
-        makeImageMultiband = class_creator.creat_multiband(kwargs_data, self._kwargs_psf, self._kwargs_options, compute_bool=self._compute_bool)
-        logL = makeImageMultiband.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
+        imageModel = class_creator.creat_image_model(kwargs_data, self._kwargs_psf, self._kwargs_numerics, self._kwargs_model)
+        logL = imageModel.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
         return logL, None
 
     def __call__(self, a):
@@ -110,12 +111,10 @@ class AlignmentChain(object):
         :return:
         """
         k = 0
-        kwargs_data = copy.deepcopy(self._kwargs_data_init)
-        for i, kwargs_data_i in enumerate(kwargs_data):
-            if self._compute_bool[i]:
-                kwargs_data_i['ra_shift'] = args[k]
-                kwargs_data_i['dec_shift'] = args[k+1]
-                k += 2
+        kwargs_data = self._kwargs_data_shifted
+        kwargs_data['ra_shift'] = args[k]
+        kwargs_data['dec_shift'] = args[k+1]
+        k += 2
         return kwargs_data
 
     def get_args(self, kwargs_data):
@@ -125,16 +124,11 @@ class AlignmentChain(object):
         :return:
         """
         args = []
-        for i, kwargs_data_i in enumerate(kwargs_data):
-            if self._compute_bool[i]:
-                args.append(kwargs_data_i.get('ra_shift', 0))
-                args.append(kwargs_data_i.get('dec_shift', 0))
+        args.append(kwargs_data.get('ra_shift', 0))
+        args.append(kwargs_data.get('dec_shift', 0))
         return args
 
     @property
     def num_param(self):
-        n = 0
-        for i in range(len(self._kwargs_data_init)):
-            if self._compute_bool[i]:
-                n += 2
+        n = 2
         return n

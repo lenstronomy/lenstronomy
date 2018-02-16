@@ -4,7 +4,7 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 
 class PointSource(object):
 
-    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification=False, additional_images=False,
+    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
                  save_cache=False):
         """
 
@@ -14,20 +14,23 @@ class PointSource(object):
         self._lensModel = lensModel
         self._point_source_type_list = point_source_type_list
         self._point_source_list = []
-        self._fixed_magnification = fixed_magnification
-        self._additional_images = additional_images
+        if fixed_magnification_list is None:
+            fixed_magnification_list = [False] * len(point_source_type_list)
+        self._fixed_magnification_list = fixed_magnification_list
+        if additional_images_list is None:
+            additional_images_list = [False] * len(point_source_type_list)
         for i, model in enumerate(point_source_type_list):
             if model == 'UNLENSED':
                 from lenstronomy.PointSource.point_source_types import Unlensed
                 self._point_source_list.append(PointSourceCached(Unlensed(), save_cache=save_cache))
             elif model == 'LENSED_POSITION':
                 from lenstronomy.PointSource.point_source_types import LensedPositions
-                self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification,
-                                                               additional_image=additional_images), save_cache=save_cache))
+                self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
+                                                               additional_image=additional_images_list[i]), save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
                 from lenstronomy.PointSource.point_source_types import SourcePositions
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
-                                                                 fixed_magnification=fixed_magnification),
+                                                                 fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
             elif model == 'NONE':
                 pass
@@ -121,7 +124,7 @@ class PointSource(object):
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_type_list):
             if not model == 'NONE':
-                if self._fixed_magnification:
+                if self._fixed_magnification_list[i]:
                     n += 1
                 else:
                     n += len(ra_pos_list[i])
@@ -157,7 +160,7 @@ class PointSource(object):
                 if k == i or k is None:
                     x_pos = x_image_list[i]
                     y_pos = y_image_list[i]
-                    if self._fixed_magnification:
+                    if self._fixed_magnification_list[i]:
                         mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
@@ -189,7 +192,7 @@ class PointSource(object):
         for k, model in enumerate(self._point_source_list):
             kwargs = kwargs_ps[k]
             if not self._point_source_type_list[k] == 'NONE':
-                if self._fixed_magnification:
+                if self._fixed_magnification_list:
                     mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
                     kwargs['point_amp'] = np.abs(mag) * param[i]
                     i += 1
@@ -243,7 +246,7 @@ class PointSource(object):
             elif model == 'UNLENSED':
                 kwargs_ps[i]['point_amp'] *= norm_factor
             elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification:
+                if self._fixed_magnification_list:
                     kwargs_ps[i]['source_amp'] *= norm_factor
                 else:
                     kwargs_ps[i]['point_amp'] *= norm_factor

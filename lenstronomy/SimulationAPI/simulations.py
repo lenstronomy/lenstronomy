@@ -109,8 +109,8 @@ class Simulation(object):
         sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
         lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
         pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
-                                          lensModel=lensModel, fixed_magnification=kwargs_options.get('fixed_magnification', False),
-                                       additional_images=kwargs_options.get('additional_images', False))
+                                          lensModel=lensModel, fixed_magnification_list=kwargs_options.get('fixed_magnification_list', [False]),
+                                       additional_images_list=kwargs_options.get('additional_images_list', [False]))
         kwargs_source_updated = copy.deepcopy(kwargs_source)
         kwargs_lens_light_updated = copy.deepcopy(kwargs_lens_light)
         kwargs_ps_updated = copy.deepcopy(kwargs_ps)

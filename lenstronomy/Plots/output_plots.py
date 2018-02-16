@@ -531,12 +531,10 @@ def plot_chain(chain, param_list):
         ax.plot(vel[:,i], label=param_list[i])
     ax.set_title('param velocity')
     ax.legend()
-    plt.show()
     return f, axes
 
 
-def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
-                        kwargs_else, strength_multiply=10):
+def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_multiply=10):
     """
 
     :param kwargs_data:
@@ -548,27 +546,26 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     :param else_result:
     :return:
     """
-    foreground_shear = kwargs_options.get('foreground_shear', False)
-    x_grid, y_grid = kwargs_data['x_coords'], kwargs_data['y_coords']
+    x_grid, y_grid = data_class.coordinates
     shear = ExternalShear()
 
-    if not 'EXTERNAL_SHEAR' in kwargs_options['lens_model_list']:
-        f_x_shear, f_y_shear = 0, 0
-    else:
-        for i, lens_model in enumerate(kwargs_options['lens_model_list']):
-            if lens_model == 'EXTERNAL_SHEAR':
-                kwargs = kwargs_lens[i]
-                f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
+    f_x_shear, f_y_shear = 0, 0
+    for i, lens_model in enumerate(lens_model_class.lens_model_list):
+        if lens_model == 'SHEAR':
+            kwargs = kwargs_lens[i]
+            f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
                                                          e2=kwargs['e2'] * strength_multiply)
     x_shear = x_grid - f_x_shear
     y_shear = y_grid - f_y_shear
 
-    if foreground_shear:
-        f_x_shear1, f_y_shear1 = shear.derivatives(x_grid, y_grid, e1=kwargs_else['gamma1_foreground']*strength_multiply, e2=kwargs_else['gamma2_foreground']*strength_multiply)
-    else:
-        f_x_shear1, f_y_shear1 = 0, 0
-    x_foreground = x_grid - f_x_shear1
-    y_foreground = y_grid - f_y_shear1
+    f_x_foreground, f_y_foreground = 0, 0
+    for i, lens_model in enumerate(lens_model_class.lens_model_list):
+        if lens_model == 'FOREGROUND_SHEAR':
+            kwargs = kwargs_lens[i]
+            f_x_foreground, f_y_foreground = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
+                                                     e2=kwargs['e2'] * strength_multiply)
+    x_foreground = x_grid - f_x_foreground
+    y_foreground = y_grid - f_y_foreground
 
     center_x = np.mean(x_grid)
     center_y = np.mean(y_grid)
@@ -576,7 +573,7 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     circle_shear = util_maskl.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
     circle_foreground = util_maskl.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
     f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
-    im = ax.matshow(util.array2image(np.log10(kwargs_data['image_data'])), origin='lower', alpha=0.5)
+    im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
     #f.show()

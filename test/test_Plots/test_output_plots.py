@@ -83,6 +83,7 @@ class TestOutputPlots(object):
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = kwargs_numerics
+        self.data_class = Data(self.kwargs_data)
 
     def test_lensModelPlot(self):
 
@@ -147,6 +148,20 @@ class TestOutputPlots(object):
         kwargs_psf = self.kwargs_psf
         kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
         f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf)
+        plt.close()
+
+    def test_external_shear_direction(self):
+        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=self.LensModel, kwargs_lens=self.kwargs_lens,
+                        strength_multiply=10)
+        plt.close()
+
+    def test_plot_chain(self):
+        X2_list = [1, 1, 2]
+        pos_list = [[1, 0], [2, 0], [3, 0]]
+        vel_list = [[-1, 0], [0, 0], [1, 0]]
+        param_list = ['test1', 'test2']
+        chain = X2_list, pos_list, vel_list, None
+        output_plots.plot_chain(chain=chain, param_list=param_list)
         plt.close()
 
 

@@ -54,7 +54,6 @@ class ImageModel(object):
         self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
 
-
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
         computes the source surface brightness distribution
@@ -92,7 +91,7 @@ class ImageModel(object):
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 
-    def point_source(self, kwargs_ps, kwargs_lens, unconvolved=False, k=None):
+    def point_source(self, kwargs_ps, kwargs_lens=None, unconvolved=False, k=None):
         """
         computes the point source positions and paints PSF convolutions on them
 
@@ -108,7 +107,7 @@ class ImageModel(object):
             point_source_image += self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
         return point_source_image
 
-    def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
+    def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
@@ -116,24 +115,27 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
+        if not self.LensModel is None:
+            x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
                                                          self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
+        else:
+            x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
 
         A, error_map = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
-                                             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, self.ImageNumerics.mask)
+                                             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
         d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map), d, inv_bool=inv_bool)
-        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else)
+        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         model = self.ImageNumerics.array2image(wls_model)
         error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
-    def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image_with_params(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
 
@@ -284,10 +286,18 @@ class ImageModel(object):
         :param unconvolved:
         :return:
         """
-        source_light_response, n_source = self.SourceModel.functions_split(x_source, y_source, kwargs_source)
-        lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid,
-                                                                                           kwargs_lens_light)
-        ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=False)
+        if not self.SourceModel is None:
+            source_light_response, n_source = self.SourceModel.functions_split(x_source, y_source, kwargs_source)
+        else:
+            source_light_response, n_source = [], 0
+        if not self.LensLightModel is None:
+            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid,                                                                               kwargs_lens_light)
+        else:
+            lens_light_response, n_lens_light = [], 0
+        if not self.PointSource is None:
+            ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=False)
+        else:
+            ra_pos, dec_pos, amp, n_points = [], [], [], 0
         num_param = n_points + n_lens_light + n_source
 
         num_response = self.ImageNumerics.num_response
@@ -336,7 +346,10 @@ class ImageModel(object):
         :return: updated list of kwargs with linear parameter values
         """
         i = 0
-        kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
-        kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
-        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
+        if not self.SourceModel is None:
+            kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
+        if not self.LensLightModel is None:
+            kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
+        if not self.PointSource is None:
+            kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps

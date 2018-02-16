@@ -7,7 +7,7 @@ import lenstronomy.Util.constants as const
 import lenstronomy.Util.class_creator as class_creator
 
 
-class MCMC_chain(object):
+class LikelihoodModule(object):
     """
     this class contains the routines to run a MCMC process with one single image
     """
@@ -47,6 +47,8 @@ class MCMC_chain(object):
         if self.time_delay is True:
             self.delays_measured = kwargs_likelihood['time_delays']
             self.delays_errors = kwargs_likelihood['time_delays_errors']
+            raise ValueError("cosmological sampling of time-delays not implemented in this version of lenstronomy yet!"
+                             " Please get in touch with the the developers.")
         self.priors_bool = kwargs_likelihood.get('priors', False)
         if self.priors_bool:
             self.kwargs_priors = kwargs_likelihood['kwargs_priors']
@@ -153,14 +155,14 @@ class MCMC_chain(object):
                 penalty = 10**15
         return penalty
 
-    def logL_delay(self, kwargs_lens, kwargs_else):
+    def logL_delay(self, kwargs_lens, kwargs_cosmo):
         """
         routine to compute the log likelihood of the time delay distance
         :param args:
         :return:
         """
-        delay_arcsec = self.Multiband.fermat_potential(kwargs_lens, kwargs_else)
-        D_dt_model = kwargs_else['delay_dist']
+        delay_arcsec = self.Multiband.fermat_potential(kwargs_lens, kwargs_cosmo)
+        D_dt_model = kwargs_cosmo['delay_dist']
         delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
         logL = self._logL_delays(delay_days, self.delays_measured, self.delays_errors)
         return logL

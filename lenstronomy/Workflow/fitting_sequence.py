@@ -96,37 +96,37 @@ class FittingSequence(object):
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
 
         if fitting_routine == 'lens_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
                 fix_lens=False, fix_source=True, fix_lens_light=True, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'source_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
                 fix_lens=True, fix_source=False, fix_lens_light=True, fix_point_source=True, print_key=fitting_routine)
         elif fitting_routine == 'lens_light_only':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
                 fix_lens=True, fix_source=True, fix_lens_light=False, fix_point_source=True, print_key=fitting_routine)
         elif fitting_routine == 'lens_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,
                 fix_lens=True, fix_source=False, fix_lens_light=False, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'lens_combined_gamma_fixed':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=True,
                 fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False, print_key=fitting_routine)
         elif fitting_routine == 'lens_combined':
-            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.find_model(
+            lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool, gamma_fixed=False,

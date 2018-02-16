@@ -16,13 +16,13 @@ class AlignmentFitting(object):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = AlignmentChain(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=compute_bool)
+        self.chain = AlignmentLikelihood(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=compute_bool)
 
     def pso(self, n_particles, n_iterations, lowerLimit, upperLimit, threadCount=1, mpi=False, print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
-        init_pos = self.chain.get_args(self.chain._kwargs_data_init)
+        init_pos = self.chain.get_args(self.chain.kwargs_data_init)
         num_param = self.chain.num_param
         lowerLimit = [lowerLimit] * num_param
         upperLimit = [upperLimit] * num_param
@@ -63,15 +63,15 @@ class AlignmentFitting(object):
         return kwargs_data, [X2_list, pos_list, vel_list, []]
 
 
-class AlignmentChain(object):
+class AlignmentLikelihood(object):
 
     def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
         """
         initializes all the classes needed for the chain
         """
         # print('initialized on cpu', threading.current_thread())
-        self._kwargs_data_init = kwargs_data
-        self._kwargs_data_shifted = copy.deepcopy(self._kwargs_data_init)
+        self.kwargs_data_init = kwargs_data
+        self._kwargs_data_shifted = copy.deepcopy(self.kwargs_data_init)
         self._kwargs_psf = kwargs_psf
         self._kwargs_model = kwargs_model
         self._compute_bool = compute_bool
@@ -81,7 +81,7 @@ class AlignmentChain(object):
         self._kwargs_numerics = kwargs_numerics_copy
         self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else = kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else
 
-    def X2_chain_image(self, args):
+    def _likelihood(self, args):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
@@ -92,13 +92,13 @@ class AlignmentChain(object):
         return logL, None
 
     def __call__(self, a):
-        return self.X2_chain_image(a)
+        return self._likelihood(a)
 
     def likelihood(self, a):
-        return self.X2_chain_image(a)
+        return self._likelihood(a)
 
     def computeLikelihood(self, ctx):
-        logL, _ = self.X2_chain_image(ctx.getParams())
+        logL, _ = self._likelihood(ctx.getParams())
         return logL
 
     def setup(self):
@@ -117,7 +117,8 @@ class AlignmentChain(object):
         k += 2
         return kwargs_data
 
-    def get_args(self, kwargs_data):
+    @staticmethod
+    def get_args(kwargs_data):
         """
 
         :param kwargs_data:

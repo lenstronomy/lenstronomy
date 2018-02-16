@@ -64,7 +64,6 @@ class PSF_fitting(object):
             kwargs_psf_new['kernel_pixel'] = kernel_new_small
         kwargs_psf_new['kernel_point_source'] = kernel_new
 
-
         self._image_model_class.update_psf(PSF(kwargs_psf_new))
         self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
@@ -72,7 +71,7 @@ class PSF_fitting(object):
         if logL_after > logL_before:
             improved_bool = True
             if not self._kwargs_numerics.get('psf_keep_error_map', False):
-                kwargs_psf_new['error_map'] = error_map
+                kwargs_psf_new['psf_error_map'] = error_map
             kwargs_psf_return = kwargs_psf_new
         else:
             improved_bool = False

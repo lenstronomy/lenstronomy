@@ -15,7 +15,7 @@ from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
-from lenstronomy.MCMC.mcmc_chains import MCMC_chain
+from lenstronomy.MCMC.likelihood_module import LikelihoodModule
 from lenstronomy.Workflow.parameters import Param
 
 
@@ -27,7 +27,7 @@ class MCMC_sampler(object):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = MCMC_chain(multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed,
+        self.chain = LikelihoodModule(multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed,
                                 kwargs_lower, kwargs_upper, kwargs_lens_init=kwargs_lens_init, compute_bool=compute_bool)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):

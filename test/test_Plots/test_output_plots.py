@@ -1,7 +1,6 @@
 __author__ = 'sibirrer'
 
 import pytest
-import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
@@ -39,7 +38,6 @@ class TestOutputPlots(object):
         kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                     truncate=6,
                                                     kernel=kwargs_psf['kernel_point_source'])
-
         data_class = Data(kwargs_data=kwargs_data)
         psf_class = PSF(kwargs_psf=kwargs_psf)
 
@@ -143,6 +141,12 @@ class TestOutputPlots(object):
         numPix = 100
         deltaPix = 0.05
         ax = output_plots.lens_model_plot(ax, self.LensModel, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
+        plt.close()
+
+    def test_psf_iteration_compare(self):
+        kwargs_psf = self.kwargs_psf
+        kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
+        f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf)
         plt.close()
 
 

@@ -128,5 +128,34 @@ class Solver2Point(object):
             raise ValueError("Lens model %s not supported for 2-point solver!" % lens_model)
         return x
 
+    def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
+        """
+
+        :param kwargs_fixed_lens_list:
+        :param kwargs_lens_init:
+        :return:
+        """
+        lens_model = self.lensModel.lens_model_list[0]
+        kwargs_fixed = kwargs_fixed_lens_list[0]
+        kwargs_lens = kwargs_lens_init[0]
+        if lens_model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE', 'COMPOSITE']:
+            if self._solver_type in ['CENTER']:
+                kwargs_fixed['center_x'] = kwargs_lens['center_x']
+                kwargs_fixed['center_y'] = kwargs_lens['center_y']
+            elif self._solver_type in ['ELLIPSE']:
+                kwargs_fixed['q'] = kwargs_lens['q']
+                kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+            else:
+                raise ValueError("solver_type %s not valid for lens model %s" % (self._solver_type, lens_model))
+        elif lens_model == "SHAPELETS_CART":
+            pass
+        elif lens_model == 'SHEAR':
+            kwargs_fixed['e1'] = kwargs_lens['e1']
+            kwargs_fixed['e2'] = kwargs_lens['e2']
+        else:
+            raise ValueError("%s is not a valid option for solver_type in combination with lens model %s" % (
+            self._solver_type, lens_model))
+        return kwargs_fixed_lens_list
+
 
 

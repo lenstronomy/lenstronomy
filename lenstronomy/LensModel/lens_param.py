@@ -24,16 +24,22 @@ class LensParam(object):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if not 'e1' in kwargs_fixed:
-                    kwargs['e1'] = args[i]
+                if self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    gamma_ext = args[i]
+                    phi_G = 0
+                    kwargs['e1'], kwargs['e2'] = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
                     i += 1
                 else:
-                    kwargs['e1'] = kwargs_fixed['e1']
-                if not 'e2' in kwargs_fixed:
-                    kwargs['e2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['e2'] = kwargs_fixed['e2']
+                    if not 'e1' in kwargs_fixed:
+                        kwargs['e1'] = args[i]
+                        i += 1
+                    else:
+                        kwargs['e1'] = kwargs_fixed['e1']
+                    if not 'e2' in kwargs_fixed:
+                        kwargs['e2'] = args[i]
+                        i += 1
+                    else:
+                        kwargs['e2'] = kwargs_fixed['e2']
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     kwargs['g1'] = args[i]
@@ -268,10 +274,14 @@ class LensParam(object):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if not 'e1' in kwargs_fixed:
-                    args.append(kwargs['e1'])
-                if not 'e2' in kwargs_fixed:
-                    args.append(kwargs['e2'])
+                if self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    gamma_ext, phi_G = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
+                    args.append(gamma_ext)
+                else:
+                    if not 'e1' in kwargs_fixed:
+                        args.append(kwargs['e1'])
+                    if not 'e2' in kwargs_fixed:
+                        args.append(kwargs['e2'])
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     args.append(kwargs['g1'])
@@ -390,12 +400,17 @@ class LensParam(object):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if not 'e1' in kwargs_fixed:
-                    mean.append(kwargs_mean['e1'])
+                if self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    gamma_ext, phi_G = param_util.ellipticity2phi_gamma(kwargs_mean['e1'], kwargs_mean['e2'])
+                    mean.append(gamma_ext)
                     sigma.append(kwargs_mean['shear_sigma'])
-                if not 'e2' in kwargs_fixed:
-                    mean.append(kwargs_mean['e2'])
-                    sigma.append(kwargs_mean['shear_sigma'])
+                else:
+                    if not 'e1' in kwargs_fixed:
+                        mean.append(kwargs_mean['e1'])
+                        sigma.append(kwargs_mean['shear_sigma'])
+                    if not 'e2' in kwargs_fixed:
+                        mean.append(kwargs_mean['e2'])
+                        sigma.append(kwargs_mean['shear_sigma'])
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     mean.append(kwargs_mean['g1'])
@@ -559,12 +574,16 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if not 'e1' in kwargs_fixed:
+                if self._solver_type == 'PROFILE_SHEAR' and k == 1:
                     num += 1
-                    list.append('e1')
-                if not 'e2' in kwargs_fixed:
-                    num += 1
-                    list.append('e2')
+                    list.append('gamma_ext')
+                else:
+                    if not 'e1' in kwargs_fixed:
+                        num += 1
+                        list.append('e1')
+                    if not 'e2' in kwargs_fixed:
+                        num += 1
+                        list.append('e2')
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     num += 1

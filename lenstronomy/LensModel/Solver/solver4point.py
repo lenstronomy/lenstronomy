@@ -11,20 +11,20 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lensModel, decoupling=True, solver_type='FOUR_ELLIPSE'):
+    def __init__(self, lensModel, decoupling=True, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE', 'COMPOSITE',"
                              " 'NFW_ELLIPSE', 'SHAPELETS_CART'. Your choice was %s" % solver_type)
-        if not solver_type in ['FOUR_ELLIPSE', 'FOUR_ELLIPSE_SHEAR']:
-            raise ValueError("solver_type %s not supported! Choose from 'FOUR_ELLIPSE', 'FOUR_ELLIPSE_SHEAR'"
+        if not solver_type in ['PROFILE', 'PROFILE_SHEAR']:
+            raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
                              % solver_type)
-        if solver_type in ['FOUR_ELLIPSE_SHEAR']:
+        if solver_type in ['PROFILE_SHEAR']:
             if not lensModel.lens_model_list[1] == 'SHEAR':
                 raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'FOUR_ELLIPSE_SHEAR':
+        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR':
             self._decoupling = False
         else:
             self._decoupling = decoupling
@@ -97,7 +97,7 @@ class Solver4Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
-        if self._solver_type == 'FOUR_ELLIPSE_SHEAR':
+        if self._solver_type == 'PROFILE_SHEAR':
             phi_G = x[5]
             phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
             kwargs_list[1]['e1'], kwargs_list[1]['e2'] = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
@@ -133,7 +133,7 @@ class Solver4Point(object):
         :param kwargs_list:
         :return:
         """
-        if self._solver_type == 'FOUR_ELLIPSE_SHEAR':
+        if self._solver_type == 'PROFILE_SHEAR':
             e1 = kwargs_list[1]['e1']
             e2 = kwargs_list[1]['e2']
             phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
@@ -163,6 +163,36 @@ class Solver4Point(object):
         else:
             raise ValueError("Lens model %s not supported for 4-point solver!" % lens_model)
         return x
+
+    def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
+        """
+
+        :param kwargs_fixed_lens_list:
+        :param kwargs_lens_init:
+        :return:
+        """
+
+        lens_model = self.lensModel.lens_model_list[0]
+        kwargs_fixed = kwargs_fixed_lens_list[0]
+        kwargs_lens = kwargs_lens_init[0]
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
+            kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
+            kwargs_fixed['q'] = kwargs_lens['q']
+            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+            kwargs_fixed['center_x'] = kwargs_lens['center_x']
+            kwargs_fixed['center_y'] = kwargs_lens['center_y']
+        elif lens_model in ['NFW_ELLIPSE']:
+            kwargs_fixed['theta_Rs'] = kwargs_lens['theta_Rs']
+            kwargs_fixed['q'] = kwargs_lens['q']
+            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+            kwargs_fixed['center_x'] = kwargs_lens['center_x']
+            kwargs_fixed['center_y'] = kwargs_lens['center_y']
+        elif lens_model in ['SHAPELETS_CART']:
+            pass
+        else:
+            raise ValueError(
+                "%s is not a valid option. Choose from 'PROFILE', 'COMPOSITE', 'NFW_PROFILE', 'SHAPELETS'" % self._solver_type)
+        return kwargs_fixed_lens_list
 
 
 

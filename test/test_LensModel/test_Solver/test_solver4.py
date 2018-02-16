@@ -128,7 +128,7 @@ class TestSolver4Point(object):
     def test_solver_simplified(self):
         lens_model_list = ['SPEP', 'SHEAR']
         lensModel = LensModel(lens_model_list)
-        solver = Solver4Point(lensModel, decoupling=False, solver_type='FOUR_ELLIPSE_SHEAR')
+        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1

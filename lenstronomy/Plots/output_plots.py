@@ -581,3 +581,48 @@ def ext_shear_direction(kwargs_data, kwargs_options, kwargs_lens,
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
     #f.show()
     return f, ax
+
+
+def psf_iteration_compare(kwargs_psf):
+    """
+
+    :param kwargs_psf:
+    :return:
+    """
+    psf_out = kwargs_psf['kernel_point_source']
+    psf_in = kwargs_psf['kernel_point_source_init']
+    n_kernel = len(psf_in)
+    delta_x = n_kernel/20.
+    delta_y = n_kernel/10.
+    cmap_kernel = 'seismic'
+
+    f, axes = plt.subplots(1, 3, figsize=(15, 5), sharex=False, sharey=False)
+    ax = axes[0]
+    im = ax.matshow(np.log10(psf_in), origin='lower', cmap=cmap_kernel)
+    v_min, v_max = im.get_clim()
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
+
+    ax = axes[1]
+    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, cmap=cmap_kernel)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.text(delta_x, n_kernel-delta_y, "iterative reconstruction", color="k", fontsize=20, backgroundcolor='w')
+
+    ax = axes[2]
+    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, cmap=cmap_kernel)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    plt.colorbar(im, cax=cax)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.text(delta_x, n_kernel-delta_y, "difference", color="k", fontsize=20, backgroundcolor='w')
+    f.tight_layout()
+    return f, axes

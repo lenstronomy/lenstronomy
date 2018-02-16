@@ -2,8 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.Solver.solver2point import Solver2Point
-from lenstronomy.LensModel.Solver.solver4point import Solver4Point
+from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
@@ -14,7 +13,8 @@ class Param(object):
 
     """
 
-    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None):
+    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
+                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None, linear_solver=True):
         """
 
         :return:
@@ -33,22 +33,18 @@ class Param(object):
         self._solver = kwargs_constraints.get('solver', False)
 
         if self._solver:
-            self._solver_type = kwargs_constraints.get('solver_type', 'CENTER')
-            if self._num_images == 4:
-                self.solver4points = Solver4Point(self.lensModel)
-            elif self. _num_images == 2:
-                self.solver2points = Solver2Point(self.lensModel, solver_type=self._solver_type)
-            else:
-                raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
+            self._solver_type = kwargs_constraints.get('solver_type', 'PROFILE')
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self.lensModel, num_images=self._num_images)
         else:
-            self._solver_type = "NONE"
+            self._solver_type = 'NONE'
 
-        self.kwargs_fixed_lens = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
-        self.kwargs_fixed_source = self._add_fixed_source(kwargs_fixed_source)
-        self.kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
-        self.kwargs_fixed_ps = kwargs_fixed_ps
+        if linear_solver:
+            self.kwargs_fixed_lens = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
+            self.kwargs_fixed_source = self._add_fixed_source(kwargs_fixed_source)
+            self.kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
+            self.kwargs_fixed_ps = kwargs_fixed_ps
 
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=0, solver_type='NONE')
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=self._num_images, solver_type=self._solver_type)
         source_light_model_list = kwargs_model.get('source_light_model_list', ['NONE'])
         self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source, type='source_light')
         lens_light_model_list = kwargs_model.get('lens_light_model_list', ['NONE'])
@@ -131,12 +127,7 @@ class Param(object):
 
     def _update_solver(self, kwargs_lens, kwargs_ps):
         x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        if len(x_) == 4:
-            kwargs_lens, precision = self.solver4points.constraint_lensmodel(x_, y_, kwargs_lens)
-        elif len(x_) == 2:
-            kwargs_lens, precision = self.solver2points.constraint_lensmodel(x_, y_, kwargs_lens)
-        else:
-            raise ValueError("Point source number must be either 2 or 4 to be supported by the solver. Your number is:", len(x_))
+        kwargs_lens, precision = self._solver_module.constraint_lensmodel(x_, y_, kwargs_lens)
         return kwargs_lens
 
     def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps):
@@ -190,55 +181,7 @@ class Param(object):
                 kwargs['center_y'] = 0
         return kwargs_fixed
 
-    def _add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
-        """
-        returns kwargs that are kept fixed during run, depending on options
-        :param kwargs_options:
-        :param kwargs_lens:
-        :return:
-        """
-        for k, kwargs_fixed in enumerate(kwargs_fixed_lens_list):
-            if k == 0:
-                if self._solver is True:
-                    lens_model = self._lens_model_list[0]
-                    kwargs_lens = kwargs_lens_init[0]
-                    if self._num_images == 4:
-                        if lens_model in ['SPEP', 'SPEMD']:
-                            kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
-                            kwargs_fixed['q'] = kwargs_lens['q']
-                            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
-                            kwargs_fixed['center_x'] = kwargs_lens['center_x']
-                            kwargs_fixed['center_y'] = kwargs_lens['center_y']
-                        elif lens_model in ['NFW_ELLIPSE']:
-                            kwargs_fixed['theta_Rs'] = kwargs_lens['theta_Rs']
-                            kwargs_fixed['q'] = kwargs_lens['q']
-                            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
-                            kwargs_fixed['center_x'] = kwargs_lens['center_x']
-                            kwargs_fixed['center_y'] = kwargs_lens['center_y']
-                        elif lens_model in ['SHAPELETS_CART']:
-                            pass
-                        elif lens_model in ['NONE']:
-                            pass
-                        else:
-                            raise ValueError("%s is not a valid option. Choose from 'PROFILE', 'COMPOSITE', 'NFW_PROFILE', 'SHAPELETS'" % self._solver_type)
-                    elif self._num_images == 2:
-                        if lens_model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE', 'COMPOSITE']:
-                            if self._solver_type in ['CENTER']:
-                                kwargs_fixed['center_x'] = kwargs_lens['center_x']
-                                kwargs_fixed['center_y'] = kwargs_lens['center_y']
-                            elif self._solver_type in ['ELLIPSE']:
-                                kwargs_fixed['q'] = kwargs_lens['q']
-                                kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
-                            else:
-                                raise ValueError("solver_type %s not valid for lens model %s" % (self._solver_type, lens_model))
-                        elif lens_model == "SHAPELETS_CART":
-                            pass
-                        elif lens_model == 'SHEAR':
-                            kwargs_fixed['e1'] = kwargs_lens['e1']
-                            kwargs_fixed['e2'] = kwargs_lens['e2']
-                        else:
-                            raise ValueError("%s is not a valid option for solver_type in combination with lens model %s" % (self._solver_type, lens_model))
-                    else:
-                        raise ValueError("%s is not a valid number of points" % self._num_images)
-        return kwargs_fixed_lens_list
-
+    def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
+        if self._solver:
+            kwargs_fixed = self._solver_module.add_fixed_lens(kwargs_fixed, kwargs_init)
+        return kwargs_fixed

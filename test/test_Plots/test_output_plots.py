@@ -11,6 +11,8 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Plots.output_plots import LensModelPlot
 import lenstronomy.Plots.output_plots as output_plots
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
@@ -98,6 +100,7 @@ class TestOutputPlots(object):
         lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
         lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
         lensPlot.magnification_plot(ax=axes[1, 2])
+        plt.close()
 
         f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
 
@@ -109,6 +112,7 @@ class TestOutputPlots(object):
                                         unconvolved=True)
         lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
                                         lens_light_add=True, point_source_add=True)
+        plt.close()
 
         f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
 
@@ -118,12 +122,14 @@ class TestOutputPlots(object):
         lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
         lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
         lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
+        plt.close()
 
     def test_lens_model_plot(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         numPix = 100
         deltaPix = 0.05
-        output_plots.lens_model_plot(ax, self.LensModel, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
+        ax = output_plots.lens_model_plot(ax, self.LensModel, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
+        plt.close()
 
 
 if __name__ == '__main__':

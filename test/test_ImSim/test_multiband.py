@@ -96,8 +96,9 @@ class TestImageModel(object):
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
-    def test_image_with_params(self):
-        model, error_map = self.imageModel.image_with_params(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
+    def test_image(self):
+        model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
+        error_map = self.imageModel.error_map(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 

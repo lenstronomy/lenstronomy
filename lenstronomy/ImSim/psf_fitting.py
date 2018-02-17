@@ -121,8 +121,8 @@ class PSF_fitting(object):
         # reconstructed model with given psf
         wls_model, error_map, cov_param, param = image_model_class.image_linear_solve(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_ps)
-        model, error_map = image_model_class.image_with_params(kwargs_lens, kwargs_source,
-                                                       kwargs_lens_light, kwargs_ps, point_source_add=True)
+        model = image_model_class.image(kwargs_lens, kwargs_source,
+                                           kwargs_lens_light, kwargs_ps, point_source_add=True)
         data = image_model_class.Data.data
         mask = image_model_class.ImageNumerics.mask
         point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens)

@@ -26,6 +26,7 @@ class LikelihoodModule(object):
         self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
                                            kwargs_else_upper, bounds='upper')
 
+        self._check_bounds = kwargs_likelihood.get('check_bounds', True)
         self._point_source_likelihood = kwargs_likelihood.get('point_source_likelihood', False)
         self._position_sigma = kwargs_likelihood.get('position_uncertainty', 0.004)
         self._image_likelihood = kwargs_likelihood.get('image_likelihood', True)
@@ -67,7 +68,8 @@ class LikelihoodModule(object):
                                                           source_marg=self._source_marg, compute_bool=self._compute_bool)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
-        logL -= self.check_bounds(args, self.lower_limit, self.upper_limit)
+        if self._check_bounds:
+            logL -= self.check_bounds(args, self.lower_limit, self.upper_limit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps)

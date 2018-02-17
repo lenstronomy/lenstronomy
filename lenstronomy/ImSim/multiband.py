@@ -80,7 +80,7 @@ class Multiband(object):
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def image_with_params(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
@@ -94,12 +94,23 @@ class Multiband(object):
         :return: 1d array of surface brightness pixels of the simulation
         """
         image_list = []
+        for i in range(self._num_bands):
+            image = self._imageModel_list[i].image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=unconvolved, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+            image_list.append(image)
+        return image_list
+
+    def error_map(self, kwargs_lens, kwargs_ps):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :return:
+        """
         error_map_list = []
         for i in range(self._num_bands):
-            image, error_map = self._imageModel_list[i].image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=unconvolved, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
-            image_list.append(image)
-            error_map_list.append(error_map)
-        return image_list, error_map_list
+            error_map_i = self._imageModel_list[i].error_map(kwargs_lens, kwargs_ps)
+            error_map_list.append(error_map_i)
+        return error_map_list
 
     def image_positions(self, kwargs_ps, kwargs_lens):
         """

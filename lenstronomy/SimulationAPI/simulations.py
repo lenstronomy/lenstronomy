@@ -32,16 +32,14 @@ class Simulation(object):
         # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
         x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
         # mask (1= model this pixel, 0= leave blanck)
-        mask = np.ones((numPix, numPix))  # default is model all pixels
         exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 
         kwargs_data = {
-            'sigma_background': sigma_bkg, 'mean_background': mean
-            , 'exp_time': exposure_time, 'exposure_map': exposure_map
+            'sigma_background': sigma_bkg, 'mean_background': mean,
+            'exposure_map': exposure_map
             , 'x_coords': x_grid, 'y_coords': y_grid
             , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
-            , 'mask': mask
-            , 'image_data': np.zeros_like(mask)
+            , 'image_data': np.zeros((numPix, numPix))
             }
         return kwargs_data
 
@@ -145,7 +143,7 @@ class Simulation(object):
         :param no_noise:
         :return:
         """
-        image, error_map = image_model_class.image_with_params(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        image = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         #image = makeImage.ImageNumerics.array2image(image)
         # add noise
         if no_noise:

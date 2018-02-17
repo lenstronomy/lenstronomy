@@ -95,7 +95,8 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
     def test_image_with_params(self):
-        model, error_map = self.imageModel.image_with_params(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
+        model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
+        error_map = self.imageModel.error_map(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
@@ -174,7 +175,7 @@ class TestImageModel(object):
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
         kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
-        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
+        model = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
             assert image[y_pix[i], x_pix[i]] == 1
@@ -184,7 +185,7 @@ class TestImageModel(object):
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
         kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
         kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
-        model, _ = makeImage.image_with_params(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
+        model = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
             print(int(y_pix[i]), int(x_pix[i]+0.5))

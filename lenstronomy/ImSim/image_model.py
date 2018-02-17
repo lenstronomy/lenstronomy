@@ -11,7 +11,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None, lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None, lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
 
 
@@ -125,9 +125,11 @@ class ImageModel(object):
         else:
             x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
 
-        A, error_map = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
+        A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
                                              kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
+        error_map = self.error_map(kwargs_lens, kwargs_ps)
+        error_map = self.ImageNumerics.image2array(error_map)
         d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
@@ -135,7 +137,7 @@ class ImageModel(object):
         error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
-    def image_with_params(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
 
@@ -161,14 +163,23 @@ class ImageModel(object):
             point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
         else:
             point_source = np.zeros_like(self.Data.data)
+        model = (source_light + lens_light + point_source) * self.ImageNumerics.mask
+        return model
+
+    def error_map(self, kwargs_lens, kwargs_ps):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :return:
+        """
         error_map = np.zeros_like(self.Data.data)
         if self._psf_error_map:
             ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens)
             for i in range(0, n_points):
                 error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
                 error_map += error_map_add
-        model = (source_light + lens_light + point_source) * self.ImageNumerics.mask
-        return model, error_map
+        return error_map
 
     def point_sources_list(self, kwargs_ps, kwargs_lens):
         """
@@ -322,12 +333,12 @@ class ImageModel(object):
             n += 1
         A = self._add_mask(A, mask)
         # error_map
-        error_map = np.zeros(num_response)
-        if self._psf_error_map:
-            for i in range(0, n_points):
-                error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
-                error_map += self.ImageNumerics.image2array(error_map_add)
-        return A, error_map
+        #error_map = np.zeros(num_response)
+        #if self._psf_error_map:
+        #    for i in range(0, n_points):
+        #        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+        #        error_map += self.ImageNumerics.image2array(error_map_add)
+        return A#, error_map
 
     def _add_mask(self, A, mask):
         """

@@ -464,9 +464,9 @@ class LensModelPlot(object):
 
     def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False):
 
-        model, _ = self._imageModel.image_with_params(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
-                                                    self._kwargs_else, unconvolved=unconvolved, source_add=source_add,
-                                                    lens_light_add=lens_light_add, point_source_add=point_source_add)
+        model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
+                                          self._kwargs_else, unconvolved=unconvolved, source_add=source_add,
+                                          lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
@@ -486,9 +486,9 @@ class LensModelPlot(object):
         return ax
 
     def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None, v_max=None, point_source_add=False, source_add=False, lens_light_add=False):
-        model, _ = self._imageModel.image_with_params(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
-                                                    self._kwargs_else, unconvolved=False, source_add=source_add,
-                                                    lens_light_add=lens_light_add, point_source_add=point_source_add)
+        model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
+                                          self._kwargs_else, unconvolved=False, source_add=source_add,
+                                          lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:

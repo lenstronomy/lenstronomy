@@ -31,6 +31,7 @@ class PSF_fitting(object):
         """
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
+        self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                              kwargs_lens_light, kwargs_ps)
         kernel_old = kwargs_psf["kernel_point_source"]
@@ -98,8 +99,9 @@ class PSF_fitting(object):
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         for i in range(num_iter):
             kwargs_psf_new, improved_bool = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
-            if not improved_bool and verbose:
-                print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
+            if not improved_bool:
+                if verbose:
+                    print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
                 break
         return kwargs_psf_new
 

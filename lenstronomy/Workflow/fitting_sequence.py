@@ -149,7 +149,7 @@ class FittingSequence(object):
                     kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_input, source_input,
                                                                     lens_light_input, else_input,
                                                                     factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                                    symmetry=psf_symmetry, verbose=False)
+                                                                    symmetry=psf_symmetry, verbose=True)
                     self.multi_band_list[i][1] = kwargs_psf
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
             chain, param_list = [], []

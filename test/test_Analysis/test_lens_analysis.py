@@ -97,6 +97,11 @@ class TestLensAnalysis(object):
         assert len(flux_list) == 1
         npt.assert_almost_equal(flux_list[0], 16, decimal=8)
 
+    def test_buldge_disk_ratio(self):
+        kwargs_buldge_disk = {'I0_b': 10, 'R_b': 0.1, 'phi_G_b': 0, 'q_b': 1, 'I0_d': 2, 'R_d': 1, 'phi_G_d': 0.5, 'q_d': 0.7, 'center_x': 0, 'center_y': 0}
+        light_tot, light_buldge = LensAnalysis.buldge_disk_ratio(kwargs_buldge_disk)
+        npt.assert_almost_equal(light_buldge/light_tot, 0.108, decimal=2)
+
 
 if __name__ == '__main__':
     pytest.main()

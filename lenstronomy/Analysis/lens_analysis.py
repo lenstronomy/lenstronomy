@@ -157,7 +157,8 @@ class LensAnalysis(object):
             R_h_list.append(R_h)
         return flux_list, R_h_list
 
-    def buldge_disk_ratio(self, kwargs_buldge_disk):
+    @staticmethod
+    def buldge_disk_ratio(kwargs_buldge_disk):
         """
         computes the buldge-to-disk ratio of the
 

@@ -148,7 +148,7 @@ class LightModel(object):
             elif model in ['SHAPELETS']:
                 kwargs = kwargs_list[k]
                 n_max = kwargs['n_max']
-                num_param = (n_max + 1) * (n_max + 2) / 2
+                num_param = int((n_max + 1) * (n_max + 2) / 2)
                 new = {'amp': np.ones(num_param)}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)

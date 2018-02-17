@@ -74,7 +74,8 @@ class LightModel(object):
         for i, func in enumerate(self.func_list):
             if self._valid_list[i]:
                 if k == None or k == i:
-                    flux += func.function(x, y, **kwargs_list[i])
+                    out = np.array(func.function(x, y, **kwargs_list[i]), dtype=float)
+                    flux += out
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):
@@ -138,7 +139,7 @@ class LightModel(object):
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
             elif model in ['MULTI_GAUSSIAN']:
-                num = len(kwargs_list[k]['amps'])
+                num = len(kwargs_list[k]['amp'])
                 new = {'amp': np.ones(num)}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)

@@ -5,7 +5,7 @@ import pytest
 from lenstronomy.LightModel.Profiles.shapelets import Shapelets, ShapeletSet
 
 
-class TestShapelet(object):
+class TestShapeletSet(object):
     """
     class to test Shapelets
     """
@@ -22,8 +22,17 @@ class TestShapelet(object):
         n_max = 2
         beta = 1.
         amp = [1,0,0,0,0,0]
+        output = self.shapeletSet.function(np.array(1), np.array(1), amp, n_max, beta, center_x=0, center_y=0)
+        assert output == 0.20755374871029739
+        input = np.array(0.)
+        input += output
+
         output = self.shapeletSet.function(self.x, self.y, amp, n_max, beta, center_x=0, center_y=0)
         assert output[10] == 0.47957022395315946
+        output = self.shapeletSet.function(1, 1, amp, n_max, beta, center_x=0, center_y=0)
+        assert output == 0.20755374871029739
+
+
 
     def test_shapelet_basis(self):
         num_order = 5

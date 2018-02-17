@@ -67,9 +67,9 @@ class TestParam(object):
             kwargs_mean_k.update(self.kwargs_sigma[i])
             self.kwargs_mean.append(kwargs_mean_k)
         self.param = LightParam(light_model_list=self.light_model_list,
-                               kwargs_fixed=self.kwargs_fixed, type='source_light')
+                               kwargs_fixed=self.kwargs_fixed, type='source_light', linear_solver=False)
         self.param_fixed = LightParam(light_model_list=self.light_model_list,
-                                kwargs_fixed=self.kwargs, type='source_light')
+                                kwargs_fixed=self.kwargs, type='source_light', linear_solver=False)
 
     def test_get_setParams(self):
         args = self.param.setParams(self.kwargs)
@@ -90,7 +90,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 76
+        assert num == 93
 
 
 if __name__ == '__main__':

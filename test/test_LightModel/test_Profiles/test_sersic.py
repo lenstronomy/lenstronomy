@@ -180,18 +180,18 @@ class TestSersic(object):
         Re = 0.1
         gamma = 2
         values = self.double_core_sersic.function(x, y, I0_sersic, Re, R_sersic, n_sersic, gamma, phi_G, q, I0_2, R_2, n_2, phi_G_2=0, q_2=1, center_x=0, center_y=0)
-        npt.assert_almost_equal(values[0], 0.20695476233959198, decimal=8)
+        npt.assert_almost_equal(values[0], 0.20695476233959198, decimal=5)
         x = np.array([0])
         y = np.array([0])
         values = self.double_core_sersic.function(x, y, I0_sersic, Re, R_sersic, n_sersic, gamma, phi_G, q, I0_2, R_2, n_2, phi_G_2=0, q_2=1, center_x=0, center_y=0)
-        npt.assert_almost_equal(values[0], 115.86341643333435, decimal=8)
+        npt.assert_almost_equal(values[0], 115.86341203723811, decimal=5)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.double_core_sersic.function(x, y, I0_sersic, Re, R_sersic, n_sersic, gamma, phi_G, q, I0_2, R_2, n_2, phi_G_2=0, q_2=1, center_x=0, center_y=0)
-        npt.assert_almost_equal(values[0], 0.19408465176820755, decimal=8)
-        npt.assert_almost_equal(values[1], 0.060051398351788521, decimal=8)
-        npt.assert_almost_equal(values[2], 0.023917404236271977, decimal=8)
+        npt.assert_almost_equal(values[0], 0.19408468241596671, decimal=5)
+        npt.assert_almost_equal(values[1], 0.060051398351788521, decimal=5)
+        npt.assert_almost_equal(values[2], 0.023917404236271977, decimal=5)
 
     def test_double_core_sersic_function_split(self):
         x = np.array([1])

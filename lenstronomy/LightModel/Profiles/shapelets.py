@@ -39,6 +39,7 @@ class Shapelets(object):
         :param center_y: center in y
         :return:
         """
+
         if self.precalc:
             return amp * x[n1] * y[n2]# / beta
         x_ = x - center_x
@@ -92,8 +93,9 @@ class Shapelets(object):
         """
         x_ = x - center_x
         y_ = y - center_y
-        H_x = np.empty((n_order+1, len(x)))
-        H_y = np.empty((n_order+1, len(x)))
+        n = len(np.atleast_1d(x))
+        H_x = np.empty((n_order+1, n))
+        H_y = np.empty((n_order+1, n))
         if n_order > 170:
             raise ValueError('polynomial order to large', n_order)
         for n in range(0, n_order+1):
@@ -125,19 +127,24 @@ class ShapeletSet(object):
         :return:
         """
         num_param = int((n_max+1)*(n_max+2)/2)
-        f_ = np.zeros_like(x)
+        f_ = np.zeros(len(np.atleast_1d(x)))
         n1 = 0
         n2 = 0
         H_x, H_y = self.shapelets.pre_calc(x, y, beta, n_max, center_x, center_y)
         for i in range(num_param):
             kwargs_source_shapelet = {'center_x': center_x, 'center_y': center_y, 'n1': n1, 'n2': n2, 'beta': beta, 'amp': amp[i]}
-            f_ += self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
+            out = self.shapelets.function(H_x, H_y, **kwargs_source_shapelet)
+            f_ += out
             if n1 == 0:
                 n1 = n2 + 1
                 n2 = 0
             else:
                 n1 -= 1
                 n2 += 1
+        try: len(x)
+        except: f_ = f_[0]
+        #if isinstance(x, int) or isinstance(x, float):
+        #    f_ = f_[0]
         return f_
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):

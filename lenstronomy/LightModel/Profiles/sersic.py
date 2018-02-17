@@ -107,7 +107,7 @@ class CoreSersic(SersicUtil):
         xt2 = -sin_phi*x_shift+cos_phi*y_shift
         xt2difq2 = xt2/(q*q)
         R_ = np.sqrt(xt1*xt1+xt2*xt2difq2)
-        R_ = R_.astype(np.float32)
+        #R_ = R_.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):
             R_ = max(self._smoothing, R_)
         else:

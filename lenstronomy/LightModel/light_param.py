@@ -6,11 +6,14 @@ class LightParam(object):
 
     """
 
-    def __init__(self, light_model_list, kwargs_fixed, type='light'):
+    def __init__(self, light_model_list, kwargs_fixed, type='light', linear_solver=True):
 
         self._type = type
         self.model_list = light_model_list
-        self.kwargs_fixed = self.add_fixed_linear(kwargs_fixed)
+        self.kwargs_fixed = kwargs_fixed
+        if linear_solver:
+            self.kwargs_fixed = self.add_fixed_linear(self.kwargs_fixed)
+
 
     def getParams(self, args, i):
         """

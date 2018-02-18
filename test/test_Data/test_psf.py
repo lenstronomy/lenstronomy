@@ -61,7 +61,7 @@ class TestData(object):
             subgrid_res = i
 
             grid = kernel_util.kernel_gaussian(kernel_numPix=11*subgrid_res, deltaPix=deltaPix / float(subgrid_res), fwhm=fwhm_object)
-            grid_conv = psf_pixel.psf_convolution(grid, deltaPix / float(subgrid_res), subgrid_res=subgrid_res)
+            grid_conv = psf_pixel.psf_convolution(grid, deltaPix / float(subgrid_res), subgrid_res=subgrid_res, psf_subgrid=True)
             grid_conv_finite = image_util.re_size(grid_conv, subgrid_res)
             min_diff = np.min(grid_conv_true-grid_conv_finite)
             max_diff = np.max(grid_conv_true-grid_conv_finite)

@@ -121,7 +121,7 @@ class TestLikelihood(object):
         print(kwargs_lens, self.kwargs_lens)
         logL, _ = self.likelihoodModule.X2_chain(args)
         num_eff = self.likelihoodModule.effectiv_numData_points()
-        npt.assert_almost_equal(-logL/num_eff*2, 48.548792317921396, decimal=0)
+        npt.assert_almost_equal(-logL/num_eff*2, 1.0290933517488736, decimal=1)
 
 
 if __name__ == '__main__':

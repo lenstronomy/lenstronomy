@@ -64,21 +64,20 @@ class ImageNumerics(object):
 
     @property
     def ra_grid_ray_shooting(self):
-        if not hasattr(self, '_ra_subgrid') or not hasattr(self, '_dec_subgrid'):
-            ra_grid, dec_grid = self._Data.coordinates
-            x_grid_sub, y_grid_sub = util.make_subgrid(ra_grid, dec_grid, self._subgrid_res)
-            self._ra_subgrid = x_grid_sub[self._idex_mask_sub == 1]
-            self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]
+        self._check_subgrid()
         return self._ra_subgrid
 
     @property
     def dec_grid_ray_shooting(self):
+        self._check_subgrid()
+        return self._dec_subgrid
+
+    def _check_subgrid(self):
         if not hasattr(self, '_ra_subgrid') or not hasattr(self, '_dec_subgrid'):
             ra_grid, dec_grid = self._Data.coordinates
             x_grid_sub, y_grid_sub = util.make_subgrid(ra_grid, dec_grid, self._subgrid_res)
             self._ra_subgrid = x_grid_sub[self._idex_mask_sub == 1]
             self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]
-        return self._dec_subgrid
 
     @property
     def C_D_response(self):
@@ -242,6 +241,6 @@ class ImageNumerics(object):
             if self._fix_psf_error_map:
                 amp_estimated = amp
             else:
-                amp_estimated = kernel_util.estimate_amp(data, x_pos, y_pos, psf_kernel)
-            error_map = image_util.add_layer2image(error_map, x_pos, y_pos, psf_error_map * (psf_kernel * amp_estimated) ** 2)
+                amp_estimated = kernel_util.estimate_amp(data, x_pos[i], y_pos[i], psf_kernel)
+            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * (psf_kernel * amp_estimated) ** 2)
         return error_map

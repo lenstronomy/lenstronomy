@@ -125,7 +125,7 @@ class TestImageModel(object):
         diff_old = np.sum((kernel_old - kernel_true) ** 2)
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
-        assert diff_new < 0.001
+        assert diff_new < 0.0001
 
 
 if __name__ == '__main__':

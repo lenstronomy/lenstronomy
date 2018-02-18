@@ -76,6 +76,16 @@ class TestSolver4Point(object):
         kwargs_fixed_lens = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
         assert kwargs_fixed_lens[0]['center_x'] == kwargs_lens_init[0]['center_x']
 
+        lens_model_list = ['NFW_ELLIPSE', 'SHEAR']
+        lensModel = LensModel(lens_model_list)
+
+        kwargs_lens_init = [{'theta_Rs': 1., 'Rs': 4,'q': 0.8, 'phi_G': 0.5, 'center_x': 0.1, 'center_y': -0.1},
+                       {'e1': 0.1, 'e2': 0.5}]
+        kwargs_fixed_lens_list = [{}, {}]
+        solver = Solver(solver_type='PROFILE', lensModel=lensModel, num_images=4)
+        kwargs_fixed_lens = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
+        assert kwargs_fixed_lens[0]['theta_Rs'] == kwargs_lens_init[0]['theta_Rs']
+
 
 if __name__ == '__main__':
     pytest.main()

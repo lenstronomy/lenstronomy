@@ -58,8 +58,10 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
     if subgrid_res == 1:
         return kernel
     nx, ny = np.shape(kernel)
-    x_in = np.linspace(0, 1, nx)
-    y_in = np.linspace(0, 1, ny)
+    d_x = 1. / nx
+    x_in = np.linspace(d_x/2, 1-d_x/2, nx)
+    d_y = 1. / nx
+    y_in = np.linspace(d_y/2, 1-d_y/2, ny)
     nx_new = nx * subgrid_res
     ny_new = ny * subgrid_res
     if odd is True:
@@ -67,8 +69,11 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
             nx_new -= 1
         if ny_new % 2 == 0:
             ny_new -= 1
-    x_out = np.linspace(0, 1, nx_new)
-    y_out = np.linspace(0, 1, ny_new)
+
+    d_x_new = 1. / nx_new
+    d_y_new = 1. / ny_new
+    x_out = np.linspace(d_x_new/2, 1-d_x_new/2, nx_new)
+    y_out = np.linspace(d_y_new/2, 1-d_y_new, ny_new)
     out_values = image_util.re_size_array(x_in, y_in, kernel, x_out, y_out)
     kernel_subgrid = out_values
     kernel_subgrid = kernel_norm(kernel_subgrid)

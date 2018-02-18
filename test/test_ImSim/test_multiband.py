@@ -34,11 +34,7 @@ class TestImageModel(object):
 
         kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
         kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type=psf_type, fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                                    truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
+                                               truncate=5)
         data_class = Data(kwargs_data=kwargs_data)
         psf_class = PSF(kwargs_psf=kwargs_psf)
 
@@ -78,7 +74,7 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.13759844488796105, decimal=8)
+        npt.assert_almost_equal(source_model[0][10, 10], 0.1370014246240874, decimal=8)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model[0]) == 100
@@ -86,7 +82,7 @@ class TestImageModel(object):
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
-        npt.assert_almost_equal(lens_flux[0][50, 50], 0.43168169448245169, decimal=8)
+        npt.assert_almost_equal(lens_flux[0][50, 50], 0.4415194068014886, decimal=8)
 
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
         npt.assert_almost_equal(lens_flux[0][50, 50], 4.7310552067454452, decimal=8)

@@ -1,4 +1,3 @@
-from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
@@ -81,7 +80,7 @@ class Simulation(object):
             kernel_large /= np.sum(kernel_large)
             kernel_large = util.array2image(kernel_large)
             kernel_pixel = kernel_util.pixel_kernel(kernel_large)
-            kwargs_psf = {'psf_type': psf_type, 'sigma': sigma, 'truncate': truncate*sigma, 'kernel_point_source': kernel_large, 'kernel_pixel': kernel_pixel}
+            kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm, 'truncation': truncate*fwhm, 'kernel_point_source': kernel_large, 'kernel_pixel': kernel_pixel, 'pixel_size': deltaPix}
         elif psf_type == 'PIXEL':
             kernel_large = copy.deepcopy(kernel)
             kernel_large = kernel_util.cut_psf(kernel_large, psf_size=kernelsize)

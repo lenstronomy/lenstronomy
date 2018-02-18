@@ -6,6 +6,7 @@ import copy
 import scipy.ndimage.interpolation as interp
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
+from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
 
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
@@ -53,6 +54,9 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
     :param subgrid_res: subgrid resolution required
     :return: kernel with higher resolution (larger)
         """
+    subgrid_res = int(subgrid_res)
+    if subgrid_res == 1:
+        return kernel
     nx, ny = np.shape(kernel)
     x_in = np.linspace(0, 1, nx)
     y_in = np.linspace(0, 1, ny)
@@ -119,6 +123,17 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
             kernel_pixel = image_util.add_layer2image(kernel_pixel, k_x, k_y, kernel_subgrid)
     kernel_pixel = util.averaging(kernel_pixel, numGrid=kernel_size*subgrid_res, numPix=kernel_size)
     return kernel_norm(kernel_pixel)
+
+
+def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
+    sigma = util.fwhm2sigma(fwhm)
+    x_grid, y_grid = util.make_grid(kernel_numPix, deltaPix)
+    gaussian = Gaussian()
+    kernel = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
+                                         center_x=0, center_y=0)
+    kernel /= np.sum(kernel)
+    kernel = util.array2image(kernel)
+    return kernel
 
 
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):

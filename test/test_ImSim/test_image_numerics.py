@@ -13,7 +13,7 @@ class TestImageNumerics(object):
         self.numPix = 10
         kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix))}
         self.Data = Data(kwargs_data)
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'sigma': 1}
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
         self.PSF = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         self.ImageNumerics = ImageNumerics(self.Data, self.PSF, kwargs_numerics)

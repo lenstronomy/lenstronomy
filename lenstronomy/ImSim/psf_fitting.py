@@ -34,8 +34,8 @@ class PSF_fitting(object):
         self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                              kwargs_lens_light, kwargs_ps)
-        kernel_old = kwargs_psf["kernel_point_source"]
-        kernel_small = kwargs_psf["kernel_pixel"]
+        kernel_old = psf_class.kernel_point_source
+        kernel_small = psf_class.kernel_pixel
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
         kwargs_numerics_psf = copy.deepcopy(self._kwargs_numerics)

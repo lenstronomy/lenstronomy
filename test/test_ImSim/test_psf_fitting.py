@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy.testing as npt
 import pytest
 import numpy as np
+import lenstronomy.Util.util as util
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
@@ -31,12 +32,15 @@ class TestImageModel(object):
         # PSF specification
 
         self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                                    truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
+        sigma = util.fwhm2sigma(fwhm)
+        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+        gaussian = Gaussian()
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
+                                                center_x=0, center_y=0)
+        kernel_point_source /= np.sum(kernel_point_source)
+        kernel_point_source = util.array2image(kernel_point_source)
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
         data_class = Data(kwargs_data=self.kwargs_data)
         psf_class = PSF(kwargs_psf=self.kwargs_psf)
@@ -75,16 +79,19 @@ class TestImageModel(object):
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        self.kwargs_psf = kwargs_psf
         self.psf_fitting = PSF_fitting(self.imageModel)
 
     def test_update_psf(self):
         fwhm = 0.3
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
-                                               kernel=None)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
-                                               truncate=6,
-                                               kernel=kwargs_psf['kernel_point_source'])
+        sigma = util.fwhm2sigma(fwhm)
+        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+        gaussian = Gaussian()
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
+                                                center_x=0, center_y=0)
+        kernel_point_source /= np.sum(kernel_point_source)
+        kernel_point_source = util.array2image(kernel_point_source)
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
         kwargs_psf_return, improved_bool = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
@@ -99,11 +106,16 @@ class TestImageModel(object):
 
     def test_update_iterative(self):
         fwhm = 0.3
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=0.05, truncate=3,
-                                               kernel=None)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=0.05,
-                                               truncate=6,
-                                               kernel=kwargs_psf['kernel_point_source'])
+        sigma = util.fwhm2sigma(fwhm)
+        x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
+        from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+        gaussian = Gaussian()
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
+                                              center_x=0, center_y=0)
+        kernel_point_source /= np.sum(kernel_point_source)
+        kernel_point_source = util.array2image(kernel_point_source)
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
+
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
                                                            factor=0.2, num_iter=10, symmetry=1)

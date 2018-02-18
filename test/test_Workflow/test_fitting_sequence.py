@@ -109,8 +109,6 @@ class TestFittingSequence(object):
     def test_simulationAPI_psf(self):
         assert self.kwargs_psf['kernel_pixel'][1, 1] == 1.681921511056146e-07
 
-
-    """
     def test_fitting_sequence(self):
         kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
         lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'ellipse_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'shear_sigma': 0.1}]
@@ -123,8 +121,14 @@ class TestFittingSequence(object):
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
         fittingSequence = FittingSequence(multi_band_list, self.kwargs_model, self.kwargs_constraints, self.kwargs_likelihood, kwargs_params)
+
+        lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=[])
+        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
+
         n_p = 2
         n_i = 2
+        """
+        
         fitting_kwargs_list = [
             {'fitting_routine': 'lens_only', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'lens_fixed', 'sigma_scale': 1., 'n_particles': n_p, 'n_iterations': n_i},
@@ -138,7 +142,7 @@ class TestFittingSequence(object):
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
-    """
+        """
 
 
 if __name__ == '__main__':

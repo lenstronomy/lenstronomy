@@ -26,11 +26,7 @@ class TestSimulation(object):
         # PSF specification
 
         self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
-                                          kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=kwargs_psf['kernel_point_source'])
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=5)
 
         data_class = Data(kwargs_data=self.kwargs_data)
         psf_class = PSF(kwargs_psf=self.kwargs_psf)

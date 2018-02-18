@@ -49,6 +49,10 @@ class TestPointSource(object):
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
 
+    def test_point_source_amplitude(self):
+        amp_list = self.PointSource.source_amplitude(self.kwargs_ps, self.kwargs_lens)
+        assert len(amp_list) == 3
+
     def test_set_save_cache(self):
         self.PointSource.set_save_cache(True)
         assert self.PointSource._point_source_list[0]._save_cache == True

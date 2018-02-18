@@ -160,37 +160,6 @@ class SourcePositions(object):
         self._solver = LensEquationSolver(lens_model_class)
 
 
-class PointSourceNone(object):
-    """
-    class of a none point source
-
-    """
-    def __init__(self):
-        pass
-
-    def image_position(self, kwargs_ps=None, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
-        """
-
-        :param ra_image:
-        :param dec_image:
-        :param point_amp:
-        :return:
-        """
-        return [], []
-
-    def source_position(self, kwargs_ps, kwargs_lens=None):
-        return [], []
-
-    def image_amplitude(self, kwargs_ps, kwargs_lens=None):
-        return []
-
-    def source_amplitude(self, kwargs_ps, kwargs_lens=None):
-        []
-
-    def update_lens_model(self, lens_model_class):
-        pass
-
-
 class PointSourceCached(object):
     """
 

@@ -146,6 +146,20 @@ class PointSource(object):
                 amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
+    def source_amplitude(self, kwargs_ps, kwargs_lens):
+        """
+        returns the source amplitudes
+
+        :param kwargs_ps:
+        :param kwargs_lens:
+        :return:
+        """
+        amp_list = []
+        for i, model in enumerate(self._point_source_list):
+            if not self._point_source_type_list[i] == 'NONE':
+                amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+        return amp_list
+
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False, k=None):
         """
 

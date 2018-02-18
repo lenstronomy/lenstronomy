@@ -11,7 +11,7 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.ImSim.psf_fitting import PSF_fitting
+from lenstronomy.ImSim.psf_fitting import PsfFitting
 
 
 class TestImageModel(object):
@@ -79,7 +79,7 @@ class TestImageModel(object):
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        self.psf_fitting = PSF_fitting(self.imageModel)
+        self.psf_fitting = PsfFitting(self.imageModel)
 
     def test_update_psf(self):
         fwhm = 0.3
@@ -119,6 +119,17 @@ class TestImageModel(object):
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
                                                            factor=0.2, num_iter=10, symmetry=1)
+        kernel_new = kwargs_psf_new['kernel_point_source']
+        kernel_true = self.kwargs_psf['kernel_point_source']
+        kernel_old = kwargs_psf['kernel_point_source']
+        diff_old = np.sum((kernel_old - kernel_true) ** 2)
+        diff_new = np.sum((kernel_new - kernel_true) ** 2)
+        assert diff_old > diff_new
+        assert diff_new < 0.01
+
+        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
+                                                           self.kwargs_lens_light, self.kwargs_ps,
+                                                           factor=0.2, num_iter=10, symmetry=1, no_break=True)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
         kernel_old = kwargs_psf['kernel_point_source']

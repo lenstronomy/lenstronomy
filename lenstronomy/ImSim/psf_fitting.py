@@ -8,7 +8,7 @@ import numpy as np
 import copy
 
 
-class PSF_fitting(object):
+class PsfFitting(object):
     """
     class to find subsequently a better psf as making use of the point sources in the lens model
     this technique can be dangerous as one might overfit the data
@@ -32,8 +32,7 @@ class PSF_fitting(object):
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         self._image_model_class.update_numerics(self._kwargs_numerics)
-        logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
-                                                             kwargs_lens_light, kwargs_ps)
+
         kernel_old = psf_class.kernel_point_source
         kernel_small = psf_class.kernel_pixel
         kernel_size = len(kernel_old)
@@ -69,19 +68,12 @@ class PSF_fitting(object):
         self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                kwargs_lens_light, kwargs_ps)
-        if logL_after > logL_before:
-            improved_bool = True
-            if not self._kwargs_numerics.get('psf_keep_error_map', False):
-                kwargs_psf_new['psf_error_map'] = error_map
-            kwargs_psf_return = kwargs_psf_new
-        else:
-            improved_bool = False
-            kwargs_psf_return = kwargs_psf
-            self._image_model_class.update_psf(PSF(kwargs_psf))
-        return kwargs_psf_return, improved_bool
+        if not self._kwargs_numerics.get('psf_keep_error_map', False):
+            kwargs_psf_new['psf_error_map'] = error_map
+        return kwargs_psf_new, logL_after
 
     def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_ps, factor=1, num_iter=10, symmetry=1, verbose=True):
+                   kwargs_ps, factor=1, num_iter=10, symmetry=1, verbose=True, no_break=False):
         """
 
         :param kwargs_data:
@@ -97,13 +89,27 @@ class PSF_fitting(object):
         """
         self._image_model_class.PointSource.set_save_cache(True)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
+        kwargs_psf_final = copy.deepcopy(kwargs_psf)
+
+        psf_class = PSF(kwargs_psf)
+        self._image_model_class.update_psf(psf_class)
+        self._image_model_class.update_numerics(self._kwargs_numerics)
+        logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
+                                                                          kwargs_lens_light, kwargs_ps)
+        i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, improved_bool = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
-            if not improved_bool:
-                if verbose:
-                    print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
-                break
-        return kwargs_psf_new
+            kwargs_psf_new, logL_after = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
+            if logL_after > logL_before:
+                kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
+                i_best = i
+            else:
+                if not no_break:
+                    if verbose:
+                        print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
+                    break
+        if verbose:
+            print("iteration of step %s gave best reconstruction." % i_best)
+        return kwargs_psf_final
 
     def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,
                                   kwargs_ps):

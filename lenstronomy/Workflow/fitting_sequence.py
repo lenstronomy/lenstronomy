@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.psf_fitting import PSF_fitting
+from lenstronomy.ImSim.psf_fitting import PsfFitting
 from lenstronomy.Workflow.fitting import Fitting
 from lenstronomy.MCMC.alignment_matching import AlignmentFitting
 import lenstronomy.Util.class_creator as class_creator
@@ -7,7 +7,7 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherite the Fitting class
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, verbose=True):
         self.multi_band_list = multi_band_list
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
@@ -16,6 +16,8 @@ class FittingSequence(object):
         self._lens_init, self._source_init, self._lens_light_init, self._else_init = kwargs_init
         self._lens_sigma, self._source_sigma, self._lens_light_sigma, self._else_sigma = kwargs_sigma
         self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._else_fixed = kwargs_fixed
+
+        self._verbose = verbose
 
         self.fitting = Fitting(multi_band_list=multi_band_list, kwargs_model=kwargs_model,
                                kwargs_constraints=kwargs_constraints, kwargs_likelihood=kwargs_likelihood,
@@ -145,11 +147,12 @@ class FittingSequence(object):
                                                                   kwargs_psf=kwargs_psf,
                                                                   kwargs_numerics=kwargs_numerics,
                                                                   kwargs_model=self.kwargs_model)
-                    psf_iter = PSF_fitting(image_model_class=image_model)
+                    psf_iter = PsfFitting(image_model_class=image_model)
                     kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_input, source_input,
                                                                     lens_light_input, else_input,
                                                                     factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                                    symmetry=psf_symmetry, verbose=True)
+                                                                    symmetry=psf_symmetry, verbose=self._verbose,
+                                                                    no_break=True)
                     self.multi_band_list[i][1] = kwargs_psf
             lens_result, source_result, lens_light_result, else_result = lens_input, source_input, lens_light_input, else_input
             chain, param_list = [], []

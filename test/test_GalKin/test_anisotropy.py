@@ -12,7 +12,7 @@ class TestAnisotropy(object):
     def setup(self):
         pass
 
-    def test_anisotropy(self):
+    def test_K(self):
         r = 2.
         R = 1.
 
@@ -40,6 +40,66 @@ class TestAnisotropy(object):
         kwargs = {'r_ani': 1}
         k = anisoClass.K(r, R, kwargs=kwargs)
         npt.assert_almost_equal(k, 0.95827704196894481, decimal=5)
+
+    def test_beta(self):
+        r = 2.
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='const')
+        kwargs = {'beta': 1.}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        npt.assert_almost_equal(beta, 1, decimal=5)
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='Colin')
+        kwargs = {'r_ani': 1}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        npt.assert_almost_equal(beta, 1./3, decimal=5)
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='radial')
+        kwargs = {}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        npt.assert_almost_equal(beta, 1, decimal=5)
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='isotropic')
+        kwargs = {}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        npt.assert_almost_equal(beta, 0, decimal=5)
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='OsipkovMerritt')
+        kwargs = {'r_ani': 1}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        npt.assert_almost_equal(beta, 0.8, decimal=5)
+
+    def test_radial_anisotropy(self):
+
+        # radial
+        r = 1.
+        R = 2.
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='radial')
+        kwargs = {}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        k = anisoClass.K(r, R, kwargs=kwargs)
+
+        anisoClassMamon = MamonLokasAnisotropy(anisotropy_model='const')
+        kwargs = {'beta': beta}
+        k_mamon = anisoClassMamon.K(r, R, kwargs=kwargs)
+        print(k, k_mamon)
+        #npt.assert_almost_equal(k, k_mamon, decimal=5)
+
+    def test_isotropic_anisotropy(self):
+
+        # radial
+        r = 2.
+        R = 1.
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='isotropic')
+        kwargs = {}
+        beta = anisoClass.beta_r(r, kwargs=kwargs)
+        k = anisoClass.K(r, R, kwargs=kwargs)
+
+        anisoClassMamon = MamonLokasAnisotropy(anisotropy_model='const')
+        kwargs = {'beta': beta}
+        k_mamon = anisoClassMamon.K(r, R, kwargs=kwargs)
+        print(k, k_mamon)
+        #npt.assert_almost_equal(k, k_mamon, decimal=5)
 
 
 if __name__ == '__main__':

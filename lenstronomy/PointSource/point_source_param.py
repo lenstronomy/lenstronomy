@@ -6,13 +6,15 @@ class PointSourceParam(object):
 
     """
 
-    def __init__(self, model_list, kwargs_fixed, num_point_source_list=None):
+    def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True):
 
         self.model_list = model_list
         if num_point_source_list is None:
             num_point_source_list = [0] * len(model_list)
         self._num_point_sources_list = num_point_source_list
-        self.kwargs_fixed = self.add_fix_linear(kwargs_fixed)
+        self.kwargs_fixed = kwargs_fixed
+        if linear_solver:
+            self.kwargs_fixed = self.add_fix_linear(kwargs_fixed)
 
     def getParams(self, args, i):
         """

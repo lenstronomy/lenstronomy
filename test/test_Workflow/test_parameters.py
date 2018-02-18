@@ -13,10 +13,11 @@ class TestParam(object):
                           'lens_light_model_list': ['DOUBLE_SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
         kwargs_param = {}
         kwargs_fixed_lens = [{'gamma': 1.9}] #for SPEP lens
-        kwargs_fixed_source = [{'amp': 1, 'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
-        kwargs_fixed_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
+        kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
-        self.param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps)
+        self.param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
+                                 kwargs_fixed_lens_light, kwargs_fixed_ps)
 
     def test_getParams(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9,'q':0.8,'phi_G':1.5, 'center_x':0., 'center_y':0.}] #for SPEP lens
@@ -41,9 +42,22 @@ class TestParam(object):
         assert list[0] == 'theta_E'
         assert num_param == 15
 
+        kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
+                        'lens_light_model_list': ['DOUBLE_SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+        kwargs_param = {}
+        kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
+        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        kwargs_fixed_lens_light = [{}]
+        param_class_linear = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
+                                        kwargs_fixed_lens_light, kwargs_fixed_ps, linear_solver=False)
+        num_param, list = param_class_linear.num_param()
+        assert list[0] == 'theta_E'
+        assert num_param == 18
+
     def test_get_all_params(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9,'q':0.8,'phi_G':1.5, 'center_x':0., 'center_y':0.}] #for SPEP lens
-        kwargs_true_source = [{'amp':1*2*np.pi*0.1**2,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
+        kwargs_true_source = [{'amp': 1*2*np.pi*0.1**2,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
         kwargs_true_lens_light = [{'center_x_2': 0.1, 'n_2': 1, 'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'R_2': 1.2, 'I0_2': 1.7, 'center_y_2': 0.14, 'n_sersic': 1.7,
                                   'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0, 'q_2': 1}]

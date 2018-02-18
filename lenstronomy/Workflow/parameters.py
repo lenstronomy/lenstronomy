@@ -38,19 +38,22 @@ class Param(object):
         else:
             self._solver_type = 'NONE'
 
-        if linear_solver:
-            self.kwargs_fixed_lens = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
-            self.kwargs_fixed_source = self._add_fixed_source(kwargs_fixed_source)
-            self.kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
-            self.kwargs_fixed_ps = kwargs_fixed_ps
+        kwargs_fixed_lens = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
+        kwargs_fixed_source = self._add_fixed_source(kwargs_fixed_source)
+        kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
+        kwargs_fixed_ps = kwargs_fixed_ps
 
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=self._num_images, solver_type=self._solver_type)
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=self._num_images,
+                                    solver_type=self._solver_type)
         source_light_model_list = kwargs_model.get('source_light_model_list', ['NONE'])
-        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source, type='source_light')
+        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source, type='source_light',
+                                      linear_solver=linear_solver)
         lens_light_model_list = kwargs_model.get('lens_light_model_list', ['NONE'])
-        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light, type='lens_light')
+        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light, type='lens_light',
+                                          linear_solver=linear_solver)
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
-        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps, num_point_source_list=num_point_source_list)
+        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps,
+                                            num_point_source_list=num_point_source_list, linear_solver=linear_solver)
 
     @property
     def num_point_source_images(self):

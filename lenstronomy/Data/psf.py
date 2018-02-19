@@ -39,10 +39,6 @@ class PSF(object):
             self._truncation = kwargs_psf.get('truncation', 5 * self._fwhm)
             if 'pixel_size' in kwargs_psf:
                 self._pixel_size = kwargs_psf['pixel_size']
-                kernel_numPix = self._truncation / self._pixel_size
-                if kernel_numPix % 2 == 0:
-                    kernel_numPix += 1
-                self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)
         elif self.psf_type == 'PIXEL':
             self._kernel_point_source = kwargs_psf['kernel_point_source']
             if 'kernel_pixel' in kwargs_psf:
@@ -59,7 +55,13 @@ class PSF(object):
     @property
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):
-            raise ValueError("kernel_point_source could not be created. Please follow the guidelines of the PSF class!")
+            if self.psf_type == 'GAUSSIAN':
+                kernel_numPix = self._truncation / self._pixel_size
+                if kernel_numPix % 2 == 0:
+                    kernel_numPix += 1
+                self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)
+            else:
+                raise ValueError("kernel_point_source could not be created. Please follow the guidelines of the PSF class!")
         return self._kernel_point_source
 
     @property
@@ -72,6 +74,20 @@ class PSF(object):
         if not hasattr(self, '_kernel_pixel'):
             raise ValueError("kernel_pixel could not be created. Please follow the guidelines of the PSF class!")
         return self._kernel_pixel
+
+    def set_pixel_size(self, deltaPix):
+        """
+        update pixel size
+
+        :param deltaPix:
+        :return:
+        """
+        self._pixel_size = deltaPix
+        if self.psf_type == 'GAUSSIAN':
+            try:
+                del self._kernel_point_source
+            except:
+                pass
 
     @property
     def psf_error_map(self):

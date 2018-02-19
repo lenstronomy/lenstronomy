@@ -1,11 +1,13 @@
 __author__ = 'sibirrer'
 
 import os
+import sys
 import shutil
 import tempfile
 import time
 
 import emcee
+from emcee.utils import MPIPool
 import numpy as np
 from cosmoHammer import CosmoHammerSampler
 from cosmoHammer import LikelihoodComputationChain
@@ -16,7 +18,6 @@ from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
 from lenstronomy.MCMC.likelihood_module import LikelihoodModule
-from lenstronomy.Workflow.parameters import Param
 
 
 class MCMC_sampler(object):
@@ -82,11 +83,18 @@ class MCMC_sampler(object):
             print('===================')
         return lens_dict, source_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
         """
         returns the mcmc analysis of the parameter space
         """
-        sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain)
+        if mpi:
+            pool = MPIPool()
+            if not pool.is_master():
+                pool.wait()
+                sys.exit(0)
+            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain, pool=pool)
+        else:
+            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
         sampler.reset()
@@ -94,7 +102,6 @@ class MCMC_sampler(object):
         store = InMemoryStorageUtil()
         for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
             store.persistSamplingValues(pos, prob, None)
-
         return store.samples
 
     def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):

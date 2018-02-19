@@ -24,6 +24,8 @@ class ImageNumerics(object):
         :param kwargs_numerics:
         """
 
+        deltaPix = data.deltaPix
+        psf.set_pixel_size(deltaPix)
         self._Data = data
         self._PSF = psf
         self._nx, self._ny = np.shape(self._Data.data)

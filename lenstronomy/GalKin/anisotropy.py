@@ -12,16 +12,22 @@ class MamonLokasAnisotropy(object):
     def K(self, r, R, kwargs):
         """
         equation A16 im Mamon & Lokas
-        :param u:
-        :param ua:
+        :param r: 3d radius
+        :param R: projected 2d radius
         :return:
         """
         u = r / R
+        if np.min(u) < 1:
+            raise ValueError("3d radius is smaller than projected radius! Does not make sense.")
 
-        if self._type == 'const':
+        if self._type == 'const_wrong':
             beta = kwargs['beta']
-            k = 1./2. * u**(2*beta - 1) * ((3./2 - beta) * np.sqrt(np.pi) * special.gamma(beta - 1./2)/special.gamma(beta)
-                        + beta * special.betainc(1./u**2, beta+1./2, 1./2) - special.betainc(1./u**2, beta-1./2, 1./2))
+            k = 1./2. * u**(2*beta - 1.) * ((3./2 - beta) * np.sqrt(np.pi) * special.gamma(beta - 1./2)/special.gamma(beta)
+                        + beta * self._B(x=1./u**2, a=beta+1./2, b=1./2) - self._B(x=1./u**2, a=beta-1./2, b=1./2))
+        elif self._type == 'const':
+            beta = kwargs['beta']
+            k = np.sqrt(1 - 1./u**2) / (1. - 2*beta) + np.sqrt(np.pi)/2 * special.gamma(beta - 1./2)/special.gamma(beta)\
+                * (3./2 - beta) * u**(2*beta - 1.) * (1 - special.betainc(beta+1./2, 1./2, 1./u**2))
         elif self._type == 'isotropic':
             k = np.sqrt(1 - 1./u**2)
         elif self._type == 'radial':
@@ -61,6 +67,16 @@ class MamonLokasAnisotropy(object):
             return self.radial()
         else:
             raise ValueError('anisotropy type %s not supported!' % self._type)
+    def _B(self, x, a, b):
+        """
+        incomplete Beta function as described in Mamon&Lokas A13
+
+        :param x:
+        :param a:
+        :param b:
+        :return:
+        """
+        return special.betainc(a, b, x) * special.beta(a, b)
 
     def const_beta(self, kwargs):
         return kwargs['beta']

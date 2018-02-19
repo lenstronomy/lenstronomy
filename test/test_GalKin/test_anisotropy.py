@@ -16,10 +16,15 @@ class TestAnisotropy(object):
         r = 2.
         R = 1.
 
-        anisoClass = MamonLokasAnisotropy(anisotropy_model='const')
-        kwargs = {'beta': 1.}
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='const_wrong')
+        kwargs = {'beta': 1.0}
         k = anisoClass.K(r, R, kwargs=kwargs)
-        npt.assert_almost_equal(k, 1.7975661612434335, decimal=5)
+        npt.assert_almost_equal(k, 0.61418484930437822, decimal=5)
+
+        anisoClass = MamonLokasAnisotropy(anisotropy_model='const')
+        kwargs = {'beta': 1.0}
+        k = anisoClass.K(r, R, kwargs=kwargs)
+        npt.assert_almost_equal(k, 0.61418484930437822, decimal=5)
 
         anisoClass = MamonLokasAnisotropy(anisotropy_model='Colin')
         kwargs = {'r_ani': 1}
@@ -72,18 +77,19 @@ class TestAnisotropy(object):
     def test_radial_anisotropy(self):
 
         # radial
-        r = 1.
-        R = 2.
+        r = 2.
+        R = 1.
         anisoClass = MamonLokasAnisotropy(anisotropy_model='radial')
         kwargs = {}
         beta = anisoClass.beta_r(r, kwargs=kwargs)
         k = anisoClass.K(r, R, kwargs=kwargs)
-
         anisoClassMamon = MamonLokasAnisotropy(anisotropy_model='const')
         kwargs = {'beta': beta}
+        print(beta, 'beta')
+        #kwargs = {'beta': 1}
         k_mamon = anisoClassMamon.K(r, R, kwargs=kwargs)
         print(k, k_mamon)
-        #npt.assert_almost_equal(k, k_mamon, decimal=5)
+        npt.assert_almost_equal(k, k_mamon, decimal=5)
 
     def test_isotropic_anisotropy(self):
 
@@ -94,12 +100,12 @@ class TestAnisotropy(object):
         kwargs = {}
         beta = anisoClass.beta_r(r, kwargs=kwargs)
         k = anisoClass.K(r, R, kwargs=kwargs)
-
+        print(beta, 'test')
         anisoClassMamon = MamonLokasAnisotropy(anisotropy_model='const')
         kwargs = {'beta': beta}
         k_mamon = anisoClassMamon.K(r, R, kwargs=kwargs)
         print(k, k_mamon)
-        #npt.assert_almost_equal(k, k_mamon, decimal=5)
+        npt.assert_almost_equal(k, k_mamon, decimal=5)
 
 
 if __name__ == '__main__':

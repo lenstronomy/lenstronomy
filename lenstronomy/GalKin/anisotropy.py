@@ -145,13 +145,7 @@ class Anisotropy(object):
             beta = kwargs['beta']
             return (s / r)**(2*beta)
         else:
-            n = 100
-            r_ = np.linspace(r, s, n)
-            int = 0
-            for r_i in r_:
-                int += 2 * self.beta_r(r_i, kwargs)/r_i
-            int *= (r-s) / n
-            return np.exp(int)
+            raise ValueError("anisotropy type %s not supported." % self._type)
 
     def const_beta(self, kwargs):
         return kwargs['beta']

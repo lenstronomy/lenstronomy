@@ -4,10 +4,10 @@ Tests for `galkin` module.
 import pytest
 import numpy.testing as npt
 
-from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
+from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy, Anisotropy
 
 
-class TestAnisotropy(object):
+class TestMamonLokasAnisotropy(object):
 
     def setup(self):
         pass
@@ -106,6 +106,22 @@ class TestAnisotropy(object):
         k_mamon = anisoClassMamon.K(r, R, kwargs=kwargs)
         print(k, k_mamon)
         npt.assert_almost_equal(k, k_mamon, decimal=5)
+
+
+class TestAnisotropy(object):
+
+    def setup(self):
+        pass
+
+    def test_J_beta_rs(self):
+        anisotropy_const = Anisotropy(anisotropy_type='const')
+        anisotropy_r_ani = Anisotropy(anisotropy_type='r_ani')
+        kwargs = {'r_ani': 2, 'beta': 1}
+        r, s = 0.8, 3
+        J_rs_const = anisotropy_const.J_beta_rs(r, s, kwargs)
+        J_rs_r_ani = anisotropy_r_ani.J_beta_rs(r, s, kwargs)
+        npt.assert_almost_equal(J_rs_const, 14.0625, decimal=5)
+        npt.assert_almost_equal(J_rs_r_ani, 2.8017241379310343, decimal=5)
 
 
 if __name__ == '__main__':

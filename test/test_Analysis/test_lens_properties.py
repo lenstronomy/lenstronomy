@@ -38,10 +38,10 @@ class TestLensProp(object):
         psf_fwhm = 0.7
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.211919902322
-        v_sigma = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, r_eff=r_eff)
-        v_sigma_mge_lens = lensProp.velocity_disperson_new(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                                  psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
-                                                  r_eff=r_eff)
+        v_sigma = lensProp.velocity_disperson_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, r_eff=r_eff)
+        v_sigma_mge_lens = lensProp.velocity_disperson_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
+                                                                 psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                                 r_eff=r_eff)
         vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=1000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0

@@ -39,6 +39,8 @@ class MCMC_sampler(object):
             print("PSO initialises its particles with default values")
         if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
+            if pso.isMaster():
+                print('MPI option chosen')
         else:
             pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=threadCount)
         if not init_pos is None:

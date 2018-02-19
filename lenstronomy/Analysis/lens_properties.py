@@ -41,8 +41,8 @@ class LensProp(object):
         sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
         return sigma2
 
-    def velocity_disperson_new(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                               aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
+    def velocity_disperson_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+                                     aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
         """
 
         :param kwargs_lens:

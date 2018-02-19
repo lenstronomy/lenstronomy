@@ -47,6 +47,16 @@ class TestLensCosmo(object):
         mass = self.lensCosmo.mass_in_theta_E(phi_E)
         assert mass == 761967261292.6725
 
+    def test_kappa2proj_mass(self):
+        kappa = 0.5
+        mass = self.lensCosmo.kappa2proj_mass(kappa)
+        npt.assert_almost_equal(mass, kappa * self.lensCosmo.epsilon_crit, decimal=3)
+
+    def test_mass_in_coin(self):
+        theta_E = 1.
+        m_coin = self.lensCosmo.mass_in_coin(theta_E)
+        npt.assert_almost_equal(m_coin, 165279526936.52194, decimal=0)
+
     def test_D_dt_model(self):
         D_dt = self.lensCosmo.D_dt
         assert D_dt == 4965.660384441859

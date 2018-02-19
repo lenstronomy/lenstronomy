@@ -110,15 +110,6 @@ class LensCosmo(object):
         mass = self.arcsec2phys_lens(theta_E) ** 2 * np.pi * self.epsilon_crit
         return mass
 
-    def mass_in_theta_E_2(self, theta_E):
-        """
-        mass within Einstein radius (area * epsilon crit) [M_sun]
-        :param theta_E: Einstein radius [arcsec]
-        :return: mass within Einstein radius [M_sun]
-        """
-        mass = (theta_E * const.arcsec) ** 2 * const.c ** 2 / (4 * const.G) / self.D_ds * (self.D_d * self.D_s) / const.M_sun * const.Mpc
-        return mass
-
     def mass_in_coin(self, theta_E):
         """
 
@@ -138,31 +129,6 @@ class LensCosmo(object):
         """
         D_dt = self.D_dt / (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
-
-    def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
-        """
-
-        :return:
-        """
-        sigma_v2_model = sigma_v_model**2
-        Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model * self.D_ds / self.D_s)
-        D_d = D_dt_model/(1+z_d)/Ds_Dds/(1-kappa_ext)
-        return D_d, Ds_Dds
-
-    def angular_distances(self, sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled, fermat_pot):
-        """
-
-        :param sigma_v_measured: velocity dispersion measured [km/s]
-        :param time_delay_measured: time delay measured [d]
-        :param kappa_ext: external convergence estimated []
-        :param sigma_v_modeled: lens model velocity dispersion with default cosmology and without external convergence [km/s]
-        :param fermat_pot: fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]
-        :return: D_d and D_d*D_s/D_ds, units in Mpc physical
-        """
-
-        Ds_Dds = (sigma_v_measured/sigma_v_modeled) ** 2 / (self.D_ds / self.D_s) / (1 - kappa_ext)
-        DdDs_Dds = 1./(1+self.z_lens)/(1-kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
-        return Ds_Dds, DdDs_Dds
 
 
 class FlatLCDM(object):

@@ -19,9 +19,8 @@ class ImageNumerics(object):
         convolved to enable an impact on other pixels.
 
 
-
-        :param data:
-        :param kwargs_numerics:
+        :param data: instance of the lenstronomy Data() class
+        :param kwargs_numerics: keyword arguments which specify the nummerics
         """
 
         deltaPix = data.deltaPix

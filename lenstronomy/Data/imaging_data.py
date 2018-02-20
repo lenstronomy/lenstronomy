@@ -23,17 +23,9 @@ class Data(object):
         'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
 
         optional keywords for noise properties:
-        'sigma_background': rms value of the background noise
+        'background_rms': rms value of the background noise
         'exp_time: float, exposure time to compute the Poisson noise contribution
         'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
-
-        optional keywords for masking purposes:
-        'mask': 2d numpy array consists of zeros or ones. Pixels with mask[i,j]==1 are evaluated in the likelihood process.
-        Pixel with mask[i,j]==0 are ignored
-        'idex_mask': ignores any computation on the pixels with idex_mask[i,j]==0. Will not be stored in memory during linear inversions.
-        Difference to 'mask': Pixels with mask[i,j]==0 will be ray-traced, evaluated and their flux value being
-        convolved to enable an impact on other pixels.
-
 
         :param kwargs_data:
         :param subgrid_res:

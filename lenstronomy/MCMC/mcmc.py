@@ -20,7 +20,7 @@ from cosmoHammer.util import MpiUtil
 from lenstronomy.MCMC.likelihood_module import LikelihoodModule
 
 
-class MCMC_sampler(object):
+class MCMCSampler(object):
     """
     class which executes the different sampling  methods
     """

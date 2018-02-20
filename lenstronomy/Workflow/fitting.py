@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
-from lenstronomy.MCMC.mcmc import MCMC_sampler
+from lenstronomy.MCMC.mcmc import MCMCSampler
 from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.parameters import Param
 
@@ -64,9 +64,9 @@ class Fitting(object):
                                          kwargs_mean_lens_light, kwargs_mean_ps)
         # run PSO
         kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps]
-        mcmc_class = MCMC_sampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                  self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
-                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
+        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
+                                 self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
+                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
         lens_result, source_result, lens_light_result, else_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -158,9 +158,9 @@ class Fitting(object):
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else, kwargs_lens_init=kwargs_mean_lens)
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
-        mcmc_class = MCMC_sampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                  self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
-                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
+        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
+                                 self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
+                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
         num_param, param_list = param_class.num_param()

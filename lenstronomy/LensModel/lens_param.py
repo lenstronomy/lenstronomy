@@ -275,7 +275,7 @@ class LensParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                    gamma_ext, phi_G = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
+                    phi_G, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
                     args.append(gamma_ext)
                 else:
                     if not 'e1' in kwargs_fixed:

@@ -68,7 +68,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     return ax
 
 
-def image_position_plot(ax, coords, ra_image, dec_image):
+def image_position_plot(ax, coords, ra_image, dec_image, color='w'):
     """
 
     :param ax:
@@ -84,7 +84,7 @@ def image_position_plot(ax, coords, ra_image, dec_image):
             x_ = (x_image[i] + 0.5) * deltaPix
             y_ = (y_image[i] + 0.5) * deltaPix
             ax.plot(x_, y_, 'or')
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color=color)
     return ax
 
 
@@ -102,7 +102,7 @@ def source_position_plot(ax, coords, kwargs_source):
     return ax
 
 
-def lens_model_plot(ax, lensModel, kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=False):
+def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0, point_source=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -124,7 +124,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix, deltaPix, sourcePos_x=0,
         kwargs_lens, compute_window=_frame_size, grid_scale=0.005)
     kappa_result = util.array2image(lensModel.kappa(x_grid, y_grid, kwargs_lens))
     im = ax.matshow(np.log10(kappa_result), origin='lower',
-                    extent=[0, _frame_size, 0, _frame_size], cmap='Greys') #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+                    extent=[0, _frame_size, 0, _frame_size], cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
 
     plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
     plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
@@ -423,7 +423,7 @@ class LensModelPlot(object):
         plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        image_position_plot(ax, self._coords, ra_image[0], dec_image[0])
+        image_position_plot(ax, self._coords, ra_image[0], dec_image[0], color='k')
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 

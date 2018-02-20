@@ -59,7 +59,7 @@ class LikelihoodModule(object):
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
         #extract parameters
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.param.get_all_params(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.param.getParams(args)
         #generate image and computes likelihood
         self.Multiband.reset_point_source_cache()
         logL = 0

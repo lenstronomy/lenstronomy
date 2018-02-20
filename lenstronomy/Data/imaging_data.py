@@ -66,9 +66,7 @@ class Data(object):
             exp_map = kwargs_data.get('exp_time', None)
         self._exp_map = exp_map
         self._data = data
-        self._sigma_b = kwargs_data.get('sigma_background', None)
-
-        x_grid, y_grid = self._coords.coordinate_grid(self.nx)
+        self._sigma_b = kwargs_data.get('background_rms', None)
 
     @property
     def data(self):
@@ -93,7 +91,7 @@ class Data(object):
         :return: rms value of background noise
         """
         if self._sigma_b is None:
-            raise ValueError("rms background value as 'simga_background' not specified!")
+            raise ValueError("rms background value as 'background_rms' not specified!")
         return self._sigma_b
 
     @property

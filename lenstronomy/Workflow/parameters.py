@@ -29,7 +29,10 @@ class Param(object):
         self._lens_model_list = kwargs_model.get('lens_model_list', ['NONE'])
         self.lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
                                    redshift_list=kwargs_model.get('redshift_list', None), multi_plane=kwargs_model.get('multi_plane', False))
-        self._num_images = num_point_source_list[0]
+        try:
+            self._num_images = num_point_source_list[0]
+        except:
+            self._num_images = 0
         self._solver = kwargs_constraints.get('solver', False)
 
         if self._solver:
@@ -70,6 +73,9 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
+        if self._solver:
+            kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
+        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, bounds=None):
@@ -120,13 +126,6 @@ class Param(object):
         num += _num
         list += _list
         return num, list
-
-    def get_all_params(self, args):
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.getParams(args)
-        if self._solver:
-            kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
-        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps)
-        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def _update_solver(self, kwargs_lens, kwargs_ps):
         kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)

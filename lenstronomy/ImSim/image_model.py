@@ -34,6 +34,16 @@ class ImageModel(object):
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
 
+    def update_data(self, data_class):
+        """
+
+        :param data_class: instance of Data() class
+        :return:
+        """
+        self.Data = data_class
+        self.ImageNumerics._Data = data_class
+
+
     def update_psf(self, psf_class):
         """
         update the instance of the class with a new instance of PSF() with a potentially different point spread function

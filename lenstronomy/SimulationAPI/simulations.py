@@ -34,7 +34,7 @@ class Simulation(object):
         exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 
         kwargs_data = {
-            'sigma_background': sigma_bkg, 'mean_background': mean,
+            'background_rms': sigma_bkg, 'mean_background': mean,
             'exposure_map': exposure_map
             , 'x_coords': x_grid, 'y_coords': y_grid
             , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord

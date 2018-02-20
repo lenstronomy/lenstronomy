@@ -84,7 +84,7 @@ class LensedPositions(object):
         if self._fixed_magnification:
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
-            point_amp = kwargs_ps['source_amp'] * mag
+            point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
             point_amp = kwargs_ps['point_amp']
         return np.array(point_amp)
@@ -140,7 +140,7 @@ class SourcePositions(object):
         if self._fixed_magnification:
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
-            point_amp = kwargs_ps['source_amp'] * mag
+            point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
             point_amp = kwargs_ps['point_amp']
         return np.array(point_amp)

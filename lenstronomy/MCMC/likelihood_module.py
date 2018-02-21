@@ -52,7 +52,7 @@ class LikelihoodModule(object):
                              " Please get in touch with the the developers.")
         self.priors_bool = kwargs_likelihood.get('priors', False)
         if self.priors_bool:
-            self.kwargs_priors = kwargs_likelihood['kwargs_priors']
+            self._prior_module = kwargs_likelihood['prior_module']
 
     def X2_chain(self, args):
         """
@@ -74,7 +74,7 @@ class LikelihoodModule(object):
         if self.time_delay is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps)
         if self.priors_bool:
-            logL += self.priors(kwargs_lens, self.kwargs_priors)
+            logL += self.prior_compute(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         if self._check_solver is True:
             logL -= self.check_solver(kwargs_lens, kwargs_ps, self._solver_tolerance)
         if self._force_no_add_image:
@@ -112,6 +112,12 @@ class LikelihoodModule(object):
         else:
             return False
 
+    def prior_compute(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        if not hasattr(self._prior_module, 'likelihood'):
+            raise ValueError("prior module instance needs a definition 'likelihood")
+        logL = self._prior_module.likelihood(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return logL
+
     def likelihood_image_pos(self, kwargs_lens, kwargs_ps, sigma):
         """
 
@@ -132,20 +138,6 @@ class LikelihoodModule(object):
         dist = util.min_square_dist(ra_image_list[0], dec_image_list[0], x_image, y_image)
         logL = - np.sum(dist/sigma**2)/2
         return logL
-
-    def priors(self, kwargs_lens, kwargs_priors):
-        """
-
-        :param kwargs_lens:
-        :param kwargs_priors:
-        :return:
-        """
-        prior = 0
-        if 'gamma_ext' in kwargs_lens and 'gamma_ext' in kwargs_priors and 'gamma_ext_sigma' in kwargs_priors:
-            prior -= (kwargs_lens['gamma_ext']-kwargs_priors['gamma_ext'])**2/(2*kwargs_priors['gamma_ext_sigma'])**2
-        if 'psi_ext' in kwargs_lens and 'psi_ext' in kwargs_priors and 'psi_ext_sigma' in kwargs_priors:
-            prior -= (kwargs_lens['psi_ext']-kwargs_priors['psi_ext'])**2/(2*kwargs_priors['psi_ext_sigma'])**2
-        return prior
 
     def check_bounds(self, args, lowerLimit, upperLimit):
         """

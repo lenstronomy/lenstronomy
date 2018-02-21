@@ -163,7 +163,7 @@ class LensModelPlot(object):
         :param cmap_string:
         """
         self._kwargs_data = kwargs_data
-        if type(cmap_string) == '':
+        if isinstance(cmap_string, str) or isinstance(cmap_string, unicode):
             cmap = plt.get_cmap(cmap_string)
         else:
             cmap = cmap_string

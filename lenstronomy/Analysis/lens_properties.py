@@ -16,13 +16,13 @@ class LensProp(object):
     this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model
     """
 
-    def __init__(self, z_lens, z_source, kwargs_options, cosmo=None):
+    def __init__(self, z_lens, z_source, kwargs_model, cosmo=None):
         self.z_d = z_lens
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
-        self.lens_analysis = LensAnalysis(kwargs_options)
-        self.lens_model = LensModelExtensions(lens_model_list=kwargs_options['lens_model_list'])
-        self.kwargs_options = kwargs_options
+        self.lens_analysis = LensAnalysis(kwargs_model)
+        self.lens_model = LensModelExtensions(lens_model_list=kwargs_model['lens_model_list'])
+        self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 

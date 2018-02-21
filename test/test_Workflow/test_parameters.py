@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import pytest
 
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Workflow.parameters import Param, ParamUpdate
 
 
 class TestParam(object):
@@ -70,6 +70,27 @@ class TestParam(object):
         kwargs_fixed = [{}]
         kwargs_fixed = self.param_class._add_fixed_source(kwargs_fixed)
         assert 1 == 1
+
+
+class TestParamUpdate(object):
+    def setup(self):
+        kwargs_fixed_lens = [{}, {}]
+        kwargs_fixed_source = [{}]
+        kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_ps = [{}]
+        self.paramUpdate = ParamUpdate(kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps)
+
+    def test_update_fixed_simple(self):
+        kwargs_lens = [{'theta_E': 1, 'gamma': 2}, {}]
+        kwargs_source = [{'test_source': 1}]
+        kwargs_lens_light = [{'test_lens_light': 1}]
+        kwargs_ps = [{'test_point_source': 1}]
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self.paramUpdate.update_fixed_simple(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=True,
+                             fix_source=True, fix_lens_light=True, fix_point_source=True, gamma_fixed=True)
+        assert kwargs_fixed_lens[0]['gamma'] == 2
+        assert kwargs_fixed_source[0]['test_source'] == 1
+        assert kwargs_fixed_lens_light[0]['test_lens_light'] == 1
+        assert kwargs_fixed_ps[0]['test_point_source'] == 1
 
 
 if __name__ == '__main__':

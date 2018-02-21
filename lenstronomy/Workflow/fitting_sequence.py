@@ -176,7 +176,7 @@ class FittingSequence(object):
                     self.multi_band_list[i][0] = kwargs_data
             chain, param_list = [], []
         else:
-            raise ValueError("%s is not a valid fitting routine" %fitting_routine)
+            raise ValueError("%s is not a valid fitting routine" % fitting_routine)
 
         return lens_result, source_result, lens_light_result, else_result, chain, param_list
 

@@ -406,7 +406,7 @@ class LensParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
                 if self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                    gamma_ext, phi_G = param_util.ellipticity2phi_gamma(kwargs_mean['e1'], kwargs_mean['e2'])
+                    phi_G, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_mean['e1'], kwargs_mean['e2'])
                     mean.append(gamma_ext)
                     sigma.append(kwargs_mean['shear_sigma'])
                 else:

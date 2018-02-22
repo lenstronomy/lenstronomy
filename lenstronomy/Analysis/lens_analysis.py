@@ -6,6 +6,7 @@ from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 
@@ -18,16 +19,15 @@ class LensAnalysis(object):
         self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', ['NONE']))
         self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', ['NONE']))
         self.LensModel = LensModelExtensions(lens_model_list=kwargs_model['lens_model_list'])
+        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', ['NONE']))
         self.kwargs_model = kwargs_model
         self.NumLensModel = NumericLens(lens_model_list=kwargs_model['lens_model_list'])
         self.gaussian = Gaussian()
 
-    def fermat_potential(self, kwargs_lens, kwargs_else):
-        if 'ra_pos' in kwargs_else and 'dec_pos' in kwargs_else:
-            ra_pos = kwargs_else['ra_pos']
-            dec_pos = kwargs_else['dec_pos']
-        else:
-            raise ValueError('No point source positions assigned')
+    def fermat_potential(self, kwargs_lens, kwargs_ps):
+        ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
+        ra_pos = ra_pos[0]
+        dec_pos = dec_pos[0]
         ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
@@ -75,7 +75,7 @@ class LensAnalysis(object):
         :return:
         """
         kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        lens_light_model_internal_bool = self.kwargs_model.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
+        lens_light_model_internal_bool = self.kwargs_model.get('light_model_deflector_bool', [True] * len(kwargs_lens_light))
         lens_light = np.zeros_like(x_grid)
         for i, bool in enumerate(lens_light_model_internal_bool):
             if bool is True:

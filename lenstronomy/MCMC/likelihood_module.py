@@ -63,13 +63,16 @@ class LikelihoodModule(object):
         #generate image and computes likelihood
         self.Multiband.reset_point_source_cache()
         logL = 0
+        if self._check_bounds:
+            penalty, bound_hit = self.check_bounds(args, self.lower_limit, self.upper_limit)
+            logL -= penalty
+            if bound_hit:
+                return logL, None
         if self._image_likelihood:
             logL += self.Multiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                           source_marg=self._source_marg, compute_bool=self._compute_bool)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
-        if self._check_bounds:
-            logL -= self.check_bounds(args, self.lower_limit, self.upper_limit)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self.time_delay is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps)
@@ -144,10 +147,12 @@ class LikelihoodModule(object):
         checks whether the parameter vector has left its bound, if so, adds a big number
         """
         penalty = 0
+        bound_hit = False
         for i in range(0, len(args)):
             if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
                 penalty = 10**15
-        return penalty
+                bound_hit = True
+        return penalty, bound_hit
 
     def logL_delay(self, kwargs_lens, kwargs_cosmo):
         """

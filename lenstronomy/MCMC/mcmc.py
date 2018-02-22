@@ -38,6 +38,9 @@ class MCMCSampler(object):
         if lowerLimit is None or upperLimit is None:
             lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
             print("PSO initialises its particles with default values")
+        else:
+            lowerLimit = np.maximum(lowerLimit, self.chain.lower_limit)
+            upperLimit = np.minimum(upperLimit, self.chain.upper_limit)
         if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
             if pso.isMaster():

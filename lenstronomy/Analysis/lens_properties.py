@@ -26,8 +26,8 @@ class LensProp(object):
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
 
-    def time_delays(self, kwargs_lens, kwargs_else, kappa_ext=0):
-        fermat_pot = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_else)
+    def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
+        fermat_pot = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_ps)
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
@@ -54,7 +54,7 @@ class LensProp(object):
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         mass_profile_list = []
         kwargs_profile = []
-        lens_model_internal_bool = self.kwargs_options.get('lens_model_internal_bool', [True] * len(kwargs_lens))
+        lens_model_internal_bool = self.kwargs_options.get('lens_model_deflector_bool', [True] * len(kwargs_lens))
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
             if lens_model_internal_bool[i]:
                 mass_profile_list.append(lens_model)
@@ -72,7 +72,7 @@ class LensProp(object):
 
         light_profile_list = []
         kwargs_light = []
-        lens_light_model_internal_bool = self.kwargs_options.get('lens_light_model_internal_bool', [True] * len(kwargs_lens_light))
+        lens_light_model_internal_bool = self.kwargs_options.get('light_model_deflector_bool', [True] * len(kwargs_lens_light))
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
             if lens_light_model_internal_bool[i]:
                 light_profile_list.append(light_model)

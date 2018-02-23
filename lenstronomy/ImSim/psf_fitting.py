@@ -97,6 +97,7 @@ class PsfFitting(object):
         self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                           kwargs_lens_light, kwargs_ps)
+        logL_after = 0
         i_best = 0
         for i in range(num_iter):
             kwargs_psf_new, logL_after = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
@@ -110,6 +111,7 @@ class PsfFitting(object):
                     break
         if verbose:
             print("iteration of step %s gave best reconstruction." % i_best)
+            print("log likelihood before: %s and log likelihood after: %s" % (logL_before, logL_after))
         return kwargs_psf_final
 
     def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,

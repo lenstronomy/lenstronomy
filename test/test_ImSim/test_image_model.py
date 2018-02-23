@@ -30,12 +30,10 @@ class TestImageModel(object):
 
         # PSF specification
 
-        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
-        self.kwargs_psf['psf_error_map'] = np.zeros_like(self.kwargs_psf['kernel_point_source'])
-        data_class = Data(kwargs_data=self.kwargs_data)
-        psf_class = PSF(kwargs_psf=self.kwargs_psf)
+        psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -65,8 +63,8 @@ class TestImageModel(object):
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                        self.kwargs_lens_light, self.kwargs_ps)
-        self.kwargs_data['image_data'] = image_sim
-        data_class = Data(self.kwargs_data)
+        data_class.update_data(image_sim)
+
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
@@ -154,8 +152,7 @@ class TestImageModel(object):
         SimAPI = Simulation()
         numPix = 100
         deltaPix = 0.05
-        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
-        data_class = Data(kwargs_data)
+        data_class = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}

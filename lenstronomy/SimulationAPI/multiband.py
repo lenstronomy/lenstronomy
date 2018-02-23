@@ -148,13 +148,9 @@ class SingleBand(object):
         self.simulation = Simulation()
         sky_per_pixel = sky_brightness*collector_area*deltaPix**2  # time independent noise term per pixel per second
         sigma_bkg = np.sqrt(readout_noise**2 + exposure_time*sky_per_pixel**2) / exposure_time  # total Gaussian noise term per pixel in full exposure (in units of counts per second)
-        kwargs_data = self.simulation.data_configure(numPix, deltaPix, exposure_time, sigma_bkg)
-        self._kwargs_data = kwargs_data
-        kwargs_psf = self.simulation.psf_configure(psf_type, fwhm)
-        self._kwargs_psf = kwargs_psf
+        self._data = self.simulation.data_configure(numPix, deltaPix, exposure_time, sigma_bkg)
+        self._psf = self.simulation.psf_configure(psf_type, fwhm)
         self._flux_calibration_factor = collector_area / extinction * deltaPix**2  # transforms intrinsic surface brightness per angular area into the flux normalizations per pixel
-        self._psf = PSF(self._kwargs_psf)
-        self._data = Data(self._kwargs_data)
 
     def simulate(self, kwargs_options, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, lens_colour, source_colour, quasar_colour, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """

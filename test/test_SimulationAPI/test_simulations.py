@@ -25,11 +25,10 @@ class TestSimulation(object):
 
         # PSF specification
 
-        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=5)
-
-        data_class = Data(kwargs_data=self.kwargs_data)
-        psf_class = PSF(kwargs_psf=self.kwargs_psf)
+        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        self.kwargs_data = data_class.constructor_kwargs()
+        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=5)
+        self.kwargs_psf = psf_class.constructor_kwargs()
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)

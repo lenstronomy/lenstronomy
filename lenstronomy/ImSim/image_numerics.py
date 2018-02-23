@@ -172,7 +172,7 @@ class ImageNumerics(object):
             grid_final = grid_re_sized
         else:
             gridScale = self._Data.deltaPix/float(self._subgrid_res)
-            if self._PSF.psf_type == 'PIXEL' and not self._psf_subgrid:
+            if not self._psf_subgrid:
                 grid_re_sized = image_util.re_size(image, self._subgrid_res)
                 grid_final = self._PSF.psf_convolution(grid_re_sized, gridScale, psf_subgrid=False, subgrid_res=1)
             else:

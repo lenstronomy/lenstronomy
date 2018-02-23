@@ -52,6 +52,24 @@ class PSF(object):
         if 'psf_error_map' in kwargs_psf:
             self._psf_error_map = kwargs_psf['psf_error_map']
 
+    def constructor_kwargs(self):
+        """
+
+        :return: kwargs that can construct the PSF() class instance
+        """
+        kwargs_psf = {'psf_type': self.psf_type}
+        if self.psf_type == 'GAUSSIAN':
+            kwargs_psf['fwhm'] = self._fwhm
+            kwargs_psf['truncation'] = self._truncation
+            if hasattr(self, '_pixel_size'):
+                kwargs_psf['pixel_size'] = self._pixel_size
+        elif self.psf_type == 'PIXEL':
+            kwargs_psf['kernel_pixel'] = self.kernel_pixel
+            kwargs_psf['kernel_point_source'] = self.kernel_point_source
+        if hasattr(self, '_psf_error_map'):
+            kwargs_psf['psf_error_map'] = self._psf_error_map
+        return kwargs_psf
+
     @property
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):

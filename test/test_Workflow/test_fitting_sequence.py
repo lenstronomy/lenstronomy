@@ -28,16 +28,13 @@ class TestFittingSequence(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                     truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
-
-        data_class = Data(kwargs_data=kwargs_data)
-        psf_class = PSF(kwargs_psf=kwargs_psf)
+                                                    kernel=psf_class.kernel_point_source)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -70,9 +67,11 @@ class TestFittingSequence(object):
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
 
-        kwargs_data['image_data'] = image_sim
-        self.kwargs_data = kwargs_data
-        self.kwargs_psf = kwargs_psf
+        data_class.update_data(image_sim)
+        self.data_class = data_class
+        self.psf_class = psf_class
+        self.kwargs_data = data_class.constructor_kwargs()
+        self.kwargs_psf = psf_class.constructor_kwargs()
         self.kwargs_model = {'lens_model_list': lens_model_list,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
@@ -104,10 +103,10 @@ class TestFittingSequence(object):
                              }
 
     def test_simulationAPI_image(self):
-        npt.assert_almost_equal(self.kwargs_data['image_data'][4, 4], 0.1, decimal=0)
+        npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
 
     def test_simulationAPI_psf(self):
-        assert self.kwargs_psf['kernel_pixel'][1, 1] == 1.681921511056146e-07
+        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 1.681921511056146e-07, decimal=8)
 
     def test_fitting_sequence(self):
         kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]

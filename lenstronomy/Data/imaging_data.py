@@ -60,6 +60,29 @@ class Data(object):
         self._data = data
         self._sigma_b = kwargs_data.get('background_rms', None)
 
+    def constructor_kwargs(self):
+        """
+
+
+        :return: kwargs that allow to construct the Data() class
+        """
+        kwargs_data = {'numPix': self.nx, 'image_data': self.data, 'exposure_map': self._exp_map,
+                       'background_rms': self._sigma_b, 'ra_at_xy_0': self._coords._ra_at_xy_0,
+                        'dec_at_xy_0': self._coords._dec_at_xy_0, 'transform_pix2angle': self._coords._Mpix2a}
+        return kwargs_data
+
+    def update_data(self, image_data):
+        """
+        update the data
+
+        :param image_data: 2d numpy array of same size as nx, ny
+        :return:
+        """
+        nx, ny = np.shape(image_data)
+        if not self.nx == nx and not self.ny == ny:
+            raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self.nx, self.ny))
+        self._data = image_data
+
     @property
     def data(self):
         """

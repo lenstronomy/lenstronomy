@@ -32,11 +32,9 @@ class TestImageModel(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=5)
-        data_class = Data(kwargs_data=kwargs_data)
-        psf_class = PSF(kwargs_psf=kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -66,7 +64,9 @@ class TestImageModel(object):
                                 point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
-        kwargs_data['image_data'] = image_sim
+        data_class.update_data(image_sim)
+        kwargs_data = data_class.constructor_kwargs()
+        kwargs_psf = psf_class.constructor_kwargs()
         self.solver = LensEquationSolver(lensModel=lens_model_class)
         multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
         self.imageModel = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)

@@ -31,7 +31,7 @@ class TestImageModel(object):
 
         # PSF specification
 
-        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -42,7 +42,6 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        data_class = Data(kwargs_data=self.kwargs_data)
         psf_class = PSF(kwargs_psf=self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
@@ -74,8 +73,7 @@ class TestImageModel(object):
                                      point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
-        self.kwargs_data['image_data'] = image_sim
-        data_class = Data(self.kwargs_data)
+        data_class.update_data(image_sim)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)

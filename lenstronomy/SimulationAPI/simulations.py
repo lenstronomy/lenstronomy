@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
@@ -40,7 +42,9 @@ class Simulation(object):
             , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
             , 'image_data': np.zeros((numPix, numPix))
             }
-        return kwargs_data
+        data_class = Data(kwargs_data)
+        #return kwargs_data
+        return data_class
 
     def shift_coordinate_grid(self, kwargs_data, x_shift, y_shift, pixel_units=False):
         """
@@ -55,8 +59,6 @@ class Simulation(object):
         else:
             ra_shift, dec_shift = x_shift, y_shift
         kwargs_data_new = copy.deepcopy(kwargs_data)
-        kwargs_data_new['x_coords'] += ra_shift
-        kwargs_data_new['y_coords'] += dec_shift
         kwargs_data_new['ra_at_xy_0'] += ra_shift
         kwargs_data_new['dec_at_xy_0'] += dec_shift
         return kwargs_data_new
@@ -91,7 +93,9 @@ class Simulation(object):
             kwargs_psf = {'psf_type': 'NONE'}
         else:
             raise ValueError("psf type %s not supported!" % psf_type)
-        return kwargs_psf
+        psf_class = PSF(kwargs_psf)
+        return psf_class
+        #return kwargs_psf
 
     def normalize_flux(self, kwargs_options, kwargs_source, kwargs_lens_light, kwargs_ps, norm_factor_source=1, norm_factor_lens_light=1, norm_factor_point_source=1.):
         """
@@ -129,7 +133,7 @@ class Simulation(object):
         kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
-    def simulate(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def simulate(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         simulate image
         :param kwargs_options:
@@ -138,11 +142,11 @@ class Simulation(object):
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
-        :param kwargs_else:
+        :param kwargs_ps:
         :param no_noise:
         :return:
         """
-        image = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+        image = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
         #image = makeImage.ImageNumerics.array2image(image)
         # add noise
         if no_noise:

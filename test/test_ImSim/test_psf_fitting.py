@@ -23,7 +23,7 @@ class TestImageModel(object):
         self.SimAPI = Simulation()
 
         # data specifics
-        sigma_bkg = 0.05  # background noise per pixel
+        sigma_bkg = 0.01  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
@@ -103,7 +103,7 @@ class TestImageModel(object):
         assert diff_old > diff_new
 
     def test_update_iterative(self):
-        fwhm = 0.4
+        fwhm = 0.3
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -116,7 +116,7 @@ class TestImageModel(object):
 
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
-                                                           factor=0.2, num_iter=10, symmetry=1)
+                                                           factor=0.2, num_iter=3, symmetry=1)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
         kernel_old = kwargs_psf['kernel_point_source']
@@ -127,7 +127,7 @@ class TestImageModel(object):
 
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                            self.kwargs_lens_light, self.kwargs_ps,
-                                                           factor=0.2, num_iter=10, symmetry=1, no_break=True)
+                                                           factor=0.2, num_iter=3, symmetry=1, no_break=True)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
         kernel_old = kwargs_psf['kernel_point_source']
@@ -135,6 +135,14 @@ class TestImageModel(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
+
+    def test_mask_point_sources(self):
+        ra_image, dec_image, amp = self.imageModel.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
+        print(ra_image, dec_image, amp)
+        x_grid, y_grid = self.imageModel.Data.coordinates
+        radius = 0.5
+        mask_point_source_list = self.psf_fitting.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
+        assert mask_point_source_list[0][10, 10] == 1
 
 
 if __name__ == '__main__':

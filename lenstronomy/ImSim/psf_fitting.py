@@ -158,16 +158,16 @@ class PsfFitting(object):
         for l in range(len(x)):
             # cutout the star
             x_, y_ = x[l], y[l]
-            star_cutout = kernel_util.cutout_source(x_, y_, image_list[l], kernelsize + 2, shift=False)
+            x_int = int(round(x_))
+            y_int = int(round(y_))
+            star_cutout = kernel_util.cutout_source(x_int, y_int, image_list[l], kernelsize + 2, shift=False)
             # cutout the mask
             mask_i = mask * mask_point_source_list[l]
-            mask_cutout = kernel_util.cutout_source(int(round(x_)), int(round(x_)), mask_i, kernelsize + 2, shift=False)
+            mask_cutout = kernel_util.cutout_source(x_int, y_int, mask_i, kernelsize + 2, shift=False)
             # enlarge the initial PSF kernel to the new cutout size
             kernel_enlarged = np.zeros((kernelsize+2, kernelsize+2))
             kernel_enlarged[1:-1, 1:-1] = kernel_init
             # shift the initial kernel to the shift of the star
-            x_int = int(round(x_))
-            y_int = int(round(y_))
             shift_x = x_int - x_
             shift_y = y_int - y_
             kernel_shifted = interp.shift(kernel_enlarged, [-shift_y, -shift_x], order=1)
@@ -178,13 +178,14 @@ class PsfFitting(object):
             star_cutout /= np.sum(star_cutout[mask_cutout == 1]) * norm_unmaksed
             # replace mask with shifted initial kernel (+2 size)
             star_cutout[mask_cutout == 0] = kernel_shifted[mask_cutout == 0]
+            star_cutout[star_cutout < 0] = 0
             # de-shift kernel
-            kernel_shifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y)
+            kernel_deshifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y)
             # re-size kernel
-            kernel_shifted = image_util.cut_edges(kernel_shifted, kernelsize)
+            kernel_deshifted = image_util.cut_edges(kernel_deshifted, kernelsize)
 
             # re-normalize kernel again
-            kernel_shifted = kernel_util.kernel_norm(kernel_shifted)
+            kernel_deshifted = kernel_util.kernel_norm(kernel_deshifted)
             """
 
             kernel_shifted = kernel_util.cutout_source(x_[l], y_[l], image_list[l],
@@ -204,7 +205,7 @@ class PsfFitting(object):
             #kernel_shifted[mask_cutout == 1] /= (np.sum(kernel_init[mask_cutout == 1]) * np.sum(kernel_shifted[mask_cutout == 1]))
             """
             for k in range(symmetry):
-                kernel_rotated = image_util.rotateImage(kernel_shifted, angle * k)
+                kernel_rotated = image_util.rotateImage(kernel_deshifted, angle * k)
                 kernel_norm = kernel_util.kernel_norm(kernel_rotated)
                 try:
                     kernel_list[i, :, :] = kernel_norm

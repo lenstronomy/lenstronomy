@@ -70,7 +70,7 @@ class MCMCSampler(object):
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
-        lens_dict, source_dict, lens_light_dict, else_dict = self.chain.param.getParams(result)
+        lens_dict, source_dict, lens_light_dict, else_dict = self.chain.param.getParams(result, bijective=True)
         #if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
         if mpi is True and not pso.isMaster():
             pass

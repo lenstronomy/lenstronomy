@@ -19,7 +19,7 @@ lenstronomy - the gravitational lensing software package
     :target: https://github.com/sibirrer/lenstronomy/blob/master/LICENSE
 
 
-The model package for gravitational strong lens images.
+A multi-purpose package to model strong gravitational lenses.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
 e.g. Birrer et al. 2016 for time-delay cosmography and Birrer et al. 2017 for lensing substructure analysis.
 
@@ -59,7 +59,7 @@ Modelling Features
 * Point sources (including solving the lens equation)
 * a variety of mass models to use
 * non-linear line-of-sight description
-* iterative point spread function
+* iterative point spread function reconstruction
 * linear and non-linear optimization modules
 
 

@@ -29,20 +29,18 @@ class SPEMD_SMOOTH(object):
         :param s_scale:
         :return:
         """
+        if theta_E < 0:
+            theta_E = 0
         if s_scale < 0.00000001:
             s_scale = 0.00000001
         if gamma < 1.2:
             gamma = 1.2
-            theta_E = 0
         if gamma > 2.9:
             gamma = 2.9
-            theta_E = 0
         if q < 0.1:
             q = 0.1
-            theta_E = 0
         if q > 1:
             q = 1.
-            theta_E = 0
         return theta_E, gamma, q, phi_G, s_scale
 
     def function(self, x, y, theta_E, gamma, q, phi_G, s_scale, center_x=0, center_y=0):

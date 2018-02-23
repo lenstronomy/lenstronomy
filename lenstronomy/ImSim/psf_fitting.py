@@ -6,6 +6,7 @@ import lenstronomy.Util.mask as mask_util
 
 import numpy as np
 import copy
+import scipy.ndimage.interpolation as interp
 
 
 class PsfFitting(object):
@@ -139,7 +140,7 @@ class PsfFitting(object):
             model_single_source_list.append(model_single_source)
         return model_single_source_list
 
-    def cutout_psf(self, x_, y_, image_list, kernelsize, mask, mask_point_source_list, kernel_init, symmetry=1):
+    def cutout_psf(self, x, y, image_list, kernelsize, mask, mask_point_source_list, kernel_init, symmetry=1):
         """
 
         :param x_:
@@ -148,14 +149,47 @@ class PsfFitting(object):
         :param kernelsize:
         :return:
         """
-        n = len(x_) * symmetry
+        n = len(x) * symmetry
         angle = 360. / symmetry
         kernel_list = np.zeros((n, kernelsize, kernelsize))
         i = 0
-        for l in range(len(x_)):
-            kernel_shifted = kernel_util.cutout_source(x_[l], y_[l], image_list[l], kernelsize + 2)
+        for l in range(len(x)):
+            # cutout the star
+            x_, y_ = x[l], y[l]
+            star_cutout = kernel_util.cutout_source(x_, y_, image_list[l], kernelsize + 2, shift=False)
+            # cutout the mask
             mask_i = mask * mask_point_source_list[l]
-            mask_cutout = kernel_util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize + 2, shift=False)
+            mask_cutout = kernel_util.cutout_source(int(round(x_)), int(round(x_)), mask_i, kernelsize + 2, shift=False)
+            # enlarge the initial PSF kernel to the new cutout size
+            kernel_enlarged = np.zeros((kernelsize+2, kernelsize+2))
+            kernel_enlarged[1:-1, 1:-1] = kernel_init
+            # shift the initial kernel to the shift of the star
+            x_int = int(round(x_))
+            y_int = int(round(y_))
+            shift_x = x_int - x_
+            shift_y = y_int - y_
+            kernel_shifted = interp.shift(kernel_enlarged, [-shift_y, -shift_x], order=1)
+            # compute normalization of masked and unmasked region of the shifted kernel
+            # norm_masked = np.sum(kernel_shifted[mask_i == 0])
+            norm_unmaksed = np.sum(kernel_shifted[mask_cutout == 1])
+            # normalize star within the unmasked region to the norm of the initial kernel of the same region
+            star_cutout /= np.sum(star_cutout[mask_cutout== 1]) * norm_unmaksed
+            # replace mask with shifted initial kernel (+2 size)
+            star_cutout[mask_cutout == 0] = kernel_shifted[mask_cutout == 0]
+            # de-shift kernel
+            kernel_shifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y)
+            # re-size kernel
+            kernel_shifted = image_util.cut_edges(kernel_shifted, kernelsize)
+
+            # re-normalize kernel again
+            kernel_shifted = kernel_util.kernel_norm(kernel_shifted)
+            """
+
+            kernel_shifted = kernel_util.cutout_source(x_[l], y_[l], image_list[l],
+                                                       kernelsize + 2)  # don't de-shift it here
+            mask_i = mask * mask_point_source_list[l]
+            mask_cutout = kernel_util.cutout_source(int(round(x_[l])), int(round(x_[l])), mask_i, kernelsize + 2,
+                                                    shift=False)
             kernel_shifted[kernel_shifted < 0] = 0
             kernel_shifted *= mask_cutout
             kernel_init = kernel_util.kernel_norm(kernel_init)
@@ -166,6 +200,7 @@ class PsfFitting(object):
             kernel_shifted *= kernel_norm
             kernel_shifted[mask_cutout == 0] = kernel_init[mask_cutout == 0]
             #kernel_shifted[mask_cutout == 1] /= (np.sum(kernel_init[mask_cutout == 1]) * np.sum(kernel_shifted[mask_cutout == 1]))
+            """
             for k in range(symmetry):
                 kernel_rotated = image_util.rotateImage(kernel_shifted, angle * k)
                 kernel_norm = kernel_util.kernel_norm(kernel_rotated)

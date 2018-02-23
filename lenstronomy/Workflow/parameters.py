@@ -62,7 +62,7 @@ class Param(object):
     def num_point_source_images(self):
         return self._num_images
 
-    def getParams(self, args):
+    def getParams(self, args, bijective=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...(
@@ -75,7 +75,7 @@ class Param(object):
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         if self._solver:
             kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
-        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps)
+        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, bounds=None):
@@ -131,10 +131,10 @@ class Param(object):
         kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)
         return kwargs_lens
 
-    def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps):
+    def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, image_plane=False):
 
         for i, kwargs in enumerate(kwargs_source_list):
-            if self._image_plane_source_list[i]:
+            if self._image_plane_source_list[i] and not image_plane:
                 if 'center_x' in kwargs:
                     x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
                     kwargs['center_x'] = x_mapped

@@ -67,7 +67,7 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'subgrid_res': 3, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                      lens_light_model_class,
                                      point_source_class, kwargs_numerics=kwargs_numerics)
@@ -103,7 +103,7 @@ class TestImageModel(object):
         assert diff_old > diff_new
 
     def test_update_iterative(self):
-        fwhm = 0.3
+        fwhm = 0.4
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian

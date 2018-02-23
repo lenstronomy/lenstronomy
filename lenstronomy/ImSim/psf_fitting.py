@@ -175,7 +175,7 @@ class PsfFitting(object):
             # norm_masked = np.sum(kernel_shifted[mask_i == 0])
             norm_unmaksed = np.sum(kernel_shifted[mask_cutout == 1])
             # normalize star within the unmasked region to the norm of the initial kernel of the same region
-            star_cutout /= np.sum(star_cutout[mask_cutout== 1]) * norm_unmaksed
+            star_cutout /= np.sum(star_cutout[mask_cutout == 1]) * norm_unmaksed
             # replace mask with shifted initial kernel (+2 size)
             star_cutout[mask_cutout == 0] = kernel_shifted[mask_cutout == 0]
             # de-shift kernel

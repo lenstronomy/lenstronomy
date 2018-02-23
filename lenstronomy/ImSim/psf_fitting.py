@@ -47,8 +47,8 @@ class PsfFitting(object):
         mask = self._image_model_class.ImageNumerics.mask
         x_grid, y_grid = self._image_model_class.Data.coordinates
         deltaPix = self._image_model_class.Data.deltaPix
-        fwhm = self._image_model_class.PSF.psf_fwhm(kwargs_psf, deltaPix)
-        radius = fwhm*kwargs_psf.get("block_neighbour", 0.) / 2.
+        #fwhm = self._image_model_class.PSF.psf_fwhm(kwargs_psf, deltaPix)
+        radius = kwargs_psf.get("block_neighbour", 0.) / 2.
         mask_point_source_list = self.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
         point_source_list = self.cutout_psf(x_, y_, image_single_point_source_list, kernel_size, mask, mask_point_source_list, kernel_old, symmetry=symmetry)
         kernel_old_array = np.zeros((symmetry, kernel_size, kernel_size))

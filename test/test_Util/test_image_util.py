@@ -61,7 +61,7 @@ def test_add_poisson():
     image = np.ones((100, 100))
     exp_time = 100.
     poisson = image_util.add_poisson(image, exp_time)
-    assert abs(np.sum(poisson)) < np.sqrt(np.sum(image)/exp_time)*3
+    assert abs(np.sum(poisson)) < np.sqrt(np.sum(image)/exp_time)*10
 
 
 def test_findOverlap():

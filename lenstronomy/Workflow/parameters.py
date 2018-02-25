@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import copy
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
@@ -191,10 +192,11 @@ class Param(object):
 class ParamUpdate(object):
 
     def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps):
-        self.kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps]
+        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps])
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=False,
                              fix_source=False, fix_lens_light=False, fix_point_source=False, gamma_fixed=False):
+        print(self.kwargs_fixed[0], 'kwargs_fixed_lens', gamma_fixed, fix_lens)
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:
@@ -214,7 +216,7 @@ class ParamUpdate(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
             add_fixed_ps=add_fixed_ps)
-        if gamma_fixed:
+        if gamma_fixed is True:
             if 'gamma' in kwargs_lens[0]:
                 kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
         return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps
@@ -222,7 +224,7 @@ class ParamUpdate(object):
     def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
                       add_fixed_lens_light=None, add_fixed_ps=None):
 
-        lens_fix, source_fix, lens_light_fix, ps_fix = self.kwargs_fixed
+        lens_fix, source_fix, lens_light_fix, ps_fix = copy.deepcopy(self.kwargs_fixed)
 
         if add_fixed_lens is None:
             kwargs_fixed_lens_updated = lens_fix

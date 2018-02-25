@@ -18,7 +18,6 @@ class Fitting(object):
 
         :return:
         """
-        self.kwargs_fixed = kwargs_fixed
         self.multi_band_list = multi_band_list
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
@@ -109,14 +108,14 @@ class Fitting(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._paramUpdate.update_fixed_simple(
             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=fix_lens, fix_source=fix_source,
             fix_lens_light=fix_lens_light, fix_point_source=fix_point_source, gamma_fixed=gamma_fixed)
-        lens_result, source_result, lens_light_result, else_result, chain, param_list = self._run_pso(
+        lens_result, source_result, lens_light_result, ps_result, chain, param_list = self._run_pso(
             n_particles, n_iterations,
             kwargs_fixed_lens, kwargs_lens, kwargs_lens_sigma,
             kwargs_fixed_source, kwargs_source, kwargs_source_sigma,
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             threadCount=threadCount, mpi=mpi, print_key=print_key, sigma_factor=sigma_factor, compute_bool=compute_bool)
-        return lens_result, source_result, lens_light_result, else_result, chain, param_list
+        return lens_result, source_result, lens_light_result, ps_result, chain, param_list
 
     def mcmc_run(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                  kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma,

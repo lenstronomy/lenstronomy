@@ -153,7 +153,7 @@ class LensModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, arrow_size=0.1, cmap_string="gist_heat", high_res=5):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", high_res=5):
         """
 
         :param kwargs_options:

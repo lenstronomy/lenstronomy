@@ -108,7 +108,6 @@ class FittingSequence(object):
         print_key = fitting_kwargs.get('print_key', 'PSO')
 
         lens_sigma, source_sigma, lens_light_sigma, else_sigma = self._sigma_kwargs()
-
         lens_result, source_result, lens_light_result, else_result, chain, param_list = self.fitting.pso_run(
                 lens_input, source_input, lens_light_input, else_input,
                 lens_sigma, source_sigma, lens_light_sigma, else_sigma,

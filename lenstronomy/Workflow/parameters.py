@@ -196,7 +196,6 @@ class ParamUpdate(object):
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=False,
                              fix_source=False, fix_lens_light=False, fix_point_source=False, gamma_fixed=False):
-        print(self.kwargs_fixed[0], 'kwargs_fixed_lens', gamma_fixed, fix_lens)
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:

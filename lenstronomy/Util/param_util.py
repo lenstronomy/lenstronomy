@@ -78,6 +78,8 @@ def elliptisity2phi_q(e1, e2):
     """
     phi = np.arctan2(e2, e1)/2
     c = np.sqrt(e1**2+e2**2)
+    if c > 1:
+        c -= int(c)
     q = (1-c)/(1+c)
     return phi, q
 

@@ -44,6 +44,7 @@ class Fitting(object):
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_mean_lens)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
+
         lowerLimit = np.array(mean_start) - np.array(sigma_start)*sigma_factor
         upperLimit = np.array(mean_start) + np.array(sigma_start)*sigma_factor
         num_param, param_list = param_class.num_param()
@@ -80,6 +81,7 @@ class Fitting(object):
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_else, kwargs_lens_init=kwargs_mean_lens)
         kwargs_fixed = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_else
+
         mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
                                  self.kwargs_likelihood, kwargs_fixed, self.kwargs_lower, self.kwargs_upper,
                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)

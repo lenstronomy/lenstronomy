@@ -51,14 +51,14 @@ class FittingSequence(object):
                 self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, else_temp)
         return lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
-    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, else_input):
+    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input):
         """
 
         :param fitting_kwargs:
         :param lens_input:
         :param source_input:
         :param lens_light_input:
-        :param else_input:
+        :param ps_input:
         :return:
         """
         n_burn = fitting_kwargs['n_burn']
@@ -76,7 +76,7 @@ class FittingSequence(object):
         fix_point_source = fitting_kwargs.get('fix_point_source', False)
 
         samples, param, dist = self.fitting.mcmc_run(
-                                  lens_input, source_input, lens_light_input, else_input,
+                                  lens_input, source_input, lens_light_input, ps_input,
                                   lens_sigma, source_sigma, lens_light_sigma, else_sigma,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
                                   sigma_factor=sigma_scale, gamma_fixed=gamma_fixed, compute_bool=compute_bool,

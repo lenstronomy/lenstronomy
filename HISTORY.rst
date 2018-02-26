@@ -18,3 +18,8 @@ History
 ++++++++++++++++++
 
 * Added feature to align coordinate system of different images
+
+0.1.0 (2018-02-25)
+++++++++++++++++++
+
+* Major design update

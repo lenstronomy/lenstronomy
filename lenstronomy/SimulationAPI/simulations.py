@@ -36,14 +36,12 @@ class Simulation(object):
         exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 
         kwargs_data = {
-            'background_rms': sigma_bkg, 'mean_background': mean,
+            'background_rms': sigma_bkg,
             'exposure_map': exposure_map
-            , 'x_coords': x_grid, 'y_coords': y_grid
             , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
             , 'image_data': np.zeros((numPix, numPix))
             }
         data_class = Data(kwargs_data)
-        #return kwargs_data
         return data_class
 
     def shift_coordinate_grid(self, kwargs_data, x_shift, y_shift, pixel_units=False):
@@ -95,7 +93,6 @@ class Simulation(object):
             raise ValueError("psf type %s not supported!" % psf_type)
         psf_class = PSF(kwargs_psf)
         return psf_class
-        #return kwargs_psf
 
     def normalize_flux(self, kwargs_options, kwargs_source, kwargs_lens_light, kwargs_ps, norm_factor_source=1, norm_factor_lens_light=1, norm_factor_point_source=1.):
         """

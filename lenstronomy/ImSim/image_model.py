@@ -38,34 +38,36 @@ class ImageModel(object):
         """
 
         :param data_class: instance of Data() class
-        :return:
+        :return: no return. Class is updated.
         """
         self.Data = data_class
         self.ImageNumerics._Data = data_class
 
-
     def update_psf(self, psf_class):
         """
+
         update the instance of the class with a new instance of PSF() with a potentially different point spread function
 
         :param psf_class:
-        :return:
+        :return: no return. Class is updated.
         """
         self.PSF = psf_class
         self.ImageNumerics._PSF = psf_class
 
     def update_numerics(self, kwargs_numerics):
         """
+
         update numerical options
 
         :param kwargs_numerics:
-        :return:
+        :return: no return. Class is updated.
         """
         self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
+
         computes the source surface brightness distribution
 
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
@@ -87,6 +89,7 @@ class ImageModel(object):
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """
+
         computes the lens surface brightness distribution
 
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -103,6 +106,7 @@ class ImageModel(object):
 
     def point_source(self, kwargs_ps, kwargs_lens=None, unconvolved=False, k=None):
         """
+
         computes the point source positions and paints PSF convolutions on them
 
         :param kwargs_ps:
@@ -119,6 +123,7 @@ class ImageModel(object):
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, inv_bool=False):
         """
+
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
 
@@ -149,6 +154,7 @@ class ImageModel(object):
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
+
         make a image with a realisation of linear parameter values "param"
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
@@ -225,6 +231,7 @@ class ImageModel(object):
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
         """
+
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
 
@@ -294,7 +301,9 @@ class ImageModel(object):
 
     def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, mask, unconvolved=False):
         """
+
         return linear response Matrix
+
         :param x_grid:
         :param y_grid:
         :param x_source:
@@ -361,6 +370,7 @@ class ImageModel(object):
 
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
+
         links linear parameters to kwargs arguments
 
         :param param: linear parameter vector corresponding to the response matrix

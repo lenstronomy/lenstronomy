@@ -101,8 +101,16 @@
 <span class="sd">        size of pixel</span>
 <span class="sd">        :return: sqrt(pixel_area)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_area</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_area</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Coordinates.coordinate_grid"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">[docs]</a>    <span class="k">def</span> <span class="nf">coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param numPix:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span></div></div>
 </pre></div>
 
           </div>
@@ -138,7 +146,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

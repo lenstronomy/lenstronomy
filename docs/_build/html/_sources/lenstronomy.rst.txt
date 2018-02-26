@@ -14,6 +14,8 @@ Subpackages
     lenstronomy.LensModel
     lenstronomy.LightModel
     lenstronomy.MCMC
+    lenstronomy.Plots
+    lenstronomy.PointSource
     lenstronomy.SimulationAPI
     lenstronomy.Util
     lenstronomy.Workflow

@@ -155,7 +155,7 @@
         <span class="n">xt2</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
         <span class="n">xt2difq2</span> <span class="o">=</span> <span class="n">xt2</span><span class="o">/</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
         <span class="n">R_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xt1</span><span class="o">*</span><span class="n">xt1</span><span class="o">+</span><span class="n">xt2</span><span class="o">*</span><span class="n">xt2difq2</span><span class="p">)</span>
-        <span class="n">R_</span> <span class="o">=</span> <span class="n">R_</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="c1">#R_ = R_.astype(np.float32)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R_</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R_</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="n">R_</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span><span class="p">,</span> <span class="n">R_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -262,7 +262,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

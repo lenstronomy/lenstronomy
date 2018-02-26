@@ -141,6 +141,7 @@
 <div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel</span>
+
 <span class="sd">    :param numPix:</span>
 <span class="sd">    :param deltapix:</span>
 <span class="sd">    :param subgrid_res:</span>
@@ -167,6 +168,26 @@
     <span class="n">Mpix2coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">deltapix_eff</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">deltapix_eff</span><span class="p">]])</span>
     <span class="n">Mcoord2pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Mpix2coord</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span></div>
+
+
+<div class="viewcode-block" id="grid_from_coordinate_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.grid_from_coordinate_transform">[docs]</a><span class="k">def</span> <span class="nf">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return a grid in x and y coordinates that satisfy the coordinate system</span>
+
+
+<span class="sd">    :param numPix:</span>
+<span class="sd">    :param Mpix2coord:</span>
+<span class="sd">    :param ra_at_xy_0:</span>
+<span class="sd">    :param dec_at_xy_0:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix</span><span class="p">)</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">ra_grid</span> <span class="o">=</span> <span class="n">x_grid</span> <span class="o">*</span> <span class="n">Mpix2coord</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_grid</span> <span class="o">*</span> <span class="n">Mpix2coord</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ra_at_xy_0</span>
+    <span class="n">dec_grid</span> <span class="o">=</span> <span class="n">x_grid</span> <span class="o">*</span> <span class="n">Mpix2coord</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_grid</span> <span class="o">*</span> <span class="n">Mpix2coord</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dec_at_xy_0</span>
+    <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span></div>
 
 
 <div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -457,7 +478,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

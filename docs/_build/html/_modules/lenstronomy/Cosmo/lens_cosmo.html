@@ -158,15 +158,6 @@
         <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span>
         <span class="k">return</span> <span class="n">mass</span></div>
 
-<div class="viewcode-block" id="LensCosmo.mass_in_theta_E_2"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E_2">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_theta_E_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass within Einstein radius (area * epsilon crit) [M_sun]</span>
-<span class="sd">        :param theta_E: Einstein radius [arcsec]</span>
-<span class="sd">        :return: mass within Einstein radius [M_sun]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta_E</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span>
-        <span class="k">return</span> <span class="n">mass</span></div>
-
 <div class="viewcode-block" id="LensCosmo.mass_in_coin"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_coin">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_coin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -185,32 +176,7 @@
 <span class="sd">        :return: time delay in days</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">D_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_dt</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">kappa_ext</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span>  <span class="c1"># eqn 7 in Suyu et al.</span>
-        <span class="k">return</span> <span class="n">D_dt</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">fermat_pot</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># * self.arcsec2phys_lens(1.)**2</span></div>
-
-<div class="viewcode-block" id="LensCosmo.angular_diameter_relations"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_diameter_relations">[docs]</a>    <span class="k">def</span> <span class="nf">angular_diameter_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_v_model</span><span class="p">,</span> <span class="n">sigma_v</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">D_dt_model</span><span class="p">,</span> <span class="n">z_d</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sigma_v2_model</span> <span class="o">=</span> <span class="n">sigma_v_model</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">Ds_Dds</span> <span class="o">=</span> <span class="n">sigma_v</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa_ext</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sigma_v2_model</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span><span class="p">)</span>
-        <span class="n">D_d</span> <span class="o">=</span> <span class="n">D_dt_model</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_d</span><span class="p">)</span><span class="o">/</span><span class="n">Ds_Dds</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa_ext</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">D_d</span><span class="p">,</span> <span class="n">Ds_Dds</span></div>
-
-<div class="viewcode-block" id="LensCosmo.angular_distances"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_distances">[docs]</a>    <span class="k">def</span> <span class="nf">angular_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma_v_measured</span><span class="p">,</span> <span class="n">time_delay_measured</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">sigma_v_modeled</span><span class="p">,</span> <span class="n">fermat_pot</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param sigma_v_measured: velocity dispersion measured [km/s]</span>
-<span class="sd">        :param time_delay_measured: time delay measured [d]</span>
-<span class="sd">        :param kappa_ext: external convergence estimated []</span>
-<span class="sd">        :param sigma_v_modeled: lens model velocity dispersion with default cosmology and without external convergence [km/s]</span>
-<span class="sd">        :param fermat_pot: fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]</span>
-<span class="sd">        :return: D_d and D_d*D_s/D_ds, units in Mpc physical</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">Ds_Dds</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_v_measured</span><span class="o">/</span><span class="n">sigma_v_modeled</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">D_s</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kappa_ext</span><span class="p">)</span>
-        <span class="n">DdDs_Dds</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa_ext</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">time_delay_measured</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">fermat_pot</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">Mpc</span>
-        <span class="k">return</span> <span class="n">Ds_Dds</span><span class="p">,</span> <span class="n">DdDs_Dds</span></div></div>
+        <span class="k">return</span> <span class="n">D_dt</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">fermat_pot</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># * self.arcsec2phys_lens(1.)**2</span></div></div>
 
 
 <div class="viewcode-block" id="FlatLCDM"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM">[docs]</a><span class="k">class</span> <span class="nc">FlatLCDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -305,7 +271,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

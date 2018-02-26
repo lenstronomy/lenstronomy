@@ -87,6 +87,7 @@
 <span class="sd">        :param center_y: center in y</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precalc</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">n2</span><span class="p">]</span><span class="c1"># / beta</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
@@ -140,8 +141,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">H_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_order</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-        <span class="n">H_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_order</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">H_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_order</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">H_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_order</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">n_order</span> <span class="o">&gt;</span> <span class="mi">170</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;polynomial order to large&#39;</span><span class="p">,</span> <span class="n">n_order</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
@@ -173,19 +175,24 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">pre_calc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_param</span><span class="p">):</span>
             <span class="n">kwargs_source_shapelet</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="n">center_x</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="n">center_y</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="n">n1</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="n">n2</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">amp</span><span class="p">[</span><span class="n">i</span><span class="p">]}</span>
-            <span class="n">f_</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapelets</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_source_shapelet</span><span class="p">)</span>
+            <span class="n">f_</span> <span class="o">+=</span> <span class="n">out</span>
             <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">n1</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">n1</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="n">n2</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="n">f_</span> <span class="o">=</span> <span class="n">f_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#if isinstance(x, int) or isinstance(x, float):</span>
+        <span class="c1">#    f_ = f_[0]</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
 <div class="viewcode-block" id="ShapeletSet.function_split"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split">[docs]</a>    <span class="k">def</span> <span class="nf">function_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -297,7 +304,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

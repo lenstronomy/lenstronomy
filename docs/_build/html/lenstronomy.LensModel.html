@@ -84,12 +84,12 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_utils">lenstronomy.LensModel.Profiles.sersic_utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-shapelet-pot-module">lenstronomy.LensModel.Profiles.shapelet_pot module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-shapelet-pot-2-module">lenstronomy.LensModel.Profiles.shapelet_pot_2 module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-sie-module">lenstronomy.LensModel.Profiles.sie module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sie">lenstronomy.LensModel.Profiles.sie module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis">lenstronomy.LensModel.Profiles.sis module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sis_truncate">lenstronomy.LensModel.Profiles.sis_truncate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-module">lenstronomy.LensModel.Profiles.spemd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spemd">lenstronomy.LensModel.Profiles.spemd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-own-module">lenstronomy.LensModel.Profiles.spemd_own module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy-lensmodel-profiles-spemd-smooth-module">lenstronomy.LensModel.Profiles.spemd_smooth module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spemd_smooth">lenstronomy.LensModel.Profiles.spemd_smooth module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spep">lenstronomy.LensModel.Profiles.spep module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.spp">lenstronomy.LensModel.Profiles.spp module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles">Module contents</a></li>
@@ -119,14 +119,45 @@
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.alpha">
 <code class="descname">alpha</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>deflection angles
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: deflection angles in units of arcsec</p>
+<dd><p>deflection angles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angles in units of arcsec</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.lens_model.LensModel.arrival_time">
+<code class="descname">arrival_time</code><span class="sig-paren">(</span><em>x_image</em>, <em>y_image</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.arrival_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.arrival_time" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_image</strong> – </li>
+<li><strong>y_image</strong> – </li>
+<li><strong>kwargs_lens</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -158,54 +189,94 @@
 <code class="descname">gamma</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>shear computation
 g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
-g2 = d^2phi/dxdy
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: gamma1, gamma2</p>
+g2 = d^2phi/dxdy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">gamma1, gamma2</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.hessian">
 <code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><p>hessian matrix
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: f_xx, f_xy, f_yy components</p>
+<dd><p>hessian matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f_xx, f_xy, f_yy components</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.kappa">
 <code class="descname">kappa</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.kappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.kappa" title="Permalink to this definition">¶</a></dt>
-<dd><p>lensing convergence k = 1/2 laplacian(phi)
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: lensing convergence</p>
+<dd><p>lensing convergence k = 1/2 laplacian(phi)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing convergence</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.magnification">
 <code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.magnification" title="Permalink to this definition">¶</a></dt>
 <dd><p>mag = 1/det(A)
-A = 1 - d^2phi/d_ij
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: magnification</p>
+A = 1 - d^2phi/d_ij</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">magnification</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -233,47 +304,91 @@ A = 1 - d^2phi/d_ij
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.mass_2d">
 <code class="descname">mass_2d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs</em>, <em>bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.mass_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the mass enclosed a projected (2d) radius r
-:param r: radius (in angular units)
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param bool_list: list of bools that are part of the output
-:return: projected mass (in angular units, modulo epsilon_crit)</p>
+<dd><p>computes the mass enclosed a projected (2d) radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (in angular units)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>bool_list</strong> – list of bools that are part of the output</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">projected mass (in angular units, modulo epsilon_crit)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.mass_3d">
 <code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs</em>, <em>bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.mass_3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the mass within a 3d sphere of radius r
-:param r: radius (in angular units)
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param bool_list: list of bools that are part of the output
-:return: mass (in angular units, modulo epsilon_crit)</p>
+<dd><p>computes the mass within a 3d sphere of radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (in angular units)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>bool_list</strong> – list of bools that are part of the output</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass (in angular units, modulo epsilon_crit)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.potential">
 <code class="descname">potential</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.potential" title="Permalink to this definition">¶</a></dt>
-<dd><p>lensing potential
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: lensing potential in units of arcsec^2</p>
+<dd><p>lensing potential</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential in units of arcsec^2</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model.LensModel.ray_shooting">
 <code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel.ray_shooting" title="Permalink to this definition">¶</a></dt>
-<dd><p>maps image to source position (inverse deflection)
-:param x: x-position (preferentially arcsec)
-:type x: numpy array
-:param y: y-position (preferentially arcsec)
-:type y: numpy array
-:param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-:param k: only evaluate the k-th lens model
-:return: source plane positions corresponding to (x, y) in the image plane</p>
+<dd><p>maps image to source position (inverse deflection)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy array</em>) – x-position (preferentially arcsec)</li>
+<li><strong>y</strong> (<em>numpy array</em>) – y-position (preferentially arcsec)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>k</strong> – only evaluate the k-th lens model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">source plane positions corresponding to (x, y) in the image plane</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -581,7 +696,7 @@ A = 1 - d^2phi/d_ij
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

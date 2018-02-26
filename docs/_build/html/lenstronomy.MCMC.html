@@ -24,7 +24,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.SimulationAPI package" href="lenstronomy.SimulationAPI.html" />
+    <link rel="next" title="lenstronomy.Plots package" href="lenstronomy.Plots.html" />
     <link rel="prev" title="lenstronomy.LightModel.Profiles package" href="lenstronomy.LightModel.Profiles.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
+          <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
@@ -58,172 +58,40 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-lenstronomy.MCMC.initialise_from_chain">
-<span id="lenstronomy-mcmc-initialise-from-chain-module"></span><h2>lenstronomy.MCMC.initialise_from_chain module<a class="headerlink" href="#module-lenstronomy.MCMC.initialise_from_chain" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain">
-<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.initialise_from_chain.</code><code class="descname">InitialiseFromChain</code><span class="sig-paren">(</span><em>path</em>, <em>fraction=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/initialise_from_chain.html#InitialiseFromChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Picks random positions from a given sample to initialize the walkers.</p>
-<dl class="method">
-<dt id="lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain.generate">
-<code class="descname">generate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/initialise_from_chain.html#InitialiseFromChain.generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain.generate" title="Permalink to this definition">¶</a></dt>
-<dd><p>generates the positions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><em>sampler</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/initialise_from_chain.html#InitialiseFromChain.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.initialise_from_chain.InitialiseFromChain.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-mcmc-initialise-from-chain-module">
+<h2>lenstronomy.MCMC.initialise_from_chain module<a class="headerlink" href="#lenstronomy-mcmc-initialise-from-chain-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-lenstronomy.MCMC.mcmc">
 <span id="lenstronomy-mcmc-mcmc-module"></span><h2>lenstronomy.MCMC.mcmc module<a class="headerlink" href="#module-lenstronomy.MCMC.mcmc" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.MCMC.mcmc.MCMC_sampler">
-<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.mcmc.</code><code class="descname">MCMC_sampler</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_options</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMC_sampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMC_sampler" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.MCMC.mcmc.MCMCSampler">
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.mcmc.</code><code class="descname">MCMCSampler</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class which executes the different sampling  methods</p>
 <dl class="method">
-<dt id="lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_CH">
-<code class="descname">mcmc_CH</code><span class="sig-paren">(</span><em>walkerRatio</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMC_sampler.mcmc_CH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_CH" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.MCMC.mcmc.MCMCSampler.mcmc_CH">
+<code class="descname">mcmc_CH</code><span class="sig-paren">(</span><em>walkerRatio</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler.mcmc_CH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler.mcmc_CH" title="Permalink to this definition">¶</a></dt>
 <dd><p>runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
 returns the chain</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_emcee">
-<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMC_sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMC_sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.MCMC.mcmc.MCMCSampler.mcmc_emcee">
+<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the mcmc analysis of the parameter space</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.MCMC.mcmc.MCMC_sampler.pso">
-<code class="descname">pso</code><span class="sig-paren">(</span><em>n_particles</em>, <em>n_iterations</em>, <em>lowerLimit=None</em>, <em>upperLimit=None</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>print_positions=False</em>, <em>mpi=False</em>, <em>print_key='default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMC_sampler.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMC_sampler.pso" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.MCMC.mcmc.MCMCSampler.pso">
+<code class="descname">pso</code><span class="sig-paren">(</span><em>n_particles</em>, <em>n_iterations</em>, <em>lowerLimit=None</em>, <em>upperLimit=None</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>print_positions=False</em>, <em>mpi=False</em>, <em>print_key='default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler.pso" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the best fit for the lense model on catalogue basis with particle swarm optimizer</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.MCMC.mcmc_chains">
-<span id="lenstronomy-mcmc-mcmc-chains-module"></span><h2>lenstronomy.MCMC.mcmc_chains module<a class="headerlink" href="#module-lenstronomy.MCMC.mcmc_chains" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain">
-<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.mcmc_chains.</code><code class="descname">MCMC_chain</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_options</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class contains the routines to run a MCMC process with one single image</p>
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_catalogue">
-<code class="descname">X2_chain_catalogue</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.X2_chain_catalogue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_catalogue" title="Permalink to this definition">¶</a></dt>
-<dd><p>routine to compute X2 given variable parameters for a MCMC/PSO chain</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_image">
-<code class="descname">X2_chain_image</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.X2_chain_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.X2_chain_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>routine to compute X2 given variable parameters for a MCMC/PSO chainF</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_additional_images">
-<code class="descname">check_additional_images</code><span class="sig-paren">(</span><em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.check_additional_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_additional_images" title="Permalink to this definition">¶</a></dt>
-<dd><p>checks whether additional images have been found and placed in kwargs_else
-:param kwargs_else:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_bounds">
-<code class="descname">check_bounds</code><span class="sig-paren">(</span><em>args</em>, <em>lowerLimit</em>, <em>upperLimit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.check_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>checks whether the parameter vector has left its bound, if so, adds a big number</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_solver">
-<code class="descname">check_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em>, <em>tolerance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.check_solver" title="Permalink to this definition">¶</a></dt>
-<dd><p>test whether the image positions map back to the same source position
-:param kwargs_lens:
-:param kwargs_else:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.computeLikelihood">
-<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.computeLikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.effectiv_numData_points">
-<code class="descname">effectiv_numData_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.effectiv_numData_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.effectiv_numData_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood">
-<code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood_image_pos">
-<code class="descname">likelihood_image_pos</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_else</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.likelihood_image_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.likelihood_image_pos" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_lens_model</strong> – image position of lens model</li>
-<li><strong>y_lens_model</strong> – image position of lens model</li>
-<li><strong>x_image</strong> – image position of image data</li>
-<li><strong>y_image</strong> – image position of image data</li>
-<li><strong>sigma</strong> – likelihood sigma</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of model given image positions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.logL_delay">
-<code class="descname">logL_delay</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_else</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.logL_delay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.logL_delay" title="Permalink to this definition">¶</a></dt>
-<dd><p>routine to compute the log likelihood of the time delay distance
-:param args:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.priors">
-<code class="descname">priors</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_priors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.priors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.priors" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_priors</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.MCMC.mcmc_chains.MCMC_chain.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc_chains.html#MCMC_chain.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc_chains.MCMC_chain.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="lenstronomy-mcmc-mcmc-chains-module">
+<h2>lenstronomy.MCMC.mcmc_chains module<a class="headerlink" href="#lenstronomy-mcmc-mcmc-chains-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-lenstronomy.MCMC.reinitialize">
 <span id="lenstronomy-mcmc-reinitialize-module"></span><h2>lenstronomy.MCMC.reinitialize module<a class="headerlink" href="#module-lenstronomy.MCMC.reinitialize" title="Permalink to this headline">¶</a></h2>
@@ -261,9 +129,9 @@ returns the chain</p>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.MCMC package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.MCMC.initialise_from_chain">lenstronomy.MCMC.initialise_from_chain module</a></li>
+<li><a class="reference internal" href="#lenstronomy-mcmc-initialise-from-chain-module">lenstronomy.MCMC.initialise_from_chain module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC.mcmc">lenstronomy.MCMC.mcmc module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.MCMC.mcmc_chains">lenstronomy.MCMC.mcmc_chains module</a></li>
+<li><a class="reference internal" href="#lenstronomy-mcmc-mcmc-chains-module">lenstronomy.MCMC.mcmc_chains module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC.reinitialize">lenstronomy.MCMC.reinitialize module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC">Module contents</a></li>
 </ul>
@@ -274,8 +142,8 @@ returns the chain</p>
   <p class="topless"><a href="lenstronomy.LightModel.Profiles.html"
                         title="previous chapter">lenstronomy.LightModel.Profiles package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.SimulationAPI.html"
-                        title="next chapter">lenstronomy.SimulationAPI package</a></p>
+  <p class="topless"><a href="lenstronomy.Plots.html"
+                        title="next chapter">lenstronomy.Plots package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -307,7 +175,7 @@ returns the chain</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
+          <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              >next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
@@ -317,7 +185,7 @@ returns the chain</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

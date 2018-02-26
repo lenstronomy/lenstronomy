@@ -250,42 +250,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_diameter_relations">
-<code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em>, <em>z_d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_distances">
-<code class="descname">angular_distances</code><span class="sig-paren">(</span><em>sigma_v_measured</em>, <em>time_delay_measured</em>, <em>kappa_ext</em>, <em>sigma_v_modeled</em>, <em>fermat_pot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.angular_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.angular_distances" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sigma_v_measured</strong> – velocity dispersion measured [km/s]</li>
-<li><strong>time_delay_measured</strong> – time delay measured [d]</li>
-<li><strong>kappa_ext</strong> – external convergence estimated []</li>
-<li><strong>sigma_v_modeled</strong> – lens model velocity dispersion with default cosmology and without external convergence [km/s]</li>
-<li><strong>fermat_pot</strong> – fermat potential of lens model, modulo MSD of kappa_ext [arcsec^2]</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">D_d and D_d*D_s/D_ds, units in Mpc physical</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.arcsec2phys_lens">
 <code class="descname">arcsec2phys_lens</code><span class="sig-paren">(</span><em>arcsec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.arcsec2phys_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.arcsec2phys_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert angular to physical quantities for lens plane
@@ -334,14 +298,6 @@
 <dl class="method">
 <dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E">
 <code class="descname">mass_in_theta_E</code><span class="sig-paren">(</span><em>theta_E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.mass_in_theta_E"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E" title="Permalink to this definition">¶</a></dt>
-<dd><p>mass within Einstein radius (area * epsilon crit) [M_sun]
-:param theta_E: Einstein radius [arcsec]
-:return: mass within Einstein radius [M_sun]</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E_2">
-<code class="descname">mass_in_theta_E_2</code><span class="sig-paren">(</span><em>theta_E</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.mass_in_theta_E_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass within Einstein radius (area * epsilon crit) [M_sun]
 :param theta_E: Einstein radius [arcsec]
 :return: mass within Einstein radius [M_sun]</p>
@@ -448,7 +404,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

@@ -66,6 +66,21 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle linear coordinate transformations of a square pixel image</p>
 <dl class="method">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">
+<code class="descname">coordinate_grid</code><span class="sig-paren">(</span><em>numPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.coordinate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>numPix</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix">
 <code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -126,18 +141,46 @@
 <span id="lenstronomy-data-imaging-data-module"></span><h2>lenstronomy.Data.imaging_data module<a class="headerlink" href="#module-lenstronomy.Data.imaging_data" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Data.imaging_data.Data">
-<em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>subgrid_res=1</em>, <em>psf_subgrid=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.C_D">
+<code class="descname">C_D</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.C_D" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">covariance matrix of all pixel values in 2d numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.background_rms">
+<code class="descname">background_rms</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.background_rms" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">rms value of background noise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.array2image">
-<code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.array2image" title="Permalink to this definition">¶</a></dt>
-<dd><p>maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
-:param array: 1d array
-:param idex_mask: 1d array of length nx*ny
-:param nx: x-axis of 2d grid
-:param ny: y-axis of 2d grid
-:return:</p>
+<dt id="lenstronomy.Data.imaging_data.Data.constructor_kwargs">
+<code class="descname">constructor_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.constructor_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.constructor_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">kwargs that allow to construct the Data() class</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -147,7 +190,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.covariance_matrix">
-<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>d</em>, <em>sigma_b</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>d</em>, <em>sigma_b</em>, <em>f</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a diagonal matrix for the covariance estimation
 :param d: data array
 :param sigma_b: background noise
@@ -158,25 +201,45 @@
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.data">
 <code class="descname">data</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2d numpy array of data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.deltaPix">
 <code class="descname">deltaPix</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.deltaPix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pixel size (in units of arcsec)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.image2array">
-<code class="descname">image2array</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.image2array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.image2array" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns 1d array of values in image in idex_mask
-:param image:
-:param idex_mask:
-:return:</p>
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.exposure_map">
+<code class="descname">exposure_map</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.exposure_map" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.log_likelihood">
-<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>mask</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns reduced residual map
 :param model:
 :param data:
@@ -228,76 +291,24 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.Data.imaging_data.Data.mask">
-<code class="descname">mask</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.numData">
 <code class="descname">numData</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.numData" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.imaging_data.Data.numData_evaluate">
-<code class="descname">numData_evaluate</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.numData_evaluate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.Data.imaging_data.Data.num_response">
-<code class="descname">num_response</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.num_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of pixels as part of the response array
-:return:</p>
-</dd></dl>
-
 <dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.psf_convolution">
-<code class="descname">psf_convolution</code><span class="sig-paren">(</span><em>grid</em>, <em>grid_scale</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.psf_convolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.psf_convolution" title="Permalink to this definition">¶</a></dt>
-<dd><p>convolves a given pixel grid with a PSF</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.psf_fwhm">
-<code class="descname">psf_fwhm</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.psf_fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.psf_fwhm" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dt id="lenstronomy.Data.imaging_data.Data.update_data">
+<code class="descname">update_data</code><span class="sig-paren">(</span><em>image_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.update_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>update the data</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_data</strong> – 2d numpy array of same size as nx, ny</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">psf fwhm in units of arcsec</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.re_size_convolve">
-<code class="descname">re_size_convolve</code><span class="sig-paren">(</span><em>array</em>, <em>kwargs_psf</em>, <em>unconvolved=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.re_size_convolve" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>array</strong> – 2d image (can also be higher resolution binned</li>
-<li><strong>kwargs_psf</strong> – kwargs of psf modelling</li>
-<li><strong>unconvolved</strong> – bool, if True, no convlolution performed, only re-binning</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array with convolved and re-binned data/model</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.reduced_chi2">
-<code class="descname">reduced_chi2</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.reduced_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.reduced_chi2" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns reduced chi2
-:param model:
-:param error_map:
-:return:</p>
 </dd></dl>
 
 </dd></dl>
@@ -372,7 +383,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

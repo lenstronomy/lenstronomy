@@ -61,10 +61,10 @@
 
 <span class="sd">        :param profile_list:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">profile_type_list</span><span class="o">=</span><span class="n">profile_list</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">light_model_list</span><span class="o">=</span><span class="n">profile_list</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interpol_grid_num&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_interpolate&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_interpolate&#39;</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_integrate&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_integrate&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LightProfile.light_3d"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -111,7 +111,7 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_cdf&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
+            <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
             <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_array</span><span class="p">):</span>
@@ -216,7 +216,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

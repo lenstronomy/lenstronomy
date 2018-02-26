@@ -169,8 +169,12 @@
         <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="n">x_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_source</span><span class="p">)</span>
         <span class="n">y_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_source</span><span class="p">)</span>
-        <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">fermat_pot</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span><span class="p">:</span>
+            <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">arrival_time</span> <span class="o">=</span> <span class="o">-</span><span class="n">fermat_pot</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">arrival_time</span><span class="p">)</span>
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_mins</span><span class="p">)[</span><span class="n">idx</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div></div>
@@ -209,7 +213,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

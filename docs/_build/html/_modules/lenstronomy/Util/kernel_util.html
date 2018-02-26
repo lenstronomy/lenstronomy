@@ -54,6 +54,7 @@
 <span class="kn">import</span> <span class="nn">scipy.ndimage.interpolation</span> <span class="k">as</span> <span class="nn">interp</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
 
 
 <div class="viewcode-block" id="de_shift_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.de_shift_kernel">[docs]</a><span class="k">def</span> <span class="nf">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
@@ -101,9 +102,14 @@
 <span class="sd">    :param subgrid_res: subgrid resolution required</span>
 <span class="sd">    :return: kernel with higher resolution (larger)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">subgrid_res</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subgrid_res</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">kernel</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
-    <span class="n">x_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
-    <span class="n">y_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">d_x</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">nx</span>
+    <span class="n">x_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">d_x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d_x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">d_y</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">nx</span>
+    <span class="n">y_in</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">d_y</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d_y</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
     <span class="n">nx_new</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">subgrid_res</span>
     <span class="n">ny_new</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">subgrid_res</span>
     <span class="k">if</span> <span class="n">odd</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -111,8 +117,11 @@
             <span class="n">nx_new</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">ny_new</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ny_new</span> <span class="o">-=</span> <span class="mi">1</span>
-    <span class="n">x_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nx_new</span><span class="p">)</span>
-    <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny_new</span><span class="p">)</span>
+
+    <span class="n">d_x_new</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">nx_new</span>
+    <span class="n">d_y_new</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">ny_new</span>
+    <span class="n">x_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">d_x_new</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d_x_new</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx_new</span><span class="p">)</span>
+    <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">d_y_new</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d_y_new</span><span class="p">,</span> <span class="n">ny_new</span><span class="p">)</span>
     <span class="n">out_values</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span>
     <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">out_values</span>
     <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
@@ -167,6 +176,17 @@
             <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">add_layer2image</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">,</span> <span class="n">k_x</span><span class="p">,</span> <span class="n">k_y</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">)</span>
     <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">kernel_size</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kernel_gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_gaussian">[docs]</a><span class="k">def</span> <span class="nf">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">)</span>
+    <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">)</span>
+    <span class="n">gaussian</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">gaussian</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">sigma_x</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">sigma_y</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
+                                         <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">kernel</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kernel</span></div>
 
 
 <div class="viewcode-block" id="cutout_source"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cutout_source">[docs]</a><span class="k">def</span> <span class="nf">cutout_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -227,6 +247,30 @@
             <span class="n">fwhm_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">I_2</span> <span class="o">-</span> <span class="n">I_r</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">I_r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">I_r</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">fwhm_2</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The kernel did not drop to half the max value - fwhm not determined!&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="estimate_amp"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.estimate_amp">[docs]</a><span class="k">def</span> <span class="nf">estimate_amp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">psf_kernel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    estimates the amplitude of a point source located at x_pos, y_pos</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :param x_pos:</span>
+<span class="sd">    :param y_pos:</span>
+<span class="sd">    :param deltaPix:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numPix_x</span><span class="p">,</span> <span class="n">numPix_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1">#data_center = int((numPix-1.)/2)</span>
+    <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="o">-</span><span class="mf">0.49999</span><span class="p">))</span><span class="c1">#+data_center</span>
+    <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="o">-</span><span class="mf">0.49999</span><span class="p">))</span><span class="c1">#+data_center</span>
+    <span class="k">if</span> <span class="n">x_int</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">x_int</span> <span class="o">&lt;</span> <span class="n">numPix_x</span><span class="o">-</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">y_int</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y_int</span> <span class="o">&lt;</span> <span class="n">numPix_y</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">mean_image</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">y_int</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">y_int</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_int</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">x_int</span><span class="o">+</span><span class="mi">3</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_kernel</span><span class="p">)</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mean_kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">psf_kernel</span><span class="p">[</span><span class="n">center</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">center</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">center</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">center</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">amp_estimated</span> <span class="o">=</span> <span class="n">mean_image</span><span class="o">/</span><span class="n">mean_kernel</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">amp_estimated</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">amp_estimated</span></div>
 </pre></div>
 
           </div>
@@ -262,7 +306,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

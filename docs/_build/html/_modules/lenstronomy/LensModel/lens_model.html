@@ -63,16 +63,21 @@
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
 <span class="sd">        :param foreground_shear: bool, when True, models a foreground non-linear shear distortion</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redshift_list</span> <span class="o">=</span> <span class="n">redshift_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiLens</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
+
 
 <div class="viewcode-block" id="LensModel.ray_shooting"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.ray_shooting">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        maps image to source position (inverse deflection)</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -99,6 +104,20 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="LensModel.arrival_time"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.arrival_time">[docs]</a>    <span class="k">def</span> <span class="nf">arrival_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_image:</span>
+<span class="sd">        :param y_image:</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;arrival_time routine not defined for single plane lensing. Please use Fermat potential instead&quot;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="LensModel.mass"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.mass">[docs]</a>    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epsilon_crit</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -115,6 +134,7 @@
 <div class="viewcode-block" id="LensModel.potential"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.potential">[docs]</a>    <span class="k">def</span> <span class="nf">potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        lensing potential</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -128,6 +148,7 @@
 <div class="viewcode-block" id="LensModel.alpha"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.alpha">[docs]</a>    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deflection angles</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -141,6 +162,7 @@
 <div class="viewcode-block" id="LensModel.kappa"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.kappa">[docs]</a>    <span class="k">def</span> <span class="nf">kappa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        lensing convergence k = 1/2 laplacian(phi)</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -159,6 +181,7 @@
 <span class="sd">        shear computation</span>
 <span class="sd">        g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)</span>
 <span class="sd">        g2 = d^2phi/dxdy</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -178,6 +201,7 @@
 <span class="sd">        magnification</span>
 <span class="sd">        mag = 1/det(A)</span>
 <span class="sd">        A = 1 - d^2phi/d_ij</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -194,6 +218,7 @@
 <div class="viewcode-block" id="LensModel.hessian"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        hessian matrix</span>
+
 <span class="sd">        :param x: x-position (preferentially arcsec)</span>
 <span class="sd">        :type x: numpy array</span>
 <span class="sd">        :param y: y-position (preferentially arcsec)</span>
@@ -207,6 +232,7 @@
 <div class="viewcode-block" id="LensModel.mass_3d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">bool_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the mass within a 3d sphere of radius r</span>
+
 <span class="sd">        :param r: radius (in angular units)</span>
 <span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
 <span class="sd">        :param bool_list: list of bools that are part of the output</span>
@@ -220,6 +246,7 @@
 <div class="viewcode-block" id="LensModel.mass_2d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">bool_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the mass enclosed a projected (2d) radius r</span>
+
 <span class="sd">        :param r: radius (in angular units)</span>
 <span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
 <span class="sd">        :param bool_list: list of bools that are part of the output</span>
@@ -265,7 +292,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

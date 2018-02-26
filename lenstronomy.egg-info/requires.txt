@@ -1,3 +1,0 @@
-numpy>=1.13
-scipy>=0.14.0
-configparser

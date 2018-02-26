@@ -106,7 +106,7 @@
     <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">gamma</span></div>
 
 
-<div class="viewcode-block" id="phi_q2_elliptisity"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.phi_q2_elliptisity">[docs]</a><span class="k">def</span> <span class="nf">phi_q2_elliptisity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="phi_q2_ellipticity"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.phi_q2_ellipticity">[docs]</a><span class="k">def</span> <span class="nf">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param phi:</span>
@@ -126,6 +126,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">e2</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">e1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">e2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">q</span></div>
 
@@ -138,7 +140,7 @@
 <span class="sd">    :param bounds:</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">phi_q2_elliptisity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">]:</span>
         <span class="n">e</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e2</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">bounds</span> <span class="o">==</span> <span class="s1">&#39;lower&#39;</span><span class="p">:</span>
@@ -183,7 +185,7 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, ETH Zurich.
+        &#169; Copyright 2018, Simon Birrer and contributors.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
   </body>

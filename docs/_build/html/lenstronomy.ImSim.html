@@ -346,7 +346,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_class</strong> – instance of Data() class</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
 </tr>
 </tbody>
 </table>
@@ -362,7 +362,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_numerics</strong> – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
 </tr>
 </tbody>
 </table>
@@ -378,7 +378,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>psf_class</strong> – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
 </tr>
 </tbody>
 </table>
@@ -387,8 +387,128 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </dd></dl>
 
 </div>
-<div class="section" id="lenstronomy-imsim-iterative-psf-module">
-<h2>lenstronomy.ImSim.iterative_psf module<a class="headerlink" href="#lenstronomy-imsim-iterative-psf-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.ImSim.image_numerics">
+<span id="lenstronomy-imsim-image-numerics-module"></span><h2>lenstronomy.ImSim.image_numerics module<a class="headerlink" href="#module-lenstronomy.ImSim.image_numerics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics">
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_numerics.</code><code class="descname">ImageNumerics</code><span class="sig-paren">(</span><em>data</em>, <em>psf</em>, <em>kwargs_numerics</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking</p>
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.C_D_response">
+<code class="descname">C_D_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.C_D_response" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">covariance matrix of pixels within index_mask as a 1d array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.array2image">
+<code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.array2image" title="Permalink to this definition">¶</a></dt>
+<dd><p>maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
+:param array: 1d array
+:param idex_mask: 1d array of length nx*ny
+:param nx: x-axis of 2d grid
+:param ny: y-axis of 2d grid
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.dec_grid_ray_shooting">
+<code class="descname">dec_grid_ray_shooting</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.dec_grid_ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.exposure_map_array">
+<code class="descname">exposure_map_array</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.exposure_map_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.image2array">
+<code class="descname">image2array</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.image2array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.image2array" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 1d array of values in image in idex_mask
+:param image:
+:param idex_mask:
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.mask">
+<code class="descname">mask</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.numData_evaluate">
+<code class="descname">numData_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.numData_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.num_response">
+<code class="descname">num_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.num_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of pixels as part of the response array
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering">
+<code class="descname">point_source_rendering</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.point_source_rendering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_points</strong> – </li>
+<li><strong>x_pos</strong> – </li>
+<li><strong>y_pos</strong> – </li>
+<li><strong>psf_large</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">response matrix of point sources</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.psf_error_map">
+<code class="descname">psf_error_map</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.psf_error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.psf_error_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.ra_grid_ray_shooting">
+<code class="descname">ra_grid_ray_shooting</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.ra_grid_ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.re_size_convolve">
+<code class="descname">re_size_convolve</code><span class="sig-paren">(</span><em>array</em>, <em>unconvolved=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> – 1d data vector (can also be higher resolution binned)</li>
+<li><strong>kwargs_psf</strong> – kwargs of psf modelling</li>
+<li><strong>unconvolved</strong> – bool, if True, no convlolution performed, only re-binning</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array with convolved and re-binned data/model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.ImSim.multiband">
 <span id="lenstronomy-imsim-multiband-module"></span><h2>lenstronomy.ImSim.multiband module<a class="headerlink" href="#module-lenstronomy.ImSim.multiband" title="Permalink to this headline">¶</a></h2>
@@ -524,8 +644,159 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </dd></dl>
 
 </div>
-<div class="section" id="lenstronomy-imsim-point-source-module">
-<h2>lenstronomy.ImSim.point_source module<a class="headerlink" href="#lenstronomy-imsim-point-source-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.ImSim.psf_fitting">
+<span id="lenstronomy-imsim-psf-fitting-module"></span><h2>lenstronomy.ImSim.psf_fitting module<a class="headerlink" href="#module-lenstronomy.ImSim.psf_fitting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting">
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.psf_fitting.</code><code class="descname">PsfFitting</code><span class="sig-paren">(</span><em>image_model_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class to find subsequently a better psf as making use of the point sources in the lens model
+this technique can be dangerous as one might overfit the data</p>
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.combine_psf">
+<code class="descname">combine_psf</code><span class="sig-paren">(</span><em>kernel_list</em>, <em>kernel_old</em>, <em>sigma_bkg</em>, <em>factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.combine_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.combine_psf" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates psf estimate based on old kernel and several new estimates
+:param kernel_list:
+:param kernel_old:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.cutout_psf">
+<code class="descname">cutout_psf</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>image_list</em>, <em>kernelsize</em>, <em>mask</em>, <em>mask_point_source_list</em>, <em>kernel_init</em>, <em>symmetry=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.cutout_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.cutout_psf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>image_list</strong> – list of images (i.e. data - all models subtracted, except a single point source)</li>
+<li><strong>kernelsize</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.image_single_point_source">
+<code class="descname">image_single_point_source</code><span class="sig-paren">(</span><em>image_model_class</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.image_single_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.image_single_point_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>return model without including the point source contributions
+:param kwargs_data:
+:param kwargs_psf:
+:param kwargs_options:
+:param kwargs_lens:
+:param kwargs_source:
+:param kwargs_lens_light:
+:param kwargs_ps:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.mask_point_source">
+<code class="descname">mask_point_source</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>x_grid</em>, <em>y_grid</em>, <em>radius</em>, <em>i=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.mask_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.mask_point_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_pos</strong> – </li>
+<li><strong>y_pos</strong> – </li>
+<li><strong>i</strong> – </li>
+<li><strong>kernel</strong> – </li>
+<li><strong>image</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a mask of the size of the image with cutouts around the position</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.mask_point_sources">
+<code class="descname">mask_point_sources</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>x_grid</em>, <em>y_grid</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.mask_point_sources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.mask_point_sources" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_pos</strong> – </li>
+<li><strong>y_pos</strong> – </li>
+<li><strong>x_grid</strong> – </li>
+<li><strong>y_grid</strong> – </li>
+<li><strong>radius</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.update_iterative">
+<code class="descname">update_iterative</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>factor=1</em>, <em>num_iter=10</em>, <em>symmetry=1</em>, <em>verbose=True</em>, <em>no_break=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.update_iterative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.update_iterative" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_data</strong> – </li>
+<li><strong>kwargs_psf</strong> – </li>
+<li><strong>kwargs_options</strong> – </li>
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_ps</strong> – </li>
+<li><strong>factor</strong> – </li>
+<li><strong>num_iter</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.psf_fitting.PsfFitting.update_psf">
+<code class="descname">update_psf</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>factor=1</em>, <em>symmetry=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/psf_fitting.html#PsfFitting.update_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.psf_fitting.PsfFitting.update_psf" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_data</strong> – </li>
+<li><strong>kwargs_psf</strong> – </li>
+<li><strong>kwargs_options</strong> – </li>
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_ps</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.ImSim">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.ImSim" title="Permalink to this headline">¶</a></h2>
@@ -544,9 +815,9 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim.de_lens">lenstronomy.ImSim.de_lens module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim.image_model">lenstronomy.ImSim.image_model module</a></li>
-<li><a class="reference internal" href="#lenstronomy-imsim-iterative-psf-module">lenstronomy.ImSim.iterative_psf module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.ImSim.image_numerics">lenstronomy.ImSim.image_numerics module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim.multiband">lenstronomy.ImSim.multiband module</a></li>
-<li><a class="reference internal" href="#lenstronomy-imsim-point-source-module">lenstronomy.ImSim.point_source module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.ImSim.psf_fitting">lenstronomy.ImSim.psf_fitting module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim">Module contents</a></li>
 </ul>
 </li>

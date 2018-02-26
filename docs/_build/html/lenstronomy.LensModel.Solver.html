@@ -133,6 +133,51 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LensModel.Solver.solver">
+<span id="lenstronomy-lensmodel-solver-solver-module"></span><h2>lenstronomy.LensModel.Solver.solver module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Solver.solver.Solver">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>solver_type</em>, <em>lensModel=None</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>joint solve class to manage with type of solver to be executed and checks whether the requirements are fulfilled.</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens">
+<code class="descname">add_fixed_lens</code><span class="sig-paren">(</span><em>kwargs_fixed_lens_list</em>, <em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns kwargs that are kept fixed during run, depending on options
+:param kwargs_options:
+:param kwargs_lens:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel">
+<code class="descname">constraint_lensmodel</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_pos</strong> – </li>
+<li><strong>y_pos</strong> – </li>
+<li><strong>kwargs_list</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.update_solver">
+<code class="descname">update_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.update_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.update_solver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LensModel.Solver.solver2point">
 <span id="lenstronomy-lensmodel-solver-solver2point-module"></span><h2>lenstronomy.LensModel.Solver.solver2point module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver2point" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -263,6 +308,7 @@
 <li><a class="reference internal" href="#">lenstronomy.LensModel.Solver package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Solver.lens_equation_solver">lenstronomy.LensModel.Solver.lens_equation_solver module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Solver.solver">lenstronomy.LensModel.Solver.solver module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Solver.solver2point">lenstronomy.LensModel.Solver.solver2point module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Solver.solver4point">lenstronomy.LensModel.Solver.solver4point module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Solver">Module contents</a></li>

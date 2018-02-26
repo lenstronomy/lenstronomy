@@ -136,6 +136,7 @@ class NFW(object):
 
     def nfwPot(self, R, Rs, rho0):
         """
+
         lensing potential of NFW profile (*Sigma_crit*D_OL**2)
 
         :param R: radius of interest
@@ -154,7 +155,8 @@ class NFW(object):
 
     def nfwAlpha(self, R, Rs, rho0, ax_x, ax_y):
         """
-        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate "axis"
+
+        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate 'axis'
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -179,7 +181,8 @@ class NFW(object):
 
     def nfwGamma(self, R, Rs, rho0, ax_x, ax_y):
         """
-        shear gamma of NFW profile (*Sigma_crit) along the projection to coordinate "axis"
+
+        shear gamma of NFW profile (*Sigma_crit) along the projection to coordinate 'axis'
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -241,6 +244,7 @@ class NFW(object):
 
     def _g(self, X):
         """
+
         analytic solution of integral for NFW profile to compute deflection angel and gamma
 
         :param x: R/Rs
@@ -272,6 +276,7 @@ class NFW(object):
 
     def _h(self, X):
         """
+
         analytic solution of integral for NFW profile to compute the potential
 
         :param x: R/Rs
@@ -302,7 +307,9 @@ class NFW(object):
 
     def _rho02alpha(self, rho0, Rs):
         """
+
         convert rho0 to angle at Rs
+
         :param rho0:
         :param Rs:
         :return:

@@ -101,16 +101,18 @@ class Velocity_dispersion(object):
         y_ = y + np.random.normal() * sigma_one_direction
         return x_, y_
 
-    def check_in_slit(self, x_, y_, R_slit, dR_slit):
+    def check_in_slit(self, x, y, R_slit, dR_slit):
         """
-        check whether a ray in position (x_,y_) is captured in the slit with Radius R_slit and width dR_slit
-        :param x_:
-        :param y_:
+
+        check whether a ray in position (x,y) is captured in the slit with Radius R_slit and width dR_slit
+
+        :param x:
+        :param y:
         :param R_slit:
         :param dR_slit:
         :return:
         """
-        if abs(x_) < R_slit/2. and abs(y_) < dR_slit/2.:
+        if abs(x) < R_slit/2. and abs(y) < dR_slit/2.:
             return True
         else:
             return False

@@ -12,6 +12,14 @@ lenstronomy\.LensModel\.Solver\.lens\_equation\_solver module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.LensModel\.Solver\.solver module
+---------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Solver.solver
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.LensModel\.Solver\.solver2point module
 ---------------------------------------------------
 

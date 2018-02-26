@@ -16,6 +16,7 @@ Contents:
    lenstronomy
    contributing
    authors
+   published
    history
 
 Feedback

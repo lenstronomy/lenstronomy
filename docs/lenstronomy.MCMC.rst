@@ -4,10 +4,18 @@ lenstronomy\.MCMC package
 Submodules
 ----------
 
-lenstronomy\.MCMC\.initialise\_from\_chain module
--------------------------------------------------
+lenstronomy\.MCMC\.alignment\_matching module
+---------------------------------------------
 
-.. automodule:: lenstronomy.MCMC.initialise_from_chain
+.. automodule:: lenstronomy.MCMC.alignment_matching
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy\.MCMC\.likelihood\_module module
+--------------------------------------------
+
+.. automodule:: lenstronomy.MCMC.likelihood_module
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,14 +24,6 @@ lenstronomy\.MCMC\.mcmc module
 ------------------------------
 
 .. automodule:: lenstronomy.MCMC.mcmc
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.MCMC\.mcmc\_chains module
---------------------------------------
-
-.. automodule:: lenstronomy.MCMC.mcmc_chains
     :members:
     :undoc-members:
     :show-inheritance:

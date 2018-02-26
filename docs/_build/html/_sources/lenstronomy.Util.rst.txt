@@ -12,6 +12,14 @@ lenstronomy\.Util\.analysis\_util module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.Util\.class\_creator module
+----------------------------------------
+
+.. automodule:: lenstronomy.Util.class_creator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.Util\.constants module
 -----------------------------------
 
@@ -32,14 +40,6 @@ lenstronomy\.Util\.derivative\_util module
 ------------------------------------------
 
 .. automodule:: lenstronomy.Util.derivative_util
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.Util\.fft\_convolve module
----------------------------------------
-
-.. automodule:: lenstronomy.Util.fft_convolve
     :members:
     :undoc-members:
     :show-inheritance:

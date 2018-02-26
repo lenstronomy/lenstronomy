@@ -86,34 +86,36 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param data_class: instance of Data() class</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: no return. Class is updated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Data</span> <span class="o">=</span> <span class="n">data_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">_Data</span> <span class="o">=</span> <span class="n">data_class</span></div>
 
-
 <div class="viewcode-block" id="ImageModel.update_psf"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.update_psf">[docs]</a>    <span class="k">def</span> <span class="nf">update_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_class</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        update the instance of the class with a new instance of PSF() with a potentially different point spread function</span>
 
 <span class="sd">        :param psf_class:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: no return. Class is updated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PSF</span> <span class="o">=</span> <span class="n">psf_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">_PSF</span> <span class="o">=</span> <span class="n">psf_class</span></div>
 
 <div class="viewcode-block" id="ImageModel.update_numerics"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.update_numerics">[docs]</a>    <span class="k">def</span> <span class="nf">update_numerics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        update numerical options</span>
 
 <span class="sd">        :param kwargs_numerics:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: no return. Class is updated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span> <span class="o">=</span> <span class="n">ImageNumerics</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">PSF</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="n">kwargs_numerics</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImageModel.source_surface_brightness"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness">[docs]</a>    <span class="k">def</span> <span class="nf">source_surface_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">de_lensed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        computes the source surface brightness distribution</span>
 
 <span class="sd">        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles</span>
@@ -135,6 +137,7 @@
 
 <div class="viewcode-block" id="ImageModel.lens_surface_brightness"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.lens_surface_brightness">[docs]</a>    <span class="k">def</span> <span class="nf">lens_surface_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        computes the lens surface brightness distribution</span>
 
 <span class="sd">        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles</span>
@@ -151,6 +154,7 @@
 
 <div class="viewcode-block" id="ImageModel.point_source"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.point_source">[docs]</a>    <span class="k">def</span> <span class="nf">point_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        computes the point source positions and paints PSF convolutions on them</span>
 
 <span class="sd">        :param kwargs_ps:</span>
@@ -167,6 +171,7 @@
 
 <div class="viewcode-block" id="ImageModel.image_linear_solve"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.image_linear_solve">[docs]</a>    <span class="k">def</span> <span class="nf">image_linear_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inv_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        computes the image (lens and source surface brightness with a given lens model).</span>
 <span class="sd">        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)</span>
 
@@ -197,6 +202,7 @@
 
 <div class="viewcode-block" id="ImageModel.image"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">source_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lens_light_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">point_source_add</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        make a image with a realisation of linear parameter values &quot;param&quot;</span>
 
 <span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
@@ -273,6 +279,7 @@
 
 <div class="viewcode-block" id="ImageModel.likelihood_data_given_model"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        computes the likelihood of the data given a model</span>
 <span class="sd">        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</span>
 
@@ -342,7 +349,9 @@
 
     <span class="k">def</span> <span class="nf">_response_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        return linear response Matrix</span>
+
 <span class="sd">        :param x_grid:</span>
 <span class="sd">        :param y_grid:</span>
 <span class="sd">        :param x_source:</span>
@@ -409,6 +418,7 @@
 
     <span class="k">def</span> <span class="nf">_update_linear_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        links linear parameters to kwargs arguments</span>
 
 <span class="sd">        :param param: linear parameter vector corresponding to the response matrix</span>

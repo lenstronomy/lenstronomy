@@ -144,8 +144,79 @@
 </dd></dl>
 
 </div>
-<div class="section" id="lenstronomy-cosmo-cosmo-properties-pycosmo-module">
-<h2>lenstronomy.Cosmo.cosmo_properties_pycosmo module<a class="headerlink" href="#lenstronomy-cosmo-cosmo-properties-pycosmo-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.Cosmo.cosmo_solver">
+<span id="lenstronomy-cosmo-cosmo-solver-module"></span><h2>lenstronomy.Cosmo.cosmo_solver module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmo_solver" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmo_solver.InvertCosmo">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_solver.</code><code class="descname">InvertCosmo</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#InvertCosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.InvertCosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Cosmo.cosmo_solver.SolverUtil" title="lenstronomy.Cosmo.cosmo_solver.SolverUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.Cosmo.cosmo_solver.SolverUtil</span></code></a></p>
+<p>class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_solver.InvertCosmo.get_cosmo">
+<code class="descname">get_cosmo</code><span class="sig-paren">(</span><em>Dd</em>, <em>Ds_Dds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#InvertCosmo.get_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.InvertCosmo.get_cosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the values of H0 and omega_m computed with an interpolation
+:param Dd: flat
+:param Ds_Dds: float
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_solver.</code><code class="descname">SolverFlatCosmo</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#SolverFlatCosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Cosmo.cosmo_solver.SolverUtil" title="lenstronomy.Cosmo.cosmo_solver.SolverUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.Cosmo.cosmo_solver.SolverUtil</span></code></a></p>
+<p>class to solve multidimensional non-linear equations to determine the cosmological parameters H0 and omega_m given
+the angular diameter distance relations</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.F">
+<code class="descname">F</code><span class="sig-paren">(</span><em>x</em>, <em>Dd</em>, <em>Ds_Dds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#SolverFlatCosmo.F"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.F" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – array of parameters (H_0, omega_m)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>init</em>, <em>Dd</em>, <em>Ds_Dds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#SolverFlatCosmo.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.solve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmo_solver.SolverUtil">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_solver.</code><code class="descname">SolverUtil</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#SolverUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.SolverUtil" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>util functions</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_solver.SolverUtil.cosmo2Dd_Ds_Dds">
+<code class="descname">cosmo2Dd_Ds_Dds</code><span class="sig-paren">(</span><em>H_0</em>, <em>omega_m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#SolverUtil.cosmo2Dd_Ds_Dds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.SolverUtil.cosmo2Dd_Ds_Dds" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>H_0</strong> – Hubble constant</li>
+<li><strong>omega_m</strong> – matter density</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">angular diameter distances Dd and Ds/Dds</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.Cosmo.lens_cosmo">
 <span id="lenstronomy-cosmo-lens-cosmo-module"></span><h2>lenstronomy.Cosmo.lens_cosmo module<a class="headerlink" href="#module-lenstronomy.Cosmo.lens_cosmo" title="Permalink to this headline">¶</a></h2>
@@ -350,7 +421,7 @@
 <li><a class="reference internal" href="#">lenstronomy.Cosmo package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.background">lenstronomy.Cosmo.background module</a></li>
-<li><a class="reference internal" href="#lenstronomy-cosmo-cosmo-properties-pycosmo-module">lenstronomy.Cosmo.cosmo_properties_pycosmo module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmo_solver">lenstronomy.Cosmo.cosmo_solver module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.lens_cosmo">lenstronomy.Cosmo.lens_cosmo module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo">Module contents</a></li>
 </ul>

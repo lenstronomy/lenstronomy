@@ -20,6 +20,14 @@ lenstronomy\.Data\.imaging\_data module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.Data\.psf module
+-----------------------------
+
+.. automodule:: lenstronomy.Data.psf
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

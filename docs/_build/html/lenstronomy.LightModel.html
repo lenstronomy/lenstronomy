@@ -166,6 +166,103 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LightModel.light_param">
+<span id="lenstronomy-lightmodel-light-param-module"></span><h2>lenstronomy.LightModel.light_param module<a class="headerlink" href="#module-lenstronomy.LightModel.light_param" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.light_param.LightParam">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_param.</code><code class="descname">LightParam</code><span class="sig-paren">(</span><em>light_model_list</em>, <em>kwargs_fixed</em>, <em>type='light'</em>, <em>linear_solver=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_param.LightParam.add_fixed_linear">
+<code class="descname">add_fixed_linear</code><span class="sig-paren">(</span><em>kwargs_fixed_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.add_fixed_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.add_fixed_linear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_light</strong> – </li>
+<li><strong>type</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_param.LightParam.getParams">
+<code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.getParams" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – </li>
+<li><strong>i</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_param.LightParam.num_param">
+<code class="descname">num_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_param.LightParam.param_init">
+<code class="descname">param_init</code><span class="sig-paren">(</span><em>kwargs_mean_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.param_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.param_init" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_mean</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_param.LightParam.setParams">
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_list</strong> – </li>
+<li><strong>bounds</strong> – bool, if True, ellitpicity of min/max</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LightModel">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LightModel" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -183,6 +280,7 @@
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.light_model">lenstronomy.LightModel.light_model module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.light_param">lenstronomy.LightModel.light_param module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel">Module contents</a></li>
 </ul>
 </li>

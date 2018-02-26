@@ -51,12 +51,12 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
 
 def azimuthalAverage(image, center=None):
     """
+
     Calculate the azimuthally averaged radial profile.
 
     image - The 2D image
-    center - The [x,y] pixel coordinates used as the center. The default is
-             None, which then uses the center of the image (including
-             fracitonal pixels).
+    center - The [x,y] pixel coordinates used as the center. The default is None, which then uses the center of the
+    image (including fracitonal pixels).
 
     """
     # Calculate the indices from the image

@@ -58,8 +58,173 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="lenstronomy-mcmc-initialise-from-chain-module">
-<h2>lenstronomy.MCMC.initialise_from_chain module<a class="headerlink" href="#lenstronomy-mcmc-initialise-from-chain-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.MCMC.alignment_matching">
+<span id="lenstronomy-mcmc-alignment-matching-module"></span><h2>lenstronomy.MCMC.alignment_matching module<a class="headerlink" href="#module-lenstronomy.MCMC.alignment_matching" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentFitting">
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.alignment_matching.</code><code class="descname">AlignmentFitting</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_numerics</em>, <em>kwargs_model</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentFitting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class which executes the different sampling  methods</p>
+<dl class="method">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentFitting.pso">
+<code class="descname">pso</code><span class="sig-paren">(</span><em>n_particles</em>, <em>n_iterations</em>, <em>lowerLimit</em>, <em>upperLimit</em>, <em>threadCount=1</em>, <em>mpi=False</em>, <em>print_key='default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentFitting.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentFitting.pso" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the best fit for the lense model on catalogue basis with particle swarm optimizer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.alignment_matching.</code><code class="descname">AlignmentLikelihood</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_numerics</em>, <em>kwargs_model</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.computeLikelihood">
+<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.computeLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.get_args">
+<em class="property">static </em><code class="descname">get_args</code><span class="sig-paren">(</span><em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood.get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.get_args" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_data</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.likelihood">
+<code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.num_param">
+<code class="descname">num_param</code><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.num_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.update_data">
+<code class="descname">update_data</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/alignment_matching.html#AlignmentLikelihood.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.alignment_matching.AlignmentLikelihood.update_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.MCMC.likelihood_module">
+<span id="lenstronomy-mcmc-likelihood-module-module"></span><h2>lenstronomy.MCMC.likelihood_module module<a class="headerlink" href="#module-lenstronomy.MCMC.likelihood_module" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule">
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.likelihood_module.</code><code class="descname">LikelihoodModule</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>this class contains the routines to run a MCMC process with one single image</p>
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.X2_chain">
+<code class="descname">X2_chain</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.X2_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.X2_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute X2 given variable parameters for a MCMC/PSO chainF</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_additional_images">
+<code class="descname">check_additional_images</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.check_additional_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_additional_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether additional images have been found and placed in kwargs_else
+:param kwargs_else:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_bounds">
+<code class="descname">check_bounds</code><span class="sig-paren">(</span><em>args</em>, <em>lowerLimit</em>, <em>upperLimit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.check_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether the parameter vector has left its bound, if so, adds a big number</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_solver">
+<code class="descname">check_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>tolerance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.check_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>test whether the image positions map back to the same source position
+:param kwargs_lens:
+:param kwargs_ps:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.computeLikelihood">
+<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.computeLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.effectiv_numData_points">
+<code class="descname">effectiv_numData_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.effectiv_numData_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.effectiv_numData_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.likelihood">
+<code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.likelihood_image_pos">
+<code class="descname">likelihood_image_pos</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.likelihood_image_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.likelihood_image_pos" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_lens_model</strong> – image position of lens model</li>
+<li><strong>y_lens_model</strong> – image position of lens model</li>
+<li><strong>x_image</strong> – image position of image data</li>
+<li><strong>y_image</strong> – image position of image data</li>
+<li><strong>sigma</strong> – likelihood sigma</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of model given image positions</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.logL_delay">
+<code class="descname">logL_delay</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.logL_delay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.logL_delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute the log likelihood of the time delay distance
+:param args:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.prior_compute">
+<code class="descname">prior_compute</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.prior_compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.prior_compute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.MCMC.mcmc">
 <span id="lenstronomy-mcmc-mcmc-module"></span><h2>lenstronomy.MCMC.mcmc module<a class="headerlink" href="#module-lenstronomy.MCMC.mcmc" title="Permalink to this headline">¶</a></h2>
@@ -89,9 +254,6 @@ returns the chain</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="lenstronomy-mcmc-mcmc-chains-module">
-<h2>lenstronomy.MCMC.mcmc_chains module<a class="headerlink" href="#lenstronomy-mcmc-mcmc-chains-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-lenstronomy.MCMC.reinitialize">
 <span id="lenstronomy-mcmc-reinitialize-module"></span><h2>lenstronomy.MCMC.reinitialize module<a class="headerlink" href="#module-lenstronomy.MCMC.reinitialize" title="Permalink to this headline">¶</a></h2>
@@ -129,9 +291,9 @@ returns the chain</p>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.MCMC package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#lenstronomy-mcmc-initialise-from-chain-module">lenstronomy.MCMC.initialise_from_chain module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.MCMC.alignment_matching">lenstronomy.MCMC.alignment_matching module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.MCMC.likelihood_module">lenstronomy.MCMC.likelihood_module module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC.mcmc">lenstronomy.MCMC.mcmc module</a></li>
-<li><a class="reference internal" href="#lenstronomy-mcmc-mcmc-chains-module">lenstronomy.MCMC.mcmc_chains module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC.reinitialize">lenstronomy.MCMC.reinitialize module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.MCMC">Module contents</a></li>
 </ul>

@@ -20,10 +20,10 @@ lenstronomy\.ImSim\.image\_model module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.ImSim\.iterative\_psf module
------------------------------------------
+lenstronomy\.ImSim\.image\_numerics module
+------------------------------------------
 
-.. automodule:: lenstronomy.ImSim.iterative_psf
+.. automodule:: lenstronomy.ImSim.image_numerics
     :members:
     :undoc-members:
     :show-inheritance:
@@ -36,10 +36,10 @@ lenstronomy\.ImSim\.multiband module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.ImSim\.point\_source module
-----------------------------------------
+lenstronomy\.ImSim\.psf\_fitting module
+---------------------------------------
 
-.. automodule:: lenstronomy.ImSim.point_source
+.. automodule:: lenstronomy.ImSim.psf_fitting
     :members:
     :undoc-members:
     :show-inheritance:

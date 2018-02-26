@@ -184,6 +184,7 @@
 
 <div class="viewcode-block" id="NFW.nfwPot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.nfwPot">[docs]</a>    <span class="k">def</span> <span class="nf">nfwPot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        lensing potential of NFW profile (*Sigma_crit*D_OL**2)</span>
 
 <span class="sd">        :param R: radius of interest</span>
@@ -202,7 +203,8 @@
 
 <div class="viewcode-block" id="NFW.nfwAlpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.nfwAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">nfwAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate &quot;axis&quot;</span>
+
+<span class="sd">        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate &#39;axis&#39;</span>
 
 <span class="sd">        :param R: radius of interest</span>
 <span class="sd">        :type R: float/numpy array</span>
@@ -227,7 +229,8 @@
 
 <div class="viewcode-block" id="NFW.nfwGamma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw.NFW.nfwGamma">[docs]</a>    <span class="k">def</span> <span class="nf">nfwGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        shear gamma of NFW profile (*Sigma_crit) along the projection to coordinate &quot;axis&quot;</span>
+
+<span class="sd">        shear gamma of NFW profile (*Sigma_crit) along the projection to coordinate &#39;axis&#39;</span>
 
 <span class="sd">        :param R: radius of interest</span>
 <span class="sd">        :type R: float/numpy array</span>
@@ -289,6 +292,7 @@
 
     <span class="k">def</span> <span class="nf">_g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        analytic solution of integral for NFW profile to compute deflection angel and gamma</span>
 
 <span class="sd">        :param x: R/Rs</span>
@@ -320,6 +324,7 @@
 
     <span class="k">def</span> <span class="nf">_h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        analytic solution of integral for NFW profile to compute the potential</span>
 
 <span class="sd">        :param x: R/Rs</span>
@@ -350,7 +355,9 @@
 
     <span class="k">def</span> <span class="nf">_rho02alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        convert rho0 to angle at Rs</span>
+
 <span class="sd">        :param rho0:</span>
 <span class="sd">        :param Rs:</span>
 <span class="sd">        :return:</span>

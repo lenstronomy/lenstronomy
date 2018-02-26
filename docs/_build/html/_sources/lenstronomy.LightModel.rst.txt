@@ -19,6 +19,14 @@ lenstronomy\.LightModel\.light\_model module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.LightModel\.light\_param module
+--------------------------------------------
+
+.. automodule:: lenstronomy.LightModel.light_param
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

@@ -65,10 +65,8 @@
 <code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">azimuthalAverage</code><span class="sig-paren">(</span><em>image</em>, <em>center=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#azimuthalAverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.azimuthalAverage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the azimuthally averaged radial profile.</p>
 <p>image - The 2D image
-center - The [x,y] pixel coordinates used as the center. The default is</p>
-<blockquote>
-<div>None, which then uses the center of the image (including
-fracitonal pixels).</div></blockquote>
+center - The [x,y] pixel coordinates used as the center. The default is None, which then uses the center of the
+image (including fracitonal pixels).</p>
 </dd></dl>
 
 <dl class="function">
@@ -108,6 +106,67 @@ fracitonal pixels).</div></blockquote>
 <li><strong>center_x</strong> – center of light</li>
 <li><strong>center_y</strong> – center of light</li>
 <li><strong>n</strong> – number of discrete steps</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Util.class_creator">
+<span id="lenstronomy-util-class-creator-module"></span><h2>lenstronomy.Util.class_creator module<a class="headerlink" href="#module-lenstronomy.Util.class_creator" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lenstronomy.Util.class_creator.creat_image_model">
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">creat_image_model</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_numerics</em>, <em>kwargs_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#creat_image_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.creat_image_model" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_data</strong> – </li>
+<li><strong>kwargs_psf</strong> – </li>
+<li><strong>kwargs_options</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.class_creator.creat_lens_model_extension">
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">creat_lens_model_extension</code><span class="sig-paren">(</span><em>lensModel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#creat_lens_model_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.creat_lens_model_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>create instance of LensModelExtensions given an instance of LensModel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lensModel</strong> – instance of LensModel class</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">instance of LensModelExtensions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.class_creator.creat_multiband">
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">creat_multiband</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#creat_multiband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.creat_multiband" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_data</strong> – </li>
+<li><strong>kwargs_psf</strong> – </li>
+<li><strong>kwargs_options</strong> – </li>
 </ul>
 </td>
 </tr>
@@ -229,9 +288,6 @@ fracitonal pixels).</div></blockquote>
 :return:</p>
 </dd></dl>
 
-</div>
-<div class="section" id="lenstronomy-util-fft-convolve-module">
-<h2>lenstronomy.Util.fft_convolve module<a class="headerlink" href="#lenstronomy-util-fft-convolve-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-lenstronomy.Util.image_util">
 <span id="lenstronomy-util-image-util-module"></span><h2>lenstronomy.Util.image_util module<a class="headerlink" href="#module-lenstronomy.Util.image_util" title="Permalink to this headline">¶</a></h2>
@@ -1211,10 +1267,10 @@ into pixel coordinates in an image
 <li><a class="reference internal" href="#">lenstronomy.Util package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.analysis_util">lenstronomy.Util.analysis_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Util.class_creator">lenstronomy.Util.class_creator module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.constants">lenstronomy.Util.constants module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.correlation">lenstronomy.Util.correlation module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.derivative_util">lenstronomy.Util.derivative_util module</a></li>
-<li><a class="reference internal" href="#lenstronomy-util-fft-convolve-module">lenstronomy.Util.fft_convolve module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.image_util">lenstronomy.Util.image_util module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.kernel_util">lenstronomy.Util.kernel_util module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Util.mask">lenstronomy.Util.mask module</a></li>

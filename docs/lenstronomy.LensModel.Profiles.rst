@@ -4,14 +4,6 @@ lenstronomy\.LensModel\.Profiles package
 Submodules
 ----------
 
-lenstronomy\.LensModel\.Profiles\.barkana\_integrals module
------------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.barkana_integrals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy\.LensModel\.Profiles\.composite\_sersic\_nfw module
 ---------------------------------------------------------------
 
@@ -172,18 +164,18 @@ lenstronomy\.LensModel\.Profiles\.sersic\_utils module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.LensModel\.Profiles\.shapelet\_pot module
-------------------------------------------------------
+lenstronomy\.LensModel\.Profiles\.shapelet\_pot\_cartesian module
+-----------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.shapelet_pot
+.. automodule:: lenstronomy.LensModel.Profiles.shapelet_pot_cartesian
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.LensModel\.Profiles\.shapelet\_pot\_2 module
----------------------------------------------------------
+lenstronomy\.LensModel\.Profiles\.shapelet\_pot\_polar module
+-------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.shapelet_pot_2
+.. automodule:: lenstronomy.LensModel.Profiles.shapelet_pot_polar
     :members:
     :undoc-members:
     :show-inheritance:
@@ -216,14 +208,6 @@ lenstronomy\.LensModel\.Profiles\.spemd module
 ----------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.spemd
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.LensModel\.Profiles\.spemd\_own module
----------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.spemd_own
     :members:
     :undoc-members:
     :show-inheritance:

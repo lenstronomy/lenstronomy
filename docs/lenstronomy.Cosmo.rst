@@ -12,10 +12,10 @@ lenstronomy\.Cosmo\.background module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.Cosmo\.cosmo\_properties\_pycosmo module
------------------------------------------------------
+lenstronomy\.Cosmo\.cosmo\_solver module
+----------------------------------------
 
-.. automodule:: lenstronomy.Cosmo.cosmo_properties_pycosmo
+.. automodule:: lenstronomy.Cosmo.cosmo_solver
     :members:
     :undoc-members:
     :show-inheritance:

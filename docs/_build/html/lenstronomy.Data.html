@@ -314,6 +314,116 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.Data.psf">
+<span id="lenstronomy-data-psf-module"></span><h2>lenstronomy.Data.psf module<a class="headerlink" href="#module-lenstronomy.Data.psf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Data.psf.PSF">
+<em class="property">class </em><code class="descclassname">lenstronomy.Data.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>kwargs_psf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Point Spread Function convolution</p>
+<p>supported types:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>‘GAUSSIAN’: Gaussian convolution kernel</dt>
+<dd><dl class="first last docutils">
+<dt>kwargs:</dt>
+<dd>‘fwhm’: full width at half maximum of Gaussian kernel (arcsec)</dd>
+<dt>required for point sources:</dt>
+<dd>‘pixel_size’</dd>
+<dt>optional:</dt>
+<dd>‘truncation’: truncation of the Gaussian convolution, default: 5*fwhm
+the kernel size will be set to cover everything within the truncation</dd>
+</dl>
+</dd>
+<dt>‘PIXEL’: pixelized convolution kernel with odd pixel numbers</dt>
+<dd><dl class="first last docutils">
+<dt>kwargs:</dt>
+<dd>‘kernel_point_source’: the pixelized kernel from a point source in its center</dd>
+<dt>optional:</dt>
+<dd>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical
+convolution</dd>
+</dl>
+</dd>
+</dl>
+<p>‘NONE’: default option, results in no convolution, point sources will not be displayed</p>
+</div></blockquote>
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.constructor_kwargs">
+<code class="descname">constructor_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.constructor_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.constructor_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">kwargs that can construct the PSF() class instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.psf.PSF.kernel_pixel">
+<code class="descname">kernel_pixel</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_pixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the convolution kernel for a uniform surface brightness on a pixel size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.psf.PSF.kernel_point_source">
+<code class="descname">kernel_point_source</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_point_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.psf_convolution">
+<code class="descname">psf_convolution</code><span class="sig-paren">(</span><em>grid</em>, <em>grid_scale</em>, <em>psf_subgrid=False</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_convolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_convolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>convolves a given pixel grid with a PSF</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.psf.PSF.psf_error_map">
+<code class="descname">psf_error_map</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_error_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.Data.psf.PSF.psf_fwhm">
+<em class="property">static </em><code class="descname">psf_fwhm</code><span class="sig-paren">(</span><em>kwargs</em>, <em>deltaPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">psf fwhm in units of arcsec</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.set_pixel_size">
+<code class="descname">set_pixel_size</code><span class="sig-paren">(</span><em>deltaPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.set_pixel_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.set_pixel_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>update pixel size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deltaPix</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.Data">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Data" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -331,6 +441,7 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Data.coord_transforms">lenstronomy.Data.coord_transforms module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Data.imaging_data">lenstronomy.Data.imaging_data module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Data.psf">lenstronomy.Data.psf module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Data">Module contents</a></li>
 </ul>
 </li>

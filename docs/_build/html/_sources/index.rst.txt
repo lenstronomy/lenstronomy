@@ -15,6 +15,7 @@ Contents:
    usage
    lenstronomy
    contributing
+   mailinglist
    authors
    published
    history

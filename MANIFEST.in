@@ -2,6 +2,7 @@ include AUTHORS.rst
 include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
+include MAILINGLIST.rst
 include README.rst
 include requirements.txt
 include PUBLISHED.rst

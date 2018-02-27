@@ -2,6 +2,11 @@
 Published work with lenstronomy
 ===============================
 
+In this section you can find the concept papers **lenstronomy** is based on the list of science publications that made
+use of **lenstronomy**. Please let the developers know when you publish a paper that made use of **lenstronomy**.
+We are happy to include your publication in this list.
+
+
 Method papers
 -------------
 

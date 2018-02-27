@@ -95,35 +95,25 @@
 <span class="sd">        :param kwargs_lens: lens model kwargs</span>
 <span class="sd">        :param compute_window: window size in arcsec where the critical curve is computed</span>
 <span class="sd">        :param grid_scale: numerical grid spacing of the computation of the critical curves</span>
-<span class="sd">        :return: lists of ra and dec arrays corresponding to different disconnected critical curves</span>
-<span class="sd">        and their caustic counterparts</span>
+<span class="sd">        :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">compute_window</span> <span class="o">/</span> <span class="n">grid_scale</span><span class="p">)</span>
         <span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">grid_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">mag_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
 
-        <span class="c1">#import numpy.ma as ma</span>
-        <span class="c1">#z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.</span>
-
-        <span class="c1"># Non-filled contours (lines only).</span>
         <span class="n">level</span> <span class="o">=</span> <span class="mf">0.5</span>
         <span class="kn">import</span> <span class="nn">matplotlib._cntr</span> <span class="k">as</span> <span class="nn">cntr</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">cntr</span><span class="o">.</span><span class="n">Cntr</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid_high_res</span><span class="p">),</span> <span class="n">mag_high_res</span><span class="p">)</span>
         <span class="n">nlist</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">segs</span> <span class="o">=</span> <span class="n">nlist</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">nlist</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="c1"># print segs  # x,y coords of contour points.</span>
-
-        <span class="c1">#cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],</span>
-        <span class="c1">#                alpha=0.0)</span>
-        <span class="c1">#paths = cs.collections[0].get_paths()</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="n">segs</span>
         <span class="n">ra_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ra_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
-            <span class="c1">#v = p.vertices</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">ra_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">dec_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>

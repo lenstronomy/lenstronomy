@@ -47,35 +47,25 @@ class LensModelExtensions(LensModel):
         :param kwargs_lens: lens model kwargs
         :param compute_window: window size in arcsec where the critical curve is computed
         :param grid_scale: numerical grid spacing of the computation of the critical curves
-        :return: lists of ra and dec arrays corresponding to different disconnected critical curves
-        and their caustic counterparts
+        :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts
+
         """
 
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
         mag_high_res = util.array2image(self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
 
-        #import numpy.ma as ma
-        #z = ma.asarray(z, dtype=np.float64)  # Import if want filled contours.
-
-        # Non-filled contours (lines only).
         level = 0.5
         import matplotlib._cntr as cntr
         c = cntr.Cntr(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res)
         nlist = c.trace(level, level, 0)
         segs = nlist[:len(nlist) // 2]
-        # print segs  # x,y coords of contour points.
-
-        #cs = ax.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
-        #                alpha=0.0)
-        #paths = cs.collections[0].get_paths()
         paths = segs
         ra_crit_list = []
         dec_crit_list = []
         ra_caustic_list = []
         dec_caustic_list = []
         for p in paths:
-            #v = p.vertices
             v = p
             ra_points = v[:, 0]
             dec_points = v[:, 1]

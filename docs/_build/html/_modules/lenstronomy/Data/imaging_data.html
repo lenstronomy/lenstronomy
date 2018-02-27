@@ -54,30 +54,37 @@
 <div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle the data, coordinate system and masking, including convolution with various numerical precisions</span>
+
+<span class="sd">    The Data() class is initialized with keyword arguments:</span>
+
+<span class="sd">    - &#39;image_data&#39;: 2d numpy array of the image data</span>
+<span class="sd">    - &#39;transform_pix2angle&#39; 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -&gt; (ra, dec)</span>
+<span class="sd">    - &#39;ra_at_xy_0&#39; RA coordinate of pixel (0,0)</span>
+<span class="sd">    - &#39;dec_at_xy_0&#39; DEC coordinate of pixel (0,0)</span>
+
+<span class="sd">    optional keywords for shifts in the coordinate system:</span>
+<span class="sd">    - &#39;ra_shift&#39;: shifts the coordinate system with respect to &#39;ra_at_xy_0&#39;</span>
+<span class="sd">    - &#39;dec_shift&#39;: shifts the coordinate system with respect to &#39;dec_at_xy_0&#39;</span>
+
+<span class="sd">    optional keywords for noise properties:</span>
+<span class="sd">    - &#39;background_rms&#39;: rms value of the background noise</span>
+<span class="sd">    - &#39;exp_time: float, exposure time to compute the Poisson noise contribution</span>
+<span class="sd">    - &#39;exposure_map&#39;: 2d numpy array, effective exposure time for each pixel. If set, will replace &#39;exp_time&#39;</span>
+
+
+<span class="sd">    Notes:</span>
+
+<span class="sd">    the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that</span>
+<span class="sd">    your definitions and units of &#39;exposure_map&#39;, &#39;background_rms&#39; and &#39;image_data&#39; are in accordance with the</span>
+<span class="sd">    likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</span>
+
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        kwargs_data must contain:</span>
+<span class="sd">        :param kwargs_data: keyword arguments as described above</span>
 
-<span class="sd">        &#39;image_data&#39;: 2d numpy array of the image data</span>
-<span class="sd">        &#39;transform_pix2angle&#39; 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift</span>
-<span class="sd">        (x, y) -&gt; (ra, dec)</span>
-<span class="sd">        &#39;ra_at_xy_0&#39; RA coordinate of pixel (0,0)</span>
-<span class="sd">        &#39;dec_at_xy_0&#39; DEC coordinate of pixel (0,0)</span>
-
-<span class="sd">        optional keywords for shifts in the coordinate system:</span>
-<span class="sd">        &#39;ra_shift&#39;: shifts the coordinate system with respect to &#39;ra_at_xy_0&#39;</span>
-<span class="sd">        &#39;dec_shift&#39;: shifts the coordinate system with respect to &#39;dec_at_xy_0&#39;</span>
-
-<span class="sd">        optional keywords for noise properties:</span>
-<span class="sd">        &#39;background_rms&#39;: rms value of the background noise</span>
-<span class="sd">        &#39;exp_time: float, exposure time to compute the Poisson noise contribution</span>
-<span class="sd">        &#39;exposure_map&#39;: 2d numpy array, effective exposure time for each pixel. If set, will replace &#39;exp_time&#39;</span>
-
-<span class="sd">        :param kwargs_data:</span>
-<span class="sd">        :param subgrid_res:</span>
-<span class="sd">        :param psf_subgrid:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;image_data&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
@@ -121,10 +128,11 @@
 
 <div class="viewcode-block" id="Data.update_data"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.update_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="sd">        update the data</span>
 
 <span class="sd">        :param image_data: 2d numpy array of same size as nx, ny</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">==</span> <span class="n">nx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">==</span> <span class="n">ny</span><span class="p">:</span>
@@ -160,8 +168,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exposure_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Units of data and exposure map should result in:</span>
+<span class="sd">        number of flux counts = data * exposure_map</span>
 
-<span class="sd">        :return:</span>
+<span class="sd">        :return: exposure map for each pixel</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Exposure map has not been specified in Data() class!&quot;</span><span class="p">)</span>
@@ -171,8 +181,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">C_D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Covariance matrix of all pixel values in 2d numpy array (only diagonal component)</span>
+<span class="sd">        The covariance matrix is estimated from the data.</span>
+<span class="sd">        WARNING: For low count statistics, the noise in the data may lead to biased estimates of the covariance matrix.</span>
 
-<span class="sd">        :return: covariance matrix of all pixel values in 2d numpy array</span>
+<span class="sd">        :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_C_D&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_rms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_map</span><span class="p">)</span>
@@ -180,72 +193,92 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">numData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: number of pixels in the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: ra and dec coordinates of the pixels, each in 1d numpy arrays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span>
 
 <div class="viewcode-block" id="Data.map_coord2pix"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.map_coord2pix">[docs]</a>    <span class="k">def</span> <span class="nf">map_coord2pix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        maps the (ra,dec) coordinates of the system into the pixel coordinate of the image</span>
 
-<span class="sd">        :param ra:</span>
-<span class="sd">        :param dec:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param ra: relative RA coordinate as defined by the coordinate frame</span>
+<span class="sd">        :param dec: relative DEC coordinate as defined by the coordinate frame</span>
+<span class="sd">        :return: (x, y) pixel coordinates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Data.map_pix2coord"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.map_pix2coord">[docs]</a>    <span class="k">def</span> <span class="nf">map_pix2coord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        maps the (x,y) pixel coordinates of the image into the system coordinates</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the pixel</span>
+<span class="sd">        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel</span>
+<span class="sd">        :return: relative (RA, DEC) coordinates of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">map_pix2coord</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.covariance_matrix"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">sigma_b</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.covariance_matrix"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">background_rms</span><span class="p">,</span> <span class="n">exposure_map</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns a diagonal matrix for the covariance estimation</span>
-<span class="sd">        :param d: data array</span>
-<span class="sd">        :param sigma_b: background noise</span>
-<span class="sd">        :param f: reduced poissonian noise</span>
-<span class="sd">        :return: len(d) x len(d) matrix</span>
+<span class="sd">        returns a diagonal matrix for the covariance estimation which describes the error</span>
+
+<span class="sd">        Notes:</span>
+
+<span class="sd">        - the exposure map must be positive definite. Values that deviate too much from the mean exposure time will be</span>
+<span class="sd">            given a lower limit to not under-predict the Poisson component of the noise.</span>
+
+<span class="sd">        - the data must be positive semi-definite for the Poisson noise estimate.</span>
+<span class="sd">            Values &lt; 0 (Possible after mean subtraction) will not have a Poisson component in their noise estimate.</span>
+
+
+<span class="sd">        :param data: data array, eg in units of photons/second</span>
+<span class="sd">        :param background_rms: background noise rms, eg. in units (photons/second)^2</span>
+<span class="sd">        :param exposure_map: exposure time per pixel, e.g. in units of seconds</span>
+<span class="sd">        :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">f</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">exposure_map</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">exposure_map</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mean_exp_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="n">f</span><span class="p">[</span><span class="n">f</span> <span class="o">&lt;</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span>
+            <span class="n">mean_exp_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">)</span>
+            <span class="n">exposure_map</span><span class="p">[</span><span class="n">exposure_map</span> <span class="o">&lt;</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_exp_time</span> <span class="o">/</span> <span class="mi">10</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sigma_b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING! sigma_b*f </span><span class="si">%s</span><span class="s2"> &gt;1 may introduce unstable error estimates&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sigma_b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
-        <span class="n">d_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">background_rms</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING! sigma_b*f </span><span class="si">%s</span><span class="s2"> &lt; 1 count may introduce unstable error estimates&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">background_rms</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">)))</span>
+        <span class="n">d_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="c1">#threshold = 1.5*sigma_b</span>
-        <span class="n">d_pos</span><span class="p">[</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">d_pos</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
         <span class="c1">#d_pos[d &lt; threshold] = 0</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="n">d_pos</span><span class="o">/</span><span class="n">f</span> <span class="o">+</span> <span class="n">sigma_b</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">d_pos</span> <span class="o">/</span> <span class="n">exposure_map</span> <span class="o">+</span> <span class="n">background_rms</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">sigma</span></div>
 
 <div class="viewcode-block" id="Data.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns reduced residual map</span>
-<span class="sd">        :param model:</span>
-<span class="sd">        :param data:</span>
-<span class="sd">        :param sigma:</span>
-<span class="sd">        :param reduce_frac:</span>
-<span class="sd">        :param mask:</span>
-<span class="sd">        :param error_map:</span>
-<span class="sd">        :return:</span>
+
+<span class="sd">        computes the likelihood of the data given the model p(data|model)</span>
+<span class="sd">        The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the</span>
+<span class="sd">        background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).</span>
+
+<span class="sd">        :param model: the model (same dimensions and units as data)</span>
+<span class="sd">        :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</span>
+<span class="sd">        :param error_map: additional error term (in same units as covariance matrix).</span>
+<span class="sd">            This can e.g. come from model errors in the PSF estimation.</span>
+<span class="sd">        :return: the natural logarithm of the likelihood p(data|model)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_map</span><span class="p">)</span>
         <span class="n">X2</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_D</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_map</span><span class="p">))</span> <span class="o">*</span> <span class="n">mask</span>
         <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
         <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">logL</span></div></div>
-
-
 </pre></div>
 
           </div>

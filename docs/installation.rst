@@ -2,9 +2,8 @@
 Installation
 ============
 
-At the command line either via easy_install or pip::
+At the command line with pip::
 
-    $ easy_install lenstronomy
     $ pip install lenstronomy
 
 Or, if you have virtualenvwrapper installed::

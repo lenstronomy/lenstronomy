@@ -144,14 +144,35 @@
 <em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
+<p>The Data() class is initialized with keyword arguments:</p>
+<ul class="simple">
+<li>‘image_data’: 2d numpy array of the image data</li>
+<li>‘transform_pix2angle’ 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -&gt; (ra, dec)</li>
+<li>‘ra_at_xy_0’ RA coordinate of pixel (0,0)</li>
+<li>‘dec_at_xy_0’ DEC coordinate of pixel (0,0)</li>
+</ul>
+<p>optional keywords for shifts in the coordinate system:
+- ‘ra_shift’: shifts the coordinate system with respect to ‘ra_at_xy_0’
+- ‘dec_shift’: shifts the coordinate system with respect to ‘dec_at_xy_0’</p>
+<p>optional keywords for noise properties:
+- ‘background_rms’: rms value of the background noise
+- ‘exp_time: float, exposure time to compute the Poisson noise contribution
+- ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’</p>
+<p>Notes:</p>
+<p>the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
+your definitions and units of ‘exposure_map’, ‘background_rms’ and ‘image_data’ are in accordance with the
+likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</p>
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.C_D">
 <code class="descname">C_D</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.C_D" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Covariance matrix of all pixel values in 2d numpy array (only diagonal component)
+The covariance matrix is estimated from the data.
+WARNING: For low count statistics, the noise in the data may lead to biased estimates of the covariance matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">covariance matrix of all pixel values in 2d numpy array</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">covariance matrix of all pixel values in 2d numpy array (only diagonal component).</td>
 </tr>
 </tbody>
 </table>
@@ -186,16 +207,51 @@
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.coordinates">
 <code class="descname">coordinates</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.coordinates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">ra and dec coordinates of the pixels, each in 1d numpy arrays</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.covariance_matrix">
-<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>d</em>, <em>sigma_b</em>, <em>f</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a diagonal matrix for the covariance estimation
-:param d: data array
-:param sigma_b: background noise
-:param f: reduced poissonian noise
-:return: len(d) x len(d) matrix</p>
+<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>data</em>, <em>background_rms</em>, <em>exposure_map</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a diagonal matrix for the covariance estimation which describes the error</p>
+<p>Notes:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>the exposure map must be positive definite. Values that deviate too much from the mean exposure time will be</dt>
+<dd><p class="first last">given a lower limit to not under-predict the Poisson component of the noise.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>the data must be positive semi-definite for the Poisson noise estimate.</dt>
+<dd><p class="first last">Values &lt; 0 (Possible after mean subtraction) will not have a Poisson component in their noise estimate.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – data array, eg in units of photons/second</li>
+<li><strong>background_rms</strong> – background noise rms, eg. in units (photons/second)^2</li>
+<li><strong>exposure_map</strong> – exposure time per pixel, e.g. in units of seconds</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -227,11 +283,13 @@
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.exposure_map">
 <code class="descname">exposure_map</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.exposure_map" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Units of data and exposure map should result in:
+number of flux counts = data * exposure_map</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">exposure map for each pixel</td>
 </tr>
 </tbody>
 </table>
@@ -240,30 +298,43 @@
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.log_likelihood">
 <code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>mask</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns reduced residual map
-:param model:
-:param data:
-:param sigma:
-:param reduce_frac:
-:param mask:
-:param error_map:
-:return:</p>
+<dd><p>computes the likelihood of the data given the model p(data|model)
+The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the
+background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – the model (same dimensions and units as data)</li>
+<li><strong>mask</strong> – bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</li>
+<li><strong>error_map</strong> – additional error term (in same units as covariance matrix).
+This can e.g. come from model errors in the PSF estimation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the natural logarithm of the likelihood p(data|model)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.map_coord2pix">
 <code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.map_coord2pix" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>maps the (ra,dec) coordinates of the system into the pixel coordinate of the image</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra</strong> – </li>
-<li><strong>dec</strong> – </li>
+<li><strong>ra</strong> – relative RA coordinate as defined by the coordinate frame</li>
+<li><strong>dec</strong> – relative DEC coordinate as defined by the coordinate frame</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(x, y) pixel coordinates</p>
 </td>
 </tr>
 </tbody>
@@ -273,17 +344,18 @@
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.map_pix2coord">
 <code class="descname">map_pix2coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.map_pix2coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.map_pix2coord" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>maps the (x,y) pixel coordinates of the image into the system coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
+<li><strong>x</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</li>
+<li><strong>y</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">relative (RA, DEC) coordinates of the system</p>
 </td>
 </tr>
 </tbody>
@@ -293,7 +365,15 @@
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.numData">
 <code class="descname">numData</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.numData" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of pixels in the data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.update_data">
@@ -305,7 +385,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_data</strong> – 2d numpy array of same size as nx, ny</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
@@ -321,7 +401,7 @@
 <em class="property">class </em><code class="descclassname">lenstronomy.Data.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>kwargs_psf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Point Spread Function convolution</p>
-<p>supported types:</p>
+<p>supported psy_types:</p>
 <blockquote>
 <div><dl class="docutils">
 <dt>‘GAUSSIAN’: Gaussian convolution kernel</dt>
@@ -341,7 +421,8 @@ the kernel size will be set to cover everything within the truncation</dd>
 <dd>‘kernel_point_source’: the pixelized kernel from a point source in its center</dd>
 <dt>optional:</dt>
 <dd>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical
-convolution</dd>
+convolution. If not specified, it will take the full point source kernel and numerically convolve it
+over the size of a pixel</dd>
 </dl>
 </dd>
 </dl>

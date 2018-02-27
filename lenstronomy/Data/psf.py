@@ -9,9 +9,9 @@ class PSF(object):
     """
     Point Spread Function convolution
 
-    supported types:
+    supported psy_types:
 
-        'GAUSSIAN': Gaussian convolution kernel
+    - 'GAUSSIAN': Gaussian convolution kernel
             kwargs:
                 'fwhm': full width at half maximum of Gaussian kernel (arcsec)
             required for point sources:
@@ -21,14 +21,16 @@ class PSF(object):
                 the kernel size will be set to cover everything within the truncation
 
 
-        'PIXEL': pixelized convolution kernel with odd pixel numbers
+    - 'PIXEL': pixelized convolution kernel with odd pixel numbers
             kwargs:
                 'kernel_point_source': the pixelized kernel from a point source in its center
             optional:
                 'kernel_pixel': PSF of an extended pixel, can be different size (odd axis number) for faster numerical
-                convolution
+                convolution. If not specified, it will take the full point source kernel and numerically convolve it
+                over the size of a pixel
 
-        'NONE': default option, results in no convolution, point sources will not be displayed
+
+    - 'NONE': default option, results in no convolution, point sources will not be displayed
 
     """
     def __init__(self, kwargs_psf):
@@ -141,7 +143,7 @@ class PSF(object):
         :return:
         """
         if not hasattr(self, '_subgrid_kernel_out'):
-            kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True)
+            kernel = kernel_util.subgrid_kernel(self.kernel_pixel, subgrid_res, odd=True)
             n = len(self._kernel_pixel)
             n_new = n * subgrid_res
             if n_new % 2 == 0:

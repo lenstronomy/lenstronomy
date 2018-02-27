@@ -6,30 +6,37 @@ from lenstronomy.Data.coord_transforms import Coordinates
 class Data(object):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
+
+    The Data() class is initialized with keyword arguments:
+
+    - 'image_data': 2d numpy array of the image data
+    - 'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -> (ra, dec)
+    - 'ra_at_xy_0' RA coordinate of pixel (0,0)
+    - 'dec_at_xy_0' DEC coordinate of pixel (0,0)
+
+    optional keywords for shifts in the coordinate system:
+    - 'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
+    - 'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
+
+    optional keywords for noise properties:
+    - 'background_rms': rms value of the background noise
+    - 'exp_time: float, exposure time to compute the Poisson noise contribution
+    - 'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
+
+
+    Notes:
+
+    the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
+    your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
+    likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
+
+
     """
     def __init__(self, kwargs_data):
         """
 
-        kwargs_data must contain:
+        :param kwargs_data: keyword arguments as described above
 
-        'image_data': 2d numpy array of the image data
-        'transform_pix2angle' 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift
-        (x, y) -> (ra, dec)
-        'ra_at_xy_0' RA coordinate of pixel (0,0)
-        'dec_at_xy_0' DEC coordinate of pixel (0,0)
-
-        optional keywords for shifts in the coordinate system:
-        'ra_shift': shifts the coordinate system with respect to 'ra_at_xy_0'
-        'dec_shift': shifts the coordinate system with respect to 'dec_at_xy_0'
-
-        optional keywords for noise properties:
-        'background_rms': rms value of the background noise
-        'exp_time: float, exposure time to compute the Poisson noise contribution
-        'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
-
-        :param kwargs_data:
-        :param subgrid_res:
-        :param psf_subgrid:
         """
 
         if not 'image_data' in kwargs_data:
@@ -73,10 +80,11 @@ class Data(object):
 
     def update_data(self, image_data):
         """
+
         update the data
 
         :param image_data: 2d numpy array of same size as nx, ny
-        :return:
+        :return: None
         """
         nx, ny = np.shape(image_data)
         if not self.nx == nx and not self.ny == ny:
@@ -112,8 +120,10 @@ class Data(object):
     @property
     def exposure_map(self):
         """
+        Units of data and exposure map should result in:
+        number of flux counts = data * exposure_map
 
-        :return:
+        :return: exposure map for each pixel
         """
         if self._exp_map is None:
             raise ValueError("Exposure map has not been specified in Data() class!")
@@ -123,8 +133,11 @@ class Data(object):
     @property
     def C_D(self):
         """
+        Covariance matrix of all pixel values in 2d numpy array (only diagonal component)
+        The covariance matrix is estimated from the data.
+        WARNING: For low count statistics, the noise in the data may lead to biased estimates of the covariance matrix.
 
-        :return: covariance matrix of all pixel values in 2d numpy array
+        :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).
         """
         if not hasattr(self, '_C_D'):
             self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
@@ -132,69 +145,89 @@ class Data(object):
 
     @property
     def numData(self):
+        """
+
+        :return: number of pixels in the data
+        """
         return len(self._x_grid)
 
     @property
     def coordinates(self):
+        """
+
+        :return: ra and dec coordinates of the pixels, each in 1d numpy arrays
+        """
         return self._x_grid, self._y_grid
 
     def map_coord2pix(self, ra, dec):
         """
+        maps the (ra,dec) coordinates of the system into the pixel coordinate of the image
 
-        :param ra:
-        :param dec:
-        :return:
+        :param ra: relative RA coordinate as defined by the coordinate frame
+        :param dec: relative DEC coordinate as defined by the coordinate frame
+        :return: (x, y) pixel coordinates
         """
         return self._coords.map_coord2pix(ra, dec)
 
     def map_pix2coord(self, x, y):
         """
+        maps the (x,y) pixel coordinates of the image into the system coordinates
 
-        :param x:
-        :param y:
-        :return:
+        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
+        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
+        :return: relative (RA, DEC) coordinates of the system
         """
         return self._coords.map_pix2coord(x, y)
 
-    def covariance_matrix(self, d, sigma_b, f, verbose=False):
+    def covariance_matrix(self, data, background_rms, exposure_map, verbose=False):
         """
-        returns a diagonal matrix for the covariance estimation
-        :param d: data array
-        :param sigma_b: background noise
-        :param f: reduced poissonian noise
-        :return: len(d) x len(d) matrix
+        returns a diagonal matrix for the covariance estimation which describes the error
+
+        Notes:
+
+        - the exposure map must be positive definite. Values that deviate too much from the mean exposure time will be
+            given a lower limit to not under-predict the Poisson component of the noise.
+
+        - the data must be positive semi-definite for the Poisson noise estimate.
+            Values < 0 (Possible after mean subtraction) will not have a Poisson component in their noise estimate.
+
+
+        :param data: data array, eg in units of photons/second
+        :param background_rms: background noise rms, eg. in units (photons/second)^2
+        :param exposure_map: exposure time per pixel, e.g. in units of seconds
+        :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2
         """
-        if isinstance(f, int) or isinstance(f, float):
-            if f <= 0:
-                f = 1
+        if isinstance(exposure_map, int) or isinstance(exposure_map, float):
+            if exposure_map <= 0:
+                exposure_map = 1
         else:
-            mean_exp_time = np.mean(f)
-            f[f < mean_exp_time / 10] = mean_exp_time / 10
+            mean_exp_time = np.mean(exposure_map)
+            exposure_map[exposure_map < mean_exp_time / 10] = mean_exp_time / 10
         if verbose:
-            if sigma_b * np.max(f) < 1:
-                print("WARNING! sigma_b*f %s >1 may introduce unstable error estimates" % (sigma_b*np.max(f)))
-        d_pos = np.zeros_like(d)
+            if background_rms * np.max(exposure_map) < 1:
+                print("WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates" % (background_rms * np.max(exposure_map)))
+        d_pos = np.zeros_like(data)
         #threshold = 1.5*sigma_b
-        d_pos[d >= 0] = d[d >= 0]
+        d_pos[data >= 0] = data[data >= 0]
         #d_pos[d < threshold] = 0
-        sigma = d_pos/f + sigma_b**2
+        sigma = d_pos / exposure_map + background_rms ** 2
         return sigma
 
     def log_likelihood(self, model, mask, error_map=0):
         """
-        returns reduced residual map
-        :param model:
-        :param data:
-        :param sigma:
-        :param reduce_frac:
-        :param mask:
-        :param error_map:
-        :return:
+
+        computes the likelihood of the data given the model p(data|model)
+        The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the
+        background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).
+
+        :param model: the model (same dimensions and units as data)
+        :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood
+        :param error_map: additional error term (in same units as covariance matrix).
+            This can e.g. come from model errors in the PSF estimation.
+        :return: the natural logarithm of the likelihood p(data|model)
         """
         C_D = self.covariance_matrix(model, self._sigma_b, self.exposure_map)
         X2 = (model - self._data)**2 / (C_D + np.abs(error_map)) * mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL
-
-

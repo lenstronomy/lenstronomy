@@ -29,8 +29,9 @@ class Multiband(object):
 
         :return:
         """
-        self.pointSource.delete_lens_model_cach()
-        self.pointSource.set_save_cache(True)
+        if self.pointSource is not None:
+            self.pointSource.delete_lens_model_cach()
+            self.pointSource.set_save_cache(True)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
         """

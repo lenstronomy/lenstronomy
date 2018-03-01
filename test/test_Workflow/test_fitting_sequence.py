@@ -106,7 +106,7 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
 
     def test_simulationAPI_psf(self):
-        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 1.681921511056146e-07, decimal=8)
+        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 1.9948432790647363e-07, decimal=6)
 
     def test_fitting_sequence(self):
         kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]

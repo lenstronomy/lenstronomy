@@ -203,8 +203,10 @@ class ImageModel(object):
         :param kwargs_ps:
         :return: list of images containing only single point sources
         """
-        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         point_list = []
+        if self.PointSource is None:
+            return point_list
+        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         for i in range(len(ra_array)):
             point_source = self.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
             point_list.append(point_source)
@@ -224,6 +226,8 @@ class ImageModel(object):
         numPix = self.Data.nx * 2
         search_window = deltaPix * numPix
         min_distance = deltaPix
+        if self.PointSource is None:
+            return [], []
         x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
                                                          search_window=search_window,
                                                          precision_limit=10**(-10), num_iter_max=100)

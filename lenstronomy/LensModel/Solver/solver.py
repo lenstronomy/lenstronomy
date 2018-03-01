@@ -45,12 +45,12 @@ class Solver(object):
 
         return kwargs_lens
 
-    def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
+    def add_fixed_lens(self, kwargs_fixed_lens, kwargs_lens_init):
         """
         returns kwargs that are kept fixed during run, depending on options
         :param kwargs_options:
         :param kwargs_lens:
         :return:
         """
-        kwargs_fixed_lens_list = self.solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
-        return kwargs_fixed_lens_list
+        kwargs_fixed_lens = self.solver.add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
+        return kwargs_fixed_lens

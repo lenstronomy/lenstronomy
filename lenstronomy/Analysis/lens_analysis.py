@@ -18,10 +18,10 @@ class LensAnalysis(object):
     def __init__(self, kwargs_model):
         self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', ['NONE']))
         self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', ['NONE']))
-        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model['lens_model_list'])
+        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']))
         self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', ['NONE']))
         self.kwargs_model = kwargs_model
-        self.NumLensModel = NumericLens(lens_model_list=kwargs_model['lens_model_list'])
+        self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']))
         self.gaussian = Gaussian()
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):

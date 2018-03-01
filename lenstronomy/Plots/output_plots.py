@@ -98,8 +98,10 @@ def source_position_plot(ax, coords, kwargs_source):
     :return:
     """
     deltaPix = coords.pixel_size
-    x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
-    ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+    if kwargs_source is not None:
+        if 'center_x' in kwargs_source[0]:
+            x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
+            ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax
 
 
@@ -121,7 +123,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     x_grid, y_grid = data.coordinates
     lensModelExt = class_creator.creat_lens_model_extension(lensModel)
     ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
-        kwargs_lens, compute_window=_frame_size, grid_scale=0.005)
+        kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
     kappa_result = util.array2image(lensModel.kappa(x_grid, y_grid, kwargs_lens))
     im = ax.matshow(np.log10(kappa_result), origin='lower',
                     extent=[0, _frame_size, 0, _frame_size], cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)

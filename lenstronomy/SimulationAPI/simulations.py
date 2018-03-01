@@ -86,7 +86,8 @@ class Simulation(object):
             kernel_large = kernel_util.cut_psf(kernel_large, psf_size=kernelsize)
             kernel_small = copy.deepcopy(kernel)
             kernel_small = kernel_util.cut_psf(kernel_small, psf_size=kernelsize)
-            kwargs_psf = {'psf_type': "PIXEL", 'kernel_pixel': kernel_small, 'kernel_point_source': kernel_large}
+            #kwargs_psf = {'psf_type': "PIXEL", 'kernel_pixel': kernel_small, 'kernel_point_source': kernel_large}
+            kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': kernel_large}
         elif psf_type == 'NONE':
             kwargs_psf = {'psf_type': 'NONE'}
         else:
@@ -130,7 +131,8 @@ class Simulation(object):
         kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
-    def simulate(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def simulate(self, image_model_class, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                 no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
         simulate image
         :param kwargs_options:

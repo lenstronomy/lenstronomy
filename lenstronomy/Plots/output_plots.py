@@ -207,7 +207,7 @@ class LensModelPlot(object):
         log_model[np.isnan(log_model)] = -5
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
-        print("reduced chi^^ = ", self._reduced_x2)
+        print("reduced chi^2 = ", self._reduced_x2)
 
     def data_plot(self, ax, v_min=None, v_max=None):
         """

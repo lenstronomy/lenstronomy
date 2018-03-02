@@ -84,7 +84,7 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.05, search_window=10, precision_limit=10**(-10), num_iter_max=100):
         """
 
         :param kwargs_ps:
@@ -177,11 +177,13 @@ class PointSource(object):
                     x_pos = x_image_list[i]
                     y_pos = y_image_list[i]
                     if self._fixed_magnification_list[i]:
-                        mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
                         if with_amp:
                             mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
+                        else:
+                            mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
+                            mag = np.abs(mag)  # tests fail
                         amp.append(list(mag))
                     else:
                         if with_amp:

@@ -27,7 +27,7 @@ class TestImageModel(object):
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
-        fwhm = 0.5  # full width half max of PSF
+        fwhm = 0.3  # full width half max of PSF
 
         # PSF specification
 
@@ -65,7 +65,7 @@ class TestImageModel(object):
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
         self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
-                           'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
+                           'source_amp': 10.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 3, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
@@ -80,7 +80,7 @@ class TestImageModel(object):
         self.psf_fitting = PsfFitting(self.imageModel)
 
     def test_update_psf(self):
-        fwhm = 0.3
+        fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -93,7 +93,7 @@ class TestImageModel(object):
 
         kwargs_psf_return, improved_bool = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
-                                                                       factor=0.1, symmetry=1)
+                                                                       factor=0.5, symmetry=1)
         assert improved_bool
         kernel_new = kwargs_psf_return['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
@@ -103,7 +103,7 @@ class TestImageModel(object):
         assert diff_old > diff_new
 
     def test_update_iterative(self):
-        fwhm = 0.3
+        fwhm = 0.5
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -116,7 +116,7 @@ class TestImageModel(object):
 
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
-                                                           factor=0.2, num_iter=3, symmetry=1)
+                                                           factor=0.5, num_iter=10, symmetry=1)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
         kernel_old = kwargs_psf['kernel_point_source']

@@ -96,7 +96,7 @@ class LensedPositions(object):
             ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
             mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
             point_amp = kwargs_ps['point_amp']
-            source_amp = np.mean(np.array(point_amp) / np.array(mag))
+            source_amp = np.mean(np.array(point_amp) / np.array(np.abs(mag)))
         return np.array(source_amp)
 
     def update_lens_model(self, lens_model_class):
@@ -184,7 +184,7 @@ class PointSourceCached(object):
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.05, search_window=10, precision_limit=10**(-10), num_iter_max=100):
         """
 
         :param ra_image:

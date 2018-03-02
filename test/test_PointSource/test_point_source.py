@@ -106,7 +106,7 @@ class TestPointSource_fixed_mag(object):
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
         assert ra_pos[1][0] == 1
-        assert ra_pos[2][0] == self.x_pos[0]
+        npt.assert_almost_equal(ra_pos[2][0], self.x_pos[0], decimal=8)
 
     def test_point_source_list(self):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)

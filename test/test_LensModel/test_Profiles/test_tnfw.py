@@ -27,6 +27,10 @@ class TestTNFW(object):
         print(f_x, f_x_t)
         for i in range(len(x_array)):
             npt.assert_almost_equal(f_x[i], f_x_t[i], decimal=3)
+            npt.assert_almost_equal(f_y[i], f_y_t[i], decimal=3)
+
+        f_x_t, f_y_t = self.tnfw.derivatives(1. , 1., Rs, theta_Rs, r_trunc=1.)
+        npt.assert_almost_equal(f_x_t, 0.17145581715955596, decimal=8)
 
 
 if __name__ == '__main__':

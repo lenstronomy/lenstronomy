@@ -54,6 +54,9 @@ class SinglePlane(object):
             elif lens_type == 'NFW_ELLIPSE':
                 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
                 self.func_list.append(NFW_ELLIPSE())
+            elif lens_type == 'TNFW':
+                from lenstronomy.LensModel.Profiles.tnfw import TNFW
+                self.func_list.append(TNFW())
             elif lens_type == 'SERSIC':
                 from lenstronomy.LensModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic())

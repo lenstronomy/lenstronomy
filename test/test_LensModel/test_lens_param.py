@@ -9,7 +9,7 @@ class TestParam(object):
 
     def setup(self):
         self.lens_model_list = ['SPEP', 'SHEAR', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
-                                'NFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
+                                'NFW', 'TNFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
                                 'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE'
                                 ]
@@ -22,6 +22,7 @@ class TestParam(object):
             {'theta_E': 1, 'r_trunc': 2., 'center_x': 0, 'center_y': 0},  # 'SIS_TRUNCATED'
             {'theta_E': 1, 'gamma': 2, 'center_x': 0, 'center_y': 0},  # 'SPP'
             {'Rs': 1, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW'
+            {'Rs': 1, 'theta_Rs': 0.1, 'r_trunc': 10, 'center_x': 0, 'center_y': 0},  # 'TNFW'
             {'Rs': 1, 'q': 0.8, 'phi_G': 0.5, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW_ELLIPSE
             {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
             {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.5},  # 'SERSIC_ELLIPSE'
@@ -49,6 +50,7 @@ class TestParam(object):
             {'theta_E_sigma': 1, 'r_trunc_sigma': 2., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SIS_TRUNCATED'
             {'theta_E_sigma': 1, 'gamma_sigma': 2, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SPP'
             {'Rs_sigma': 1, 'theta_Rs_sigma': 0.1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'NFW'
+            {'Rs_sigma': 1, 'theta_Rs_sigma': 0.1, 'r_trunc_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'TNFW'
             {'Rs_sigma': 1, 'ellipse_sigma': 0.1, 'theta_Rs_sigma': 0.1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'NFW_ELLIPSE
             {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SERSIC'
             {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},
@@ -69,7 +71,7 @@ class TestParam(object):
             {'coeffs_sigma': 0.1, 'beta_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS_CART'
             {'coupling_sigma': 1, 'phi_dipole_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'DIPOLE'
         ]
-        self.kwargs_fixed = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+        self.kwargs_fixed = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                              {'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},
                              {}, {}, {'phi_dipole': 1.}]
         self.kwargs_mean = []
@@ -101,7 +103,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 113
+        assert num == 119
 
 
 if __name__ == '__main__':

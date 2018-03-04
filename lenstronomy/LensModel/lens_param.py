@@ -108,18 +108,24 @@ class LensParam(object):
                     kwargs['phi_G'] = kwargs_fixed['phi_G']
                     kwargs['q'] = kwargs_fixed['q']
 
-            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
                     kwargs['Rs'] = args[i]
                     i += 1
                 else:
                     kwargs['Rs'] = kwargs_fixed['Rs']
-            if model in ['NFW', 'NFW_ELLIPSE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE']:
                 if not 'theta_Rs' in kwargs_fixed:
                     kwargs['theta_Rs'] = args[i]
                     i += 1
                 else:
                     kwargs['theta_Rs'] = kwargs_fixed['theta_Rs']
+            if model in ['TNFW', 'SIS_TRUNCATED']:
+                if not 'r_trunc' in kwargs_fixed:
+                    kwargs['r_trunc'] = args[i]
+                    i += 1
+                else:
+                    kwargs['r_trunc'] = kwargs_fixed['r_trunc']
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -235,7 +241,7 @@ class LensParam(object):
                 if not 's_scale' in kwargs_fixed:
                     kwargs['s_scale'] = args[i]
                     i += 1
-            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
                          'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'center_x' in kwargs_fixed:
@@ -320,12 +326,15 @@ class LensParam(object):
                     args.append(e1)
                     args.append(e2)
 
-            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
                     args.append(kwargs['Rs'])
-            if model in ['NFW', 'NFW_ELLIPSE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE']:
                 if not 'theta_Rs' in kwargs_fixed:
                     args.append(kwargs['theta_Rs'])
+            if model in ['TNFW', 'SIS_TRUNCATED']:
+                if not 'r_trunc' in kwargs_fixed:
+                    args.append(kwargs['r_trunc'])
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -381,7 +390,7 @@ class LensParam(object):
             if model in ['SPEMD_SMOOTH']:
                 if not 's_scale' in kwargs_fixed:
                     args.append(kwargs['s_scale'])
-            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                                  'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE',
                          'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'center_x' in kwargs_fixed:
@@ -465,14 +474,18 @@ class LensParam(object):
                     sigma.append(ellipse_sigma)
                     sigma.append(ellipse_sigma)
 
-            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
                     mean.append(kwargs_mean['Rs'])
                     sigma.append(kwargs_mean['Rs_sigma'])
-            if model in ['NFW', 'NFW_ELLIPSE']:
+            if model in ['NFW', 'TNFW', 'NFW_ELLIPSE']:
                 if not 'theta_Rs' in kwargs_fixed:
                     mean.append(kwargs_mean['theta_Rs'])
                     sigma.append(kwargs_mean['theta_Rs_sigma'])
+            if model in ['TNFW', 'SIS_TRUNCATED']:
+                if not 'r_trunc' in kwargs_fixed:
+                    mean.append(kwargs_mean['r_trunc'])
+                    sigma.append(kwargs_mean['r_trunc_sigma'])
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -554,7 +567,7 @@ class LensParam(object):
                 if not 's_scale' in kwargs_fixed:
                     mean.append(kwargs_mean['s_scale'])
                     sigma.append(kwargs_mean['s_scale_sigma'])
-            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
+            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
                 , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
                          'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'center_x' in kwargs_fixed:
@@ -619,7 +632,7 @@ class LensParam(object):
                     list.append('sigma_lens')
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP', 'COMPOSITE']:
                 if not 'theta_E' in kwargs_fixed:
-                    num+=1
+                    num += 1
                     list.append('theta_E')
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SPP']:
                 if not 'gamma' in kwargs_fixed:
@@ -631,14 +644,18 @@ class LensParam(object):
                     num += 2
                     list.append('e1_lens')
                     list.append('e2_lens')
-            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE']:
+            if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE', 'TNFW']:
                 if not 'Rs' in kwargs_fixed:
                     num += 1
                     list.append('Rs_nfw')
-            if model in ['NFW', 'NFW_ELLIPSE']:
+            if model in ['NFW', 'NFW_ELLIPSE', 'TNFW']:
                 if not 'theta_Rs' in kwargs_fixed:
                     num += 1
                     list.append('theta_Rs_nfw')
+            if model in ['TNFW', 'SIS_TRUNCATED']:
+                if not 'r_trunc' in kwargs_fixed:
+                    num += 1
+                    list.append('r_trunc')
 
             if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART']:
                 if not 'beta' in kwargs_fixed:
@@ -709,7 +726,7 @@ class LensParam(object):
                 if not 's_scale' in kwargs_fixed:
                     list.append('s_scale')
                     num += 1
-            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
+            if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
                          'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'center_x' in kwargs_fixed:

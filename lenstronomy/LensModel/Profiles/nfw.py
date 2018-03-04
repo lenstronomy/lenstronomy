@@ -149,8 +149,8 @@ class NFW(object):
         :type r200: float>0
         :return: Epsilon(R) projected density at radius R
         """
-        x=R/Rs
-        hx=self._h(x)
+        x = R/Rs
+        hx = self._h(x)
         return 2*rho0*Rs**3*hx
 
     def nfwAlpha(self, R, Rs, rho0, ax_x, ax_y):

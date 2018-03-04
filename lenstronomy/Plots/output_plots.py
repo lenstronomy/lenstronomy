@@ -80,7 +80,7 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w'):
     if len(ra_image) > 0:
         if len(ra_image[0]) > 0:
             x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
-            abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+            abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
             for i in range(len(x_image)):
                 x_ = (x_image[i] + 0.5) * deltaPix
                 y_ = (y_image[i] + 0.5) * deltaPix
@@ -141,7 +141,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
             x_ = (x_image[i] + 0.5) * deltaPix
             y_ = (y_image[i] + 0.5) * deltaPix
             ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-            #ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*k', markersize=10)
     ax.get_xaxis().set_visible(False)

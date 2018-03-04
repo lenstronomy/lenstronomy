@@ -42,7 +42,6 @@ class Solver(object):
             raise ValueError("Point source number %s must be as specified by the solver with number of images %s" %
                              (len(x_), self._num_images))
         kwargs_lens, precision = self.constraint_lensmodel(x_, y_, kwargs_lens)
-
         return kwargs_lens
 
     def add_fixed_lens(self, kwargs_fixed_lens, kwargs_lens_init):

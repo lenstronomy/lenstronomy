@@ -84,7 +84,7 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.05, search_window=10, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
         """
 
         :param kwargs_ps:

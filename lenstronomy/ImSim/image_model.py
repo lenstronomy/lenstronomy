@@ -222,8 +222,8 @@ class ImageModel(object):
         :param sourcePos_y: source position in relative arc sec
         :return: x_coords, y_coords of image positions
         """
-        deltaPix = self.Data.deltaPix / 2.
-        numPix = self.Data.nx * 2
+        deltaPix = self.Data.deltaPix * 2.
+        numPix = self.Data.nx / 2
         search_window = deltaPix * numPix
         min_distance = deltaPix
         if self.PointSource is None:

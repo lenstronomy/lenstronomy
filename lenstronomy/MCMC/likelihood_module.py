@@ -71,6 +71,7 @@ class LikelihoodModule(object):
         if self._image_likelihood:
             logL += self.Multiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                           source_marg=self._source_marg, compute_bool=self._compute_bool)
+            x_mins, y_mins = self.Multiband.image_positions(kwargs_ps, kwargs_lens)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
         # logL -= self.bounds_convergence(kwargs_lens)
@@ -94,8 +95,12 @@ class LikelihoodModule(object):
         :return:
         """
         # TODO: make this part of the PointSource class
-        ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        source_x, source_y = self.lensModel.ray_shooting(ra_image_list[0],dec_image_list[0],
+        if 'ra_image' in kwargs_ps[0]:
+            ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
+        else:
+            ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+            ra_image, dec_image = ra_image_list[0], dec_image_list[0]
+        source_x, source_y = self.lensModel.ray_shooting(ra_image, dec_image,
                                                              kwargs_lens)
         dist = np.sqrt((source_x - source_x[0])**2 + (source_y - source_y[0])**2)
         if np.max(dist) > tolerance:

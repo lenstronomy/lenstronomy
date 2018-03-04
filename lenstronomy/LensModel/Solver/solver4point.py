@@ -24,12 +24,12 @@ class Solver4Point(object):
                 raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR':
+        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR' or lensModel.multi_plane is True:
             self._decoupling = False
         else:
             self._decoupling = decoupling
 
-    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-10):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
 
         :param x_pos: list of image positions (x-axis)

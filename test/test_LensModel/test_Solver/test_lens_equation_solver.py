@@ -73,6 +73,25 @@ class TestLensEquationSolver(object):
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 
+    def test_central_image(self):
+        lens_model_list = ['SPEP', 'SIS', 'SHEAR']
+        kwargs_spep = {'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0}
+        kwargs_sis = {'theta_E': 1, 'center_x': 1.5, 'center_y': 0}
+        kwargs_shear = {'e1': 0.01, 'e2': 0}
+        kwargs_lens = [kwargs_spep, kwargs_sis, kwargs_shear]
+        lensModel = LensModel(lens_model_list)
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = -0.1
+        min_distance = 0.05
+        search_window = 10
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                     min_distance=min_distance,
+                                                                     search_window=search_window,
+                                                                     precision_limit=10 ** (-10), num_iter_max=10)
+        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+
 
 if __name__ == '__main__':
     pytest.main()

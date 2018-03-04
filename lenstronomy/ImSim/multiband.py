@@ -32,6 +32,9 @@ class Multiband(object):
         if self.pointSource is not None:
             self.pointSource.delete_lens_model_cach()
             self.pointSource.set_save_cache(True)
+            for imageModel in self._imageModel_list:
+                imageModel.PointSource.delete_lens_model_cach()
+                imageModel.PointSource.set_save_cache(True)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
         """
@@ -142,7 +145,7 @@ class Multiband(object):
         # generate image
         logL = 0
         for i in range(self._num_bands):
-            if compute_bool[i]:
+            if compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=source_marg)
         return logL
 
@@ -154,7 +157,7 @@ class Multiband(object):
                 raise ValueError('compute_bool statement has not the same range as number of bands available!')
         num = 0
         for i in range(self._num_bands):
-            if compute_bool[i]:
+            if compute_bool[i] is True:
                 num += self._imageModel_list[i].numData_evaluate
         return num
 

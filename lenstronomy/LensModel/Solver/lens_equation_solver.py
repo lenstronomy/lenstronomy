@@ -14,7 +14,7 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
-    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10, precision_limit=10**(-10), num_iter_max=100):
         """
         finds image position source position and lense model
 
@@ -37,15 +37,21 @@ class LensEquationSolver(object):
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
         x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
-        x_mins = x_mins[delta_map <= min_distance]
-        y_mins = y_mins[delta_map <= min_distance]
+        mag = self.lensModel.magnification(x_mins, y_mins, kwargs_lens)
+        mag = np.abs(mag)
+        #print(x_mins, y_mins, 'before requirement of min_distance')
+        #x_mins = x_mins[delta_map*mag <= min_distance*5]
+        #y_mins = y_mins[delta_map*mag <= min_distance*5]
+        #print(x_mins, y_mins, 'after requirement of min_distance')
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit, num_iter_max)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
+        #print(x_mins, y_mins, 'after precision limit requirement')
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
+        #print(x_mins, y_mins, 'after overlap removals')
         x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
 

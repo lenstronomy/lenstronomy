@@ -27,7 +27,7 @@ class PointSourceParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION']:
+            if model in ['LENSED_POSITION', 'UNLENSED']:
                 if not 'ra_image' in kwargs_fixed:
                     kwargs['ra_image'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
@@ -59,22 +59,6 @@ class PointSourceParam(object):
                     i += 1
                 else:
                     kwargs['point_amp'] = kwargs_fixed['point_amp']
-            if model in ['UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    kwargs['ra_image'] = args[i]
-                    i += 1
-                else:
-                    kwargs['ra_image'] = kwargs_fixed['ra_source']
-                if not 'dec_image' in kwargs_fixed:
-                    kwargs['dec_image'] = args[i]
-                    i += 1
-                else:
-                    kwargs['dec_image'] = kwargs_fixed['dec_image']
-                if not 'point_amp' in kwargs_fixed:
-                    kwargs['point_amp'] = args[i]
-                    i += 1
-                else:
-                    kwargs['point_amp'] = kwargs_fixed['point_amp']
 
             kwargs_list.append(kwargs)
         return kwargs_list, i
@@ -89,7 +73,7 @@ class PointSourceParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION']:
+            if model in ['LENSED_POSITION', 'UNLENSED']:
                 if not 'ra_image' in kwargs_fixed:
                     x_pos = kwargs['ra_image'][0:self._num_point_sources_list[k]]
                     for x in x_pos:
@@ -109,14 +93,6 @@ class PointSourceParam(object):
                     args.append(kwargs['dec_source'])
                 if not 'point_amp' in kwargs_fixed:
                     args.append(kwargs['point_amp'])
-
-            if model in ['UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    args.append(kwargs['ra_image'])
-                if not 'dec_image' in kwargs_fixed:
-                    args.append(kwargs['dec_image'])
-                if not 'point_amp' in kwargs_fixed:
-                    args.append(kwargs['point_amp'])
         return args
 
     def param_init(self, kwargs_mean_list):
@@ -130,7 +106,7 @@ class PointSourceParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION']:
+            if model in ['LENSED_POSITION', 'UNLENSED']:
                 if not 'ra_image' in kwargs_fixed:
                     pos = kwargs['ra_image'][0:self._num_point_sources_list[k]]
                     for x in pos:
@@ -156,17 +132,6 @@ class PointSourceParam(object):
                 if not 'point_amp' in kwargs_fixed:
                     mean.append(kwargs['point_amp'])
                     sigma.append(kwargs['point_amp_sigma'])
-
-            if model in ['UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    mean.append(kwargs['ra_image'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'dec_image' in kwargs_fixed:
-                    mean.append(kwargs['dec_image'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'point_amp' in kwargs_fixed:
-                    mean.append(kwargs['point_amp'])
-                    sigma.append(kwargs['point_amp_sigma'])
         return mean, sigma
 
     def num_param(self):
@@ -178,7 +143,7 @@ class PointSourceParam(object):
         list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION']:
+            if model in ['LENSED_POSITION', 'UNLENSED']:
                 if not 'ra_image' in kwargs_fixed:
                     num += self._num_point_sources_list[k]
                     for i in range(self._num_point_sources_list[k]):
@@ -198,17 +163,6 @@ class PointSourceParam(object):
                 if not 'dec_source' in kwargs_fixed:
                     num += 1
                     list.append('dec_source')
-                if not 'point_amp' in kwargs_fixed:
-                    num += 1
-                    list.append('point_amp')
-
-            if model in ['UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    num += 1
-                    list.append('ra_image')
-                if not 'dec_image' in kwargs_fixed:
-                    num += 1
-                    list.append('dec_image')
                 if not 'point_amp' in kwargs_fixed:
                     num += 1
                     list.append('point_amp')

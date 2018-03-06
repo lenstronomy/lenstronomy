@@ -44,7 +44,6 @@ class Fitting(object):
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_mean_lens)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps)
-
         lowerLimit = np.array(mean_start) - np.array(sigma_start)*sigma_factor
         upperLimit = np.array(mean_start) + np.array(sigma_start)*sigma_factor
         num_param, param_list = param_class.num_param()

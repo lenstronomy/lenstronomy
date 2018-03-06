@@ -23,3 +23,8 @@ History
 ++++++++++++++++++
 
 * Major design update
+
+0.1.1 (2018-03-05)
+++++++++++++++++++
+
+* minor update to facilitate options without lensing

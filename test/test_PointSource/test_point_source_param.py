@@ -9,15 +9,14 @@ from lenstronomy.PointSource.point_source_param import PointSourceParam
 class TestParam(object):
 
     def setup(self):
-        kwargs_model = {'num_point_sources_list': [4], 'point_source_model_list': ['LENSED_POSITION', 'SOURCE_POSITION', 'UNLENSED']}
         kwargs_fixed = [{}, {}, {}]
-        num_point_sources_list = [4]
+        num_point_sources_list = [4, None, 1]
         point_source_model_list = ['LENSED_POSITION', 'SOURCE_POSITION', 'UNLENSED']
         self.param = PointSourceParam(model_list=point_source_model_list, kwargs_fixed=kwargs_fixed, num_point_source_list=num_point_sources_list)
-        self.kwargs =[{'ra_image': np.array([0, 0, 0, 0]), 'dec_image': np.array([0 , 0, 0, 0]),
+        self.kwargs =[{'ra_image': np.array([0, 0, 0, 0]), 'dec_image': np.array([0, 0, 0, 0]),
                        'point_amp': np.array([1, 1, 1, 1])},
                       {'ra_source': 1, 'dec_source': 1, 'point_amp': 1.},
-                      {'ra_image': 1, 'dec_image': 1, 'point_amp': 1.}]
+                      {'ra_image': [1], 'dec_image': [1], 'point_amp': [1.]}]
         self.kwargs_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}]
 
         self.kwargs_mean = []

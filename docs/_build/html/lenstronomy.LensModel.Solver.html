@@ -93,7 +93,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">
-<code class="descname">image_position_from_source</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_position_from_source</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>min_distance=0.1</em>, <em>search_window=10</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>finds image position source position and lense model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -142,7 +142,7 @@
 <p>joint solve class to manage with type of solver to be executed and checks whether the requirements are fulfilled.</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens">
-<code class="descname">add_fixed_lens</code><span class="sig-paren">(</span><em>kwargs_fixed_lens_list</em>, <em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_fixed_lens</code><span class="sig-paren">(</span><em>kwargs_fixed_lens</em>, <em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns kwargs that are kept fixed during run, depending on options
 :param kwargs_options:
 :param kwargs_lens:
@@ -264,7 +264,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel">
-<code class="descname">constraint_lensmodel</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_list</em>, <em>xtol=1.49012e-10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">constraint_lensmodel</code><span class="sig-paren">(</span><em>x_pos</em>, <em>y_pos</em>, <em>kwargs_list</em>, <em>xtol=1.49012e-12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

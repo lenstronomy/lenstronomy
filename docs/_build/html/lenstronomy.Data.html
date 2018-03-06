@@ -402,32 +402,42 @@ This can e.g. come from model errors in the PSF estimation.</li>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Point Spread Function convolution</p>
 <p>supported psy_types:</p>
-<blockquote>
-<div><dl class="docutils">
+<ul>
+<li><dl class="first docutils">
 <dt>‘GAUSSIAN’: Gaussian convolution kernel</dt>
 <dd><dl class="first last docutils">
 <dt>kwargs:</dt>
-<dd>‘fwhm’: full width at half maximum of Gaussian kernel (arcsec)</dd>
+<dd><p class="first last">‘fwhm’: full width at half maximum of Gaussian kernel (arcsec)</p>
+</dd>
 <dt>required for point sources:</dt>
-<dd>‘pixel_size’</dd>
+<dd><p class="first last">‘pixel_size’</p>
+</dd>
 <dt>optional:</dt>
-<dd>‘truncation’: truncation of the Gaussian convolution, default: 5*fwhm
-the kernel size will be set to cover everything within the truncation</dd>
+<dd><p class="first last">‘truncation’: truncation of the Gaussian convolution, default: 5*fwhm
+the kernel size will be set to cover everything within the truncation</p>
+</dd>
 </dl>
 </dd>
+</dl>
+</li>
+<li><dl class="first docutils">
 <dt>‘PIXEL’: pixelized convolution kernel with odd pixel numbers</dt>
 <dd><dl class="first last docutils">
 <dt>kwargs:</dt>
-<dd>‘kernel_point_source’: the pixelized kernel from a point source in its center</dd>
+<dd><p class="first last">‘kernel_point_source’: the pixelized kernel from a point source in its center</p>
+</dd>
 <dt>optional:</dt>
-<dd>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical
+<dd><p class="first last">‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical
 convolution. If not specified, it will take the full point source kernel and numerically convolve it
-over the size of a pixel</dd>
+over the size of a pixel</p>
+</dd>
 </dl>
 </dd>
 </dl>
-<p>‘NONE’: default option, results in no convolution, point sources will not be displayed</p>
-</div></blockquote>
+</li>
+<li><p class="first">‘NONE’: default option, results in no convolution, point sources will not be displayed</p>
+</li>
+</ul>
 <dl class="method">
 <dt id="lenstronomy.Data.psf.PSF.constructor_kwargs">
 <code class="descname">constructor_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.constructor_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.constructor_kwargs" title="Permalink to this definition">¶</a></dt>

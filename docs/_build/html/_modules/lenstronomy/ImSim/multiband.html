@@ -77,8 +77,12 @@
 
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pointSource</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pointSource</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">imageModel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">:</span>
+                <span class="n">imageModel</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
+                <span class="n">imageModel</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Multiband.source_surface_brightness"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.multiband.Multiband.source_surface_brightness">[docs]</a>    <span class="k">def</span> <span class="nf">source_surface_brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">de_lensed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -189,7 +193,7 @@
         <span class="c1"># generate image</span>
         <span class="n">logL</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span> <span class="n">source_marg</span><span class="o">=</span><span class="n">source_marg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">logL</span></div>
 
@@ -201,7 +205,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;compute_bool statement has not the same range as number of bands available!&#39;</span><span class="p">)</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">numData_evaluate</span>
         <span class="k">return</span> <span class="n">num</span></div>
 

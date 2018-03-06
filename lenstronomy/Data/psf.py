@@ -33,6 +33,7 @@ class PSF(object):
     - 'NONE': default option, results in no convolution, point sources will not be displayed
 
     """
+
     def __init__(self, kwargs_psf):
         self.psf_type = kwargs_psf.get('psf_type', 'NONE')
         if self.psf_type == 'GAUSSIAN':

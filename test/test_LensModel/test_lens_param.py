@@ -8,7 +8,7 @@ from lenstronomy.LensModel.lens_param import LensParam
 class TestParam(object):
 
     def setup(self):
-        self.lens_model_list = ['SPEP', 'SHEAR', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
+        self.lens_model_list = ['SPEP', 'SHEAR', 'CONVERGENCE', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
                                 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
                                 'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE'
@@ -16,6 +16,7 @@ class TestParam(object):
         self.kwargs = [
             {'theta_E': 1., 'gamma': 2, 'q': 0.7, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},  # 'SPEP
             {'e1': 0.1, 'e2': 0.1},  # EXTERNAL_SHEAR
+            {'kappa_ext': 0.1},  # CONVERGENCE
             {'g1': 0.01, 'g2': 0.01, 'g3': -0.01, 'g4': 0},  # 'FLEXION'
             {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'theta_E': 1., 'center_x': 0, 'center_y': 0},  # 'SIS
@@ -44,6 +45,7 @@ class TestParam(object):
         self.kwargs_sigma = [
             {'theta_E_sigma': 1., 'gamma_sigma': 2, 'ellipse_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SPEP
             {'shear_sigma': 0.1},  # EXTERNAL_SHEAR
+            {'kappa_ext_sigma': 0.1},  # CONVERGENCE
             {'flexion_sigma': 0.01},  # 'FLEXION'
             {'amp_sigma': 1., 'sigma_x_sigma': 1, 'sigma_y_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'GAUSSIAN'
             {'theta_E_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SIS
@@ -71,7 +73,7 @@ class TestParam(object):
             {'coeffs_sigma': 0.1, 'beta_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS_CART'
             {'coupling_sigma': 1, 'phi_dipole_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'DIPOLE'
         ]
-        self.kwargs_fixed = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+        self.kwargs_fixed = [{}, {}, {},{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                              {'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},
                              {}, {}, {'phi_dipole': 1.}]
         self.kwargs_mean = []
@@ -103,7 +105,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 119
+        assert num == 120
 
 
 if __name__ == '__main__':

@@ -40,6 +40,12 @@ class LensParam(object):
                         i += 1
                     else:
                         kwargs['e2'] = kwargs_fixed['e2']
+            if model == 'CONVERGENCE':
+                if not 'kappa_ext' in kwargs_fixed:
+                    kwargs['kappa_ext'] = args[i]
+                    i += 1
+                else:
+                    kwargs['kappa_ext'] = kwargs_fixed['kappa_ext']
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     kwargs['g1'] = args[i]
@@ -293,6 +299,9 @@ class LensParam(object):
                         args.append(kwargs['e1'])
                     if not 'e2' in kwargs_fixed:
                         args.append(kwargs['e2'])
+            if model == 'CONVERGENCE':
+                if not 'kappa_ext' in kwargs_fixed:
+                    args.append(kwargs['kappa_ext'])
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     args.append(kwargs['g1'])
@@ -425,6 +434,10 @@ class LensParam(object):
                     if not 'e2' in kwargs_fixed:
                         mean.append(kwargs_mean['e2'])
                         sigma.append(kwargs_mean['shear_sigma'])
+            if model == 'CONVERGENCE':
+                if not 'kappa_ext' in kwargs_fixed:
+                    mean.append(kwargs_mean['kappa_ext'])
+                    sigma.append(kwargs_mean['kappa_ext_sigma'])
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     mean.append(kwargs_mean['g1'])
@@ -602,6 +615,10 @@ class LensParam(object):
                     if not 'e2' in kwargs_fixed:
                         num += 1
                         list.append('e2')
+            if model == 'CONVERGENCE':
+                if not 'kappa_ext' in kwargs_fixed:
+                    num += 1
+                    list.append('kappa_ext')
             if model == 'FLEXION':
                 if not 'g1' in kwargs_fixed:
                     num += 1

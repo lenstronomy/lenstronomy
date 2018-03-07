@@ -21,6 +21,9 @@ class SinglePlane(object):
             if lens_type == 'SHEAR':
                 from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
+            elif lens_type == 'CONVERGENCE':
+                from lenstronomy.LensModel.Profiles.mass_sheet import MassSheet
+                self.func_list.append(MassSheet())
             elif lens_type == 'FLEXION':
                 from lenstronomy.LensModel.Profiles.flexion import Flexion
                 self.func_list.append(Flexion())

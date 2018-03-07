@@ -209,7 +209,7 @@ class LensModelPlot(object):
         self._v_max_default = min(np.max(log_model), 10)
         print("reduced chi^2 = ", self._reduced_x2)
 
-    def data_plot(self, ax, v_min=None, v_max=None):
+    def data_plot(self, ax, v_min=None, v_max=None, text='Observed'):
         """
 
         :param ax:
@@ -227,7 +227,7 @@ class LensModelPlot(object):
         ax.autoscale(False)
 
         scale_bar(ax, self._frame_size, dist=1, text='1"')
-        text_description(ax, self._frame_size, text="Observed", color="w", backgroundcolor='k')
+        text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
         coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -261,11 +261,11 @@ class LensModelPlot(object):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
 
-        plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
-        plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        image_position_plot(ax, self._coords, ra_image, dec_image)
-        source_position_plot(ax, self._coords, self._kwargs_source)
+        #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
+        #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
+        #ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        #image_position_plot(ax, self._coords, ra_image, dec_image)
+        #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, v_min=None, v_max=None):
         """

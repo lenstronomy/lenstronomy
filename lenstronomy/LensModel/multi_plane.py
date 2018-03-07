@@ -27,6 +27,22 @@ class MultiLens(object):
         self._redshift_list = redshift_list
         self._sorted_redshift_index = self._index_ordering(redshift_list)
         self._lens_model = SinglePlane(lens_model_list)
+        z_before = 0
+        self._T_ij_list = []
+        self._T_z_list = []
+        self._reduced2physical_factor = []
+        for idex in self._sorted_redshift_index:
+            z_lens = self._redshift_list[idex]
+            delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+            self._T_ij_list.append(delta_T)
+            T_z = self._cosmo_bkg.T_xy(0, z_lens)
+            self._T_z_list.append(T_z)
+            factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
+            self._reduced2physical_factor.append(factor)
+            z_before = z_lens
+        delta_T = self._cosmo_bkg.T_xy(z_before, z_source)
+        self._T_ij_list.append(delta_T)
+        self._T_z_source = self._cosmo_bkg.T_xy(0, z_source)
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
         """
@@ -39,18 +55,16 @@ class MultiLens(object):
         """
         x = np.zeros_like(theta_x)
         y = np.zeros_like(theta_y)
-        z_before = 0
         alpha_x = theta_x
         alpha_y = theta_y
-        for idex in self._sorted_redshift_index:
-            z_lens = self._redshift_list[idex]
-            delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+        i = 0
+        for i, idex in enumerate(self._sorted_redshift_index):
+            delta_T = self._T_ij_list[i]
             x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
-            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, idex, z_lens)
-            z_before = z_lens
-        delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
+            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+        delta_T = self._T_ij_list[i+1]
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
-        beta_x, beta_y = self._co_moving2angle(x, y, self._z_source)
+        beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
     def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
@@ -67,20 +81,21 @@ class MultiLens(object):
         dt_geo = np.zeros_like(theta_x)
         x = np.zeros_like(theta_x)
         y = np.zeros_like(theta_y)
-        z_before = 0
         alpha_x = theta_x
         alpha_y = theta_y
-        for idex in self._sorted_redshift_index:
+        i = 0
+        for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+            delta_T = self._T_ij_list[i]
+            #delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             dt_geo_new = self._geometrical_delay(alpha_x, alpha_y, delta_T)
             x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
             dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, idex, z_lens)
-            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, idex, z_lens)
+            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
             dt_geo = dt_geo + dt_geo_new
             dt_grav = dt_grav + dt_grav_new
-            z_before = z_lens
-        delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
+        delta_T = self._T_ij_list[i + 1]
+        #delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
         dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
         return dt_grav + dt_geo
 
@@ -139,7 +154,7 @@ class MultiLens(object):
             raise ValueError("There is no lens object between observer at z=0 and source at z=%s" % self._z_source)
         return sort_index
 
-    def _reduced2physical_deflection(self, alpha_reduced, z_lens, z_source):
+    def _reduced2physical_deflection(self, alpha_reduced, idex_lens):
         """
         alpha_reduced = D_ds/Ds alpha_physical
 
@@ -148,7 +163,8 @@ class MultiLens(object):
         :param z_source: source redshift
         :return: physical deflection angle
         """
-        factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
+        factor = self._reduced2physical_factor[idex_lens]
+        #factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
         return alpha_reduced * factor
 
     def _gravitational_delay(self, x, y, kwargs_lens, idex, z_lens):
@@ -161,7 +177,7 @@ class MultiLens(object):
         :param idex: index of the lens model
         :return: gravitational delay in units of days as seen at z=0
         """
-        theta_x, theta_y = self._co_moving2angle(x, y, z_lens)
+        theta_x, theta_y = self._co_moving2angle(x, y, idex)
         potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=idex)
         delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source)
         return -delay_days
@@ -191,7 +207,7 @@ class MultiLens(object):
         delay_days = const.delay_arcsec2days(potential, D_dt)
         return delay_days
 
-    def _co_moving2angle(self, x, y, z_lens):
+    def _co_moving2angle(self, x, y, idex):# z_lens):
         """
         transforms co-moving distances Mpc into angles on the sky (radian)
 
@@ -200,7 +216,21 @@ class MultiLens(object):
         :param z_lens: redshift of plane
         :return: angles on the sky
         """
-        T_z = self._cosmo_bkg.T_xy(0, z_lens)
+        T_z = self._T_z_list[idex]
+        #T_z = self._cosmo_bkg.T_xy(0, z_lens)
+        theta_x = x / T_z
+        theta_y = y / T_z
+        return theta_x, theta_y
+
+    def _co_moving2angle_source(self, x, y):
+        """
+        special case of the co_moving2angle definition at the source redshift
+
+        :param x:
+        :param y:
+        :return:
+        """
+        T_z = self._T_z_source
         theta_x = x / T_z
         theta_y = y / T_z
         return theta_x, theta_y
@@ -220,7 +250,7 @@ class MultiLens(object):
         y_ = y + alpha_y * delta_T
         return x_, y_
 
-    def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, idex, z_lens):
+    def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, idex):
         """
         adds the pyhsical deflection angle of a single lens plane to the deflection field
 
@@ -230,13 +260,13 @@ class MultiLens(object):
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
         :param idex: index of the lens model to be added
-        :param z_lens: redshift of the deflector plane
+        :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
-        theta_x, theta_y = self._co_moving2angle(x, y, z_lens)
+        theta_x, theta_y = self._co_moving2angle(x, y, idex)
         alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=idex)
-        alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, z_lens, z_source=self._z_source)
-        alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, z_lens, z_source=self._z_source)
+        alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, idex)
+        alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, idex)
         alpha_x_new = alpha_x - alpha_x_phys
         alpha_y_new = alpha_y - alpha_y_phys
         return alpha_x_new, alpha_y_new

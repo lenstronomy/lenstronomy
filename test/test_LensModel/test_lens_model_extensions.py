@@ -27,24 +27,12 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(ra_crit_list[0][3], -0.53249999999999997, decimal=5)
         npt.assert_almost_equal(dec_crit_list[0][3], -1.2536936868024853, decimal=5)
 
-        """
-        import matplotlib.pyplot as plt
-        lensModel = LensModel(lens_model_list)
-        x_grid_high_res, y_grid_high_res = util.make_subgrid(x_grid, y_grid, 10)
-        mag_high_res = util.array2image(
-            lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens, kwargs_else={}))
-
-        cs = plt.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
-                         alpha=0.0)
-        paths = cs.collections[0].get_paths()
-        for i, p in enumerate(paths):
-            v = p.vertices
-            ra_points = v[:, 0]
-            dec_points = v[:, 1]
-            print(ra_points, ra_crit_list[i])
-            npt.assert_almost_equal(ra_points[0], ra_crit_list[i][0], 5)
-            npt.assert_almost_equal(dec_points[0], dec_crit_list[i][0], 5)
-        """
+    def test_critical_curves_tiling(self):
+        lens_model_list = ['SPEP']
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'q': 0.8, 'phi_G': 1., 'center_x': 0, 'center_y': 0}]
+        lensModel = LensModelExtensions(lens_model_list)
+        ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01, max_order=10)
+        npt.assert_almost_equal(ra_crit[0], -0.5355208333333333, decimal=5)
 
     def test_get_magnification_model(self):
         self.kwargs_options = { 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'],

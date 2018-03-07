@@ -41,6 +41,77 @@ class LensModelExtensions(LensModel):
             mag_finite[i] = np.sum(I_image) * deltaPix**2
         return mag_finite
 
+    def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
+        """
+
+        :param kwargs_lens:
+        :param compute_window:
+        :param tiling_scale:
+        :return:
+        """
+        numPix = int(compute_window / start_scale)
+        x_grid_init, y_grid_init = util.make_grid(numPix, deltapix=start_scale, subgrid_res=1)
+        mag_init = util.array2image(self.magnification(x_grid_init, y_grid_init, kwargs_lens))
+        x_grid_init = util.array2image(x_grid_init)
+        y_grid_init = util.array2image(y_grid_init)
+
+        ra_crit_list = []
+        dec_crit_list = []
+        # iterate through original triangles and return ra_crit, dec_crit list
+        for i in range(numPix-1):
+            for j in range(numPix-1):
+                edge1 = [x_grid_init[i, j], y_grid_init[i, j], mag_init[i, j]]
+                edge2 = [x_grid_init[i+1, j+1], y_grid_init[i+1, j+1], mag_init[i+1, j+1]]
+                edge_90_1 = [x_grid_init[i, j+1], y_grid_init[i, j+1], mag_init[i, j+1]]
+                edge_90_2 = [x_grid_init[i+1, j], y_grid_init[i+1, j], mag_init[i+1, j]]
+                ra_crit, dec_crit = self._tiling_crit(edge1, edge2, edge_90_1, max_order=max_order,
+                                                      kwargs_lens=kwargs_lens)
+                ra_crit_list += ra_crit  # list addition
+                dec_crit_list += dec_crit  # list addition
+                ra_crit, dec_crit = self._tiling_crit(edge1, edge2, edge_90_2, max_order=max_order,
+                                                      kwargs_lens=kwargs_lens)
+                ra_crit_list += ra_crit  # list addition
+                dec_crit_list += dec_crit  # list addition
+        return np.array(ra_crit_list), np.array(dec_crit_list)
+
+    def _tiling_crit(self, edge1, edge2, edge_90, max_order, kwargs_lens):
+        """
+        tiles a rectangular triangle and compares the signs of the magnification
+
+        :param edge1: [ra_coord, dec_coord, magnification]
+        :param edge2: [ra_coord, dec_coord, magnification]
+        :param edge_90: [ra_coord, dec_coord, magnification]
+        :param max_order: maximal order to fold triangle
+        :return:
+        """
+        ra_1, dec_1, mag_1 = edge1
+        ra_2, dec_2, mag_2 = edge2
+        ra_3, dec_3, mag_3 = edge_90
+        sign_list = np.sign([mag_1, mag_2, mag_3])
+        if sign_list[0] == sign_list[1] and sign_list[0] == sign_list[2]:  # if all signs are the same
+            return [], []
+        else:
+            # split triangle along the long axis
+            # execute tiling twice
+            # add ra_crit and dec_crit together
+            # if max depth has been reached, return the mean value in the triangle
+            max_order -= 1
+            if max_order <= 0:
+                return [(ra_1 + ra_2 + ra_3)/3], [(dec_1 + dec_2 + dec_3)/3]
+            else:
+                # split triangle
+                ra_90_ = (ra_1 + ra_2)/2  # find point in the middle of the long axis to split triangle
+                dec_90_ = (dec_1 + dec_2)/2
+                mag_90_ = self.magnification(ra_90_, dec_90_, kwargs_lens)
+                edge_90_ = [ra_90_, dec_90_, mag_90_]
+                ra_crit, dec_crit = self._tiling_crit(edge1=edge_90, edge2=edge1, edge_90=edge_90_, max_order=max_order,
+                                                      kwargs_lens=kwargs_lens)
+                ra_crit_2, dec_crit_2 = self._tiling_crit(edge1=edge_90, edge2=edge2, edge_90=edge_90_, max_order=max_order,
+                                                          kwargs_lens=kwargs_lens)
+                ra_crit += ra_crit_2
+                dec_crit += dec_crit_2
+                return ra_crit, dec_crit
+
     def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01):
         """
 

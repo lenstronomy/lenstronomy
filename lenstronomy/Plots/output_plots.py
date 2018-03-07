@@ -62,9 +62,9 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     :return:
     """
     deltaPix = coords.pixel_size
-    for i in range(len(ra_caustic_list)):
-        x_c, y_c = coords.map_coord2pix(ra_caustic_list[i], dec_caustic_list[i])
-        ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), color=color)
+    #for i in range(len(ra_caustic_list)):
+    x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
+    ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), ',', color=color)
     return ax
 
 
@@ -105,7 +105,7 @@ def source_position_plot(ax, coords, kwargs_source):
     return ax
 
 
-def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0, point_source=False):
+def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0, point_source=False, with_caustics=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -122,14 +122,18 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     _coords = data._coords
     x_grid, y_grid = data.coordinates
     lensModelExt = class_creator.creat_lens_model_extension(lensModel)
-    ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
-        kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
+
+    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
+    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
     kappa_result = util.array2image(lensModel.kappa(x_grid, y_grid, kwargs_lens))
     im = ax.matshow(np.log10(kappa_result), origin='lower',
                     extent=[0, _frame_size, 0, _frame_size], cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
-
-    plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
-    plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
+    if with_caustics is True:
+        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
+                                                                         start_scale=deltaPix, max_order=10)
+        ra_caustic_list, dec_caustic_list = lensModelExt.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
+        plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
     if point_source:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
@@ -190,8 +194,6 @@ class LensModelPlot(object):
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
-        self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModel.critical_curve_caustics(kwargs_lens, compute_window=self._frame_size, grid_scale=0.005)
-
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps, inv_bool=True)
         self._kwargs_lens = kwargs_lens
@@ -208,6 +210,21 @@ class LensModelPlot(object):
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
         print("reduced chi^2 = ", self._reduced_x2)
+
+    def _critical_curves(self):
+        if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
+            self._ra_crit_list, self._dec_crit_list = self._lensModel.critical_curve_tiling(self._kwargs_lens,
+                                                                                        compute_window=self._frame_size,
+                                                                                        start_scale=self._deltaPix / 5.,
+                                                                                        max_order=10)
+        return self._ra_crit_list, self._dec_crit_list
+
+    def _caustics(self):
+        if not hasattr(self, '_ra_caustic_list') or not hasattr(self, '_dec_caustic_list'):
+            ra_crit_list, dec_crit_list = self._critical_curves()
+            self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list,
+                                                                                     dec_crit_list, self._kwargs_lens)
+        return self._ra_caustic_list, self._dec_caustic_list
 
     def data_plot(self, ax, v_min=None, v_max=None, text='Observed'):
         """
@@ -370,7 +387,8 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
-        plot_line_set(ax, coords_source, self._ra_caustic_list, self._dec_caustic_list, color='b')
+        ra_caustic_list, dec_caustic_list = self._caustics()
+        plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
         coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
@@ -424,9 +442,10 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'det(A$^{-1}$)', fontsize=15)
-
-        plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
-        plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
+        ra_crit_list, dec_crit_list = self._critical_curves()
+        ra_caustic_list, dec_caustic_list = self._caustics()
+        plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
+        plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k')
         source_position_plot(ax, self._coords, self._kwargs_source)
@@ -460,8 +479,10 @@ class LensModelPlot(object):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'arcsec', fontsize=15)
 
-        plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
-        plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
+        ra_crit_list, dec_crit_list = self._critical_curves()
+        ra_caustic_list, dec_caustic_list = self._caustics()
+        plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
+        plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image)
         source_position_plot(ax, self._coords, self._kwargs_source)

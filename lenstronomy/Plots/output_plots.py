@@ -190,7 +190,7 @@ class LensModelPlot(object):
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
-        self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModel.critical_curve_caustics(kwargs_lens, compute_window=self._frame_size, grid_scale=0.01)
+        self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModel.critical_curve_caustics(kwargs_lens, compute_window=self._frame_size, grid_scale=0.005)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps, inv_bool=True)

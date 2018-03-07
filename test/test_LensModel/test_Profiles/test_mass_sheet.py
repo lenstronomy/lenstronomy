@@ -63,3 +63,9 @@ class TestMassSheet(object):
 
 if __name__ == '__main__':
     pytest.main()
+
+
+#import matplotlib.pyplot as plt
+#plt.contour()
+#import matplotlib.path as mpath
+#mpath._path

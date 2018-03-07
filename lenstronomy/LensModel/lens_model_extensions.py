@@ -50,31 +50,29 @@ class LensModelExtensions(LensModel):
         :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts
 
         """
-
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
         mag_high_res = util.array2image(self.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
 
-        level = 0.5
-        import matplotlib._cntr as cntr
-        c = cntr.Cntr(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res)
-        nlist = c.trace(level, level, 0)
-        segs = nlist[:len(nlist) // 2]
-        paths = segs
         ra_crit_list = []
         dec_crit_list = []
         ra_caustic_list = []
         dec_caustic_list = []
-        for p in paths:
-            v = p
+
+        import matplotlib.pyplot as plt
+        cs = plt.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
+                         alpha=0.0)
+        paths = cs.collections[0].get_paths()
+        for i, p in enumerate(paths):
+            v = p.vertices
             ra_points = v[:, 0]
             dec_points = v[:, 1]
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
-
             ra_caustics, dec_caustics = self.ray_shooting(ra_points, dec_points, kwargs_lens)
             ra_caustic_list.append(ra_caustics)
             dec_caustic_list.append(dec_caustics)
+        plt.cla()
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
     def effective_einstein_radius(self, kwargs_lens_list, k=None):

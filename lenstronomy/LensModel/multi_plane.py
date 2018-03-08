@@ -113,7 +113,7 @@ class MultiLens(object):
         alpha_y = theta_y - beta_y
         return alpha_x, alpha_y
 
-    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.000001):
+    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.0000001):
         """
         computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
 

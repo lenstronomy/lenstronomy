@@ -16,7 +16,7 @@ class TestLensProp(object):
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
                          'foreground_shear': False, 'lens_model_deflector_bool': [True, False, False, False, False],
-                          'lens_light_deflector_bool': [True], 'lens_light_model_list': ['DOUBLE_SERSIC']}
+                          'lens_light_deflector_bool': [True], 'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options)
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'q': 0.96286768452645233, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'phi_G': 0.46030738644964475, 'gamma': 1.8},
                        {'Rs': 3.3343851394796515, 'q': 0.71808978862755635, 'center_x': 0, 'center_y': 0, 'Ra': 1.3113719625383848,
@@ -25,10 +25,12 @@ class TestLensProp(object):
                         'theta_E': 0.28165274714097904}, {'center_y': 3.83985426,
                         'center_x': -2.32019933, 'theta_E': 0.0038110812674654873},
                        {'center_y': 4.31985428, 'center_x': -1.68019931, 'theta_E': 0.45552039839735037}]
-        kwargs_lens_light = [{'n_sersic': 1.1212528655709217, 'R_2': 0.03025682660635394, 'I0_2': 139.96763298885992,
-                              'center_x': -0.019674496231393473, 'n_2': 1.90000008624093865,
+        kwargs_lens_light = [{'n_sersic': 1.1212528655709217,
+                              'center_x': -0.019674496231393473,
                               'q': 0.79703498156919605, 'I0_sersic': 1.1091367792010356, 'center_y': 0.076914975081560991,
-                              'phi_G': -0.52624727893702705, 'R_sersic': 0.42691611878867058}]
+                              'phi_G': -0.52624727893702705, 'R_sersic': 0.42691611878867058},
+                             {'R_sersic': 0.03025682660635394, 'I0_sersic': 139.96763298885992, 'n_sersic': 1.90000008624093865,
+                              'center_x': -0.019674496231393473, 'center_y': 0.076914975081560991}]
         r_ani = 0.62
         kwargs_anisotropy = {'r_ani': r_ani}
         R_slit = 3.8

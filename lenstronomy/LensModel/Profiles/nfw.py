@@ -24,8 +24,8 @@ class NFW(object):
         :return: 
         """
         rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
@@ -37,8 +37,8 @@ class NFW(object):
         returns df/dx and df/dy of the function (integral of NFW)
         """
         rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
@@ -50,8 +50,8 @@ class NFW(object):
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
@@ -171,9 +171,9 @@ class NFW(object):
         :return: Epsilon(R) projected density at radius R
         """
         if isinstance(R, int) or isinstance(R, float):
-            R = max(R, 0.00001)
+            R = max(R, 0.00000001)
         else:
-            R[R <= 0.00001] = 0.00001
+            R[R <= 0.00000001] = 0.00000001
         x = R/Rs
         gx = self._g(x)
         a = 4*rho0*Rs*R*gx/x**2/R
@@ -196,7 +196,7 @@ class NFW(object):
         :type axis: same as R
         :return: Epsilon(R) projected density at radius R
         """
-        c = 0.001
+        c = 0.000001
         if isinstance(R, int) or isinstance(R, float):
             R = max(R, c)
         else:
@@ -222,7 +222,7 @@ class NFW(object):
             elif X > 1:
                 a = 1/(X**2-1)*(1-2/np.sqrt(X**2-1)*np.arctan(np.sqrt((X-1)/(1+X))))
             else:  # X == 0:
-                c = 0.0001
+                c = 0.0000001
                 a = 1/(-1)*(1-2/np.sqrt(1)*np.arctanh(np.sqrt((1-c)/(1+c))))
 
         else:
@@ -237,7 +237,7 @@ class NFW(object):
             a[X>1] = 1/(x**2-1)*(1-2/np.sqrt(x**2-1)*np.arctan(np.sqrt((x-1)/(1+x))))
             # a[X>y] = 0
 
-            c = 0.001
+            c = 0.000001
             x = X[X == 0]
             a[X==0] = 1/(-1)*(1-2/np.sqrt(1)*np.arctanh(np.sqrt((1-c)/(1+c))))
         return a
@@ -250,7 +250,7 @@ class NFW(object):
         :param x: R/Rs
         :type x: float >0
         """
-        c = 0.001
+        c = 0.000001
         if isinstance(X, int) or isinstance(X, float):
             if X < 1:
                 x = max(c, X)
@@ -282,7 +282,7 @@ class NFW(object):
         :param x: R/Rs
         :type x: float >0
         """
-        c = 0.001
+        c = 0.000001
         if isinstance(X, int) or isinstance(X, float):
             if X < 1:
                 x = max(0.001, X)
@@ -291,7 +291,7 @@ class NFW(object):
                 a = np.log(X/2.)**2 + np.arccos(1./X)**2
         else:
             a = np.empty_like(X)
-            X[X <= c] = 0.001
+            X[X <= c] = 0.000001
             x = X[X < 1]
             a[X < 1] = np.log(x/2.)**2 - np.arccosh(1./x)**2
             x = X[X >= 1]

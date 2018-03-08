@@ -55,7 +55,7 @@ class LightParam(object):
                     i += num_param
                 else:
                     kwargs['amp'] = kwargs_fixed['amp']
-            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'I0_sersic' in kwargs_fixed:
                     kwargs['I0_sersic'] = args[i]
                     i += 1
@@ -72,7 +72,7 @@ class LightParam(object):
                 else:
                     kwargs['R_sersic'] = kwargs_fixed['R_sersic']
 
-            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                     phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G'] = phi
@@ -81,31 +81,7 @@ class LightParam(object):
                 else:
                     kwargs['phi_G'] = kwargs_fixed['phi_G']
                     kwargs['q'] = kwargs_fixed['q']
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'I0_2' in kwargs_fixed:
-                    kwargs['I0_2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['I0_2'] = kwargs_fixed['I0_2']
-                if not 'R_2' in kwargs_fixed:
-                    kwargs['R_2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['R_2'] = kwargs_fixed['R_2']
-                if not 'n_2' in kwargs_fixed:
-                    kwargs['n_2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['n_2'] = kwargs_fixed['n_2']
-                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
-                    kwargs['phi_G_2'] = phi
-                    kwargs['q_2'] = q
-                    i += 2
-                else:
-                    kwargs['phi_G_2'] = kwargs_fixed['phi_G_2']
-                    kwargs['q_2'] = kwargs_fixed['q_2']
-            if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     kwargs['Re'] = args[i]
                     i += 1
@@ -116,43 +92,6 @@ class LightParam(object):
                     i += 1
                 else:
                     kwargs['gamma'] = kwargs_fixed['gamma']
-            if model in ['BULDGE_DISK']:
-                if not 'I0_b' in kwargs_fixed:
-                    kwargs['I0_b'] = args[i]
-                    i += 1
-                else:
-                    kwargs['I0_b'] = kwargs_fixed['I0_b']
-                if not 'R_b' in kwargs_fixed:
-                    kwargs['R_b'] = args[i]
-                    i += 1
-                else:
-                    kwargs['R_b'] = kwargs_fixed['R_b']
-                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
-                    kwargs['phi_G_b'] = phi
-                    kwargs['q_b'] = q
-                    i += 2
-                else:
-                    kwargs['phi_G_b'] = kwargs_fixed['phi_G_b']
-                    kwargs['q_b'] = kwargs_fixed['q_b']
-                if not 'I0_d' in kwargs_fixed:
-                    kwargs['I0_d'] = args[i]
-                    i += 1
-                else:
-                    kwargs['I0_d'] = kwargs_fixed['I0_d']
-                if not 'R_d' in kwargs_fixed:
-                    kwargs['R_d'] = args[i]
-                    i += 1
-                else:
-                    kwargs['R_d'] = kwargs_fixed['R_d']
-                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
-                    kwargs['phi_G_d'] = phi
-                    kwargs['q_d'] = q
-                    i += 2
-                else:
-                    kwargs['phi_G_d'] = kwargs_fixed['phi_G_d']
-                    kwargs['q_d'] = kwargs_fixed['q_d']
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
                     kwargs['sigma0'] = args[i]
@@ -233,7 +172,7 @@ class LightParam(object):
                     num_param = (n_max + 1) + (n_max + 2) / 2
                     for i in range(num_param):
                         args.append(kwargs['amp'][i])
-            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'I0_sersic' in kwargs_fixed:
                     args.append(kwargs['I0_sersic'])
                 if not 'n_sersic' in kwargs_fixed:
@@ -241,44 +180,16 @@ class LightParam(object):
                 if not 'R_sersic' in kwargs_fixed:
                     args.append(kwargs['R_sersic'])
 
-            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                     e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
                     args.append(e1)
                     args.append(e2)
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'I0_2' in kwargs_fixed:
-                    args.append(kwargs['I0_2'])
-                if not 'R_2' in kwargs_fixed:
-                    args.append(kwargs['R_2'])
-                if not 'n_2' in kwargs_fixed:
-                    args.append(kwargs['n_2'])
-                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
-                    args.append(e1)
-                    args.append(e2)
-            if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     args.append(kwargs['Re'])
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
-            if model in ['BULDGE_DISK']:
-                if not 'I0_b' in kwargs_fixed:
-                    args.append(kwargs['I0_b'])
-                if not 'R_b' in kwargs_fixed:
-                    args.append(kwargs['R_b'])
-                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_b'], kwargs['q_b'], bounds)
-                    args.append(e1)
-                    args.append(e2)
-                if not 'I0_d' in kwargs_fixed:
-                    args.append(kwargs['I0_d'])
-                if not 'R_d' in kwargs_fixed:
-                    args.append(kwargs['R_b'])
-                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_d'], kwargs['q_d'], bounds)
-                    args.append(e1)
-                    args.append(e2)
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
                     args.append(kwargs['sigma0'])
@@ -334,7 +245,7 @@ class LightParam(object):
                 if not 'amp' in kwargs_fixed:
                     mean.append(kwargs_mean['amp'])
                     sigma.append(kwargs_mean['amp_sigma'])
-            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'I0_sersic' in kwargs_fixed:
                     mean.append(kwargs_mean['I0_sersic'])
                     sigma.append(kwargs_mean['I0_sersic_sigma'])
@@ -345,7 +256,7 @@ class LightParam(object):
                     mean.append(kwargs_mean['R_sersic'])
                     sigma.append(kwargs_mean['R_sersic_sigma'])
 
-            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                         phi = kwargs_mean['phi_G']
                         q = kwargs_mean['q']
@@ -356,64 +267,13 @@ class LightParam(object):
                         sigma.append(ellipse_sigma)
                         sigma.append(ellipse_sigma)
 
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'I0_2' in kwargs_fixed:
-                    mean.append(kwargs_mean['I0_2'])
-                    sigma.append(kwargs_mean['I0_2_sigma'])
-                if not 'R_2' in kwargs_fixed:
-                    mean.append(kwargs_mean['R_2'])
-                    sigma.append(kwargs_mean['R_2_sigma'])
-                if not 'n_2' in kwargs_fixed:
-                    mean.append(kwargs_mean['n_2'])
-                    sigma.append(kwargs_mean['n_2_sigma'])
-                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    phi = kwargs_mean['phi_G_2']
-                    q = kwargs_mean['q_2']
-                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-                    mean.append(e1)
-                    mean.append(e2)
-                    ellipse_sigma = kwargs_mean['ellipse_sigma']
-                    sigma.append(ellipse_sigma)
-                    sigma.append(ellipse_sigma)
-
-            if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     mean.append(kwargs_mean['Re'])
                     sigma.append(kwargs_mean['Re_sigma'])
                 if not 'gamma' in kwargs_fixed:
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
-            if model in ['BULDGE_DISK']:
-                if not 'I0_b' in kwargs_fixed:
-                    mean.append(kwargs_mean['I0_b'])
-                    sigma.append(kwargs_mean['I0_b_sigma'])
-                if not 'R_b' in kwargs_fixed:
-                    mean.append(kwargs_mean['R_b'])
-                    sigma.append(kwargs_mean['R_b_sigma'])
-                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    phi = kwargs_mean['phi_G_b']
-                    q = kwargs_mean['q_b']
-                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-                    mean.append(e1)
-                    mean.append(e2)
-                    ellipse_sigma = kwargs_mean['ellipse_sigma']
-                    sigma.append(ellipse_sigma)
-                    sigma.append(ellipse_sigma)
-                if not 'I0_d' in kwargs_fixed:
-                    mean.append(kwargs_mean['I0_d'])
-                    sigma.append(kwargs_mean['I0_d_sigma'])
-                if not 'R_d' in kwargs_fixed:
-                    mean.append(kwargs_mean['R_d'])
-                    sigma.append(kwargs_mean['R_d_sigma'])
-                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    phi = kwargs_mean['phi_G_d']
-                    q = kwargs_mean['q_d']
-                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-                    mean.append(e1)
-                    mean.append(e2)
-                    ellipse_sigma = kwargs_mean['ellipse_sigma']
-                    sigma.append(ellipse_sigma)
-                    sigma.append(ellipse_sigma)
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
                     mean.append(kwargs_mean['sigma0'])
@@ -474,7 +334,7 @@ class LightParam(object):
                     list.append(str('n_max_' + self._type))
                 if not 'amp' in kwargs_fixed:
                     raise ValueError('shapelets amplitude must be fixed in the parameter configuration!')
-            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['SERSIC', 'CORE_SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'I0_sersic' in kwargs_fixed:
                     num += 1
                     list.append(str('I0_sersic_' + self._type))
@@ -485,55 +345,19 @@ class LightParam(object):
                     num += 1
                     list.append(str('R_sersic_' + self._type))
 
-            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            if model in ['SERSIC_ELLIPSE', 'CORE_SERSIC', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'phi_G' in kwargs_fixed or not 'q' in kwargs_fixed:
                     num += 2
                     list.append(str('e1_' + self._type))
                     list.append(str('e2_' + self._type))
 
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                if not 'I0_2' in kwargs_fixed:
-                    num += 1
-                    list.append(str('I2_' + self._type))
-                if not 'R_2' in kwargs_fixed:
-                    num += 1
-                    list.append(str('R_2_' + self._type))
-                if not 'n_2' in kwargs_fixed:
-                    num += 1
-                    list.append(str('n_2_' + self._type))
-                if not 'phi_G_2' in kwargs_fixed or not 'q_2' in kwargs_fixed:
-                    num += 2
-                    list.append(str('e1_2_' + self._type))
-                    list.append(str('e2_2_' + self._type))
-
-            if model in ['CORE_SERSIC', 'DOUBLE_CORE_SERSIC']:
+            if model in ['CORE_SERSIC']:
                 if not 'Re' in kwargs_fixed:
                     num += 1
                     list.append(str('Re_' + self._type))
                 if not 'gamma' in kwargs_fixed:
                     num += 1
                     list.append(str('gamma_' + self._type))
-            if model in ['BULDGE_DISK']:
-                if not 'I0_b' in kwargs_fixed:
-                    num += 1
-                    list.append(str('I0_b_' + self._type))
-                if not 'R_b' in kwargs_fixed:
-                    num += 1
-                    list.append(str('R_b_' + self._type))
-                if not 'phi_G_b' in kwargs_fixed or not 'q_b' in kwargs_fixed:
-                    num += 2
-                    list.append(str('e1_b_' + self._type))
-                    list.append(str('e2_b_' + self._type))
-                if not 'I0_d' in kwargs_fixed:
-                    num += 1
-                    list.append(str('I0_d_' + self._type))
-                if not 'R_d' in kwargs_fixed:
-                    num += 1
-                    list.append(str('R_d_' + self._type))
-                if not 'phi_G_d' in kwargs_fixed or not 'q_d' in kwargs_fixed:
-                    num += 2
-                    list.append(str('e1_d_' + self._type))
-                    list.append(str('e2_d_' + self._type))
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'sigma0' in kwargs_fixed:
                     list.append(str('sigma0_' + self._type))
@@ -580,12 +404,6 @@ class LightParam(object):
             kwargs_fixed = kwargs_fixed_list[i]
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_fixed['I0_sersic'] = 1
-            elif model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_fixed['I0_sersic'] = 1
-                kwargs_fixed['I0_2'] = 1
-            elif model in ['BULDGE_DISK']:
-                kwargs_fixed['I0_b'] = 1
-                kwargs_fixed['I0_d'] = 1
             elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_fixed['sigma0'] = 1
             elif model in ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SHAPELETS']:

@@ -157,29 +157,6 @@ class LensAnalysis(object):
             R_h_list.append(R_h)
         return flux_list, R_h_list
 
-    @staticmethod
-    def buldge_disk_ratio(kwargs_buldge_disk):
-        """
-        computes the buldge-to-disk ratio of the
-
-        :param kwargs_buldge_disk: kwargs of the buldge2disk function
-        :return:
-        """
-        kwargs_bd = copy.deepcopy(kwargs_buldge_disk)
-        kwargs_bd['center_x'] = 0
-        kwargs_bd['center_y'] = 0
-        deltaPix = 0.05
-        numPix = 200
-        x_grid, y_grid = util.make_grid(numPix, deltaPix)
-        from lenstronomy.LightModel.Profiles.sersic import BuldgeDisk
-        bd_class = BuldgeDisk()
-        light_grid = bd_class.function(x_grid, y_grid, **kwargs_bd)
-        light_tot = np.sum(light_grid)
-        kwargs_bd['I0_d'] = 0
-        light_grid = bd_class.function(x_grid, y_grid, **kwargs_bd)
-        light_buldge = np.sum(light_grid)
-        return light_tot, light_buldge
-
     def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
         """
         variance of the linear source reconstruction in the source plane coordinates,

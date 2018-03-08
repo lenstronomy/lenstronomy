@@ -27,18 +27,9 @@ class LightModel(object):
             elif profile_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.sersic import Sersic_elliptic
                 self.func_list.append(Sersic_elliptic(smoothing=smoothing))
-            elif profile_type == 'DOUBLE_SERSIC':
-                from lenstronomy.LightModel.Profiles.sersic import DoubleSersic
-                self.func_list.append(DoubleSersic(smoothing=smoothing))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
                 self.func_list.append(CoreSersic(smoothing=smoothing))
-            elif profile_type == 'DOUBLE_CORE_SERSIC':
-                from lenstronomy.LightModel.Profiles.sersic import DoubleCoreSersic
-                self.func_list.append(DoubleCoreSersic(smoothing=smoothing))
-            elif profile_type == 'BULDGE_DISK':
-                from lenstronomy.LightModel.Profiles.sersic import BuldgeDisk
-                self.func_list.append(BuldgeDisk(smoothing=smoothing))
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
@@ -90,7 +81,8 @@ class LightModel(object):
             if self._valid_list[i]:
                 if k == None or k == i:
                     kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
-                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'GAUSSIAN', 'MULTI_GAUSSIAN']:
+                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                                                     'GAUSSIAN', 'MULTI_GAUSSIAN']:
                         flux += func.light_3d(r, **kwargs)
                     else:
                         raise ValueError('Light model %s does not support a 3d light distribution!'
@@ -108,13 +100,7 @@ class LightModel(object):
         response = []
         n = 0
         for k, model in enumerate(self.profile_type_list):
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                new = {'I0_sersic': 1, 'I0_2': 1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += self.func_list[k].function_split(x, y, **kwargs_new)
-                n += 2
-            elif model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 new = {'I0_sersic': 1}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)
@@ -175,16 +161,8 @@ class LightModel(object):
         :return:
         """
         for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_list[k]['I0_sersic'] = param[i]
-                i += 1
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_list[k]['I0_2'] = param[i]
-                i += 1
-            if model in ['BULDGE_DISK']:
-                kwargs_list[k]['I0_b'] = param[i]
-                i += 1
-                kwargs_list[k]['I0_d'] = param[i]
                 i += 1
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_list[k]['sigma0'] = param[i]
@@ -208,13 +186,8 @@ class LightModel(object):
         kwargs_list_new = []
         for k, model in enumerate(self.profile_type_list):
             kwargs_list_k = kwargs_list[k].copy()
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC', 'CORE_SERSIC']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_list_k['I0_sersic'] *= norm_factor
-            if model in ['DOUBLE_SERSIC', 'DOUBLE_CORE_SERSIC']:
-                kwargs_list_k['I0_2'] *= norm_factor
-            if model in ['BULDGE_DISK']:
-                kwargs_list_k['I0_b'] *= norm_factor
-                kwargs_list_k['I0_d'] *= norm_factor
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_list_k['sigma0'] *= norm_factor
             if model in ['GAUSSIAN', 'MULTI_GAUSSIAN']:

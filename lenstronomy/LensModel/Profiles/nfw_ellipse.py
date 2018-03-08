@@ -6,6 +6,7 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
 
+
 class NFW_ELLIPSE(object):
     """
     this class contains functions concerning the NFW profile
@@ -30,8 +31,8 @@ class NFW_ELLIPSE(object):
         xt2 = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
         R_ = np.sqrt(xt1**2 + xt2**2)
         rho0_input = self.nfw._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         f_ = self.nfw.nfwPot(R_, Rs, rho0_input)
         return f_
 
@@ -48,8 +49,8 @@ class NFW_ELLIPSE(object):
         xt2 = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
         R_ = np.sqrt(xt1**2 + xt2**2)
         rho0_input = self.nfw._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         f_x_prim, f_y_prim = self.nfw.nfwAlpha(R_, Rs, rho0_input, xt1, xt2)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)

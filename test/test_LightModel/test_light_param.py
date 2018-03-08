@@ -8,8 +8,8 @@ from lenstronomy.LightModel.light_param import LightParam
 class TestParam(object):
 
     def setup(self):
-        self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE', 'DOUBLE_SERSIC',
-                                 'CORE_SERSIC', 'DOUBLE_CORE_SERSIC', 'BULDGE_DISK', 'SHAPELETS', 'HERNQUIST',
+        self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
+                                 'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
                                  'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'NONE'
                                  ]
         self.kwargs = [
@@ -17,14 +17,8 @@ class TestParam(object):
             {'amp': [1., 2], 'sigma': [1, 3], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
             {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
             {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0,
-             'I0_2': 1, 'R_2': 0.05, 'n_2': 2, 'phi_G_2': 0, 'q_2': 1},  # 'DOUBLE_SERSIC'
             {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},
             # 'CORE_SERSIC'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5,
-             'center_x': 0, 'center_y': 0, 'I0_2': 1, 'R_2': 0.05, 'n_2': 2, 'phi_G_2': 0, 'q_2': 1},
-            # 'DOUBLE_CORE_SERSIC'
-            {'I0_b': 1, 'R_b': 0.1, 'phi_G_b': 0, 'q_b': 1, 'I0_d': 2, 'R_d': 1, 'phi_G_d': 0.5, 'q_d': 0.7, 'center_x': 0, 'center_y': 0},  # BULDGE_DISK
             {'amp': [1, 1, 1], 'beta': 0.5, 'n_max': 1, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS'
             {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
             {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0},  # 'HERNQUIST_ELLIPSE'
@@ -43,13 +37,7 @@ class TestParam(object):
             {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
              'center_y_sigma': 1, 'ellipse_sigma': 0.1},  # 'SERSIC_ELLIPSE'
             {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
-             'center_y_sigma': 1, 'ellipse_sigma': 0.1, 'I0_2_sigma': 1, 'R_2_sigma': 0.05, 'n_2_sigma': 2},  # 'DOUBLE_SERSIC'
-            {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
              'center_y_sigma': 1, 'ellipse_sigma': 0.1, 'Re_sigma': 0.01, 'gamma_sigma': 0.1},  # 'CORE_SERSIC'
-            {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
-             'center_y_sigma': 1, 'ellipse_sigma': 0.1, 'Re_sigma': 0.01, 'gamma_sigma': 0.1, 'I0_2_sigma': 1, 'R_2_sigma': 0.05, 'n_2_sigma': 2},  # 'DOUBLE_CORE_SERSIC'
-            {'I0_b_sigma': 1, 'R_b_sigma': 0.1, 'ellipse_sigma': 0.1, 'I0_d_sigma': 2, 'R_d_sigma': 1,
-             'center_x_sigma': 0, 'center_y_sigma': 0},  # BULDGE_DISK
             {'amp_sigma': 1, 'beta_sigma': 0.1, 'n_max_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS'
             {'sigma0_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'HERNQUIST'
             {'sigma0_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},  # 'HERNQUIST_ELLIPSE'
@@ -59,7 +47,7 @@ class TestParam(object):
             {},  # 'NONE'
 
         ]
-        self.kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {}, {}, {}, {'amp': [1, 1, 1]}, {}, {}, {}, {}, {}, {}
+        self.kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'amp': [1, 1, 1]}, {}, {}, {}, {}, {}, {}
                              ]
         self.kwargs_mean = []
         for i in range(len(self.light_model_list)):
@@ -90,7 +78,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 93
+        assert num == 57
 
 
 if __name__ == '__main__':

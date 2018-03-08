@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
-
+import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 
 
@@ -17,18 +17,20 @@ class TestLightModel(object):
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
                                  'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'NONE'
                                  ]
+        phi_G, q = 0.5, 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         self.kwargs = [
             {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'amp': [1., 2], 'sigma': [1, 3], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
             {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'q': 0.8, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},
+            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
+            {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},
             # 'CORE_SERSIC'
             {'amp': [1, 1, 1], 'beta': 0.5, 'n_max': 1, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS'
             {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
-            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0},  # 'HERNQUIST_ELLIPSE'
+            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'HERNQUIST_ELLIPSE'
             {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
-            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0},  # 'PJAFFE_ELLIPSE'
+            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'PJAFFE_ELLIPSE'
             {'mean': 1},  # 'UNIFORM'
             {}]# 'NONE'
 
@@ -41,10 +43,11 @@ class TestLightModel(object):
 
     def test_surface_brightness(self):
         output = self.LightModel.surface_brightness(x=1, y=1, kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output, 1.5496725222329162, decimal=6)
+        npt.assert_almost_equal(output, 1.5781408598915985, decimal=6)
+
     def test_surface_brightness_array(self):
         output = self.LightModel.surface_brightness(x=[1], y=[1], kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output[0], 1.5496725222329162, decimal=6)
+        npt.assert_almost_equal(output[0], 1.5781408598915985, decimal=6)
 
     def test_functions_split(self):
         output = self.LightModel.functions_split(x=1., y=1., kwargs_list=self.kwargs)

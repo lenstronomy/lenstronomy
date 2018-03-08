@@ -1,5 +1,6 @@
 import pytest
 from lenstronomy.SimulationAPI.multiband import MultiBand
+import lenstronomy.Util.param_util as param_util
 import numpy as np
 
 
@@ -64,20 +65,10 @@ class TestMultiband(object):
         # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'I0_sersic': 1000., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
+        phi, q = 0.2, 0.9
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_sersic_ellipse = {'I0_sersic': 10., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
-        # 'DOUBLE_SERSIC': two Sersic overlaid on shared center and ellipticity
-        kwargs_sersic_double = {'I0_sersic': 1., 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 0, 'center_y': 0,
-                                'phi_G': 0.2, 'q': 0.8, 'I0_2': 0.2, 'R_2': 1, 'n_2': 1}
-        # 'CORE_SERSIC': Cored Sersic profile
-        kwargs_sersic_core = {'I0_sersic': 10000., 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 0, 'center_y': 0,
-                              'phi_G': 0.2, 'q': 0.8, 'Re': 0.1, 'gamma': 3}
-        # 'DOUBLE_CORE_SERSIC': double cored Sersic profile
-        kwargs_sersic_doube_core = {'I0_sersic': 1., 'Re': 0.3, 'R_sersic': 0.5, 'n_sersic': 2, 'gamma': 3,
-                                    'phi_G': 0.8, 'q': 0.6, 'center_x': 0, 'center_y': 0, 'I0_2': 0.2, 'R_2': 2,
-                                    'n_2': 1}
-        # 'NONE': no light profile
-        kwargs_none = {}
+                                 'e1': e1, 'e2': e2}
 
         lens_light_model_list = ['SERSIC']
         kwargs_lens_light_list = [kwargs_sersic]

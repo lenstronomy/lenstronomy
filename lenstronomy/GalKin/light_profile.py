@@ -51,8 +51,10 @@ class LightProfile(object):
         kwargs_list_copy = copy.deepcopy(kwargs_list)
         kwargs_list_new = []
         for kwargs in kwargs_list_copy:
-            if 'q' in kwargs:
-                kwargs['q'] = 1.
+            if 'e1' in kwargs:
+                kwargs['e1'] = 0
+            if 'e2' in kwargs:
+                kwargs['e2'] = 0
             kwargs_list_new.append({k: v for k, v in kwargs.items() if not k in ['center_x', 'center_y']})
         return self.light_model.surface_brightness(R, 0, kwargs_list_new)
 

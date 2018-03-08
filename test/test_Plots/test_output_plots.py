@@ -4,7 +4,7 @@ import pytest
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
+import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -51,8 +51,10 @@ class TestOutputPlots(object):
         # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
+        phi, q = 0.2, 0.9
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': e1, 'e2': e2}
 
         lens_light_model_list = ['SERSIC']
         self.kwargs_lens_light = [kwargs_sersic]

@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+import lenstronomy.Util.param_util as param_util
 
 
 class Sersic(SersicUtil):
@@ -15,10 +16,10 @@ class Sersic(SersicUtil):
         """
         returns Sersic profile
         """
-        if n_sersic < 0.2:
-            n_sersic = 0.2
-        if R_sersic < 10.**(-6):
-            R_sersic = 10.**(-6)
+        #if n_sersic < 0.2:
+        #    n_sersic = 0.2
+        #if R_sersic < 10.**(-6):
+        #    R_sersic = 10.**(-6)
         x_shift = x - center_x
         y_shift = y - center_y
         R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
@@ -48,14 +49,15 @@ class Sersic_elliptic(SersicUtil):
     this class contains functions to evaluate an elliptical Sersic function
     """
 
-    def function(self, x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, center_x=0, center_y=0):
+    def function(self, x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
         """
         returns Sersic profile
         """
-        if n_sersic < 0.2:
-            n_sersic = 0.2
-        if R_sersic < 10.**(-6):
-            R_sersic = 10.**(-6)
+        #if n_sersic < 0.2:
+        #    n_sersic = 0.2
+        #if R_sersic < 10.**(-6):
+        #    R_sersic = 10.**(-6)
+        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
 
@@ -92,10 +94,11 @@ class CoreSersic(SersicUtil):
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
     """
 
-    def function(self, x, y, I0_sersic, R_sersic, Re, n_sersic, gamma, phi_G, q, center_x=0, center_y=0, alpha=3.):
+    def function(self, x, y, I0_sersic, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.):
         """
         returns Core-Sersic function
         """
+        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
         Rb = R_sersic
         x_shift = x - center_x
         y_shift = y - center_y

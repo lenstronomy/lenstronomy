@@ -73,16 +73,22 @@ class TestLightProfile(object):
 
     def test_ellipticity_in_profiles(self):
         lightProfile = ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']
-        kwargs_profile = [{'Rs': 0.16350224766074103, 'q': 0.4105628122365978, 'center_x': -0.019983826426838536,
-            'center_y': 0.90000011282957304, 'phi_G': 0.14944144075912402, 'sigma0': 1.3168943578511678},
-            {'Rs': 0.29187068596715743, 'q': 0.70799587973181288, 'center_x': 0.020568531548241405,
-            'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824, 'phi_G': -0.37221683730659516,
+        import lenstronomy.Util.param_util as param_util
+        phi, q = 0.14944144075912402, 0.4105628122365978
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+
+        phi2, q2 = -0.37221683730659516, 0.70799587973181288
+        e12, e22 = param_util.phi_q2_ellipticity(phi2, q2)
+        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': e1, 'e2': e2, 'center_x': -0.019983826426838536,
+            'center_y': 0.90000011282957304, 'sigma0': 1.3168943578511678},
+            {'Rs': 0.29187068596715743, 'e1': e12, 'e2': e22, 'center_x': 0.020568531548241405,
+            'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
         lensAnalysis = LensAnalysis(kwargs_options)
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile)
-        kwargs_profile[0]['q'] = 1
-        kwargs_profile[1]['q'] = 1
+        kwargs_profile[0]['e1'], kwargs_profile[0]['e2'] = 0, 0
+        kwargs_profile[1]['e1'], kwargs_profile[1]['e2'] = 0, 0
         r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile)
         npt.assert_almost_equal(r_eff / r_eff_spherical, 1, decimal=2)
 

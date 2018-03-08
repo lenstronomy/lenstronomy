@@ -1,4 +1,5 @@
 import numpy as np
+import lenstronomy.Util.param_util as param_util
 
 
 class PJaffe(object):
@@ -46,7 +47,7 @@ class PJaffe_Ellipse(object):
         self.lens = PJaffe_lens()
         self.spherical = PJaffe()
 
-    def function(self, x, y, sigma0, Ra, Rs, q, phi_G, center_x=0, center_y=0):
+    def function(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
         """
 
         :param x:
@@ -58,10 +59,11 @@ class PJaffe_Ellipse(object):
         :param center_y:
         :return:
         """
+        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
         x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
         return self.spherical.function(x_, y_, sigma0, Ra, Rs)
 
-    def light_3d(self, r, sigma0, Ra, Rs, q=1, phi_G=0):
+    def light_3d(self, r, sigma0, Ra, Rs, e1=0, e2=0):
         """
 
         :param y:

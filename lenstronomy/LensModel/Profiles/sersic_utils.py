@@ -111,3 +111,4 @@ class SersicUtil(object):
         Prugniel & Simien (1997)
         :return:
         """
+        raise ValueError("not implemented! Use a Multi-Gaussian-component decomposition.")

@@ -4,6 +4,7 @@ import numpy.testing as npt
 import pytest
 
 from lenstronomy.Analysis.lens_properties import LensProp
+import lenstronomy.Util.param_util as param_util
 
 
 class TestLensProp(object):
@@ -25,10 +26,13 @@ class TestLensProp(object):
                         'theta_E': 0.28165274714097904}, {'center_y': 3.83985426,
                         'center_x': -2.32019933, 'theta_E': 0.0038110812674654873},
                        {'center_y': 4.31985428, 'center_x': -1.68019931, 'theta_E': 0.45552039839735037}]
+
+        phi, q = -0.52624727893702705, 0.79703498156919605
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens_light = [{'n_sersic': 1.1212528655709217,
                               'center_x': -0.019674496231393473,
-                              'q': 0.79703498156919605, 'I0_sersic': 1.1091367792010356, 'center_y': 0.076914975081560991,
-                              'phi_G': -0.52624727893702705, 'R_sersic': 0.42691611878867058},
+                              'e1': e1, 'e2': e2, 'I0_sersic': 1.1091367792010356, 'center_y': 0.076914975081560991,
+                               'R_sersic': 0.42691611878867058},
                              {'R_sersic': 0.03025682660635394, 'I0_sersic': 139.96763298885992, 'n_sersic': 1.90000008624093865,
                               'center_x': -0.019674496231393473, 'center_y': 0.076914975081560991}]
         r_ani = 0.62
@@ -49,9 +53,7 @@ class TestLensProp(object):
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
-        kwargs_numerics = {}
 
-        kwargs_lens_light = {'n_sersic': 2.474840710884247, 'R_2': 0.03534390928460919, 'I0_2': 48.50620123542663, 'center_x': -0.041110651331184814, 'n_2': 6.441956631512987, 'q': 0.815610540458232, 'I0_sersic': 0.50907639871167998, 'center_y': 0.094280889324232287, 'phi_G': -0.41067986340454093, 'R_sersic': 0.59310620263893432}
 
     def test_time_delays(self):
         z_lens = 0.5

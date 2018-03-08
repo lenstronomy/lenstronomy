@@ -42,7 +42,7 @@ class TestSimulation(object):
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.2, 'e2': 0.3}
 
         lens_light_model_list = ['SERSIC']
         self.kwargs_lens_light = [kwargs_sersic]
@@ -71,7 +71,7 @@ class TestSimulation(object):
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.2, 'e2': 0.3}
 
         kwargs_lens_light_list = [kwargs_sersic]
         kwargs_source_list = [kwargs_sersic_ellipse]
@@ -81,7 +81,7 @@ class TestSimulation(object):
                                   kwargs_lens_light_list, kwargs_ps)
 
         assert len(image_sim) == 100
-        npt.assert_almost_equal(np.sum(image_sim), 24476.280571230454, decimal=-3)
+        npt.assert_almost_equal(np.sum(image_sim), 14894.805448596271, decimal=-3)
 
     def test_normalize_flux(self):
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -95,7 +95,7 @@ class TestSimulation(object):
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.2, 'e2': 0.3}
         lens_light_model_list = ['SERSIC']
         kwargs_lens_light_list = [kwargs_sersic]
         source_model_list = ['SERSIC_ELLIPSE']
@@ -130,7 +130,7 @@ class TestSimulation(object):
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.2, 'e2': 0.3}
 
 
         lens_light_model_list = ['SERSIC']
@@ -151,7 +151,7 @@ class TestSimulation(object):
         numPix = 10
         deltaPix = 0.1
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.2, 'e2': 0.3}
 
 
         lens_light_model_list = ['SERSIC']

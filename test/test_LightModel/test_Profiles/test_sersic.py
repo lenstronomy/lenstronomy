@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 
 from lenstronomy.LightModel.Profiles.sersic import Sersic, Sersic_elliptic, CoreSersic
-
+import lenstronomy.Util.param_util as param_util
 import numpy as np
 import pytest
 import numpy.testing as npt
@@ -73,18 +73,19 @@ class TestSersic(object):
         n_sersic = 1
         phi_G = 1
         q = 0.9
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         center_x = 0
         center_y = 0
-        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, center_x, center_y)
+        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.12595366113005077, decimal=6)
         x = np.array([0])
         y = np.array([0])
-        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, center_x, center_y)
+        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 5.1482553482055664, decimal=2)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
-        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, phi_G, q, center_x, center_y)
+        values = self.sersic_elliptic.function(x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.11308277793465012, decimal=6)
         npt.assert_almost_equal(values[1], 0.021188620675507107, decimal=6)
         npt.assert_almost_equal(values[2], 0.0037276744362724477, decimal=6)
@@ -99,18 +100,19 @@ class TestSersic(object):
         n = 1
         phi_G = 1
         q = 0.9
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         center_x = 0
         center_y = 0
-        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, phi_G, q, center_x, center_y)
+        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.84489101, decimal=8)
         x = np.array([0])
         y = np.array([0])
-        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, phi_G, q, center_x, center_y)
+        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 288406.09, decimal=0)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
-        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, phi_G, q, center_x, center_y)
+        values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
         npt.assert_almost_equal(values[0], 0.79749529635325933, decimal=6)
         npt.assert_almost_equal(values[1], 0.33653478121594838, decimal=6)
         npt.assert_almost_equal(values[2], 0.14050402887681532, decimal=6)

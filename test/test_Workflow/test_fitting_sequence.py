@@ -48,7 +48,7 @@ class TestFittingSequence(object):
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
-                                 'phi_G': 0.2, 'q': 0.9}
+                                 'e1': 0.1, 'e2': 0.1}
 
         lens_light_model_list = ['SERSIC']
         self.kwargs_lens_light = [kwargs_sersic]

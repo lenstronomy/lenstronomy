@@ -71,6 +71,32 @@ class TestParam(object):
         kwargs_fixed = self.param_class._add_fixed_source(kwargs_fixed)
         assert 1 == 1
 
+    def test_get_cosmo(self):
+        kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
+                        'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+        kwargs_param = {}
+        kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
+        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        kwargs_fixed_lens_light = [{}]
+        kwargs_cosmo = {'sampling': True, 'D_dt_init': 1000, 'D_dt_sigma': 100, 'D_dt_lower': 0, 'D_dt_upper': 10000}
+        param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
+                                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_cosmo=kwargs_cosmo)
+
+        kwargs_true_lens = [
+            {'theta_E': 1., 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
+        kwargs_true_source = [
+            {'amp': 1 * 2 * np.pi * 0.1 ** 2, 'center_x': 0.2, 'center_y': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
+        kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
+                                   'q': 0.86, 'n_sersic': 1.7,
+                                   'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
+        kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
+        args = param_class.setParams(kwargs_true_lens, kwargs_true_source,
+                                          kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
+                                          kwargs_cosmo={'D_dt': 1000})
+        kwargs_cosmo = param_class.getCosmo(args=args)
+        assert kwargs_cosmo['D_dt'] == 1000
+
 
 class TestParamUpdate(object):
     def setup(self):

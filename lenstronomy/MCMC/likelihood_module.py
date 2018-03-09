@@ -19,7 +19,8 @@ class LikelihoodModule(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = kwargs_fixed
         self.Multiband = class_creator.creat_multiband(multi_band_list, kwargs_model)
         self.lensModel = self.Multiband.lensModel
-        self.param = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_lens_init)
+        self.param = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
+                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_lens_init)
         kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower = kwargs_lower
         kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_else_upper = kwargs_upper
         self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower, bounds='lower')
@@ -49,7 +50,7 @@ class LikelihoodModule(object):
             self.delays_measured = kwargs_likelihood['time_delays']
             self.delays_errors = kwargs_likelihood['time_delays_errors']
             raise ValueError("cosmological sampling of time-delays not implemented in this version of lenstronomy yet!"
-                             " Please get in touch with the the developers.")
+                             " Please get in touch with the developers.")
         self.priors_bool = kwargs_likelihood.get('priors', False)
         if self.priors_bool:
             self._prior_module = kwargs_likelihood['prior_module']

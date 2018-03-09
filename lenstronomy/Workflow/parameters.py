@@ -7,6 +7,7 @@ from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
+from lenstronomy.Cosmo.cosmo_param import CosmoParam
 
 
 class Param(object):
@@ -15,7 +16,7 @@ class Param(object):
     """
 
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
-                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None, linear_solver=True):
+                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None, linear_solver=True, kwargs_cosmo={}):
         """
 
         :return:
@@ -64,6 +65,7 @@ class Param(object):
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps,
                                             num_point_source_list=num_point_source_list, linear_solver=linear_solver)
+        self.cosmoParams = CosmoParam(**kwargs_cosmo)
 
     @property
     def num_point_source_images(self):
@@ -86,7 +88,17 @@ class Param(object):
         kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
-    def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, bounds=None):
+    def getCosmo(self, args):
+        """
+        return the cosmology keyword arguments
+
+        :param args: tuple of parameter values
+        :return: keyword arguments
+        """
+        kwargs_cosmo, i = self.cosmoParams.getParams(args, i=len(args)-1)
+        return kwargs_cosmo
+
+    def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=None, bounds=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
@@ -97,6 +109,7 @@ class Param(object):
         args += self.souceParams.setParams(kwargs_source, bounds=bounds)
         args += self.lensLightParams.setParams(kwargs_lens_light, bounds=bounds)
         args += self.pointSourceParams.setParams(kwargs_ps)
+        args += self.cosmoParams.setParams(kwargs_cosmo)
         return args
 
     def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_ps):
@@ -116,6 +129,9 @@ class Param(object):
         _mean, _sigma = self.pointSourceParams.param_init(kwarg_mean_ps)
         mean += _mean
         sigma += _sigma
+        _mean, _sigma = self.cosmoParams.param_init()
+        mean += _mean
+        sigma += _sigma
         return mean, sigma
 
     def num_param(self):
@@ -131,6 +147,9 @@ class Param(object):
         num += _num
         list += _list
         _num, _list = self.pointSourceParams.num_param()
+        num += _num
+        list += _list
+        _num, _list = self.cosmoParams.num_param()
         num += _num
         list += _list
         return num, list

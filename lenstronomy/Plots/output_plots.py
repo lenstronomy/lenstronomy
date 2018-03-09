@@ -350,7 +350,7 @@ class LensModelPlot(object):
         cb.set_label(r'(f$_{model}$-f$_{data}$)', fontsize=15)
         return ax
 
-    def source_plot(self, ax, numPix, deltaPix_source, source_sigma=0.001, convolution=False, v_min=None, v_max=None):
+    def source_plot(self, ax, numPix, deltaPix_source, source_sigma=0.001, convolution=False, v_min=None, v_max=None, with_caustics=False):
         """
 
         :param ax:
@@ -387,15 +387,16 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
-        ra_caustic_list, dec_caustic_list = self._caustics()
-        plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
+        if with_caustics:
+            ra_caustic_list, dec_caustic_list = self._caustics()
+            plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
         coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None):
+    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._Mpix2coord * deltaPix_source / self._deltaPix)
         x_center = self._kwargs_source[0]['center_x']
@@ -416,14 +417,16 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'error variance', fontsize=15)
-        plot_line_set(ax, coords_source, self._ra_caustic_list, self._dec_caustic_list, color='b')
+        if with_caustics:
+            ra_caustic_list, dec_caustic_list = self._caustics()
+            plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
         coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
         text_description(ax, d_s, text="Error map in source", color="w", backgroundcolor='k', flipped=False)
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def magnification_plot(self, ax, v_min=-10, v_max=10):
+    def magnification_plot(self, ax, v_min=-10, v_max=10, with_caustics=False):
         """
 
         :param ax:
@@ -442,16 +445,17 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'det(A$^{-1}$)', fontsize=15)
-        ra_crit_list, dec_crit_list = self._critical_curves()
-        ra_caustic_list, dec_caustic_list = self._caustics()
-        plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
-        plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
+        if with_caustics:
+            ra_crit_list, dec_crit_list = self._critical_curves()
+            ra_caustic_list, dec_caustic_list = self._caustics()
+            plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
+            plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k')
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
-    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0):
+    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False):
         """
 
         :param kwargs_lens:
@@ -478,11 +482,11 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'arcsec', fontsize=15)
-
-        ra_crit_list, dec_crit_list = self._critical_curves()
-        ra_caustic_list, dec_caustic_list = self._caustics()
-        plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
-        plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
+        if with_caustics:
+            ra_crit_list, dec_crit_list = self._critical_curves()
+            ra_caustic_list, dec_caustic_list = self._caustics()
+            plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
+            plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image)
         source_position_plot(ax, self._coords, self._kwargs_source)

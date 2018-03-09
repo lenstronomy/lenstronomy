@@ -126,7 +126,7 @@ class TestFittingSequence(object):
 
         n_p = 2
         n_i = 2
-        """
+        #"""
         
         fitting_kwargs_list = [
             {'fitting_routine': 'lens_only', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
@@ -141,7 +141,7 @@ class TestFittingSequence(object):
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
-        """
+        #"""
 
 
 if __name__ == '__main__':

@@ -94,7 +94,6 @@ class LikelihoodModule(object):
         :param kwargs_ps:
         :return:
         """
-        # TODO: make this part of the PointSource class
         if 'ra_image' in kwargs_ps[0]:
             ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
         else:
@@ -113,7 +112,6 @@ class LikelihoodModule(object):
         :param kwargs_else:
         :return:
         """
-        # TODO: make this part of the PointSource class
         ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         if len(ra_image_list[0]) > self.param.num_point_source_images:
             return True

@@ -20,10 +20,16 @@ class Param(object):
 
         :return:
         """
-        n = len(kwargs_fixed_source)
-        num_point_source_list = kwargs_constraints.get('num_point_source_list', [0] * n)
-        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n)
-        self._fix_to_point_source_list = kwargs_constraints.get('fix_to_point_source_list', [False] * n)
+        n_source_model = len(kwargs_fixed_source)
+        num_point_source_list = kwargs_constraints.get('num_point_source_list', [0] * len(kwargs_fixed_ps))
+        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n_source_model)
+        self._fix_to_point_source_list = kwargs_constraints.get('fix_to_point_source_list', [False] * n_source_model)
+
+        self._joint_with_other_lens_list = kwargs_constraints.get('joint_with_other_lens_list', [False] * len(kwargs_fixed_lens))
+        self._joint_with_other_source_list = kwargs_constraints.get('joint_with_other_source_list',
+                                                                  [False] * len(kwargs_fixed_source))
+        self._joint_with_other_lens_light_list = kwargs_constraints.get('joint_with_other_lens_light_list',
+                                                                  [False] * len(kwargs_fixed_lens_light))
         self._joint_center_source = kwargs_constraints.get('joint_center_source_light', False)
         self._joint_center_lens_light = kwargs_constraints.get('joint_center_lens_light', False)
 
@@ -77,6 +83,7 @@ class Param(object):
         if self._solver:
             kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
         kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
+        kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, bounds=None):
@@ -140,6 +147,11 @@ class Param(object):
                     x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
+            if self._joint_with_other_source_list[i]:
+                k = self._joint_with_other_source_list[i]
+                if 'center_x' in kwargs:
+                    kwargs['center_x'] = kwargs_source_list[k]['center_x']
+                    kwargs['center_y'] = kwargs_source_list[k]['center_y']
             if self._fix_to_point_source_list[i]:
                 x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image'],
                                                                  kwargs_lens_list)
@@ -168,7 +180,28 @@ class Param(object):
                 if i > 0:
                     kwargs['center_x'] = 0
                     kwargs['center_y'] = 0
+            if self._joint_with_other_source_list[i]:
+                kwargs['center_x'] = 0
+                kwargs['center_y'] = 0
         return kwargs_fixed
+
+    def _update_lens_light(self, kwargs_lens_light_list):
+        """
+        update the lens light parameters based on the constraint options
+
+        :param kwargs_lens_light_list:
+        :return:
+        """
+        for i, kwargs in enumerate(kwargs_lens_light_list):
+            if self._joint_with_other_lens_light_list[i] is not False:
+                k = self._joint_with_other_lens_light_list[i]
+                kwargs['center_x'] = kwargs_lens_light_list[k]['center_x']
+                kwargs['center_y'] = kwargs_lens_light_list[k]['center_y']
+            if self._joint_center_lens_light:
+                if i > 0:
+                    kwargs['center_x'] = kwargs_lens_light_list[0]['center_x']
+                    kwargs['center_y'] = kwargs_lens_light_list[0]['center_y']
+        return kwargs_lens_light_list
 
     def _add_fixed_lens_light(self, kwargs_fixed):
         """
@@ -177,8 +210,11 @@ class Param(object):
         :param kwargs_fixed:
         :return:
         """
-        if self._joint_center_lens_light:
-            for i, kwargs in enumerate(kwargs_fixed):
+        for i, kwargs in enumerate(kwargs_fixed):
+            if self._joint_center_lens_light:
+                kwargs['center_x'] = 0
+                kwargs['center_y'] = 0
+            if self._joint_with_other_lens_light_list[i] is not False:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0
         return kwargs_fixed

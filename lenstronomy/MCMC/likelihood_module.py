@@ -19,11 +19,28 @@ class LikelihoodModule(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = kwargs_fixed
         self.Multiband = class_creator.creat_multiband(multi_band_list, kwargs_model)
         self.lensModel = self.Multiband.lensModel
+        # this part is not yet fully implemented
+        self._time_delay_likelihood = kwargs_likelihood.get('time_delay_likelihood', False)
+        if self._time_delay_likelihood is True:
+            self._delays_measured = np.array(kwargs_likelihood['time_delays_measured'])
+            self._delays_errors = np.array(kwargs_likelihood['time_delays_uncertainties'])
+            sampling = kwargs_constraints.get('time_delay_sampling', True)
+            D_dt_init = kwargs_likelihood['D_dt_init']
+            D_dt_sigma = kwargs_likelihood['D_dt_sigma']
+            D_dt_lower = kwargs_likelihood['D_dt_lower']
+            D_dt_upper = kwargs_likelihood['D_dt_upper']
+            kwargs_cosmo_param = {'sampling': sampling, 'D_dt_init': D_dt_init, 'D_dt_sigma': D_dt_sigma,
+                                  'D_dt_lower': D_dt_lower, 'D_dt_upper': D_dt_upper}
+        else:
+            kwargs_cosmo_param = None
+
         self.param = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
-                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_lens_init)
+                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_lens_init,
+                           kwargs_cosmo=kwargs_cosmo_param)
         kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower = kwargs_lower
         kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_else_upper = kwargs_upper
-        self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower, bounds='lower')
+        self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower,
+                                                kwargs_else_lower, bounds='lower')
         self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
                                            kwargs_else_upper, bounds='upper')
 
@@ -44,13 +61,7 @@ class LikelihoodModule(object):
                 raise ValueError('compute_bool statement has not the same range as number of bands available!')
             self._compute_bool = compute_bool
 
-        # this part is not yet fully implemented
-        self.time_delay = kwargs_likelihood.get('time_delay', False)
-        if self.time_delay is True:
-            self.delays_measured = kwargs_likelihood['time_delays']
-            self.delays_errors = kwargs_likelihood['time_delays_errors']
-            raise ValueError("cosmological sampling of time-delays not implemented in this version of lenstronomy yet!"
-                             " Please get in touch with the developers.")
+
         self.priors_bool = kwargs_likelihood.get('priors', False)
         if self.priors_bool:
             self._prior_module = kwargs_likelihood['prior_module']
@@ -76,8 +87,9 @@ class LikelihoodModule(object):
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
         # logL -= self.bounds_convergence(kwargs_lens)
-        if self.time_delay is True:
-            logL += self.logL_delay(kwargs_lens, kwargs_ps)
+        if self._time_delay_likelihood is True:
+            kwargs_cosmo = self.param.getCosmo(args)
+            logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self.priors_bool:
             logL += self.prior_compute(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         if self._check_solver is True:
@@ -135,7 +147,6 @@ class LikelihoodModule(object):
         :param sigma: likelihood sigma
         :return: log likelihood of model given image positions
         """
-        # TODO: make this part of the PointSource class
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
         ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
@@ -158,16 +169,17 @@ class LikelihoodModule(object):
                 bound_hit = True
         return penalty, bound_hit
 
-    def logL_delay(self, kwargs_lens, kwargs_cosmo):
+    def logL_delay(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """
         routine to compute the log likelihood of the time delay distance
         :param args:
         :return:
         """
-        delay_arcsec = self.Multiband.fermat_potential(kwargs_lens, kwargs_cosmo)
-        D_dt_model = kwargs_cosmo['delay_dist']
-        delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
-        logL = self._logL_delays(delay_days, self.delays_measured, self.delays_errors)
+        delay_arcsec = self.Multiband.fermat_potential(kwargs_lens, kwargs_ps)
+        D_dt_model = kwargs_cosmo['D_dt']
+        delay_days = const.delay_arcsec2days(delay_arcsec[0], D_dt_model)
+        print(delay_days)
+        logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
 
     def _logL_delays(self, delays_model, delays_measured, delays_errors):

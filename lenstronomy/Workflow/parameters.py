@@ -65,7 +65,7 @@ class Param(object):
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps,
                                             num_point_source_list=num_point_source_list, linear_solver=linear_solver)
-        self.cosmoParams = CosmoParam(**kwargs_cosmo)
+        self.cosmoParams = CosmoParam(kwargs_cosmo)
 
     @property
     def num_point_source_images(self):

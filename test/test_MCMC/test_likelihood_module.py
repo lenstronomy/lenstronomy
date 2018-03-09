@@ -92,6 +92,7 @@ class TestLikelihood(object):
                               'image_plane_source_list': [False] * num_source_model,
                               'solver': False,
                               'solver_type': 'PROFILE_SHEAR',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                              'time_delay_sampling': True,
                               }
 
         self.kwargs_likelihood = {'check_bounds': True,
@@ -100,7 +101,14 @@ class TestLikelihood(object):
                              'point_source_likelihood': False,
                              'position_uncertainty': 0.004,
                              'check_solver': True,
-                             'solver_tolerance': 0.001
+                             'solver_tolerance': 0.001,
+                                  'time_delay_likelihood': True,
+                                  'time_delays_measured': [0, -7, -7],
+                                  'time_delays_uncertainties': [4., 3., 2],
+                                  'D_dt_init': 1000,
+                                  'D_dt_sigma': 200,
+                                  'D_dt_lower': 0,
+                                  'D_dt_upper': 10000,
                              }
         kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]

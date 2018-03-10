@@ -16,7 +16,7 @@ class LikelihoodModule(object):
         initializes all the classes needed for the chain
         """
         # print('initialized on cpu', threading.current_thread())
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = kwargs_fixed
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = kwargs_fixed
         self.Multiband = class_creator.creat_multiband(multi_band_list, kwargs_model)
         self.lensModel = self.Multiband.lensModel
         # this part is not yet fully implemented
@@ -24,25 +24,16 @@ class LikelihoodModule(object):
         if self._time_delay_likelihood is True:
             self._delays_measured = np.array(kwargs_likelihood['time_delays_measured'])
             self._delays_errors = np.array(kwargs_likelihood['time_delays_uncertainties'])
-            sampling = kwargs_constraints.get('time_delay_sampling', True)
-            D_dt_init = kwargs_likelihood['D_dt_init']
-            D_dt_sigma = kwargs_likelihood['D_dt_sigma']
-            D_dt_lower = kwargs_likelihood['D_dt_lower']
-            D_dt_upper = kwargs_likelihood['D_dt_upper']
-            kwargs_cosmo_param = {'sampling': sampling, 'D_dt_init': D_dt_init, 'D_dt_sigma': D_dt_sigma,
-                                  'D_dt_lower': D_dt_lower, 'D_dt_upper': D_dt_upper}
-        else:
-            kwargs_cosmo_param = None
 
         self.param = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
-                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=kwargs_lens_init,
-                           kwargs_cosmo=kwargs_cosmo_param)
-        kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_else_lower = kwargs_lower
-        kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_else_upper = kwargs_upper
+                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                           kwargs_lens_init=kwargs_lens_init)
+        kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_ps_lower, kwargs_cosmo_lower = kwargs_lower
+        kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_ps_upper, kwargs_cosmo_upper = kwargs_upper
         self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower,
-                                                kwargs_else_lower, bounds='lower')
+                                                kwargs_ps_lower, kwargs_cosmo_lower, bounds='lower')
         self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
-                                           kwargs_else_upper, bounds='upper')
+                                           kwargs_ps_upper, kwargs_cosmo_upper, bounds='upper')
 
         self._check_bounds = kwargs_likelihood.get('check_bounds', True)
         self._point_source_likelihood = kwargs_likelihood.get('point_source_likelihood', False)
@@ -60,8 +51,6 @@ class LikelihoodModule(object):
             if not len(compute_bool) == self._num_bands:
                 raise ValueError('compute_bool statement has not the same range as number of bands available!')
             self._compute_bool = compute_bool
-
-
         self.priors_bool = kwargs_likelihood.get('priors', False)
         if self.priors_bool:
             self._prior_module = kwargs_likelihood['prior_module']
@@ -178,7 +167,6 @@ class LikelihoodModule(object):
         delay_arcsec = self.Multiband.fermat_potential(kwargs_lens, kwargs_ps)
         D_dt_model = kwargs_cosmo['D_dt']
         delay_days = const.delay_arcsec2days(delay_arcsec[0], D_dt_model)
-        print(delay_days)
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
 

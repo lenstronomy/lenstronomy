@@ -106,7 +106,7 @@ class Solver4Point(object):
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
-            phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
             kwargs_list[0]['theta_E'] = theta_E
             kwargs_list[0]['q'] = q
             kwargs_list[0]['phi_G'] = phi_G
@@ -114,7 +114,7 @@ class Solver4Point(object):
             kwargs_list[0]['center_y'] = center_y
         elif lens_model in ['NFW_ELLIPSE']:
             [theta_Rs, e1, e2, center_x, center_y, no_sens_param] = x
-            phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
             kwargs_list[0]['theta_Rs'] = theta_Rs
             kwargs_list[0]['q'] = q
             kwargs_list[0]['phi_G'] = phi_G

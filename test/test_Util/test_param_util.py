@@ -52,30 +52,30 @@ def test_phi_q2_elliptisity():
 def test_phi_q2_elliptisity_bounds():
     bounds = 'lower'
     phi, q = 0, 1
-    e1, e2 = param_util.phi_q2_elliptisity_bounds(phi, q, bounds)
+    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
     assert e1 == 0
     assert e2 == 0
 
     phi, q = 1, 1
-    e1, e2 = param_util.phi_q2_elliptisity_bounds(phi,q, bounds)
+    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
     assert e1 == 0
     assert e2 == 0
 
     phi, q = 2., 0.95
-    e1, e2 = param_util.phi_q2_elliptisity_bounds(phi, q, bounds)
+    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
     assert e1 == -0.019405192187382792
     assert e2 == -0.019405192187382792
 
     bounds = 'upper'
     phi, q = 2., 0.95
-    e1, e2 = param_util.phi_q2_elliptisity_bounds(phi, q, bounds)
+    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
     assert e1 == 0.019405192187382792
     assert e2 == 0.019405192187382792
 
 
 def test_elliptisity2phi_q():
     e1, e2 = 0.3,0
-    phi,q = param_util.elliptisity2phi_q(e1,e2)
+    phi,q = param_util.ellipticity2phi_q(e1, e2)
     assert phi == 0
     assert q == 0.53846153846153844
 
@@ -83,27 +83,27 @@ def test_elliptisity2phi_q():
 def test_elliptisity2phi_q_symmetry():
     phi,q = 1.5, 0.8
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
-    phi_new,q_new = param_util.elliptisity2phi_q(e1,e2)
+    phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
     assert phi == phi_new
     assert q == q_new
 
     phi,q = -1.5, 0.8
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
-    phi_new,q_new = param_util.elliptisity2phi_q(e1,e2)
+    phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
     assert phi == phi_new
     assert q == q_new
 
     e1, e2 = 0.1, -0.1
-    phi, q = param_util.elliptisity2phi_q(e1, e2)
+    phi, q = param_util.ellipticity2phi_q(e1, e2)
     e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
     npt.assert_almost_equal(e1, e1_new, decimal=10)
     npt.assert_almost_equal(e2, e2_new, decimal=10)
 
     e1, e2 = 2.99, -0.0
-    phi, q = param_util.elliptisity2phi_q(e1, e2)
+    phi, q = param_util.ellipticity2phi_q(e1, e2)
     print(phi, q)
     e1_new, e2_new = param_util.phi_q2_ellipticity(phi, q)
-    phi_new, q_new = param_util.elliptisity2phi_q(e1_new, e2_new)
+    phi_new, q_new = param_util.ellipticity2phi_q(e1_new, e2_new)
     npt.assert_almost_equal(phi, phi_new, decimal=10)
     npt.assert_almost_equal(q, q_new, decimal=10)
     #npt.assert_almost_equal(e1, e1_new, decimal=10)

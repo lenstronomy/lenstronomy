@@ -70,7 +70,7 @@ def phi_q2_ellipticity(phi, q):
     return e1, e2
 
 
-def elliptisity2phi_q(e1, e2):
+def ellipticity2phi_q(e1, e2):
     """
     :param e1:
     :param e2:
@@ -84,7 +84,7 @@ def elliptisity2phi_q(e1, e2):
     return phi, q
 
 
-def phi_q2_elliptisity_bounds(phi, q, bounds=None):
+def phi_q2_ellipticity_bounds(phi, q, bounds=None):
     """
 
     :param phi:

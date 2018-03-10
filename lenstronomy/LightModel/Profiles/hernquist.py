@@ -60,7 +60,7 @@ class Hernquist_Ellipse(object):
         :param center_y:
         :return:
         """
-        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_ , y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
         return self.spherical.function(x_, y_, sigma0, Rs)
 

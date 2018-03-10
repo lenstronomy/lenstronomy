@@ -88,7 +88,7 @@ class Solver2Point(object):
                 kwargs_list[0]['center_y'] = center_y
             elif self._solver_type == 'ELLIPSE':
                 [e1, e2] = x
-                phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+                phi_G, q = param_util.ellipticity2phi_q(e1, e2)
                 kwargs_list[0]['q'] = q
                 kwargs_list[0]['phi_G'] = phi_G
 

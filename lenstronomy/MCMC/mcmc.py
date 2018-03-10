@@ -70,7 +70,8 @@ class MCMCSampler(object):
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
-        lens_dict, source_dict, lens_light_dict, else_dict = self.chain.param.getParams(result, bijective=True)
+        lens_dict, source_dict, lens_light_dict, ps_dict = self.chain.param.getParams(result, bijective=True)
+        kwargs_cosmo = self.chain.param.getCosmo(result)
         #if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
         if mpi is True and not pso.isMaster():
             pass
@@ -81,11 +82,11 @@ class MCMCSampler(object):
             print(lens_dict, 'lens result')
             print(source_dict, 'source result')
             print(lens_light_dict, 'lens light result')
-            print(else_dict, 'point source result')
+            print(ps_dict, 'point source result')
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
             print('===================')
-        return lens_dict, source_dict, lens_light_dict, else_dict, [X2_list, pos_list, vel_list, []]
+        return lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo, [X2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
         """

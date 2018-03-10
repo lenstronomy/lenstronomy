@@ -109,14 +109,25 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 1.9948432790647363e-07, decimal=6)
 
     def test_fitting_sequence(self):
-        kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
+        #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
         lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'ellipse_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'shear_sigma': 0.1}]
         source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'ellipse_sigma': 0.1}]
         lens_light_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
         ps_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}]
-        kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, ps_sigma]
-        kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
-        kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
+        #kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, ps_sigma]
+        #kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
+        lens_param = self.kwargs_lens, lens_sigma, [{}, {}], self.kwargs_lens, self.kwargs_lens
+        source_param = self.kwargs_source, source_sigma, [{}], self.kwargs_source, self.kwargs_source
+        lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], self.kwargs_lens_light, self.kwargs_lens_light
+        ps_param = self.kwargs_ps, ps_sigma, [{}], self.kwargs_ps, self.kwargs_ps
+
+        kwargs_params = {'lens_model': lens_param,
+                         'source_model': source_param,
+                         'lens_light_model': lens_light_param,
+                         'point_source_model': ps_param,
+                         #'cosmography': cosmo_param
+        }
+        #kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
         fittingSequence = FittingSequence(multi_band_list, self.kwargs_model, self.kwargs_constraints, self.kwargs_likelihood, kwargs_params)

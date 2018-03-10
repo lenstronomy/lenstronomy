@@ -57,7 +57,7 @@ class Sersic_elliptic(SersicUtil):
         #    n_sersic = 0.2
         #if R_sersic < 10.**(-6):
         #    R_sersic = 10.**(-6)
-        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
 
@@ -98,7 +98,7 @@ class CoreSersic(SersicUtil):
         """
         returns Core-Sersic function
         """
-        phi_G, q = param_util.elliptisity2phi_q(e1, e2)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         Rb = R_sersic
         x_shift = x - center_x
         y_shift = y - center_y

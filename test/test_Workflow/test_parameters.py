@@ -16,8 +16,9 @@ class TestParam(object):
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_cosmo = [{}]
         self.param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
-                                 kwargs_fixed_lens_light, kwargs_fixed_ps)
+                                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo)
 
     def test_num_param(self):
         num_param, list = self.param_class.num_param()
@@ -31,8 +32,9 @@ class TestParam(object):
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_cosmo = [{}]
         param_class_linear = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
-                                        kwargs_fixed_lens_light, kwargs_fixed_ps, linear_solver=False)
+                                        kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo, linear_solver=False)
         num_param, list = param_class_linear.num_param()
         assert list[0] == 'theta_E'
         assert num_param == 11
@@ -44,7 +46,8 @@ class TestParam(object):
                                   'q': 0.86, 'n_sersic': 1.7,
                                   'I0_sersic': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
         kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
-        args = self.param_class.setParams(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps)
+        kwargs_cosmo = [{}]
+        args = self.param_class.setParams(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps, kwargs_cosmo=kwargs_cosmo)
         lens_dict_list, source_dict, lens_light_dic, else_dict = self.param_class.getParams(args)
         lens_dict = lens_dict_list[0]
         assert lens_dict['theta_E'] == 1.
@@ -62,7 +65,8 @@ class TestParam(object):
                                   'q': 0.86, 'ellipse_sigma': 0.2, 'n_sersic': 1.7, 'n_sersic_sigma': 1,
                                   'I0_sersic': 11.8, 'I0_sersic_sigma': 1, 'R_sersic': 0.697, 'R_sersic_sigma': 0.1, 'phi_G_2': 0}]
         kwargs_mean_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
-        mean, sigma = self.param_class.param_init(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps)
+
+        mean, sigma = self.param_class.param_init(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps, kwargs_mean_cosmo=None)
         assert mean[0] == 1
         assert sigma[0] == 0.1
 
@@ -73,15 +77,16 @@ class TestParam(object):
 
     def test_get_cosmo(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
-                        'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+                        'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
+                        'cosmo_type': 'D_dt'}
         kwargs_param = {}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
-        kwargs_cosmo = {'sampling': True, 'D_dt_init': 1000, 'D_dt_sigma': 100, 'D_dt_lower': 0, 'D_dt_upper': 10000}
+        kwargs_fixed_cosmo = {'D_dt': 1000}
         param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
-                                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_cosmo=kwargs_cosmo)
+                                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo)
 
         kwargs_true_lens = [
             {'theta_E': 1., 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
@@ -96,6 +101,7 @@ class TestParam(object):
                                           kwargs_cosmo={'D_dt': 1000})
         kwargs_cosmo = param_class.getCosmo(args=args)
         assert kwargs_cosmo['D_dt'] == 1000
+        assert param_class.cosmoParams._sampling is True
 
 
 class TestParamUpdate(object):
@@ -104,14 +110,15 @@ class TestParamUpdate(object):
         kwargs_fixed_source = [{}]
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_ps = [{}]
-        self.paramUpdate = ParamUpdate(kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps)
+        kwargs_fixed_cosmo = [{}]
+        self.paramUpdate = ParamUpdate(kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo)
 
     def test_update_fixed_simple(self):
         kwargs_lens = [{'theta_E': 1, 'gamma': 2}, {}]
         kwargs_source = [{'test_source': 1}]
         kwargs_lens_light = [{'test_lens_light': 1}]
         kwargs_ps = [{'test_point_source': 1}]
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self.paramUpdate.update_fixed_simple(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=True,
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self.paramUpdate.update_fixed_simple(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo={}, fix_lens=True,
                              fix_source=True, fix_lens_light=True, fix_point_source=True, gamma_fixed=True)
         assert kwargs_fixed_lens[0]['gamma'] == 2
         assert kwargs_fixed_source[0]['test_source'] == 1

@@ -49,6 +49,7 @@ class TestLikelihood(object):
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         phi, q = 0.2, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        phi_new, q_new = param_util.ellipticity2phi_q(e1, e2)
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': e1, 'e2': e2}
 
@@ -76,6 +77,7 @@ class TestLikelihood(object):
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
                                'point_source_model_list': point_source_list,
+                               'cosmo_type': 'D_dt',
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = {
@@ -92,7 +94,6 @@ class TestLikelihood(object):
                               'image_plane_source_list': [False] * num_source_model,
                               'solver': False,
                               'solver_type': 'PROFILE_SHEAR',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
-                              'time_delay_sampling': True,
                               }
 
         self.kwargs_likelihood = {'check_bounds': True,
@@ -102,27 +103,24 @@ class TestLikelihood(object):
                              'position_uncertainty': 0.004,
                              'check_solver': True,
                              'solver_tolerance': 0.001,
-                                  'time_delay_likelihood': True,
-                                  'time_delays_measured': [0, -7, -7],
-                                  'time_delays_uncertainties': [4., 3., 2],
-                                  'D_dt_init': 1000,
-                                  'D_dt_sigma': 200,
-                                  'D_dt_lower': 0,
-                                  'D_dt_upper': 10000,
+                             'time_delay_likelihood': True,
+                             'time_delays_measured': [0, -7, -7],
+                             'time_delays_uncertainties': [4., 3., 2],
                              }
-        kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
+        self.kwargs_cosmo = {'D_dt': 1000}
+        kwargs_fixed = [[{}, {}], [{}], [{}], [{}], {}]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
+        kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, self.kwargs_cosmo]
         self.likelihoodModule = LikelihoodModule(multi_band_list, self.kwargs_model, self.kwargs_constraints, self.kwargs_likelihood, kwargs_fixed,
                          kwargs_lower=kwargs_init, kwargs_upper=kwargs_init, kwargs_lens_init=self.kwargs_lens, compute_bool=None)
 
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = kwargs_fixed
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = kwargs_fixed
         self.param = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
-                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=self.kwargs_lens)
+                           kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo, kwargs_lens_init=self.kwargs_lens)
 
     def test_likelihood(self):
-        args = self.param.setParams(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps)
+        args = self.param.setParams(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, self.kwargs_cosmo)
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.param.getParams(args)
         print(kwargs_lens, self.kwargs_lens)
         logL, _ = self.likelihoodModule.X2_chain(args)

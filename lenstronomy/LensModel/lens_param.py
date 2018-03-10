@@ -106,7 +106,7 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'SIE', 'SERSIC_DOUBLE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
+                    phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G'] = phi
                     kwargs['q'] = q
                     i += 2
@@ -205,7 +205,7 @@ class LensParam(object):
                 else:
                     kwargs['n_2'] = kwargs_fixed['n_2']
                 if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
+                    phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G_2'] = phi
                     kwargs['q_2'] = q
                     i += 2
@@ -214,7 +214,7 @@ class LensParam(object):
                     kwargs['q_2'] = kwargs_fixed['q_2']
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    phi, q = param_util.elliptisity2phi_q(args[i], args[i + 1])
+                    phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
                     kwargs['phi_G_s'] = phi
                     kwargs['q_s'] = q
                     i += 2
@@ -331,7 +331,7 @@ class LensParam(object):
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
                 if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
+                    e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
                     args.append(e1)
                     args.append(e2)
 
@@ -378,12 +378,12 @@ class LensParam(object):
                 if not 'n_2' in kwargs_fixed:
                     args.append(kwargs['n_2'])
                 if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
+                    e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
                     args.append(e1)
                     args.append(e2)
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_elliptisity_bounds(kwargs['phi_G_s'], kwargs['q_s'], bounds)
+                    e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G_s'], kwargs['q_s'], bounds)
                     args.append(e1)
                     args.append(e2)
                 if not 'mass_light' in kwargs_fixed:

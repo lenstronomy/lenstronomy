@@ -15,12 +15,22 @@ class Param(object):
 
     """
 
-    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
-                 kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_lens_init=None, linear_solver=True, kwargs_cosmo={}):
+    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens=None, kwargs_fixed_source=None,
+                 kwargs_fixed_lens_light=None, kwargs_fixed_ps=None, kwargs_fixed_cosmo=None, kwargs_lens_init=None, linear_solver=True):
         """
 
         :return:
         """
+        if kwargs_fixed_lens is None:
+            kwargs_fixed_lens = [{}]
+        if kwargs_fixed_source is None:
+            kwargs_fixed_source = [{}]
+        if kwargs_fixed_lens_light is None:
+            kwargs_fixed_lens_light = [{}]
+        if kwargs_fixed_ps is None:
+            kwargs_fixed_ps = [{}]
+        if kwargs_fixed_cosmo is None:
+            kwargs_fixed_cosmo = {}
         n_source_model = len(kwargs_fixed_source)
         num_point_source_list = kwargs_constraints.get('num_point_source_list', [0] * len(kwargs_fixed_ps))
         self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n_source_model)
@@ -65,7 +75,8 @@ class Param(object):
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps,
                                             num_point_source_list=num_point_source_list, linear_solver=linear_solver)
-        self.cosmoParams = CosmoParam(kwargs_cosmo)
+        cosmo_type = kwargs_model.get('cosmo_type', None)
+        self.cosmoParams = CosmoParam(cosmo_type, kwargs_fixed_cosmo)
 
     @property
     def num_point_source_images(self):
@@ -112,7 +123,7 @@ class Param(object):
         args += self.cosmoParams.setParams(kwargs_cosmo)
         return args
 
-    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_ps):
+    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_ps, kwargs_mean_cosmo):
         """
         returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting
         bounds are defined relative to the catalogue level image called in the class Data
@@ -129,7 +140,7 @@ class Param(object):
         _mean, _sigma = self.pointSourceParams.param_init(kwarg_mean_ps)
         mean += _mean
         sigma += _sigma
-        _mean, _sigma = self.cosmoParams.param_init()
+        _mean, _sigma = self.cosmoParams.param_init(kwargs_mean_cosmo)
         mean += _mean
         sigma += _sigma
         return mean, sigma
@@ -246,11 +257,13 @@ class Param(object):
 
 class ParamUpdate(object):
 
-    def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps):
-        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps])
+    def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
+                 kwargs_fixed_cosmo):
+        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
+                                           kwargs_fixed_ps, kwargs_fixed_cosmo])
 
-    def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, fix_lens=False,
-                             fix_source=False, fix_lens_light=False, fix_point_source=False, gamma_fixed=False):
+    def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
+                             fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False, gamma_fixed=False):
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:
@@ -267,18 +280,22 @@ class ParamUpdate(object):
             add_fixed_ps = kwargs_ps
         else:
             add_fixed_ps = None
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps = self._update_fixed(
+        if fixed_cosmo:
+            add_fixed_cosmo = kwargs_cosmo
+        else:
+            add_fixed_cosmo = None
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
-            add_fixed_ps=add_fixed_ps)
+            add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
         if gamma_fixed is True:
             if 'gamma' in kwargs_lens[0]:
                 kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
-        return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps
+        return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
 
     def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
-                      add_fixed_lens_light=None, add_fixed_ps=None):
+                      add_fixed_lens_light=None, add_fixed_ps=None, add_fixed_cosmo=None):
 
-        lens_fix, source_fix, lens_light_fix, ps_fix = copy.deepcopy(self.kwargs_fixed)
+        lens_fix, source_fix, lens_light_fix, ps_fix, cosmo_fix = copy.deepcopy(self.kwargs_fixed)
 
         if add_fixed_lens is None:
             kwargs_fixed_lens_updated = lens_fix
@@ -312,4 +329,10 @@ class ParamUpdate(object):
                 kwargs_fixed_ps_updated_k = add_fixed_ps[k].copy()
                 kwargs_fixed_ps_updated_k.update(ps_fix[k])
                 kwargs_fixed_ps_updated.append(kwargs_fixed_ps_updated_k)
-        return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated, kwargs_fixed_ps_updated
+        if add_fixed_cosmo is None:
+            kwargs_fixed_cosmo_updated = cosmo_fix
+        else:
+            kwargs_fixed_cosmo_updated = add_fixed_cosmo.copy()
+            kwargs_fixed_cosmo_updated.update(cosmo_fix)
+        return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated,\
+               kwargs_fixed_ps_updated, kwargs_fixed_cosmo_updated

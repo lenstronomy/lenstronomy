@@ -1,4 +1,3 @@
-import numpy as np
 
 
 class CosmoParam(object):
@@ -6,7 +5,7 @@ class CosmoParam(object):
     class that handles the cosmology relevant parameters
     """
 
-    def __init__(self, sampling=False, D_dt_init=1000, D_dt_sigma=100, D_dt_lower=0, D_dt_upper=10000):
+    def __init__(self, cosmo_type=None, kwargs_fixed={}):
         """
 
 
@@ -16,11 +15,14 @@ class CosmoParam(object):
         :param D_dt_lower: lower bound
         :param D_dt_upper: upper bound
         """
-        self._sampling = sampling
-        self._Dt_init = D_dt_init
-        self._D_dt_sigma = D_dt_sigma
-        self._D_dt_lower = D_dt_lower
-        self._D_dt_upper = D_dt_upper
+        if cosmo_type is None:
+            self._sampling = False
+        elif cosmo_type == 'D_dt':
+            self._sampling = True
+        else:
+            raise ValueError("cosmo_type %s is not supported!" % cosmo_type)
+        self._cosmo_type = cosmo_type
+        self._kwargs_fixed = kwargs_fixed
 
     def getParams(self, args, i):
         """
@@ -31,10 +33,9 @@ class CosmoParam(object):
         """
         kwargs_cosmo = {}
         if self._sampling is True:
-            kwargs_cosmo['D_dt'] = args[i]
-            i += 1
-        else:
-            kwargs_cosmo['D_dt'] = self._Dt_init
+            if self._cosmo_type == 'D_dt':
+                kwargs_cosmo['D_dt'] = args[i]
+                i += 1
         return kwargs_cosmo, i
 
     def setParams(self, kwargs_cosmo):
@@ -45,10 +46,11 @@ class CosmoParam(object):
         """
         args = []
         if self._sampling is True:
-            args.append(kwargs_cosmo['D_dt'])
+            if self._cosmo_type == 'D_dt':
+                args.append(kwargs_cosmo['D_dt'])
         return args
 
-    def param_init(self):
+    def param_init(self, kwargs_mean):
         """
 
         :param kwargs_mean:
@@ -57,8 +59,9 @@ class CosmoParam(object):
         mean = []
         sigma = []
         if self._sampling is True:
-            mean.append(self._Dt_init)
-            sigma.append(self._D_dt_sigma)
+            if self._cosmo_type == 'D_dt':
+                mean.append(kwargs_mean['D_dt'])
+                sigma.append(kwargs_mean['D_dt_sigma'])
         return mean, sigma
 
     def num_param(self):
@@ -69,6 +72,7 @@ class CosmoParam(object):
         num = 0
         list = []
         if self._sampling is True:
-            num += 1
-            list.append('D_dt')
+            if self._cosmo_type == 'D_dt':
+                num += 1
+                list.append('D_dt')
         return num, list

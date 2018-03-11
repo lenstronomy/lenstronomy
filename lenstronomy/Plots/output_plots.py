@@ -308,15 +308,19 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ $\kappa$', fontsize=15)
         return ax
 
-    def normalized_residual_plot(self, ax, v_min=-6, v_max=6):
+    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, **kwargs):
         """
 
         :param ax:
-        :param residuals:
+        :param v_min:
+        :param v_max:
+        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """
+        if not 'cmap' in kwargs:
+            kwargs['cmap'] = 'bwr'
         im = ax.matshow(self._norm_residuals, vmin=v_min, vmax=v_max,
-                        extent=[0, self._frame_size, 0, self._frame_size], cmap='bwr', origin='lower')
+                        extent=[0, self._frame_size, 0, self._frame_size], origin='lower', **kwargs)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
@@ -426,15 +430,23 @@ class LensModelPlot(object):
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def magnification_plot(self, ax, v_min=-10, v_max=10, with_caustics=False):
+    def magnification_plot(self, ax, v_min=-10, v_max=10, with_caustics=False, **kwargs):
         """
 
         :param ax:
+        :param v_min:
+        :param v_max:
+        :param with_caustics:
+        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """
+        if not 'cmap' in kwargs:
+            kwargs['cmap'] = self._cmap
+        if not 'alpha' in kwargs:
+            kwargs['alpha'] = 0.5
         mag_result = util.array2image(self._lensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens))
         im = ax.matshow(mag_result, origin='lower', extent=[0, self._frame_size, 0, self._frame_size],
-                        vmin=v_min, vmax=v_max, cmap=self._cmap, alpha=0.5)
+                        vmin=v_min, vmax=v_max, **kwargs)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
@@ -492,8 +504,20 @@ class LensModelPlot(object):
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
-    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False):
+    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False, **kwargs):
+        """
 
+        :param ax:
+        :param text:
+        :param v_min:
+        :param v_max:
+        :param unconvolved:
+        :param point_source_add:
+        :param source_add:
+        :param lens_light_add:
+        :param kwargs: kwargs to send matplotlib.pyplot.matshow()
+        :return:
+        """
         model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
                                           self._kwargs_else, unconvolved=unconvolved, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
@@ -501,8 +525,10 @@ class LensModelPlot(object):
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
+        if not 'cmap' in kwargs:
+            kwargs['cmap'] = self._cmap
         im = ax.matshow(np.log10(model), origin='lower', vmin=v_min, vmax=v_max,
-                        extent=[0, self._frame_size, 0, self._frame_size], cmap=self._cmap)
+                        extent=[0, self._frame_size, 0, self._frame_size], **kwargs)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
@@ -610,10 +636,11 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     return f, ax
 
 
-def psf_iteration_compare(kwargs_psf):
+def psf_iteration_compare(kwargs_psf, **kwargs):
     """
 
     :param kwargs_psf:
+    :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
     :return:
     """
     psf_out = kwargs_psf['kernel_point_source']
@@ -621,11 +648,13 @@ def psf_iteration_compare(kwargs_psf):
     n_kernel = len(psf_in)
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.
-    cmap_kernel = 'seismic'
+
+    if not 'cmap' in kwargs:
+        kwargs['cmap'] = 'seismic'
 
     f, axes = plt.subplots(1, 3, figsize=(15, 5), sharex=False, sharey=False)
     ax = axes[0]
-    im = ax.matshow(np.log10(psf_in), origin='lower', cmap=cmap_kernel)
+    im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -635,7 +664,7 @@ def psf_iteration_compare(kwargs_psf):
     ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, cmap=cmap_kernel)
+    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, **kwargs)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -644,7 +673,7 @@ def psf_iteration_compare(kwargs_psf):
     ax.text(delta_x, n_kernel-delta_y, "iterative reconstruction", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[2]
-    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, cmap=cmap_kernel)
+    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)

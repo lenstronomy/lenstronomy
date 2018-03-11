@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -241,7 +241,7 @@
 <p>class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Rs</em>, <em>q</em>, <em>phi_G</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -266,7 +266,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Rs</em>, <em>q=1</em>, <em>phi_G=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -370,7 +370,7 @@
 <p>calss for elliptical pseudo Jaffe lens light</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>q</em>, <em>phi_G</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -395,7 +395,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>q=1</em>, <em>phi_G=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -422,66 +422,15 @@
 <div class="section" id="module-lenstronomy.LightModel.Profiles.sersic">
 <span id="lenstronomy-lightmodel-profiles-sersic-module"></span><h2>lenstronomy.LightModel.Profiles.sersic module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.sersic" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LightModel.Profiles.sersic.BuldgeDisk">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">BuldgeDisk</code><span class="sig-paren">(</span><em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#BuldgeDisk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.BuldgeDisk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class handles a buldge-to-disk decomposition model</p>
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.BuldgeDisk.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_b</em>, <em>R_b</em>, <em>phi_G_b</em>, <em>q_b</em>, <em>I0_d</em>, <em>R_d</em>, <em>phi_G_d</em>, <em>q_d</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#BuldgeDisk.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.BuldgeDisk.function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.BuldgeDisk.function_split">
-<code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_b</em>, <em>R_b</em>, <em>phi_G_b</em>, <em>q_b</em>, <em>I0_d</em>, <em>R_d</em>, <em>phi_G_d</em>, <em>q_d</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#BuldgeDisk.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.BuldgeDisk.function_split" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">CoreSersic</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>phi_G</em>, <em>q</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Core-Sersic function</p>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">DoubleCoreSersic</code><span class="sig-paren">(</span><em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleCoreSersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class contains functions to evaluate an elliptical core sersic and a spherical sersic function at once</p>
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>Re</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>gamma</em>, <em>phi_G</em>, <em>q</em>, <em>I0_2</em>, <em>R_2</em>, <em>n_2</em>, <em>phi_G_2=0</em>, <em>q_2=1</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleCoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic.function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic.function_split">
-<code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>Re</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>gamma</em>, <em>phi_G</em>, <em>q</em>, <em>I0_2</em>, <em>R_2</em>, <em>n_2</em>, <em>phi_G_2=0</em>, <em>q_2=1</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleCoreSersic.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleCoreSersic.function_split" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleSersic">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">DoubleSersic</code><span class="sig-paren">(</span><em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleSersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleSersic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class contains functions to evaluate an elliptical and a spherical sersic function at once</p>
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>phi_G</em>, <em>q</em>, <em>I0_2</em>, <em>R_2</em>, <em>n_2</em>, <em>phi_G_2=0</em>, <em>q_2=1</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleSersic.function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LightModel.Profiles.sersic.DoubleSersic.function_split">
-<code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>phi_G</em>, <em>q</em>, <em>I0_2</em>, <em>R_2</em>, <em>n_2</em>, <em>phi_G_2</em>, <em>q_2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#DoubleSersic.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.DoubleSersic.function_split" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -505,7 +454,7 @@
 <p>this class contains functions to evaluate an elliptical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>phi_G</em>, <em>q</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic_elliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic_elliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Sersic profile</p>
 </dd></dl>
 
@@ -792,7 +741,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

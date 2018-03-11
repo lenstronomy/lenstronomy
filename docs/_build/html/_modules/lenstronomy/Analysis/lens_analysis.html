@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis.lens_analysis &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.Analysis.lens_analysis &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -205,29 +205,6 @@
             <span class="n">R_h_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">R_h</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">flux_list</span><span class="p">,</span> <span class="n">R_h_list</span></div>
 
-<div class="viewcode-block" id="LensAnalysis.buldge_disk_ratio"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.buldge_disk_ratio">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">buldge_disk_ratio</span><span class="p">(</span><span class="n">kwargs_buldge_disk</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes the buldge-to-disk ratio of the</span>
-
-<span class="sd">        :param kwargs_buldge_disk: kwargs of the buldge2disk function</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs_bd</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_buldge_disk</span><span class="p">)</span>
-        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">deltaPix</span> <span class="o">=</span> <span class="mf">0.05</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="mi">200</span>
-        <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">BuldgeDisk</span>
-        <span class="n">bd_class</span> <span class="o">=</span> <span class="n">BuldgeDisk</span><span class="p">()</span>
-        <span class="n">light_grid</span> <span class="o">=</span> <span class="n">bd_class</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_bd</span><span class="p">)</span>
-        <span class="n">light_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">light_grid</span><span class="p">)</span>
-        <span class="n">kwargs_bd</span><span class="p">[</span><span class="s1">&#39;I0_d&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">light_grid</span> <span class="o">=</span> <span class="n">bd_class</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_bd</span><span class="p">)</span>
-        <span class="n">light_buldge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">light_grid</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">light_tot</span><span class="p">,</span> <span class="n">light_buldge</span></div>
-
 <div class="viewcode-block" id="LensAnalysis.error_map_source"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis.error_map_source">[docs]</a>    <span class="k">def</span> <span class="nf">error_map_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">cov_param</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        variance of the linear source reconstruction in the source plane coordinates,</span>
@@ -279,7 +256,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

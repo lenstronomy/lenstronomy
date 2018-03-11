@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.lens_model_extensions &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.LensModel.lens_model_extensions &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -89,6 +89,77 @@
             <span class="n">mag_finite</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">I_image</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaPix</span><span class="o">**</span><span class="mi">2</span>
         <span class="k">return</span> <span class="n">mag_finite</span></div>
 
+<div class="viewcode-block" id="LensModelExtensions.critical_curve_tiling"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_tiling">[docs]</a>    <span class="k">def</span> <span class="nf">critical_curve_tiling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">compute_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">start_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param compute_window:</span>
+<span class="sd">        :param tiling_scale:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">compute_window</span> <span class="o">/</span> <span class="n">start_scale</span><span class="p">)</span>
+        <span class="n">x_grid_init</span><span class="p">,</span> <span class="n">y_grid_init</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">start_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mag_init</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_grid_init</span><span class="p">,</span> <span class="n">y_grid_init</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
+        <span class="n">x_grid_init</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid_init</span><span class="p">)</span>
+        <span class="n">y_grid_init</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid_init</span><span class="p">)</span>
+
+        <span class="n">ra_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dec_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># iterate through original triangles and return ra_crit, dec_crit list</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numPix</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numPix</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">edge1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_grid_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">y_grid_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">mag_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]]</span>
+                <span class="n">edge2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_grid_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_grid_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">mag_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">edge_90_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_grid_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_grid_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">mag_init</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">edge_90_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_grid_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">y_grid_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">mag_init</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">]]</span>
+                <span class="n">ra_crit</span><span class="p">,</span> <span class="n">dec_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tiling_crit</span><span class="p">(</span><span class="n">edge1</span><span class="p">,</span> <span class="n">edge2</span><span class="p">,</span> <span class="n">edge_90_1</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="n">max_order</span><span class="p">,</span>
+                                                      <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">ra_crit_list</span> <span class="o">+=</span> <span class="n">ra_crit</span>  <span class="c1"># list addition</span>
+                <span class="n">dec_crit_list</span> <span class="o">+=</span> <span class="n">dec_crit</span>  <span class="c1"># list addition</span>
+                <span class="n">ra_crit</span><span class="p">,</span> <span class="n">dec_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tiling_crit</span><span class="p">(</span><span class="n">edge1</span><span class="p">,</span> <span class="n">edge2</span><span class="p">,</span> <span class="n">edge_90_2</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="n">max_order</span><span class="p">,</span>
+                                                      <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">ra_crit_list</span> <span class="o">+=</span> <span class="n">ra_crit</span>  <span class="c1"># list addition</span>
+                <span class="n">dec_crit_list</span> <span class="o">+=</span> <span class="n">dec_crit</span>  <span class="c1"># list addition</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ra_crit_list</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dec_crit_list</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_tiling_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge1</span><span class="p">,</span> <span class="n">edge2</span><span class="p">,</span> <span class="n">edge_90</span><span class="p">,</span> <span class="n">max_order</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tiles a rectangular triangle and compares the signs of the magnification</span>
+
+<span class="sd">        :param edge1: [ra_coord, dec_coord, magnification]</span>
+<span class="sd">        :param edge2: [ra_coord, dec_coord, magnification]</span>
+<span class="sd">        :param edge_90: [ra_coord, dec_coord, magnification]</span>
+<span class="sd">        :param max_order: maximal order to fold triangle</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ra_1</span><span class="p">,</span> <span class="n">dec_1</span><span class="p">,</span> <span class="n">mag_1</span> <span class="o">=</span> <span class="n">edge1</span>
+        <span class="n">ra_2</span><span class="p">,</span> <span class="n">dec_2</span><span class="p">,</span> <span class="n">mag_2</span> <span class="o">=</span> <span class="n">edge2</span>
+        <span class="n">ra_3</span><span class="p">,</span> <span class="n">dec_3</span><span class="p">,</span> <span class="n">mag_3</span> <span class="o">=</span> <span class="n">edge_90</span>
+        <span class="n">sign_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">([</span><span class="n">mag_1</span><span class="p">,</span> <span class="n">mag_2</span><span class="p">,</span> <span class="n">mag_3</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">sign_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sign_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">sign_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sign_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># if all signs are the same</span>
+            <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># split triangle along the long axis</span>
+            <span class="c1"># execute tiling twice</span>
+            <span class="c1"># add ra_crit and dec_crit together</span>
+            <span class="c1"># if max depth has been reached, return the mean value in the triangle</span>
+            <span class="n">max_order</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">max_order</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[(</span><span class="n">ra_1</span> <span class="o">+</span> <span class="n">ra_2</span> <span class="o">+</span> <span class="n">ra_3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span> <span class="p">[(</span><span class="n">dec_1</span> <span class="o">+</span> <span class="n">dec_2</span> <span class="o">+</span> <span class="n">dec_3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># split triangle</span>
+                <span class="n">ra_90_</span> <span class="o">=</span> <span class="p">(</span><span class="n">ra_1</span> <span class="o">+</span> <span class="n">ra_2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>  <span class="c1"># find point in the middle of the long axis to split triangle</span>
+                <span class="n">dec_90_</span> <span class="o">=</span> <span class="p">(</span><span class="n">dec_1</span> <span class="o">+</span> <span class="n">dec_2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+                <span class="n">mag_90_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">ra_90_</span><span class="p">,</span> <span class="n">dec_90_</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">edge_90_</span> <span class="o">=</span> <span class="p">[</span><span class="n">ra_90_</span><span class="p">,</span> <span class="n">dec_90_</span><span class="p">,</span> <span class="n">mag_90_</span><span class="p">]</span>
+                <span class="n">ra_crit</span><span class="p">,</span> <span class="n">dec_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tiling_crit</span><span class="p">(</span><span class="n">edge1</span><span class="o">=</span><span class="n">edge_90</span><span class="p">,</span> <span class="n">edge2</span><span class="o">=</span><span class="n">edge1</span><span class="p">,</span> <span class="n">edge_90</span><span class="o">=</span><span class="n">edge_90_</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="n">max_order</span><span class="p">,</span>
+                                                      <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">ra_crit_2</span><span class="p">,</span> <span class="n">dec_crit_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tiling_crit</span><span class="p">(</span><span class="n">edge1</span><span class="o">=</span><span class="n">edge_90</span><span class="p">,</span> <span class="n">edge2</span><span class="o">=</span><span class="n">edge2</span><span class="p">,</span> <span class="n">edge_90</span><span class="o">=</span><span class="n">edge_90_</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="n">max_order</span><span class="p">,</span>
+                                                          <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">ra_crit</span> <span class="o">+=</span> <span class="n">ra_crit_2</span>
+                <span class="n">dec_crit</span> <span class="o">+=</span> <span class="n">dec_crit_2</span>
+                <span class="k">return</span> <span class="n">ra_crit</span><span class="p">,</span> <span class="n">dec_crit</span>
+
 <div class="viewcode-block" id="LensModelExtensions.critical_curve_caustics"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics">[docs]</a>    <span class="k">def</span> <span class="nf">critical_curve_caustics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">compute_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">grid_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -98,31 +169,29 @@
 <span class="sd">        :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">compute_window</span> <span class="o">/</span> <span class="n">grid_scale</span><span class="p">)</span>
         <span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">grid_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">mag_high_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">,</span> <span class="n">y_grid_high_res</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
 
-        <span class="n">level</span> <span class="o">=</span> <span class="mf">0.5</span>
-        <span class="kn">import</span> <span class="nn">matplotlib._cntr</span> <span class="k">as</span> <span class="nn">cntr</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">cntr</span><span class="o">.</span><span class="n">Cntr</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid_high_res</span><span class="p">),</span> <span class="n">mag_high_res</span><span class="p">)</span>
-        <span class="n">nlist</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">segs</span> <span class="o">=</span> <span class="n">nlist</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">nlist</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="n">paths</span> <span class="o">=</span> <span class="n">segs</span>
         <span class="n">ra_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_crit_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ra_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">p</span>
+
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid_high_res</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid_high_res</span><span class="p">),</span> <span class="n">mag_high_res</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                         <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">collections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">vertices</span>
             <span class="n">ra_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">dec_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">ra_crit_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_points</span><span class="p">)</span>
             <span class="n">dec_crit_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_points</span><span class="p">)</span>
-
             <span class="n">ra_caustics</span><span class="p">,</span> <span class="n">dec_caustics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra_points</span><span class="p">,</span> <span class="n">dec_points</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
             <span class="n">ra_caustic_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_caustics</span><span class="p">)</span>
             <span class="n">dec_caustic_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_caustics</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ra_crit_list</span><span class="p">,</span> <span class="n">dec_crit_list</span><span class="p">,</span> <span class="n">ra_caustic_list</span><span class="p">,</span> <span class="n">dec_caustic_list</span></div>
 
 <div class="viewcode-block" id="LensModelExtensions.effective_einstein_radius"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius">[docs]</a>    <span class="k">def</span> <span class="nf">effective_einstein_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -238,7 +307,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

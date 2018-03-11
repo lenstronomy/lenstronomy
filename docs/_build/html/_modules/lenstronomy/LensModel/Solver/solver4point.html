@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -62,7 +62,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">,</span> <span class="n">decoupling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;PROFILE&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">=</span> <span class="n">solver_type</span>  <span class="c1"># supported:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;first lens model must be supported by the solver: &#39;SPEP&#39;, &#39;SPEMD&#39;, &#39;SIE&#39;, &#39;COMPOSITE&#39;,&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;first lens model must be supported by the solver: &#39;SPEP&#39;, &#39;SPEMD&#39;, &#39;SIE&#39; &quot;</span>
                              <span class="s2">&quot; &#39;NFW_ELLIPSE&#39;, &#39;SHAPELETS_CART&#39;. Your choice was </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">solver_type</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">solver_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PROFILE&#39;</span><span class="p">,</span> <span class="s1">&#39;PROFILE_SHEAR&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;solver_type </span><span class="si">%s</span><span class="s2"> not supported! Choose from &#39;PROFILE&#39;, &#39;PROFILE_SHEAR&#39;&quot;</span>
@@ -152,20 +152,18 @@
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e1</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e2</span>
         <span class="n">lens_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_mode_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">]:</span>
             <span class="p">[</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">no_sens_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">elliptisity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_E</span>
-            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
-            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_G</span>
+            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e1</span>
+            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e2</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_x</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_y</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
             <span class="p">[</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">no_sens_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">elliptisity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_Rs</span>
-            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
-            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_G</span>
+            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e1</span>
+            <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e2</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_x</span>
             <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">center_y</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
@@ -190,20 +188,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">phi_ext</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">lens_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_mode_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
-            <span class="n">phi_G</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">]:</span>
+            <span class="n">e1</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+            <span class="n">e2</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
             <span class="n">center_x</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
             <span class="n">center_y</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-            <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
             <span class="n">theta_E</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
             <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">phi_ext</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
-            <span class="n">phi_G</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+            <span class="n">e1</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+            <span class="n">e2</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
             <span class="n">center_x</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
             <span class="n">center_y</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-            <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
             <span class="n">theta_Rs</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span>
             <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">phi_ext</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
@@ -225,16 +221,16 @@
         <span class="n">lens_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="n">kwargs_lens_init</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">]:</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
-            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
-            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">]:</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;theta_Rs&#39;</span><span class="p">]</span>
-            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
-            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;phi_G&#39;</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+            <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
@@ -276,7 +272,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

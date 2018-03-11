@@ -4,14 +4,6 @@ lenstronomy\.LensModel\.Profiles package
 Submodules
 ----------
 
-lenstronomy\.LensModel\.Profiles\.composite\_sersic\_nfw module
----------------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.composite_sersic_nfw
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy\.LensModel\.Profiles\.dipole module
 -----------------------------------------------
 
@@ -76,6 +68,14 @@ lenstronomy\.LensModel\.Profiles\.interpol module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.LensModel\.Profiles\.mass\_sheet module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.mass_sheet
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.LensModel\.Profiles\.multi\_gaussian\_kappa module
 ---------------------------------------------------------------
 
@@ -136,14 +136,6 @@ lenstronomy\.LensModel\.Profiles\.sersic module
 -----------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.sersic
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.LensModel\.Profiles\.sersic\_double module
--------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.sersic_double
     :members:
     :undoc-members:
     :show-inheritance:
@@ -232,6 +224,14 @@ lenstronomy\.LensModel\.Profiles\.spp module
 --------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.spp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy\.LensModel\.Profiles\.tnfw module
+---------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.tnfw
     :members:
     :undoc-members:
     :show-inheritance:

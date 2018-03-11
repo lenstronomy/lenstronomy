@@ -12,6 +12,14 @@ lenstronomy\.Cosmo\.background module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.Cosmo\.cosmo\_param module
+---------------------------------------
+
+.. automodule:: lenstronomy.Cosmo.cosmo_param
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.Cosmo\.cosmo\_solver module
 ----------------------------------------
 

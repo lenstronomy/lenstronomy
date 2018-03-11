@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.hernquist &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.hernquist &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -47,6 +47,7 @@
             
   <h1>Source code for lenstronomy.LightModel.Profiles.hernquist</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
 
 
 <div class="viewcode-block" id="Hernquist"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist">[docs]</a><span class="k">class</span> <span class="nc">Hernquist</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -95,7 +96,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lens</span> <span class="o">=</span> <span class="n">Hernquist_lens</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="n">Hernquist</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Hernquist_Ellipse.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Hernquist_Ellipse.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
@@ -107,10 +108,11 @@
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
         <span class="n">x_</span> <span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_transf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Hernquist_Ellipse.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi_G</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Hernquist_Ellipse.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param y:</span>
@@ -172,7 +174,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

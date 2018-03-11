@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.1.0 documentation</title>
+    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.1.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -139,6 +139,79 @@
 <code class="descname">rho_crit</code><a class="headerlink" href="#lenstronomy.Cosmo.background.Background.rho_crit" title="Permalink to this definition">¶</a></dt>
 <dd><p>critical density
 :return: value in M_sol/Mpc^3</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.cosmo_param">
+<span id="lenstronomy-cosmo-cosmo-param-module"></span><h2>lenstronomy.Cosmo.cosmo_param module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmo_param" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_param.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>cosmo_type=None</em>, <em>kwargs_fixed={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class that handles the cosmology relevant parameters</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam.getParams">
+<code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam.getParams" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – </li>
+<li><strong>i</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam.num_param">
+<code class="descname">num_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam.param_init">
+<code class="descname">param_init</code><span class="sig-paren">(</span><em>kwargs_mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam.param_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam.param_init" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_mean</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam.setParams">
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam.setParams" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -421,6 +494,7 @@ the angular diameter distance relations</p>
 <li><a class="reference internal" href="#">lenstronomy.Cosmo package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.background">lenstronomy.Cosmo.background module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmo_param">lenstronomy.Cosmo.cosmo_param module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmo_solver">lenstronomy.Cosmo.cosmo_solver module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.lens_cosmo">lenstronomy.Cosmo.lens_cosmo module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo">Module contents</a></li>
@@ -470,7 +544,7 @@ the angular diameter distance relations</p>
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

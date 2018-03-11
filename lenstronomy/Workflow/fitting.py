@@ -133,7 +133,6 @@ class Fitting(object):
             initpos = ReusePositionGenerator(init_samples)
         else:
             initpos = None
-
         samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start)*sigma_factor, threadCount=threadCount,
                                            mpi=mpi, init_pos=initpos)
         return samples, param_list, dist
@@ -178,7 +177,8 @@ class Fitting(object):
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             kwargs_fixed_cosmo, kwargs_cosmo, kwargs_cosmo_sigma,
-            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor, compute_bool=compute_bool)
+            threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor,
+            compute_bool=compute_bool)
         return samples, param_list, dist
 
     def _set_priors(self, mean_list_kwargs, sigma_list_kwargs):

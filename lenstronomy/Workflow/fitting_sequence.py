@@ -66,7 +66,6 @@ class FittingSequence(object):
         fix_source = fitting_kwargs.get('fix_source', False)
         fix_lens_light = fitting_kwargs.get('fix_lens_light', False)
         fix_point_source = fitting_kwargs.get('fix_point_source', False)
-
         samples, param, dist = self.fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, ps_input, cosmo_input,
                                   n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,

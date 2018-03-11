@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
+import numpy as np
 import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
@@ -127,6 +128,13 @@ class TestLikelihood(object):
         logL, _ = self.likelihoodModule.X2_chain(args)
         num_eff = self.likelihoodModule.effectiv_numData_points()
         npt.assert_almost_equal(-logL/num_eff*2, 1.0290933517488736, decimal=1)
+
+    def test_image_pos_likelihood(self):
+        kwargs_ps = self.kwargs_ps
+        kwargs_ps[0]['ra_image'] = [0, 0, 0, 0]
+        kwargs_ps[0]['dec_image'] = [0, 1, 2, 3]
+        logL = self.likelihoodModule.likelihood_image_pos(kwargs_lens=self.kwargs_lens, kwargs_ps=kwargs_ps, sigma=0.1)
+        npt.assert_almost_equal(logL, -163.03977465986566, decimal=3)
 
 
 if __name__ == '__main__':

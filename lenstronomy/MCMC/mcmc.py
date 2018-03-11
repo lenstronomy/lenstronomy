@@ -88,10 +88,9 @@ class MCMCSampler(object):
             print('===================')
         return lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo, [X2_list, pos_list, vel_list, []]
 
+    """
+    
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
-        """
-        returns the mcmc analysis of the parameter space
-        """
         if mpi:
             pool = MPIPool()
             if not pool.is_master():
@@ -108,6 +107,7 @@ class MCMCSampler(object):
         for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
             store.persistSamplingValues(pos, prob, None)
         return store.samples
+    """
 
     def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
         """

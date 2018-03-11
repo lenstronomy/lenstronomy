@@ -143,7 +143,7 @@ class LikelihoodModule(object):
         if num_image != len(x_image):
             return -10**15
         dist = util.min_square_dist(ra_image_list[0], dec_image_list[0], x_image, y_image)
-        logL = - np.sum(dist/sigma**2)/2
+        logL = -np.sum(dist/sigma**2)/2
         return logL
 
     def check_bounds(self, args, lowerLimit, upperLimit):

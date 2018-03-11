@@ -66,12 +66,6 @@ class SinglePlane(object):
             elif lens_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LensModel.Profiles.sersic_ellipse import SersicEllipse
                 self.func_list.append(SersicEllipse())
-            elif lens_type == 'SERSIC_DOUBLE':
-                from lenstronomy.LensModel.Profiles.sersic_double import SersicDouble
-                self.func_list.append(SersicDouble())
-            elif lens_type == 'COMPOSITE':
-                from lenstronomy.LensModel.Profiles.composite_sersic_nfw import CompositeSersicNFW
-                self.func_list.append(CompositeSersicNFW())
             elif lens_type == 'PJAFFE':
                 from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())

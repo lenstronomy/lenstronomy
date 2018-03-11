@@ -13,16 +13,16 @@ class SPEMD(object):
         self.spp = SPP()
         self.spemd_smooth = SPEMD_SMOOTH()
 
-    def function(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
-        return self.spemd_smooth.function(x, y, theta_E, gamma, q, phi_G, self.s2, center_x, center_y)
+    def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
 
-    def derivatives(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
-        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, q, phi_G, self.s2, center_x, center_y)
+    def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
 
-    def hessian(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
-        return self.spemd_smooth.hessian(x, y, theta_E, gamma, q, phi_G, self.s2, center_x, center_y)
+    def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
 
-    def mass_3d_lens(self, r, theta_E, gamma, q, phi_G):
+    def mass_3d_lens(self, r, theta_E, gamma, e1, e2):
         """
         computes the spherical power-law mass enclosed (with SPP routiune)
         :param r:
@@ -33,13 +33,3 @@ class SPEMD(object):
         :return:
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
-
-    def convert_params(self, theta_E, gamma, q):
-        """
-
-        :param theta_E: Einstein radius
-        :param gamma: power law slope
-        :param q: axis ratio
-        :return:   prefactor to SPEMP profile for FASTELL
-        """
-        return self.spemd_smooth.convert_params(theta_E, gamma, q)

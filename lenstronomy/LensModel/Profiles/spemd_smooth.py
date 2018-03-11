@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-
+import lenstronomy.Util.param_util as param_util
 
 
 class SPEMD_SMOOTH(object):
@@ -47,7 +47,8 @@ class SPEMD_SMOOTH(object):
             theta_E = 0
         return theta_E, gamma, q, phi_G, s_scale
 
-    def function(self, x, y, theta_E, gamma, q, phi_G, s_scale, center_x=0, center_y=0):
+    def function(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E, gamma, q, phi_G, s_scale = self._parameter_constraints(theta_E, gamma, q, phi_G, s_scale)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -67,7 +68,8 @@ class SPEMD_SMOOTH(object):
                 return np.array(potential[0])
         return potential
 
-    def derivatives(self, x, y, theta_E, gamma, q, phi_G, s_scale, center_x=0, center_y=0):
+    def derivatives(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x = np.array(x)
         y = np.array(y)
         theta_E, gamma, q, phi_G, s_scale = self._parameter_constraints(theta_E, gamma, q, phi_G, s_scale)
@@ -92,7 +94,8 @@ class SPEMD_SMOOTH(object):
         #        f_x, f_y = np.array(f_x[0]), np.array(f_y[0])
         return f_x, f_y
 
-    def hessian(self, x, y, theta_E, gamma, q, phi_G, s_scale, center_x=0, center_y=0):
+    def hessian(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E, gamma, q, phi_G, s_scale = self._parameter_constraints(theta_E, gamma, q, phi_G, s_scale)
         x = np.array(x)
         y = np.array(y)

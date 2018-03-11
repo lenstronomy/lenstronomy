@@ -24,22 +24,16 @@ class LensParam(object):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if False: #self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                    gamma_ext = args[i]
-                    phi_G = 0
-                    kwargs['e1'], kwargs['e2'] = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+                if not 'e1' in kwargs_fixed:
+                    kwargs['e1'] = args[i]
                     i += 1
                 else:
-                    if not 'e1' in kwargs_fixed:
-                        kwargs['e1'] = args[i]
-                        i += 1
-                    else:
-                        kwargs['e1'] = kwargs_fixed['e1']
-                    if not 'e2' in kwargs_fixed:
-                        kwargs['e2'] = args[i]
-                        i += 1
-                    else:
-                        kwargs['e2'] = kwargs_fixed['e2']
+                    kwargs['e1'] = kwargs_fixed['e1']
+                if not 'e2' in kwargs_fixed:
+                    kwargs['e2'] = args[i]
+                    i += 1
+                else:
+                    kwargs['e2'] = kwargs_fixed['e2']
             if model == 'CONVERGENCE':
                 if not 'kappa_ext' in kwargs_fixed:
                     kwargs['kappa_ext'] = args[i]
@@ -104,15 +98,17 @@ class LensParam(object):
                 else:
                     kwargs['gamma'] = kwargs_fixed['gamma']
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SIE', 'SERSIC_DOUBLE']:
-                if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
-                    kwargs['phi_G'] = phi
-                    kwargs['q'] = q
-                    i += 2
+                         'HERNQUIST_ELLIPSE', 'SIE']:
+                if not 'e1' in kwargs_fixed:
+                    kwargs['e1'] = args[i]
+                    i += 1
                 else:
-                    kwargs['phi_G'] = kwargs_fixed['phi_G']
-                    kwargs['q'] = kwargs_fixed['q']
+                    kwargs['e1'] = kwargs_fixed['e1']
+                if not 'e2' in kwargs_fixed:
+                    kwargs['e2'] = args[i]
+                    i += 1
+                else:
+                    kwargs['e2'] = kwargs_fixed['e2']
 
             if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
@@ -171,7 +167,7 @@ class LensParam(object):
                 else:
                     print(kwargs_fixed, 'test')
                     kwargs['phi_dipole'] = kwargs_fixed['phi_dipole']
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'SERSIC_DOUBLE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
                     kwargs['n_sersic'] = args[i]
                     i += 1
@@ -182,36 +178,12 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['r_eff'] = kwargs_fixed['r_eff']
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     kwargs['k_eff'] = args[i]
                     i += 1
                 else:
                     kwargs['k_eff'] = kwargs_fixed['k_eff']
-            if model in ['SERSIC_DOUBLE']:
-                if not 'flux_ratio' in kwargs_fixed:
-                    kwargs['flux_ratio'] = args[i]
-                    i += 1
-                else:
-                    kwargs['flux_ratio'] = kwargs_fixed['flux_ratio']
-                if not 'R_2' in kwargs_fixed:
-                    kwargs['R_2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['R_2'] = kwargs_fixed['R_2']
-                if not 'n_2' in kwargs_fixed:
-                    kwargs['n_2'] = args[i]
-                    i += 1
-                else:
-                    kwargs['n_2'] = kwargs_fixed['n_2']
-                if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
-                    kwargs['phi_G_2'] = phi
-                    kwargs['q_2'] = q
-                    i += 2
-                else:
-                    kwargs['phi_G_2'] = kwargs_fixed['phi_G_2']
-                    kwargs['q_2'] = kwargs_fixed['q_2']
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     phi, q = param_util.ellipticity2phi_q(args[i], args[i + 1])
@@ -249,7 +221,7 @@ class LensParam(object):
                     i += 1
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
@@ -329,12 +301,11 @@ class LensParam(object):
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
-                if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G'], kwargs['q'], bounds)
-                    args.append(e1)
-                    args.append(e2)
-
+                         'HERNQUIST_ELLIPSE']:
+                if not 'e1' in kwargs_fixed:
+                    args.append(kwargs['e1'])
+                if not 'e2' in kwargs_fixed:
+                    args.append(kwargs['e2'])
             if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
                     args.append(kwargs['Rs'])
@@ -362,25 +333,14 @@ class LensParam(object):
                     args.append(kwargs['coupling'])
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     args.append(kwargs['phi_dipole'])
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
                     args.append(kwargs['n_sersic'])
                 if not 'r_eff' in kwargs_fixed:
                     args.append(kwargs['r_eff'])
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     args.append(kwargs['k_eff'])
-            if model in ['SERSIC_DOUBLE']:
-                if not 'flux_ratio' in kwargs_fixed:
-                    args.append(kwargs['flux_ratio'])
-                if not 'R_2' in kwargs_fixed:
-                    args.append(kwargs['R_2'])
-                if not 'n_2' in kwargs_fixed:
-                    args.append(kwargs['n_2'])
-                if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G_2'], kwargs['q_2'], bounds)
-                    args.append(e1)
-                    args.append(e2)
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     e1, e2 = param_util.phi_q2_ellipticity_bounds(kwargs['phi_G_s'], kwargs['q_s'], bounds)
@@ -401,7 +361,7 @@ class LensParam(object):
                     args.append(kwargs['s_scale'])
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                                  'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE',
-                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
+                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     args.append(kwargs['center_x'])
                 if not 'center_y' in kwargs_fixed:
@@ -476,16 +436,13 @@ class LensParam(object):
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
-                if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    phi = kwargs_mean['phi_G']
-                    q = kwargs_mean['q']
-                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-                    mean.append(e1)
-                    mean.append(e2)
-                    ellipse_sigma = kwargs_mean['ellipse_sigma']
-                    sigma.append(ellipse_sigma)
-                    sigma.append(ellipse_sigma)
+                         'HERNQUIST_ELLIPSE']:
+                if not 'e1' in kwargs_fixed:
+                    mean.append(kwargs_mean['e1'])
+                    sigma.append(kwargs_mean['ellipse_sigma'])
+                if not 'e2' in kwargs_fixed:
+                    mean.append(kwargs_mean['e2'])
+                    sigma.append(kwargs_mean['ellipse_sigma'])
 
             if model in ['NFW', 'TNFW', 'NFW_ELLIPSE', 'COMPOSITE']:
                 if not 'Rs' in kwargs_fixed:
@@ -522,36 +479,17 @@ class LensParam(object):
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     mean.append(kwargs_mean['phi_dipole'])
                     sigma.append(kwargs_mean['phi_dipole_sigma'])
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
                     mean.append(kwargs_mean['n_sersic'])
                     sigma.append(kwargs_mean['n_sersic_sigma'])
                 if not 'r_eff' in kwargs_fixed:
                     mean.append(kwargs_mean['r_eff'])
                     sigma.append(kwargs_mean['r_eff_sigma'])
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     mean.append(kwargs_mean['k_eff'])
                     sigma.append(kwargs_mean['k_eff_sigma'])
-            if model in ['SERSIC_DOUBLE']:
-                if not 'flux_ratio' in kwargs_fixed:
-                    mean.append(kwargs_mean['flux_ratio'])
-                    sigma.append(kwargs_mean['flux_ratio_sigma'])
-                if not 'R_2' in kwargs_fixed:
-                    mean.append(kwargs_mean['R_2'])
-                    sigma.append(kwargs_mean['R_2_sigma'])
-                if not 'n_2' in kwargs_fixed:
-                    mean.append(kwargs_mean['n_2'])
-                    sigma.append(kwargs_mean['n_2_sigma'])
-                if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    phi = kwargs_mean['phi_G']
-                    q = kwargs_mean['q']
-                    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-                    mean.append(e1)
-                    mean.append(e2)
-                    ellipse_sigma = kwargs_mean['ellipse_sigma']
-                    sigma.append(ellipse_sigma)
-                    sigma.append(ellipse_sigma)
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     phi = kwargs_mean['phi_G_s']
@@ -582,7 +520,7 @@ class LensParam(object):
                     sigma.append(kwargs_mean['s_scale_sigma'])
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
                 , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     mean.append(kwargs_mean['center_x'])
                     sigma.append(kwargs_mean['center_x_sigma'])
@@ -605,16 +543,12 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if False: # self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                if not 'e1' in kwargs_fixed:
                     num += 1
-                    list.append('gamma_ext')
-                else:
-                    if not 'e1' in kwargs_fixed:
-                        num += 1
-                        list.append('e1')
-                    if not 'e2' in kwargs_fixed:
-                        num += 1
-                        list.append('e2')
+                    list.append('e1')
+                if not 'e2' in kwargs_fixed:
+                    num += 1
+                    list.append('e2')
             if model == 'CONVERGENCE':
                 if not 'kappa_ext' in kwargs_fixed:
                     num += 1
@@ -656,10 +590,12 @@ class LensParam(object):
                     num += 1
                     list.append('gamma_lens')
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'COMPOSITE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
-                if not 'q' in kwargs_fixed or not 'phi_G' in kwargs_fixed:
-                    num += 2
+                         'HERNQUIST_ELLIPSE']:
+                if not 'e1' in kwargs_fixed:
+                    num += 1
                     list.append('e1_lens')
+                if not 'e2' in kwargs_fixed:
+                    num += 1
                     list.append('e2_lens')
             if model in ['NFW', 'NFW_ELLIPSE', 'COMPOSITE', 'TNFW']:
                 if not 'Rs' in kwargs_fixed:
@@ -695,31 +631,17 @@ class LensParam(object):
                 if not 'phi_dipole' in kwargs_fixed and self.kwargs_options.get('phi_dipole_decoupling', False) is True:
                     num += 1
                     list.append('phi_dipole')
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE']:
                 if not 'n_sersic' in kwargs_fixed:
                     num += 1
                     list.append('n_sersic_lens')
                 if not 'r_eff' in kwargs_fixed:
                     num += 1
                     list.append('r_eff_lens')
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE']:
+            if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     num += 1
                     list.append('k_eff_lens')
-            if model in ['SERSIC_DOUBLE']:
-                if not 'flux_ratio' in kwargs_fixed:
-                    num += 1
-                    list.append('flux_ratio_lens')
-                if not 'R_2' in kwargs_fixed:
-                    num += 1
-                    list.append('R_2_lens')
-                if not 'n_2' in kwargs_fixed:
-                    num += 1
-                    list.append('n_2_lens')
-                if not 'q_2' in kwargs_fixed or not 'phi_G_2' in kwargs_fixed:
-                    num += 2
-                    list.append('e1_2_lens')
-                    list.append('e2_2_lens')
             if model in ['COMPOSITE']:
                 if not 'q_s' in kwargs_fixed or not 'phi_G_s' in kwargs_fixed:
                     num += 2
@@ -745,7 +667,7 @@ class LensParam(object):
                     num += 1
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'COMPOSITE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'SERSIC_DOUBLE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     num += 1
                     list.append('center_x_lens')

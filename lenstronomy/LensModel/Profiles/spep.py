@@ -2,6 +2,8 @@ __author__ = 'sibirrer'
 
 
 import numpy as np
+import lenstronomy.Util.param_util as param_util
+
 
 class SPEP(object):
     """
@@ -11,7 +13,7 @@ class SPEP(object):
         from lenstronomy.LensModel.Profiles.spp import SPP
         self.spp = SPP()
 
-    def function(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
+    def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
         :param x: set of x-coordinates
         :type x: array of size (n)
@@ -26,6 +28,7 @@ class SPEP(object):
         :returns:  function
         :raises: AttributeError, KeyError
         """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         theta_E *= q
         x_shift = x - center_x
@@ -39,13 +42,9 @@ class SPEP(object):
         s2 = 0. # softening
         return 2 * E**2/eta**2 * ((p2 + s2)/E**2)**(eta/2)
 
-    def derivatives(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
+    def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
 
-        # # @hope.jit
-        # def xy_prime(dx, dy, eta, a, E, xt1, xt2, q):
-        #     fac = 1./eta*(a/(E*E))**(eta/2-1)*2
-        #     dx[:] = fac*xt1
-        #     dy[:] = fac*xt2/(q*q)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
         x_shift = x - center_x
@@ -75,7 +74,8 @@ class SPEP(object):
         f_y = sin_phi*f_x_prim+cos_phi*f_y_prim
         return f_x, f_y
 
-    def hessian(self, x, y, theta_E, gamma, q, phi_G, center_x=0, center_y=0):
+    def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
         x_shift = x - center_x
@@ -106,7 +106,7 @@ class SPEP(object):
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def mass_3d_lens(self, r, theta_E, gamma, q, phi_G):
+    def mass_3d_lens(self, r, theta_E, gamma, e1, e2):
         """
         computes the spherical power-law mass enclosed (with SPP routiune)
         :param r:
@@ -130,6 +130,6 @@ class SPEP(object):
             gamma = 1.4
         if gamma > 2.9:
             gamma = 2.9
-        if q < 0.3:
-            q = 0.3
+        if q < 0.1:
+            q = 0.1
         return float(gamma), q

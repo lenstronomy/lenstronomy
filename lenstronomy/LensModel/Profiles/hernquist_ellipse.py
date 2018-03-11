@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.Profiles.hernquist import Hernquist
+import lenstronomy.Util.param_util as param_util
 import numpy as np
 
 
@@ -12,11 +13,11 @@ class Hernquist_Ellipse(object):
         self.spherical = Hernquist()
         self._diff = 0.000001
 
-    def function(self, x, y, sigma0, Rs, q, phi_G, center_x=0, center_y=0):
+    def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """
         returns double integral of NFW profile
         """
-
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
@@ -27,10 +28,11 @@ class Hernquist_Ellipse(object):
         f_ = self.spherical.function(x_, y_, sigma0, Rs)
         return f_
 
-    def derivatives(self, x, y, sigma0, Rs, q, phi_G, center_x=0, center_y=0):
+    def derivatives(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """
         returns df/dx and df/dy of the function (integral of NFW)
         """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
@@ -46,18 +48,17 @@ class Hernquist_Ellipse(object):
         f_y = sin_phi*f_x_prim+cos_phi*f_y_prim
         return f_x, f_y
 
-    def hessian(self, x, y, sigma0, Rs, q, phi_G, center_x=0, center_y=0):
+    def hessian(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs, q, phi_G, center_x, center_y)
+        alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs, e1, e2, center_x, center_y)
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Rs, q, phi_G, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, sigma0, Rs, q, phi_G, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Rs, e1, e2, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, sigma0, Rs, e1, e2, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff
         #f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
-
         return f_xx, f_yy, f_xy

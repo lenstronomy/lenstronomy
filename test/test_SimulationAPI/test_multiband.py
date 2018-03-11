@@ -43,18 +43,9 @@ class TestMultiband(object):
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        # 'GAUSSIAN': gaussian lensing potential
-        kwargs_gaussian = {'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}
-        # 'SIS': Singular isothermal sphere
-        kwargs_sis = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
-        # 'SIS_TRUNCATED': truncated SIS profile
-        kwargs_sis_trunc = {'theta_E': 1., 'r_trunc': 0.5, 'center_x': 0, 'center_y': 0}
-        # 'SPP': 'Smooth power-law potential (SIS with variable power-law, spherical)
-        kwargs_spp = {'theta_E': 1., 'gamma': 2.1, 'center_x': 0, 'center_y': 0}
-        # 'SPEP': Smooth power-law ellipsoidal potential
-        kwargs_spep = {'theta_E': 1., 'gamma': 2.1, 'center_x': 0, 'center_y': 0, 'q': 0.9, 'phi_G': 0.2}
         # 'SPEMD': Smoothed power-law ellipsoidal mass distribution
-        kwargs_spep = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
+        e1, e2 = param_util.phi_q2_ellipticity(0.2, 0.8)
+        kwargs_spep = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2}
         # 'NONE': no lens
         kwargs_none = {}
 

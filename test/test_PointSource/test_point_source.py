@@ -5,6 +5,7 @@ import numpy.testing as npt
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+import lenstronomy.Util.param_util as param_util
 
 
 class TestPointSource(object):
@@ -12,7 +13,8 @@ class TestPointSource(object):
     def setup(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
-        self.kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi_G': 0, 'gamma': 2}]
+        e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
+        self.kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2, 'gamma': 2}]
         self.sourcePos_x, self.sourcePos_y = 0.01, -0.01
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
@@ -74,7 +76,8 @@ class TestPointSource_fixed_mag(object):
     def setup(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
         solver = LensEquationSolver(lensModel=lensModel)
-        self.kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0, 'q': 0.7, 'phi_G': 0, 'gamma': 2}]
+        e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
+        self.kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2, 'gamma': 2}]
         self.sourcePos_x, self.sourcePos_y = 0.01, -0.01
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)

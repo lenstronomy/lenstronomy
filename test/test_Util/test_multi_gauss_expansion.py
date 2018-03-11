@@ -109,8 +109,8 @@ class TestMGE(object):
         mge_kappa = MultiGaussian_kappa()
         n_comp = 8
         theta_E = 1.41
-        kwargs = {'theta_E': theta_E, 'q': 1.,
-           'phi_G': 0.99, 'gamma': 1.61}
+        kwargs = {'theta_E': theta_E, 'e1': 0,
+           'e2': 0, 'gamma': 1.61}
         rs = np.logspace(-2., 1., 100) * theta_E
         f_xx, f_yy, f_xy = spep.hessian(rs, 0, **kwargs)
         kappa = 1/2. * (f_xx + f_yy)

@@ -88,9 +88,8 @@ class Solver2Point(object):
                 kwargs_list[0]['center_y'] = center_y
             elif self._solver_type == 'ELLIPSE':
                 [e1, e2] = x
-                phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-                kwargs_list[0]['q'] = q
-                kwargs_list[0]['phi_G'] = phi_G
+                kwargs_list[0]['e1'] = e1
+                kwargs_list[0]['e2'] = e2
 
         elif lens_model in ['SHAPELETS_CART']:
             [c10, c01] = x
@@ -114,9 +113,8 @@ class Solver2Point(object):
                 center_y = kwargs_list[0]['center_y']
                 x = [center_x, center_y]
             elif self._solver_type == 'ELLIPSE':
-                q = kwargs_list[0]['q']
-                phi_G = kwargs_list[0]['phi_G']
-                e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+                e1 = kwargs_list[0]['e1']
+                e2 = kwargs_list[0]['e2']
                 x = [e1, e2]
             else:
                 raise ValueError("Solver type %s not valid for lens model %s. Supported are 'ELLIPSE' and 'CENTER'." % (self._solver_type, lens_model))
@@ -143,8 +141,8 @@ class Solver2Point(object):
                 kwargs_fixed['center_x'] = kwargs_lens['center_x']
                 kwargs_fixed['center_y'] = kwargs_lens['center_y']
             elif self._solver_type in ['ELLIPSE']:
-                kwargs_fixed['q'] = kwargs_lens['q']
-                kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+                kwargs_fixed['e1'] = kwargs_lens['e1']
+                kwargs_fixed['e2'] = kwargs_lens['e2']
             else:
                 raise ValueError("solver_type %s not valid for lens model %s" % (self._solver_type, lens_model))
         elif lens_model == "SHAPELETS_CART":

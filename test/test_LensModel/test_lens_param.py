@@ -9,12 +9,12 @@ class TestParam(object):
 
     def setup(self):
         self.lens_model_list = ['SPEP', 'SHEAR', 'CONVERGENCE', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
-                                'NFW', 'TNFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
+                                'NFW', 'TNFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
                                 'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE'
                                 ]
         self.kwargs = [
-            {'theta_E': 1., 'gamma': 2, 'q': 0.7, 'phi_G': 0.5, 'center_x': 0, 'center_y': 0},  # 'SPEP
+            {'theta_E': 1., 'gamma': 2, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'SPEP
             {'e1': 0.1, 'e2': 0.1},  # EXTERNAL_SHEAR
             {'kappa_ext': 0.1},  # CONVERGENCE
             {'g1': 0.01, 'g2': 0.01, 'g3': -0.01, 'g4': 0},  # 'FLEXION'
@@ -24,17 +24,13 @@ class TestParam(object):
             {'theta_E': 1, 'gamma': 2, 'center_x': 0, 'center_y': 0},  # 'SPP'
             {'Rs': 1, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW'
             {'Rs': 1, 'theta_Rs': 0.1, 'r_trunc': 10, 'center_x': 0, 'center_y': 0},  # 'TNFW'
-            {'Rs': 1, 'q': 0.8, 'phi_G': 0.5, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW_ELLIPSE
+            {'Rs': 1, 'e1': 0, 'e2': 0, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW_ELLIPSE
             {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-            {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.5},  # 'SERSIC_ELLIPSE'
-            {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.5, 'q_2': 0.8,
-             'phi_G_2': 0.5, 'n_2': 1., 'R_2': 0.1, 'flux_ratio': 0.5},  # 'SERSIC_DOUBLE'
-            {'theta_E': 1, 'mass_light': 0.5, 'Rs': 1, 'q': 0.7, 'phi_G': 0, 'n_sersic': 1, 'r_eff': 0.6, 'q_s': 0.9,
-             'phi_G_s': 0.8, 'center_x': 0, 'center_y': 0},  # 'COMPOSITE'
+            {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'SERSIC_ELLIPSE'
             {'sigma0': 0.5, 'Ra': 0.7, 'Rs': 0.2, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
-            {'sigma0': 0.5, 'Ra': 0.7, 'Rs': 0.2, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 1.},  # 'PJAFFE_ELLIPSE'
+            {'sigma0': 0.5, 'Ra': 0.7, 'Rs': 0.2, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'PJAFFE_ELLIPSE'
             {'sigma0': 0.5, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
-            {'sigma0': 0.5, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 1.},  # 'HERNQUIST_ELLIPSE'
+            {'sigma0': 0.5, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'HERNQUIST_ELLIPSE'
             {'amp': 1, 'sigma_x': 0.5, 'sigma_y': 0.5, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'amp': 1, 'sigma': 0.5, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN_KAPPA'
             {'scale_factor': 1, 'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},  # 'INTERPOL_SCALED'
@@ -57,9 +53,6 @@ class TestParam(object):
             {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SERSIC'
             {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},
             # 'SERSIC_ELLIPSE'
-            {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1
-                , 'n_2_sigma': 1., 'R_2_sigma': 0.1, 'flux_ratio_sigma': 0.5},  # 'SERSIC_DOUBLE'
-            {'theta_E_sigma': 1, 'mass_light_sigma': 0.5, 'Rs_sigma': 1, 'ellipse_sigma': 0.1, 'ellipse_s_sigma': 0.1, 'n_sersic_sigma': 1, 'r_eff_sigma': 0.6, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'COMPOSITE'
             {'sigma0_sigma': 0.5, 'Ra_sigma': 0.7, 'Rs_sigma': 0.2, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'PJAFFE'
             {'sigma0_sigma': 0.5, 'Ra_sigma': 0.7, 'Rs_sigma': 0.2, 'center_x_sigma': 0, 'center_y_sigma': 00, 'ellipse_sigma': 0.1},
             # 'PJAFFE_ELLIPSE'
@@ -73,7 +66,7 @@ class TestParam(object):
             {'coeffs_sigma': 0.1, 'beta_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS_CART'
             {'coupling_sigma': 1, 'phi_dipole_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'DIPOLE'
         ]
-        self.kwargs_fixed = [{}, {}, {},{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+        self.kwargs_fixed = [{}, {}, {},{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                              {'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},
                              {}, {}, {'phi_dipole': 1.}]
         self.kwargs_mean = []
@@ -105,7 +98,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 120
+        assert num == 97
 
 
 if __name__ == '__main__':

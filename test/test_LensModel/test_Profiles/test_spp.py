@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.spep import SPEP
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.sis import SIS
+import lenstronomy.Util.param_util as param_util
 
 import numpy as np
 import numpy.testing as npt
@@ -24,19 +25,20 @@ class TestSPEP(object):
         gamma = 1.9
         q = 1
         phi_G = 0.
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
-        values_spep = self.SPEP.function(x, y, E, gamma,q,phi_G)
+        values_spep = self.SPEP.function(x, y, E, gamma, e1, e2)
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
         x = np.array([0])
         y = np.array([0])
-        values_spep = self.SPEP.function(x, y, E, gamma,q,phi_G)
+        values_spep = self.SPEP.function(x, y, E, gamma, e1, e2)
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
-        values_spep = self.SPEP.function(x, y, E, gamma,q,phi_G)
+        values_spep = self.SPEP.function(x, y, E, gamma, e1, e2)
         values_spp = self.SPP.function(x, y, E, gamma)
         assert values_spep[0] == values_spp[0]
         assert values_spep[1] == values_spp[1]
@@ -49,21 +51,22 @@ class TestSPEP(object):
         gamma = 1.9
         q = 1
         phi_G = 0.
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
-        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma,q,phi_G)
+        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
         assert f_x_spep[0] == f_x_spp[0]
         assert f_y_spep[0] == f_y_spp[0]
         x = np.array([0])
         y = np.array([0])
-        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma,q,phi_G)
+        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
         assert f_x_spep[0] == f_x_spp[0]
         assert f_y_spep[0] == f_y_spp[0]
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
-        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma,q,phi_G)
+        f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
         assert f_x_spep[0] == f_x_spp[0]
         assert f_y_spep[0] == f_y_spp[0]
@@ -79,16 +82,17 @@ class TestSPEP(object):
         gamma = 1.9
         q = 1.
         phi_G = 0.
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
-        f_xx, f_yy,f_xy = self.SPEP.hessian( x, y, E,gamma,q,phi_G)
-        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma,q,phi_G)
+        f_xx, f_yy,f_xy = self.SPEP.hessian( x, y, E,gamma, e1, e2)
+        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
         f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]
         assert f_xy_spep[0] == f_xy_spp[0]
         x = np.array([1,3,4])
         y = np.array([2,1,1])
-        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma,q,phi_G)
+        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
         f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]

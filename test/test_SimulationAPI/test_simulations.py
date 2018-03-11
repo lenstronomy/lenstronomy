@@ -2,10 +2,10 @@
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
+import lenstronomy.Util.param_util as param_util
 import numpy.testing as npt
 import numpy as np
 import copy
@@ -32,7 +32,8 @@ class TestSimulation(object):
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
+        e1, e2 = param_util.phi_q2_ellipticity(0.2, 0.8)
+        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2}
 
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
@@ -64,7 +65,8 @@ class TestSimulation(object):
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
+        e1, e2 = param_util.phi_q2_ellipticity(0.2, 0.8)
+        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2}
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile

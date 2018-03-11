@@ -125,7 +125,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw_ellipse(self):
-        kwargs = {'theta_Rs': .1, 'Rs': 5., 'q': 0.9, 'phi_G': 0.}
+        kwargs = {'theta_Rs': .1, 'Rs': 5., 'e1': 0.04, 'e2': -0.04}
         lens_model = ['NFW_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
@@ -140,7 +140,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_sersic_ellipse(self):
-        kwargs = {'n_sersic': 2., 'r_eff': 0.5, 'k_eff': 0.3, 'q': 0.9, 'phi_G': 1.}
+        kwargs = {'n_sersic': 2., 'r_eff': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
         lens_model = ['SERSIC_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
@@ -155,7 +155,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_spep(self):
-        kwargs = {'theta_E': 0.5, 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.}
+        kwargs = {'theta_E': 0.5, 'gamma': 1.9, 'e1': 0.04, 'e2': -0.0}
         lens_model = ['SPEP']
         self.assert_differentials(lens_model, kwargs)
 
@@ -170,7 +170,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_PJaffe_ellipse(self):
-        kwargs = {'sigma0': 1., 'Ra': 0.2, 'Rs': 2., 'q': .8, 'phi_G': 1.}
+        kwargs = {'sigma0': 1., 'Ra': 0.2, 'Rs': 2., 'e1': 0.04, 'e2': -0.0}
         lens_model = ['PJAFFE_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
@@ -180,7 +180,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_Hernquist_ellipse(self):
-        kwargs = {'sigma0': 1., 'Rs': 1.5, 'q': 0.8, 'phi_G': 1.}
+        kwargs = {'sigma0': 1., 'Rs': 1.5, 'e1': 0.04, 'e2': -0.0}
         lens_model = ['HERNQUIST_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 

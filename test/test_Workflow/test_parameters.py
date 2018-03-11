@@ -40,7 +40,7 @@ class TestParam(object):
         assert num_param == 11
 
     def test_get_params(self):
-        kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9,'q':0.8,'phi_G':1.5, 'center_x':0., 'center_y':0.}] #for SPEP lens
+        kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9, 'e1':0.01, 'e2':-0.01, 'center_x':0., 'center_y':0.}] #for SPEP lens
         kwargs_true_source = [{'amp': 1*2*np.pi*0.1**2,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'n_sersic': 1.7,
@@ -52,17 +52,16 @@ class TestParam(object):
         lens_dict = lens_dict_list[0]
         assert lens_dict['theta_E'] == 1.
         assert lens_dict['gamma'] == 1.9
-        assert lens_dict['q'] == 0.8
-        assert lens_dict['phi_G'] == 1.5
+        assert lens_dict['e1'] == 0.01
+        assert lens_dict['e2'] == -0.01
         assert lens_dict['center_x'] == 0.
         assert lens_dict['center_y'] == 0.
         assert lens_light_dic[0]['center_x'] == -0.06
 
     def test_param_init(self):
-        kwargs_mean_lens = [{'theta_E': 1., 'theta_E_sigma': 0.1, 'gamma':1.9, 'gamma_sigma': 0.2 ,'q':0.8,'phi_G':1.5, 'ellipse_sigma': 0.2, 'center_x':0., 'center_y':0., 'center_x_sigma':0., 'center_y_sigma':0.}] #for SPEP lens
+        kwargs_mean_lens = [{'theta_E': 1., 'theta_E_sigma': 0.1, 'gamma':1.9, 'gamma_sigma': 0.2, 'e1':0.01, 'e2':-0.0, 'ellipse_sigma': 0.2, 'center_x':0., 'center_y':0., 'center_x_sigma':0., 'center_y_sigma':0.}] #for SPEP lens
         kwargs_mean_source = [{'amp': 1*2*np.pi*0.1**2, 'amp_sigma': 1, 'center_x': 0.2, 'center_y': 0.2, 'center_x_sigma': 0.2, 'center_y_sigma': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1, 'sigma_x_sigma': 0.1, 'sigma_y_sigma': 0.1}]
-        kwargs_mean_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'center_x_sigma': -0.06, 'center_y_sigma': 0.4, 'phi_G': 4.8,
-                                  'q': 0.86, 'ellipse_sigma': 0.2, 'n_sersic': 1.7, 'n_sersic_sigma': 1,
+        kwargs_mean_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'center_x_sigma': -0.06, 'center_y_sigma': 0.4, 'e1':0.01, 'e2':-0.0, 'ellipse_sigma': 0.2, 'n_sersic': 1.7, 'n_sersic_sigma': 1,
                                   'I0_sersic': 11.8, 'I0_sersic_sigma': 1, 'R_sersic': 0.697, 'R_sersic_sigma': 0.1, 'phi_G_2': 0}]
         kwargs_mean_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
 
@@ -89,7 +88,7 @@ class TestParam(object):
                                  kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo)
 
         kwargs_true_lens = [
-            {'theta_E': 1., 'gamma': 1.9, 'q': 0.8, 'phi_G': 1.5, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
+            {'theta_E': 1., 'gamma': 1.9, 'e1':0.01, 'e2':-0.01, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
         kwargs_true_source = [
             {'amp': 1 * 2 * np.pi * 0.1 ** 2, 'center_x': 0.2, 'center_y': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,

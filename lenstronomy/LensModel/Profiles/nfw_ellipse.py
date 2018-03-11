@@ -5,6 +5,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
+import lenstronomy.Util.param_util as param_util
 
 
 class NFW_ELLIPSE(object):
@@ -17,11 +18,11 @@ class NFW_ELLIPSE(object):
         self.nfw = NFW()
         self._diff = 0.000001
 
-    def function(self, x, y, Rs, theta_Rs, q, phi_G, center_x=0, center_y=0):
+    def function(self, x, y, Rs, theta_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns double integral of NFW profile
         """
-
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
@@ -36,10 +37,11 @@ class NFW_ELLIPSE(object):
         f_ = self.nfw.nfwPot(R_, Rs, rho0_input)
         return f_
 
-    def derivatives(self, x, y, Rs, theta_Rs, q, phi_G, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, theta_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns df/dx and df/dy of the function (integral of NFW)
         """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
@@ -58,14 +60,14 @@ class NFW_ELLIPSE(object):
         f_y = sin_phi*f_x_prim+cos_phi*f_y_prim
         return f_x, f_y
 
-    def hessian(self, x, y, Rs, theta_Rs, q, phi_G, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, theta_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        alpha_ra, alpha_dec = self.derivatives(x, y, Rs, theta_Rs, q, phi_G, center_x, center_y)
+        alpha_ra, alpha_dec = self.derivatives(x, y, Rs, theta_Rs, e1, e2, center_x, center_y)
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, Rs, theta_Rs, q, phi_G, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, Rs, theta_Rs, q, phi_G, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, Rs, theta_Rs, e1, e2, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, Rs, theta_Rs, e1, e2, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff
@@ -74,7 +76,7 @@ class NFW_ELLIPSE(object):
 
         return f_xx, f_yy, f_xy
 
-    def mass_3d_lens(self, R, Rs, theta_Rs, q=1, phi_G=0):
+    def mass_3d_lens(self, R, Rs, theta_Rs, e1=1, e2=0):
         """
 
         :param R:

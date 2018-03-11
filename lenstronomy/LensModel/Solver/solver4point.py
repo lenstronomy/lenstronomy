@@ -14,7 +14,7 @@ class Solver4Point(object):
     def __init__(self, lensModel, decoupling=True, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
-            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE', 'COMPOSITE',"
+            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE' "
                              " 'NFW_ELLIPSE', 'SHAPELETS_CART'. Your choice was %s" % solver_type)
         if not solver_type in ['PROFILE', 'PROFILE_SHEAR']:
             raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
@@ -104,20 +104,18 @@ class Solver4Point(object):
             kwargs_list[1]['e1'] = e1
             kwargs_list[1]['e2'] = e2
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
-            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
             kwargs_list[0]['theta_E'] = theta_E
-            kwargs_list[0]['q'] = q
-            kwargs_list[0]['phi_G'] = phi_G
+            kwargs_list[0]['e1'] = e1
+            kwargs_list[0]['e2'] = e2
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
         elif lens_model in ['NFW_ELLIPSE']:
             [theta_Rs, e1, e2, center_x, center_y, no_sens_param] = x
-            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
             kwargs_list[0]['theta_Rs'] = theta_Rs
-            kwargs_list[0]['q'] = q
-            kwargs_list[0]['phi_G'] = phi_G
+            kwargs_list[0]['e1'] = e1
+            kwargs_list[0]['e2'] = e2
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
         elif lens_model in ['SHAPELETS_CART']:
@@ -142,20 +140,18 @@ class Solver4Point(object):
         else:
             phi_ext = 0
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
-            q = kwargs_list[0]['q']
-            phi_G = kwargs_list[0]['phi_G']
+        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
+            e1 = kwargs_list[0]['e1']
+            e2 = kwargs_list[0]['e2']
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
-            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             theta_E = kwargs_list[0]['theta_E']
             x = [theta_E, e1, e2, center_x, center_y, phi_ext]
         elif lens_model in ['NFW_ELLIPSE']:
-            q = kwargs_list[0]['q']
-            phi_G = kwargs_list[0]['phi_G']
+            e1 = kwargs_list[0]['e1']
+            e2 = kwargs_list[0]['e2']
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
-            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             theta_Rs = kwargs_list[0]['theta_Rs']
             x = [theta_Rs, e1, e2, center_x, center_y, phi_ext]
         elif lens_model in ['SHAPELETS_CART']:
@@ -177,16 +173,16 @@ class Solver4Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
-            kwargs_fixed['q'] = kwargs_lens['q']
-            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+            kwargs_fixed['e1'] = kwargs_lens['e1']
+            kwargs_fixed['e2'] = kwargs_lens['e2']
             kwargs_fixed['center_x'] = kwargs_lens['center_x']
             kwargs_fixed['center_y'] = kwargs_lens['center_y']
         elif lens_model in ['NFW_ELLIPSE']:
             kwargs_fixed['theta_Rs'] = kwargs_lens['theta_Rs']
-            kwargs_fixed['q'] = kwargs_lens['q']
-            kwargs_fixed['phi_G'] = kwargs_lens['phi_G']
+            kwargs_fixed['e1'] = kwargs_lens['e1']
+            kwargs_fixed['e2'] = kwargs_lens['e2']
             kwargs_fixed['center_x'] = kwargs_lens['center_x']
             kwargs_fixed['center_y'] = kwargs_lens['center_y']
         elif lens_model in ['SHAPELETS_CART']:

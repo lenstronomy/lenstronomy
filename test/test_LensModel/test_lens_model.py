@@ -15,7 +15,7 @@ class TestLensModel(object):
         self.kwargs = [{'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
     def test_init(self):
-        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE', 'SERSIC_DOUBLE', 'COMPOSITE',
+        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
                            'SHAPELETS_POLAR', 'DIPOLE']
         lensModel = LensModel(lens_model_list)

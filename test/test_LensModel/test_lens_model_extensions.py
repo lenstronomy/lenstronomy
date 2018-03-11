@@ -4,8 +4,7 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.multi_plane import MultiLens
+import lenstronomy.Util.param_util as param_util
 
 
 class TestLensModelExtensions(object):
@@ -17,7 +16,9 @@ class TestLensModelExtensions(object):
 
     def test_critical_curves(self):
         lens_model_list = ['SPEP']
-        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'q': 0.8, 'phi_G': 1., 'center_x': 0, 'center_y': 0}]
+        phi, q = 1., 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(lens_model_list)
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModel.critical_curve_caustics(kwargs_lens,
                                                                                 compute_window=5, grid_scale=0.005)
@@ -29,7 +30,9 @@ class TestLensModelExtensions(object):
 
     def test_critical_curves_tiling(self):
         lens_model_list = ['SPEP']
-        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'q': 0.8, 'phi_G': 1., 'center_x': 0, 'center_y': 0}]
+        phi, q = 1., 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(lens_model_list)
         ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01, max_order=10)
         npt.assert_almost_equal(ra_crit[0], -0.5355208333333333, decimal=5)
@@ -64,8 +67,10 @@ class TestLensModelExtensions(object):
 
         lens_model = LensModelExtensions(lens_model_list=['SPEP'])
         gamma_in = 2.
-        kwargs_lens = [{'theta_E': 1.4516812130749424, 'q': 0.89760957136967312, 'center_x': -0.04507598845306314,
-         'center_y': 0.054491803177414651, 'phi_G': 0.34403343049704888, 'gamma': gamma_in}]
+        phi, q = 0.34403343049704888, 0.89760957136967312
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_lens = [{'theta_E': 1.4516812130749424, 'e1': e1, 'e2': e2, 'center_x': -0.04507598845306314,
+         'center_y': 0.054491803177414651, 'gamma': gamma_in}]
         gamma_out = lens_model.profile_slope(kwargs_lens)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 

@@ -37,7 +37,9 @@ class TestImageModel(object):
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'q': 0.8, 'phi_G': 0.2}
+        phi, q = 0.2, 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2}
 
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
@@ -168,7 +170,8 @@ class TestImageModel(object):
         x_pix = np.array([10, 5, 10, 90])
         y_pix = np.array([40, 50, 60, 50])
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
-        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
+        e1, e2 = param_util.phi_q2_ellipticity(0, 0.8)
+        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
         model = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
@@ -178,7 +181,9 @@ class TestImageModel(object):
         x_pix = np.array([10.5, 5.5, 10.5, 90.5])
         y_pix = np.array([40, 50, 60, 50])
         ra_pos, dec_pos = makeImage.Data.map_pix2coord(x_pix, y_pix)
-        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'q': 0.8, 'phi_G': 0, 'center_x': 0, 'center_y': 0}]
+        phi, q = 0., 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_lens_init = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         kwargs_else = [{'ra_image': ra_pos, 'dec_image': dec_pos, 'point_amp': np.ones_like(ra_pos)}]
         model = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)

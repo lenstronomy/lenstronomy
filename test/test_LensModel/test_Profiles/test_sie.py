@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import pytest
+import lenstronomy.Util.param_util as param_util
 
 try:
     import fastell4py
@@ -26,9 +27,10 @@ class TestSIE(object):
             theta_E = 1.
             q = 0.9
             phi_G = 1.
-            values = self.sie.function(x, y, theta_E, q, phi_G)
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+            values = self.sie.function(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.function(x, y, theta_E, gamma, q, phi_G)
+            values_spemd = self.spemd.function(x, y, theta_E, gamma, e1, e2)
             assert values == values_spemd
 
         def test_derivatives(self):
@@ -37,9 +39,10 @@ class TestSIE(object):
             theta_E = 1.
             q = 0.9
             phi_G = 1.
-            values = self.sie.derivatives(x, y, theta_E, q, phi_G)
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+            values = self.sie.derivatives(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.derivatives(x, y, theta_E, gamma, q, phi_G)
+            values_spemd = self.spemd.derivatives(x, y, theta_E, gamma, e1, e2)
             assert values == values_spemd
 
         def test_hessian(self):
@@ -48,9 +51,10 @@ class TestSIE(object):
             theta_E = 1.
             q = 0.9
             phi_G = 1.
-            values = self.sie.hessian(x, y, theta_E, q, phi_G)
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+            values = self.sie.hessian(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.hessian(x, y, theta_E, gamma, q, phi_G)
+            values_spemd = self.spemd.hessian(x, y, theta_E, gamma, e1, e2)
             assert values[0] == values_spemd[0]
 
 

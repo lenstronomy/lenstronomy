@@ -7,8 +7,9 @@ class SIE(object):
     """
     def __init__(self):
         self.spemd = SPEMD()
+        self._gamma = 2
 
-    def function(self, x, y, theta_E, q, phi_G, center_x=0, center_y=0):
+    def function(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
         :param x:
@@ -20,10 +21,9 @@ class SIE(object):
         :param center_y:
         :return:
         """
-        gamma = 2
-        return self.spemd.function(x, y, theta_E, gamma, q, phi_G, center_x, center_y)
+        return self.spemd.function(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)
 
-    def derivatives(self, x, y, theta_E, q, phi_G, center_x=0, center_y=0):
+    def derivatives(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
         :param x:
@@ -35,10 +35,9 @@ class SIE(object):
         :param center_y:
         :return:
         """
-        gamma = 2
-        return self.spemd.derivatives(x, y, theta_E, gamma, q, phi_G, center_x, center_y)
+        return self.spemd.derivatives(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)
 
-    def hessian(self, x, y, theta_E, q, phi_G, center_x=0, center_y=0):
+    def hessian(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
         :param x:
@@ -50,5 +49,4 @@ class SIE(object):
         :param center_y:
         :return:
         """
-        gamma = 2
-        return self.spemd.hessian(x, y, theta_E, gamma, q, phi_G, center_x, center_y)
+        return self.spemd.hessian(x, y, theta_E, self._gamma, e1, e2, center_x, center_y)

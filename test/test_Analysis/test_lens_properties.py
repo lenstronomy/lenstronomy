@@ -19,10 +19,8 @@ class TestLensProp(object):
                          'foreground_shear': False, 'lens_model_deflector_bool': [True, False, False, False, False],
                           'lens_light_deflector_bool': [True], 'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options)
-        kwargs_lens = [{'theta_E': 1.4272358196260446, 'q': 0.96286768452645233, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'phi_G': 0.46030738644964475, 'gamma': 1.8},
-                       {'Rs': 3.3343851394796515, 'q': 0.71808978862755635, 'center_x': 0, 'center_y': 0, 'Ra': 1.3113719625383848,
-                        'phi_G': 1.2119791682610044, 'sigma0': 0.3405563712096914}, {'e1': -0.050871696555354479,
-                        'e2': -0.0061601733920590464}, {'center_y': 2.79985456, 'center_x': -2.32019894,
+        kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
+                       {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}, {'center_y': 2.79985456, 'center_x': -2.32019894,
                         'theta_E': 0.28165274714097904}, {'center_y': 3.83985426,
                         'center_x': -2.32019933, 'theta_E': 0.0038110812674654873},
                        {'center_y': 4.31985428, 'center_x': -1.68019931, 'theta_E': 0.45552039839735037}]
@@ -59,7 +57,8 @@ class TestLensProp(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP'], 'point_source_model_list': ['LENSED_POSITION']}
-        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'q': 0.7, 'phi_G': 0}]
+        e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
+        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2}]
         kwargs_else = [{'ra_image': [-1, 0, 1], 'dec_image': [0, 0, 0]}]
 
         lensProp = LensProp(z_lens, z_source, kwargs_options)

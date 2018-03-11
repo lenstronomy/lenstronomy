@@ -80,7 +80,8 @@ class TestLensAnalysis(object):
 
     def test_multi_gaussian_lens(self):
         kwargs_options = {'lens_model_list': ['SPEP']}
-        kwargs_lens = [{'gamma': 1.8, 'theta_E': 0.6, 'q': 0.9, 'phi_G': 0, 'center_x': 0.5, 'center_y': -0.1}]
+        e1, e2 = param_util.phi_q2_ellipticity(0, 0.9)
+        kwargs_lens = [{'gamma': 1.8, 'theta_E': 0.6, 'e1': e1, 'e2': e2, 'center_x': 0.5, 'center_y': -0.1}]
         lensAnalysis = LensAnalysis(kwargs_options)
         amplitudes, sigmas, center_x, center_y = lensAnalysis.multi_gaussian_lens(kwargs_lens, n_comp=20)
         model = MultiGaussian_kappa()

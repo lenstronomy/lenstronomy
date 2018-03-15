@@ -44,6 +44,8 @@ class LikelihoodModule(object):
         self._force_no_add_image = kwargs_likelihood.get('force_no_add_image', False)
         self._source_marg = kwargs_likelihood.get('source_marg',
                                                   False)  # whether to fully invert the covariance matrix for marginalization
+        self._restrict_number_images = kwargs_likelihood.get('restrict_image_number', False)
+        self._max_num_images = kwargs_likelihood.get('max_num_images', self.param.num_point_source_images)
         self._num_bands = len(multi_band_list)
         if compute_bool is None:
             self._compute_bool = [True] * self._num_bands
@@ -87,6 +89,11 @@ class LikelihoodModule(object):
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool:
                 logL -= 10**10
+        if self._restrict_number_images:
+            ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+            if len(ra_image_list[0]) > self._max_num_images:
+                logL -= 10**10
+
         return logL, None
 
     def check_solver(self, kwargs_lens, kwargs_ps, tolerance):

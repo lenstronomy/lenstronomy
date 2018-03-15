@@ -48,6 +48,11 @@ def test_phi_q2_elliptisity():
     assert e1 == -0.016760092842656733
     assert e2 == -0.019405192187382792
 
+    phi, q = 0, 0.9
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+    assert e1 == 0.05263157894736841
+    assert e2 == 0
+
 
 def test_phi_q2_elliptisity_bounds():
     bounds = 'lower'

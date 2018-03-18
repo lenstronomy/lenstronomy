@@ -32,11 +32,14 @@ def test_map_coord2pix():
 
 def test_make_grid():
     numPix = 11
-    deltapix = 1
+    deltapix = 1.
     grid = Util.make_grid(numPix, deltapix)
     assert grid[0][0] == -5
+    assert np.sum(grid[0]) == 0
     x_grid, y_grid = Util.make_grid(numPix, deltapix, subgrid_res=2.)
-    assert x_grid[0] == -5.5
+    print(np.sum(x_grid))
+    assert np.sum(x_grid) == 0
+    assert x_grid[0] == -5.25
 
 
 def test_make_grid_transform():
@@ -118,14 +121,14 @@ def test_get_axes():
     deltapix = 0.1
     x_grid, y_grid = Util.make_grid(numPix,deltapix)
     x_axes, y_axes = Util.get_axes(x_grid, y_grid)
-    assert x_axes[0] == -0.5
-    assert y_axes[0] == -0.5
-    assert x_axes[1] == -0.4
-    assert y_axes[1] == -0.4
+    npt.assert_almost_equal(x_axes[0], -0.5, decimal=12)
+    npt.assert_almost_equal(y_axes[0], -0.5, decimal=12)
+    npt.assert_almost_equal(x_axes[1], -0.4, decimal=12)
+    npt.assert_almost_equal(y_axes[1], -0.4, decimal=12)
     x_grid += 1
     x_axes, y_axes = Util.get_axes(x_grid, y_grid)
-    assert x_axes[0] == 0.5
-    assert y_axes[0] == -0.5
+    npt.assert_almost_equal(x_axes[0], 0.5, decimal=12)
+    npt.assert_almost_equal(y_axes[0], -0.5, decimal=12)
 
 
 def test_symmetry():

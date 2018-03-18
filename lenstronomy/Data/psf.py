@@ -26,8 +26,12 @@ class PSF(object):
                 'kernel_point_source': the pixelized kernel from a point source in its center
             optional:
                 'kernel_pixel': PSF of an extended pixel, can be different size (odd axis number) for faster numerical
-                convolution. If not specified, it will take the full point source kernel and numerically convolve it
-                over the size of a pixel
+                    convolution. If not specified, it will take the full point source kernel and numerically convolve it
+                    over the size of a pixel
+
+                'psf_error_map': uncertainty in the PSF model. Same shape as 'kernel_point_source'.
+                    This error will be added to the pixel error around the position of point sources as follows:
+                     \sigma^2_i += ('psf_error_map'_j * point_source_flux)**2
 
 
     - 'NONE': default option, results in no convolution, point sources will not be displayed

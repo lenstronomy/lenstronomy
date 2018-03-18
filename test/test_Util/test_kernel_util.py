@@ -1,6 +1,7 @@
 import lenstronomy.Util.util as Util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
+import lenstronomy.Util.util as util
 import pytest
 import numpy as np
 import numpy.testing as npt
@@ -140,7 +141,7 @@ def test_pixel_kernel():
     assert pixel_kernel[4, 4] == kernel[4, 4]
 
     pixel_kernel = kernel_util.pixel_kernel(point_source_kernel=kernel, subgrid_res=11)
-    npt.assert_almost_equal(pixel_kernel[4, 4], 0.44559763157283427, decimal=3)
+    npt.assert_almost_equal(pixel_kernel[4, 4], 0.44812512806502264, decimal=3)
 
 
 def test_cutout_source2():
@@ -152,8 +153,28 @@ def test_cutout_source2():
 
 def test_subgrid_kernel():
     kernel = np.ones((3, 3))
-    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=2)
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=False)
     assert subgrid_kernel[0,0] == 0.0069444444444444441
+
+
+def test_subgrid_rebin():
+    kernel_size = 11
+    subgrid_res = 3
+
+    sigma = 1
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gaussian = Gaussian()
+    x_grid, y_gird = Util.make_grid(kernel_size, 1./subgrid_res, subgrid_res)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel = Util.array2image(flux)
+    print(np.shape(kernel))
+    kernel = util.averaging(kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size)
+    kernel = kernel_util.kernel_norm(kernel)
+
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=subgrid_res, odd=True)
+    kernel_pixel = util.averaging(subgrid_kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size)
+    kernel_pixel = kernel_util.kernel_norm(kernel_pixel)
+    assert np.sum((kernel_pixel - kernel)**2) < 0.1
 
 
 if __name__ == '__main__':

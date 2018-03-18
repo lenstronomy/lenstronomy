@@ -68,13 +68,13 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     deltapix_eff = deltapix/float(subgrid_res)
     a = np.arange(numPix_eff)
     matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
+    x_grid = matrix[:, 0] * deltapix_eff
+    y_grid = matrix[:, 1] * deltapix_eff
     if left_lower is True:
-        x_grid = matrix[:, 0]*deltapix
-        y_grid = matrix[:, 1]*deltapix
+        shift = -1. / 2 + 1. / (2 * subgrid_res)
     else:
-        x_grid = (matrix[:, 0] - (numPix_eff-1)/2.)*deltapix_eff
-        y_grid = (matrix[:, 1] - (numPix_eff-1)/2.)*deltapix_eff
-    shift = (subgrid_res-1)/(2.*subgrid_res)*deltapix
+        shift = np.sum(x_grid) / numPix_eff**2
+
     return x_grid - shift, y_grid - shift
 
 

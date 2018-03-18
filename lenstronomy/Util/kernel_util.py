@@ -11,11 +11,16 @@ from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
     """
+    de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.
 
-    :param kernel:
-    :param shift_x:
-    :param shift_y:
-    :return:
+    The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the
+     pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
+     their shifted version with the input kernel.
+
+    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid
+    :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)
+    :param shift_y: y-offset relative to the center of the pixel (sub-pixel shift)
+    :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y) results in the input kernel
     """
     nx, ny = np.shape(kernel)
     kernel_new = np.zeros((nx+2, ny+2)) + (kernel[0, 0] + kernel[0, -1] + kernel[-1, 0] + kernel[-1, -1]) / 4.
@@ -50,6 +55,8 @@ def kernel_norm(kernel):
 def subgrid_kernel(kernel, subgrid_res, odd=False):
     """
     creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
+    #TODO make sure the re-binned high-resolution shifted kernel corresponds to the shifted un-binned kernel
+
     :param kernel: initial kernel
     :param subgrid_res: subgrid resolution required
     :return: kernel with higher resolution (larger)
@@ -72,8 +79,8 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
 
     d_x_new = 1. / nx_new
     d_y_new = 1. / ny_new
-    x_out = np.linspace(d_x_new/2, 1-d_x_new/2, nx_new)
-    y_out = np.linspace(d_y_new/2, 1-d_y_new, ny_new)
+    x_out = np.linspace(d_x_new/2., 1-d_x_new/2., nx_new)
+    y_out = np.linspace(d_y_new/2., 1-d_y_new/2., ny_new)
     out_values = image_util.re_size_array(x_in, y_in, kernel, x_out, y_out)
     kernel_subgrid = out_values
     kernel_subgrid = kernel_norm(kernel_subgrid)

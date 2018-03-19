@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 0.1.2 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -116,13 +116,13 @@
     <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">)</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
+    <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
     <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
-        <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">x_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
-        <span class="n">y_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
-    <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">subgrid_res</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span> <span class="o">/</span> <span class="n">numPix_eff</span><span class="o">**</span><span class="mi">2</span>
+
     <span class="k">return</span> <span class="n">x_grid</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">-</span> <span class="n">shift</span></div>
 
 
@@ -216,9 +216,9 @@
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">Nbig</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numGrid</span><span class="p">)</span>
-    <span class="n">Nsmall</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numPix</span><span class="p">)</span>
-    <span class="n">small</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="n">Nsmall</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">),</span> <span class="n">Nsmall</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">)])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">Nbig</span> <span class="o">=</span> <span class="n">numGrid</span>
+    <span class="n">Nsmall</span> <span class="o">=</span> <span class="n">numPix</span>
+    <span class="n">small</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">Nsmall</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">Nsmall</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">Nbig</span><span class="o">/</span><span class="n">Nsmall</span><span class="p">)])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">small</span></div>
 
 
@@ -473,7 +473,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

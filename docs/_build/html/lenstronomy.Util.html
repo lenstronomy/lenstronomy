@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 0.1.2 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 0.2.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -428,6 +428,28 @@ center is well defined for odd pixel sizes.
 <span id="lenstronomy-util-kernel-util-module"></span><h2>lenstronomy.Util.kernel_util module<a class="headerlink" href="#module-lenstronomy.Util.kernel_util" title="Permalink to this headline">¶</a></h2>
 <p>routines that manipulate convolution kernels</p>
 <dl class="function">
+<dt id="lenstronomy.Util.kernel_util.averaging_odd_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">averaging_odd_kernel</code><span class="sig-paren">(</span><em>kernel_high_res</em>, <em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#averaging_odd_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.averaging_odd_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (evenn_l number), both
+meant to be centered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kernel_high_res</strong> – </li>
+<li><strong>subgrid_res</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.kernel_util.cut_psf">
 <code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">cut_psf</code><span class="sig-paren">(</span><em>psf_data</em>, <em>psf_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#cut_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.cut_psf" title="Permalink to this definition">¶</a></dt>
 <dd><p>cut the psf properly
@@ -450,18 +472,24 @@ center is well defined for odd pixel sizes.
 <dl class="function">
 <dt id="lenstronomy.Util.kernel_util.de_shift_kernel">
 <code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">de_shift_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>shift_x</em>, <em>shift_y</em>, <em>iterations=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#de_shift_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.de_shift_kernel" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.</p>
+<dl class="docutils">
+<dt>The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the</dt>
+<dd>pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
+their shifted version with the input kernel.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kernel</strong> – </li>
-<li><strong>shift_x</strong> – </li>
-<li><strong>shift_y</strong> – </li>
+<li><strong>kernel</strong> – (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid</li>
+<li><strong>shift_x</strong> – x-offset relative to the center of the pixel (sub-pixel shift)</li>
+<li><strong>shift_y</strong> – y-offset relative to the center of the pixel (sub-pixel shift)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">de-shifted kernel such that the interpolated shift boy (shift_x, shift_y) results in the input kernel</p>
 </td>
 </tr>
 </tbody>
@@ -528,11 +556,23 @@ center is well defined for odd pixel sizes.
 
 <dl class="function">
 <dt id="lenstronomy.Util.kernel_util.subgrid_kernel">
-<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">subgrid_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>subgrid_res</em>, <em>odd=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#subgrid_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.subgrid_kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
-:param kernel: initial kernel
-:param subgrid_res: subgrid resolution required
-:return: kernel with higher resolution (larger)</p>
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">subgrid_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>subgrid_res</em>, <em>odd=False</em>, <em>num_iter=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#subgrid_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.subgrid_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kernel</strong> – initial kernel</li>
+<li><strong>subgrid_res</strong> – subgrid resolution required</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">kernel with higher resolution (larger)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -1325,7 +1365,7 @@ into pixel coordinates in an image
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

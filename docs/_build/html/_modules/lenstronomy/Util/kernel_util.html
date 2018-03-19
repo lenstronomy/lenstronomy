@@ -154,7 +154,7 @@
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">)</span>
-    <span class="n">n_low</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_high</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">subgrid_res</span>
+    <span class="n">n_low</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_high</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">subgrid_res</span><span class="p">)</span>
     <span class="n">kernel_low_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_low</span><span class="p">,</span> <span class="n">n_low</span><span class="p">))</span>
     <span class="c1"># adding pixels that are fully within a single re-binned pixel</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">subgrid_res</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>

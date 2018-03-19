@@ -106,7 +106,7 @@ def averaging_odd_kernel(kernel_high_res, subgrid_res):
     :return:
     """
     n_high = len(kernel_high_res)
-    n_low = (n_high + 1) / subgrid_res
+    n_low = int((n_high + 1) / subgrid_res)
     kernel_low_res = np.zeros((n_low, n_low))
     # adding pixels that are fully within a single re-binned pixel
     for i in range(subgrid_res-1):

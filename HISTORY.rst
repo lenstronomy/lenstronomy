@@ -29,10 +29,16 @@ History
 
 * minor update to facilitate options without lensing
 
-0.1.2 (2018-03-10)
+0.2.0 (2018-03-10)
 ++++++++++++++++++
 
 * ellipticity parameter handling changed
 * time-delay distance sampling included
 * parameter handling for sampling more flexible
 * removed redundancies in the light and mass profiles
+
+0.2.1 (2018-03-19)
+++++++++++++++++++
+
+* updated documentation
+* improved sub-sampling of the PSF

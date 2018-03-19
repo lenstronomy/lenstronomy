@@ -52,10 +52,9 @@ def kernel_norm(kernel):
     return kernel
 
 
-def subgrid_kernel(kernel, subgrid_res, odd=False):
+def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=1):
     """
     creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
-    #TODO make sure the re-binned high-resolution shifted kernel corresponds to the shifted un-binned kernel
 
     :param kernel: initial kernel
     :param subgrid_res: subgrid resolution required
@@ -81,10 +80,56 @@ def subgrid_kernel(kernel, subgrid_res, odd=False):
     d_y_new = 1. / ny_new
     x_out = np.linspace(d_x_new/2., 1-d_x_new/2., nx_new)
     y_out = np.linspace(d_y_new/2., 1-d_y_new/2., ny_new)
-    out_values = image_util.re_size_array(x_in, y_in, kernel, x_out, y_out)
-    kernel_subgrid = out_values
-    kernel_subgrid = kernel_norm(kernel_subgrid)
+    kernel_input = copy.deepcopy(kernel)
+    for i in range(max(num_iter, 1)):
+        out_values = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
+        kernel_subgrid = out_values
+        kernel_subgrid = kernel_norm(kernel_subgrid)
+        if subgrid_res % 2 == 0:
+            kernel_pixel = averaging_odd_kernel(kernel_subgrid, subgrid_res)
+        else:
+            kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
+        kernel_pixel = kernel_norm(kernel_pixel)
+        delta = kernel - kernel_pixel
+        kernel_input += delta
+        kernel_input = kernel_norm(kernel_input)
     return kernel_subgrid
+
+
+def averaging_odd_kernel(kernel_high_res, subgrid_res):
+    """
+    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (evenn_l number), both
+    meant to be centered.
+
+    :param kernel_high_res:
+    :param subgrid_res:
+    :return:
+    """
+    n_high = len(kernel_high_res)
+    n_low = (n_high + 1) / subgrid_res
+    kernel_low_res = np.zeros((n_low, n_low))
+    # adding pixels that are fully within a single re-binned pixel
+    for i in range(subgrid_res-1):
+        for j in range(subgrid_res-1):
+            kernel_low_res += kernel_high_res[i::subgrid_res, j::subgrid_res]
+    # adding half of a pixel that has over-lap with two pixels
+    i = subgrid_res - 1
+    for j in range(subgrid_res - 1):
+        kernel_low_res[1:, :] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[:-1, :] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
+    j = subgrid_res - 1
+    for i in range(subgrid_res - 1):
+        kernel_low_res[:, 1:] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
+        kernel_low_res[:, :-1] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
+    # adding a quater of a pixel value that is at the boarder of four pixels
+    i = subgrid_res - 1
+    j = subgrid_res - 1
+    kernel_edge = kernel_high_res[i::subgrid_res, j::subgrid_res]
+    kernel_low_res[1:, 1:] += kernel_edge / 4
+    kernel_low_res[:-1, 1:] += kernel_edge / 4
+    kernel_low_res[1:, :-1] += kernel_edge / 4
+    kernel_low_res[:-1, :-1] += kernel_edge / 4
+    return kernel_low_res
 
 
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):

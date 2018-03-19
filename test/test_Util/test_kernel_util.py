@@ -153,8 +153,8 @@ def test_cutout_source2():
 
 def test_subgrid_kernel():
     kernel = np.ones((3, 3))
-    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=False)
-    assert subgrid_kernel[0,0] == 0.0069444444444444441
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=True)
+    assert subgrid_kernel[0,0] == 0.008264462809917356
 
 
 def test_subgrid_rebin():

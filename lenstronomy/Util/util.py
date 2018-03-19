@@ -168,9 +168,9 @@ def averaging(grid, numGrid, numPix):
     :return:
     """
 
-    Nbig = int(numGrid)
-    Nsmall = int(numPix)
-    small = grid.reshape([Nsmall, int(Nbig/Nsmall), Nsmall, int(Nbig/Nsmall)]).mean(3).mean(1)
+    Nbig = numGrid
+    Nsmall = numPix
+    small = grid.reshape([int(Nsmall), int(Nbig/Nsmall), int(Nsmall), int(Nbig/Nsmall)]).mean(3).mean(1)
     return small
 
 

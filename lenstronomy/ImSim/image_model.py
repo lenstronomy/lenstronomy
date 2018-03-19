@@ -222,15 +222,9 @@ class ImageModel(object):
         :param sourcePos_y: source position in relative arc sec
         :return: x_coords, y_coords of image positions
         """
-        deltaPix = self.Data.deltaPix * 2.
-        numPix = self.Data.nx / 2
-        search_window = deltaPix * numPix
-        min_distance = deltaPix
         if self.PointSource is None:
             return [], []
-        x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
-                                                         search_window=search_window,
-                                                         precision_limit=10**(-10), num_iter_max=100)
+        x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):

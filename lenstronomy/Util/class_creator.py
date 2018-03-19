@@ -48,8 +48,12 @@ def creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
         lens_light_model_class = None
     if 'point_source_model_list' in kwargs_model:
         point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', ['NONE']),
-                                     fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
-                                     additional_images_list=kwargs_model.get('additional_images_list', None))
+                                         fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
+                                         additional_images_list=kwargs_model.get('additional_images_list', None),
+                                         min_distance=kwargs_model.get('min_distance', 0.01),
+                                         search_window=kwargs_model.get('search_window', 5),
+                                         precision_limit=kwargs_model.get('precision_limit', 10**(-10)),
+                                         num_iter_max=kwargs_model.get('num_iter_max', 100))
     else:
         point_source_class = None
     imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
@@ -83,8 +87,12 @@ def creat_multiband(multi_band_list, kwargs_model):
         lens_light_model_class = None
     if 'point_source_model_list' in kwargs_model:
         point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', ['NONE']),
-                                     fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
-                                     additional_images_list=kwargs_model.get('additional_images_list', None))
+                                         fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
+                                         additional_images_list=kwargs_model.get('additional_images_list', None),
+                                         min_distance=kwargs_model.get('min_distance', 0.01),
+                                         search_window=kwargs_model.get('search_window', 5),
+                                         precision_limit=kwargs_model.get('precision_limit', 10 ** (-10)),
+                                         num_iter_max=kwargs_model.get('num_iter_max', 100))
     else:
         point_source_class = None
     multiband = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)

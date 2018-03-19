@@ -5,11 +5,15 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
-                 save_cache=False):
+                 save_cache=False, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
         """
 
         :param point_source_model_list:
-        :param lensModel:
+        :param lensModel: instance of the LensModel() class
+
+        for the parameters: min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
+        have a look at the lensEquationSolver class
+
         """
         self._lensModel = lensModel
         self._point_source_type_list = point_source_type_list
@@ -36,6 +40,7 @@ class PointSource(object):
                 pass
             else:
                 raise ValueError("Point-source model %s not available" % model)
+        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max = min_distance, search_window, precision_limit, num_iter_max
 
     def update_lens_model(self, lens_model_class):
         """
@@ -84,7 +89,7 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens):
         """
 
         :param kwargs_ps:
@@ -96,9 +101,9 @@ class PointSource(object):
         y_image_list = []
         for i, model in enumerate(self._point_source_list):
             kwargs = kwargs_ps[i]
-            x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=min_distance,
-                                                    search_window=search_window, precision_limit=precision_limit,
-                                                    num_iter_max=num_iter_max)
+            x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
+                                                    search_window=self._search_window, precision_limit=self._precision_limit,
+                                                    num_iter_max=self._num_iter_max)
             x_image_list.append(x_image)
             y_image_list.append(y_image)
         return x_image_list, y_image_list

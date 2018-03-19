@@ -59,7 +59,7 @@ class TestImageModel(object):
         source_model_list = ['SERSIC_ELLIPSE']
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
-        self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
+        self.kwargs_ps = [{'ra_source': 0.01, 'dec_source': 0.0,
                        'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True, 'psf_error_map': True}
@@ -108,6 +108,7 @@ class TestImageModel(object):
                                                                  sourcePos_y=self.kwargs_ps[0]['dec_source'],
                                                                  kwargs_lens=self.kwargs_lens)
         ra_pos_new = x_im[0]
+        print(ra_pos_new, ra_pos)
         npt.assert_almost_equal(ra_pos_new[0], ra_pos[0], decimal=8)
         npt.assert_almost_equal(ra_pos_new[1], ra_pos[1], decimal=8)
         npt.assert_almost_equal(ra_pos_new[2], ra_pos[2], decimal=8)
@@ -137,10 +138,10 @@ class TestImageModel(object):
     def test_fermat_potential(self):
         phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_ps)
         print(phi_fermat)
-        npt.assert_almost_equal(phi_fermat[0][0], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][1], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][2], -0.51082354, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][3], -0.51082354, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][0], -0.2630531731871062, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][1], -0.2809100018126987, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][2], -0.5086643370512096, decimal=3)
+        npt.assert_almost_equal(phi_fermat[0][3], -0.5131716608238992, decimal=3)
 
     def test_add_mask(self):
         mask = np.array([[0, 1],[1, 0]])

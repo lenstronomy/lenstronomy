@@ -59,7 +59,7 @@ class TestImageModel(object):
         source_model_list = ['SERSIC_ELLIPSE']
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
-        self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
+        self.kwargs_ps = [{'ra_source': 0.0001, 'dec_source': 0.0,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}

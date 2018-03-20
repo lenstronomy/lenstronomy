@@ -27,7 +27,6 @@ class TestImageModel(object):
         numPix = 100  # cutout pixel size
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
-        psf_type = 'PIXEL'  # 'gaussian', 'pixel', 'NONE'
 
         # PSF specification
 

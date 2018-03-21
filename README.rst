@@ -1,5 +1,5 @@
 ========================================================
-lenstronomy - the gravitational lensing software package
+lenstronomy - gravitational lensing software package
 ========================================================
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
@@ -19,7 +19,7 @@ lenstronomy - the gravitational lensing software package
     :target: https://github.com/sibirrer/lenstronomy/blob/master/LICENSE
 
 
-A multi-purpose package to model strong gravitational lenses.
+**lenstronomy** is a multi-purpose package to model strong gravitational lenses.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
 e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_ for time-delay cosmography and measuring
 the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ for

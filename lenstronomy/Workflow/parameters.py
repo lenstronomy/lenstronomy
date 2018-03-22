@@ -175,8 +175,8 @@ class Param(object):
             if self._joint_with_other_source_list[i]:
                 k = self._joint_with_other_source_list[i]
                 if 'center_x' in kwargs:
-                    kwargs['center_x'] = kwargs_source_list[k]['center_x']
-                    kwargs['center_y'] = kwargs_source_list[k]['center_y']
+                    kwargs['center_x'] = copy.deepcopy(kwargs_source_list[k]['center_x'])
+                    kwargs['center_y'] = copy.deepcopy(kwargs_source_list[k]['center_y'])
             if self._image_plane_source_list[i] and not image_plane:
                 if 'center_x' in kwargs:
                     x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)

@@ -178,10 +178,13 @@ class Param(object):
                     kwargs['center_x'] = copy.deepcopy(kwargs_source_list[k]['center_x'])
                     kwargs['center_y'] = copy.deepcopy(kwargs_source_list[k]['center_y'])
             if self._image_plane_source_list[i] and not image_plane:
-                if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
-                    kwargs['center_x'] = x_mapped
-                    kwargs['center_y'] = y_mapped
+                if self._joint_with_other_source_list[i]:
+                    pass
+                else:
+                    if 'center_x' in kwargs:
+                        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
+                        kwargs['center_x'] = x_mapped
+                        kwargs['center_y'] = y_mapped
             if self._fix_to_point_source_list[i]:
                 x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image'],
                                                                  kwargs_lens_list)

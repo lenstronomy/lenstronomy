@@ -244,8 +244,9 @@ class Param(object):
         """
         for i, kwargs in enumerate(kwargs_fixed):
             if self._joint_center_lens_light:
-                kwargs['center_x'] = 0
-                kwargs['center_y'] = 0
+                if i > 0:
+                    kwargs['center_x'] = 0
+                    kwargs['center_y'] = 0
             if self._joint_with_other_lens_light_list[i] is not False:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0

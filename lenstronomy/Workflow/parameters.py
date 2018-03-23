@@ -230,8 +230,9 @@ class Param(object):
                 kwargs['center_y'] = kwargs_lens_light_list[k]['center_y']
             if self._joint_center_lens_light:
                 if i > 0:
-                    kwargs['center_x'] = kwargs_lens_light_list[0]['center_x']
-                    kwargs['center_y'] = kwargs_lens_light_list[0]['center_y']
+                    if 'center_x' in kwargs:
+                        kwargs['center_x'] = kwargs_lens_light_list[0]['center_x']
+                        kwargs['center_y'] = kwargs_lens_light_list[0]['center_y']
         return kwargs_lens_light_list
 
     def _add_fixed_lens_light(self, kwargs_fixed):

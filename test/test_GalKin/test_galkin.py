@@ -140,7 +140,7 @@ class TestGalkin(object):
         print(sigma_v, sigma_v2, 'sigma_v linear, sigma_v log')
         print((sigma_v/sigma_v2)**2)
 
-        npt.assert_almost_equal(sigma_v/sigma_v2, 1, decimal=2)
+        npt.assert_almost_equal(sigma_v/sigma_v2, 1, decimal=1)
 
     def test_compare_power_law(self):
         """

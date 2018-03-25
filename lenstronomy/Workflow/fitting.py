@@ -89,6 +89,7 @@ class Fitting(object):
         mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
                                  self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool, fix_solver=fix_solver)
+
         lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,

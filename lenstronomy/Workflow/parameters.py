@@ -206,7 +206,6 @@ class Param(object):
         """
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
         for i, kwargs in enumerate(kwargs_fixed_update):
-            kwargs = kwargs_fixed[i]
             if self._fix_to_point_source_list[i]:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0

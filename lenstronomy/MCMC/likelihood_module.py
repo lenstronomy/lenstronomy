@@ -11,7 +11,8 @@ class LikelihoodModule(object):
     """
     this class contains the routines to run a MCMC process with one single image
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper, kwargs_lens_init=None, compute_bool=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower,
+                 kwargs_upper, kwargs_lens_init=None, compute_bool=None, fix_solver=False):
         """
         initializes all the classes needed for the chain
         """
@@ -27,7 +28,7 @@ class LikelihoodModule(object):
 
         self.param = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                            kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
-                           kwargs_lens_init=kwargs_lens_init)
+                           kwargs_lens_init=kwargs_lens_init, fix_lens_solver=fix_solver)
         kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_ps_lower, kwargs_cosmo_lower = kwargs_lower
         kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_ps_upper, kwargs_cosmo_upper = kwargs_upper
         self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower,

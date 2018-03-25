@@ -24,12 +24,14 @@ class MCMCSampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper, kwargs_lens_init=None, compute_bool=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower,
+                 kwargs_upper, kwargs_lens_init=None, compute_bool=None, fix_solver=False):
         """
         initialise the classes of the chain and for parameter options
         """
         self.chain = LikelihoodModule(multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed,
-                                kwargs_lower, kwargs_upper, kwargs_lens_init=kwargs_lens_init, compute_bool=compute_bool)
+                                kwargs_lower, kwargs_upper, kwargs_lens_init=kwargs_lens_init,
+                                      compute_bool=compute_bool, fix_solver=fix_solver)
 
     def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):
         """

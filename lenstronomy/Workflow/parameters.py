@@ -16,7 +16,8 @@ class Param(object):
     """
 
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens=None, kwargs_fixed_source=None,
-                 kwargs_fixed_lens_light=None, kwargs_fixed_ps=None, kwargs_fixed_cosmo=None, kwargs_lens_init=None, linear_solver=True):
+                 kwargs_fixed_lens_light=None, kwargs_fixed_ps=None, kwargs_fixed_cosmo=None, kwargs_lens_init=None,
+                 linear_solver=True, fix_lens_solver=False):
         """
 
         :return:
@@ -51,29 +52,31 @@ class Param(object):
             self._num_images = num_point_source_list[0]
         except:
             self._num_images = 0
-        self._solver = kwargs_constraints.get('solver', False)
-
+        if fix_lens_solver:
+            self._solver = False
+        else:
+            self._solver = kwargs_constraints.get('solver', False)
         if self._solver:
             self._solver_type = kwargs_constraints.get('solver_type', 'PROFILE')
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=self.lensModel, num_images=self._num_images)
         else:
             self._solver_type = 'NONE'
 
-        kwargs_fixed_lens = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
-        kwargs_fixed_source = self._add_fixed_source(kwargs_fixed_source)
-        kwargs_fixed_lens_light = self._add_fixed_lens_light(kwargs_fixed_lens_light)
-        kwargs_fixed_ps = kwargs_fixed_ps
+        kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
+        kwargs_fixed_source_updated = self._add_fixed_source(kwargs_fixed_source)
+        kwargs_fixed_lens_light_updated = self._add_fixed_lens_light(kwargs_fixed_lens_light)
+        kwargs_fixed_ps_updated = copy.deepcopy(kwargs_fixed_ps)
 
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens, num_images=self._num_images,
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
                                     solver_type=self._solver_type)
         source_light_model_list = kwargs_model.get('source_light_model_list', ['NONE'])
-        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source, type='source_light',
+        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source_updated, type='source_light',
                                       linear_solver=linear_solver)
         lens_light_model_list = kwargs_model.get('lens_light_model_list', ['NONE'])
-        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light, type='lens_light',
+        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
                                           linear_solver=linear_solver)
         point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
-        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps,
+        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps_updated,
                                             num_point_source_list=num_point_source_list, linear_solver=linear_solver)
         cosmo_type = kwargs_model.get('cosmo_type', None)
         self.cosmoParams = CosmoParam(cosmo_type, kwargs_fixed_cosmo)
@@ -190,9 +193,8 @@ class Param(object):
                         kwargs['center_x'] = np.mean(x_mapped)
                         kwargs['center_y'] = np.mean(y_mapped)
             if self._joint_center_source:
-                for i in range(1, len(kwargs_source_list)):
-                    kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
-                    kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']
+                kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
+                kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']
         return kwargs_source_list
 
     def _add_fixed_source(self, kwargs_fixed):
@@ -202,7 +204,8 @@ class Param(object):
         :param kwargs_fixed:
         :return:
         """
-        for i, kwargs in enumerate(kwargs_fixed):
+        kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
+        for i, kwargs in enumerate(kwargs_fixed_update):
             kwargs = kwargs_fixed[i]
             if self._fix_to_point_source_list[i]:
                 kwargs['center_x'] = 0
@@ -214,7 +217,7 @@ class Param(object):
             if self._joint_with_other_source_list[i]:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0
-        return kwargs_fixed
+        return kwargs_fixed_update
 
     def _update_lens_light(self, kwargs_lens_light_list):
         """
@@ -242,7 +245,8 @@ class Param(object):
         :param kwargs_fixed:
         :return:
         """
-        for i, kwargs in enumerate(kwargs_fixed):
+        kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
+        for i, kwargs in enumerate(kwargs_fixed_update):
             if self._joint_center_lens_light:
                 if i > 0:
                     kwargs['center_x'] = 0
@@ -250,12 +254,13 @@ class Param(object):
             if self._joint_with_other_lens_light_list[i] is not False:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0
-        return kwargs_fixed
+        return kwargs_fixed_update
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
+        kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
         if self._solver:
-            kwargs_fixed = self._solver_module.add_fixed_lens(kwargs_fixed, kwargs_init)
-        return kwargs_fixed
+            kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
+        return kwargs_fixed_update
 
 
 class ParamUpdate(object):
@@ -264,6 +269,11 @@ class ParamUpdate(object):
                  kwargs_fixed_cosmo):
         self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
                                            kwargs_fixed_ps, kwargs_fixed_cosmo])
+        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
+        source_fix = copy.deepcopy(self.kwargs_fixed[1])
+        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
+        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
+        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
                              fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False, gamma_fixed=False):

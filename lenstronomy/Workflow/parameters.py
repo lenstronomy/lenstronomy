@@ -290,16 +290,21 @@ class ParamUpdate(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
             add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
+
         if gamma_fixed is True:
             if 'gamma' in kwargs_lens[0]:
                 kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
+
         return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
 
     def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
                       add_fixed_lens_light=None, add_fixed_ps=None, add_fixed_cosmo=None):
 
-        lens_fix, source_fix, lens_light_fix, ps_fix, cosmo_fix = copy.deepcopy(self.kwargs_fixed)
-
+        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
+        source_fix = copy.deepcopy(self.kwargs_fixed[1])
+        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
+        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
+        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
         if add_fixed_lens is None:
             kwargs_fixed_lens_updated = lens_fix
         else:

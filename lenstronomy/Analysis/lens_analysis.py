@@ -151,7 +151,7 @@ class LensAnalysis(object):
                 light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_copy, k=k)
             else:
                 raise ValueError("type %s not supported!" % type)
-            flux = np.sum(light)*delta_grid**2/ deltaPix**2
+            flux = np.sum(light)*delta_grid**2 / deltaPix**2
             R_h = analysis_util.half_light_radius(light, x_grid, y_grid)
             flux_list.append(flux)
             R_h_list.append(R_h)

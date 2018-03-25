@@ -64,7 +64,6 @@ class Fitting(object):
                  kwargs_fixed_ps, kwargs_mean_ps, kwargs_sigma_ps,
                  kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
                  threadCount=1, mpi=False, print_key='Default', sigma_factor=1, compute_bool=None):
-
         kwargs_prior_lens = self._set_priors(kwargs_mean_lens, kwargs_sigma_lens)
         kwargs_prior_source = self._set_priors(kwargs_mean_source, kwargs_sigma_source)
         kwargs_prior_lens_light = self._set_priors(kwargs_mean_lens_light, kwargs_sigma_lens_light)
@@ -89,7 +88,7 @@ class Fitting(object):
         mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
                                  self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
                                  kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool)
-        lens_result, source_result, lens_light_result, else_result, cosmo_result, chain = mcmc_class.pso(n_particles,
+        lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
                                                                                                        upperLimit,
@@ -97,7 +96,7 @@ class Fitting(object):
                                                                                                        threadCount=threadCount,
                                                                                                        mpi=mpi,
                                                                                                        print_key=print_key)
-        return lens_result, source_result, lens_light_result, else_result, cosmo_result, chain, param_list
+        return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def _mcmc_run(self, n_burn, n_run, walkerRatio,
                   kwargs_fixed_lens, kwargs_mean_lens, kwargs_sigma_lens,

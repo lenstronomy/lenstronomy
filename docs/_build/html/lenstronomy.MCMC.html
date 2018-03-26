@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.MCMC package &#8212; lenstronomy 0.2.1 documentation</title>
+    <title>lenstronomy.MCMC package &#8212; lenstronomy 0.2.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.1',
+        VERSION:     '0.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -134,7 +134,7 @@
 <span id="lenstronomy-mcmc-likelihood-module-module"></span><h2>lenstronomy.MCMC.likelihood_module module<a class="headerlink" href="#module-lenstronomy.MCMC.likelihood_module" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.MCMC.likelihood_module.LikelihoodModule">
-<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.likelihood_module.</code><code class="descname">LikelihoodModule</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.likelihood_module.</code><code class="descname">LikelihoodModule</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em>, <em>fix_solver=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/likelihood_module.html#LikelihoodModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.likelihood_module.LikelihoodModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>this class contains the routines to run a MCMC process with one single image</p>
 <dl class="method">
@@ -230,7 +230,7 @@
 <span id="lenstronomy-mcmc-mcmc-module"></span><h2>lenstronomy.MCMC.mcmc module<a class="headerlink" href="#module-lenstronomy.MCMC.mcmc" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.MCMC.mcmc.MCMCSampler">
-<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.mcmc.</code><code class="descname">MCMCSampler</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.MCMC.mcmc.</code><code class="descname">MCMCSampler</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_likelihood</em>, <em>kwargs_fixed</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_lens_init=None</em>, <em>compute_bool=None</em>, <em>fix_solver=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/MCMC/mcmc.html#MCMCSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.MCMC.mcmc.MCMCSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class which executes the different sampling  methods</p>
 <dl class="method">
@@ -336,7 +336,7 @@ returns the chain</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

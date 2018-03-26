@@ -42,3 +42,9 @@ History
 
 * updated documentation
 * improved sub-sampling of the PSF
+
+0.2.2 (2018-03-25)
+++++++++++++++++++
+
+* improved parameter handling
+* minor bugs with parameter handling fixed

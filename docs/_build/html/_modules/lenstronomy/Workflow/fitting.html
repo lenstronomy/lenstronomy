@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow.fitting &#8212; lenstronomy 0.2.1 documentation</title>
+    <title>lenstronomy.Workflow.fitting &#8212; lenstronomy 0.2.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.1',
+        VERSION:     '0.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -111,8 +111,7 @@
                  <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_mean_lens_light</span><span class="p">,</span> <span class="n">kwargs_sigma_lens_light</span><span class="p">,</span>
                  <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_mean_ps</span><span class="p">,</span> <span class="n">kwargs_sigma_ps</span><span class="p">,</span>
                  <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_mean_cosmo</span><span class="p">,</span> <span class="n">kwargs_sigma_cosmo</span><span class="p">,</span>
-                 <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;Default&#39;</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
+                 <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;Default&#39;</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fix_solver</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">kwargs_prior_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_priors</span><span class="p">(</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">kwargs_sigma_lens</span><span class="p">)</span>
         <span class="n">kwargs_prior_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_priors</span><span class="p">(</span><span class="n">kwargs_mean_source</span><span class="p">,</span> <span class="n">kwargs_sigma_source</span><span class="p">)</span>
         <span class="n">kwargs_prior_lens_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_priors</span><span class="p">(</span><span class="n">kwargs_mean_lens_light</span><span class="p">,</span> <span class="n">kwargs_sigma_lens_light</span><span class="p">)</span>
@@ -122,7 +121,8 @@
 
         <span class="c1"># initialise mcmc classes</span>
         <span class="n">param_class</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span>
-                            <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">)</span>
+                            <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span>
+                            <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">fix_lens_solver</span><span class="o">=</span><span class="n">fix_solver</span><span class="p">)</span>
         <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwargs_prior_lens</span><span class="p">,</span> <span class="n">kwargs_prior_source</span><span class="p">,</span>
                                                          <span class="n">kwargs_prior_lens_light</span><span class="p">,</span> <span class="n">kwargs_prior_ps</span><span class="p">,</span> <span class="n">kwargs_prior_cosmo</span><span class="p">)</span>
         <span class="n">lowerLimit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">)</span><span class="o">*</span><span class="n">sigma_factor</span>
@@ -136,8 +136,9 @@
         <span class="n">kwargs_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_kwargs</span><span class="p">()</span>
         <span class="n">mcmc_class</span> <span class="o">=</span> <span class="n">MCMCSampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="p">,</span>
-                                 <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
-        <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">else_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">mcmc_class</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span>
+                                 <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">,</span> <span class="n">fix_solver</span><span class="o">=</span><span class="n">fix_solver</span><span class="p">)</span>
+
+        <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">mcmc_class</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span>
                                                                                                        <span class="n">n_iterations</span><span class="p">,</span>
                                                                                                        <span class="n">lowerLimit</span><span class="p">,</span>
                                                                                                        <span class="n">upperLimit</span><span class="p">,</span>
@@ -145,7 +146,7 @@
                                                                                                        <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span>
                                                                                                        <span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span>
                                                                                                        <span class="n">print_key</span><span class="o">=</span><span class="n">print_key</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">else_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param_list</span>
+        <span class="k">return</span> <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param_list</span>
 
     <span class="k">def</span> <span class="nf">_mcmc_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">walkerRatio</span><span class="p">,</span>
                   <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">kwargs_sigma_lens</span><span class="p">,</span>
@@ -153,7 +154,7 @@
                   <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_mean_lens_light</span><span class="p">,</span> <span class="n">kwargs_sigma_lens_light</span><span class="p">,</span>
                   <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_mean_ps</span><span class="p">,</span> <span class="n">kwargs_sigma_ps</span><span class="p">,</span>
                   <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_mean_cosmo</span><span class="p">,</span> <span class="n">kwargs_sigma_cosmo</span><span class="p">,</span>
-                  <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">init_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                  <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">init_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fix_solver</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">kwargs_prior_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_priors</span><span class="p">(</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">kwargs_sigma_lens</span><span class="p">)</span>
         <span class="n">kwargs_prior_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_priors</span><span class="p">(</span><span class="n">kwargs_mean_source</span><span class="p">,</span> <span class="n">kwargs_sigma_source</span><span class="p">)</span>
@@ -164,7 +165,8 @@
         <span class="c1"># initialise mcmc classes</span>
 
         <span class="n">param_class</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span>
-                            <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">)</span>
+                            <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span>
+                            <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">fix_lens_solver</span><span class="o">=</span><span class="n">fix_solver</span><span class="p">)</span>
         <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span>
                         <span class="n">kwargs_fixed_cosmo</span><span class="p">]</span>
         <span class="n">kwargs_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_kwargs</span><span class="p">()</span>
@@ -172,7 +174,7 @@
 
         <span class="n">mcmc_class</span> <span class="o">=</span> <span class="n">MCMCSampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="p">,</span>
-                                 <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+                                 <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_mean_lens</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">,</span> <span class="n">fix_solver</span><span class="o">=</span><span class="n">fix_solver</span><span class="p">)</span>
         <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">param_init</span><span class="p">(</span><span class="n">kwargs_prior_lens</span><span class="p">,</span> <span class="n">kwargs_prior_source</span><span class="p">,</span>
                                                          <span class="n">kwargs_prior_lens_light</span><span class="p">,</span> <span class="n">kwargs_prior_ps</span><span class="p">,</span> <span class="n">kwargs_prior_cosmo</span><span class="p">)</span>
         <span class="n">num_param</span><span class="p">,</span> <span class="n">param_list</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
@@ -204,7 +206,8 @@
             <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_lens_light_sigma</span><span class="p">,</span>
             <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_ps_sigma</span><span class="p">,</span>
             <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">kwargs_cosmo_sigma</span><span class="p">,</span>
-            <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="n">print_key</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="n">sigma_factor</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+            <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="n">print_key</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="n">sigma_factor</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">,</span>
+            <span class="n">fix_solver</span><span class="o">=</span><span class="n">fix_lens</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param_list</span></div>
 
 <div class="viewcode-block" id="Fitting.mcmc_run"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting.Fitting.mcmc_run">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span>
@@ -226,7 +229,7 @@
             <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_ps_sigma</span><span class="p">,</span>
             <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">kwargs_cosmo_sigma</span><span class="p">,</span>
             <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">init_samples</span><span class="o">=</span><span class="n">init_samples</span><span class="p">,</span> <span class="n">sigma_factor</span><span class="o">=</span><span class="n">sigma_factor</span><span class="p">,</span>
-            <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
+            <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">,</span> <span class="n">fix_solver</span><span class="o">=</span><span class="n">fix_lens</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">samples</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">dist</span></div>
 
     <span class="k">def</span> <span class="nf">_set_priors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean_list_kwargs</span><span class="p">,</span> <span class="n">sigma_list_kwargs</span><span class="p">):</span>
@@ -272,7 +275,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

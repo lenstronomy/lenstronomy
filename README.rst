@@ -18,6 +18,8 @@ lenstronomy - gravitational lensing software package
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
     :target: https://github.com/sibirrer/lenstronomy/blob/master/LICENSE
 
+.. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
+    :target: https://arxiv.org/abs/1803.09746
 
 **lenstronomy** is a multi-purpose package to model strong gravitational lenses.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
@@ -95,3 +97,12 @@ You can find simple examle notebooks for various cases.
 * `Measuring cosmic shear with Einstein rings <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/EinsteinRingShear_simulations.ipynb>`_
 * `Fitting of galaxy light profiles, like e.g. GALFIT <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb>`_
 * `Quasar-host galaxy decomposition <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb>`_
+
+
+Attribution
+-----------
+The design concept of **lenstronomy** are reported in
+`Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_. Please cite this paper whenever you publish
+results that made use of **lenstronomy**. Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
+when you make use of the *lenstronomy** work-flow or the Shapelet source reconstruction. Please make sure to cite also
+the relevant work that was implemented in **lenstronomy**, as described in the release paper.

@@ -149,7 +149,8 @@ class Data(object):
 
         :return: number of pixels in the data
         """
-        return len(self._x_grid)
+        nx, ny = np.shape(self._x_grid)
+        return nx*ny
 
     @property
     def coordinates(self):

@@ -58,8 +58,10 @@ class Coordinates(object):
     def coordinate_grid(self, numPix):
         """
 
-        :param numPix:
-        :return:
+        :param numPix: number of pixels per axis
+        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
         ra_coords, dec_coords = util.grid_from_coordinate_transform(numPix, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords = util.array2image(ra_coords)  # new
+        dec_coords = util.array2image(dec_coords)  # new
         return ra_coords, dec_coords

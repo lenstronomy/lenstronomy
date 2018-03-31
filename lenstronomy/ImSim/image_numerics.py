@@ -76,6 +76,8 @@ class ImageNumerics(object):
     def _check_subgrid(self):
         if not hasattr(self, '_ra_subgrid') or not hasattr(self, '_dec_subgrid'):
             ra_grid, dec_grid = self._Data.coordinates
+            ra_grid = util.image2array(ra_grid)
+            dec_grid = util.image2array(dec_grid)
             x_grid_sub, y_grid_sub = util.make_subgrid(ra_grid, dec_grid, self._subgrid_res)
             self._ra_subgrid = x_grid_sub[self._idex_mask_sub == 1]
             self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]

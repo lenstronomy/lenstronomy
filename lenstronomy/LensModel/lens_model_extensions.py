@@ -220,7 +220,7 @@ class LensModelExtensions(LensModel):
         if lens_model_internal_bool is None:
             lens_model_internal_bool = [True] * len(kwargs_lens)
         for i, kwargs in enumerate(kwargs_lens):
-            if not lens_model_internal_bool[i]:
+            if not lens_model_internal_bool[i] is True:
                 f_x, f_y = self.alpha(0, 0, kwargs_lens, k=i)
                 f_xx, f_xy, f_yy = self.hessian(0, 0, kwargs_lens, k=i)
                 alpha0_x += f_x

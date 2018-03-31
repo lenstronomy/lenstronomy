@@ -144,6 +144,8 @@ class TestImageModel(object):
         ra_image, dec_image, amp = self.imageModel.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         print(ra_image, dec_image, amp)
         x_grid, y_grid = self.imageModel.Data.coordinates
+        x_grid = util.image2array(x_grid)
+        y_grid = util.image2array(y_grid)
         radius = 0.5
         mask_point_source_list = self.psf_fitting.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
         assert mask_point_source_list[0][10, 10] == 1

@@ -46,6 +46,8 @@ class PsfFitting(object):
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
         mask = self._image_model_class.ImageNumerics.mask
         x_grid, y_grid = self._image_model_class.Data.coordinates
+        x_grid = util.image2array(x_grid)
+        y_grid = util.image2array(y_grid)
         deltaPix = self._image_model_class.Data.deltaPix
         #fwhm = self._image_model_class.PSF.psf_fwhm(kwargs_psf, deltaPix)
         radius = kwargs_psf.get("block_neighbour", 0.) / 2.

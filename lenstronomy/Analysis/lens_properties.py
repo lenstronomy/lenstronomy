@@ -56,7 +56,7 @@ class LensProp(object):
         kwargs_profile = []
         lens_model_internal_bool = self.kwargs_options.get('lens_model_deflector_bool', [True] * len(kwargs_lens))
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
-            if lens_model_internal_bool[i]:
+            if lens_model_internal_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
                 kwargs_profile.append(kwargs_lens_i)

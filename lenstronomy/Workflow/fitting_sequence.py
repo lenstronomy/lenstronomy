@@ -19,7 +19,7 @@ class FittingSequence(object):
         self.fitting = Fitting(multi_band_list=multi_band_list, kwargs_model=kwargs_model,
                                kwargs_constraints=kwargs_constraints, kwargs_likelihood=kwargs_likelihood,
                                kwargs_params=kwargs_params)
-        self._param = Param(kwargs_model, kwargs_constraints)
+        self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
 
     def fit_sequence(self, fitting_kwargs_list):
         """

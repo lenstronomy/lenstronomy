@@ -21,7 +21,7 @@ lenstronomy - gravitational lensing software package
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
 
-**lenstronomy** is a multi-purpose package to model strong gravitational lenses.
+``lenstronomy`` is a multi-purpose package to model strong gravitational lenses.
 The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
 e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_ for time-delay cosmography and measuring
 the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ for
@@ -29,7 +29,7 @@ quantifying lensing substructure to infer dark matter properties.
 
 
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
-The documentation of **lenstronomy** is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
+The documentation of ``lenstronomy`` is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
 the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
 
 
@@ -49,9 +49,9 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
 
 Additional python libraries:
 
-* CosmoHammer (through PyPi)
-* astropy
-* standard python libraries (numpy, scipy)
+* ``CosmoHammer`` (through PyPi)
+* ``astropy``
+* standard python libraries (``numpy``, ``scipy``)
 
 
 
@@ -79,7 +79,7 @@ Getting started
 ---------------
 
 The `starting guide jupyter notebook <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/starting_guide.ipynb>`_
-leads through the main modules and design features of **lenstronomy**. The modular design of **lenstronomy** allows the
+leads through the main modules and design features of ``lenstronomy``. The modular design of ``lenstronomy`` allows the
 user to directly access a lot of tools and each module can also be used as stand-alone packages.
 
 
@@ -99,10 +99,21 @@ You can find simple examle notebooks for various cases.
 * `Quasar-host galaxy decomposition <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb>`_
 
 
+Shapelet reconstruction demonstration movies
+--------------------------------------------
+
+We provide some examples where a real galaxy has been lensed and then been reconstructed by a shapelet basis set.
+
+* `HST quality data with perfect knowledge of the lens model <http://www.astro.ucla.edu/~sibirrer/video/true_reconstruct.mp4>`_
+* `HST quality with a clump hidden in the data <http://www.astro.ucla.edu/~sibirrer/video/clump_reconstruct.mp4>`_
+* `Extremely large telescope quality data with a clump hidden in the data <http://www.astro.ucla.edu/~sibirrer/video/TMT_high_res_clump_reconstruct.mp4>`_
+
+
+
 Attribution
 -----------
-The design concept of **lenstronomy** are reported in
+The design concept of ``lenstronomy`` are reported in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_. Please cite this paper whenever you publish
-results that made use of **lenstronomy**. Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
-when you make use of the **lenstronomy** work-flow or the Shapelet source reconstruction. Please make sure to cite also
-the relevant work that was implemented in **lenstronomy**, as described in the release paper.
+results that made use of ``lenstronomy``. Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
+when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction. Please make sure to cite also
+the relevant work that was implemented in ``lenstronomy``, as described in the release paper.

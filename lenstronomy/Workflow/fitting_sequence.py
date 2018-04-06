@@ -109,7 +109,7 @@ class FittingSequence(object):
         psf_iter_num = fitting_kwargs['psf_iter_num']
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
         for i in range(len(self.multi_band_list)):
-            if compute_bool[i]:
+            if compute_bool[i] is True:
                 kwargs_data = self.multi_band_list[i][0]
                 kwargs_psf = self.multi_band_list[i][1]
                 kwargs_numerics = self.multi_band_list[i][2]
@@ -136,7 +136,7 @@ class FittingSequence(object):
         upperLimit = fitting_kwargs.get('upper_limit_shift', 0.2)
 
         for i in range(len(self.multi_band_list)):
-            if compute_bool[i]:
+            if compute_bool[i] is True:
                     kwargs_data = self.multi_band_list[i][0]
                     kwargs_psf = self.multi_band_list[i][1]
                     kwargs_numerics = self.multi_band_list[i][2]

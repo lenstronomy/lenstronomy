@@ -181,12 +181,12 @@ class Param(object):
                     kwargs['center_x'] = kwargs_source_list[k]['center_x']
                     kwargs['center_y'] = kwargs_source_list[k]['center_y']
             else:
-                if self._image_plane_source_list[i] and not image_plane:
+                if self._image_plane_source_list[i] is True and not image_plane:
                     if 'center_x' in kwargs:
                         x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
                         kwargs['center_x'] = x_mapped
                         kwargs['center_y'] = y_mapped
-                if self._fix_to_point_source_list[i]:
+                if self._fix_to_point_source_list[i] is True:
                     x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image'],
                                                                      kwargs_lens_list)
                     if 'center_x' in kwargs:
@@ -196,6 +196,25 @@ class Param(object):
                 kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
                 kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']
         return kwargs_source_list
+
+    def image2source_plane(self, kwargs_lens_list, kwargs_source_list):
+        """
+        will update the parameters that were defined in the image plane and place them in the source plane
+
+        :param kwargs_source_list:
+        :return:
+        """
+        kwargs_source = copy.deepcopy(kwargs_source_list)
+        for i, kwargs in enumerate(kwargs_source):
+            if self._joint_with_other_source_list[i]:
+                pass
+            else:
+                if self._image_plane_source_list[i] is True:
+                    if 'center_x' in kwargs:
+                        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
+                        kwargs['center_x'] = x_mapped
+                        kwargs['center_y'] = y_mapped
+        return kwargs_source
 
     def _add_fixed_source(self, kwargs_fixed):
         """

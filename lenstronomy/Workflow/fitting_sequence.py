@@ -2,6 +2,7 @@ from lenstronomy.ImSim.psf_fitting import PsfFitting
 from lenstronomy.Workflow.fitting import Fitting
 from lenstronomy.MCMC.alignment_matching import AlignmentFitting
 import lenstronomy.Util.class_creator as class_creator
+from lenstronomy.Workflow.parameters import Param
 
 
 class FittingSequence(object):
@@ -18,6 +19,7 @@ class FittingSequence(object):
         self.fitting = Fitting(multi_band_list=multi_band_list, kwargs_model=kwargs_model,
                                kwargs_constraints=kwargs_constraints, kwargs_likelihood=kwargs_likelihood,
                                kwargs_params=kwargs_params)
+        self._param = Param(kwargs_model, kwargs_constraints)
 
     def fit_sequence(self, fitting_kwargs_list):
         """
@@ -104,7 +106,7 @@ class FittingSequence(object):
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input):
-
+        source_updated = self._param.image2source_plane(lens_input, source_input)
         psf_iter_factor = fitting_kwargs['psf_iter_factor']
         psf_iter_num = fitting_kwargs['psf_iter_num']
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
@@ -119,7 +121,7 @@ class FittingSequence(object):
                                                                   kwargs_numerics=kwargs_numerics,
                                                                   kwargs_model=self.kwargs_model)
                 psf_iter = PsfFitting(image_model_class=image_model)
-                kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_input, source_input,
+                kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_input, source_updated,
                                                        lens_light_input, ps_input,
                                                        factor=psf_iter_factor, num_iter=psf_iter_num,
                                                        symmetry=psf_symmetry, verbose=self._verbose,
@@ -134,13 +136,13 @@ class FittingSequence(object):
         n_iterations = fitting_kwargs.get('n_iterations', 10)
         lowerLimit = fitting_kwargs.get('lower_limit_shift', -0.2)
         upperLimit = fitting_kwargs.get('upper_limit_shift', 0.2)
-
+        source_updated = self._param.image2source_plane(lens_input, source_input)
         for i in range(len(self.multi_band_list)):
             if compute_bool[i] is True:
                     kwargs_data = self.multi_band_list[i][0]
                     kwargs_psf = self.multi_band_list[i][1]
                     kwargs_numerics = self.multi_band_list[i][2]
-                    alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_input, source_input,
+                    alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_input, source_updated,
                                                         lens_light_input, ps_input, compute_bool=compute_bool)
 
                     kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit,

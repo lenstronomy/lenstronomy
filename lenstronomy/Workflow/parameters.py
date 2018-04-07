@@ -207,7 +207,10 @@ class Param(object):
         kwargs_source = copy.deepcopy(kwargs_source_list)
         for i, kwargs in enumerate(kwargs_source):
             if self._joint_with_other_source_list[i] is not False:
-                pass
+                k = self._joint_with_other_source_list[i]
+                if 'center_x' in kwargs:
+                    kwargs['center_x'] = kwargs_source[k]['center_x']
+                    kwargs['center_y'] = kwargs_source[k]['center_y']
             elif self._image_plane_source_list[i] is True:
                 if 'center_x' in kwargs:
                     x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)

@@ -53,7 +53,7 @@ class CosmoLikelihood(object):
         :param args:
         :return:
         """
-        H0 = args
+        H0 = args[0]
         h = H0/100.
         omega_m = self.omega_mh2_fixed / h**2
         logL, bool = self.prior_omega_mh2(h, omega_m)

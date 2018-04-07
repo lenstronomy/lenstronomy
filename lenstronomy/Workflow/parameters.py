@@ -175,7 +175,7 @@ class Param(object):
     def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, image_plane=False):
 
         for i, kwargs in enumerate(kwargs_source_list):
-            if self._joint_with_other_source_list[i]:
+            if self._joint_with_other_source_list[i] is not False:
                 k = self._joint_with_other_source_list[i]
                 if 'center_x' in kwargs:
                     kwargs['center_x'] = kwargs_source_list[k]['center_x']
@@ -206,14 +206,13 @@ class Param(object):
         """
         kwargs_source = copy.deepcopy(kwargs_source_list)
         for i, kwargs in enumerate(kwargs_source):
-            if self._joint_with_other_source_list[i]:
+            if self._joint_with_other_source_list[i] is not False:
                 pass
-            else:
-                if self._image_plane_source_list[i] is True:
-                    if 'center_x' in kwargs:
-                        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
-                        kwargs['center_x'] = x_mapped
-                        kwargs['center_y'] = y_mapped
+            elif self._image_plane_source_list[i] is True:
+                if 'center_x' in kwargs:
+                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
+                    kwargs['center_x'] = x_mapped
+                    kwargs['center_y'] = y_mapped
         return kwargs_source
 
     def _add_fixed_source(self, kwargs_fixed):

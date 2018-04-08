@@ -22,10 +22,12 @@ class Data(object):
     - 'background_rms': rms value of the background noise
     - 'exp_time: float, exposure time to compute the Poisson noise contribution
     - 'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
+    - 'noise_map': Gaussian noise (1-sigma) for each individual pixel.
+        If this keyword is set, the other noise properties will be ignored.
 
 
     Notes:
-
+    -----
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.
@@ -66,6 +68,8 @@ class Data(object):
         self._exp_map = exp_map
         self._data = data
         self._sigma_b = kwargs_data.get('background_rms', None)
+        if 'noise_map' in kwargs_data:
+            self._noise_map = kwargs_data['noise_map']
 
     def constructor_kwargs(self):
         """
@@ -140,7 +144,10 @@ class Data(object):
         :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).
         """
         if not hasattr(self, '_C_D'):
-            self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
+            if hasattr(self, '_noise_map'):
+                self._C_D = self._noise_map**2
+            else:
+                self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
         return self._C_D
 
     @property
@@ -198,6 +205,8 @@ class Data(object):
         :param exposure_map: exposure time per pixel, e.g. in units of seconds
         :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2
         """
+        if hasattr(self, '_noise_map'):
+            return self.C_D
         if isinstance(exposure_map, int) or isinstance(exposure_map, float):
             if exposure_map <= 0:
                 exposure_map = 1

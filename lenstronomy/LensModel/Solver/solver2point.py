@@ -1,11 +1,8 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.lens_model import LensModel
-import lenstronomy.Util.param_util as param_util
-
 import scipy.optimize
 import numpy as np
-
+import copy
 
 class Solver2Point(object):
     """
@@ -29,20 +26,21 @@ class Solver2Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated lens model that satisfies the lens equation for the point sources
         """
-        init = self._extract_array(kwargs_list)
+        kwargs = copy.deepcopy(kwargs_list)
+        init = self._extract_array(kwargs)
         if self._decoupling:
-            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list)
-            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=0)
+            alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs)
+            alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=0)
             x_sub = alpha_1_x - alpha_0_x
             y_sub = alpha_1_y - alpha_0_y
         else:
             x_sub, y_sub = np.zeros(2), np.zeros(2)
         a = self._subtract_constraint(x_sub, y_sub)
-        x = self.solve(x_pos, y_pos, init, kwargs_list, a)
-        kwargs_list = self._update_kwargs(x, kwargs_list)
-        y_end = self._F(x, x_pos, y_pos, kwargs_list, a)
+        x = self.solve(x_pos, y_pos, init, kwargs, a)
+        kwargs = self._update_kwargs(x, kwargs)
+        y_end = self._F(x, x_pos, y_pos, kwargs, a)
         accuracy = np.sum(y_end ** 2)
-        return kwargs_list, accuracy
+        return kwargs, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a):
         x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=1.49012e-10)#, factor=0.1)

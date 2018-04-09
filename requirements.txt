@@ -6,4 +6,5 @@ cosmohammer>=0.6.1
 emcee
 matplotlib
 corner
+sklearn
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

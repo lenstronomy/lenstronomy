@@ -17,9 +17,9 @@ class TestCosmography(object):
         self.Dd_true = lensCosmo.D_d
         self.D_dt_true = lensCosmo.D_dt
 
-        self.sigma_Dd = 200
+        self.sigma_Dd = 100
         self.sigma_Ddt = 100
-        num_samples = 100000
+        num_samples = 10000
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
@@ -73,3 +73,18 @@ class TestCosmography(object):
         npt.assert_almost_equal(H0_mean / self.H0_true, 1, decimal=1)
         sigma = np.sqrt(np.var(mcmc_samples))
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
+
+    def test_sampling_H0_omega_m_sklearn(self):
+        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
+                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
+                                    kde_type='gaussian', bandwidth=100)
+        walkerRatio = 10
+        n_run = 10
+        n_burn = 10
+        mean_start = [self.H0_true, self.omega_m_true]
+        sigma_start = [5, 0.1]
+        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
+        H0_mean = np.mean(mcmc_samples[:, 0])
+        npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=2)
+        sigma = np.sqrt(np.var(mcmc_samples[:, 0]))
+        npt.assert_almost_equal(sigma, 2, decimal=0)

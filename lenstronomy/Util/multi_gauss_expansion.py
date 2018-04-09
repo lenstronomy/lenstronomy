@@ -30,12 +30,16 @@ def mge_1d(r_array, flux_r, N=20):
     :return: amplitudes and Gaussian sigmas for the best 1d flux profile
     """
     try:
-        amplitudes, sigmas, norm= _mge_1d(r_array, flux_r, N)
+        amplitudes, sigmas, norm = _mge_1d(r_array, flux_r, N)
     except:
         N_new = N - 1
         if N_new == 0:
-            raise ValueError("Number of MGE went down to zero! This should not happen!")
-        amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new)
+            print("WARNING: Number of MGE went down to zero! This should not happen!")
+            amplitudes = [1]
+            sigmas = [1]
+            norm = 0
+        else:
+            amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new)
     return amplitudes, sigmas, norm
 
 
@@ -47,7 +51,7 @@ def _mge_1d(r_array, flux_r, N=20):
     :param N:
     :return:
     """
-    sigmas = np.logspace(np.log10(r_array[0]), np.log10(r_array[-1] / 2.), N + 2)[1:-1]
+    sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.001) / 2.), N + 2)[1:-1]
     # sigmas = np.linspace(r_array[0], r_array[-1]/2, N + 2)[1:-1]
 
     A = np.zeros((len(flux_r), N))

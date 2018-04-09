@@ -20,14 +20,15 @@ class CosmoLikelihood(object):
     this class contains the likelihood function of the Strong lensing analysis
     """
 
-    def __init__(self, z_d, z_s, D_d_sample, D_delta_t_sample, sampling_option="H0_only", omega_m_fixed=0.3, omega_mh2_fixed=0.14157):
+    def __init__(self, z_d, z_s, D_d_sample, D_delta_t_sample, sampling_option="H0_only", omega_m_fixed=0.3,
+                 omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1):
         """
         initializes all the classes needed for the chain (i.e. redshifts of lens and source)
         """
         self.z_d = z_d
         self.z_s = z_s
         self.cosmoProp = FlatLCDM(z_lens=z_d, z_source=z_s)
-        self._kde_likelihood = KDELikelihood(D_d_sample, D_delta_t_sample)
+        self._kde_likelihood = KDELikelihood(D_d_sample, D_delta_t_sample, kde_type=kde_type, bandwidth=bandwidth)
         self.sampling_option = sampling_option
         self.omega_m_fixed = omega_m_fixed
         self.omega_mh2_fixed = omega_mh2_fixed
@@ -199,11 +200,14 @@ class MCMC_sampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, z_d, z_s, D_d_sample, D_dt_sample, sampling_option="H0_only", omega_m_fixed=0.3, omega_mh2_fixed=0.14157):
+    def __init__(self, z_d, z_s, D_d_sample, D_dt_sample, sampling_option="H0_only", omega_m_fixed=0.3,
+                 omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = CosmoLikelihood(z_d, z_s, D_d_sample, D_dt_sample, sampling_option=sampling_option, omega_m_fixed=omega_m_fixed, omega_mh2_fixed=omega_mh2_fixed)
+        self.chain = CosmoLikelihood(z_d, z_s, D_d_sample, D_dt_sample, sampling_option=sampling_option,
+                                     omega_m_fixed=omega_m_fixed, omega_mh2_fixed=omega_mh2_fixed,
+                                     kde_type=kde_type, bandwidth=bandwidth)
         self.cosmoParam = CosmoParam(sampling_option)
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):
@@ -287,14 +291,23 @@ class KDELikelihood(object):
     class that samples the cosmographic likelihood given a distribution of points in the 2-dimensional distribution
     of D_d and D_delta_t
     """
-    def __init__(self, D_d_sample, D_delta_t_sample):
+    def __init__(self, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
         """
 
         :param D_d_sample: 1-d numpy array of angular diamter distances to the lens plane
         :param D_delta_t_sample: 1-d numpy array of time-delay distances
         """
         values = np.vstack([D_d_sample, D_delta_t_sample])
-        self._PDF_kernel = stats.gaussian_kde(values)
+        if kde_type == 'scipy_gaussian':
+            self._PDF_kernel = stats.gaussian_kde(values)
+        else:
+            from sklearn.neighbors import KernelDensity
+            self._kde = KernelDensity(bandwidth=bandwidth, kernel=kde_type)
+            values = np.vstack([D_d_sample, D_delta_t_sample])
+            self._kde.fit(values.T)
+        self._kde_type = kde_type
+
+
 
     def logLikelihood(self, D_d, D_delta_t):
         """
@@ -305,6 +318,10 @@ class KDELikelihood(object):
         :param D_delta_t: model predicted time-delay distance
         :return: loglikelihood (log of KDE value)
         """
-        density = self._PDF_kernel([D_d, D_delta_t])
-        logL = np.log(density)
+        if self._kde_type == 'scipy_gaussian':
+            density = self._PDF_kernel([D_d, D_delta_t])
+            logL = np.log(density)
+        else:
+            x = np.array([[D_d], [D_delta_t]])
+            logL = self._kde.score_samples(x.T)
         return logL

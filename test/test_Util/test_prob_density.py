@@ -61,7 +61,7 @@ class TestProbDensity(object):
         pdf_array = self.gauss(x_array, simga=sigma)
         approx = Approx(x_array, pdf_array)
         sample = approx.draw(n=20000)
-        mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2], [lower_sigma3, upper_sigma3]]= prob_density.compute_lower_upper_errors(sample, num_sigma=3)
+        mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2], [lower_sigma3, upper_sigma3]] = prob_density.compute_lower_upper_errors(sample, num_sigma=3)
         npt.assert_almost_equal(mean, 0, decimal=2)
         print(lower_sigma1, lower_sigma2, lower_sigma3)
         print(upper_sigma1, upper_sigma2, upper_sigma3)

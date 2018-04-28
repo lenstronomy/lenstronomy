@@ -41,9 +41,9 @@ def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05):
     deltaPix = coords.pixel_size
     ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
     xx_, yy_ = coords.map_coord2pix(ra0, dec0)
-    xx_ra, yy_ra = coords.map_coord2pix(ra0 - p0, dec0)
+    xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
     xx_dec, yy_dec = coords.map_coord2pix(ra0, dec0 + p0)
-    xx_ra_t, yy_ra_t = coords.map_coord2pix(ra0 - pt, dec0)
+    xx_ra_t, yy_ra_t = coords.map_coord2pix(ra0 + pt, dec0)
     xx_dec_t, yy_dec_t = coords.map_coord2pix(ra0, dec0 + pt)
 
     ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_ra - xx_) * deltaPix, (yy_ra - yy_) * deltaPix,
@@ -125,7 +125,10 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
-    kappa_result = lensModel.kappa(x_grid, y_grid, kwargs_lens)
+    x_grid1d = util.image2array(x_grid)
+    y_grid1d = util.image2array(y_grid)
+    kappa_result = lensModel.kappa(x_grid1d, y_grid1d, kwargs_lens)
+    kappa_result = util.array2image(kappa_result)
     im = ax.matshow(np.log10(kappa_result), origin='lower',
                     extent=[0, _frame_size, 0, _frame_size], cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:

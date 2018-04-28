@@ -26,7 +26,7 @@ class Solver(object):
         else:
             raise ValueError("%s number of images is not valid. Use 2 or 4!" % self._num_images)
 
-    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
 
         :param x_pos:
@@ -34,7 +34,7 @@ class Solver(object):
         :param kwargs_list:
         :return:
         """
-        return self.solver.constraint_lensmodel(x_pos, y_pos, kwargs_list)
+        return self.solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)
 
     def update_solver(self, kwargs_lens, kwargs_ps):
         x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']

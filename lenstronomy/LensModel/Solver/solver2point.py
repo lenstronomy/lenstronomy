@@ -17,7 +17,7 @@ class Solver2Point(object):
         else:
             self._decoupling = decoupling
 
-    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list):
+    def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
 
         :param x_pos: list of image positions (x-axis)
@@ -36,14 +36,14 @@ class Solver2Point(object):
         else:
             x_sub, y_sub = np.zeros(2), np.zeros(2)
         a = self._subtract_constraint(x_sub, y_sub)
-        x = self.solve(x_pos, y_pos, init, kwargs, a)
+        x = self.solve(x_pos, y_pos, init, kwargs, a, xtol=xtol)
         kwargs = self._update_kwargs(x, kwargs)
         y_end = self._F(x, x_pos, y_pos, kwargs, a)
         accuracy = np.sum(y_end ** 2)
         return kwargs, accuracy
 
-    def solve(self, x_pos, y_pos, init, kwargs_list, a):
-        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=1.49012e-10)#, factor=0.1)
+    def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-12):
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)#, factor=0.1)
         return x
 
     def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(2)):

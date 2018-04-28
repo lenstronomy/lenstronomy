@@ -24,7 +24,7 @@ class Solver4Point(object):
                 raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR' or lensModel.multi_plane is True:
+        if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR':
             self._decoupling = False
         else:
             self._decoupling = decoupling

@@ -77,10 +77,10 @@ class TestCosmography(object):
     def test_sampling_H0_omega_m_sklearn(self):
         mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
                                     omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
-                                    kde_type='gaussian', bandwidth=100)
+                                    kde_type='gaussian', bandwidth=10)
         walkerRatio = 10
-        n_run = 10
-        n_burn = 10
+        n_run = 20
+        n_burn = 20
         mean_start = [self.H0_true, self.omega_m_true]
         sigma_start = [5, 0.1]
         mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)

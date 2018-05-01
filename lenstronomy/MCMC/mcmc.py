@@ -120,6 +120,13 @@ class MCMCSampler(object):
 
         mean_start = np.maximum(lowerLimit, mean_start)
         mean_start = np.minimum(upperLimit, mean_start)
+
+        low_start = mean_start - sigma_start
+        high_start = mean_start + sigma_start
+        low_start = np.maximum(lowerLimit, low_start)
+        high_start = np.minimum(upperLimit, high_start)
+        sigma_start = (high_start - low_start) / 2
+        mean_start = (high_start + low_start) / 2
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
         chain = LikelihoodComputationChain(

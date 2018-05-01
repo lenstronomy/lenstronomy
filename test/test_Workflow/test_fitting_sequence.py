@@ -43,8 +43,6 @@ class TestFittingSequence(object):
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
         lens_model_class = LensModel(lens_model_list=lens_model_list)
-        # list of light profiles (for lens and source)
-        # 'SERSIC': spherical Sersic profile
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,

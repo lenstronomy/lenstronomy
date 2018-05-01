@@ -117,6 +117,9 @@ class MCMCSampler(object):
         returns the chain
         """
         lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
+
+        mean_start = np.maximum(lowerLimit, mean_start)
+        mean_start = np.minimum(upperLimit, mean_start)
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
         chain = LikelihoodComputationChain(

@@ -106,6 +106,27 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(beta_x, beta_x_single, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_single, decimal=8)
 
+    def test_random_ordering(self):
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS', 'SIS']
+        sis1 = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        sis2 = {'theta_E': .2, 'center_x': 0.5, 'center_y': 0}
+        sis3 = {'theta_E': .1, 'center_x': 0, 'center_y': 0.5}
+        z1 = 0.1
+        z2 = 0.5
+        z3 = 0.7
+        redshift_list = [z1, z2, z3]
+        kwargs_lens = [sis1, sis2, sis3]
+        lensModel = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        beta_x_1, beta_y_1 = lensModel.ray_shooting(1., 0., kwargs_lens)
+
+        redshift_list = [z3, z2, z1]
+        kwargs_lens = [sis3, sis2, sis1]
+        lensModel = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        beta_x_2, beta_y_2 = lensModel.ray_shooting(1., 0., kwargs_lens)
+        npt.assert_almost_equal(beta_x_1, beta_x_2, decimal=8)
+        npt.assert_almost_equal(beta_y_1, beta_y_2, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

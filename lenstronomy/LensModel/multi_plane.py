@@ -178,7 +178,7 @@ class MultiLens(object):
         :return: gravitational delay in units of days as seen at z=0
         """
         theta_x, theta_y = self._co_moving2angle(x, y, idex)
-        potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=idex)
+        potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[idex])
         delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source)
         return -delay_days
 
@@ -264,7 +264,7 @@ class MultiLens(object):
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, idex)
-        alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=idex)
+        alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[idex])
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, idex)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, idex)
         alpha_x_new = alpha_x - alpha_x_phys

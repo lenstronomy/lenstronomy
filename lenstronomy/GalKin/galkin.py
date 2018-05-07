@@ -29,7 +29,6 @@ class Galkin(object):
         self._max_integrate = kwargs_numerics.get('max_integrate', 10)  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = kwargs_numerics.get('min_integrate', 0.001)  # min integration (and interpolation) in units of arcsecs
 
-
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur, r_eff=1.):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)

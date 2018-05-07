@@ -143,7 +143,7 @@ class TestGalkin(object):
 
         # mge of light profile
         lightModel = LightModel(light_profile_list)
-        r_array = np.logspace(-2, 2, 100) * r_eff * 2
+        r_array = np.logspace(-2, 2, 200) * r_eff * 2
         flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
         amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
         light_profile_list_mge = ['MULTI_GAUSSIAN']
@@ -151,7 +151,7 @@ class TestGalkin(object):
 
         # mge of lens profile
         lensModel = LensModel(mass_profile_list)
-        r_array = np.logspace(-2, 2, 100)
+        r_array = np.logspace(-2, 2, 200)
         kappa_r = lensModel.kappa(r_array, 0, kwargs_profile)
         amps, sigmas, norm = mge.mge_1d(r_array, kappa_r, N=20)
         mass_profile_list_mge = ['MULTI_GAUSSIAN_KAPPA']

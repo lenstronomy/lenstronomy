@@ -8,7 +8,7 @@ python:
   #- "pypy3"  # Pypy3 5.8.0-beta0
 
 before_install:
-  - sudo apt-get build-dep python-scipy
+#  - sudo apt-get build-dep python-scipy
   - pip install coveralls
   - pip install python-coveralls
   - pip install scipy

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.2.2 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.2.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -2198,37 +2198,89 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.tnfw.</code><code class="descname">TNFW</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class contains functions concerning the truncated NFW profile Baltz et al 2009</p>
+<p>this class contains functions concerning the truncated NFW profile with a truncation function (r_trunc^2)*(r^2+r_trunc^2)</p>
 <p>relation are: R_200 = c * Rs</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_trunc=100</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>deflection angles of the truncated NFW profile
-:param x:
-:param y:
-:param Rs:
-:param theta_Rs:
-:param r_trunc:
-:param center_x:
-:param center_y:
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.F">
+<code class="descname">F</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.F"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.F" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classic NFW function in terms of arctanh and arctan
+:param x: r/Rs
 :return:</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.L">
+<code class="descname">L</code><span class="sig-paren">(</span><em>x</em>, <em>tau</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.L"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logarithm that appears frequently
+:param x: r/Rs
+:param tau: t/Rs
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>three dimenstional truncated NFW profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho(R) density</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>projected two dimenstional NFW profile (kappa*Sigma_crit)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs=None</em>, <em>theta_Rs=None</em>, <em>r_trunc=None</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_trunc=100</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_trunc</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
-<li><strong>Rs</strong> – </li>
-<li><strong>theta_Rs</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>center_x</strong> – </li>
-<li><strong>center_y</strong> – </li>
+<li><strong>x</strong> – angular position</li>
+<li><strong>y</strong> – angular position</li>
+<li><strong>Rs</strong> – angular turn over point</li>
+<li><strong>theta_Rs</strong> – deflection at Rs</li>
+<li><strong>center_x</strong> – center of halo</li>
+<li><strong>center_y</strong> – center of halo</li>
 </ul>
 </td>
 </tr>
@@ -2241,23 +2293,63 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_trunc=100</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_trunc</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_2d">
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>analytic solution of the projection integral
+(convergence)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float &gt;0</em>) – R/Rs</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_infinity">
+<code class="descname">mass_3d_infinity</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d_infinity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_infinity" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r
+:param r:
+:param Ra:
+:param Rs:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r
+:param r:
+:param Ra:
+:param Rs:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwAlpha">
+<code class="descname">nfwAlpha</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em>, <em>ax_x</em>, <em>ax_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwAlpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>deflection angel of NFW profile (<a href="#id1"><span class="problematic" id="id2">*</span></a>Sigma_crit*D_OL) along the projection to coordinate “axis”</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
-<li><strong>Rs</strong> – </li>
-<li><strong>theta_Rs</strong> – </li>
-<li><strong>r_trunc</strong> – </li>
-<li><strong>center_x</strong> – </li>
-<li><strong>center_y</strong> – </li>
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
 </td>
 </tr>
 </tbody>
@@ -2265,20 +2357,46 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.truncated_deflection">
-<code class="descname">truncated_deflection</code><span class="sig-paren">(</span><em>x</em>, <em>tau</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.truncated_deflection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.truncated_deflection" title="Permalink to this definition">¶</a></dt>
-<dd><p>The horrendous functional form of the deflection angle for the truncated profile</p>
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwGamma">
+<code class="descname">nfwGamma</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em>, <em>ax_x</em>, <em>ax_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwGamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwGamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate ‘axis’</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – r/Rs</li>
-<li><strong>tau</strong> – t/Rs</li>
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot">
+<code class="descname">nfwPot</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwPot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot" title="Permalink to this definition">¶</a></dt>
+<dd><p>lensing potential of NFW profile (<a href="#id3"><span class="problematic" id="id4">*</span></a>Sigma_crit*D_OL**2)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
 </td>
 </tr>
 </tbody>
@@ -2379,7 +2497,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

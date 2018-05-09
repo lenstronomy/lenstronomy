@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data.imaging_data &#8212; lenstronomy 0.2.2 documentation</title>
+    <title>lenstronomy.Data.imaging_data &#8212; lenstronomy 0.2.4 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -70,10 +70,12 @@
 <span class="sd">    - &#39;background_rms&#39;: rms value of the background noise</span>
 <span class="sd">    - &#39;exp_time: float, exposure time to compute the Poisson noise contribution</span>
 <span class="sd">    - &#39;exposure_map&#39;: 2d numpy array, effective exposure time for each pixel. If set, will replace &#39;exp_time&#39;</span>
+<span class="sd">    - &#39;noise_map&#39;: Gaussian noise (1-sigma) for each individual pixel.</span>
+<span class="sd">        If this keyword is set, the other noise properties will be ignored.</span>
 
 
 <span class="sd">    Notes:</span>
-
+<span class="sd">    -----</span>
 <span class="sd">    the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that</span>
 <span class="sd">    your definitions and units of &#39;exposure_map&#39;, &#39;background_rms&#39; and &#39;image_data&#39; are in accordance with the</span>
 <span class="sd">    likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</span>
@@ -114,6 +116,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_exp_map</span> <span class="o">=</span> <span class="n">exp_map</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;background_rms&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;noise_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_noise_map</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;noise_map&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Data.constructor_kwargs"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.constructor_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">constructor_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -188,7 +192,10 @@
 <span class="sd">        :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_C_D&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_rms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_map</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_noise_map&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_noise_map</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_rms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_map</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_C_D</span>
 
     <span class="nd">@property</span>
@@ -197,7 +204,8 @@
 
 <span class="sd">        :return: number of pixels in the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">)</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nx</span><span class="o">*</span><span class="n">ny</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -245,6 +253,8 @@
 <span class="sd">        :param exposure_map: exposure time per pixel, e.g. in units of seconds</span>
 <span class="sd">        :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_noise_map&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_D</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exposure_map</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">exposure_map</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">exposure_map</span> <span class="o">=</span> <span class="mi">1</span>
@@ -309,7 +319,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data package &#8212; lenstronomy 0.2.2 documentation</title>
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.2.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -72,9 +72,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>numPix</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>numPix</strong> – number of pixels per axis</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</td>
 </tr>
 </tbody>
 </table>
@@ -157,8 +157,10 @@
 <p>optional keywords for noise properties:
 - ‘background_rms’: rms value of the background noise
 - ‘exp_time: float, exposure time to compute the Poisson noise contribution
-- ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’</p>
-<p>Notes:</p>
+- ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’
+- ‘noise_map’: Gaussian noise (1-sigma) for each individual pixel.</p>
+<blockquote>
+<div>If this keyword is set, the other noise properties will be ignored.</div></blockquote>
 <p>the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
 your definitions and units of ‘exposure_map’, ‘background_rms’ and ‘image_data’ are in accordance with the
 likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</p>
@@ -590,7 +592,7 @@ over the size of a pixel</p>
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

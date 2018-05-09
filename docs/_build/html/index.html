@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 0.2.2 documentation</title>
+    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 0.2.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.2.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.2.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -55,13 +55,14 @@
 <a class="reference external image-reference" href="http://lenstronomy.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/lenstronomy/badge/?version=latest" /></a>
 <a class="reference external image-reference" href="https://coveralls.io/github/sibirrer/lenstronomy?branch=master"><img alt="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master" src="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=master" /></a>
 <a class="reference external image-reference" href="https://github.com/sibirrer/lenstronomy/blob/master/LICENSE"><img alt="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat" /></a>
-<p><strong>lenstronomy</strong> is a multi-purpose package to model strong gravitational lenses.
+<a class="reference external image-reference" href="https://arxiv.org/abs/1803.09746"><img alt="https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg" src="https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg" /></a>
+<p><code class="docutils literal"><span class="pre">lenstronomy</span></code> is a multi-purpose package to model strong gravitational lenses.
 The software is based on <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>  and finds application in
 e.g. <a class="reference external" href="http://adsabs.harvard.edu/abs/2016JCAP...08..020B">Birrer et al 2016</a> for time-delay cosmography and measuring
 the expansion rate of the universe and <a class="reference external" href="http://adsabs.harvard.edu/abs/2017JCAP...05..037B">Birrer et al 2017</a> for
 quantifying lensing substructure to infer dark matter properties.</p>
 <p>The development is coordinated on <a class="reference external" href="https://github.com/sibirrer/lenstronomy">GitHub</a> and contributions are welcome.
-The documentation of <strong>lenstronomy</strong> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
+The documentation of <code class="docutils literal"><span class="pre">lenstronomy</span></code> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
 the package is distributed over <a class="reference external" href="https://pypi.python.org/pypi/lenstronomy">PyPI</a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -75,9 +76,9 @@ the package is distributed over <a class="reference external" href="https://pypi
 is also required and can be cloned from: <a class="reference external" href="https://github.com/sibirrer/fastell4py">https://github.com/sibirrer/fastell4py</a> (needs a fortran compiler)</p>
 <p>Additional python libraries:</p>
 <ul class="simple">
-<li>CosmoHammer (through PyPi)</li>
-<li>astropy</li>
-<li>standard python libraries (numpy, scipy)</li>
+<li><code class="docutils literal"><span class="pre">CosmoHammer</span></code> (through PyPi)</li>
+<li><code class="docutils literal"><span class="pre">astropy</span></code></li>
+<li>standard python libraries (<code class="docutils literal"><span class="pre">numpy</span></code>, <code class="docutils literal"><span class="pre">scipy</span></code>)</li>
 </ul>
 </div>
 <div class="section" id="modelling-features">
@@ -102,7 +103,7 @@ is also required and can be cloned from: <a class="reference external" href="htt
 <div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/starting_guide.ipynb">starting guide jupyter notebook</a>
-leads through the main modules and design features of <strong>lenstronomy</strong>. The modular design of <strong>lenstronomy</strong> allows the
+leads through the main modules and design features of <code class="docutils literal"><span class="pre">lenstronomy</span></code>. The modular design of <code class="docutils literal"><span class="pre">lenstronomy</span></code> allows the
 user to directly access a lot of tools and each module can also be used as stand-alone packages.</p>
 </div>
 <div class="section" id="example-notebooks">
@@ -119,6 +120,23 @@ You can find simple examle notebooks for various cases.</p>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb">Fitting of galaxy light profiles, like e.g. GALFIT</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb">Quasar-host galaxy decomposition</a></li>
 </ul>
+</div>
+<div class="section" id="shapelet-reconstruction-demonstration-movies">
+<h2>Shapelet reconstruction demonstration movies<a class="headerlink" href="#shapelet-reconstruction-demonstration-movies" title="Permalink to this headline">¶</a></h2>
+<p>We provide some examples where a real galaxy has been lensed and then been reconstructed by a shapelet basis set.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.astro.ucla.edu/~sibirrer/video/true_reconstruct.mp4">HST quality data with perfect knowledge of the lens model</a></li>
+<li><a class="reference external" href="http://www.astro.ucla.edu/~sibirrer/video/clump_reconstruct.mp4">HST quality with a clump hidden in the data</a></li>
+<li><a class="reference external" href="http://www.astro.ucla.edu/~sibirrer/video/TMT_high_res_clump_reconstruct.mp4">Extremely large telescope quality data with a clump hidden in the data</a></li>
+</ul>
+</div>
+<div class="section" id="attribution">
+<h2>Attribution<a class="headerlink" href="#attribution" title="Permalink to this headline">¶</a></h2>
+<p>The design concept of <code class="docutils literal"><span class="pre">lenstronomy</span></code> are reported in
+<a class="reference external" href="https://arxiv.org/abs/1803.09746v1">Birrer &amp; Amara 2018</a>. Please cite this paper whenever you publish
+results that made use of <code class="docutils literal"><span class="pre">lenstronomy</span></code>. Please also cite <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>
+when you make use of the <code class="docutils literal"><span class="pre">lenstronomy</span></code> work-flow or the Shapelet source reconstruction. Please make sure to cite also
+the relevant work that was implemented in <code class="docutils literal"><span class="pre">lenstronomy</span></code>, as described in the release paper.</p>
 <div class="section" id="contents">
 <h3>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
@@ -187,7 +205,9 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#modelling-features">Modelling Features</a></li>
 <li><a class="reference internal" href="#getting-started">Getting started</a></li>
-<li><a class="reference internal" href="#example-notebooks">Example notebooks</a><ul>
+<li><a class="reference internal" href="#example-notebooks">Example notebooks</a></li>
+<li><a class="reference internal" href="#shapelet-reconstruction-demonstration-movies">Shapelet reconstruction demonstration movies</a></li>
+<li><a class="reference internal" href="#attribution">Attribution</a><ul>
 <li><a class="reference internal" href="#contents">Contents:</a></li>
 <li><a class="reference internal" href="#feedback">Feedback</a></li>
 </ul>
@@ -232,7 +252,7 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.2.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.2.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -7,6 +7,7 @@ from lenstronomy.Cosmo.cosmography import KDELikelihood, MCMC_sampler
 class TestCosmography(object):
 
     def setup(self):
+        np.random.seed(seed=41)
         self.z_L = 0.8
         self.z_S = 3.0
         from astropy.cosmology import FlatLambdaCDM

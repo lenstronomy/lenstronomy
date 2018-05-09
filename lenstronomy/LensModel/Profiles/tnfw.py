@@ -12,6 +12,7 @@ class TNFW(object):
     this class contains functions concerning the truncated NFW profile with a truncation function (r_trunc^2)*(r^2+r_trunc^2)
 
     relation are: R_200 = c * Rs
+
     """
 
     def function(self, x, y, Rs, theta_Rs, r_trunc, center_x=0, center_y=0):
@@ -32,6 +33,7 @@ class TNFW(object):
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         f_ = self.nfwPot(R, Rs, rho0_input, r_trunc)
+        #TODO: truncated NFW potential not in place yet!
         return f_
 
     def L(self, x, tau):

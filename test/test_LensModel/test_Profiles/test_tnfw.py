@@ -10,38 +10,12 @@ import pytest
 
 
 class TestTNFW(object):
-    """
-    tests the Gaussian methods
-    """
+
     def setup(self):
         self.nfw = NFW()
         self.tnfw = TNFW()
 
-    def test_derivatives(self):
-        Rs = 1.
-        theta_Rs = 0.5
-        x_array = np.linspace(0, 10, 10)
-        y_array = np.zeros_like(x_array)
-        f_x, f_y = self.nfw.derivatives(x_array, y_array, Rs, theta_Rs)
-        f_x_t, f_y_t = self.tnfw.derivatives(x_array, y_array, Rs, theta_Rs, r_trunc=1000.)
-        #print(f_x/truth_alpha)
-        print(f_x, f_x_t)
-        for i in range(len(x_array)):
-            npt.assert_almost_equal(f_x[i], f_x_t[i], decimal=3)
-            npt.assert_almost_equal(f_y[i], f_y_t[i], decimal=3)
-
-        f_x_t, f_y_t = self.tnfw.derivatives(1. , 1., Rs, theta_Rs, r_trunc=1.)
-        npt.assert_almost_equal(f_x_t, 0.17145581715955596, decimal=8)
-
-
-class TestTNFW_new(object):
-
-    def setup(self):
-        from lenstronomy.LensModel.Profiles.tnfw_new import TNFW
-        self.nfw = NFW()
-        self.tnfw = TNFW()
-
-    def test_deflction(self):
+    def test_deflection(self):
         Rs = 0.2
         theta_Rs = 0.1
         r_trunc = 1000000000000 * Rs
@@ -53,6 +27,8 @@ class TestTNFW_new(object):
 
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
+        f_x_t, f_y_t = self.tnfw.derivatives(1., 0, Rs, theta_Rs, r_trunc=1.)
+        npt.assert_almost_equal(f_x_t, 0.01731384025307516, decimal=5)
 
     def test_potential(self):
         Rs = 0.2
@@ -76,8 +52,8 @@ class TestTNFW_new(object):
         g1t, g2t = self.tnfw.nfwGamma((x ** 2 + y ** 2) ** .5, Rs, theta_Rs, r_trunc, x, y)
         g1, g2 = self.nfw.nfwGamma((x ** 2 + y ** 2) ** .5, Rs, theta_Rs, x, y)
 
-        np.testing.assert_almost_equal(g1t, g1, 2)
-        np.testing.assert_almost_equal(g2t, g2, 2)
+        np.testing.assert_almost_equal(g1t, g1, 5)
+        np.testing.assert_almost_equal(g2t, g2, 5)
 
     def test_hessian(self):
         Rs = 0.2
@@ -89,9 +65,20 @@ class TestTNFW_new(object):
         xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, theta_Rs, r_trunc)
         xx, yy, xy = self.nfw.hessian(x, y, Rs, theta_Rs)
         print((xx - xxt)/xxt, 'test')
-        #np.testing.assert_almost_equal(xy, xyt, 4)
-        #np.testing.assert_almost_equal(yy, yyt, 4)
-        #np.testing.assert_almost_equal(xy, xyt, 4)
+        np.testing.assert_almost_equal(xy, xyt, 4)
+        np.testing.assert_almost_equal(yy, yyt, 4)
+        np.testing.assert_almost_equal(xy, xyt, 4)
+
+    def test_density_2d(self):
+        Rs = 0.2
+        theta_Rs = 0.1
+        r_trunc = 1000000000000 * Rs
+        x = np.linspace(0.1 * Rs, 3 * Rs, 1000)
+        y = np.linspace(0.2, 0.5, 1000)
+
+        kappa_t = self.tnfw.density_2d(x, y, Rs, theta_Rs, r_trunc)
+        kappa = self.nfw.density_2d(x, y, Rs, theta_Rs)
+        np.testing.assert_almost_equal(kappa, kappa_t, 5)
 
 
 if __name__ == '__main__':

@@ -45,7 +45,7 @@ class TestFittingSequence(object):
         lens_model_class = LensModel(lens_model_list=lens_model_list)
         kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.1, 'e2': 0.1}
 
         lens_light_model_list = ['SERSIC']
@@ -97,7 +97,8 @@ class TestFittingSequence(object):
                              'point_source_likelihood': False,
                              'position_uncertainty': 0.004,
                              'check_solver': True,
-                             'solver_tolerance': 0.001
+                             'solver_tolerance': 0.001,
+                             'check_positive_flux': True,
                              }
 
     def test_simulationAPI_image(self):
@@ -109,14 +110,21 @@ class TestFittingSequence(object):
     def test_fitting_sequence(self):
         #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
         lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'ellipse_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'shear_sigma': 0.1}]
+        lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}, {'e1': -0.3, 'e2': -0.3}]
+        lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}, {'e1': 0.3, 'e2': 0.3}]
         source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'ellipse_sigma': 0.1}]
+        source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
+        source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
+
         lens_light_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
+        lens_light_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2}]
+        lens_light_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2}]
         ps_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}]
         #kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, ps_sigma]
         #kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
-        lens_param = self.kwargs_lens, lens_sigma, [{}, {}], self.kwargs_lens, self.kwargs_lens
-        source_param = self.kwargs_source, source_sigma, [{}], self.kwargs_source, self.kwargs_source
-        lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], self.kwargs_lens_light, self.kwargs_lens_light
+        lens_param = self.kwargs_lens, lens_sigma, [{}, {}], lens_lower, lens_upper
+        source_param = self.kwargs_source, source_sigma, [{}], source_lower, source_upper
+        lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], lens_light_lower, lens_light_upper
         ps_param = self.kwargs_ps, ps_sigma, [{}], self.kwargs_ps, self.kwargs_ps
 
         kwargs_params = {'lens_model': lens_param,
@@ -140,12 +148,10 @@ class TestFittingSequence(object):
         fitting_kwargs_list = [
             {'fitting_routine': 'PSO', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2},
-            {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2, 'cosmoHammer': False},
-            {'fitting_routine': 'MCMC_source', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2},
             {'fitting_routine': 'align_images', 'lower_limit_shift': -0.1, 'upper_limit_shift': 0.1, 'n_particles': 2, 'n_iterations': 2},
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
-        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
+        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         #"""
 
 

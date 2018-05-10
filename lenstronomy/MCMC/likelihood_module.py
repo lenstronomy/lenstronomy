@@ -41,6 +41,7 @@ class LikelihoodModule(object):
         self._position_sigma = kwargs_likelihood.get('position_uncertainty', 0.004)
         self._image_likelihood = kwargs_likelihood.get('image_likelihood', True)
         self._check_solver = kwargs_likelihood.get('check_solver', False)
+        self._check_positive_flux = kwargs_likelihood.get('check_positive_flux', False)
         self._solver_tolerance = kwargs_likelihood.get('solver_tolerance', 0.001)
         self._force_no_add_image = kwargs_likelihood.get('force_no_add_image', False)
         self._source_marg = kwargs_likelihood.get('source_marg',
@@ -94,6 +95,8 @@ class LikelihoodModule(object):
             ra_image_list, dec_image_list = self.Multiband.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
             if len(ra_image_list[0]) > self._max_num_images:
                 logL -= 10**10
+        if self._check_positive_flux is True:
+            logL -= self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
 
         return logL, None
 
@@ -166,6 +169,16 @@ class LikelihoodModule(object):
                 bound_hit = True
         return penalty, bound_hit
 
+    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        penalty = 0
+        pos_bool = self._check_positive_flux_point_source(kwargs_ps)
+        if pos_bool is False:
+            penalty += 10**15
+        pos_bool = self._check_positive_flux_sersic(kwargs_source, kwargs_lens_light)
+        if pos_bool is False:
+            penalty += 10 ** 15
+        return penalty
+
     def logL_delay(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """
         routine to compute the log likelihood of the time delay distance
@@ -198,6 +211,36 @@ class LikelihoodModule(object):
         n = self.Multiband.numData_evaluate(compute_bool=self._compute_bool)
         num_param, _ = self.param.num_param()
         return n - num_param - 1
+
+    def _check_positive_flux_point_source(self, kwargs_ps):
+        """
+        check whether inferred linear parameters are positive
+
+        :param kwargs_ps:
+        :return: bool
+        """
+        pos_bool = True
+        for kwargs in kwargs_ps:
+            point_amp = kwargs['point_amp']
+            for amp in point_amp:
+                if amp < 0:
+                    pos_bool = False
+                    break
+        return pos_bool
+
+    def _check_positive_flux_sersic(self, kwargs_source, kwargs_lens_light):
+        pos_bool = True
+        for kwargs in kwargs_source:
+            if 'I0_sersic' in kwargs:
+                if kwargs['I0_sersic'] < 0:
+                    pos_bool = False
+                    break
+        for kwargs in kwargs_lens_light:
+            if 'I0_sersic' in kwargs:
+                if kwargs['I0_sersic'] < 0:
+                    pos_bool = False
+                    break
+        return pos_bool
 
     def __call__(self, a):
         return self.X2_chain(a)

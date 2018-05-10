@@ -80,6 +80,8 @@ class Data(object):
         kwargs_data = {'numPix': self.nx, 'image_data': self.data, 'exposure_map': self._exp_map,
                        'background_rms': self._sigma_b, 'ra_at_xy_0': self._coords._ra_at_xy_0,
                         'dec_at_xy_0': self._coords._dec_at_xy_0, 'transform_pix2angle': self._coords._Mpix2a}
+        if hasattr(self, '_noise_map'):
+            kwargs_data['noise_map'] = self._noise_map
         return kwargs_data
 
     def update_data(self, image_data):

@@ -38,7 +38,7 @@ class Fitting(object):
             self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = kwargs_params['point_source_model']
         else:
             self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = [{}], [{}], [{}], [{}], [{}]
-        if self.kwargs_likelihood.get('time_delay_likelihood', False) is True:
+        if self.kwargs_likelihood.get('time_delay_likelihood', False) is True or self.kwargs_constraints.get('mass_scaling', False) is True:
             self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = kwargs_params['cosmography']
         else:
             self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = {}, {}, {}, {}, {}

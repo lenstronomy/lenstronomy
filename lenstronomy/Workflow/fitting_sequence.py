@@ -41,9 +41,9 @@ class FittingSequence(object):
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_routine in ['psf_iteration']:
-                self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp)
+                self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
             elif fitting_routine in ['align_images']:
-                self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp)
+                self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
@@ -105,7 +105,8 @@ class FittingSequence(object):
                 fix_point_source=fix_point_source, print_key=print_key)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
-    def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input):
+    def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
+        lens_input = self._param._update_lens_scaling(cosmo_input, lens_input)
         source_updated = self._param.image2source_plane(lens_input, source_input)
         psf_iter_factor = fitting_kwargs['psf_iter_factor']
         psf_iter_num = fitting_kwargs['psf_iter_num']
@@ -129,7 +130,8 @@ class FittingSequence(object):
                 self.multi_band_list[i][1] = kwargs_psf
         return 0
 
-    def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input):
+    def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
+        lens_input = self._param._update_lens_scaling(cosmo_input, lens_input)
         mpi = fitting_kwargs.get('mpi', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
         n_particles = fitting_kwargs.get('n_particles', 10)

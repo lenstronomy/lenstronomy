@@ -64,7 +64,7 @@ class LikelihoodModule(object):
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
         #extract parameters
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.param.getParams(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.param.getParams(args)
         #generate image and computes likelihood
         self.Multiband.reset_point_source_cache()
         logL = 0
@@ -81,7 +81,6 @@ class LikelihoodModule(object):
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
         # logL -= self.bounds_convergence(kwargs_lens)
         if self._time_delay_likelihood is True:
-            kwargs_cosmo = self.param.getCosmo(args)
             logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self.priors_bool:
             logL += self.prior_compute(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

@@ -124,7 +124,7 @@ class TestLikelihood(object):
 
     def test_likelihood(self):
         args = self.param.setParams(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, self.kwargs_cosmo)
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.param.getParams(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.param.getParams(args)
         print(kwargs_lens, self.kwargs_lens)
         logL, _ = self.likelihoodModule.X2_chain(args)
         num_eff = self.likelihoodModule.effectiv_numData_points()

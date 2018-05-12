@@ -48,7 +48,7 @@ class TestParam(object):
         kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_cosmo = [{}]
         args = self.param_class.setParams(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps, kwargs_cosmo=kwargs_cosmo)
-        lens_dict_list, source_dict, lens_light_dic, else_dict = self.param_class.getParams(args)
+        lens_dict_list, source_dict, lens_light_dic, ps_dict, cosmos_dict = self.param_class.getParams(args)
         lens_dict = lens_dict_list[0]
         assert lens_dict['theta_E'] == 1.
         assert lens_dict['gamma'] == 1.9
@@ -98,9 +98,7 @@ class TestParam(object):
         args = param_class.setParams(kwargs_true_lens, kwargs_true_source,
                                           kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                           kwargs_cosmo={'D_dt': 1000})
-        kwargs_cosmo = param_class.getCosmo(args=args)
-        assert kwargs_cosmo['D_dt'] == 1000
-        assert param_class.cosmoParams._sampling is True
+        assert param_class.cosmoParams._Ddt_sampling is True
 
 
 class TestParamUpdate(object):

@@ -6,7 +6,8 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, num_images=0, solver_type='NONE', num_shapelet_lens=0):
+    def __init__(self, lens_model_list, kwargs_fixed, num_images=0, solver_type='NONE', num_shapelet_lens=0,
+                 mass_scaling=False):
         """
 
         :param kwargs_options:
@@ -244,19 +245,10 @@ class LensParam(object):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if False: #self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                    phi_G, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
-                    if bounds == 'lower':
-                        args.append(0)
-                    elif bounds == 'upper':
-                        args.append(0.5)
-                    else:
-                        args.append(gamma_ext)
-                else:
-                    if not 'e1' in kwargs_fixed:
-                        args.append(kwargs['e1'])
-                    if not 'e2' in kwargs_fixed:
-                        args.append(kwargs['e2'])
+                if not 'e1' in kwargs_fixed:
+                    args.append(kwargs['e1'])
+                if not 'e2' in kwargs_fixed:
+                    args.append(kwargs['e2'])
             if model == 'CONVERGENCE':
                 if not 'kappa_ext' in kwargs_fixed:
                     args.append(kwargs['kappa_ext'])
@@ -362,17 +354,12 @@ class LensParam(object):
             kwargs_mean = kwargs_mean_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['SHEAR', 'FOREGROUND_SHEAR']:
-                if False: # self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                    phi_G, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_mean['e1'], kwargs_mean['e2'])
-                    mean.append(gamma_ext)
+                if not 'e1' in kwargs_fixed:
+                    mean.append(kwargs_mean['e1'])
                     sigma.append(kwargs_mean['shear_sigma'])
-                else:
-                    if not 'e1' in kwargs_fixed:
-                        mean.append(kwargs_mean['e1'])
-                        sigma.append(kwargs_mean['shear_sigma'])
-                    if not 'e2' in kwargs_fixed:
-                        mean.append(kwargs_mean['e2'])
-                        sigma.append(kwargs_mean['shear_sigma'])
+                if not 'e2' in kwargs_fixed:
+                    mean.append(kwargs_mean['e2'])
+                    sigma.append(kwargs_mean['shear_sigma'])
             if model == 'CONVERGENCE':
                 if not 'kappa_ext' in kwargs_fixed:
                     mean.append(kwargs_mean['kappa_ext'])

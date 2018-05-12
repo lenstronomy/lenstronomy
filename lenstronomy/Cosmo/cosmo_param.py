@@ -5,7 +5,7 @@ class CosmoParam(object):
     class that handles the cosmology relevant parameters
     """
 
-    def __init__(self, cosmo_type=None, kwargs_fixed={}):
+    def __init__(self, cosmo_type=None, mass_scaling=False, kwargs_fixed={}):
         """
 
 
@@ -16,12 +16,13 @@ class CosmoParam(object):
         :param D_dt_upper: upper bound
         """
         if cosmo_type is None:
-            self._sampling = False
+            self._Ddt_sampling = False
         elif cosmo_type == 'D_dt':
-            self._sampling = True
+            self._Ddt_sampling = True
         else:
             raise ValueError("cosmo_type %s is not supported!" % cosmo_type)
         self._cosmo_type = cosmo_type
+        self._mass_scaling = mass_scaling
         self._kwargs_fixed = kwargs_fixed
 
     def getParams(self, args, i):
@@ -32,9 +33,14 @@ class CosmoParam(object):
         :return:
         """
         kwargs_cosmo = {}
-        if self._sampling is True:
+        if self._Ddt_sampling is True:
             if self._cosmo_type == 'D_dt':
-                kwargs_cosmo['D_dt'] = args[i]
+                if not 'D_dt' in self._kwargs_fixed:
+                    kwargs_cosmo['D_dt'] = args[i]
+                    i += 1
+        if self._mass_scaling is True:
+            if not 'mass_scale' in self._kwargs_fixed:
+                kwargs_cosmo['mass_scale'] = args[i]
                 i += 1
         return kwargs_cosmo, i
 
@@ -45,9 +51,13 @@ class CosmoParam(object):
         :return:
         """
         args = []
-        if self._sampling is True:
+        if self._Ddt_sampling is True:
             if self._cosmo_type == 'D_dt':
-                args.append(kwargs_cosmo['D_dt'])
+                if not 'D_dt' in self._kwargs_fixed:
+                    args.append(kwargs_cosmo['D_dt'])
+        if self._mass_scaling is True:
+            if not 'mass_scale' in self._kwargs_fixed:
+                    args.append(kwargs_cosmo['mass_scale'])
         return args
 
     def param_init(self, kwargs_mean):
@@ -58,10 +68,15 @@ class CosmoParam(object):
         """
         mean = []
         sigma = []
-        if self._sampling is True:
+        if self._Ddt_sampling is True:
             if self._cosmo_type == 'D_dt':
-                mean.append(kwargs_mean['D_dt'])
-                sigma.append(kwargs_mean['D_dt_sigma'])
+                if not 'D_dt' in self._kwargs_fixed:
+                    mean.append(kwargs_mean['D_dt'])
+                    sigma.append(kwargs_mean['D_dt_sigma'])
+        if self._mass_scaling is True:
+            if not 'mass_scale' in self._kwargs_fixed:
+                mean.append(kwargs_mean['mass_scale'])
+                sigma.append(kwargs_mean['mass_scale_sigma'])
         return mean, sigma
 
     def num_param(self):
@@ -71,8 +86,13 @@ class CosmoParam(object):
         """
         num = 0
         list = []
-        if self._sampling is True:
+        if self._Ddt_sampling is True:
             if self._cosmo_type == 'D_dt':
+                if not 'D_dt' in self._kwargs_fixed:
+                    num += 1
+                    list.append('D_dt')
+        if self._mass_scaling is True:
+            if not 'mass_scale' in self._kwargs_fixed:
                 num += 1
-                list.append('D_dt')
+                list.append('mass_scale')
         return num, list

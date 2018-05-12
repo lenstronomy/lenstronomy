@@ -70,6 +70,8 @@ class Data(object):
         self._sigma_b = kwargs_data.get('background_rms', None)
         if 'noise_map' in kwargs_data:
             self._noise_map = kwargs_data['noise_map']
+        else:
+            self._noise_map = None
 
     def constructor_kwargs(self):
         """
@@ -137,6 +139,15 @@ class Data(object):
             return self._exp_map
 
     @property
+    def noise_map(self):
+        """
+        1-sigma error for each pixel (optional)
+
+        :return:
+        """
+        return self._noise_map
+
+    @property
     def C_D(self):
         """
         Covariance matrix of all pixel values in 2d numpy array (only diagonal component)
@@ -146,7 +157,7 @@ class Data(object):
         :return: covariance matrix of all pixel values in 2d numpy array (only diagonal component).
         """
         if not hasattr(self, '_C_D'):
-            if hasattr(self, '_noise_map'):
+            if self._noise_map is not None:
                 self._C_D = self._noise_map**2
             else:
                 self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
@@ -189,7 +200,7 @@ class Data(object):
         """
         return self._coords.map_pix2coord(x, y)
 
-    def covariance_matrix(self, data, background_rms, exposure_map, verbose=False):
+    def covariance_matrix(self, data, background_rms=1, exposure_map=1, noise_map=None, verbose=False):
         """
         returns a diagonal matrix for the covariance estimation which describes the error
 
@@ -207,8 +218,8 @@ class Data(object):
         :param exposure_map: exposure time per pixel, e.g. in units of seconds
         :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2
         """
-        if hasattr(self, '_noise_map'):
-            return self.C_D
+        if noise_map is not None:
+            return noise_map**2
         if isinstance(exposure_map, int) or isinstance(exposure_map, float):
             if exposure_map <= 0:
                 exposure_map = 1
@@ -238,7 +249,7 @@ class Data(object):
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
-        C_D = self.covariance_matrix(model, self._sigma_b, self.exposure_map)
+        C_D = self.covariance_matrix(model, self._sigma_b, self.exposure_map, self.noise_map)
         X2 = (model - self._data)**2 / (C_D + np.abs(error_map)) * mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2

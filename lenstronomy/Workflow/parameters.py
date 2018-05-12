@@ -37,6 +37,8 @@ class Param(object):
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
         n_source_model = len(source_light_model_list)
+        self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
+        self._mass_scaling_list = kwargs_constraints.get('mass_scaling_list', None)
         num_point_source_list = kwargs_constraints.get('num_point_source_list', [0] * len(point_source_model_list))
         self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n_source_model)
         self._fix_to_point_source_list = kwargs_constraints.get('fix_to_point_source_list', [False] * n_source_model)
@@ -79,7 +81,7 @@ class Param(object):
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps_updated,
                                             num_point_source_list=num_point_source_list, linear_solver=linear_solver)
         cosmo_type = kwargs_model.get('cosmo_type', None)
-        self.cosmoParams = CosmoParam(cosmo_type, kwargs_fixed_cosmo)
+        self.cosmoParams = CosmoParam(cosmo_type, mass_scaling=self._mass_scaling, kwargs_fixed=kwargs_fixed_cosmo)
 
     @property
     def num_point_source_images(self):
@@ -96,21 +98,16 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
+        kwargs_cosmo, i = self.cosmoParams.getParams(args, i)
+        kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens)
         if self._solver:
             kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
+        if bijective is True:
+            kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
         kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
-        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
-    def getCosmo(self, args):
-        """
-        return the cosmology keyword arguments
-
-        :param args: tuple of parameter values
-        :return: keyword arguments
-        """
-        kwargs_cosmo, i = self.cosmoParams.getParams(args, i=len(args)-1)
-        return kwargs_cosmo
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
 
     def setParams(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=None, bounds=None):
         """
@@ -196,6 +193,36 @@ class Param(object):
                 kwargs_source_list[i]['center_x'] = kwargs_source_list[0]['center_x']
                 kwargs_source_list[i]['center_y'] = kwargs_source_list[0]['center_y']
         return kwargs_source_list
+
+    def _update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
+        """
+        multiplies the scaling parameters of the profiles
+
+        :param args:
+        :param kwargs_lens:
+        :param i:
+        :param inverse:
+        :return:
+        """
+        kwargs_lens_updated = copy.deepcopy(kwargs_lens)
+        if self._mass_scaling is False:
+            return kwargs_lens
+        scale_factor = kwargs_cosmo['mass_scale']
+        if inverse is True:
+            scale_factor = 1. / kwargs_cosmo['mass_scale']
+        for i, kwargs in enumerate(kwargs_lens_updated):
+            if self._mass_scaling_list[i] is True:
+                if 'theta_E' in kwargs:
+                    kwargs['theta_E'] *= scale_factor
+                elif 'theta_Rs' in kwargs:
+                    kwargs['theta_Rs'] *= scale_factor
+                elif 'theta_Rs' in kwargs:
+                    kwargs['theta_Rs'] *= scale_factor
+                elif 'k_eff' in kwargs:
+                    kwargs['sigma0'] *= scale_factor
+                elif 'k_eff' in kwargs:
+                    kwargs['sigma0'] *= scale_factor
+        return kwargs_lens_updated
 
     def image2source_plane(self, kwargs_lens_list, kwargs_source_list):
         """
@@ -291,11 +318,11 @@ class ParamUpdate(object):
                  kwargs_fixed_cosmo):
         self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
                                            kwargs_fixed_ps, kwargs_fixed_cosmo])
-        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
-        source_fix = copy.deepcopy(self.kwargs_fixed[1])
-        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
-        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
-        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
+        #lens_fix = copy.deepcopy(self.kwargs_fixed[0])
+        #source_fix = copy.deepcopy(self.kwargs_fixed[1])
+        #lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
+        #ps_fix = copy.deepcopy(self.kwargs_fixed[3])
+        #cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
                              fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False, gamma_fixed=False):

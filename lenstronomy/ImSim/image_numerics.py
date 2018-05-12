@@ -64,6 +64,15 @@ class ImageNumerics(object):
         return self._f
 
     @property
+    def noise_map_array(self):
+        if not hasattr(self, '_noise_map'):
+            noise_map = self._Data.noise_map
+            if noise_map is not None:
+                self._noise_map = util.image2array(noise_map)[self._idex_mask == 1]
+            else: self._noise_map = None
+        return self._noise_map
+
+    @property
     def ra_grid_ray_shooting(self):
         self._check_subgrid()
         return self._ra_subgrid
@@ -90,7 +99,8 @@ class ImageNumerics(object):
         """
         if not hasattr(self, '_C_D_response'):
             self._C_D_response = self._Data.covariance_matrix(self.image2array(self._Data.data),
-                                                              self._Data.background_rms, self.exposure_map_array)
+                                                              self._Data.background_rms, self.exposure_map_array,
+                                                              self.noise_map_array)
         return self._C_D_response
 
     @property

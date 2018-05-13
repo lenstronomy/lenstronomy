@@ -84,6 +84,7 @@ class MCMCSampler(object):
             print(source_dict, 'source result')
             print(lens_light_dict, 'lens light result')
             print(ps_dict, 'point source result')
+            print(kwargs_cosmo, 'cosmo result')
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
             print('===================')

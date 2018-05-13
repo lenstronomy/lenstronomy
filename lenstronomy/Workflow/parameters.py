@@ -206,7 +206,7 @@ class Param(object):
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
         if self._mass_scaling is False:
-            return kwargs_lens
+            return kwargs_lens_updated
         scale_factor = kwargs_cosmo['mass_scale']
         if inverse is True:
             scale_factor = 1. / kwargs_cosmo['mass_scale']

@@ -64,12 +64,16 @@ class Data(object):
             exp_map = kwargs_data['exposure_map']
             exp_map[exp_map <= 0] = 10**(-10)
         else:
-            exp_map = kwargs_data.get('exp_time', None)
+            exp_time = kwargs_data.get('exp_time', 1)
+            exp_map = np.ones_like(data) * exp_time
         self._exp_map = exp_map
         self._data = data
         self._sigma_b = kwargs_data.get('background_rms', None)
         if 'noise_map' in kwargs_data:
             self._noise_map = kwargs_data['noise_map']
+            if self._noise_map is not None:
+                self._sigma_b = 1
+                self._exp_map = np.ones_like(data)
         else:
             self._noise_map = None
 
@@ -122,7 +126,8 @@ class Data(object):
         :return: rms value of background noise
         """
         if self._sigma_b is None:
-            raise ValueError("rms background value as 'background_rms' not specified!")
+            if self._noise_map is None:
+                raise ValueError("rms background value as 'background_rms' not specified!")
         return self._sigma_b
 
     @property
@@ -134,7 +139,8 @@ class Data(object):
         :return: exposure map for each pixel
         """
         if self._exp_map is None:
-            raise ValueError("Exposure map has not been specified in Data() class!")
+            if self._noise_map is None:
+                raise ValueError("Exposure map has not been specified in Data() class!")
         else:
             return self._exp_map
 

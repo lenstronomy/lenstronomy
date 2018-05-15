@@ -177,7 +177,7 @@ class TestImageModel(object):
         model = makeImage.image(kwargs_lens_init, kwargs_source={}, kwargs_lens_light={}, kwargs_ps=kwargs_else)
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
-            assert image[y_pix[i], x_pix[i]] == 1
+            npt.assert_almost_equal(image[y_pix[i], x_pix[i]], 1, decimal=2)
 
         x_pix = np.array([10.5, 5.5, 10.5, 90.5])
         y_pix = np.array([40, 50, 60, 50])
@@ -190,8 +190,8 @@ class TestImageModel(object):
         image = makeImage.ImageNumerics.array2image(model)
         for i in range(len(x_pix)):
             print(int(y_pix[i]), int(x_pix[i]+0.5))
-            assert image[int(y_pix[i]), int(x_pix[i])] == 0.5
-            assert image[int(y_pix[i]), int(x_pix[i]+0.5)] == 0.5
+            npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i])], 0.5, decimal=1)
+            npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i]+0.5)], 0.5, decimal=1)
 
 
 if __name__ == '__main__':

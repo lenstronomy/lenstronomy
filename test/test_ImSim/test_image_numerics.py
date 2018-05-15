@@ -57,6 +57,41 @@ class TestImageNumerics(object):
         print(type((n + 1) * subgrid_res - 2))
         assert idex_mask_subgrid[nx * subgrid_res + (n + 1) * subgrid_res - 1] == 1
 
+    def test_point_source_rendering(self):
+        numPix = 20
+        deltaPix = 0.05
+        ra_at_xy_0 = 0
+        dec_at_xy_0 = 0
+        kwargs_data = {'image_data': np.zeros((numPix, numPix))}
+        data = Data(kwargs_data)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1., 'point_source_subgrid': 1}
+        psf = PSF(kwargs_psf)
+        kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
+        imageNumerics = ImageNumerics(data, psf, kwargs_numerics)
+        ra_pos = np.array([10, 7])
+        dec_pos = np.array([6, 7])
+        amp = np.array([10, 10])
+        image = imageNumerics.point_source_rendering_old(ra_pos, dec_pos, amp)
+        image_subgrid = imageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
+        npt.assert_almost_equal(image[10, 7], image_subgrid[10, 7], decimal=8)
+
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 2., 'point_source_subgrid': 3}
+        psf = PSF(kwargs_psf)
+        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': True}
+        imageNumerics = ImageNumerics(data, psf, kwargs_numerics)
+        ra_pos = np.array([7.1, 14])
+        dec_pos = np.array([7, 7.32])
+        amp = np.array([10, 10])
+        image = imageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
+        image_subgrid = imageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
+        image_sum = np.sum(image)
+        image_subgrid_sum = np.sum(image_subgrid)
+        npt.assert_almost_equal(image_sum/image_subgrid_sum, 1, decimal=5)
+
+        assert image[7, 14] <= image_subgrid[7, 14]
+        npt.assert_almost_equal(image[0, 0], image_subgrid[0, 0], decimal=8)
+
+
 
 if __name__ == '__main__':
     pytest.main()

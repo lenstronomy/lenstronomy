@@ -22,10 +22,10 @@ class Param(object):
 
         :return:
         """
-        self._lens_model_list = kwargs_model.get('lens_model_list', ['NONE'])
-        source_light_model_list = kwargs_model.get('source_light_model_list', ['NONE'])
-        lens_light_model_list = kwargs_model.get('lens_light_model_list', ['NONE'])
-        point_source_model_list = kwargs_model.get('point_source_model_list', ['NONE'])
+        self._lens_model_list = kwargs_model.get('lens_model_list', [])
+        source_light_model_list = kwargs_model.get('source_light_model_list', [])
+        lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
+        point_source_model_list = kwargs_model.get('point_source_model_list', [])
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
         if kwargs_fixed_source is None:
@@ -102,9 +102,9 @@ class Param(object):
         kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens)
         if self._solver:
             kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
+        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         if bijective is True:
             kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
-        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo

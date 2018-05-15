@@ -100,6 +100,32 @@ class TestParam(object):
                                           kwargs_cosmo={'D_dt': 1000})
         assert param_class.cosmoParams._Ddt_sampling is True
 
+    def test_mass_scaling(self):
+        kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW']}
+        kwargs_constraints = {'mass_scaling': True, 'mass_scaling_list': [False, True, True]}
+        kwargs_fixed_lens = [{}, {'theta_Rs': 0.1}, {'theta_Rs': 0.3}]
+        kwargs_fixed_cosmo = {}
+        param_class = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_cosmo=kwargs_fixed_cosmo)
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
+                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 1., 'center_y': 0},
+                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 0, 'center_y': 1.}]
+        kwargs_source = []
+        kwargs_lens_light = []
+        kwargs_ps = []
+        mass_scale = 2
+        kwargs_cosmo = {'mass_scale': mass_scale}
+        args = param_class.setParams(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=kwargs_cosmo)
+        assert args[-1] == mass_scale
+
+        kwargs_lens, _, _, _, _ = param_class.getParams(args)
+        assert kwargs_lens[0]['theta_E'] == 1
+        assert kwargs_lens[1]['theta_Rs'] == 0.1 * mass_scale
+        assert kwargs_lens[2]['theta_Rs'] == 0.3 * mass_scale
+
+        kwargs_lens, _, _, _, _ = param_class.getParams(args, bijective=True)
+        assert kwargs_lens[0]['theta_E'] == 1
+        assert kwargs_lens[1]['theta_Rs'] == 0.1
+        assert kwargs_lens[2]['theta_Rs'] == 0.3
 
 class TestParamUpdate(object):
     def setup(self):

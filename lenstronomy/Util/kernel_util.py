@@ -52,7 +52,7 @@ def kernel_norm(kernel):
     return kernel
 
 
-def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=1):
+def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
     """
     creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
 

@@ -34,6 +34,7 @@ class PSF(object):
                      \sigma^2_i += ('psf_error_map'_j * point_source_flux)**2
 
 
+
     - 'NONE': default option, results in no convolution, point sources will not be displayed
 
     """

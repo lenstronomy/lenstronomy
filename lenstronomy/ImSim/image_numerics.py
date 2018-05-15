@@ -18,6 +18,7 @@ class ImageNumerics(object):
         Difference to 'mask': Pixels with mask[i,j]==0 will be ray-traced, evaluated and their flux value being
         convolved to enable an impact on other pixels.
 
+        'point_source_subgrid': subgrid resolution of the point source placing
 
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics
@@ -52,9 +53,8 @@ class ImageNumerics(object):
             self._mask = np.ones_like(self._Data.data)
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
-
-
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+        self._point_source_subgrid = kwargs_numerics.get('point_source_subgrid', 3)
 
     @property
     def exposure_map_array(self):
@@ -228,7 +228,7 @@ class ImageNumerics(object):
         image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
         return image
 
-    def point_source_rendering(self, ra_pos, dec_pos, amp):
+    def point_source_rendering_old(self, ra_pos, dec_pos, amp):
         """
 
         :param n_points:
@@ -243,6 +243,39 @@ class ImageNumerics(object):
         for i in range(len(x_pos)):
             grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], amp[i] * psf_point_source)
         return grid2d
+
+    def point_source_rendering(self, ra_pos, dec_pos, amp):
+        """
+
+        :param ra_pos:
+        :param dec_pos:
+        :param amp:
+        :param subgrid:
+        :return:
+        """
+        subgrid = self._point_source_subgrid
+        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
+        # translate coordinates to higher resolution grid
+        x_pos_subgird = x_pos * subgrid + (subgrid - 1) / 2.
+        y_pos_subgrid = y_pos * subgrid + (subgrid - 1) / 2.
+        kernel_point_source_subgrid = self.kernel_point_source_subgrid
+
+        # initialize grid with higher resolution
+        nx, ny = np.shape(self._Data.data)
+        subgrid2d = np.zeros((nx*subgrid, ny*subgrid))
+        # add_layer2image
+        for i in range(len(x_pos)):
+            subgrid2d = image_util.add_layer2image(subgrid2d, x_pos_subgird[i], y_pos_subgrid[i], amp[i] * kernel_point_source_subgrid)
+        # re-size grid to data resolution
+        grid2d = image_util.re_size(subgrid2d, factor=subgrid)
+        return grid2d*subgrid**2
+
+    @property
+    def kernel_point_source_subgrid(self):
+        if not hasattr(self, '_kernel_point_source_subgrid'):
+            self._kernel_point_source_sugrid = kernel_util.subgrid_kernel(kernel=self._PSF.kernel_point_source,
+                                                                          subgrid_res=self._point_source_subgrid)
+        return self._kernel_point_source_sugrid
 
     def psf_error_map(self, ra_pos, dec_pos, amp):
         x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)

@@ -141,7 +141,7 @@ def test_pixel_kernel():
     assert pixel_kernel[4, 4] == kernel[4, 4]
 
     pixel_kernel = kernel_util.pixel_kernel(point_source_kernel=kernel, subgrid_res=11)
-    npt.assert_almost_equal(pixel_kernel[4, 4], 0.44812512806502264, decimal=3)
+    npt.assert_almost_equal(pixel_kernel[4, 4], 0.7438187859168478, decimal=3)
 
 
 def test_cutout_source2():
@@ -152,9 +152,19 @@ def test_cutout_source2():
 
 
 def test_subgrid_kernel():
-    kernel = np.ones((3, 3))
-    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=4, odd=True)
-    assert subgrid_kernel[0,0] == 0.008264462809917356
+
+    kernel = np.zeros((9, 9))
+    kernel[4, 4] = 1
+    subgrid_res = 3
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=subgrid_res, odd=True)
+    kernel_re_sized = image_util.re_size(subgrid_kernel, factor=subgrid_res) *subgrid_res**2
+    #import matplotlib.pyplot as plt
+    #plt.matshow(kernel); plt.show()
+    #plt.matshow(subgrid_kernel); plt.show()
+    #plt.matshow(kernel_re_sized);plt.show()
+    #plt.matshow(kernel_re_sized- kernel);plt.show()
+    npt.assert_almost_equal(kernel_re_sized[4, 4], 1, decimal=2)
+    #assert kernel_re_sized[4, 4] == 1
 
 
 def test_subgrid_rebin():

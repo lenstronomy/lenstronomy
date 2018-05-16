@@ -55,6 +55,8 @@ class ImageNumerics(object):
         self._mask[self._idex_mask_2d == 0] = 0
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
         self._point_source_subgrid = kwargs_numerics.get('point_source_subgrid', 3)
+        if self._point_source_subgrid %2 == 0:
+            raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
 
     @property
     def exposure_map_array(self):

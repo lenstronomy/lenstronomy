@@ -38,6 +38,7 @@ class PJaffe(object):
         rho0 = self.lens.sigma2rho(sigma0, Ra, Rs)
         return self.lens.density(r, rho0, Ra, Rs)
 
+
 class PJaffe_Ellipse(object):
     """
     calss for elliptical pseudo Jaffe lens light

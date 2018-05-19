@@ -351,8 +351,9 @@ class ParamUpdate(object):
             add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
 
         if gamma_fixed is True:
-            if 'gamma' in kwargs_lens[0]:
-                kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
+            if len(kwargs_lens) > 0 :
+                if 'gamma' in kwargs_lens[0]:
+                    kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
 
         return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
 

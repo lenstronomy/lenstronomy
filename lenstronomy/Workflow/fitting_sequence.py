@@ -21,7 +21,7 @@ class FittingSequence(object):
                                kwargs_params=kwargs_params)
         self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
 
-    def fit_sequence(self, fitting_kwargs_list):
+    def fit_sequence(self, fitting_kwargs_list, bijective=True):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
@@ -44,8 +44,9 @@ class FittingSequence(object):
                 self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
             elif fitting_routine in ['align_images']:
                 self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
-        lens_temp = self._param._update_lens_scaling(cosmo_temp, lens_temp)
-        source_temp = self._param.image2source_plane(lens_temp, source_temp)
+        if bijective:
+            lens_temp = self._param._update_lens_scaling(cosmo_temp, lens_temp)
+            source_temp = self._param.image2source_plane(lens_temp, source_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):

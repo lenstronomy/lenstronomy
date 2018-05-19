@@ -14,7 +14,8 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
-    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10, precision_limit=10**(-10), num_iter_max=100):
+    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
+                                   precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True):
         """
         finds image position source position and lense model
 
@@ -37,8 +38,8 @@ class LensEquationSolver(object):
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
         x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
-        mag = self.lensModel.magnification(x_mins, y_mins, kwargs_lens)
-        mag = np.abs(mag)
+        #mag = self.lensModel.magnification(x_mins, y_mins, kwargs_lens)
+        #mag = np.abs(mag)
         #print(x_mins, y_mins, 'before requirement of min_distance')
         #x_mins = x_mins[delta_map*mag <= min_distance*5]
         #y_mins = y_mins[delta_map*mag <= min_distance*5]
@@ -52,9 +53,9 @@ class LensEquationSolver(object):
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
         #print(x_mins, y_mins, 'after overlap removals')
-        x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+        if arrival_time_sort is True:
+            x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
-
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10), num_iter_max=100):

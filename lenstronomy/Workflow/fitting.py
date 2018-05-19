@@ -25,19 +25,19 @@ class Fitting(object):
         if kwargs_model.get('lens_model_list', None) is not None:
             self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = kwargs_params['lens_model']
         else:
-            self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = [{}], [{}], [{}], [{}], [{}]
+            self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = [], [], [], [], []
         if kwargs_model.get('source_light_model_list', None) is not None:
             self._source_init, self._source_sigma, self._source_fixed, self._source_lower, self._source_upper = kwargs_params['source_model']
         else:
-            self._source_init, self._source_sigma, self._source_fixed, self._source_lower, self._source_upper = [{}], [{}], [{}], [{}], [{}]
+            self._source_init, self._source_sigma, self._source_fixed, self._source_lower, self._source_upper = [], [], [], [], []
         if kwargs_model.get('lens_light_model_list', None) is not None:
             self._lens_light_init, self._lens_light_sigma, self._lens_light_fixed, self._lens_light_lower, self._lens_light_upper = kwargs_params['lens_light_model']
         else:
-            self._lens_light_init, self._lens_light_sigma, self._lens_light_fixed, self._lens_light_lower, self._lens_light_upper = [{}], [{}], [{}], [{}], [{}]
+            self._lens_light_init, self._lens_light_sigma, self._lens_light_fixed, self._lens_light_lower, self._lens_light_upper = [], [], [], [], []
         if kwargs_model.get('point_source_model_list', None) is not None:
             self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = kwargs_params['point_source_model']
         else:
-            self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = [{}], [{}], [{}], [{}], [{}]
+            self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = [], [], [], [], []
         if self.kwargs_likelihood.get('time_delay_likelihood', False) is True or self.kwargs_constraints.get('mass_scaling', False) is True:
             self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = kwargs_params['cosmography']
         else:

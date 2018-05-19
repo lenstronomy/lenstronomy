@@ -24,13 +24,15 @@ class ImageModel(object):
         """
         self.PSF = psf_class
         self.Data = data_class
-        self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
         self.kwargs_numerics = kwargs_numerics
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+            self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
+        else:
+            self._psf_error_map = False
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
 

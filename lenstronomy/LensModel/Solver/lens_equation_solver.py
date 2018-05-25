@@ -93,7 +93,8 @@ class LensEquationSolver(object):
             solver_precision[i] = delta
         return x_mins, y_mins, solver_precision
 
-    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=10):
+    def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5,
+                        precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True):
         """
 
         :param sourcePos_x:
@@ -105,7 +106,9 @@ class LensEquationSolver(object):
         :param kwargs_lens:
         :return:
         """
-        x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, precision_limit, num_iter_max)
+        x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance,
+                                                         search_window, precision_limit, num_iter_max,
+                                                         arrival_time_sort=arrival_time_sort)
         mag_list = []
         for i in range(len(x_mins)):
             mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)

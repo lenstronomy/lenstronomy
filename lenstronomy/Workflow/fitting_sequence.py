@@ -44,8 +44,8 @@ class FittingSequence(object):
                 self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
             elif fitting_routine in ['align_images']:
                 self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
-        if bijective:
-            lens_temp = self._param._update_lens_scaling(cosmo_temp, lens_temp)
+        if bijective is False:
+            lens_temp = self._param._update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
             source_temp = self._param.image2source_plane(lens_temp, source_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
@@ -136,13 +136,14 @@ class FittingSequence(object):
 
     def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         lens_updated = self._param._update_lens_scaling(cosmo_input, lens_input)
+        source_updated = self._param.image2source_plane(lens_updated, source_input)
         mpi = fitting_kwargs.get('mpi', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
         n_particles = fitting_kwargs.get('n_particles', 10)
         n_iterations = fitting_kwargs.get('n_iterations', 10)
         lowerLimit = fitting_kwargs.get('lower_limit_shift', -0.2)
         upperLimit = fitting_kwargs.get('upper_limit_shift', 0.2)
-        source_updated = self._param.image2source_plane(lens_updated, source_input)
+
         for i in range(len(self.multi_band_list)):
             if compute_bool[i] is True:
                     kwargs_data = self.multi_band_list[i][0]

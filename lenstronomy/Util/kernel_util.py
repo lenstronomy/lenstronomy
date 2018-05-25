@@ -54,12 +54,13 @@ def kernel_norm(kernel):
 
 def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
     """
-    creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel
+    creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an
+    iterative approach
 
     :param kernel: initial kernel
     :param subgrid_res: subgrid resolution required
     :return: kernel with higher resolution (larger)
-        """
+    """
     subgrid_res = int(subgrid_res)
     if subgrid_res == 1:
         return kernel
@@ -81,18 +82,19 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
     x_out = np.linspace(d_x_new/2., 1-d_x_new/2., nx_new)
     y_out = np.linspace(d_y_new/2., 1-d_y_new/2., ny_new)
     kernel_input = copy.deepcopy(kernel)
+    kernel_subgrid = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
+    norm_subgrid = np.sum(kernel_subgrid)
+    kernel_subgrid = kernel_norm(kernel_subgrid)
     for i in range(max(num_iter, 1)):
-        out_values = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
-        kernel_subgrid = out_values
-        kernel_subgrid = kernel_norm(kernel_subgrid)
         if subgrid_res % 2 == 0:
             kernel_pixel = averaging_odd_kernel(kernel_subgrid, subgrid_res)
         else:
             kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
         kernel_pixel = kernel_norm(kernel_pixel)
         delta = kernel - kernel_pixel
-        kernel_input += delta
-        kernel_input = kernel_norm(kernel_input)
+        delta_subgrid = image_util.re_size_array(x_in, y_in, delta, x_out, y_out)/norm_subgrid
+        kernel_subgrid += delta_subgrid
+        kernel_subgrid = kernel_norm(kernel_subgrid)
     return kernel_subgrid
 
 

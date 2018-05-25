@@ -114,6 +114,43 @@ def test_de_shift():
     npt.assert_almost_equal(kernel_de_shifted[2, 2], kernel[2, 2], decimal=2)
 
 
+def test_deshift_subgrid():
+    # test the de-shifting with a sharpened subgrid kernel
+    kernel_size = 5
+    subgrid = 3
+    fwhm = 1
+    kernel_subgrid_size = kernel_size * subgrid
+    kernel_subgrid = np.zeros((kernel_subgrid_size, kernel_subgrid_size))
+    kernel_subgrid[7, 7] = 2
+    kernel_subgrid = kernel_util.kernel_gaussian(kernel_subgrid_size, 1./subgrid, fwhm=fwhm)
+
+    kernel = util.averaging(kernel_subgrid, kernel_subgrid_size, kernel_size)
+
+    shift_x = 0.18
+    shift_y = 0.2
+    shift_x_subgird = shift_x * subgrid
+    shift_y_subgrid = shift_y * subgrid
+    kernel_shifted_subgrid = interp.shift(kernel_subgrid, [-shift_y_subgrid, -shift_x_subgird], order=1)
+    kernel_shifted = util.averaging(kernel_shifted_subgrid, kernel_subgrid_size, kernel_size)
+    kernel_shifted_highres = kernel_util.subgrid_kernel(kernel_shifted, subgrid_res=subgrid, num_iter=1)
+    """
+
+
+    import matplotlib.pyplot as plt
+    plt.matshow(kernel_subgrid)
+    plt.show()
+    plt.matshow(kernel_shifted_subgrid)
+    plt.show()
+    plt.matshow(kernel_shifted)
+    plt.show()
+    plt.matshow(kernel_shifted_highres)
+    plt.show()
+
+    """
+    #npt.assert_almost_equal(kernel_shifted_highres[7, 7], kernel_shifted_subgrid[7, 7], decimal=10)
+
+
+
 def test_shift_long_dist():
     """
     input is a shifted kernel by more than 1 pixel

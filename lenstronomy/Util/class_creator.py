@@ -48,6 +48,7 @@ def creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
         lens_light_model_class = None
     if 'point_source_model_list' in kwargs_model:
         point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []),
+                                         lensModel=lens_model_class,
                                          fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
                                          additional_images_list=kwargs_model.get('additional_images_list', None),
                                          min_distance=kwargs_model.get('min_distance', 0.01),

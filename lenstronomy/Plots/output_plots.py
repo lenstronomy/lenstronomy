@@ -68,7 +68,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     return ax
 
 
-def image_position_plot(ax, coords, ra_image, dec_image, color='w'):
+def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
     """
 
     :param ax:
@@ -80,12 +80,13 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w'):
     if len(ra_image) > 0:
         if len(ra_image[0]) > 0:
             x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
-            abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
+            if image_name_list is None:
+                image_name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
             for i in range(len(x_image)):
                 x_ = (x_image[i] + 0.5) * deltaPix
                 y_ = (y_image[i] + 0.5) * deltaPix
                 ax.plot(x_, y_, 'or')
-                ax.text(x_, y_, abc_list[i], fontsize=20, color=color)
+                ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
     return ax
 
 
@@ -435,7 +436,7 @@ class LensModelPlot(object):
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def magnification_plot(self, ax, v_min=-10, v_max=10, with_caustics=False, **kwargs):
+    def magnification_plot(self, ax, v_min=-10, v_max=10, with_caustics=False, image_name_list=None, **kwargs):
         """
 
         :param ax:
@@ -468,11 +469,11 @@ class LensModelPlot(object):
             plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        image_position_plot(ax, self._coords, ra_image, dec_image, color='k')
+        image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
-    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False):
+    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False, image_name_list=None):
         """
 
         :param kwargs_lens:
@@ -505,7 +506,7 @@ class LensModelPlot(object):
             plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        image_position_plot(ax, self._coords, ra_image, dec_image)
+        image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 

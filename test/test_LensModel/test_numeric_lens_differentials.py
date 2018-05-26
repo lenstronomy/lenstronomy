@@ -135,12 +135,12 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_sersic(self):
-        kwargs = {'n_sersic': .5, 'r_eff': 1.5, 'k_eff': 0.3}
+        kwargs = {'n_sersic': .5, 'R_sersic': 1.5, 'k_eff': 0.3}
         lens_model = ['SERSIC']
         self.assert_differentials(lens_model, kwargs)
 
     def test_sersic_ellipse(self):
-        kwargs = {'n_sersic': 2., 'r_eff': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
+        kwargs = {'n_sersic': 2., 'R_sersic': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
         lens_model = ['SERSIC_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 

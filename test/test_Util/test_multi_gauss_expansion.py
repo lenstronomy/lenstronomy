@@ -181,7 +181,7 @@ class TestMGE(object):
 
     def test_nfw_sersic(self):
         kwargs_lens_nfw = {'theta_Rs': 1.4129647849966354, 'Rs': 7.0991113634274736}
-        kwargs_lens_sersic = {'k_eff': 0.24100561407593576, 'n_sersic': 1.8058507329346063, 'r_eff': 1.0371803141813705}
+        kwargs_lens_sersic = {'k_eff': 0.24100561407593576, 'n_sersic': 1.8058507329346063, 'R_sersic': 1.0371803141813705}
         from lenstronomy.LensModel.Profiles.nfw import NFW
         from lenstronomy.LensModel.Profiles.sersic import Sersic
         nfw = NFW()

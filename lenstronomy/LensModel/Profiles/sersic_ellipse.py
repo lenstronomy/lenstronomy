@@ -14,16 +14,16 @@ class SersicEllipse(object):
         self.sersic = Sersic()
         self._diff = 0.000001
 
-    def function(self, x, y, n_sersic, r_eff, k_eff, e1, e2, center_x=0, center_y=0):
+    def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
         """
         returns Gaussian
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
-        f_ = self.sersic.function(x_, y_, n_sersic, r_eff, k_eff)
+        f_ = self.sersic.function(x_, y_, n_sersic, R_sersic, k_eff)
         return f_
 
-    def derivatives(self, x, y, n_sersic, r_eff, k_eff, e1, e2, center_x=0, center_y=0):
+    def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
         """
         returns df/dx and df/dy of the function
         """
@@ -32,21 +32,21 @@ class SersicEllipse(object):
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
         x_, y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
-        f_x_prim, f_y_prim = self.sersic.derivatives(x_, y_, n_sersic, r_eff, k_eff)
+        f_x_prim, f_y_prim = self.sersic.derivatives(x_, y_, n_sersic, R_sersic, k_eff)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
         f_x = cos_phi*f_x_prim-sin_phi*f_y_prim
         f_y = sin_phi*f_x_prim+cos_phi*f_y_prim
         return f_x, f_y
 
-    def hessian(self, x, y, n_sersic, r_eff, k_eff, e1, e2, center_x=0, center_y=0):
+    def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        alpha_ra, alpha_dec = self.derivatives(x, y, n_sersic, r_eff, k_eff, e1, e2, center_x, center_y)
+        alpha_ra, alpha_dec = self.derivatives(x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, n_sersic, r_eff, k_eff, e1, e2, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, n_sersic, r_eff, k_eff, e1, e2, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff

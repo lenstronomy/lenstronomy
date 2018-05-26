@@ -174,11 +174,11 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['n_sersic'] = kwargs_fixed['n_sersic']
-                if not 'r_eff' in kwargs_fixed:
-                    kwargs['r_eff'] = args[i]
+                if not 'R_sersic' in kwargs_fixed:
+                    kwargs['R_sersic'] = args[i]
                     i += 1
                 else:
-                    kwargs['r_eff'] = kwargs_fixed['r_eff']
+                    kwargs['R_sersic'] = kwargs_fixed['R_sersic']
             if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     kwargs['k_eff'] = args[i]
@@ -314,8 +314,8 @@ class LensParam(object):
             if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'n_sersic' in kwargs_fixed:
                     args.append(kwargs['n_sersic'])
-                if not 'r_eff' in kwargs_fixed:
-                    args.append(kwargs['r_eff'])
+                if not 'R_sersic' in kwargs_fixed:
+                    args.append(kwargs['R_sersic'])
             if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     args.append(kwargs['k_eff'])
@@ -449,9 +449,9 @@ class LensParam(object):
                 if not 'n_sersic' in kwargs_fixed:
                     mean.append(kwargs_mean['n_sersic'])
                     sigma.append(kwargs_mean['n_sersic_sigma'])
-                if not 'r_eff' in kwargs_fixed:
-                    mean.append(kwargs_mean['r_eff'])
-                    sigma.append(kwargs_mean['r_eff_sigma'])
+                if not 'R_sersic' in kwargs_fixed:
+                    mean.append(kwargs_mean['R_sersic'])
+                    sigma.append(kwargs_mean['R_sersic_sigma'])
             if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     mean.append(kwargs_mean['k_eff'])
@@ -588,9 +588,9 @@ class LensParam(object):
                 if not 'n_sersic' in kwargs_fixed:
                     num += 1
                     list.append('n_sersic_lens')
-                if not 'r_eff' in kwargs_fixed:
+                if not 'R_sersic' in kwargs_fixed:
                     num += 1
-                    list.append('r_eff_lens')
+                    list.append('R_sersic_lens')
             if model in ['SERSIC', 'SERSIC_ELLIPSE']:
                 if not 'k_eff' in kwargs_fixed:
                     num += 1

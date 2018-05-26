@@ -25,8 +25,8 @@ class TestParam(object):
             {'Rs': 1, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW'
             {'Rs': 1, 'theta_Rs': 0.1, 'r_trunc': 10, 'center_x': 0, 'center_y': 0},  # 'TNFW'
             {'Rs': 1, 'e1': 0, 'e2': 0, 'theta_Rs': 0.1, 'center_x': 0, 'center_y': 0},  # 'NFW_ELLIPSE
-            {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-            {'r_eff': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'SERSIC_ELLIPSE'
+            {'R_sersic': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
+            {'R_sersic': 1, 'n_sersic': 2, 'k_eff': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'SERSIC_ELLIPSE'
             {'sigma0': 0.5, 'Ra': 0.7, 'Rs': 0.2, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
             {'sigma0': 0.5, 'Ra': 0.7, 'Rs': 0.2, 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0},  # 'PJAFFE_ELLIPSE'
             {'sigma0': 0.5, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
@@ -50,8 +50,8 @@ class TestParam(object):
             {'Rs_sigma': 1, 'theta_Rs_sigma': 0.1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'NFW'
             {'Rs_sigma': 1, 'theta_Rs_sigma': 0.1, 'r_trunc_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'TNFW'
             {'Rs_sigma': 1, 'ellipse_sigma': 0.1, 'theta_Rs_sigma': 0.1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'NFW_ELLIPSE
-            {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SERSIC'
-            {'r_eff_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},
+            {'R_sersic_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SERSIC'
+            {'R_sersic_sigma': 1, 'n_sersic_sigma': 2, 'k_eff_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},
             # 'SERSIC_ELLIPSE'
             {'sigma0_sigma': 0.5, 'Ra_sigma': 0.7, 'Rs_sigma': 0.2, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'PJAFFE'
             {'sigma0_sigma': 0.5, 'Ra_sigma': 0.7, 'Rs_sigma': 0.2, 'center_x_sigma': 0, 'center_y_sigma': 00, 'ellipse_sigma': 0.1},

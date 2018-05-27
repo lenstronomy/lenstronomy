@@ -87,13 +87,16 @@ class Interpol_func(object):
                     f_xy[i] = self.f_xy_interp(y[i], x[i])
         return f_xx, f_yy, f_xy
 
-    def do_interp(self, x_grid, y_grid, f_, f_x, f_y, f_xx, f_yy, f_xy):
+    def do_interp(self, x_grid, y_grid, f_, f_x, f_y, f_xx=None, f_yy=None, f_xy=None):
         self.f_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_, kx=1, ky=1, s=0)
         self.f_x_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_x, kx=1, ky=1, s=0)
         self.f_y_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_y, kx=1, ky=1, s=0)
-        self.f_xx_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xx, kx=1, ky=1, s=0)
-        self.f_xy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xy, kx=1, ky=1, s=0)
-        self.f_yy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_yy, kx=1, ky=1, s=0)
+        if f_xx is not None:
+            self.f_xx_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xx, kx=1, ky=1, s=0)
+        if f_xy is not None:
+            self.f_xy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xy, kx=1, ky=1, s=0)
+        if f_yy is not None:
+            self.f_yy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_yy, kx=1, ky=1, s=0)
 
     def _check_interp(self, x_grid, y_grid, f_, f_x, f_y, f_xx, f_yy, f_xy, force=False):
         """

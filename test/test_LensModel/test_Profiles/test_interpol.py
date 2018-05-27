@@ -113,6 +113,11 @@ class TestInterpol(object):
         npt.assert_almost_equal(f_yy, 0.063245553203367583, decimal=8)
         npt.assert_almost_equal(f_xy, -0.18973665961010275, decimal=8)
 
+        x_grid, y_grid = util.make_grid(10, deltaPix)
+        f_xx, f_yy, f_xy = interp_func.hessian(x_grid, y_grid, scale_factor=1., **kwargs_interp)
+        npt.assert_almost_equal(f_xx[0], 0, decimal=2)
+
+
 
 if __name__ == '__main__':
     pytest.main("-k TestSourceModel")

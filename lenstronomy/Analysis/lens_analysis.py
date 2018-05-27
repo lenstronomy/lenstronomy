@@ -178,3 +178,49 @@ class LensAnalysis(object):
             for i in range(len(error_map)):
                 error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return error_map
+
+    def light2mass_model_conversion(self, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
+        """
+        takes a lens light model and turns it numerically in a lens model
+        (with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.
+
+        :param kwargs_lens_light: lens light keyword argument list
+        :param numPix: number of pixels per axis for the return interpolation
+        :param deltaPix: interpolation/pixel size
+        :param center_x: center of the grid
+        :param center_y: center of the grid
+        :param subgrid: subgrid for the numerical integrals
+        :return:
+        """
+        # make sugrid
+        x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix*2, deltapix=deltaPix, subgrid_res=subgrid_res)
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        # compute light on the subgrid
+        flux = self.LensLightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
+        flux /= np.mean(flux)
+        from lenstronomy.LensModel.numerical_profile_integrals import ConvergenceIntegrals
+        integral = ConvergenceIntegrals()
+
+        # compute lensing quantities with subgrid
+        convergence_sub = flux
+        f_x_sub, f_y_sub = integral.deflection_from_kappa(convergence_sub, x_grid_sub, y_grid_sub,
+                                                          deltaPix=deltaPix/float(subgrid_res))
+        f_sub = integral.potential_from_kappa(convergence_sub, x_grid_sub, y_grid_sub,
+                                                          deltaPix=deltaPix/float(subgrid_res))
+        # interpolation function on lensing quantities
+        x_axes_sub, y_axes_sub = util.get_axes(x_grid_sub, y_grid_sub)
+        from lenstronomy.LensModel.Profiles.interpol import Interpol_func
+        interp_func = Interpol_func()
+        interp_func.do_interp(x_axes_sub, y_axes_sub, f_sub, f_x_sub, f_y_sub)
+        # compute lensing quantities on sparser grid
+        x_axes, y_axes = util.get_axes(x_grid, y_grid)
+        f_ = interp_func.function(x_grid, y_grid)
+        f_x, f_y = interp_func.derivatives(x_grid, y_grid)
+        # numerical differentials for second order differentials
+        from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
+        lens_differential = NumericLens(lens_model_list=['INTERPOL'])
+        kwargs = [{'grid_interp_x': x_axes_sub, 'grid_interp_y': y_axes_sub, 'f_': f_sub,
+                   'f_x': f_x_sub, 'f_y': f_y_sub}]
+        f_xx, f_xy, f_yx, f_yy = lens_differential.hessian(x_grid, y_grid, kwargs)
+
+        return x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy

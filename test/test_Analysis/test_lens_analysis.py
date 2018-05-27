@@ -122,6 +122,39 @@ class TestLensAnalysis(object):
         assert len(flux_list) == 1
         npt.assert_almost_equal(flux_list[0], 16, decimal=8)
 
+    def test_light2mass_conversion(self):
+        numPix = 100
+        deltaPix = 0.05
+        kwargs_options = {'lens_light_model_internal_bool': [True, True],
+                          'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
+        kwargs_lens_light = [{'R_sersic': 0.5, 'n_sersic': 4, 'I0_sersic': 2, 'e1': 0, 'e2': 0.05},
+                             {'R_sersic': 1.5, 'n_sersic': 1, 'I0_sersic': 2}]
+        lensAnalysis = LensAnalysis(kwargs_options)
+        x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = lensAnalysis.light2mass_model_conversion(
+            kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix)
+        print(np.shape(f_x), 'test shape')
+        from lenstronomy.LensModel.lens_model import LensModel
+        import lenstronomy.Util.util as util
+        lensModel = LensModel(lens_model_list=['INTERPOL_SCALED'])
+        kwargs_lens = [{'scale_factor': 1, 'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
+                   'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
+                   'f_yy': util.array2image(f_yy), 'f_xy': util.array2image(f_xy)}]
+        import lenstronomy.Util.util as util
+        x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix)
+        kappa = lensModel.kappa(x_grid, y_grid, kwargs=kwargs_lens)
+        kappa = util.array2image(kappa)
+        kappa /= kappa[int(numPix/2.), int(numPix/2.)]
+        flux = lensAnalysis.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light)
+        flux = util.array2image(flux)
+        flux /= flux[int(numPix/2.), int(numPix/2.)]
+        #import matplotlib.pyplot as plt
+        #plt.matshow(flux-kappa)
+        #plt.colorbar()
+        #plt.show()
+        max_diff = np.max(np.abs(flux-kappa))
+        assert max_diff < 0.1
+        npt.assert_almost_equal(flux[0, 0], kappa[0, 0], decimal=2)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -130,7 +130,7 @@ class TestLensAnalysis(object):
         kwargs_lens_light = [{'R_sersic': 0.5, 'n_sersic': 4, 'I0_sersic': 2, 'e1': 0, 'e2': 0.05},
                              {'R_sersic': 1.5, 'n_sersic': 1, 'I0_sersic': 2}]
         lensAnalysis = LensAnalysis(kwargs_options)
-        x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = lensAnalysis.light2mass_model_conversion(
+        x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = lensAnalysis.light2mass_model_conversion(lens_light_model_list=['SERSIC_ELLIPSE', 'SERSIC'],
             kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix)
         print(np.shape(f_x), 'test shape')
         from lenstronomy.LensModel.lens_model import LensModel

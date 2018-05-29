@@ -179,7 +179,8 @@ class LensAnalysis(object):
                 error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return error_map
 
-    def light2mass_model_conversion(self, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
+    @staticmethod
+    def light2mass_model_conversion(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
         """
         takes a lens light model and turns it numerically in a lens model
         (with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.
@@ -194,10 +195,14 @@ class LensAnalysis(object):
         """
         # make sugrid
         x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix*2, deltapix=deltaPix, subgrid_res=subgrid_res)
+        import lenstronomy.Util.mask as mask_util
+        mask = mask_util.mask_sphere(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         # compute light on the subgrid
-        flux = self.LensLightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
-        flux /= np.mean(flux)
+        lightModel = LightModel(light_model_list=lens_light_model_list)
+        flux = lightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
+        flux_norm = np.sum(flux[mask == 1]) / np.sum(mask)
+        flux /= flux_norm
         from lenstronomy.LensModel.numerical_profile_integrals import ConvergenceIntegrals
         integral = ConvergenceIntegrals()
 

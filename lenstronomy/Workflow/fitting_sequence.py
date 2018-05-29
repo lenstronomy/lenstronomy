@@ -47,7 +47,7 @@ class FittingSequence(object):
         if bijective is False:
             lens_temp = self._param._update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
             source_temp = self._param.image2source_plane(lens_temp, source_temp)
-        return lens_temp, source_temp, lens_light_temp, ps_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
+        return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         """

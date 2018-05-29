@@ -4,6 +4,7 @@ import scipy.interpolate
 import numpy as np
 
 import lenstronomy.Util.util as util
+import om10
 
 class Interpol_func(object):
     """

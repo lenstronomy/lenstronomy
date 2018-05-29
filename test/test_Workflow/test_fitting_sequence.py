@@ -138,7 +138,7 @@ class TestFittingSequence(object):
         multi_band_list = [image_band]
         fittingSequence = FittingSequence(multi_band_list, self.kwargs_model, self.kwargs_constraints, self.kwargs_likelihood, kwargs_params)
 
-        lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=[])
+        lens_temp, source_temp, lens_light_temp, else_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=[])
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
 
         n_p = 2
@@ -149,8 +149,9 @@ class TestFittingSequence(object):
             {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2},
             {'fitting_routine': 'align_images', 'lower_limit_shift': -0.1, 'upper_limit_shift': 0.1, 'n_particles': 2, 'n_iterations': 2},
         ]
-        lens_temp, source_temp, lens_light_temp, else_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
+        lens_temp, source_temp, lens_light_temp, else_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -106,12 +106,6 @@ class LightModel(object):
                 kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
-            elif model in ['BULDGE_DISK']:
-                new = {'I0_b': 1, 'I0_d': 1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += self.func_list[k].function_split(x, y, **kwargs_new)
-                n += 2
             elif model in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
                 new = {'sigma0': 1}
                 kwargs_new = kwargs_list[k].copy()

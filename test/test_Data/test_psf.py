@@ -82,6 +82,13 @@ class TestData(object):
         npt.assert_almost_equal(min_diff, 0, decimal=3)
         npt.assert_almost_equal(max_diff, 0, decimal=3)
 
+    def test_fwhm(self):
+        deltaPix = 0.05
+        fwhm = 0.1
+        kwargs = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncate': 5, 'pixel_size': deltaPix}
+        fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
+        assert fwhm_compute == fwhm
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -39,7 +39,10 @@ class PsfFitting(object):
         kernel_size = len(kernel_old)
         kernelsize_small = len(kernel_small)
         kwargs_numerics_psf = copy.deepcopy(self._kwargs_numerics)
-        kwargs_numerics_psf['psf_error_map'] = False
+        #kwargs_numerics_psf['psf_error_map'] = False
+        kwargs_psf_new = copy.deepcopy(kwargs_psf)
+        if 'psf_error_map' in kwargs_psf_new:
+            kwargs_psf_new['psf_error_map'] /= 10
         self._image_model_class.update_numerics(kwargs_numerics_psf)
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
@@ -48,7 +51,7 @@ class PsfFitting(object):
         x_grid, y_grid = self._image_model_class.Data.coordinates
         x_grid = util.image2array(x_grid)
         y_grid = util.image2array(y_grid)
-        deltaPix = self._image_model_class.Data.deltaPix
+        #deltaPix = self._image_model_class.Data.deltaPix
         #fwhm = self._image_model_class.PSF.psf_fwhm(kwargs_psf, deltaPix)
         radius = kwargs_psf.get("block_neighbour", 0.) / 2.
         mask_point_source_list = self.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
@@ -59,21 +62,22 @@ class PsfFitting(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
                                                  sigma_bkg=self._image_model_class.Data.background_rms, factor=factor)
         kernel_new_small = copy.deepcopy(kernel_new)
-        kernel_new_small = kernel_util.pixel_kernel(kernel_new_small, subgrid_res=3)
+        kernel_new_small = kernel_util.pixel_kernel(kernel_new_small, subgrid_res=1)
         kernel_new_small = kernel_util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
-        kwargs_psf_new = copy.deepcopy(kwargs_psf)
+
         if not self._kwargs_numerics.get('psf_keep_small', False):
             kwargs_psf_new['kernel_pixel'] = kernel_new_small
         kwargs_psf_new['kernel_point_source'] = kernel_new
-
+        if 'psf_error_map' in kwargs_psf_new:
+            kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(kwargs_psf_new))
         self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                kwargs_lens_light, kwargs_ps)
-        if not self._kwargs_numerics.get('psf_keep_error_map', False):
-            kwargs_psf_new['psf_error_map'] = error_map
-        return kwargs_psf_new, logL_after
+        #if not self._kwargs_numerics.get('psf_keep_error_map', False):
+        #    kwargs_psf_new['psf_error_map'] = error_map
+        return kwargs_psf_new, logL_after, error_map
 
     def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light,
                    kwargs_ps, factor=1, num_iter=10, symmetry=1, verbose=True, no_break=False):
@@ -93,7 +97,10 @@ class PsfFitting(object):
         self._image_model_class.PointSource.set_save_cache(True)
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         kwargs_psf_final = copy.deepcopy(kwargs_psf)
-
+        if 'psf_error_map' in kwargs_psf:
+            error_map = kwargs_psf['psf_error_map']
+        else:
+            error_map = 0
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         self._image_model_class.update_numerics(self._kwargs_numerics)
@@ -102,7 +109,7 @@ class PsfFitting(object):
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, logL_after = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,  factor=factor, symmetry=symmetry)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 logL_best = logL_after
@@ -115,6 +122,8 @@ class PsfFitting(object):
         if verbose:
             print("iteration of step %s gave best reconstruction." % i_best)
             print("log likelihood before: %s and log likelihood after: %s" % (logL_before, logL_best))
+        if not self._kwargs_numerics.get('psf_keep_error_map', False):
+            kwargs_psf_new['psf_error_map'] = error_map
         return kwargs_psf_final
 
     def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,
@@ -216,7 +225,7 @@ class PsfFitting(object):
 
         kernel_bkg = copy.deepcopy(kernel_return)
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
-        error_map = np.var(kernel_list_new, axis=0)/(kernel_bkg)**2
+        error_map = np.var(kernel_list_new, axis=0)/(kernel_bkg)**2 / 2.
         return kernel_return, error_map
 
     def mask_point_source(self, x_pos, y_pos, x_grid, y_grid, radius, i=0):

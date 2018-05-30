@@ -95,7 +95,7 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        kwargs_psf_return, improved_bool = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_lens, self.kwargs_source,
+        kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_lens, self.kwargs_source,
                                                                        self.kwargs_lens_light, self.kwargs_ps,
                                                                        factor=0.5, symmetry=1)
         assert improved_bool

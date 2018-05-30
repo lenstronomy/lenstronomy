@@ -52,7 +52,7 @@ class PSF(object):
             if 'kernel_pixel' in kwargs_psf:
                 self._kernel_pixel = kwargs_psf['kernel_pixel']
             else:
-                self._kernel_pixel = kernel_util.pixel_kernel(self._kernel_point_source, subgrid_res=7)
+                self._kernel_pixel = kernel_util.pixel_kernel(self._kernel_point_source, subgrid_res=1)
         elif self.psf_type == 'NONE':
             self._kernel_point_source = np.zeros((3, 3))
         else:

@@ -4,14 +4,15 @@ import scipy.interpolate
 import numpy as np
 
 import lenstronomy.Util.util as util
-import om10
+
 
 class Interpol_func(object):
     """
     class which uses an interpolation of a lens model and its first and second order derivatives
     """
-    def __init__(self, grid=True):
+    def __init__(self, grid=True, min_grid_number=100):
         self._grid = grid
+        self._min_grid_number =min_grid_number
 
     def function(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
@@ -21,12 +22,12 @@ class Interpol_func(object):
             f_ = self.f_interp(y, x)
             return f_[0][0]
         else:
-            if self._grid:
+            if self._grid and n >= self._min_grid_number:
                 x_axes, y_axes = util.get_axes(x, y)
                 f_ = self.f_interp(y_axes, x_axes)
                 f_ = util.image2array(f_)
             else:
-                n = len(x)
+                #n = len(x)
                 f_ = np.zeros(n)
                 for i in range(n):
                     f_[i] = self.f_interp(y[i], x[i])
@@ -44,14 +45,14 @@ class Interpol_func(object):
             f_y = self.f_y_interp(y, x)
             return f_x[0][0], f_y[0][0]
         else:
-            if self._grid:
+            if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
                 f_x = self.f_x_interp(y_, x_)
                 f_y = self.f_y_interp(y_, x_)
                 f_x = util.image2array(f_x)
                 f_y = util.image2array(f_y)
             else:
-                n = len(x)
+                #n = len(x)
                 f_x, f_y = np.zeros(n), np.zeros(n)
                 for i in range(n):
                     f_x[i] = self.f_x_interp(y[i], x[i])
@@ -71,7 +72,7 @@ class Interpol_func(object):
             f_xy = self.f_xy_interp(y, x)
             return f_xx[0][0], f_yy[0][0], f_xy[0][0]
         else:
-            if self._grid:
+            if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
                 f_xx = self.f_xx_interp(y_, x_)
                 f_yy = self.f_yy_interp(y_, x_)
@@ -80,7 +81,7 @@ class Interpol_func(object):
                 f_yy = util.image2array(f_yy)
                 f_xy = util.image2array(f_xy)
             else:
-                n = len(x)
+                #n = len(x)
                 f_xx, f_yy, f_xy = np.zeros(n), np.zeros(n), np.zeros(n)
                 for i in range(n):
                     f_xx[i] = self.f_xx_interp(y[i], x[i])
@@ -130,8 +131,8 @@ class Interpol_func_scaled(object):
     class for handling an interpolated lensing map and has the freedom to scale its lensing effect.
     Applications are e.g. mass to light ratio.
     """
-    def __init__(self, grid=True):
-        self.interp_func = Interpol_func(grid)
+    def __init__(self, grid=True, min_grid_number=100):
+        self.interp_func = Interpol_func(grid, min_grid_number=min_grid_number)
 
     def function(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         f_out = self.interp_func.function(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)

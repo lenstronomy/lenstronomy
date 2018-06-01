@@ -48,10 +48,11 @@ class TestMultiPlane(object):
         lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        f_xx_simple, f_xy_simple, f_yy_simple = lensModel.hessian(1, 0, kwargs_lens)
-        f_xx_multi, f_xy_multi, f_yy_multi = lensModelMutli.hessian(1, 0, kwargs_lens, diff=0.000001)
+        f_xx_simple, f_xy_simple, f_yx_simple, f_yy_simple = lensModel.hessian(1, 0, kwargs_lens)
+        f_xx_multi, f_xy_multi, f_yx_multi, f_yy_multi = lensModelMutli.hessian(1, 0, kwargs_lens, diff=0.000001)
         npt.assert_almost_equal(f_xx_simple, f_xx_multi, decimal=5)
         npt.assert_almost_equal(f_xy_simple, f_xy_multi, decimal=5)
+        npt.assert_almost_equal(f_yx_simple, f_yx_multi, decimal=5)
         npt.assert_almost_equal(f_yy_simple, f_yy_multi, decimal=5)
 
     def test_sis_kappa_gamma_mag(self):

@@ -37,11 +37,12 @@ class TestNumerics(object):
 
     def test_differentials(self):
         x, y = 1., 1.
-        f_xx, f_xy, f_yy = self.lensModel.hessian(x, y, self.kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x, y, self.kwargs)
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = self.lensModelNum.hessian(x, y, self.kwargs)
         assert f_xy_num == f_yx_num
         npt.assert_almost_equal(f_xx_num, f_xx, decimal=5)
         npt.assert_almost_equal(f_xy_num, f_xy, decimal=5)
+        npt.assert_almost_equal(f_yx_num, f_yx, decimal=5)
         npt.assert_almost_equal(f_yy_num, f_yy, decimal=5)
 
 
@@ -57,7 +58,7 @@ class TestNumericsProfile(object):
         x, y = 1., 2.
         lensModel = LensModel(lens_model)
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
-        f_xx, f_xy, f_yy = lensModel.hessian(x, y, [kwargs])
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
         f_x_num, f_y_num = lensModelNum.lens_model.alpha(x, y, [kwargs])
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = lensModelNum.hessian(x, y, [kwargs])
         print(f_xx_num, f_xx)
@@ -72,7 +73,7 @@ class TestNumericsProfile(object):
 
         x, y = 1., 0.
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
-        f_xx, f_xy, f_yy = lensModel.hessian(x, y, [kwargs])
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
         f_x_num, f_y_num = lensModelNum.lens_model.alpha(x, y, [kwargs])
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = lensModelNum.hessian(x, y, [kwargs])
         print(f_xx_num, f_xx)

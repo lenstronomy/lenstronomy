@@ -124,7 +124,7 @@ class LensModel(object):
         :return: lensing convergence
         """
 
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, k=k)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
         kappa = 1./2 * (f_xx + f_yy)  # attention on units
         return kappa
 
@@ -143,7 +143,7 @@ class LensModel(object):
         :return: gamma1, gamma2
         """
 
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, k=k)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
         gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
         gamma2 = f_xy  # attention on units
         return gamma1, gamma2
@@ -163,8 +163,8 @@ class LensModel(object):
         :return: magnification
         """
 
-        f_xx, f_xy, f_yy = self.hessian(x, y, kwargs, k=k)
-        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_xy
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
+        det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
 
     def hessian(self, x, y, kwargs, k=None):

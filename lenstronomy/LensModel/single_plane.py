@@ -236,7 +236,8 @@ class SinglePlane(object):
                         f_xx += f_xx_i
                         f_yy += f_yy_i
                         f_xy += f_xy_i
-        return f_xx, f_xy, f_yy
+        f_yx = f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def hessian_differential(self, x, y, kwargs, diff=0.0000001, k=None):
         """

@@ -140,7 +140,7 @@ class MultiLens(object):
         f_yy = dalpha_decdec
         f_xy = dalpha_radec
         f_yx = dalpha_decra
-        return f_xx, f_xy, f_yy
+        return f_xx, f_xy, f_yx, f_yy
 
     def _index_ordering(self, redshift_list):
         """

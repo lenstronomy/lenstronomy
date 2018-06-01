@@ -39,14 +39,14 @@ class AnalyticKinematics(object):
 
         :param gamma: power-law slope of the mass profile (isothermal = 2)
         :param theta_E: Einstein radius of the lens (in arcseconds)
-        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be
-        described as a Hernquist profile
+        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
         :param R_slit: length of the slit/box
         :param dR_slit: width of the slit/box
         :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
         :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
-        slit of the observations
+            slit of the observations
+
         :return: LOS integrated velocity dispersion in units [km/s]
         """
         sigma_s2_sum = 0
@@ -65,10 +65,10 @@ class AnalyticKinematics(object):
     def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit, FWHM):
         """
         computes one realisation of the velocity dispersion realized in the slit
+
         :param gamma: power-law slope of the mass profile (isothermal = 2)
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
-        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be
-        described as a Hernquist profile
+        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
         :param R_slit: length of the slit/box
         :param dR_slit: width of the slit/box

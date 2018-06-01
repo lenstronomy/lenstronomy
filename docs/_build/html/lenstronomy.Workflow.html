@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.2.4 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.2.8 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -110,12 +110,12 @@
 <p>class to define a sequence of fitting applied, inherite the Fitting class</p>
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images">
-<code class="descname">align_images</code><span class="sig-paren">(</span><em>fitting_kwargs</em>, <em>lens_input</em>, <em>source_input</em>, <em>lens_light_input</em>, <em>ps_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.align_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images" title="Permalink to this definition">¶</a></dt>
+<code class="descname">align_images</code><span class="sig-paren">(</span><em>fitting_kwargs</em>, <em>lens_input</em>, <em>source_input</em>, <em>lens_light_input</em>, <em>ps_input</em>, <em>cosmo_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.align_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">
-<code class="descname">fit_sequence</code><span class="sig-paren">(</span><em>fitting_kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fit_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_sequence</code><span class="sig-paren">(</span><em>fitting_kwargs_list</em>, <em>bijective=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fit_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -153,7 +153,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration">
-<code class="descname">psf_iteration</code><span class="sig-paren">(</span><em>fitting_kwargs</em>, <em>lens_input</em>, <em>source_input</em>, <em>lens_light_input</em>, <em>ps_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.psf_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="descname">psf_iteration</code><span class="sig-paren">(</span><em>fitting_kwargs</em>, <em>lens_input</em>, <em>source_input</em>, <em>lens_light_input</em>, <em>ps_input</em>, <em>cosmo_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.psf_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -188,22 +188,6 @@
 <dt id="lenstronomy.Workflow.parameters.Param">
 <em class="property">class </em><code class="descclassname">lenstronomy.Workflow.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_cosmo=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>fix_lens_solver=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="lenstronomy.Workflow.parameters.Param.getCosmo">
-<code class="descname">getCosmo</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.getCosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.getCosmo" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the cosmology keyword arguments</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – tuple of parameter values</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">keyword arguments</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>bijective=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.getParams" title="Permalink to this definition">¶</a></dt>
@@ -349,7 +333,7 @@ might be migrated to the param class</p>
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

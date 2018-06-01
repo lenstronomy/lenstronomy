@@ -4,10 +4,10 @@ lenstronomy\.GalKin package
 Submodules
 ----------
 
-lenstronomy\.GalKin\.LOS\_dispersion module
--------------------------------------------
+lenstronomy\.GalKin\.analytic\_kinematics module
+------------------------------------------------
 
-.. automodule:: lenstronomy.GalKin.LOS_dispersion
+.. automodule:: lenstronomy.GalKin.analytic_kinematics
     :members:
     :undoc-members:
     :show-inheritance:

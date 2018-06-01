@@ -35,14 +35,16 @@ class Galkin(object):
 
     The numerical options can be chosen through the kwargs_numerics keywords
         sampling_number: number of spectral rendering to compute the light weighted integrated LOS dispersion within
-            the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
+        the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
+
         interpol_grid_num: number of interpolation points in the light and mass profile (radially). This number should
-            be chosen high enough to accurately describe the true light profile underneath.
+        be chosen high enough to accurately describe the true light profile underneath.
         log_integration: bool, if True, performs the interpolation and numerical integration in log-scale.
+
         max_integrate: maximum 3d radius to where the numerical integration of the Jeans Equation solver is made.
-            This value should be large enough to contain most of the light and to lead to a converged result.
+        This value should be large enough to contain most of the light and to lead to a converged result.
         min_integrate: minimal integration value. This value should be very close to zero but some mass and light
-            profiles are diverging and a numerically stabel value should be chosen.
+        profiles are diverging and a numerically stabel value should be chosen.
 
     These numerical options should be chosen to allow for a converged result (within your tolerance) but not too
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.

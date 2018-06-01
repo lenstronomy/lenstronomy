@@ -173,8 +173,6 @@ class TNFW(object):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
         :return: Epsilon(R) projected density at radius R
         """
         x = R / Rs
@@ -184,7 +182,7 @@ class TNFW(object):
 
     def nfwAlpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
         """
-        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate "axis"
+        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate 'axis'
 
         :param R: radius of interest
         :type R: float/numpy array

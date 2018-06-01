@@ -6,10 +6,10 @@ class Aperture(object):
     class that defines the aperture of the measurement (e.g. slit, Inegral field spectroscopy regions etc)
 
     Available aperture types:
-    --------------------
+    -------------------------
 
-        'slit': length, width, center_ra, center_dec
-        'shell': r_in, r_out, center_ra, center_dec
+    'slit': length, width, center_ra, center_dec
+    'shell': r_in, r_out, center_ra, center_dec
 
     """
     def __init__(self, aperture_type='slit', psf_fwhm=0.7):

@@ -48,3 +48,10 @@ History
 
 * improved parameter handling
 * minor bugs with parameter handling fixed
+
+0.2.8 (2018-05-31)
+++++++++++++++++++
+
+* improved GalKin module
+* minor improvements in PSF reconstruction
+* mass-to-light ratio parameterization

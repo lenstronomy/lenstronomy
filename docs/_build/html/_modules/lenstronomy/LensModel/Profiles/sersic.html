@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.sersic &#8212; lenstronomy 0.2.4 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.sersic &#8212; lenstronomy 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -60,20 +60,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Sersic.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Sersic.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns Gaussian</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">n_sersic</span>
-        <span class="n">x_red</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_reduced</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">x_red</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_reduced</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="c1">#hyper2f2_b = util.hyper2F2_array(2*n, 2*n, 1+2*n, 1+2*n, -b)</span>
         <span class="n">hyper2f2_bx</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">hyper2F2_array</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="o">*</span><span class="n">x_red</span><span class="p">)</span>
-        <span class="n">f_eff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">r_eff</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="o">*</span><span class="n">k_eff</span><span class="c1"># * hyper2f2_b</span>
+        <span class="n">f_eff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">R_sersic</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">k_eff</span><span class="c1"># * hyper2f2_b</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="n">f_eff</span> <span class="o">*</span> <span class="n">x_red</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">hyper2f2_bx</span><span class="c1"># / hyper2f2_b</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
-<div class="viewcode-block" id="Sersic.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Sersic.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns df/dx and df/dy of the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -84,12 +84,12 @@
             <span class="n">r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_x</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">/</span> <span class="n">r</span>
         <span class="n">f_y</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">/</span> <span class="n">r</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
-<div class="viewcode-block" id="Sersic.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Sersic.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -100,8 +100,8 @@
             <span class="n">r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
-        <span class="n">d_alpha_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_alpha_dr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">d_alpha_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_alpha_dr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
 
         <span class="c1">#f_xx_ = d_alpha_dr * calc_util.d_r_dx(x_, y_) * x_/r + alpha * calc_util.d_x_diffr_dx(x_, y_)</span>
         <span class="c1">#f_yy_ = d_alpha_dr * calc_util.d_r_dy(x_, y_) * y_/r + alpha * calc_util.d_y_diffr_dy(x_, y_)</span>
@@ -142,7 +142,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

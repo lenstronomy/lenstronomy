@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data package &#8212; lenstronomy 0.2.4 documentation</title>
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.2.8 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -158,9 +158,8 @@
 - ‘background_rms’: rms value of the background noise
 - ‘exp_time: float, exposure time to compute the Poisson noise contribution
 - ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’
-- ‘noise_map’: Gaussian noise (1-sigma) for each individual pixel.</p>
-<blockquote>
-<div>If this keyword is set, the other noise properties will be ignored.</div></blockquote>
+- ‘noise_map’: Gaussian noise (1-sigma) for each individual pixel.
+If this keyword is set, the other noise properties will be ignored.</p>
 <p>the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
 your definitions and units of ‘exposure_map’, ‘background_rms’ and ‘image_data’ are in accordance with the
 likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</p>
@@ -221,7 +220,7 @@ WARNING: For low count statistics, the noise in the data may lead to biased esti
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.covariance_matrix">
-<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>data</em>, <em>background_rms</em>, <em>exposure_map</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>data</em>, <em>background_rms=1</em>, <em>exposure_map=1</em>, <em>noise_map=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a diagonal matrix for the covariance estimation which describes the error</p>
 <p>Notes:</p>
 <ul>
@@ -359,6 +358,20 @@ This can e.g. come from model errors in the PSF estimation.</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">relative (RA, DEC) coordinates of the system</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Data.imaging_data.Data.noise_map">
+<code class="descname">noise_map</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.noise_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>1-sigma error for each pixel (optional)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -592,7 +605,7 @@ over the size of a pixel</p>
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

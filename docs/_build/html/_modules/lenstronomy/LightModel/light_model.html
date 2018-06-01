@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.2.4 documentation</title>
+    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.2.8 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -154,12 +154,6 @@
                 <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
                 <span class="n">response</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)]</span>
                 <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BULDGE_DISK&#39;</span><span class="p">]:</span>
-                <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;I0_b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;I0_d&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-                <span class="n">response</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">+=</span> <span class="mi">2</span>
             <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">]:</span>
                 <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sigma0&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
                 <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -276,7 +270,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

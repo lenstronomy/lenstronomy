@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.2.4 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.2.8 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -149,6 +149,32 @@ of the basis set.</p>
 </table>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.light2mass_model_conversion">
+<em class="property">static </em><code class="descname">light2mass_model_conversion</code><span class="sig-paren">(</span><em>lens_light_model_list</em>, <em>kwargs_lens_light</em>, <em>numPix=100</em>, <em>deltaPix=0.05</em>, <em>subgrid_res=5</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.light2mass_model_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.light2mass_model_conversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>takes a lens light model and turns it numerically in a lens model
+(with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens_light</strong> – lens light keyword argument list</li>
+<li><strong>numPix</strong> – number of pixels per axis for the return interpolation</li>
+<li><strong>deltaPix</strong> – interpolation/pixel size</li>
+<li><strong>center_x</strong> – center of the grid</li>
+<li><strong>center_y</strong> – center of the grid</li>
+<li><strong>subgrid</strong> – subgrid for the numerical integrals</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens">
 <code class="descname">multi_gaussian_lens</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>n_comp=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.multi_gaussian_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens" title="Permalink to this definition">¶</a></dt>
@@ -200,7 +226,8 @@ of the basis set.</p>
 <dt id="lenstronomy.Analysis.lens_properties.LensProp">
 <em class="property">class </em><code class="descclassname">lenstronomy.Analysis.lens_properties.</code><code class="descname">LensProp</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model</p>
+<p>this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
+for a given lens model</p>
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations">
 <code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em>, <em>z_d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
@@ -240,29 +267,88 @@ of the basis set.</p>
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_properties.LensProp.time_delays">
 <code class="descname">time_delays</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.time_delays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.time_delays" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion">
-<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>aniso_param=1</em>, <em>r_eff=None</em>, <em>R_slit=0.81</em>, <em>dR_slit=0.1</em>, <em>psf_fwhm=0.7</em>, <em>num_evaluate=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_disperson_numerical">
-<code class="descname">velocity_disperson_numerical</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>psf_fwhm</em>, <em>aperture_type</em>, <em>anisotropy_model</em>, <em>r_eff=1.0</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_disperson_numerical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_disperson_numerical" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>predicts the time delays of the image positions</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_lens_light</strong> – </li>
-<li><strong>kwargs_anisotropy</strong> – </li>
-<li><strong>kwargs_aperature</strong> – </li>
+<li><strong>kwargs_lens</strong> – lens model parameters</li>
+<li><strong>kwargs_ps</strong> – point source parameters</li>
+<li><strong>kappa_ext</strong> – external convergence (optional)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time delays at image positions for the fixed cosmology</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion">
+<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>aniso_param=1</em>, <em>r_eff=None</em>, <em>R_slit=0.81</em>, <em>dR_slit=0.1</em>, <em>psf_fwhm=0.7</em>, <em>num_evaluate=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
+The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.</p>
+<p>Further information can be found in the AnalyticKinematics() class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model parameters</li>
+<li><strong>kwargs_lens_light</strong> – deflector light parameters</li>
+<li><strong>aniso_param</strong> – scaled r_ani with respect to the half light radius</li>
+<li><strong>r_eff</strong> – half light radius, if not provided, will be computed from the lens light model</li>
+<li><strong>R_slit</strong> – width of the slit</li>
+<li><strong>dR_slit</strong> – length of the slit</li>
+<li><strong>psf_fwhm</strong> – full width at half maximum of the seeing condition</li>
+<li><strong>num_evaluate</strong> – number of spectral rendering of the light distribution that end up on the slit</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">velocity dispersion in units [km/s]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion_numerical">
+<code class="descname">velocity_dispersion_numerical</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>psf_fwhm</em>, <em>aperture_type</em>, <em>anisotropy_model</em>, <em>r_eff=1.0</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion_numerical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion_numerical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
+For a detailed description, visit the description of the Galkin() class.
+Additionaly to executing the Galkin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
+and light models that do not have a three-dimensional distribution built in, such as Sersic profiles etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model parameters</li>
+<li><strong>kwargs_lens_light</strong> – lens light parameters</li>
+<li><strong>kwargs_anisotropy</strong> – anisotropy parameters (see Galkin module)</li>
+<li><strong>kwargs_aperture</strong> – aperture parameters (see Galkin module)</li>
+<li><strong>psf_fwhm</strong> – full width at half maximum of the seeing (Gaussian form)</li>
+<li><strong>aperture_type</strong> – type of aperture (see Galkin module</li>
+<li><strong>anisotropy_model</strong> – stellar anisotropy model (see Galkin module)</li>
+<li><strong>r_eff</strong> – a rough estimate of the half light radius of the lens light in case of computing the MGE of the
+light profile</li>
+<li><strong>kwargs_numerics</strong> – keyword arguments that contain numerical options (see Galkin module)</li>
+<li><strong>MGE_light</strong> – bool, if true performs the MGE for the light distribution</li>
+<li><strong>MGE_mass</strong> – bool, if true performs the MGE for the mass distribution</li>
+<li><strong>lens_model_kinematics_bool</strong> – bool list of length of the lens model. Only takes a subset of all the models
+as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
+main deflector potential</li>
+<li><strong>light_model_kinematics_bool</strong> – bool list of length of the light model. Only takes a subset of all the models
+as part of the kinematics computation (can be used to ignore light components that do not describe the main
+deflector</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">LOS velocity dispersion [km/s]</p>
 </td>
 </tr>
 </tbody>
@@ -336,7 +422,7 @@ of the basis set.</p>
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

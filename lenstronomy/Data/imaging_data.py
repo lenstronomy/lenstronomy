@@ -23,11 +23,11 @@ class Data(object):
     - 'exp_time: float, exposure time to compute the Poisson noise contribution
     - 'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
     - 'noise_map': Gaussian noise (1-sigma) for each individual pixel.
-        If this keyword is set, the other noise properties will be ignored.
+    If this keyword is set, the other noise properties will be ignored.
 
 
     Notes:
-    -----
+    ------
     the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
     your definitions and units of 'exposure_map', 'background_rms' and 'image_data' are in accordance with the
     likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.

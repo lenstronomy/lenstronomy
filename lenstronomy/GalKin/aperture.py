@@ -4,6 +4,13 @@ import numpy as np
 class Aperture(object):
     """
     class that defines the aperture of the measurement (e.g. slit, Inegral field spectroscopy regions etc)
+
+    Available aperture types:
+    --------------------
+
+        'slit': length, width, center_ra, center_dec
+        'shell': r_in, r_out, center_ra, center_dec
+
     """
     def __init__(self, aperture_type='slit', psf_fwhm=0.7):
         """
@@ -26,7 +33,7 @@ class Aperture(object):
         elif self._aperture_type == 'slit':
             bool_list = self.slit_select(ra, dec, **kwargs_aperture)
         else:
-            raise ValueError("aperture type %s not implemented!" %self._aperture_type)
+            raise ValueError("aperture type %s not implemented!" % self._aperture_type)
         return bool_list
 
     def slit_select(self, ra, dec, length, width, center_ra=0, center_dec=0, angle=0):

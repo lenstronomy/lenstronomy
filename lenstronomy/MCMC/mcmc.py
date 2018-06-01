@@ -1,13 +1,10 @@
 __author__ = 'sibirrer'
 
 import os
-import sys
 import shutil
 import tempfile
 import time
 
-import emcee
-from emcee.utils import MPIPool
 import numpy as np
 from cosmoHammer import CosmoHammerSampler
 from cosmoHammer import LikelihoodComputationChain

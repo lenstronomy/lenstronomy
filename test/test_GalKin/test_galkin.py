@@ -8,7 +8,7 @@ import scipy.integrate as integrate
 from lenstronomy.GalKin.galkin_old import GalKin_analytic
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.light_profile import LightProfile
-from lenstronomy.GalKin.LOS_dispersion import Velocity_dispersion
+from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 import lenstronomy.Util.param_util as param_util
 
 
@@ -57,9 +57,9 @@ class TestGalkin(object):
                                  anisotropy_type=anisotropy_type, psf_fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=2000)
 
-        los_disp = Velocity_dispersion(beta_const=False, b_prior=False, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, aniso_param=r_ani, R_slit=length, dR_slit=width,
-                                     FWHM=psf_fwhm, num=2000)
+        los_disp = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, R_slit=length, dR_slit=width,
+                                     FWHM=psf_fwhm, rendering_number=2000)
         npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
 
     def test_log_linear_integral(self):
@@ -181,9 +181,9 @@ class TestGalkin(object):
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
 
-        los_disp = Velocity_dispersion(beta_const=False, b_prior=False, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff/0.551, aniso_param=r_ani, R_slit=length, dR_slit=width,
-                                     FWHM=psf_fwhm, num=1000)
+        los_disp = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff / 0.551, r_ani=r_ani, R_slit=length, dR_slit=width,
+                                     FWHM=psf_fwhm, rendering_number=1000)
         print(sigma_v, sigma_v_lin, sigma_v2, 'sigma_v Galkin (log and linear), sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)
 

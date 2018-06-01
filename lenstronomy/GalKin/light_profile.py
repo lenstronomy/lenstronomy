@@ -81,7 +81,7 @@ class LightProfile(object):
         r_draw = self._light_cdf(cdf_draw)
         return r_draw
 
-    def draw_light_2d(self, kwargs_list, n=1, new_compute=False, r_eff=1.):
+    def draw_light_2d(self, kwargs_list, n=1, new_compute=False):
         """
         constructs the CDF and draws from it random realizations of projected radii R
         :param kwargs_list:

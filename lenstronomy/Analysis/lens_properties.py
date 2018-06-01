@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-from lenstronomy.GalKin.LOS_dispersion import Velocity_dispersion
+from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
@@ -13,50 +13,105 @@ import lenstronomy.Util.constants as const
 
 class LensProp(object):
     """
-    this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc for a given lens model
+    this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
+    for a given lens model
     """
 
     def __init__(self, z_lens, z_source, kwargs_model, cosmo=None):
+        """
+
+        :param z_lens: redshift of lens
+        :param z_source: redshift of source
+        :param kwargs_model: model keyword arguments
+        :param cosmo: astropy.cosmology instance
+        """
         self.z_d = z_lens
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_model)
-        self.lens_model = LensModelExtensions(lens_model_list=kwargs_model['lens_model_list'])
+        self.lens_model = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', None),
+                                 z_source=kwargs_model.get('z_source', None),
+                                 redshift_list=kwargs_model.get('redshift_list', None),
+                                 multi_plane=kwargs_model.get('multi_plane', False))
         self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
-        self.dispersion = Velocity_dispersion(kwargs_cosmo=kwargs_cosmo)
+        self.analytic_kinematics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
+        """
+        predicts the time delays of the image positions
+
+        :param kwargs_lens: lens model parameters
+        :param kwargs_ps: point source parameters
+        :param kappa_ext: external convergence (optional)
+        :return: time delays at image positions for the fixed cosmology
+        """
         fermat_pot = self.lens_analysis.fermat_potential(kwargs_lens, kwargs_ps)
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=100):
+    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
+        """
+        computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
+        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
+
+        Further information can be found in the AnalyticKinematics() class.
+
+        :param kwargs_lens: lens model parameters
+        :param kwargs_lens_light: deflector light parameters
+        :param aniso_param: scaled r_ani with respect to the half light radius
+        :param r_eff: half light radius, if not provided, will be computed from the lens light model
+        :param R_slit: width of the slit
+        :param dR_slit: length of the slit
+        :param psf_fwhm: full width at half maximum of the seeing condition
+        :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
+        :return: velocity dispersion in units [km/s]
+        """
         gamma = kwargs_lens[0]['gamma']
         if r_eff is None:
             r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
         theta_E = kwargs_lens[0]['theta_E']
-        if self.dispersion.beta_const is False:
-            aniso_param *= r_eff
-        sigma2 = self.dispersion.vel_disp(gamma, theta_E, r_eff, aniso_param, R_slit, dR_slit, FWHM=psf_fwhm, num=num_evaluate)
+        r_ani = aniso_param * r_eff
+        sigma2 = self.analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, FWHM=psf_fwhm, rendering_number=num_evaluate)
         return sigma2
 
-    def velocity_disperson_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                     aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False, MGE_mass=False):
+    def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+                                      aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False,
+                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None):
+        """
+        Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
+        For a detailed description, visit the description of the Galkin() class.
+        Additionaly to executing the Galkin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
+        and light models that do not have a three-dimensional distribution built in, such as Sersic profiles etc.
+
+        :param kwargs_lens: lens model parameters
+        :param kwargs_lens_light: lens light parameters
+        :param kwargs_anisotropy: anisotropy parameters (see Galkin module)
+        :param kwargs_aperture: aperture parameters (see Galkin module)
+        :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
+        :param aperture_type: type of aperture (see Galkin module
+        :param anisotropy_model: stellar anisotropy model (see Galkin module)
+        :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
+         light profile
+        :param kwargs_numerics: keyword arguments that contain numerical options (see Galkin module)
+        :param MGE_light: bool, if true performs the MGE for the light distribution
+        :param MGE_mass: bool, if true performs the MGE for the mass distribution
+        :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
+            main deflector potential
+        :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore light components that do not describe the main
+            deflector
+        :return: LOS velocity dispersion [km/s]
         """
 
-        :param kwargs_lens:
-        :param kwargs_lens_light:
-        :param kwargs_anisotropy:
-        :param kwargs_aperature:
-        :return:
-        """
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         mass_profile_list = []
         kwargs_profile = []
-        lens_model_internal_bool = self.kwargs_options.get('lens_model_deflector_bool', [True] * len(kwargs_lens))
+        if lens_model_kinematics_bool is None:
+            lens_model_kinematics_bool = [True] * len(kwargs_lens)
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
-            if lens_model_internal_bool[i] is True:
+            if lens_model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
                 kwargs_profile.append(kwargs_lens_i)
@@ -72,9 +127,10 @@ class LensProp(object):
 
         light_profile_list = []
         kwargs_light = []
-        lens_light_model_internal_bool = self.kwargs_options.get('light_model_deflector_bool', [True] * len(kwargs_lens_light))
+        if light_model_kinematics_bool is None:
+            light_model_kinematics_bool = [True] * len(kwargs_lens_light)
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
-            if lens_light_model_internal_bool[i]:
+            if light_model_kinematics_bool[i]:
                 light_profile_list.append(light_model)
                 kwargs_Lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
                 if 'q' in kwargs_Lens_light_i:
@@ -91,8 +147,8 @@ class LensProp(object):
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture, r_eff=r_eff)
-        return sigma_v
+        sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        return sigma2
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
         """

@@ -49,6 +49,23 @@ class TestLensModelExtensions(object):
         mag = lens_model.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
+    def test_elliptical_ray_trace(self):
+
+        lens_model_list = ['SPEMD','SHEAR']
+
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},{'e1':0.01,'e2':0.03}]
+
+        extension = LensModelExtensions(lens_model_list)
+        x_image,y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
+
+        mag_square_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
+                                                         grid_number=200,window_size=0.1)
+
+        mag_polar_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
+                                                        grid_number=200,window_size=0.1,polar_grid=True)
+
+        npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
+
     def test_profile_slope(self):
         lens_model = LensModelExtensions(lens_model_list=['SPP'])
         gamma_in = 2.
@@ -93,7 +110,6 @@ class TestLensModelExtensions(object):
         assert shear1 == 0.1
         assert shear2 == 0.01
         assert kappa_ext == 0
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

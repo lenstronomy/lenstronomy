@@ -76,7 +76,7 @@ class LensEquationSolver(object):
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
             delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
             f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_min[i], y_min[i], kwargs_lens)
-            DistMatrix = np.array([[1 - f_yy, f_xy], [f_xy, 1 - f_xx]])
+            DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
             det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
             posAngel = np.array([x_min[i], y_min[i]])
             while(delta > precision_limit and l < num_iter_max):

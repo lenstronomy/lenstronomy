@@ -284,12 +284,11 @@ class TestGalkin(object):
     def test_interpolated_sersic(self):
         import lenstronomy.Util.util as util
         from lenstronomy.Analysis.lens_analysis import LensAnalysis
-        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0, 'center_y': 0}]
-        kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0, 'center_y': 0}]
-        deltaPix = 0.05
+        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0.01, 'center_y': 0.01}]
+        kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
+        deltaPix = 0.1
         numPix = 100
         #"""
-
 
         x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = LensAnalysis.light2mass_model_conversion(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
                                                  deltaPix=deltaPix, subgrid_res=5)
@@ -320,8 +319,8 @@ class TestGalkin(object):
         lensProp_interp = LensProp(z_lens, z_source, kwargs_options_interp)
         v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_interp, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
-                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff)
-        npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 2)
+                                                         kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff)
+        npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 1)
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
         #"""

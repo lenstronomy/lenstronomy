@@ -308,7 +308,7 @@ class TestGalkin(object):
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options)
-
+        """
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
                                                          MGE_light=True, MGE_mass=True, r_eff=r_eff)
@@ -321,6 +321,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 2)
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
+        """
 
 
 if __name__ == '__main__':

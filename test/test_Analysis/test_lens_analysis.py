@@ -131,7 +131,7 @@ class TestLensAnalysis(object):
                              {'R_sersic': 1.5, 'n_sersic': 1, 'I0_sersic': 2}]
         lensAnalysis = LensAnalysis(kwargs_options)
         x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = lensAnalysis.light2mass_model_conversion(lens_light_model_list=['SERSIC_ELLIPSE', 'SERSIC'],
-            kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix)
+            kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix, subgrid_res=5)
         print(np.shape(f_x), 'test shape')
         from lenstronomy.LensModel.lens_model import LensModel
         import lenstronomy.Util.util as util
@@ -143,16 +143,18 @@ class TestLensAnalysis(object):
         x_grid, y_grid = util.make_grid(numPix, deltapix=deltaPix)
         kappa = lensModel.kappa(x_grid, y_grid, kwargs=kwargs_lens)
         kappa = util.array2image(kappa)
-        kappa /= kappa[int(numPix/2.), int(numPix/2.)]
+        kappa /= np.mean(kappa)
         flux = lensAnalysis.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light)
         flux = util.array2image(flux)
-        flux /= flux[int(numPix/2.), int(numPix/2.)]
+        flux /= np.mean(flux)
         #import matplotlib.pyplot as plt
         #plt.matshow(flux-kappa)
         #plt.colorbar()
         #plt.show()
-        max_diff = np.max(np.abs(flux-kappa))
-        assert max_diff < 0.1
+        delta_kappa = (kappa - flux)/flux
+        max_delta = np.max(np.abs(delta_kappa))
+        assert max_delta < 0.1
+        #assert max_diff < 0.01
         npt.assert_almost_equal(flux[0, 0], kappa[0, 0], decimal=2)
 
 

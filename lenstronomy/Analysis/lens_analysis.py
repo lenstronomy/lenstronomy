@@ -194,7 +194,7 @@ class LensAnalysis(object):
         :return:
         """
         # make sugrid
-        x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix*2, deltapix=deltaPix, subgrid_res=subgrid_res)
+        x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix*5, deltapix=deltaPix, subgrid_res=subgrid_res)
         import lenstronomy.Util.mask as mask_util
         mask = mask_util.mask_sphere(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)

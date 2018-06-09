@@ -56,7 +56,7 @@ class TestLensModelExtensions(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},{'e1':0.01,'e2':0.03}]
 
         extension = LensModelExtensions(lens_model_list)
-        x_image,y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
+        x_image, y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
 
         mag_square_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
                                                          grid_number=200,window_size=0.1)
@@ -110,6 +110,7 @@ class TestLensModelExtensions(object):
         assert shear1 == 0.1
         assert shear2 == 0.01
         assert kappa_ext == 0
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

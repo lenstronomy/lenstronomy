@@ -146,7 +146,6 @@ class Simulation(object):
         :return:
         """
         image = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
-        #image = makeImage.ImageNumerics.array2image(image)
         # add noise
         if no_noise:
             return image

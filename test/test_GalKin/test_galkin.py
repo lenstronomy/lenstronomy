@@ -281,6 +281,47 @@ class TestGalkin(object):
         print(out, 'out')
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
+    def test_interpolated_sersic(self):
+        import lenstronomy.Util.util as util
+        from lenstronomy.Analysis.lens_analysis import LensAnalysis
+        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0, 'center_y': 0}]
+        deltaPix = 0.05
+        numPix = 200
+        x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = LensAnalysis.light2mass_model_conversion(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+                                                 deltaPix=deltaPix, subgrid_res=5)
+        kwargs_interp = [{'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
+                   'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
+                   'f_yy': util.array2image(f_yy), 'f_xy': util.array2image(f_xy)}]
+        from lenstronomy.Analysis.lens_properties import LensProp
+        z_lens = 0.5
+        z_source = 1.5
+        r_ani = 0.62
+        kwargs_anisotropy = {'r_ani': r_ani}
+        R_slit = 3.8
+        dR_slit = 1.
+        kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0}
+        aperture_type = 'slit'
+        psf_fwhm = 0.7
+        anisotropy_model = 'OsipkovMerritt'
+        r_eff = 0.5
+        kwargs_options = {'lens_model_list': ['SERSIC'],
+                          'lens_light_model_list': ['SERSIC']}
+        lensProp = LensProp(z_lens, z_source, kwargs_options)
+
+        v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
+                                                         kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
+                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff)
+        kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
+                                 'lens_light_model_list': ['SERSIC']}
+        lensProp_interp = LensProp(z_lens, z_source, kwargs_options_interp)
+        v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_interp, kwargs_light, kwargs_anisotropy,
+                                                         kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
+                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff)
+        npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 2)
+        # use as kinematic constraints
+        # compare with MGE Sersic kinematic estimate
+
 
 if __name__ == '__main__':
     pytest.main()

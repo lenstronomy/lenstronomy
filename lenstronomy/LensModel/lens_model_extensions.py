@@ -173,8 +173,13 @@ class LensModelExtensions(LensModel):
         :param kwargs_lens:
         :return:
         """
-        center_x = kwargs_lens_list[0]['center_x']
-        center_y = kwargs_lens_list[0]['center_y']
+        if 'center_x' in kwargs_lens_list[0]:
+            center_x = kwargs_lens_list[0]['center_x']
+            center_y = kwargs_lens_list[0]['center_y']
+        elif self.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
+            center_x, center_y = 0, 0
+        else:
+            raise ValueError("lens model not defined to provide a center and therefore an Einstein radius")
         numPix = 100
         deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)

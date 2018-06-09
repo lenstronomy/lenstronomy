@@ -120,7 +120,8 @@ class LensProp(object):
             massModel = LensModelExtensions(lens_model_list=mass_profile_list)
             theta_E = massModel.effective_einstein_radius(kwargs_lens)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            mass_r = massModel.kappa(r_array, 0, kwargs_profile)
+            #TODO does not work for interpolation profiles without a center
+            mass_r = massModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]

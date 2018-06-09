@@ -120,11 +120,11 @@ class LensEquationSolver(object):
 
     def sort_arrival_times(self, x_mins, y_mins, kwargs_lens):
         """
-        sort arrival times (fermat potential) of image positions
-        :param x_mins:
-        :param y_mins:
-        :param kwargs_lens:
-        :return:
+        sort arrival times (fermat potential) of image positions in increasing order of light travel time
+        :param x_mins: ra position of images
+        :param y_mins: dec position of images
+        :param kwargs_lens: keyword arguments of lens model
+        :return: sorted lists of x_mins and y_mins
         """
         if len(x_mins) <= 1:
             return x_mins, y_mins

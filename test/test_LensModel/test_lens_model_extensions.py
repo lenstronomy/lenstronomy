@@ -91,6 +91,14 @@ class TestLensModelExtensions(object):
         gamma_out = lens_model.profile_slope(kwargs_lens)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
+    def test_lens_center(self):
+        center_x, center_y = 0.43, -0.67
+        kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
+        lensModel = LensModelExtensions(lens_model_list=['SIS'])
+        center_x_out, center_y_out = lensModel.lens_center(kwargs_lens)
+        npt.assert_almost_equal(center_x_out, center_x, 2)
+        npt.assert_almost_equal(center_y_out, center_y, 2)
+
     def test_external_shear(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]

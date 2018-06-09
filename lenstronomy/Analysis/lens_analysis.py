@@ -79,8 +79,9 @@ class LensAnalysis(object):
         lens_light = np.zeros_like(x_grid)
         for i, bool in enumerate(lens_light_model_internal_bool):
             if bool is True:
-                kwargs_lens_light_copy[i]['center_x'] = 0
-                kwargs_lens_light_copy[i]['center_y'] = 0
+                if 'center_x' in kwargs_lens_light_copy[i]:
+                    kwargs_lens_light_copy[i]['center_x'] = 0
+                    kwargs_lens_light_copy[i]['center_y'] = 0
                 lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
                 lens_light += lens_light_i
         return lens_light

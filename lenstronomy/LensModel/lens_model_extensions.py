@@ -166,6 +166,29 @@ class LensModelExtensions(LensModel):
         plt.cla()
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
+    def lens_center(self, kwargs_lens, k=None, bool_list=None, numPix=200, deltaPix=0.01, center_x_init=0, center_y_init=0):
+        """
+        computes the convergence weighted center of a lens model
+
+        :param kwargs_lens: lens model keyword argument list
+        :param bool_list: bool list (optional) to include certain models or not
+        :return: center_x, center_y
+        """
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        x_grid += center_x_init
+        y_grid += center_y_init
+
+        if bool_list is None:
+            kappa = self.kappa(x_grid, y_grid, kwargs_lens, k=k)
+        else:
+            kappa = np.zeros_like(x_grid)
+            for k in range(len(kwargs_lens)):
+                if bool_list[k] is True:
+                    kappa += self.kappa(x_grid, y_grid, kwargs_lens, k=k)
+        center_x = x_grid[kappa == np.max(kappa)]
+        center_y = y_grid[kappa == np.max(kappa)]
+        return center_x, center_y
+
     def effective_einstein_radius(self, kwargs_lens_list, k=None):
         """
         computes the radius with mean convergence=1
@@ -179,13 +202,16 @@ class LensModelExtensions(LensModel):
         elif self.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
             center_x, center_y = 0, 0
         else:
-            raise ValueError("lens model not defined to provide a center and therefore an Einstein radius")
+            center_x, center_y = 0, 0
         numPix = 100
         deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
         kappa = self.kappa(x_grid, y_grid, kwargs_lens_list, k=k)
+        if self.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
+            center_x = x_grid[kappa == np.max(kappa)]
+            center_y = y_grid[kappa == np.max(kappa)]
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
         for r in r_array:

@@ -225,6 +225,14 @@ class LensParam(object):
                 kwargs['grid_interp_y'] = kwargs_fixed['grid_interp_y']
                 kwargs['f_x'] = kwargs_fixed['f_x']
                 kwargs['f_y'] = kwargs_fixed['f_y']
+                if 'f_' in kwargs_fixed:
+                    kwargs['f_'] = kwargs_fixed['f_']
+                if 'f_xx' in kwargs_fixed:
+                    kwargs['f_xx'] = kwargs_fixed['f_xx']
+                if 'f_xy' in kwargs_fixed:
+                    kwargs['f_xy'] = kwargs_fixed['f_xy']
+                if 'f_yy' in kwargs_fixed:
+                    kwargs['f_yy'] = kwargs_fixed['f_yy']
             if model in ['INTERPOL_SCALED']:
                 if not 'scale_factor' in kwargs_fixed:
                     kwargs['scale_factor'] = args[i]

@@ -287,10 +287,10 @@ class TestGalkin(object):
         kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0, 'center_y': 0}]
         deltaPix = 0.05
-        numPix = 200
-        """
-        
-        
+        numPix = 100
+        #"""
+
+
         x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = LensAnalysis.light2mass_model_conversion(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
                                                  deltaPix=deltaPix, subgrid_res=5)
         kwargs_interp = [{'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
@@ -311,7 +311,7 @@ class TestGalkin(object):
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options)
-        
+
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
                                                          MGE_light=True, MGE_mass=True, r_eff=r_eff)
@@ -324,7 +324,7 @@ class TestGalkin(object):
         npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 2)
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
-        """
+        #"""
 
 
 if __name__ == '__main__':

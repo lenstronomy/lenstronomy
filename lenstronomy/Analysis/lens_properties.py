@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import copy
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
@@ -76,8 +77,9 @@ class LensProp(object):
         return sigma2
 
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                      aperture_type, anisotropy_model, r_eff=1., kwargs_numerics={}, MGE_light=False,
-                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None):
+                                      aperture_type, anisotropy_model, r_eff=None, kwargs_numerics={}, MGE_light=False,
+                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
+                                      Hernquist_approx=False):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.
@@ -113,14 +115,19 @@ class LensProp(object):
         for i, lens_model in enumerate(self.kwargs_options['lens_model_list']):
             if lens_model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
-                kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
+                if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
+                    center_x, center_y = self.lens_model.lens_center(kwargs_lens, k=i)
+                    kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
+                    kwargs_lens_i['grid_interp_x'] -= center_x
+                    kwargs_lens_i['grid_interp_y'] -= center_y
+                else:
+                    kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_mass is True:
             massModel = LensModelExtensions(lens_model_list=mass_profile_list)
-            theta_E = massModel.effective_einstein_radius(kwargs_lens)
+            theta_E = massModel.effective_einstein_radius(kwargs_profile)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            #TODO does not work for interpolation profiles without a center
             mass_r = massModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
@@ -133,18 +140,24 @@ class LensProp(object):
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
             if light_model_kinematics_bool[i]:
                 light_profile_list.append(light_model)
-                kwargs_Lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
-                if 'q' in kwargs_Lens_light_i:
-                    kwargs_Lens_light_i['q'] = 1
-                kwargs_light.append(kwargs_Lens_light_i)
-
-        if MGE_light is True:
-            lightModel = LightModel(light_profile_list)
-            r_array = np.logspace(-3, 2, 200) * r_eff * 2
-            flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
-            amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
-            light_profile_list = ['MULTI_GAUSSIAN']
-            kwargs_light = [{'amp': amps, 'sigma': sigmas}]
+                kwargs_lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
+                if 'q' in kwargs_lens_light_i:
+                    kwargs_lens_light_i['q'] = 1
+                kwargs_light.append(kwargs_lens_light_i)
+        if r_eff is None:
+            lensAnalysis = LensAnalysis({'lens_light_model_list': light_profile_list})
+            r_eff = lensAnalysis.half_light_radius_lens(kwargs_light)
+        if Hernquist_approx is True:
+            light_profile_list = ['HERNQUIST']
+            kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]
+        else:
+            if MGE_light is True:
+                lightModel = LightModel(light_profile_list)
+                r_array = np.logspace(-3, 2, 200) * r_eff * 2
+                flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
+                amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
+                light_profile_list = ['MULTI_GAUSSIAN']
+                kwargs_light = [{'amp': amps, 'sigma': sigmas}]
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)

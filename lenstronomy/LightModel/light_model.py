@@ -18,9 +18,15 @@ class LightModel(object):
             if profile_type == 'GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
                 self.func_list.append(Gaussian())
+            elif profile_type == 'GAUSSIAN_ELLIPSE':
+                from lenstronomy.LightModel.Profiles.gaussian import GaussianEllipse
+                self.func_list.append(GaussianEllipse())
             elif profile_type == 'MULTI_GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
                 self.func_list.append(MultiGaussian())
+            elif profile_type == 'MULTI_GAUSSIAN_ELLIPSE':
+                from lenstronomy.LightModel.Profiles.gaussian import MultiGaussianEllipse
+                self.func_list.append(MultiGaussianEllipse())
             elif profile_type == 'SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic(smoothing=smoothing))

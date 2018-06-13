@@ -70,6 +70,26 @@ def phi_q2_ellipticity(phi, q):
     return e1, e2
 
 
+def transform_e1e2(x, y, e1, e2, center_x=0, center_y=0):
+    """
+    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordiante system
+
+    :param x:
+    :param y:
+    :param e1:
+    :param e2:
+    :param center_x:
+    :param center_y:
+    :return:
+    """
+    x_shift = x - center_x
+    y_shift = y - center_y
+    x_ = (1-e1) * x_shift - e2 * y_shift
+    y_ = -e2 * x_shift + (1 + e1) * y_shift
+    det = np.sqrt((1-e1)*(1+e1) + e2**2)
+    return x_ / det, y_ / det
+
+
 def ellipticity2phi_q(e1, e2):
     """
     :param e1:

@@ -282,7 +282,6 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_interpolated_sersic(self):
-        import lenstronomy.Util.util as util
         from lenstronomy.Analysis.lens_analysis import LensAnalysis
         kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0.01, 'center_y': 0.01}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
@@ -290,11 +289,9 @@ class TestGalkin(object):
         numPix = 100
         #"""
 
-        x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy = LensAnalysis.light2mass_model_conversion(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
-                                                 deltaPix=deltaPix, subgrid_res=5)
-        kwargs_interp = [{'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
-                   'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
-                   'f_yy': util.array2image(f_yy), 'f_xy': util.array2image(f_xy)}]
+        kwargs_interp = LensAnalysis.light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+                                                                                          deltaPix=deltaPix, subgrid_res=5)
+        kwargs_lens_interp = [kwargs_interp]
         from lenstronomy.Analysis.lens_properties import LensProp
         z_lens = 0.5
         z_source = 1.5
@@ -317,7 +314,7 @@ class TestGalkin(object):
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
         lensProp_interp = LensProp(z_lens, z_source, kwargs_options_interp)
-        v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_interp, kwargs_light, kwargs_anisotropy,
+        v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
                                                          kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff)
         npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 1)

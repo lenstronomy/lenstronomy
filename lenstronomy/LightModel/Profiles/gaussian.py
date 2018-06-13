@@ -1,4 +1,5 @@
 import numpy as np
+import lenstronomy.Util.param_util as param_util
 
 
 class Gaussian(object):
@@ -38,6 +39,41 @@ class Gaussian(object):
         sigma3d_x = sigma_x
         sigma3d_y = sigma_y
         return self.function(r, 0, amp3d, sigma3d_x, sigma3d_y)
+
+
+class GaussianEllipse(object):
+    """
+    class for Gaussian light profile
+    """
+    def __init__(self):
+        self.gaussian = Gaussian()
+
+    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param sigma0:
+        :param a:
+        :param s:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+        return self.gaussian.function(x_, y_, amp, sigma, sigma, center_x, center_y)
+
+    def light_3d(self, r, amp, sigma, e1, e2):
+        """
+
+        :param y:
+        :param sigma0:
+        :param Rs:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        return self.gaussian.light_3d(r, amp, sigma_x=sigma, sigma_y=sigma)
 
 
 class MultiGaussian(object):
@@ -84,3 +120,53 @@ class MultiGaussian(object):
         for i in range(len(amp)):
             f_ += self.gaussian.light_3d(r, amp[i], sigma[i], sigma[i])
         return f_
+
+
+class MultiGaussianEllipse(object):
+    """
+    class for elliptical multi Gaussian profile
+    """
+    def __init__(self):
+        self.gaussian = Gaussian()
+
+    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param sigma0:
+        :param a:
+        :param s:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+
+        f_ = np.zeros_like(x)
+        for i in range(len(amp)):
+            f_ += self.gaussian.function(x_, y_, amp[i], sigma[i], sigma[i], center_x, center_y)
+        return f_
+
+    def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+        f_list = []
+        for i in range(len(amp)):
+            f_list.append(self.gaussian.function(x_, y_, amp[i], sigma[i], sigma[i], center_x, center_y))
+        return f_list
+
+    def light_3d(self, r, amp, sigma, e1=0, e2=0):
+        """
+
+        :param y:
+        :param sigma0:
+        :param Rs:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_ = np.zeros_like(r)
+        for i in range(len(amp)):
+            f_ += self.gaussian.light_3d(r, amp[i], sigma[i], sigma[i])
+        return f_
+

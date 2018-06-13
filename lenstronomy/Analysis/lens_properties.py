@@ -30,10 +30,6 @@ class LensProp(object):
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_model)
-        self.lens_model = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', None),
-                                 z_source=kwargs_model.get('z_source', None),
-                                 redshift_list=kwargs_model.get('redshift_list', None),
-                                 multi_plane=kwargs_model.get('multi_plane', False))
         self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.analytic_kinematics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
@@ -51,7 +47,7 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
+    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, lens_light_model_bool_list=None, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -69,8 +65,12 @@ class LensProp(object):
         :return: velocity dispersion in units [km/s]
         """
         gamma = kwargs_lens[0]['gamma']
+        if 'center_x' in kwargs_lens_light[0]:
+            center_x, center_y = kwargs_lens_light[0]['center_x'], kwargs_lens_light[0]['center_y']
+        else:
+            center_x, center_y = 0, 0
         if r_eff is None:
-            r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light)
+            r_eff = self.lens_analysis.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y, model_bool_list=lens_light_model_bool_list)
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
         sigma2 = self.analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, FWHM=psf_fwhm, rendering_number=num_evaluate)
@@ -85,6 +85,9 @@ class LensProp(object):
         For a detailed description, visit the description of the Galkin() class.
         Additionaly to executing the Galkin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
         and light models that do not have a three-dimensional distribution built in, such as Sersic profiles etc.
+
+        The center of all the lens and lens light models that are part of the kinematic estimate must be centered on the
+        same point.
 
         :param kwargs_lens: lens model parameters
         :param kwargs_lens_light: lens light parameters
@@ -116,7 +119,7 @@ class LensProp(object):
             if lens_model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x, center_y = self.lens_model.lens_center(kwargs_lens, k=i)
+                    center_x, center_y = self.lens_analysis.LensModel.lens_center(kwargs_lens, k=i)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
                     kwargs_lens_i['grid_interp_x'] -= center_x
                     kwargs_lens_i['grid_interp_y'] -= center_y

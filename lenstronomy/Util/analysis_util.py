@@ -87,3 +87,36 @@ def azimuthalAverage(image, center=None):
     radial_prof = tbin / nr
 
     return radial_prof
+
+
+def moments(I_xy, x, y):
+    """
+    compute quadrupole moments from a light distribution
+
+    :param I_xy: light distribution
+    :param x: x-coordinates of I_xy
+    :param y: y-coordinates of I_xy
+    :return: Q_xx, Q_xy, Q_yy
+    """
+    x_ = np.sum(I_xy * x)
+    y_ = np.sum(I_xy * y)
+    Q_xx = np.sum(I_xy * (x - x_)**2)
+    Q_xy = np.sum(I_xy * (x - x_) * (y - y_))
+    Q_yy = np.sum(I_xy * (y - y_) ** 2)
+    return Q_xx, Q_xy, Q_yy
+
+
+def ellipticities(I_xy, x, y):
+    """
+    compute ellipticities of a light distribution
+
+    :param I_xy:
+    :param x:
+    :param y:
+    :return:
+    """
+    Q_xx, Q_xy, Q_yy = moments(I_xy, x, y)
+    norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx*Q_yy - Q_xy**2)
+    e1 = (Q_xx - Q_yy) / norm
+    e2 = 2 * Q_xy / norm
+    return e1, e2

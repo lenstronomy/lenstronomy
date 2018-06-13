@@ -115,6 +115,18 @@ def test_elliptisity2phi_q_symmetry():
     #npt.assert_almost_equal(e2, e2_new, decimal=10)
 
 
+def test_transform_e1e2():
+    e1 = 0.01
+    e2 = 0.
+    x = 0.
+    y = 1.
+    x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+    x_new = (1-e1) * x - e2 * y
+    y_new = -e2 * x + (1 + e1) * y
+    det = np.sqrt((1 - e1) * (1 + e1) + e2 ** 2)
+    npt.assert_almost_equal(x_, x_new / det, decimal=5)
+    npt.assert_almost_equal(y_, y_new / det, decimal=5)
+
 
 def test_phi_gamma_ellipticity():
     phi = -1.

@@ -5,22 +5,27 @@ import numpy as np
 import scipy.special
 import scipy.integrate as integrate
 from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+import lenstronomy.Util.param_util as param_util
 
 
-class GaussianKappa(object):
+class GaussianKappaEllipse(object):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
+    with ellipticity in the convergence
     """
     def __init__(self):
         self.gaussian = Gaussian()
         self.ds = 0.00001
 
-    def function(self, x, y, amp, sigma_x, sigma_y, center_x=0, center_y=0):
+    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         returns Gaussian
         """
-        x_ = x - center_x
-        y_ = y - center_y
+
+        """
+        
+        phi, q = param_util.ellipticity2phi_q(e1, e2)
+
         r = np.sqrt(x_**2 + y_**2)
         c = 1. / (2 * sigma_x * sigma_y)
         num_int = self._num_integral(r, c)
@@ -28,6 +33,8 @@ class GaussianKappa(object):
         amp2d = amp_density / (np.sqrt(np.pi) * np.sqrt(sigma_x * sigma_y * 2))
         amp2d *= 2 * 1. / (2 * c)
         return num_int * amp2d
+        """
+        return 0
 
     def _num_integral(self, r, c):
         """

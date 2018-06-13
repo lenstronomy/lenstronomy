@@ -12,7 +12,7 @@ class Interpol_func(object):
     """
     def __init__(self, grid=True, min_grid_number=100):
         self._grid = grid
-        self._min_grid_number =min_grid_number
+        self._min_grid_number = min_grid_number
 
     def function(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)

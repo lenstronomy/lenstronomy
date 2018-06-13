@@ -79,17 +79,19 @@ class TestLightProfile(object):
 
         phi2, q2 = -0.37221683730659516, 0.70799587973181288
         e12, e22 = param_util.phi_q2_ellipticity(phi2, q2)
-        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': e1, 'e2': e2, 'center_x': -0.019983826426838536,
-            'center_y': 0.90000011282957304, 'sigma0': 1.3168943578511678},
-            {'Rs': 0.29187068596715743, 'e1': e12, 'e2': e22, 'center_x': 0.020568531548241405,
-            'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824,
+        center_x = -0.019983826426838536
+        center_y = 0.90000011282957304
+        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': e1, 'e2': e2, 'center_x': center_x,
+            'center_y': center_y, 'sigma0': 1.3168943578511678},
+            {'Rs': 0.29187068596715743, 'e1': e12, 'e2': e22, 'center_x': center_x,
+            'center_y': center_y, 'Ra': 0.020000382843298824,
             'sigma0': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
         lensAnalysis = LensAnalysis(kwargs_options)
-        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile)
+        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y)
         kwargs_profile[0]['e1'], kwargs_profile[0]['e2'] = 0, 0
         kwargs_profile[1]['e1'], kwargs_profile[1]['e2'] = 0, 0
-        r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile)
+        r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y)
         npt.assert_almost_equal(r_eff / r_eff_spherical, 1, decimal=2)
 
     def test_light_3d(self):

@@ -203,7 +203,7 @@ class LensModelExtensions(LensModel):
             center_x, center_y = 0, 0
         else:
             center_x, center_y = 0, 0
-        numPix = 100
+        numPix = 200
         deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
@@ -213,7 +213,7 @@ class LensModelExtensions(LensModel):
             center_x = x_grid[kappa == np.max(kappa)]
             center_y = y_grid[kappa == np.max(kappa)]
         kappa = util.array2image(kappa)
-        r_array = np.linspace(0.0001, numPix*deltaPix/2., 1000)
+        r_array = np.linspace(0.0001, numPix*deltaPix/2., 200)
         for r in r_array:
             mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)

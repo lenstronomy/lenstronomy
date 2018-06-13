@@ -7,7 +7,7 @@ this file contains standard routines
 import numpy as np
 import mpmath
 
-def rotate(xcoords,ycoords,angle):
+def rotate(xcoords, ycoords, angle):
     """
 
     :param xcoords: x points
@@ -17,6 +17,7 @@ def rotate(xcoords,ycoords,angle):
     """
     return xcoords*np.cos(angle)+ycoords*np.sin(angle),\
            -xcoords*np.sin(angle)+ycoords*np.cos(angle)
+
 
 def map_coord2pix(ra, dec, x_0, y_0, M):
     """

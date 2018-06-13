@@ -2,6 +2,7 @@ import copy
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
+import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
@@ -16,12 +17,15 @@ class LensAnalysis(object):
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
     def __init__(self, kwargs_model):
-        self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', ['NONE']))
-        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', ['NONE']))
-        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']))
-        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', ['NONE']))
+        self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
+        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
+        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', []),
+                                 z_source=kwargs_model.get('z_source', None),
+                                 redshift_list=kwargs_model.get('redshift_list', None),
+                                 multi_plane=kwargs_model.get('multi_plane', False))
+        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []))
         self.kwargs_model = kwargs_model
-        self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']))
+        self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
         self.gaussian = Gaussian()
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):
@@ -34,27 +38,57 @@ class LensAnalysis(object):
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
         return fermat_pot
 
-    def half_light_radius_lens(self, kwargs_lens_light, deltaPix=None, numPix=None):
+    def ellipticity_lens_light(self, kwargs_lens_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=None,
+                               numPix=None):
+        """
+        make sure that the window covers all the light, otherwise the moments may give to low answers.
+
+        :param kwargs_lens_light:
+        :param center_x:
+        :param center_y:
+        :param model_bool_list:
+        :param deltaPix:
+        :param numPix:
+        :return:
+        """
+        if model_bool_list is None:
+            model_bool_list = [True] * len(kwargs_lens_light)
+        if numPix is None:
+            numPix = 100
+        if deltaPix is None:
+            deltaPix = 0.05
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        x_grid += center_x
+        y_grid += center_y
+        I_xy = self._lens_light_internal(x_grid, y_grid, kwargs_lens_light, model_bool_list=model_bool_list)
+        e1, e2 = analysis_util.ellipticities(I_xy, x_grid, y_grid)
+        return e1, e2
+
+    def half_light_radius_lens(self, kwargs_lens_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=None, numPix=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
 
         :param kwargs_lens_light:
         :return:
         """
+        if model_bool_list is None:
+            model_bool_list = [True] * len(kwargs_lens_light)
         if numPix is None:
             numPix = 1000
         if deltaPix is None:
             deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
-        lens_light = self._lens_light_internal(x_grid, y_grid, kwargs_lens_light)
-        R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid)
+        x_grid += center_x
+        y_grid += center_y
+        lens_light = self._lens_light_internal(x_grid, y_grid, kwargs_lens_light, model_bool_list=model_bool_list)
+        R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x, center_y)
         return R_h
 
-    def half_light_radius_source(self, kwargs_source, deltaPix=None, numPix=None):
+    def half_light_radius_source(self, kwargs_source, center_x=0, center_y=0, deltaPix=None, numPix=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
 
-        :param kwargs_lens_light:
+        :param kwargs_source:
         :return:
         """
         if numPix is None:
@@ -62,31 +96,31 @@ class LensAnalysis(object):
         if deltaPix is None:
             deltaPix = 0.005
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
+        x_grid += center_x
+        y_grid += center_y
         source_light = self.SourceModel.surface_brightness(x_grid, y_grid, kwargs_source)
-        R_h = analysis_util.half_light_radius(source_light, x_grid, y_grid, center_x=kwargs_source[0]['center_x'], center_y=kwargs_source[0]['center_y'])
+        R_h = analysis_util.half_light_radius(source_light, x_grid, y_grid, center_x=center_x, center_y=center_y)
         return R_h
 
-    def _lens_light_internal(self, x_grid, y_grid, kwargs_lens_light):
+    def _lens_light_internal(self, x_grid, y_grid, kwargs_lens_light, model_bool_list=None):
         """
+        evaluates only part of the light profiles
 
         :param x_grid:
         :param y_grid:
         :param kwargs_lens_light:
         :return:
         """
-        kwargs_lens_light_copy = copy.deepcopy(kwargs_lens_light)
-        lens_light_model_internal_bool = self.kwargs_model.get('light_model_deflector_bool', [True] * len(kwargs_lens_light))
+        if model_bool_list is None:
+            model_bool_list = [True] * len(kwargs_lens_light)
         lens_light = np.zeros_like(x_grid)
-        for i, bool in enumerate(lens_light_model_internal_bool):
+        for i, bool in enumerate(model_bool_list):
             if bool is True:
-                if 'center_x' in kwargs_lens_light_copy[i]:
-                    kwargs_lens_light_copy[i]['center_x'] = 0
-                    kwargs_lens_light_copy[i]['center_y'] = 0
-                lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light_copy, k=i)
+                lens_light_i = self.LensLightModel.surface_brightness(x_grid, y_grid, kwargs_lens_light, k=i)
                 lens_light += lens_light_i
         return lens_light
 
-    def multi_gaussian_lens_light(self, kwargs_lens_light, n_comp=20):
+    def multi_gaussian_lens_light(self, kwargs_lens_light, model_bool_list=None, e1=0, e2=0, n_comp=20, deltaPix=None, numPix=None):
         """
         multi-gaussian decomposition of the lens light profile (in 1-dimension)
 
@@ -94,14 +128,24 @@ class LensAnalysis(object):
         :param n_comp:
         :return:
         """
-        r_h = self.half_light_radius_lens(kwargs_lens_light)
+        if 'center_x' in kwargs_lens_light[0]:
+            center_x = kwargs_lens_light[0]['center_x']
+            center_y = kwargs_lens_light[0]['center_y']
+        else:
+            center_x, center_y = 0, 0
+        r_h = self.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y,
+                                          model_bool_list=model_bool_list, deltaPix=deltaPix, numPix=numPix)
         r_array = np.logspace(-3, 2, 200) * r_h * 2
+        x_coords, y_coords = param_util.transform_e1e2(r_array, np.zeros_like(r_array), e1=-e1, e2=-e2)
+        x_coords += center_x
+        y_coords += center_y
         #r_array = np.logspace(-2, 1, 50) * r_h
-        flux_r = self._lens_light_internal(r_array, np.zeros_like(r_array), kwargs_lens_light)
+        flux_r = self._lens_light_internal(x_coords, y_coords, kwargs_lens_light,
+                                           model_bool_list=model_bool_list)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
-        return amplitudes, sigmas
+        return amplitudes, sigmas, center_x, center_y
 
-    def multi_gaussian_lens(self, kwargs_lens, n_comp=20):
+    def multi_gaussian_lens(self, kwargs_lens, model_bool_list=None, e1=0, e2=0, n_comp=20):
         """
         multi-gaussian lens model in convergence space
 
@@ -109,23 +153,23 @@ class LensAnalysis(object):
         :param n_comp:
         :return:
         """
-        kwargs_lens_copy = copy.deepcopy(kwargs_lens)
-        if 'center_x' in kwargs_lens_copy[0]:
-            center_x = kwargs_lens_copy[0]['center_x']
-            center_y = kwargs_lens_copy[0]['center_y']
+        if 'center_x' in kwargs_lens[0]:
+            center_x = kwargs_lens[0]['center_x']
+            center_y = kwargs_lens[0]['center_y']
         else:
             raise ValueError('no keyword center_x defined!')
         theta_E = self.LensModel.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
+        x_coords, y_coords = param_util.transform_e1e2(r_array, np.zeros_like(r_array), e1=-e1, e2=-e2)
+        x_coords += center_x
+        y_coords += center_y
         #r_array = np.logspace(-2, 1, 50) * theta_E
-        lens_model_internal_bool = self.kwargs_model.get('lens_model_internal_bool', [True] * len(kwargs_lens))
+        if model_bool_list is None:
+            model_bool_list = [True] * len(kwargs_lens)
         kappa_s = np.zeros_like(r_array)
-        for i in range(len(kwargs_lens_copy)):
-            if lens_model_internal_bool[i]:
-                if 'center_x' in kwargs_lens_copy[0]:
-                    kwargs_lens_copy[i]['center_x'] -= center_x
-                    kwargs_lens_copy[i]['center_y'] -= center_y
-                kappa_s += self.LensModel.kappa(r_array, np.zeros_like(r_array), kwargs_lens_copy, k=i)
+        for i in range(len(kwargs_lens)):
+            if model_bool_list[i] is True:
+                kappa_s += self.LensModel.kappa(x_coords, y_coords, kwargs_lens, k=i)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 
@@ -180,8 +224,32 @@ class LensAnalysis(object):
                 error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return error_map
 
+    def light2mass_mge(self, kwargs_lens_light, model_bool_list=None, elliptical=False, numPix=100, deltaPix=0.05):
+        # estimate center
+        if 'center_x' in kwargs_lens_light[0]:
+            center_x, center_y = kwargs_lens_light[0]['center_x'], kwargs_lens_light[0]['center_y']
+        else:
+            center_x, center_y = 0, 0
+        # estimate half-light radius
+        r_h = self.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y,
+                                          model_bool_list=model_bool_list, numPix=numPix, deltaPix=deltaPix)
+        # estimate ellipticity at half-light radius
+        if elliptical is True:
+            e1, e2 = self.ellipticity_lens_light(kwargs_lens_light, center_x=center_x, center_y=center_y, model_bool_list=model_bool_list, deltaPix=deltaPix*2,
+                               numPix=numPix)
+        else:
+            e1, e2 = 0, 0
+        # MGE around major axis
+        amplitudes, sigmas, center_x, center_y = self.multi_gaussian_lens_light(kwargs_lens_light, model_bool_list=model_bool_list, e1=e1, e2=e2, n_comp=20)
+        kwargs_mge = {'amp': amplitudes, 'sigma': sigmas, 'center_x': center_x, 'center_y': center_y}
+        if elliptical:
+            kwargs_mge['e1'] = e1
+            kwargs_mge['e2'] = e2
+        # rotate axes and add ellipticity to model kwargs
+        return kwargs_mge
+
     @staticmethod
-    def light2mass_model_conversion(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
+    def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
         """
         takes a lens light model and turns it numerically in a lens model
         (with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.
@@ -228,5 +296,7 @@ class LensAnalysis(object):
         kwargs = [{'grid_interp_x': x_axes_sub, 'grid_interp_y': y_axes_sub, 'f_': f_sub,
                    'f_x': f_x_sub, 'f_y': f_y_sub}]
         f_xx, f_xy, f_yx, f_yy = lens_differential.hessian(x_grid, y_grid, kwargs)
-
-        return x_axes, y_axes, f_, f_x, f_y, f_xx, f_yy, f_xy
+        kwargs_interpol = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
+                   'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
+                           'f_xy': util.array2image(f_xy), 'f_yy': util.array2image(f_yy)}
+        return kwargs_interpol

@@ -6,7 +6,7 @@ from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
-from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
 
 import numpy as np
 import copy

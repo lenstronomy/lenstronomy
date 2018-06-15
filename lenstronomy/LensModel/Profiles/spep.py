@@ -81,6 +81,8 @@ class SPEP(object):
         x_shift = x - center_x
         y_shift = y - center_y
         E = phi_E_new / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
+        if E <= 0:
+            return np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         # E = phi_E
         eta = float(-gamma+3)
         xt1 = np.cos(phi_G)*x_shift+np.sin(phi_G)*y_shift
@@ -130,6 +132,6 @@ class SPEP(object):
             gamma = 1.4
         if gamma > 2.9:
             gamma = 2.9
-        if q < 0.1:
-            q = 0.1
+        if q < 0.01:
+            q = 0.01
         return float(gamma), q

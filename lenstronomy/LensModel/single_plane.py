@@ -79,7 +79,7 @@ class SinglePlane(object):
                 from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
                 self.func_list.append(Hernquist_Ellipse())
             elif lens_type == 'GAUSSIAN':
-                from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+                from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
                 self.func_list.append(Gaussian())
             elif lens_type == 'GAUSSIAN_KAPPA':
                 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa

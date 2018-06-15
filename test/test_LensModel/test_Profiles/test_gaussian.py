@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
 import numpy as np

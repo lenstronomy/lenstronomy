@@ -100,7 +100,7 @@ def moments(I_xy, x, y):
     """
     x_ = np.sum(I_xy * x)
     y_ = np.sum(I_xy * y)
-    Q_xx = np.sum(I_xy * (x - x_)**2)
+    Q_xx = np.sum(I_xy * (x - x_) ** 2)
     Q_xy = np.sum(I_xy * (x - x_) * (y - y_))
     Q_yy = np.sum(I_xy * (y - y_) ** 2)
     return Q_xx, Q_xy, Q_yy

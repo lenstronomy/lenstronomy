@@ -4,7 +4,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import scipy.special
 import scipy.integrate as integrate
-from lenstronomy.LensModel.Profiles.gaussian import Gaussian
+from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
 
 
 class GaussianKappa(object):

@@ -3,7 +3,6 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 import lenstronomy.Util.param_util as param_util
-from lenstronomy.LensModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
@@ -26,7 +25,6 @@ class LensAnalysis(object):
         self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []))
         self.kwargs_model = kwargs_model
         self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
-        self.gaussian = Gaussian()
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)

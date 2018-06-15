@@ -32,9 +32,9 @@ class LikelihoodModule(object):
         kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower, kwargs_ps_lower, kwargs_cosmo_lower = kwargs_lower
         kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper, kwargs_ps_upper, kwargs_cosmo_upper = kwargs_upper
         self.lower_limit = self.param.setParams(kwargs_lens_lower, kwargs_source_lower, kwargs_lens_light_lower,
-                                                kwargs_ps_lower, kwargs_cosmo_lower, bounds='lower')
+                                                kwargs_ps_lower, kwargs_cosmo_lower)
         self.upper_limit = self.param.setParams(kwargs_lens_upper, kwargs_source_upper, kwargs_lens_light_upper,
-                                           kwargs_ps_upper, kwargs_cosmo_upper, bounds='upper')
+                                           kwargs_ps_upper, kwargs_cosmo_upper)
 
         self._check_bounds = kwargs_likelihood.get('check_bounds', True)
         self._point_source_likelihood = kwargs_likelihood.get('point_source_likelihood', False)

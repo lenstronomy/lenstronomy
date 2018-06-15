@@ -133,7 +133,7 @@ class TestNumerics(object):
 
     def test_gaussian(self):
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa as Model
-        kwargs = {'amp': 1. / 4., 'sigma_x': 2., 'sigma_y': 2.}
+        kwargs = {'amp': 1. / 4., 'sigma': 2.}
         self.assert_integrals(Model, kwargs)
 
     def test_gaussian_density_deflection(self):
@@ -145,11 +145,10 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa as Model
         lensModel = Model()
         amp = 1. / 4.
-        sigma_x = 2.
-        sigma_y = 2.
-        amp_lens = lensModel._amp3d_to_2d(amp, sigma_x, sigma_y)
-        kwargs_lens = {'amp': amp_lens, 'sigma_x': sigma_x, 'sigma_y': sigma_y}
-        kwargs_density = {'amp': amp, 'sigma_x': sigma_x, 'sigma_y': sigma_y}
+        sigma = 2.
+        amp_lens = lensModel._amp3d_to_2d(amp, sigma, sigma)
+        kwargs_lens = {'amp': amp_lens, 'sigma': sigma}
+        kwargs_density = {'amp': amp, 'sigma': sigma}
         r = .5
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r

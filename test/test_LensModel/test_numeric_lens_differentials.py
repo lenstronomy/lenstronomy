@@ -96,7 +96,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_gausian_kappa(self):
-        kwargs = {'amp': 1. / 4., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
+        kwargs = {'amp': 1. / 4., 'sigma': 2., 'center_x': 0., 'center_y': 0.}
         lens_model = ['GAUSSIAN_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 

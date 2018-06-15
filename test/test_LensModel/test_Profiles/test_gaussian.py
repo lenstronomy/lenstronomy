@@ -87,9 +87,8 @@ class TestGaussianKappa(object):
         amp = 1.*2*np.pi
         center_x = 0.
         center_y = 0.
-        sigma_x = 1.
-        sigma_y = 1.
-        f_x, f_y = self.gaussian_kappa.derivatives(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        sigma = 1.
+        f_x, f_y = self.gaussian_kappa.derivatives(x, y, amp, sigma, center_x, center_y)
         npt.assert_almost_equal(f_x[2], 0.63813558702212059, decimal=8)
         npt.assert_almost_equal(f_y[2], 0.63813558702212059, decimal=8)
 
@@ -99,11 +98,11 @@ class TestGaussianKappa(object):
         amp = 1.*2*np.pi
         center_x = 0.
         center_y = 0.
-        sigma_x = 1.
-        sigma_y = 1.
-        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        sigma = 1.
+
+        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
         kappa = 1./2 * (f_xx + f_yy)
-        kappa_true = self.gaussian.function(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        kappa_true = self.gaussian.function(x, y, amp, sigma, sigma, center_x, center_y)
         print(kappa_true)
         print(kappa)
         npt.assert_almost_equal(kappa[0], kappa_true[0], decimal=5)
@@ -115,12 +114,11 @@ class TestGaussianKappa(object):
         amp = 1.*2*np.pi
         center_x = 0.
         center_y = 0.
-        sigma_x = 1.
-        sigma_y = 1.
-        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        sigma = 1.
+        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
         kappa = 1./2 * (f_xx + f_yy)
-        amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma_x, sigma_y)
-        density_2d = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma_x, sigma_y, center_x, center_y)
+        amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma, sigma)
+        density_2d = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma, center_x, center_y)
         npt.assert_almost_equal(kappa[1], density_2d[1], decimal=5)
         npt.assert_almost_equal(kappa[2], density_2d[2], decimal=5)
 
@@ -130,11 +128,10 @@ class TestGaussianKappa(object):
         amp = 1.*2*np.pi
         center_x = 0.
         center_y = 0.
-        sigma_x = 1.
-        sigma_y = 1.
-        amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma_x, sigma_y)
-        density_2d_gauss = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma_x, sigma_y, center_x, center_y)
-        density_2d = self.gaussian.function(x, y, amp, sigma_x, sigma_y, center_x, center_y)
+        sigma = 1.
+        amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma, sigma)
+        density_2d_gauss = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma, center_x, center_y)
+        density_2d = self.gaussian.function(x, y, amp, sigma, sigma, center_x, center_y)
         npt.assert_almost_equal(density_2d_gauss[1], density_2d[1], decimal=5)
 
 

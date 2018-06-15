@@ -11,7 +11,7 @@ class MultiGaussianKappa(object):
     def __init__(self):
         self.gaussian_kappa = GaussianKappa()
 
-    def function(self, x, y, amp, sigma, center_x=0, center_y=0):
+    def function(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -24,11 +24,11 @@ class MultiGaussianKappa(object):
         """
         f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_ += self.gaussian_kappa.function(x, y, amp=amp[i], sigma_x=sigma[i], sigma_y=sigma[i],
+            f_ += self.gaussian_kappa.function(x, y, amp=scale_factor*amp[i], sigma=sigma[i],
                                                center_x=center_x, center_y=center_y)
         return f_
 
-    def derivatives(self, x, y, amp, sigma, center_x=0, center_y=0):
+    def derivatives(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -41,13 +41,13 @@ class MultiGaussianKappa(object):
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_kappa.derivatives(x, y, amp=amp[i], sigma_x=sigma[i], sigma_y=sigma[i],
+            f_x_i, f_y_i = self.gaussian_kappa.derivatives(x, y, amp=scale_factor*amp[i], sigma=sigma[i],
                                                            center_x=center_x, center_y=center_y)
             f_x += f_x_i
             f_y += f_y_i
         return f_x, f_y
 
-    def hessian(self, x, y, amp, sigma, center_x=0, center_y=0):
+    def hessian(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -60,15 +60,15 @@ class MultiGaussianKappa(object):
         """
         f_xx, f_yy, f_xy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=amp[i], sigma_x=sigma[i],
-                                                                 sigma_y=sigma[i], center_x=center_x,
+            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i],
+                                                                 sigma=sigma[i], center_x=center_x,
                                                                  center_y=center_y)
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
         return f_xx, f_yy, f_xy
 
-    def density(self, r, amp, sigma):
+    def density(self, r, amp, sigma, scale_factor=1):
         """
 
         :param r:
@@ -78,10 +78,10 @@ class MultiGaussianKappa(object):
         """
         d_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
-            d_ += self.gaussian_kappa.density(r, amp[i], sigma[i], sigma[i])
+            d_ += self.gaussian_kappa.density(r, scale_factor*amp[i], sigma[i])
         return d_
 
-    def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0):
+    def density_2d(self, x, y, amp, sigma, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param R:
@@ -92,10 +92,10 @@ class MultiGaussianKappa(object):
         """
         d_3d = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            d_3d += self.gaussian_kappa.density_2d(x, y, amp[i], sigma[i], sigma[i], center_x, center_y)
+            d_3d += self.gaussian_kappa.density_2d(x, y, scale_factor*amp[i], sigma[i], center_x, center_y)
         return d_3d
 
-    def mass_3d_lens(self, R, amp, sigma):
+    def mass_3d_lens(self, R, amp, sigma, scale_factor=1):
         """
 
         :param R:
@@ -105,7 +105,7 @@ class MultiGaussianKappa(object):
         """
         mass_3d = np.zeros_like(R, dtype=float)
         for i in range(len(amp)):
-            mass_3d += self.gaussian_kappa.mass_3d_lens(R, amp[i], sigma[i], sigma[i])
+            mass_3d += self.gaussian_kappa.mass_3d_lens(R, scale_factor*amp[i], sigma[i])
         return mass_3d
 
 
@@ -117,7 +117,7 @@ class MultiGaussianKappaEllipse(object):
     def __init__(self):
         self.gaussian_kappa = GaussianKappaEllipse()
 
-    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -130,11 +130,11 @@ class MultiGaussianKappaEllipse(object):
         """
         f_ = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_ += self.gaussian_kappa.function(x, y, amp=amp[i], sigma=sigma[i], e1=e1, e2=e2,
+            f_ += self.gaussian_kappa.function(x, y, amp=scale_factor*amp[i], sigma=sigma[i], e1=e1, e2=e2,
                                                center_x=center_x, center_y=center_y)
         return f_
 
-    def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -147,13 +147,13 @@ class MultiGaussianKappaEllipse(object):
         """
         f_x, f_y = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_kappa.derivatives(x, y, amp=amp[i], sigma=sigma[i], e1=e1, e2=e2,
+            f_x_i, f_y_i = self.gaussian_kappa.derivatives(x, y, amp=scale_factor*amp[i], sigma=sigma[i], e1=e1, e2=e2,
                                                            center_x=center_x, center_y=center_y)
             f_x += f_x_i
             f_y += f_y_i
         return f_x, f_y
 
-    def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param x:
@@ -166,14 +166,14 @@ class MultiGaussianKappaEllipse(object):
         """
         f_xx, f_yy, f_xy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=amp[i], sigma=sigma[i], e1=e1, e2=e2,
+            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i], sigma=sigma[i], e1=e1, e2=e2,
                                                                  center_x=center_x, center_y=center_y)
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
         return f_xx, f_yy, f_xy
 
-    def density(self, r, amp, sigma, e1, e2):
+    def density(self, r, amp, sigma, e1, e2, scale_factor=1):
         """
 
         :param r:
@@ -183,10 +183,10 @@ class MultiGaussianKappaEllipse(object):
         """
         d_ = np.zeros_like(r, dtype=float)
         for i in range(len(amp)):
-            d_ += self.gaussian_kappa.density(r, amp[i], sigma[i], e1, e2)
+            d_ += self.gaussian_kappa.density(r, scale_factor*amp[i], sigma[i], e1, e2)
         return d_
 
-    def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
+    def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """
 
         :param R:
@@ -197,10 +197,10 @@ class MultiGaussianKappaEllipse(object):
         """
         d_3d = np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            d_3d += self.gaussian_kappa.density_2d(x, y, amp[i], sigma[i], e1, e2, center_x, center_y)
+            d_3d += self.gaussian_kappa.density_2d(x, y, scale_factor*amp[i], sigma[i], e1, e2, center_x, center_y)
         return d_3d
 
-    def mass_3d_lens(self, R, amp, sigma, e1, e2):
+    def mass_3d_lens(self, R, amp, sigma, e1, e2, scale_factor=1):
         """
 
         :param R:
@@ -210,5 +210,5 @@ class MultiGaussianKappaEllipse(object):
         """
         mass_3d = np.zeros_like(R, dtype=float)
         for i in range(len(amp)):
-            mass_3d += self.gaussian_kappa.mass_3d_lens(R, amp[i], sigma[i], e1, e2)
+            mass_3d += self.gaussian_kappa.mass_3d_lens(R, scale_factor*amp[i], sigma[i], e1, e2)
         return mass_3d

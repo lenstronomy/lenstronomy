@@ -146,7 +146,7 @@ class LightParam(object):
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list, bounds=None):
+    def setParams(self, kwargs_list):
         """
 
         :param kwargs_list:

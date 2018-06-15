@@ -17,7 +17,8 @@ class TestLensModel(object):
     def test_init(self):
         lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE']
+                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
+                            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 
@@ -54,7 +55,8 @@ class TestLensModel(object):
 
     def test_mass_2d(self):
         lensModel = LensModel(['GAUSSIAN_KAPPA'])
-        output = lensModel.mass_2d(r=1, kwargs=self.kwargs)
+        kwargs = [{'amp': 1., 'sigma': 2.}]
+        output = lensModel.mass_2d(r=1, kwargs=kwargs)
         assert output == 0.11750309741540453
 
 

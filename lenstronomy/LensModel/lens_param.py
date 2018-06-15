@@ -79,13 +79,19 @@ class LensParam(object):
                     i += 1
                 else:
                     kwargs['sigma_y'] = kwargs_fixed['sigma_y']
-            if model in ['GAUSSIAN_KAPPA']:
+            if model in ['GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'sigma' in kwargs_fixed:
                     kwargs['sigma'] = args[i]
                     i += 1
                 else:
                     kwargs['sigma'] = kwargs_fixed['sigma']
-
+            if model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
+                if not 'sigma' in kwargs_fixed:
+                    raise ValueError("%s must have fixed 'sigma' list!" %model)
+                if not 'amp' in kwargs_fixed:
+                    raise ValueError("%s must have fixed 'amp' list!" % model)
+                kwargs['sigma'] = kwargs_fixed['sigma']
+                kwargs['amp'] = kwargs_fixed['amp']
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIS_TRUNCATED', 'SPP', 'SIE']:
                 if not 'theta_E' in kwargs_fixed:
                     kwargs['theta_E'] = args[i]
@@ -99,7 +105,7 @@ class LensParam(object):
                 else:
                     kwargs['gamma'] = kwargs_fixed['gamma']
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'SIE']:
+                         'HERNQUIST_ELLIPSE', 'SIE', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'e1' in kwargs_fixed:
                     kwargs['e1'] = args[i]
                     i += 1
@@ -208,7 +214,8 @@ class LensParam(object):
                     i += 1
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA',
+                         'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     kwargs['center_x'] = args[i]
                     i += 1
@@ -233,16 +240,16 @@ class LensParam(object):
                     kwargs['f_xy'] = kwargs_fixed['f_xy']
                 if 'f_yy' in kwargs_fixed:
                     kwargs['f_yy'] = kwargs_fixed['f_yy']
-            if model in ['INTERPOL_SCALED']:
+            if model in ['INTERPOL_SCALED', 'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'scale_factor' in kwargs_fixed:
                     kwargs['scale_factor'] = args[i]
                     i += 1
                 else:
-                    kwargs['scale_factor'] = kwargs_fixed['scale_factor']
+                    kwargs['scale_factor'] = kwargs_fixed.get('scale_factor', 1)
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list, bounds=None):
+    def setParams(self, kwargs_list):
         """
 
         :param kwargs:
@@ -269,7 +276,7 @@ class LensParam(object):
                     args.append(kwargs['g3'])
                 if not 'g4' in kwargs_fixed:
                     args.append(kwargs['g4'])
-            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA']:
+            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'amp' in kwargs_fixed:
                     args.append(kwargs['amp'])
             if model in ['GAUSSIAN']:
@@ -277,7 +284,7 @@ class LensParam(object):
                     args.append(kwargs['sigma_x'])
                 if not 'sigma_y' in kwargs_fixed:
                     args.append(kwargs['sigma_y'])
-            if model in ['GAUSSIAN_KAPPA']:
+            if model in ['GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'sigma' in kwargs_fixed:
                     args.append(kwargs['sigma'])
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP']:
@@ -287,7 +294,7 @@ class LensParam(object):
                 if not 'gamma' in kwargs_fixed:
                     args.append(kwargs['gamma'])
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE']:
+                         'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'e1' in kwargs_fixed:
                     args.append(kwargs['e1'])
                 if not 'e2' in kwargs_fixed:
@@ -340,14 +347,15 @@ class LensParam(object):
                     args.append(kwargs['s_scale'])
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                                  'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE',
-                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                         'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE',
+                         'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     args.append(kwargs['center_x'])
                 if not 'center_y' in kwargs_fixed:
                     args.append(kwargs['center_y'])
-            if model in ['INTERPOL_SCALED']:
+            if model in ['INTERPOL_SCALED', 'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'scale_factor' in kwargs_fixed:
-                    args.append(kwargs['scale_factor'])
+                    args.append(kwargs.get('scale_factor', 1))
         return args
 
     def param_init(self, kwargs_mean_list):
@@ -385,10 +393,14 @@ class LensParam(object):
                 if not 'g4' in kwargs_fixed:
                     mean.append(kwargs_mean['g4'])
                     sigma.append(kwargs_mean['flexion_sigma'])
-            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA']:
+            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'amp' in kwargs_fixed:
                     mean.append(kwargs_mean['amp'])
                     sigma.append(kwargs_mean['amp_sigma'])
+            if model in ['GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
+                if not 'sigma' in kwargs_fixed:
+                    mean.append(kwargs_mean['sigma'])
+                    sigma.append(kwargs_mean['sigma_sigma'])
             if model in ['GAUSSIAN']:
                 if not 'sigma_x' in kwargs_fixed:
                     mean.append(kwargs_mean['sigma_x'])
@@ -396,11 +408,6 @@ class LensParam(object):
                 if not 'sigma_y' in kwargs_fixed:
                     mean.append(kwargs_mean['sigma_y'])
                     sigma.append(kwargs_mean['sigma_y_sigma'])
-            if model in ['GAUSSIAN_KAPPA']:
-                if not 'sigma' in kwargs_fixed:
-                    mean.append(kwargs_mean['sigma'])
-                    sigma.append(kwargs_mean['sigma_sigma'])
-
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP']:
                 if not 'theta_E' in kwargs_fixed:
                     mean.append(kwargs_mean['theta_E'])
@@ -410,7 +417,7 @@ class LensParam(object):
                     mean.append(kwargs_mean['gamma'])
                     sigma.append(kwargs_mean['gamma_sigma'])
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE']:
+                         'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'e1' in kwargs_fixed:
                     mean.append(kwargs_mean['e1'])
                     sigma.append(kwargs_mean['ellipse_sigma'])
@@ -481,17 +488,18 @@ class LensParam(object):
                     sigma.append(kwargs_mean['s_scale_sigma'])
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR'
                 , 'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE',
+                         'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     mean.append(kwargs_mean['center_x'])
                     sigma.append(kwargs_mean['center_x_sigma'])
                 if not 'center_y' in kwargs_fixed:
                     mean.append(kwargs_mean['center_y'])
                     sigma.append(kwargs_mean['center_y_sigma'])
-            if model in ['INTERPOL_SCALED']:
+            if model in ['INTERPOL_SCALED', 'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'scale_factor' in kwargs_fixed:
-                    mean.append(kwargs_mean['scale_factor'])
-                    sigma.append(kwargs_mean['scale_factor_sigma'])
+                    mean.append(kwargs_mean.get('scale_factor', 1))
+                    sigma.append(kwargs_mean.get('scale_factor_sigma', 1))
         return mean, sigma
 
     def num_param(self):
@@ -527,10 +535,14 @@ class LensParam(object):
                 if not 'g4' in kwargs_fixed:
                     num += 1
                     list.append('g4')
-            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA']:
+            if model in ['GAUSSIAN', 'GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'amp' in kwargs_fixed:
                     num += 1
                     list.append('amp_lens')
+            if model in ['GAUSSIAN_KAPPA', 'GAUSSIAN_KAPPA_ELLIPSE']:
+                if not 'sigma' in kwargs_fixed:
+                    num += 1
+                    list.append('sigma_lens')
             if model in ['GAUSSIAN']:
                 if not 'sigma_x' in kwargs_fixed:
                     num += 1
@@ -538,10 +550,6 @@ class LensParam(object):
                 if not 'sigma_y' in kwargs_fixed:
                     num += 1
                     list.append('sigma_y_lens')
-            if model in ['GAUSSIAN_KAPPA']:
-                if not 'sigma' in kwargs_fixed:
-                    num += 1
-                    list.append('sigma_lens')
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIS', 'SIE', 'SIS_TRUNCATED', 'SPP']:
                 if not 'theta_E' in kwargs_fixed:
                     num += 1
@@ -551,7 +559,7 @@ class LensParam(object):
                     num += 1
                     list.append('gamma_lens')
             if model in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NFW_ELLIPSE', 'SERSIC_ELLIPSE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE']:
+                         'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'e1' in kwargs_fixed:
                     num += 1
                     list.append('e1_lens')
@@ -620,14 +628,15 @@ class LensParam(object):
                     num += 1
             if model in ['SIS', 'SIE', 'SPP', 'SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SIS_TRUNCATED', 'SHAPELETS_POLAR',
                          'SHAPELETS_CART', 'DIPOLE', 'GAUSSIAN_KAPPA', 'SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST',
-                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+                         'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'GAUSSIAN_KAPPA_ELLIPSE',
+                         'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'center_x' in kwargs_fixed:
                     num += 1
                     list.append('center_x_lens')
                 if not 'center_y' in kwargs_fixed:
                     num += 1
                     list.append('center_y_lens')
-            if model in ['INTERPOL_SCALED']:
+            if model in ['INTERPOL_SCALED', 'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']:
                 if not 'scale_factor' in kwargs_fixed:
                     list.append('scale_factor')
                     num += 1

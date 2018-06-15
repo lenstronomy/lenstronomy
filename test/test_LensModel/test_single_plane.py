@@ -30,7 +30,8 @@ class TestLensModel(object):
 
     def test_mass_2d(self):
         lensModel = SinglePlane(['GAUSSIAN_KAPPA'])
-        output = lensModel.mass_2d(r=1, kwargs=self.kwargs)
+        kwargs = [{'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}]
+        output = lensModel.mass_2d(r=1, kwargs=kwargs)
         assert output == 0.11750309741540453
 
 

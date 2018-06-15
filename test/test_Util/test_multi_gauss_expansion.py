@@ -104,9 +104,9 @@ class TestMGE(object):
 
     def test_spemd(self):
         from lenstronomy.LensModel.Profiles.spep import SPEP
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussian_kappa
+        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
         spep = SPEP()
-        mge_kappa = MultiGaussian_kappa()
+        mge_kappa = MultiGaussianKappa()
         n_comp = 8
         theta_E = 1.41
         kwargs = {'theta_E': theta_E, 'e1': 0,
@@ -194,8 +194,8 @@ class TestMGE(object):
         kappa = 1 / 2. * (f_xx_nfw + f_xx_s + f_yy_nfw + f_yy_s)
         amplitudes, sigmas, norm = mge.mge_1d(rs, kappa, N=n_comp)
         kappa_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
-        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussian_kappa
-        mge_kappa = MultiGaussian_kappa()
+        from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
+        mge_kappa = MultiGaussianKappa()
         f_xx_mge, f_yy_mge, f_xy_mge = mge_kappa.hessian(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
         for i in range(0, 80):
             npt.assert_almost_equal(kappa_mge[i], 1. / 2 * (f_xx_mge[i] + f_yy_mge[i]), decimal=1)

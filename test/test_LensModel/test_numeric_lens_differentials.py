@@ -100,6 +100,11 @@ class TestNumericsProfile(object):
         lens_model = ['GAUSSIAN_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_gausian_kappa_ellipse(self):
+        kwargs = {'amp': 1., 'sigma': 2., 'e1': .1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['GAUSSIAN_KAPPA_ELLIPSE']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_external_shear(self):
         kwargs = {'e1': 0.1, 'e2': -0.1}
         lens_model = ['SHEAR']

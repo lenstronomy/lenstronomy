@@ -84,9 +84,15 @@ class SinglePlane(object):
             elif lens_type == 'GAUSSIAN_KAPPA':
                 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
                 self.func_list.append(GaussianKappa())
+            elif lens_type == 'GAUSSIAN_KAPPA_ELLIPSE':
+                from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
+                self.func_list.append(GaussianKappaEllipse())
             elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
-                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussian_kappa
-                self.func_list.append(MultiGaussian_kappa())
+                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
+                self.func_list.append(MultiGaussianKappa())
+            elif lens_type == 'MULTI_GAUSSIAN_KAPPA_ELLIPSE':
+                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappaEllipse
+                self.func_list.append(MultiGaussianKappaEllipse())
             elif lens_type == 'INTERPOL':
                 from lenstronomy.LensModel.Profiles.interpol import Interpol_func
                 self.func_list.append(Interpol_func(grid=False, min_grid_number=100))

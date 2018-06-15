@@ -69,7 +69,7 @@ class GaussianKappaEllipse(object):
         f_yy = (alpha_dec_dy - alpha_dec) / diff
         return f_xx, f_yy, f_xy
 
-    def density(self, r, amp, sigma_x, sigma_y):
+    def density(self, r, amp, sigma, e1, e2):
         """
 
         :param r:
@@ -77,7 +77,7 @@ class GaussianKappaEllipse(object):
         :param sigma:
         :return:
         """
-        return self.spherical.density(r, amp, sigma_x, sigma_y)
+        return self.spherical.density(r, amp, sigma, sigma)
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
@@ -100,6 +100,30 @@ class GaussianKappaEllipse(object):
         :return:
         """
         return self.spherical.mass_2d(R, amp, sigma, sigma)
+
+    def mass_3d(self, R, amp, sigma, e1, e2):
+        """
+
+        :param R:
+        :param amp:
+        :param sigma:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.spherical.mass_3d(R, amp, sigma, sigma)
+
+    def mass_3d_lens(self, R, amp, sigma, e1, e2):
+        """
+
+        :param R:
+        :param amp:
+        :param sigma:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.spherical.mass_3d_lens(R, amp, sigma, sigma)
 
     def mass_2d_lens(self, R, amp, sigma, e1, e2):
         """

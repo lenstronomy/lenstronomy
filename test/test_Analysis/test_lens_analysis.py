@@ -4,7 +4,7 @@ import pytest
 
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian, MultiGaussianEllipse
-from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussian_kappa
+from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
 import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.util as util
 
@@ -94,7 +94,7 @@ class TestLensAnalysis(object):
         kwargs_lens = [{'gamma': 1.8, 'theta_E': 0.6, 'e1': e1, 'e2': e2, 'center_x': 0.5, 'center_y': -0.1}]
         lensAnalysis = LensAnalysis(kwargs_options)
         amplitudes, sigmas, center_x, center_y = lensAnalysis.multi_gaussian_lens(kwargs_lens, n_comp=20)
-        model = MultiGaussian_kappa()
+        model = MultiGaussianKappa()
         x = np.logspace(-2, 0.5, 10) + 0.5
         y = np.zeros_like(x) - 0.1
         f_xx, f_yy, fxy = model.hessian(x, y, amplitudes, sigmas, center_x=0.5, center_y=-0.1)

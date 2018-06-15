@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 import lenstronomy.Util.mask as mask_util
 
 
@@ -89,7 +90,7 @@ def azimuthalAverage(image, center=None):
     return radial_prof
 
 
-def moments(I_xy, x, y):
+def moments(I_xy_input, x, y):
     """
     compute quadrupole moments from a light distribution
 
@@ -98,12 +99,15 @@ def moments(I_xy, x, y):
     :param y: y-coordinates of I_xy
     :return: Q_xx, Q_xy, Q_yy
     """
+    I_xy = copy.deepcopy(I_xy_input)
+    background = np.minimum(0, np.min(I_xy))
+    I_xy -= background
     x_ = np.sum(I_xy * x)
     y_ = np.sum(I_xy * y)
     Q_xx = np.sum(I_xy * (x - x_) ** 2)
     Q_xy = np.sum(I_xy * (x - x_) * (y - y_))
     Q_yy = np.sum(I_xy * (y - y_) ** 2)
-    return Q_xx, Q_xy, Q_yy
+    return Q_xx, Q_xy, Q_yy, background / np.mean(I_xy)
 
 
 def ellipticities(I_xy, x, y):
@@ -115,8 +119,9 @@ def ellipticities(I_xy, x, y):
     :param y:
     :return:
     """
-    Q_xx, Q_xy, Q_yy = moments(I_xy, x, y)
+    Q_xx, Q_xy, Q_yy, bkg = moments(I_xy, x, y)
+    print(bkg, 'bkg')
     norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx*Q_yy - Q_xy**2)
     e1 = (Q_xx - Q_yy) / norm
     e2 = 2 * Q_xy / norm
-    return e1, e2
+    return e1 / (1+bkg), e2 / (1+bkg)

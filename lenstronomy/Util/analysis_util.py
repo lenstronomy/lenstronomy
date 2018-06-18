@@ -104,9 +104,11 @@ def moments(I_xy_input, x, y):
     I_xy -= background
     x_ = np.sum(I_xy * x)
     y_ = np.sum(I_xy * y)
-    Q_xx = np.sum(I_xy * (x - x_) ** 2)
-    Q_xy = np.sum(I_xy * (x - x_) * (y - y_))
-    Q_yy = np.sum(I_xy * (y - y_) ** 2)
+    r = (np.max(x) - np.min(x)) / 3.
+    mask = mask_util.mask_sphere(x, y, center_x=x_, center_y=y_, r=r)
+    Q_xx = np.sum(I_xy * mask * (x - x_) ** 2)
+    Q_xy = np.sum(I_xy * mask * (x - x_) * (y - y_))
+    Q_yy = np.sum(I_xy * mask * (y - y_) ** 2)
     return Q_xx, Q_xy, Q_yy, background / np.mean(I_xy)
 
 
@@ -120,7 +122,6 @@ def ellipticities(I_xy, x, y):
     :return:
     """
     Q_xx, Q_xy, Q_yy, bkg = moments(I_xy, x, y)
-    print(bkg, 'bkg')
     norm = Q_xx + Q_yy + 2 * np.sqrt(Q_xx*Q_yy - Q_xy**2)
     e1 = (Q_xx - Q_yy) / norm
     e2 = 2 * Q_xy / norm

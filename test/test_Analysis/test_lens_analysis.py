@@ -175,7 +175,19 @@ class TestLensAnalysis(object):
 
     def test_light2mass_mge_elliptical_sersic(self):
         # same test as above but with Sersic ellipticity definition
-        pass
+        lens_light_kwargs = [
+            {'R_sersic': 1.3479852771734446, 'center_x': -0.0014089381116285044, 'n_sersic': 2.260502794737016,
+             'I0_sersic': 0.08679965264978318, 'center_y': 0.0573684892835563, 'e1': 0.22781838418202335,
+             'e2': 0.03841125245832406},
+            {'R_sersic': 0.20907637464009315, 'center_x': -0.0014089381116285044, 'n_sersic': 3.0930684763455156,
+             'I0_sersic': 3.2534559112899633, 'center_y': 0.0573684892835563, 'e1': 0.0323604434989261,
+             'e2': -0.12430547471424626}]
+        light_model_list = ['SERSIC_ELLIPSE', 'SERSIC_ELLIPSE']
+        lensAnalysis = LensAnalysis({'lens_light_model_list': light_model_list})
+        kwargs_mge = lensAnalysis.light2mass_mge(lens_light_kwargs, model_bool_list=None, elliptical=True, numPix=500,
+                                                 deltaPix=0.5)
+        print(kwargs_mge)
+        npt.assert_almost_equal(kwargs_mge['e1'], 0.22, decimal=2)
 
     def test_ellipticity_lens_light(self):
         e1_in = 0.1
@@ -184,7 +196,7 @@ class TestLensAnalysis(object):
         light_model_list = ['GAUSSIAN_ELLIPSE']
         lensAnalysis = LensAnalysis(kwargs_model={'lens_light_model_list': light_model_list})
         e1, e2 = lensAnalysis.ellipticity_lens_light(kwargs_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=0.1,
-                               numPix=100)
+                               numPix=200)
         npt.assert_almost_equal(e1, e1_in, decimal=4)
         npt.assert_almost_equal(e2, e2_in, decimal=4)
 
@@ -194,7 +206,7 @@ class TestLensAnalysis(object):
         kwargs_light = [{'I0_sersic': 1, 'n_sersic': 2., 'R_sersic': 1, 'center_x': 0,'center_y': 0, 'e1': e1_in, 'e2': e2_in}]
         light_model_list = ['SERSIC_ELLIPSE']
         lensAnalysis = LensAnalysis(kwargs_model={'lens_light_model_list': light_model_list})
-        e1, e2 = lensAnalysis.ellipticity_lens_light(kwargs_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=0.1,
+        e1, e2 = lensAnalysis.ellipticity_lens_light(kwargs_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=0.2,
                                numPix=400)
         print(e1, e2)
         npt.assert_almost_equal(e1, e1_in, decimal=3)

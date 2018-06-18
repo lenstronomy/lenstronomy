@@ -11,7 +11,8 @@ class TestParam(object):
         self.lens_model_list = ['SPEP', 'SHEAR', 'CONVERGENCE', 'FLEXION', 'GAUSSIAN', 'SIS', 'SIS_TRUNCATED', 'SPP',
                                 'NFW', 'TNFW', 'NFW_ELLIPSE', 'SERSIC', 'SERSIC_ELLIPSE',
                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN',
-                                'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE'
+                                'GAUSSIAN_KAPPA', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART', 'DIPOLE',
+                                'MULTI_GAUSSIAN_KAPPA'
                                 ]
         self.kwargs = [
             {'theta_E': 1., 'gamma': 2, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'SPEP
@@ -37,6 +38,7 @@ class TestParam(object):
             {'coeffs': [1, 1], 'beta': 1., 'center_x': 0, 'center_y': 0},  # 'SHAPELETS_POLAR'
             {'coeffs': [1, 1], 'beta': 1., 'center_x': 0, 'center_y': 0},  # 'SHAPELETS_CART'
             {'coupling': 1, 'phi_dipole': 1, 'center_x': 0, 'center_y': 0},  # 'DIPOLE'
+            {'amp': [1], 'sigma': [0.5], 'center_x': 0, 'center_y': 0, 'scale_factor': 1},  # 'MULTI_GAUSSIAN_KAPPA'
             ]
         self.kwargs_sigma = [
             {'theta_E_sigma': 1., 'gamma_sigma': 2, 'ellipse_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SPEP
@@ -65,10 +67,11 @@ class TestParam(object):
             {'coeffs_sigma': 0.1, 'beta_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS_POLAR'
             {'coeffs_sigma': 0.1, 'beta_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS_CART'
             {'coupling_sigma': 1, 'phi_dipole_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'DIPOLE'
+            {'center_x_sigma': 0, 'center_y_sigma': 0, 'scale_factor_sigma': 1},
         ]
         self.kwargs_fixed = [{}, {}, {},{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
                              {'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},
-                             {}, {}, {'phi_dipole': 1.}]
+                             {}, {}, {'phi_dipole': 1.}, {'sigma': [1], 'amp': [1]}]
         self.kwargs_mean = []
         for i in range(len(self.lens_model_list)):
             kwargs_mean_k = self.kwargs[i].copy()
@@ -98,7 +101,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 97
+        assert num == 100
 
 
 if __name__ == '__main__':

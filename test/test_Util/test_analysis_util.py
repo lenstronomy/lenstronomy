@@ -20,7 +20,7 @@ class TestCorrelation(object):
         assert I_r[0] == 0
 
     def test_ellipticities(self):
-        x_grid, y_grid = util.make_grid(numPix=100, deltapix=1)
+        x_grid, y_grid = util.make_grid(numPix=200, deltapix=1)
         e1, e2 = 0., 0.1
         profile = GaussianEllipse()
         I_xy = profile.function(x_grid, y_grid, amp=1, sigma=10, e1=e1, e2=e2)

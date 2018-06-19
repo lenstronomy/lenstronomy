@@ -31,7 +31,7 @@ class PSF(object):
 
                 'psf_error_map': uncertainty in the PSF model. Same shape as 'kernel_point_source'.
                     This error will be added to the pixel error around the position of point sources as follows:
-                     \sigma^2_i += ('psf_error_map'_j * point_source_flux)**2
+                     \sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
 
 
 

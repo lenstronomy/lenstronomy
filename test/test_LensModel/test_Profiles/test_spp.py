@@ -109,11 +109,11 @@ class TestSPEP(object):
         y = np.array([2])
         theta_E = 1.
         gamma = 2.
-        f_sis = self.SIS.function( x, y, theta_E)
+        f_sis = self.SIS.function(x, y, theta_E)
         f_spp = self.SPP.function(x, y, theta_E, gamma)
-        f_x_sis, f_y_sis = self.SIS.derivatives( x, y, theta_E)
+        f_x_sis, f_y_sis = self.SIS.derivatives(x, y, theta_E)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, theta_E, gamma)
-        f_xx_sis, f_yy_sis, f_xy_sis = self.SIS.hessian( x, y, theta_E)
+        f_xx_sis, f_yy_sis, f_xy_sis = self.SIS.hessian(x, y, theta_E)
         f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, theta_E, gamma)
         npt.assert_almost_equal(f_sis[0],f_spp[0], decimal=7)
         npt.assert_almost_equal(f_x_sis[0], f_x_spp[0], decimal=7)

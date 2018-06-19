@@ -18,7 +18,7 @@ class ImageNumerics(object):
         Difference to 'mask': Pixels with mask[i,j]==0 will be ray-traced, evaluated and their flux value being
         convolved to enable an impact on other pixels.
 
-        'point_source_subgrid': subgrid resolution of the point source placing
+        'point_source_subgrid': sub-sampling resolution of the point source placing
 
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics

@@ -36,6 +36,11 @@ class TestNumerics(object):
         kwargs = {'amp': 1. / 4., 'sigma_x': 2., 'sigma_y': 2.}
         self.assert_integrals(Model, kwargs)
 
+    def test_power_law(self):
+        from lenstronomy.LightModel.Profiles.power_law import PowerLaw as Model
+        kwargs = {'amp': 2, 'gamma': 2, 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -29,7 +29,7 @@ class SPP(object):
 
         x_ = x - center_x
         y_ = y - center_y
-        E = theta_E / ((3 - gamma) / 2.) ** (1. / (1 - gamma))
+        E = theta_E / ((3. - gamma) / 2.) ** (1. / (1. - gamma))
         # E = phi_E_spp
         eta= -gamma + 3
 
@@ -48,9 +48,9 @@ class SPP(object):
 
         xt1 = x - center_x
         xt2 = y - center_y
-        E = theta_E / ((3 - gamma) / 2.) ** (1. / (1 - gamma))
+        E = theta_E / ((3. - gamma) / 2.) ** (1. / (1. - gamma))
         # E = phi_E_spp
-        eta = -gamma + 3
+        eta = -gamma + 3.
 
         P2=xt1*xt1+xt2*xt2
         if isinstance(P2, int) or isinstance(P2, float):
@@ -70,9 +70,9 @@ class SPP(object):
         gamma = self._gamma_limit(gamma)
         xt1 = x - center_x
         xt2 = y - center_y
-        E = theta_E / ((3 - gamma) / 2.) ** (1. / (1 - gamma))
+        E = theta_E / ((3. - gamma) / 2.) ** (1. / (1. - gamma))
         # E = phi_E_spp
-        eta = -gamma + 3
+        eta = -gamma + 3.
 
         P2 = xt1**2+xt2**2
         if isinstance(P2, int) or isinstance(P2, float):

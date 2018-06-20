@@ -64,7 +64,6 @@ class TestNumericsProfile(object):
         print(f_xx_num, f_xx)
         print(f_yy_num, f_yy)
         print(f_xy_num, f_xy)
-        print((f_xx - f_yy)**2/4 + f_xy**2, (f_xx_num - f_yy_num)**2/4 + f_xy_num**2)
         npt.assert_almost_equal(f_x, f_x_num, decimal=5)
         npt.assert_almost_equal(f_y, f_y_num, decimal=5)
         npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
@@ -79,7 +78,7 @@ class TestNumericsProfile(object):
         print(f_xx_num, f_xx)
         print(f_yy_num, f_yy)
         print(f_xy_num, f_xy)
-        print((f_xx - f_yy)**2/4 + f_xy**2, (f_xx_num - f_yy_num)**2/4 + f_xy_num**2)
+        print(f_xx_num + f_yy_num, f_xx + f_yy)
         npt.assert_almost_equal(f_x, f_x_num, decimal=5)
         npt.assert_almost_equal(f_y, f_y_num, decimal=5)
         npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
@@ -161,7 +160,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_spep(self):
-        kwargs = {'theta_E': 0.5, 'gamma': 1.9, 'e1': 0.04, 'e2': -0.0}
+        kwargs = {'theta_E': 0.5, 'gamma': 1.9, 'e1': 0.04, 'e2': -0.1}
         lens_model = ['SPEP']
         self.assert_differentials(lens_model, kwargs)
 
@@ -191,7 +190,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_NIE(self):
-        kwargs = {'theta_E': 2., 'q': 0.8, 's': 0.04}
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 's_scale': 0.04}
         lens_model = ['NIE']
         self.assert_differentials(lens_model, kwargs)
 

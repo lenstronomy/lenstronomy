@@ -1,6 +1,95 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import lenstronomy.Util.util as util
+import lenstronomy.Util.param_util as param_util
+
+
+class NIE(object):
+
+    def __init__(self):
+        self.nie_simple = NIE_simple()
+
+    def function(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param e1:
+        :param e2:
+        :param s_scale:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, phi_G)
+        # evaluate
+        f_ = self.nie_simple.function(x__, y__, theta_E, s_scale, q)
+        # rotate back
+        return f_
+
+    def derivatives(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param e1:
+        :param e2:
+        :param s_scale:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, phi_G)
+        # evaluate
+        f__x, f__y = self.nie_simple.derivatives(x__, y__, theta_E, s_scale, q)
+        # rotate back
+        f_x, f_y = util.rotate(f__x, f__y, -phi_G)
+        return f_x, f_y
+
+    def hessian(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param e1:
+        :param e2:
+        :param s_scale:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, phi_G)
+        # evaluate
+        f__xx, f__yy, f__xy = self.nie_simple.hessian(x__, y__, theta_E, s_scale, q)
+        # rotate back
+        kappa = 1./2 * (f__xx + f__yy)
+        gamma1__ = 1./2 *(f__xx - f__yy)
+        gamma2__ = f__xy
+        gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
+        gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
+        f_xx = kappa + gamma1
+        f_yy = kappa - gamma1
+        f_xy = gamma2
+        return f_xx, f_yy, f_xy
 
 
 class NIE_simple(object):

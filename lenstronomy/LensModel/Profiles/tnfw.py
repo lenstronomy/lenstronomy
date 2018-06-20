@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 # the potential therefore is its integral
 
 import numpy as np
+import scipy.interpolate as interp
 import warnings
 
 
@@ -14,6 +15,15 @@ class TNFW(object):
     relation are: R_200 = c * Rs
 
     """
+
+    def __init__(self, interpol=True, num_interp_X=1000, max_interp_X=10):
+        """
+
+        :param interpol: bool, if True, interpolates the functions F(), g() and h()
+        """
+        self._interpol = interpol
+        self._max_interp_X = max_interp_X
+        self._num_interp_X = num_interp_X
 
     def function(self, x, y, Rs, theta_Rs, r_trunc, center_x=0, center_y=0):
         """

@@ -21,8 +21,8 @@ class TestSolver4Point(object):
     def test_decoupling(self):
         lens_model_list = ['SPEP', 'SIS']
         lensModel = LensModel(lens_model_list)
-        solver = Solver4Point(lensModel, decoupling=False)
-        solver_decoupled = Solver4Point(lensModel, decoupling=True)
+        solver = Solver4Point(lensModel)
+        solver_decoupled = Solver4Point(lensModel)
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1
         sourcePos_y = -0.1
@@ -156,7 +156,7 @@ class TestSolver4Point(object):
         e1_new, e2_new = param_util.phi_gamma_ellipticity(phi=0., gamma=gamma_ext+0.1)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0., 'e2': 0., 'center_x': 0., 'center_y': 0},
                             {'e1': e1_new, 'e2': e2_new}]
-        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
+        solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
@@ -190,7 +190,7 @@ class TestSolver4Point(object):
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': e2}]
-        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
+        solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
@@ -226,7 +226,7 @@ class TestSolver4Point(object):
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': e2}, {'theta_E': .1, 'center_x': 1, 'center_y': 0}]
-        solver = Solver4Point(lensModel, decoupling=False, solver_type='PROFILE_SHEAR')
+        solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)

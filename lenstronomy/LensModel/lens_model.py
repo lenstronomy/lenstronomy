@@ -25,7 +25,6 @@ class LensModel(object):
         else:
             self.lens_model = SinglePlane(lens_model_list)
 
-
     def ray_shooting(self, x, y, kwargs, k=None):
         """
         maps image to source position (inverse deflection)

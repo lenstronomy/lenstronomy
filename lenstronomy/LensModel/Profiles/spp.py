@@ -82,7 +82,6 @@ class SPP(object):
             p2 = P2[P2>0]  #in the SIS regime
             a[P2==0] = 0.000001
             a[P2>0] = p2
-        s2 = 0. # softening
 
         kappa = 1./eta*(a/E**2)**(eta/2-1)*((eta-2)*(xt1**2+xt2**2)/a+(1+1))
         gamma1 = 1./eta*(a/E**2)**(eta/2-1)*((eta/2-1)*(2*xt1**2-2*xt2**2)/a)

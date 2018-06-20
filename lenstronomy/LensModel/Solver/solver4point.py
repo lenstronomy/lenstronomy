@@ -11,7 +11,7 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lensModel, decoupling=True, solver_type='PROFILE'):
+    def __init__(self, lensModel, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE' "
@@ -24,10 +24,10 @@ class Solver4Point(object):
                 raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'PROFILE_SHEAR':
+        if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list:
             self._decoupling = False
         else:
-            self._decoupling = decoupling
+            self._decoupling = True
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
@@ -43,6 +43,10 @@ class Solver4Point(object):
         if self._decoupling:
             alpha_0_x, alpha_0_y = self.lensModel.alpha(x_pos, y_pos, kwargs)
             alpha_1_x, alpha_1_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=0)
+            if self._solver_type == 'PROFILE_SHEAR':
+                alpha_shear_x, alpha_shear_y = self.lensModel.alpha(x_pos, y_pos, kwargs, k=1)
+                alpha_1_x += alpha_shear_x
+                alpha_1_y += alpha_shear_y
             x_sub = alpha_1_x - alpha_0_x
             y_sub = alpha_1_y - alpha_0_y
         else:
@@ -61,7 +65,13 @@ class Solver4Point(object):
     def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(6)):
         kwargs_list = self._update_kwargs(x, kwargs_list)
         if self._decoupling:
-            beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list, k=0)
+            alpha_x, alpha_y = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=0)
+            if self._solver_type == 'PROFILE_SHEAR':
+                alpha_x_shear, alpha_y_shear = self.lensModel.alpha(x_pos, y_pos, kwargs_list, k=1)
+                alpha_x += alpha_x_shear
+                alpha_y += alpha_y_shear
+            beta_x = x_pos - alpha_x
+            beta_y = y_pos - alpha_y
         else:
             beta_x, beta_y = self.lensModel.ray_shooting(x_pos, y_pos, kwargs_list)
         y = np.zeros(6)

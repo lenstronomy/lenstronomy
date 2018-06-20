@@ -8,6 +8,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestNFW(object):
     """
     tests the Gaussian methods
@@ -89,6 +90,28 @@ class TestNFW(object):
         theta_Rs = 1
         m_3d = self.nfw.mass_3d_lens(R, Rs, theta_Rs)
         npt.assert_almost_equal(m_3d, 1.1573795105019022, decimal=8)
+
+    def test_interpol(self):
+        R = 1
+        Rs = 3
+        theta_Rs = 1
+        x = np.array([2, 3, 4])
+        y = np.array([1, 1, 1])
+
+        nfw = NFW(interpol=False)
+        nfw_interp = NFW(interpol=True)
+
+        values = nfw.function(x, y, Rs, theta_Rs)
+        values_interp = nfw_interp.function(x, y, Rs, theta_Rs)
+        npt.assert_almost_equal(values, values_interp, decimal=4)
+
+        values = nfw.derivatives(x, y, Rs, theta_Rs)
+        values_interp = nfw_interp.derivatives(x, y, Rs, theta_Rs)
+        npt.assert_almost_equal(values, values_interp, decimal=4)
+
+        values = nfw.hessian(x, y, Rs, theta_Rs)
+        values_interp = nfw_interp.hessian(x, y, Rs, theta_Rs)
+        npt.assert_almost_equal(values, values_interp, decimal=4)
 
 
 class TestMassAngleConversion(object):

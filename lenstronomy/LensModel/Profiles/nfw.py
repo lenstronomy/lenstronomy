@@ -4,6 +4,8 @@ __author__ = 'sibirrer'
 #the potential therefore is its integral
 
 import numpy as np
+import scipy.interpolate as interp
+
 
 class NFW(object):
     """
@@ -11,6 +13,14 @@ class NFW(object):
 
     relation are: R_200 = c * Rs
     """
+    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
+        """
+
+        :param interpol: bool, if True, interpolates the functions F(), g() and h()
+        """
+        self._interpol = interpol
+        self._max_interp_X = max_interp_X
+        self._num_interp_X = num_interp_X
 
     def function(self, x, y, Rs, theta_Rs, center_x=0, center_y=0):
         """
@@ -94,7 +104,7 @@ class NFW(object):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         x = R/Rs
-        Fx = self._F(x)
+        Fx = self.F_(x)
         return 2*rho0*Rs*Fx
 
     def mass_3d(self, R, Rs, rho0):
@@ -130,7 +140,7 @@ class NFW(object):
         :return:
         """
         x = R/Rs
-        gx = self._g(x)
+        gx = self.g_(x)
         m_2d = 4*rho0*Rs*R**2*gx/x**2 * np.pi
         return m_2d
 
@@ -150,7 +160,7 @@ class NFW(object):
         :return: Epsilon(R) projected density at radius R
         """
         x = R/Rs
-        hx = self._h(x)
+        hx = self.h_(x)
         return 2*rho0*Rs**3*hx
 
     def nfwAlpha(self, R, Rs, rho0, ax_x, ax_y):
@@ -175,7 +185,7 @@ class NFW(object):
         else:
             R[R <= 0.00000001] = 0.00000001
         x = R/Rs
-        gx = self._g(x)
+        gx = self.g_(x)
         a = 4*rho0*Rs*R*gx/x**2/R
         return a*ax_x, a*ax_y
 
@@ -202,10 +212,27 @@ class NFW(object):
         else:
             R[R <= c] = c
         x = R/Rs
-        gx = self._g(x)
-        Fx = self._F(x)
+        gx = self.g_(x)
+        Fx = self.F_(x)
         a = 2*rho0*Rs*(2*gx/x**2 - Fx)#/x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
         return a*(ax_y**2-ax_x**2)/R**2, -a*2*(ax_x*ax_y)/R**2
+
+    def F_(self, X):
+        """
+        computes h()
+
+        :param X:
+        :return:
+        """
+        if self._interpol:
+            if not hasattr(self, '_F_interp'):
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                F_x = self._F(x)
+                self._F_interp = interp.interp1d(x, F_x, kind='linear', axis=-1, copy=False, bounds_error=False,
+                                                 fill_value=0, assume_sorted=True)
+            return self._F_interp(X)
+        else:
+            return self._F(X)
 
     def _F(self, X):
         """
@@ -227,20 +254,35 @@ class NFW(object):
 
         else:
             a = np.empty_like(X)
-            x = X[X < 1]
-            a[X<1] = 1/(x**2-1)*(1-2/np.sqrt(1-x**2)*np.arctanh(np.sqrt((1-x)/(1+x))))
+            x = X[(X < 1) & (X > 0)]
+            a[(X < 1) & (X > 0)] = 1/(x**2-1)*(1-2/np.sqrt(1-x**2)*np.arctanh(np.sqrt((1-x)/(1+x))))
 
-            x = X[X == 1]
-            a[X==1] = 1./3.
+            a[X == 1] = 1./3.
 
             x = X[X > 1]
-            a[X>1] = 1/(x**2-1)*(1-2/np.sqrt(x**2-1)*np.arctan(np.sqrt((x-1)/(1+x))))
+            a[X > 1] = 1/(x**2-1)*(1-2/np.sqrt(x**2-1)*np.arctan(np.sqrt((x-1)/(1+x))))
             # a[X>y] = 0
 
-            c = 0.000001
-            x = X[X == 0]
-            a[X==0] = 1/(-1)*(1-2/np.sqrt(1)*np.arctanh(np.sqrt((1-c)/(1+c))))
+            c = 0.0000001
+            a[X == 0] = 1/(-1)*(1-2/np.sqrt(1)*np.arctanh(np.sqrt((1-c)/(1+c))))
         return a
+
+    def g_(self, X):
+        """
+        computes h()
+
+        :param X:
+        :return:
+        """
+        if self._interpol:
+            if not hasattr(self, '_g_interp'):
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                g_x = self._g(x)
+                self._g_interp = interp.interp1d(x, g_x, kind='linear', axis=-1, copy=False, bounds_error=False,
+                                                 fill_value=0, assume_sorted=True)
+            return self._g_interp(X)
+        else:
+            return self._g(X)
 
     def _g(self, X):
         """
@@ -264,15 +306,29 @@ class NFW(object):
             a = np.empty_like(X)
             X[X <= c] = c
             x = X[X < 1]
-
             a[X < 1] = np.log(x/2.) + 1/np.sqrt(1-x**2)*np.arccosh(1./x)
-
             a[X == 1] = 1 + np.log(1./2.)
-
             x = X[X > 1]
             a[X > 1] = np.log(x/2) + 1/np.sqrt(x**2-1)*np.arccos(1./x)
 
         return a
+
+    def h_(self, X):
+        """
+        computes h()
+
+        :param X:
+        :return:
+        """
+        if self._interpol:
+            if not hasattr(self, '_h_interp'):
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                h_x = self._h(x)
+                self._h_interp = interp.interp1d(x, h_x, kind='linear', axis=-1, copy=False, bounds_error=False,
+                                                 fill_value=0, assume_sorted=True)
+            return self._h_interp(X)
+        else:
+            return self._h(X)
 
     def _h(self, X):
         """

@@ -190,6 +190,11 @@ class TestNumericsProfile(object):
         lens_model = ['HERNQUIST_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_NIE(self):
+        kwargs = {'theta_E': 2., 'q': 0.8, 's': 0.04}
+        lens_model = ['NIE']
+        self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

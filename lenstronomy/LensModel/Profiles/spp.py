@@ -9,6 +9,7 @@ class SPP(object):
     """
     class for Softened power-law elliptical potential (SPEP)
     """
+    param_names = ['theta_E', 'gamma', 'center_x', 'center_y']
 
     def function(self, x, y, theta_E, gamma, center_x=0, center_y=0):
         """

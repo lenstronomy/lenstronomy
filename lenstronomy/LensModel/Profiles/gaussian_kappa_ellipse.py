@@ -14,6 +14,8 @@ class GaussianKappaEllipse(object):
     the calculation follows Glenn van de Ven et al. 2009
 
     """
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.spherical = GaussianKappa()
         self._diff = 0.000001
@@ -111,7 +113,7 @@ class GaussianKappaEllipse(object):
         :param e2:
         :return:
         """
-        return self.spherical.mass_3d(R, amp, sigma, sigma)
+        return self.spherical.mass_3d(R, amp, sigma)
 
     def mass_3d_lens(self, R, amp, sigma, e1, e2):
         """

@@ -6,6 +6,8 @@ class SIS(object):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
+    param_names = ['theta_E', 'center_x', 'center_y']
+
     def function(self, x, y, theta_E, center_x=0, center_y=0):
         x_shift = x - center_x
         y_shift = y - center_y

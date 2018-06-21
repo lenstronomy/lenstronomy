@@ -14,6 +14,11 @@ class TestPowerLaw(object):
     def setup(self):
         pass
 
+    def test_param_name(self):
+        chameleon = Chameleon()
+        names = chameleon.param_names
+        assert names[0] == 'amp'
+
     def test_function(self):
         """
 

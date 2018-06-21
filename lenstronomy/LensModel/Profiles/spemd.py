@@ -8,6 +8,8 @@ class SPEMD(object):
     """
     class for smooth power law ellipse mass density profile
     """
+    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.s2 = 0.00000001
         self.spp = SPP()

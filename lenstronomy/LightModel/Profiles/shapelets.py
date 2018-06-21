@@ -11,6 +11,8 @@ class Shapelets(object):
     """
 
     """
+    param_names = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']
+
     def __init__(self, interpolation=False, precalc=False):
         """
         load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 50
@@ -112,6 +114,8 @@ class ShapeletSet(object):
     """
     class to operate on entire shapelet set
     """
+    param_names = ['amp', 'n_max', 'beta', 'center_x', 'center_y']
+
     def __init__(self):
         self.shapelets = Shapelets(precalc=True)
 

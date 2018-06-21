@@ -7,6 +7,7 @@ class PJaffe(object):
     based on Eliasdottir (2013)
     """
     _s = 0.0001
+    param_names = ['sigma0', 'Ra', 'Rs', 'center_x', 'center_y']
 
     def density(self, r, rho0, Ra, Rs):
         """

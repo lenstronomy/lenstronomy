@@ -8,6 +8,7 @@ class ExternalShear(object):
     """
     new class for external shear e1, e2 expression
     """
+    param_names = ['e1', 'e2']
 
     def function(self, x, y, e1, e2):
         # change to polar coordinates

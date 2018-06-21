@@ -9,6 +9,8 @@ class PJaffe_Ellipse(object):
 
     relation are: R_200 = c * Rs
     """
+    param_names = ['sigma0', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.spherical = PJaffe()
         self._diff = 0.000001

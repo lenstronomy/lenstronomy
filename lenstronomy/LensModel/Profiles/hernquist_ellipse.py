@@ -9,9 +9,11 @@ class Hernquist_Ellipse(object):
 
     relation are: R_200 = c * Rs
     """
+    param_names = ['sigma0', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.spherical = Hernquist()
-        self._diff = 0.000001
+        self._diff = 0.0000000001
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """

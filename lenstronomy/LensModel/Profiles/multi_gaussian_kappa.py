@@ -7,6 +7,7 @@ class MultiGaussianKappa(object):
     """
 
     """
+    param_names = ['amp', 'sigma', 'center_x', 'center_y']
 
     def __init__(self):
         self.gaussian_kappa = GaussianKappa()
@@ -113,6 +114,7 @@ class MultiGaussianKappaEllipse(object):
     """
 
     """
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
 
     def __init__(self):
         self.gaussian_kappa = GaussianKappaEllipse()

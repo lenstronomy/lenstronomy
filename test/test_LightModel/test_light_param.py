@@ -10,22 +10,21 @@ class TestParam(object):
     def setup(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
-                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'NONE'
+                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM'
                                  ]
         self.kwargs = [
             {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'amp': [1., 2], 'sigma': [1, 3], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
+            {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
+            {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
+            {'amp': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
             # 'CORE_SERSIC'
             {'amp': [1, 1, 1], 'beta': 0.5, 'n_max': 1, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS'
-            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
-            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1},  # 'HERNQUIST_ELLIPSE'
-            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
-            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1},  # 'PJAFFE_ELLIPSE'
-            {'mean': 1},  # 'UNIFORM'
-            {},  # 'NONE'
+            {'amp': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
+            {'amp': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1},  # 'HERNQUIST_ELLIPSE'
+            {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
+            {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1},  # 'PJAFFE_ELLIPSE'
+            {'amp': 1},  # 'UNIFORM'
 
         ]
         self.kwargs_sigma = [
@@ -33,21 +32,20 @@ class TestParam(object):
             # 'GAUSSIAN'
             {'amp_sigma': 1., 'sigma_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},
             # 'MULTI_GAUSSIAN'
-            {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1, 'center_y_sigma': 1},  # 'SERSIC'
-            {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
-             'center_y_sigma': 1, 'ellipse_sigma': 0.1},  # 'SERSIC_ELLIPSE'
-            {'I0_sersic_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
-             'center_y_sigma': 1, 'ellipse_sigma': 0.1, 'Re_sigma': 0.01, 'gamma_sigma': 0.1},  # 'CORE_SERSIC'
+            {'amp_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1, 'center_y_sigma': 1},  # 'SERSIC'
+            {'amp_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
+             'center_y_sigma': 1, 'e1_sigma': 0.1, 'e2_sigma': 0.1},  # 'SERSIC_ELLIPSE'
+            {'amp_sigma': 1, 'R_sersic_sigma': 0.5, 'n_sersic_sigma': 1, 'center_x_sigma': 1,
+             'center_y_sigma': 1, 'e1_sigma': 0.1, 'e2_sigma': 0.1, 'Re_sigma': 0.01, 'gamma_sigma': 0.1},  # 'CORE_SERSIC'
             {'amp_sigma': 1, 'beta_sigma': 0.1, 'n_max_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'SHAPELETS'
-            {'sigma0_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'HERNQUIST'
-            {'sigma0_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},  # 'HERNQUIST_ELLIPSE'
-            {'sigma0_sigma': 1, 'Ra_sigma': 0.1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'PJAFFE'
-            {'sigma0_sigma': 1, 'Ra_sigma': 0.1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'ellipse_sigma': 0.1},  # 'PJAFFE'
-            {'mean_sigma': 0.1},  # 'UNIFORM'
-            {},  # 'NONE'
+            {'amp_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'HERNQUIST'
+            {'amp_sigma': 1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'e1_sigma': 0.1, 'e2_sigma': 0.1},  # 'HERNQUIST_ELLIPSE'
+            {'amp_sigma': 1, 'Ra_sigma': 0.1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0},  # 'PJAFFE'
+            {'amp_sigma': 1, 'Ra_sigma': 0.1, 'Rs_sigma': 0.5, 'center_x_sigma': 0, 'center_y_sigma': 0, 'e1_sigma': 0.1, 'e2_sigma': 0.1},  # 'PJAFFE'
+            {'amp_sigma': 0.1},  # 'UNIFORM'
 
         ]
-        self.kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'amp': [1, 1, 1]}, {}, {}, {}, {}, {}, {}
+        self.kwargs_fixed = [{}, {'sigma': [1, 3], 'amp': [1, 1]}, {}, {}, {}, {'amp': [1, 1, 1]}, {}, {}, {}, {}, {}
                              ]
         self.kwargs_mean = []
         for i in range(len(self.light_model_list)):
@@ -74,11 +72,11 @@ class TestParam(object):
 
     def test_param_init(self):
         mean, sigma = self.param.param_init(self.kwargs_mean)
-        assert mean[0] == 0
+        assert mean[0] == 1
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 57
+        assert num == 55
 
 
 if __name__ == '__main__':

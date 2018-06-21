@@ -5,8 +5,9 @@ class Hernquist(object):
     """
     class to compute the Hernquist 1990 model
     """
-    _diff = 0.00001
-    _s = 0.0001
+    _diff = 0.00000001
+    _s = 0.00001
+    param_names = ['sigma0', 'Rs', 'center_x', 'center_y']
 
     def density(self, r, rho0, Rs):
         """
@@ -52,7 +53,7 @@ class Hernquist(object):
         :param X: r/rs
         :return:
         """
-        c = 0.0000001
+        c = self._s
         if isinstance(X, int) or isinstance(X, float):
             X = max(X, c)
             if X < 1 and X > 0:
@@ -176,7 +177,7 @@ class Hernquist(object):
         else:
             r[r < self._s] = self._s
         X = r / Rs
-        f_ = sigma0 * Rs**2 * (np.log(X**2/4.) + 2*self._F(X))
+        f_ = sigma0 * Rs ** 2 * (np.log(X ** 2 / 4.) + 2 * self._F(X))
         return f_
 
     def derivatives(self, x, y, sigma0, Rs, center_x=0, center_y=0):
@@ -199,7 +200,7 @@ class Hernquist(object):
         else:
             r[r < self._s] = self._s
         X = r/Rs
-        alpha_r = 2*sigma0 * Rs * X * (1-self._F(X)) / (X**2-1)
+        alpha_r = 2 * sigma0 * Rs * X * (1 - self._F(X)) / (X ** 2 - 1)
         f_x = alpha_r * x_/r
         f_y = alpha_r * y_/r
         return f_x, f_y
@@ -216,10 +217,10 @@ class Hernquist(object):
         :param center_y:
         :return:
         """
-        alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs,  center_x, center_y)
+        alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs, center_x, center_y)
         diff = self._diff
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Rs,  center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, sigma0, Rs,  center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Rs, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, sigma0, Rs, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff

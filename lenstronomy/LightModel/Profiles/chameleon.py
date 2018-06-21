@@ -7,6 +7,8 @@ class Chameleon(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
+    param_names = ['amp', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.nie = NIE()
 

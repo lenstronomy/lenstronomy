@@ -7,6 +7,7 @@ class NIE(object):
     """
     non-divergent isothermal ellipse (projected)
     """
+    param_names = ['amp', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
 
     def function(self, x, y, amp, e1, e2, s_scale, center_x=0, center_y=0):
         """

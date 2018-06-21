@@ -163,7 +163,7 @@ class TestSersic(object):
         f_xx, f_yy, f_xy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
         kappa = (f_xx + f_yy) / 2.
         assert kappa[0] > 0
-        flux = self.sersic_light.function(x, y, I0_sersic=1., R_sersic=R_sersic, n_sersic=n_sersic)
+        flux = self.sersic_light.function(x, y, amp=1., R_sersic=R_sersic, n_sersic=n_sersic)
         flux /= flux[0]
         kappa /= kappa[0]
         npt.assert_almost_equal(flux[1], kappa[1], decimal=5)

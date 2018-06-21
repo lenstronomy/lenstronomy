@@ -9,6 +9,8 @@ class SPEP(object):
     """
     class for Softened power-law elliptical potential (SPEP)
     """
+    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         from lenstronomy.LensModel.Profiles.spp import SPP
         self.spp = SPP()

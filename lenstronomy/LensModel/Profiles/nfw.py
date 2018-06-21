@@ -13,6 +13,8 @@ class NFW(object):
 
     relation are: R_200 = c * Rs
     """
+    param_names = ['Rs', 'theta_Rs', 'center_x', 'center_y']
+
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
         """
 

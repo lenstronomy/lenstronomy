@@ -6,6 +6,10 @@ import lenstronomy.Util.param_util as param_util
 
 
 class NIE(object):
+    """
+
+    """
+    param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
 
     def __init__(self):
         self.nie_simple = NIE_simple()
@@ -113,6 +117,8 @@ class NIE_simple(object):
     this class contains the function and the derivatives of the  (softened) Isothermal ellipse
     See Keeton&Kochanek 1998
     """
+    param_names = ['theta_E', 's', 'q', 'center_x', 'center_y']
+
     def __init__(self, diff=0.0000000001):
         self._diff = diff
 

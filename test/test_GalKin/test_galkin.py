@@ -66,7 +66,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = .5
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -106,7 +106,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = .5
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -150,7 +150,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.5
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -194,7 +194,7 @@ class TestGalkin(object):
         """
         light_profile_list = ['HERNQUIST']
         r_eff = 1.
-        kwargs_light = [{'Rs': r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs': r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 2
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -210,7 +210,7 @@ class TestGalkin(object):
         r_eff = 1.
         phi, q = 1, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_light = [{'Rs': r_eff, 'sigma0': 1.,'e1': e1, 'e2': e2}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs': r_eff, 'amp': 1.,'e1': e1, 'e2': e2}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 2
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -223,7 +223,7 @@ class TestGalkin(object):
         :return:
         """
         light_profile_list = ['PJAFFE']
-        kwargs_light = [{'Rs': .5, 'Ra': 0.01, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs': .5, 'Ra': 0.01, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 0.01
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -237,7 +237,7 @@ class TestGalkin(object):
         :return:
         """
         light_profile_list = ['HERNQUIST']
-        kwargs_light = [{'Rs': 0.10535462602138289, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'sigma0': 3.7114695634960109}]
+        kwargs_light = [{'Rs': 0.10535462602138289, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'amp': 3.7114695634960109}]
         lightProfile = LightProfile(light_profile_list)
         R = 0.01
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -253,7 +253,7 @@ class TestGalkin(object):
         light_profile_list = ['HERNQUIST_ELLIPSE']
         phi, q = 0.74260706384506325, 0.46728323131925864
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_light = [{'Rs': 0.10535462602138289, 'e1': e1, 'e2': e2, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'sigma0': 3.7114695634960109}]
+        kwargs_light = [{'Rs': 0.10535462602138289, 'e1': e1, 'e2': e2, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'amp': 3.7114695634960109}]
         lightProfile = LightProfile(light_profile_list)
         R = 0.01
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -272,8 +272,8 @@ class TestGalkin(object):
 
         phi2, q2 = -0.33379268413794494, 0.66582356813012267
         e12, e22 = param_util.phi_q2_ellipticity(phi2, q2)
-        kwargs_light = [{'Rs': 0.10535462602138289, 'e1': e1, 'e2': e2, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'sigma0': 3.7114695634960109},
-                        {'Rs': 0.44955054610388684, 'e1': e12, 'e2': e22, 'center_x': 0.019536801118136753, 'center_y': 0.0218888643537157, 'Ra': 0.0010000053334891974, 'sigma0': 967.00280526319796}]
+        kwargs_light = [{'Rs': 0.10535462602138289, 'e1': e1, 'e2': e2, 'center_x': -0.02678473951679429, 'center_y': 0.88691126347462712, 'amp': 3.7114695634960109},
+                        {'Rs': 0.44955054610388684, 'e1': e12, 'e2': e22, 'center_x': 0.019536801118136753, 'center_y': 0.0218888643537157, 'Ra': 0.0010000053334891974, 'amp': 967.00280526319796}]
         lightProfile = LightProfile(light_profile_list)
         R = 0.01
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -283,7 +283,7 @@ class TestGalkin(object):
 
     def test_interpolated_sersic(self):
         from lenstronomy.Analysis.lens_analysis import LensAnalysis
-        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'I0_sersic': 1, 'center_x': 0.01, 'center_y': 0.01}]
+        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'amp': 1, 'center_x': 0.01, 'center_y': 0.01}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
         deltaPix = 0.1
         numPix = 100

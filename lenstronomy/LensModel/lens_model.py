@@ -25,6 +25,17 @@ class LensModel(object):
         else:
             self.lens_model = SinglePlane(lens_model_list)
 
+    def param_name_list(self):
+        """
+        returns the list of all parameter names
+
+        :return: list of list of strings (for each light model separately)
+        """
+        name_list = []
+        for func in self.lens_model.func_list:
+            name_list.append(func.param_names)
+        return name_list
+
     def ray_shooting(self, x, y, kwargs, k=None):
         """
         maps image to source position (inverse deflection)

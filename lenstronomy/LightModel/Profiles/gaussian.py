@@ -7,7 +7,7 @@ class Gaussian(object):
     class for Gaussian light profile
     """
     def __init__(self):
-        pass
+        self.param_names = ['amp', 'sigma_x', 'sigma_y', 'center_x', 'center_y']
 
     def function(self, x, y, amp, sigma_x, sigma_y, center_x=0, center_y=0):
         """
@@ -45,6 +45,8 @@ class GaussianEllipse(object):
     """
     class for Gaussian light profile
     """
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.gaussian = Gaussian()
 
@@ -80,6 +82,8 @@ class MultiGaussian(object):
     """
     class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
     """
+    param_names = ['amp', 'sigma', 'center_x', 'center_y']
+
     def __init__(self):
         self.gaussian = Gaussian()
 
@@ -126,6 +130,8 @@ class MultiGaussianEllipse(object):
     """
     class for elliptical multi Gaussian profile
     """
+    param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.gaussian = Gaussian()
 

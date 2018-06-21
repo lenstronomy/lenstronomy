@@ -23,7 +23,7 @@ class TestMGE(object):
         n_sersic = 3.7
         I0_sersic = 1.
         rs = np.logspace(-2., 1., 50) * r_sersic
-        ss = self.sersic.function(rs, np.zeros_like(rs), I0_sersic=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
+        ss = self.sersic.function(rs, np.zeros_like(rs), amp=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
 
         amplitudes, sigmas, norm = mge.mge_1d(rs, ss, N=n_comp)
         ss_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
@@ -38,7 +38,7 @@ class TestMGE(object):
         n_sersic = 3.7
         I0_sersic = 1.
         rs = np.logspace(-2., 1., 50) * r_sersic
-        ss = self.sersic.function(rs, np.zeros_like(rs), I0_sersic=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
+        ss = self.sersic.function(rs, np.zeros_like(rs), amp=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
 
         amplitudes, sigmas, norm = mge.mge_1d(rs, ss, N=n_comp)
         ss_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
@@ -53,7 +53,7 @@ class TestMGE(object):
         n_sersic = .5
         I0_sersic = 1.
         rs = np.logspace(-2., 1., 50) * r_sersic
-        ss = self.sersic.function(rs, np.zeros_like(rs), I0_sersic=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
+        ss = self.sersic.function(rs, np.zeros_like(rs), amp=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
 
         amplitudes, sigmas, norm = mge.mge_1d(rs, ss, N=n_comp)
         ss_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
@@ -65,7 +65,7 @@ class TestMGE(object):
         n_sersic =3.5
         I0_sersic = 1.
         rs = np.logspace(-2., 1., 50) * r_sersic
-        ss = self.sersic.function(rs, np.zeros_like(rs), I0_sersic=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
+        ss = self.sersic.function(rs, np.zeros_like(rs), amp=I0_sersic, n_sersic=n_sersic, R_sersic=r_sersic)
 
         amplitudes, sigmas, norm = mge.mge_1d(rs, ss, N=n_comp)
         ss_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)

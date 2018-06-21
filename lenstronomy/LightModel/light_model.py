@@ -69,6 +69,17 @@ class LightModel(object):
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
             self._valid_list.append(valid)
 
+    def param_name_list(self):
+        """
+        returns the list of all parameter names
+
+        :return: list of list of strings (for each light model separately)
+        """
+        name_list = []
+        for func in self.func_list:
+            name_list.append(func.param_names)
+        return name_list
+
     def surface_brightness(self, x, y, kwargs_list, k=None):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
@@ -116,20 +127,9 @@ class LightModel(object):
         response = []
         n = 0
         for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
-                new = {'I0_sersic': 1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += [self.func_list[k].function(x, y, **kwargs_new)]
-                n += 1
-            elif model in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE']:
-                new = {'sigma0': 1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += [self.func_list[k].function(x, y, **kwargs_new)]
-                n += 1
-            elif model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON']:
-                new = {'amp':  1}
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'UNIFORM']:
+                new = {'amp': 1}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
@@ -150,14 +150,6 @@ class LightModel(object):
                 kwargs_new.update(new)
                 response += self.func_list[k].function_split(x, y, **kwargs_new)
                 n += num_param
-            elif model in ['UNIFORM']:
-                new = {'mean':  1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += [self.func_list[k].function(x, y, **kwargs_new)]
-                n += 1
-            elif model in ['NONE']:
-                pass
             else:
                 raise ValueError('model type %s not valid!' % model)
         return response, n
@@ -171,11 +163,10 @@ class LightModel(object):
         :return:
         """
         for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
-                kwargs_list[k]['I0_sersic'] = param[i]
-                i += 1
-            elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
-                kwargs_list[k]['sigma0'] = param[i]
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                         'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                         'UNIFORM']:
+                kwargs_list[k]['amp'] = param[i]
                 i += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num_param = len(kwargs_list[k]['sigma'])
@@ -186,12 +177,6 @@ class LightModel(object):
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
-            elif model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON']:
-                kwargs_list[k]['amp'] = param[i]
-                i += 1
-            elif model in ['UNIFORM']:
-                kwargs_list[k]['mean'] = param[i]
-                i += 1
             else:
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
@@ -205,16 +190,7 @@ class LightModel(object):
         kwargs_list_new = []
         for k, model in enumerate(self.profile_type_list):
             kwargs_list_k = kwargs_list[k].copy()
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
-                kwargs_list_k['I0_sersic'] *= norm_factor
-            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
-                kwargs_list_k['sigma0'] *= norm_factor
-            if model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE',
-                         'CHAMELEON']:
+            if 'amp' in kwargs_list_k:
                 kwargs_list_k['amp'] *= norm_factor
-            if model in ['SHAPELETS']:
-                kwargs_list_k['amp'] *= norm_factor
-            if model in ['UNIFORM']:
-                kwargs_list_k['mean'] *= norm_factor
             kwargs_list_new.append(kwargs_list_k)
         return kwargs_list_new

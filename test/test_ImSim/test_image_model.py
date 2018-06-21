@@ -46,11 +46,11 @@ class TestImageModel(object):
         lens_model_class = LensModel(lens_model_list=lens_model_list)
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         phi, q = 0.2, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': e1, 'e2': e2}
 
         lens_light_model_list = ['SERSIC']

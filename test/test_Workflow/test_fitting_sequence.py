@@ -43,9 +43,9 @@ class TestFittingSequence(object):
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
         lens_model_class = LensModel(lens_model_list=lens_model_list)
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.1, 'e2': 0.1}
 
         lens_light_model_list = ['SERSIC']
@@ -109,10 +109,10 @@ class TestFittingSequence(object):
 
     def test_fitting_sequence(self):
         #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
-        lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'ellipse_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'shear_sigma': 0.1}]
+        lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'e1_sigma': 0.1, 'e2_sigma': 0.1}]
         lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}, {'e1': -0.3, 'e2': -0.3}]
         lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}, {'e1': 0.3, 'e2': 0.3}]
-        source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'ellipse_sigma': 0.1}]
+        source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1}]
         source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
         source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
 

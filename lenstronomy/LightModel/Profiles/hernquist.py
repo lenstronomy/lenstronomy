@@ -9,8 +9,9 @@ class Hernquist(object):
     def __init__(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Hernquist_lens
         self.lens = Hernquist_lens()
+        self.param_names = ['amp', 'Rs', 'center_x', 'center_y']
 
-    def function(self, x, y, sigma0, Rs, center_x=0, center_y=0):
+    def function(self, x, y, amp, Rs, center_x=0, center_y=0):
         """
 
         :param x:
@@ -22,20 +23,20 @@ class Hernquist(object):
         :param center_y:
         :return:
         """
-        rho0 = self.lens.sigma2rho(sigma0, Rs)
+        rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density_2d(x, y, rho0, Rs, center_x, center_y)
 
-    def light_3d(self, r, sigma0, Rs):
+    def light_3d(self, r, amp, Rs):
         """
 
         :param y:
-        :param sigma0:
+        :param amp:
         :param Rs:
         :param center_x:
         :param center_y:
         :return:
         """
-        rho0 = self.lens.sigma2rho(sigma0, Rs)
+        rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
 
 
@@ -43,17 +44,19 @@ class Hernquist_Ellipse(object):
     """
     class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
     """
+    param_names = ['amp', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Hernquist_lens
         self.lens = Hernquist_lens()
         self.spherical = Hernquist()
 
-    def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
+    def function(self, x, y, amp, Rs, e1, e2, center_x=0, center_y=0):
         """
 
         :param x:
         :param y:
-        :param sigma0:
+        :param amp:
         :param a:
         :param s:
         :param center_x:
@@ -62,19 +65,19 @@ class Hernquist_Ellipse(object):
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_ , y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
-        return self.spherical.function(x_, y_, sigma0, Rs)
+        return self.spherical.function(x_, y_, amp, Rs)
 
-    def light_3d(self, r, sigma0, Rs, e1=0, e2=0):
+    def light_3d(self, r, amp, Rs, e1=0, e2=0):
         """
 
         :param y:
-        :param sigma0:
+        :param amp:
         :param Rs:
         :param center_x:
         :param center_y:
         :return:
         """
-        rho0 = self.lens.sigma2rho(sigma0, Rs)
+        rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
 
     def _coord_transf(self, x, y, q, phi_G, center_x, center_y):

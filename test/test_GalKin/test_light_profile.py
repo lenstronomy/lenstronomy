@@ -15,7 +15,7 @@ class TestLightProfile(object):
 
     def test_draw_light(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
-        kwargs_profile = [{'sigma0': 1., 'Rs': 0.8}]
+        kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=500000)
         bins = np.linspace(0., 1, 20)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
@@ -30,7 +30,7 @@ class TestLightProfile(object):
 
     def test_draw_light_2d_linear(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
-        kwargs_profile = [{'sigma0': 1., 'Rs': 0.8}]
+        kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d_linear(kwargs_profile, n=100000)
         bins = np.linspace(0., 1, 20)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
@@ -48,7 +48,7 @@ class TestLightProfile(object):
 
     def test_draw_light_PJaffe(self):
         lightProfile = LightProfile(profile_list=['PJAFFE'])
-        kwargs_profile = [{'sigma0': 1., 'Rs': 0.5, 'Ra': 0.2}]
+        kwargs_profile = [{'amp': 1., 'Rs': 0.5, 'Ra': 0.2}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
         bins = np.linspace(0, 2, 10)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
@@ -60,7 +60,7 @@ class TestLightProfile(object):
         npt.assert_almost_equal(light2d[8]/hist[8], 1, decimal=1)
 
         lightProfile = LightProfile(profile_list=['PJAFFE'], kwargs_numerics={'min_interpolate': 0.0001, 'max_interpolate': 20.})
-        kwargs_profile = [{'sigma0': 1., 'Rs': 0.04, 'Ra': 0.02}]
+        kwargs_profile = [{'amp': 1., 'Rs': 0.04, 'Ra': 0.02}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
         bins = np.linspace(0., 0.1, 10)
         hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
@@ -82,10 +82,10 @@ class TestLightProfile(object):
         center_x = -0.019983826426838536
         center_y = 0.90000011282957304
         kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': e1, 'e2': e2, 'center_x': center_x,
-            'center_y': center_y, 'sigma0': 1.3168943578511678},
+            'center_y': center_y, 'amp': 1.3168943578511678},
             {'Rs': 0.29187068596715743, 'e1': e12, 'e2': e22, 'center_x': center_x,
             'center_y': center_y, 'Ra': 0.020000382843298824,
-            'sigma0': 85.948773973262391}]
+            'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
         lensAnalysis = LensAnalysis(kwargs_options)
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y)
@@ -97,7 +97,7 @@ class TestLightProfile(object):
     def test_light_3d(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
         r = np.logspace(-2, 2, 100)
-        kwargs_profile = [{'sigma0': 1., 'Rs': 0.5}]
+        kwargs_profile = [{'amp': 1., 'Rs': 0.5}]
         light_3d = lightProfile.light_3d_interp(r, kwargs_profile)
         light_3d_exact = lightProfile.light_3d(r, kwargs_profile)
         for i in range(len(r)):

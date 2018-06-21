@@ -15,24 +15,24 @@ class TestLightModel(object):
     def setup(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
-                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'NONE'
+                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM'
                                  ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         self.kwargs = [
             {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'amp': [1., 2], 'sigma': [1, 3], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
-            {'I0_sersic': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},
+            {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
+            {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
+            {'amp': 1, 'R_sersic': 0.5, 'Re': 0.1, 'gamma': 2., 'n_sersic': 1, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},
             # 'CORE_SERSIC'
             {'amp': [1, 1, 1], 'beta': 0.5, 'n_max': 1, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS'
-            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
-            {'sigma0': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'HERNQUIST_ELLIPSE'
-            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
-            {'sigma0': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'PJAFFE_ELLIPSE'
-            {'mean': 1},  # 'UNIFORM'
-            {}]# 'NONE'
+            {'amp': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'HERNQUIST'
+            {'amp': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'HERNQUIST_ELLIPSE'
+            {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
+            {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2},  # 'PJAFFE_ELLIPSE'
+            {'amp': 1},  # 'UNIFORM'
+            ]
 
         self.LightModel = LightModel(light_model_list=self.light_model_list)
 
@@ -56,6 +56,10 @@ class TestLightModel(object):
     def test_re_normalize_flux(self):
         kwargs_out = self.LightModel.re_normalize_flux(kwargs_list=self.kwargs, norm_factor=2)
         assert kwargs_out[0]['amp'] == 2 * self.kwargs[0]['amp']
+
+    def test_param_name_list(self):
+        param_name_list = self.LightModel.param_name_list()
+        assert len(self.light_model_list)  == len(param_name_list)
 
 
 if __name__ == '__main__':

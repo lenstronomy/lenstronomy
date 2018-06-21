@@ -38,7 +38,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.8
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
 
         # mge of light profile
         lightModel = LightModel(light_profile_list)
@@ -87,7 +87,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.8
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
 
         # mass profile
         mass_profile_list = ['SPP']
@@ -133,7 +133,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.8
-        kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
 
         # mass profile
         mass_profile_list = ['SPP']
@@ -193,7 +193,7 @@ class TestGalkin(object):
         light_profile_list = ['SERSIC']
         r_sersic = .3
         n_sersic = 2.8
-        kwargs_light = [{'I0_sersic': 1., 'R_sersic':  r_sersic, 'n_sersic': n_sersic}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'amp': 1., 'R_sersic':  r_sersic, 'n_sersic': n_sersic}]  # effective half light radius (2d projected) in arcsec
 
         # mass profile
         mass_profile_list = ['SPP']
@@ -206,7 +206,7 @@ class TestGalkin(object):
         r_eff = lens_analysis.half_light_radius_lens(kwargs_light)
         print(r_eff)
         light_profile_list_hernquist = ['HERNQUIST']
-        kwargs_light_hernquist = [{'Rs': r_eff*0.551, 'sigma0': 1.}]
+        kwargs_light_hernquist = [{'Rs': r_eff*0.551, 'amp': 1.}]
 
         # mge of light profile
         lightModel = LightModel(light_profile_list)

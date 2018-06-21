@@ -29,9 +29,9 @@ class TestLensProp(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens_light = [{'n_sersic': 1.1212528655709217,
                               'center_x': -0.019674496231393473,
-                              'e1': e1, 'e2': e2, 'I0_sersic': 1.1091367792010356, 'center_y': 0.076914975081560991,
+                              'e1': e1, 'e2': e2, 'amp': 1.1091367792010356, 'center_y': 0.076914975081560991,
                                'R_sersic': 0.42691611878867058},
-                             {'R_sersic': 0.03025682660635394, 'I0_sersic': 139.96763298885992, 'n_sersic': 1.90000008624093865,
+                             {'R_sersic': 0.03025682660635394, 'amp': 139.96763298885992, 'n_sersic': 1.90000008624093865,
                               'center_x': -0.019674496231393473, 'center_y': 0.076914975081560991}]
         r_ani = 0.62
         kwargs_anisotropy = {'r_ani': r_ani}

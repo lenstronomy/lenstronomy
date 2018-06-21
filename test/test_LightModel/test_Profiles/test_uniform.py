@@ -16,7 +16,7 @@ class TestShapelet(object):
         :return:
         """
         uniform = Uniform()
-        output = uniform.function(x=1, y=1, mean=0.1)
+        output = uniform.function(x=1, y=1, amp=0.1)
         assert output == 0.1
 
 

@@ -11,6 +11,8 @@ class GaussianKappa(object):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     """
+    param_names = ['amp', 'sigma', 'center_x', 'center_y']
+
     def __init__(self):
         self.gaussian = Gaussian()
         self.ds = 0.00001

@@ -10,6 +10,8 @@ class SersicEllipse(object):
     """
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
     """
+    param_names = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.sersic = Sersic()
         self._diff = 0.000001

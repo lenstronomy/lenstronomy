@@ -22,12 +22,12 @@ class TestNumerics(object):
         npt.assert_almost_equal(light_2d_num/light_2d, 1., decimal=1)
 
     def test_PJaffe(self):
-        kwargs = {'sigma0': 1., 'Ra': 0.2, 'Rs': 2.}
+        kwargs = {'amp': 1., 'Ra': 0.2, 'Rs': 2.}
         from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe as Model
         self.assert_integrals(Model, kwargs)
 
     def test_hernquist(self):
-        kwargs = {'sigma0': 1.,  'Rs': 5.}
+        kwargs = {'amp': 1.,  'Rs': 5.}
         from lenstronomy.LightModel.Profiles.hernquist import Hernquist as Model
         self.assert_integrals(Model, kwargs)
 

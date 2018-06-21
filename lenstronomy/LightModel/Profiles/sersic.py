@@ -11,8 +11,9 @@ class Sersic(SersicUtil):
     """
     this class contains functions to evaluate an spherical Sersic function
     """
+    param_names = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
 
-    def function(self, x, y, I0_sersic, R_sersic, n_sersic, center_x=0, center_y=0):
+    def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0):
         """
         returns Sersic profile
         """
@@ -35,12 +36,12 @@ class Sersic(SersicUtil):
                 result = 0
             else:
                 exponent = -bn*(R_frac**(1./n_sersic)-1.)
-                result = I0_sersic * np.exp(exponent)
+                result = amp * np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= 100]
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R)
-            result[R_frac <= 100] = I0_sersic * np.exp(exponent)
+            result[R_frac <= 100] = amp * np.exp(exponent)
         return result
 
 
@@ -48,8 +49,9 @@ class Sersic_elliptic(SersicUtil):
     """
     this class contains functions to evaluate an elliptical Sersic function
     """
+    param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
 
-    def function(self, x, y, I0_sersic, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
+    def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
         """
         returns Sersic profile
         """
@@ -80,12 +82,12 @@ class Sersic_elliptic(SersicUtil):
                 result = 0
             else:
                 exponent = -bn*(R_frac**(1./n_sersic)-1.)
-                result = I0_sersic * np.exp(exponent)
+                result = amp * np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= 100]
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R_)
-            result[R_frac <= 100] = I0_sersic * np.exp(exponent)
+            result[R_frac <= 100] = amp * np.exp(exponent)
         return result
 
 
@@ -93,8 +95,9 @@ class CoreSersic(SersicUtil):
     """
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
     """
+    param_names = ['amp', 'R_sersic', 'Re', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
 
-    def function(self, x, y, I0_sersic, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.):
+    def function(self, x, y, amp, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.):
         """
         returns Core-Sersic function
         """
@@ -124,4 +127,4 @@ class CoreSersic(SersicUtil):
             R[R_ > self._smoothing] = _R
 
         k, bn = self.k_bn(n_sersic, Re)
-        return I0_sersic * (1 + (Rb/R)**alpha)**(gamma/alpha) * np.exp(-bn*(((R**alpha+Rb**alpha)/Re**alpha)**(1./(alpha*n_sersic))-1.))
+        return amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * np.exp(-bn * (((R ** alpha + Rb ** alpha) / Re ** alpha) ** (1. / (alpha * n_sersic)) - 1.))

@@ -8,6 +8,8 @@ class PointMass(object):
     """
     class to compute the physical deflection angle of a point mass, given as an Einstein radius
     """
+    param_names = ['theta_E', 'center_x', 'center_y']
+
     def __init__(self):
         self.r_min = 10**(-20)
         # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)

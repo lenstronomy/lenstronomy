@@ -40,9 +40,9 @@ class TestSimulation(object):
         lens_model_class = LensModel(lens_model_list=lens_model_list)
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
 
         lens_light_model_list = ['SERSIC']
@@ -70,9 +70,9 @@ class TestSimulation(object):
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
 
         kwargs_lens_light_list = [kwargs_sersic]
@@ -94,9 +94,9 @@ class TestSimulation(object):
 
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
         lens_light_model_list = ['SERSIC']
         kwargs_lens_light_list = [kwargs_sersic]
@@ -129,9 +129,9 @@ class TestSimulation(object):
 
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'I0_sersic': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
 
 
@@ -147,12 +147,12 @@ class TestSimulation(object):
                           # if True, simulates point source at source position of 'sourcePos_xy' in kwargs_else
                           }
         kwargs_source_updated = self.SimAPI.normalize_flux_source(kwargs_options, kwargs_source_list, norm_factor_source=10)
-        assert kwargs_source_updated[0]['I0_sersic'] == kwargs_source_list[0]['I0_sersic'] * 10
+        assert kwargs_source_updated[0]['amp'] == kwargs_source_list[0]['amp'] * 10
 
     def test_source_plane(self):
         numPix = 10
         deltaPix = 0.1
-        kwargs_sersic_ellipse = {'I0_sersic': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
 
 

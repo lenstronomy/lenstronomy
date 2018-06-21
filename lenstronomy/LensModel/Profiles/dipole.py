@@ -7,6 +7,7 @@ class Dipole(object):
     """
     class for dipole response of two massive bodies (experimental)
     """
+    param_names = ['com_x', 'com_y', 'phi_dipole', 'coupling']
 
     def function(self, x, y, com_x, com_y, phi_dipole, coupling):
         # coordinate shift

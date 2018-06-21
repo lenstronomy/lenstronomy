@@ -9,6 +9,8 @@ class PowerLaw(object):
     class for power-law elliptical mass distribution
 
     """
+    param_names = ['amp', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+
     def __init__(self):
         self.lens = SPP()
 

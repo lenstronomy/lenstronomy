@@ -10,6 +10,8 @@ class SPEMD_SMOOTH(object):
     The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
     (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
     """
+    param_names = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
+
     def __init__(self):
         try:
             from fastell4py import fastell4py

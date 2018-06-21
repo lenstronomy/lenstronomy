@@ -3,6 +3,7 @@ class Flexion(object):
     """
     class for flexion
     """
+    param_names = ['g1', 'g2', 'g3', 'g4']
 
     def function(self, x, y, g1, g2, g3, g4):
         f_ = 1./6 * (g1 * x**3 + g2 * x**2 * y + g3 * x * y**2 + g4 * y**3)

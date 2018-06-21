@@ -7,6 +7,9 @@ class Moffat(object):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     """
+    def __init__(self):
+        self.param_names = ['amp', 'alpha', 'beta', 'center_x', 'center_y']
+
     def function(self, x, y, amp, alpha, beta, center_x, center_y):
         """
         returns Moffat profile

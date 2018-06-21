@@ -5,10 +5,12 @@ class Uniform(object):
     """
     class for Gaussian light profile
     """
+    param_names = ['amp']
+
     def __init__(self):
         pass
 
-    def function(self, x, y, mean):
+    def function(self, x, y, amp):
         """
 
         :param x:
@@ -20,5 +22,5 @@ class Uniform(object):
         :param center_y:
         :return:
         """
-        return np.ones_like(x) * mean
+        return np.ones_like(x) * amp
 

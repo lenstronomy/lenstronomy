@@ -11,6 +11,7 @@ class CartShapelets(object):
     """
     this class contains the function and the derivatives of the cartesian shapelets
     """
+    param_names = ['coeffs', 'beta', 'center_x', 'center_y']
 
     def function(self, x, y, coeffs, beta, center_x=0, center_y=0):
         shapelets = self._createShapelet(coeffs)

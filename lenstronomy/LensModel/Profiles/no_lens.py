@@ -2,10 +2,13 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
+
 class NoLens(object):
     """
     this is the trivial mapping without deflecting anything
     """
+    param_names = []
+
     def function(self, x, y):
         return np.zeros_like(x)
 

@@ -13,6 +13,8 @@ class PolarShapelets(object):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
+    param_names = ['coeffs', 'beta', 'center_x', 'center_y']
+
     def __init__(self):
         n = 10
         self.poly = [[[] for i in range(n)] for i in range(n)]

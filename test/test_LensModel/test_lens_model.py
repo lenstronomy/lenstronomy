@@ -59,6 +59,15 @@ class TestLensModel(object):
         output = lensModel.mass_2d(r=1, kwargs=kwargs)
         assert output == 0.11750309741540453
 
+    def test_param_name_list(self):
+        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
+                           'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
+                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
+            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
+        lensModel = LensModel(lens_model_list)
+        param_name_list = lensModel.param_name_list()
+        assert len(lens_model_list) == len(param_name_list)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

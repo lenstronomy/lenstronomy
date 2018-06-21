@@ -113,7 +113,7 @@ class NIE_simple(object):
     this class contains the function and the derivatives of the  (softened) Isothermal ellipse
     See Keeton&Kochanek 1998
     """
-    def __init__(self, diff=0.00000001):
+    def __init__(self, diff=0.0000000001):
         self._diff = diff
 
     def function(self, x, y, theta_E, s, q):
@@ -126,9 +126,11 @@ class NIE_simple(object):
         """
         returns df/dx and df/dy of the function
         """
+        if q >= 1:
+            q = 0.999999
         psi = self._psi(x, y, q, s)
-        f_x = theta_E / np.sqrt(1. -q**2) * np.arctan(np.sqrt((1.-q**2))*x / (psi+s))
-        f_y = theta_E / np.sqrt(1. - q ** 2) * np.arctan(np.sqrt((1. - q ** 2)) * y / (psi + q**2*s))
+        f_x = theta_E / np.sqrt(1. -q ** 2) * np.arctan(np.sqrt(1. - q ** 2) * x / (psi+s))
+        f_y = theta_E / np.sqrt(1. - q ** 2) * np.arctanh(np.sqrt(1. - q ** 2) * y / (psi + q**2*s))
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, s, q):

@@ -3,7 +3,7 @@ from lenstronomy.LightModel.Profiles.power_law import PowerLaw
 
 class Chameleon(object):
     """
-    class of the Chameleon model (See Suyu+2014) an elliptical double power-law profile
+    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
     def __init__(self):

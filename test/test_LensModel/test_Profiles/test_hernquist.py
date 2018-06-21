@@ -55,15 +55,15 @@ class TestHernquist(object):
         Rs = 1.
         sigma0 = 0.5
         f_xx, f_yy,f_xy = self.profile.hessian(x, y, sigma0, Rs)
-        npt.assert_almost_equal(f_xx[0], 0.0779016004481825, decimal=8)
-        npt.assert_almost_equal(f_yy[0], -0.023212809452388683, decimal=8)
-        npt.assert_almost_equal(f_xy[0], -0.0674096084507525, decimal=8)
+        npt.assert_almost_equal(f_xx[0], 0.0779016004481825, decimal=6)
+        npt.assert_almost_equal(f_yy[0], -0.023212809452388683, decimal=6)
+        npt.assert_almost_equal(f_xy[0], -0.0674096084507525, decimal=6)
 
     def test_mass_tot(self):
         rho0 = 1
         Rs = 3
         m_tot = self.profile.mass_tot(rho0, Rs)
-        npt.assert_almost_equal(m_tot, 169.64600329384882, decimal=8)
+        npt.assert_almost_equal(m_tot, 169.64600329384882, decimal=6)
 
     def test_grav_pot(self):
         x, y = 1, 0

@@ -24,6 +24,7 @@ class NIE(object):
         :return:
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        theta_E = self._theta_E_q_convert(theta_E, q)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -48,6 +49,7 @@ class NIE(object):
         :return:
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        theta_E = self._theta_E_q_convert(theta_E, q)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -73,6 +75,7 @@ class NIE(object):
         :return:
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        theta_E = self._theta_E_q_convert(theta_E, q)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -90,6 +93,19 @@ class NIE(object):
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_yy, f_xy
+
+    def _theta_E_q_convert(self, theta_E, q):
+        """
+        converts a spherical averaged Einstein radius to an elliptical (major axis) Einstein radius.
+        This then follows the convention of the SPEMD profile in lenstronomy.
+        (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+
+        :param theta_E:
+        :param q:
+        :return:
+        """
+        #theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) /(1+(1-q)/2)
+        return theta_E
 
 
 class NIE_simple(object):

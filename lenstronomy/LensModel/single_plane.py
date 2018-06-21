@@ -45,6 +45,9 @@ class SinglePlane(object):
             elif lens_type == 'NIE':
                 from lenstronomy.LensModel.Profiles.nie import NIE
                 self.func_list.append(NIE())
+            elif lens_type == 'NIE_SIMPLE':
+                from lenstronomy.LensModel.Profiles.nie import NIE_simple
+                self.func_list.append(NIE_simple())
             elif lens_type == 'SPEP':
                 from lenstronomy.LensModel.Profiles.spep import SPEP
                 self.func_list.append(SPEP())

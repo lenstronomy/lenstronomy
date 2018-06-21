@@ -12,7 +12,6 @@ class LightParam(object):
         if linear_solver:
             self.kwargs_fixed = self.add_fixed_linear(self.kwargs_fixed)
 
-
     def getParams(self, args, i):
         """
 

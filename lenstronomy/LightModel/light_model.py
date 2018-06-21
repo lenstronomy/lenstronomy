@@ -54,6 +54,15 @@ class LightModel(object):
             elif profile_type == 'UNIFORM':
                 from lenstronomy.LightModel.Profiles.uniform import Uniform
                 self.func_list.append(Uniform())
+            elif profile_type == 'POWER_LAW':
+                from lenstronomy.LightModel.Profiles.power_law import PowerLaw
+                self.func_list.append(PowerLaw())
+            elif profile_type == 'NIE':
+                from lenstronomy.LightModel.Profiles.nie import NIE
+                self.func_list.append(NIE())
+            elif profile_type == 'CHAMELEON':
+                from lenstronomy.LightModel.Profiles.chameleon import Chameleon
+                self.func_list.append(Chameleon())
             elif profile_type == 'NONE':
                 valid = False
             else:
@@ -88,7 +97,8 @@ class LightModel(object):
                 if k == None or k == i:
                     kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
                     if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                                                     'GAUSSIAN', 'MULTI_GAUSSIAN']:
+                                                     'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
+                                                     'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW']:
                         flux += func.light_3d(r, **kwargs)
                     else:
                         raise ValueError('Light model %s does not support a 3d light distribution!'
@@ -118,13 +128,13 @@ class LightModel(object):
                 kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
-            elif model in ['GAUSSIAN']:
+            elif model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON']:
                 new = {'amp':  1}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)
                 response += [self.func_list[k].function(x, y, **kwargs_new)]
                 n += 1
-            elif model in ['MULTI_GAUSSIAN']:
+            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[k]['amp'])
                 new = {'amp': np.ones(num)}
                 kwargs_new = kwargs_list[k].copy()
@@ -164,17 +174,26 @@ class LightModel(object):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC']:
                 kwargs_list[k]['I0_sersic'] = param[i]
                 i += 1
-            if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
+            elif model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_list[k]['sigma0'] = param[i]
                 i += 1
-            if model in ['SHAPELETS']:
+            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                num_param = len(kwargs_list[k]['sigma'])
+                kwargs_list[k]['amp'] = param[i:i + num_param]
+                i += num_param
+            elif model in ['SHAPELETS']:
                 n_max = kwargs_list[k]['n_max']
                 num_param = (n_max + 1) * (n_max + 2) / 2
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
-            if model in ['UNIFORM']:
+            elif model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON']:
+                kwargs_list[k]['amp'] = param[i]
+                i += 1
+            elif model in ['UNIFORM']:
                 kwargs_list[k]['mean'] = param[i]
                 i += 1
+            else:
+                raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
     def re_normalize_flux(self, kwargs_list, norm_factor=1):
@@ -190,7 +209,8 @@ class LightModel(object):
                 kwargs_list_k['I0_sersic'] *= norm_factor
             if model in ['HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE']:
                 kwargs_list_k['sigma0'] *= norm_factor
-            if model in ['GAUSSIAN', 'MULTI_GAUSSIAN']:
+            if model in ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE',
+                         'CHAMELEON']:
                 kwargs_list_k['amp'] *= norm_factor
             if model in ['SHAPELETS']:
                 kwargs_list_k['amp'] *= norm_factor

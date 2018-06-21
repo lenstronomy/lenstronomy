@@ -41,11 +41,6 @@ class TestNumerics(object):
         kwargs = {'amp': 2, 'gamma': 2, 'e1': 0, 'e2': 0}
         self.assert_integrals(Model, kwargs)
 
-    def test_chameleon(self):
-        from lenstronomy.LightModel.Profiles.chameleon import Chameleon as Model
-        kwargs = {'amp': 2., 'flux_ratio': -.5, 'gamma1': 2., 'gamma2': 1.6, 'e1': 0, 'e2': 0}
-        self.assert_integrals(Model, kwargs)
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

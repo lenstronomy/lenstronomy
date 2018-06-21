@@ -125,9 +125,9 @@ class TestHernquistEllipse(object):
         q, phi_G = 0.8, 0.5
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_yy,f_xy = self.profile.hessian(x, y, sigma0, Rs, e1, e2)
-        npt.assert_almost_equal(f_xx[0], 0.09340916928834986, decimal=8)
-        npt.assert_almost_equal(f_yy[0], -0.02853883795950196, decimal=8)
-        npt.assert_almost_equal(f_xy[0], -0.06298489507727822, decimal=8)
+        npt.assert_almost_equal(f_xx[0], 0.09340916928834986, decimal=6)
+        npt.assert_almost_equal(f_yy[0], -0.02853883795950196, decimal=6)
+        npt.assert_almost_equal(f_xy[0], -0.06298489507727822, decimal=6)
 
 
 if __name__ == '__main__':

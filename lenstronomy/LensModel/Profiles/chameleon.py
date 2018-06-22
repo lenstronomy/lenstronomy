@@ -1,5 +1,6 @@
 from lenstronomy.LensModel.Profiles.nie import NIE
 import lenstronomy.Util.param_util as param_util
+import numpy as np
 
 
 class Chameleon(object):
@@ -28,10 +29,10 @@ class Chameleon(object):
         :return: flux of chameleon profile
         """
         if not w_t > w_c:
-            theta_E = 0
+            w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        s_scale_1 = 4 * w_c ** 2 / (1. + q) ** 2
-        s_scale_2 = 4 * w_t ** 2 / (1. + q) ** 2
+        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
+        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         f_1 = self.nie.function(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
         f_2 = self.nie.function(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
         f_ = f_1 - f_2
@@ -52,9 +53,11 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
+        if not w_t > w_c:
+            w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        s_scale_1 = 4 * w_c ** 2 / (1. + q) ** 2
-        s_scale_2 = 4 * w_t ** 2 / (1. + q) ** 2
+        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
+        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         f_x_1, f_y_1 = self.nie.derivatives(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
         f_x_2, f_y_2 = self.nie.derivatives(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
         f_x = f_x_1 - f_x_2
@@ -76,9 +79,11 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
+        if not w_t > w_c:
+            w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        s_scale_1 = 4 * w_c ** 2 / (1. + q) ** 2
-        s_scale_2 = 4 * w_t ** 2 / (1. + q) ** 2
+        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
+        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         f_xx_1, f_yy_1, f_xy_1 = self.nie.hessian(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
         f_xx_2, f_yy_2, f_xy_2 = self.nie.hessian(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
         f_xx = f_xx_1 - f_xx_2

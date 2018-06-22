@@ -32,8 +32,8 @@ class TestPowerLaw(object):
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_light = {'amp': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        s_scale_1 = 4 * w_c ** 2 / (1. + q) ** 2
-        s_scale_2 = 4 * w_t ** 2 / (1. + q) ** 2
+        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
+        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         kwargs_1 = {'amp': 1., 's_scale': s_scale_1, 'e1': e1, 'e2': e2}
         kwargs_2 = {'amp': 1., 's_scale': s_scale_2, 'e1': e1, 'e2': e2}
         flux = chameleon.function(x=x, y=1., **kwargs_light)

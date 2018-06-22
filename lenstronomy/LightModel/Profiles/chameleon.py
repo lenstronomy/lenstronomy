@@ -1,5 +1,6 @@
 from lenstronomy.LightModel.Profiles.nie import NIE
 import lenstronomy.Util.param_util as param_util
+import numpy as np
 
 
 class Chameleon(object):
@@ -28,10 +29,10 @@ class Chameleon(object):
         :return: flux of chameleon profile
         """
         if not w_t > w_c:
-            amp = 0
+            w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        s_scale_1 = 4 * w_c ** 2 / (1. + q) ** 2
-        s_scale_2 = 4 * w_t ** 2 / (1. + q) ** 2
+        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
+        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         flux1 = self.nie.function(x, y, 1, e1, e2, s_scale_1, center_x, center_y)
         flux2 = self.nie.function(x, y, 1, e1, e2, s_scale_2, center_x, center_y)
         flux = amp / (1. + q) * (flux1 - flux2)

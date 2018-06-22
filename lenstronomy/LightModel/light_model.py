@@ -12,7 +12,6 @@ class LightModel(object):
     def __init__(self, light_model_list, smoothing=0.0000001):
         self.profile_type_list = light_model_list
         self.func_list = []
-        self._valid_list = []
         for profile_type in light_model_list:
             valid = True
             if profile_type == 'GAUSSIAN':
@@ -63,11 +62,8 @@ class LightModel(object):
             elif profile_type == 'CHAMELEON':
                 from lenstronomy.LightModel.Profiles.chameleon import Chameleon
                 self.func_list.append(Chameleon())
-            elif profile_type == 'NONE':
-                valid = False
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
-            self._valid_list.append(valid)
 
     def param_name_list(self):
         """
@@ -89,10 +85,9 @@ class LightModel(object):
         y = np.array(y, dtype=float)
         flux = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
-            if self._valid_list[i]:
-                if k == None or k == i:
-                    out = np.array(func.function(x, y, **kwargs_list[i]), dtype=float)
-                    flux += out
+            if k is None or k == i:
+                out = np.array(func.function(x, y, **kwargs_list[i]), dtype=float)
+                flux += out
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):
@@ -104,15 +99,14 @@ class LightModel(object):
         r = np.array(r, dtype=float)
         flux = np.zeros_like(r)
         for i, func in enumerate(self.func_list):
-            if self._valid_list[i]:
-                if k == None or k == i:
-                    kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
-                    if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
+            if k is None or k == i:
+                kwargs = {k: v for k, v in kwargs_list[i].items() if not k in ['center_x', 'center_y']}
+                if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
                                                      'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
                                                      'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW']:
-                        flux += func.light_3d(r, **kwargs)
-                    else:
-                        raise ValueError('Light model %s does not support a 3d light distribution!'
+                    flux += func.light_3d(r, **kwargs)
+                else:
+                    raise ValueError('Light model %s does not support a 3d light distribution!'
                                          % self.profile_type_list[i])
         return flux
 

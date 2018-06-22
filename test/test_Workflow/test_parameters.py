@@ -127,6 +127,18 @@ class TestParam(object):
         assert kwargs_lens[1]['theta_Rs'] == 0.1
         assert kwargs_lens[2]['theta_Rs'] == 0.3
 
+    def test_joint_with_light(self):
+        kwargs_model = {'lens_model_list': ['CHAMELEON'], 'lens_light_model_list': ['CHAMELEON']}
+        kwargs_constraints = {'joint_with_light_list': [0]}
+        kwargs_lens = [{'theta_E': 10}]
+        kwargs_lens_light = [{'amp': 1, 'w_t': 0.5, 'w_c': 0.1, 'center_x': 0, 'center_y': 0.3, 'e1': 0.1, 'e2': -0.2}]
+        param = Param(kwargs_model=kwargs_model, kwargs_constraints=kwargs_constraints)
+        args = param.setParams(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
+        kwargs_lens_out, _, kwargs_lens_light_out, _, _ = param.getParams(args)
+        assert kwargs_lens_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
+        assert kwargs_lens_light_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
+
+
 class TestParamUpdate(object):
     def setup(self):
         kwargs_fixed_lens = [{}, {}]

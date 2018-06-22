@@ -144,7 +144,7 @@ class SinglePlane(object):
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
 
-    def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens):
+    def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens, k=None):
         """
         fermat potential (negative sign means earlier arrival time)
 
@@ -156,7 +156,7 @@ class SinglePlane(object):
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
 
-        potential = self.potential(x_image, y_image, kwargs_lens)
+        potential = self.potential(x_image, y_image, kwargs_lens, k=k)
         geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
         return geometry - potential
 
@@ -173,6 +173,7 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        bool_list = self._bool_list(k)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[self._foreground_shear_idex])
             x_ = x - f_x_shear1
@@ -180,13 +181,10 @@ class SinglePlane(object):
         else:
             x_ = x
             y_ = y
-        if k is not None:
-            potential = self.func_list[k].function(x_, y_, **kwargs[k])
-        else:
-            potential = np.zeros_like(x)
-            for i, func in enumerate(self.func_list):
-                if (not self._model_list[i] == 'NONE') or (self._foreground_shear and self._foreground_shear_idex == i):
-                    potential += func.function(x_, y_, **kwargs[i])
+        potential = np.zeros_like(x)
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                potential += func.function(x_, y_, **kwargs[i])
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -202,6 +200,7 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        bool_list = self._bool_list(k)
         if self._foreground_shear:
             f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[
                 self._foreground_shear_idex])
@@ -210,15 +209,12 @@ class SinglePlane(object):
         else:
             x_ = x
             y_ = y
-        if k is not None:
-            f_x, f_y = self.func_list[k].derivatives(x_, y_, **kwargs[k])
-        else:
-            f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
-            for i, func in enumerate(self.func_list):
-                if (not self._model_list[i] == 'NONE') or (self._foreground_shear and self._foreground_shear_idex == i):
-                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
-                    f_x += f_x_i
-                    f_y += f_y_i
+        f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                f_x += f_x_i
+                f_y += f_y_i
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
@@ -238,19 +234,16 @@ class SinglePlane(object):
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
         else:
+            bool_list = self._bool_list(k)
             x_ = x
             y_ = y
-            if k is not None:
-                f_xx, f_yy, f_xy= self.func_list[k].hessian(x_, y_, **kwargs[k])
-            else:
-                f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
-                for i, func in enumerate(self.func_list):
-                    if (not self._model_list[i] == 'NONE') or (
-                            self._foreground_shear and self._foreground_shear_idex == i):
-                        f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-                        f_xx += f_xx_i
-                        f_yy += f_yy_i
-                        f_xy += f_xy_i
+            f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
+            for i, func in enumerate(self.func_list):
+                if bool_list[i] is True:
+                    f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
+                    f_xx += f_xx_i
+                    f_yy += f_yy_i
+                    f_xy += f_xy_i
         f_yx = f_xy
         return f_xx, f_xy, f_yx, f_yy
 
@@ -292,8 +285,7 @@ class SinglePlane(object):
         :param bool_list: list of bools that are part of the output
         :return: mass (in angular units, modulo epsilon_crit)
         """
-        if bool_list is None:
-            bool_list = [True]*len(self.func_list)
+        bool_list = self._bool_list(bool_list)
         mass_3d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
@@ -312,8 +304,7 @@ class SinglePlane(object):
         :param bool_list: list of bools that are part of the output
         :return: projected mass (in angular units, modulo epsilon_crit)
         """
-        if bool_list is None:
-            bool_list = [True]*len(self.func_list)
+        bool_list = self._bool_list(bool_list)
         mass_2d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
@@ -323,4 +314,27 @@ class SinglePlane(object):
                 #except:
                 #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
+
+    def _bool_list(self, k=None):
+        """
+        returns a bool list of the length of the lens models
+        if k = None: returns bool list with True's
+        if k is int, returns bool list with False's but k'th is True
+
+        :param k: None, int, or list of ints
+        :return: bool list
+        """
+        n = len(self.func_list)
+        if k is None:
+            bool_list = [True] * n
+        elif isinstance(k, int):
+            bool_list = [False] * n
+            bool_list[k] = True
+        else:
+            bool_list = [False] * n
+            for k_i in k:
+                bool_list[k_i] = True
+        if self._foreground_shear is True:
+            bool_list[self._foreground_shear_idex] = False
+        return bool_list
 

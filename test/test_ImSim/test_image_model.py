@@ -162,8 +162,8 @@ class TestImageModel(object):
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}
         psf_class = PSF(kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
-        source_model_class = LightModel(['NONE'])
-        lens_light_model_class = LightModel(['NONE'])
+        source_model_class = LightModel([])
+        lens_light_model_class = LightModel([])
         kwargs_numerics = {'subgrid_res': 2}
         point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], fixed_magnification_list=[False])
         makeImage = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)

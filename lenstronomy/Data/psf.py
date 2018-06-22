@@ -149,7 +149,7 @@ class PSF(object):
         :return:
         """
         if not hasattr(self, '_subgrid_kernel_out'):
-            kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True)
+            kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True, num_iter=5)
             n = len(self._kernel_pixel)
             n_new = n * subgrid_res
             if n_new % 2 == 0:

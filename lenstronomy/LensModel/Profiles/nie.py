@@ -114,7 +114,7 @@ class NIE(object):
 
 class NIE_simple(object):
     """
-    this class contains the function and the derivatives of the  (softened) Isothermal ellipse
+    this class contains the function and the derivatives of the non-singular isothermal ellipse
     See Keeton&Kochanek 1998
     """
     param_names = ['theta_E', 's', 'q', 'center_x', 'center_y']
@@ -135,7 +135,7 @@ class NIE_simple(object):
         if q >= 1:
             q = 0.999999
         psi = self._psi(x, y, q, s)
-        f_x = theta_E / np.sqrt(1. -q ** 2) * np.arctan(np.sqrt(1. - q ** 2) * x / (psi+s))
+        f_x = theta_E / np.sqrt(1. - q ** 2) * np.arctan(np.sqrt(1. - q ** 2) * x / (psi+s))
         f_y = theta_E / np.sqrt(1. - q ** 2) * np.arctanh(np.sqrt(1. - q ** 2) * y / (psi + q**2*s))
         return f_x, f_y
 

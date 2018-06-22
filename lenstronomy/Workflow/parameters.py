@@ -242,10 +242,10 @@ class Param(object):
                     kwargs['theta_E'] *= scale_factor
                 elif 'theta_Rs' in kwargs:
                     kwargs['theta_Rs'] *= scale_factor
-                elif 'theta_Rs' in kwargs:
-                    kwargs['theta_Rs'] *= scale_factor
-                elif 'k_eff' in kwargs:
+                elif 'sigma0' in kwargs:
                     kwargs['sigma0'] *= scale_factor
+                elif 'k_eff' in kwargs:
+                    kwargs['k_eff'] *= scale_factor
         return kwargs_lens_updated
 
     def image2source_plane(self, kwargs_lens_list, kwargs_source_list):

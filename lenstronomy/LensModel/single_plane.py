@@ -327,7 +327,7 @@ class SinglePlane(object):
         n = len(self.func_list)
         if k is None:
             bool_list = [True] * n
-        elif isinstance(k, int):
+        elif isinstance(k, (int, long)):
             bool_list = [False] * n
             bool_list[k] = True
         else:

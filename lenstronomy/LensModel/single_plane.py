@@ -180,8 +180,16 @@ class SinglePlane(object):
         else:
             x_ = x
             y_ = y
+
         if k is not None:
-            potential = self.func_list[k].function(x_, y_, **kwargs[k])
+
+            if isinstance(k,list) or isinstance(k,np.ndarray):
+                potential = 0
+                for k_i in k:
+                    potential += self.func_list[k_i].function(x_, y_, **kwargs[k_i])
+            else:
+                potential = self.func_list[k].function(x_, y_, **kwargs[k])
+
         else:
             potential = np.zeros_like(x)
             for i, func in enumerate(self.func_list):
@@ -210,15 +218,37 @@ class SinglePlane(object):
         else:
             x_ = x
             y_ = y
+
         if k is not None:
-            f_x, f_y = self.func_list[k].derivatives(x_, y_, **kwargs[k])
+
+            if isinstance(k, list) or isinstance(k, np.ndarray):
+
+                f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
+
+                for k_i in k:
+
+                    func = self.func_list[k_i]
+
+                    if (not self._model_list[k_i] == 'NONE') or (self._foreground_shear and self._foreground_shear_idex == k_i):
+
+                        f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[k_i])
+                        f_x += f_x_i
+                        f_y += f_y_i
+
+            else:
+
+                f_x, f_y = self.func_list[k].derivatives(x_, y_, **kwargs[k])
+
         else:
+
             f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
+
             for i, func in enumerate(self.func_list):
                 if (not self._model_list[i] == 'NONE') or (self._foreground_shear and self._foreground_shear_idex == i):
                     f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
                     f_x += f_x_i
                     f_y += f_y_i
+
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):
@@ -234,15 +264,38 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
         else:
             x_ = x
             y_ = y
+
             if k is not None:
-                f_xx, f_yy, f_xy= self.func_list[k].hessian(x_, y_, **kwargs[k])
+
+                if isinstance(k, list) or isinstance(k, np.ndarray):
+
+                    f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
+
+                    for k_i in k:
+
+                        func = self.func_list[k_i]
+
+                        if (not self._model_list[k_i] == 'NONE') or (
+                                self._foreground_shear and self._foreground_shear_idex == k_i):
+
+                            f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[k_i])
+                            f_xx += f_xx_i
+                            f_yy += f_yy_i
+                            f_xy += f_xy_i
+
+                else:
+
+                    f_xx, f_yy, f_xy = self.func_list[k].hessian(x_, y_, **kwargs[k])
+
             else:
+
                 f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
                 for i, func in enumerate(self.func_list):
                     if (not self._model_list[i] == 'NONE') or (
@@ -251,6 +304,7 @@ class SinglePlane(object):
                         f_xx += f_xx_i
                         f_yy += f_yy_i
                         f_xy += f_xy_i
+
         f_yx = f_xy
         return f_xx, f_xy, f_yx, f_yy
 

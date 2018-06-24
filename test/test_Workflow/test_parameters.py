@@ -102,7 +102,7 @@ class TestParam(object):
 
     def test_mass_scaling(self):
         kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW']}
-        kwargs_constraints = {'mass_scaling': True, 'mass_scaling_list': [False, True, True]}
+        kwargs_constraints = {'mass_scaling': True, 'mass_scaling_list': [False, 0, 0], 'num_scale_factor': 1}
         kwargs_fixed_lens = [{}, {'theta_Rs': 0.1}, {'theta_Rs': 0.3}]
         kwargs_fixed_cosmo = {}
         param_class = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_cosmo=kwargs_fixed_cosmo)
@@ -113,7 +113,7 @@ class TestParam(object):
         kwargs_lens_light = []
         kwargs_ps = []
         mass_scale = 2
-        kwargs_cosmo = {'mass_scale': mass_scale}
+        kwargs_cosmo = {'scale_factor': [mass_scale]}
         args = param_class.setParams(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         assert args[-1] == mass_scale
 

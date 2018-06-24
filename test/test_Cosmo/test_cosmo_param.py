@@ -29,6 +29,15 @@ class TestParam(object):
         num, list = self.param.num_param()
         assert num == 1
 
+    def test_mass_scaling(self):
+        kwargs_fixed = {}
+        param = CosmoParam(kwargs_fixed=kwargs_fixed, mass_scaling=True, num_scale_factor=3)
+        kwargs = {'scale_factor': [0, 1, 2]}
+        args = param.setParams(kwargs)
+        assert len(args) == 3
+        kwargs_new, _ = param.getParams(args, i=0)
+        assert kwargs_new['scale_factor'][1] == 1
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -150,7 +150,6 @@ def test_deshift_subgrid():
     #npt.assert_almost_equal(kernel_shifted_highres[7, 7], kernel_shifted_subgrid[7, 7], decimal=10)
 
 
-
 def test_shift_long_dist():
     """
     input is a shifted kernel by more than 1 pixel
@@ -201,6 +200,7 @@ def test_subgrid_kernel():
     #plt.matshow(kernel_re_sized);plt.show()
     #plt.matshow(kernel_re_sized- kernel);plt.show()
     npt.assert_almost_equal(kernel_re_sized[4, 4], 1, decimal=2)
+    assert np.max(subgrid_kernel) == subgrid_kernel[13, 13]
     #assert kernel_re_sized[4, 4] == 1
 
 

@@ -39,10 +39,14 @@ class CosmoParam(object):
                 if 'D_dt' not in self._kwargs_fixed:
                     kwargs_cosmo['D_dt'] = args[i]
                     i += 1
+                else:
+                    kwargs_cosmo['D_dt'] = self._kwargs_fixed['D_dt']
         if self._mass_scaling is True:
             if 'scale_factor' not in self._kwargs_fixed:
                 kwargs_cosmo['scale_factor'] = args[i: i + self._num_scale_factor]
                 i += self._num_scale_factor
+            else:
+                kwargs_cosmo['scale_factor'] = self._kwargs_fixed['scale_factor']
         return kwargs_cosmo, i
 
     def setParams(self, kwargs_cosmo):

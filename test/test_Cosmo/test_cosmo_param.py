@@ -37,6 +37,13 @@ class TestParam(object):
         assert len(args) == 3
         kwargs_new, _ = param.getParams(args, i=0)
         assert kwargs_new['scale_factor'][1] == 1
+        param = CosmoParam(kwargs_fixed=kwargs, mass_scaling=True, num_scale_factor=3)
+        kwargs_in = {'scale_factor': [9, 9, 9]}
+        args = param.setParams(kwargs_in)
+        assert len(args) == 0
+        kwargs_new, _ = param.getParams(args, i=0)
+        print(kwargs_new)
+        assert kwargs_new['scale_factor'][1] == 1
 
 
 if __name__ == '__main__':

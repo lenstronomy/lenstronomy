@@ -34,7 +34,13 @@ class TestParam(object):
         param = CosmoParam(kwargs_fixed=kwargs_fixed, mass_scaling=True, num_scale_factor=3)
         kwargs = {'scale_factor': [0, 1, 2]}
         args = param.setParams(kwargs)
+        kwargs_mean = kwargs
+        kwargs_mean['scale_factor_sigma'] = [1, 1, 1]
+        mean, sigma = param.param_init(kwargs_mean=kwargs_mean)
+        assert sigma[0] == 1
         assert len(args) == 3
+        num_param, param_list = param.num_param()
+        assert num_param == 3
         kwargs_new, _ = param.getParams(args, i=0)
         assert kwargs_new['scale_factor'][1] == 1
         param = CosmoParam(kwargs_fixed=kwargs, mass_scaling=True, num_scale_factor=3)

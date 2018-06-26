@@ -128,6 +128,37 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(beta_x_1, beta_x_2, decimal=8)
         npt.assert_almost_equal(beta_y_1, beta_y_2, decimal=8)
 
+    def test_ray_shooting_partial(self):
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS', 'SIS']
+        sis1 = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        sis2 = {'theta_E': .2, 'center_x': 0.5, 'center_y': 0}
+        sis3 = {'theta_E': .1, 'center_x': 0, 'center_y': 0.5}
+        z1 = 0.1
+        z2 = 0.5
+        z3 = 0.7
+        redshift_list = [z1, z2, z3]
+        kwargs_lens = [sis1, sis2, sis3]
+        lensModel = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        z_intermediate = .5
+        theta_x, theta_y = 1., 1.
+        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
+                                            alpha_y=theta_y, z_start=0, z_stop=z_intermediate, kwargs_lens=kwargs_lens)
+        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=x_out, y=y_out, alpha_x=alpha_x_out,
+                                                                            alpha_y=alpha_y_out, z_start=z_intermediate,
+                                                                                z_stop=z_source,
+                                                                                kwargs_lens=kwargs_lens)
+        beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
+        beta_x_true, beta_y_true = lensModel.ray_shooting(theta_x, theta_y, kwargs_lens)
+        npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
+        npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
+                                            alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens,
+                                                                                keep_range=True)
+        beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
+        npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
+        npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

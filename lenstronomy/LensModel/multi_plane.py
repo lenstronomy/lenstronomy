@@ -67,6 +67,48 @@ class MultiLens(object):
         beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
+    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False):
+        """
+        ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
+        and then backwards to redshfit z_stop
+
+        :param x: co-moving position [Mpc]
+        :param y: co-moving position [Mpc]
+        :param alpha_x: ray angle at z_start [arcsec]
+        :param alpha_y: ray angle at z_start [arcsec]
+        :param z_start: redshift of start of computation
+        :param z_stop: redshift where output is computed
+        :param kwargs_lens: lens model keyword argument list
+        :param keep_range: bool, if True, only computes the angular diamter ratio between the first and last step once
+        :return: co-moving position and angles at redshfit z_stop
+        """
+        z_lens_last = z_start
+        first_deflector = True
+        for i, idex in enumerate(self._sorted_redshift_index):
+            z_lens = self._redshift_list[idex]
+            if z_lens >= z_start and z_lens < z_stop:
+                if first_deflector is True:
+                    if keep_range is True:
+                        if not hasattr(self, '_cosmo_bkg_T_start'):
+                            self._cosmo_bkg_T_start = self._cosmo_bkg.T_xy(z_start, z_lens)
+                        delta_T = self._cosmo_bkg_T_start
+                    else:
+                        delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
+                    first_deflector = False
+                else:
+                    delta_T = self._T_ij_list[i]
+                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+                alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+                z_lens_last = z_lens
+        if keep_range is True:
+            if not hasattr(self, '_cosmo_bkg_T_stop'):
+                self._cosmo_bkg_T_stop = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+            delta_T = self._cosmo_bkg_T_stop
+        else:
+            delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+        return x, y, alpha_x, alpha_y
+
     def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)
@@ -87,7 +129,6 @@ class MultiLens(object):
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
             delta_T = self._T_ij_list[i]
-            #delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             dt_geo_new = self._geometrical_delay(alpha_x, alpha_y, delta_T)
             x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
             dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, idex, z_lens)
@@ -95,7 +136,6 @@ class MultiLens(object):
             dt_geo = dt_geo + dt_geo_new
             dt_grav = dt_grav + dt_grav_new
         delta_T = self._T_ij_list[i + 1]
-        #delta_T = self._cosmo_bkg.T_xy(z_before, self._z_source)
         dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
         return dt_grav + dt_geo
 
@@ -113,7 +153,7 @@ class MultiLens(object):
         alpha_y = theta_y - beta_y
         return alpha_x, alpha_y
 
-    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.0000001):
+    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.00000001):
         """
         computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
 

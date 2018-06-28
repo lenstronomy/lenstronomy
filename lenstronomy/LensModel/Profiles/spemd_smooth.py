@@ -136,7 +136,7 @@ class SPEMD_SMOOTH(object):
         :param theta_E: Einstein radius
         :param gamma: power law slope
         :param q: axis ratio
-        :return:   prefactor to SPEMP profile for FASTELL
+        :return: pre-factor to SPEMP profile for FASTELL
         """
         gam = (gamma-1)/2.
         q_fastell = (3-gamma)/2. * (theta_E ** 2 / q) ** gam

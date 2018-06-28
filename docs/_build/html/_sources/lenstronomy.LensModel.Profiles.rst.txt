@@ -4,6 +4,14 @@ lenstronomy\.LensModel\.Profiles package
 Submodules
 ----------
 
+lenstronomy\.LensModel\.Profiles\.chameleon module
+--------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.chameleon
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.LensModel\.Profiles\.dipole module
 -----------------------------------------------
 
@@ -28,18 +36,26 @@ lenstronomy\.LensModel\.Profiles\.flexion module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.LensModel\.Profiles\.gaussian module
--------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.gaussian
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy\.LensModel\.Profiles\.gaussian\_kappa module
 --------------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy\.LensModel\.Profiles\.gaussian\_kappa\_ellipse module
+-----------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy\.LensModel\.Profiles\.gaussian\_potential module
+------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian_potential
     :members:
     :undoc-members:
     :show-inheritance:
@@ -96,6 +112,14 @@ lenstronomy\.LensModel\.Profiles\.nfw\_ellipse module
 -----------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nfw_ellipse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy\.LensModel\.Profiles\.nie module
+--------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nie
     :members:
     :undoc-members:
     :show-inheritance:

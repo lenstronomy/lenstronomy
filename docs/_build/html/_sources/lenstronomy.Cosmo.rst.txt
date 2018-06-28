@@ -28,6 +28,14 @@ lenstronomy\.Cosmo\.cosmo\_solver module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy\.Cosmo\.cosmography module
+--------------------------------------
+
+.. automodule:: lenstronomy.Cosmo.cosmography
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy\.Cosmo\.lens\_cosmo module
 --------------------------------------
 

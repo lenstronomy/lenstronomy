@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -123,11 +123,11 @@
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times">
 <code class="descname">sort_arrival_times</code><span class="sig-paren">(</span><em>x_mins</em>, <em>y_mins</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.sort_arrival_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times" title="Permalink to this definition">¶</a></dt>
-<dd><p>sort arrival times (fermat potential) of image positions
-:param x_mins:
-:param y_mins:
-:param kwargs_lens:
-:return:</p>
+<dd><p>sort arrival times (fermat potential) of image positions in increasing order of light travel time
+:param x_mins: ra position of images
+:param y_mins: dec position of images
+:param kwargs_lens: keyword arguments of lens model
+:return: sorted lists of x_mins and y_mins</p>
 </dd></dl>
 
 </dd></dl>
@@ -239,7 +239,7 @@
 <span id="lenstronomy-lensmodel-solver-solver4point-module"></span><h2>lenstronomy.LensModel.Solver.solver4point module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver4point" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver4point.</code><code class="descname">Solver4Point</code><span class="sig-paren">(</span><em>lensModel</em>, <em>decoupling=True</em>, <em>solver_type='PROFILE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver4point.</code><code class="descname">Solver4Point</code><span class="sig-paren">(</span><em>lensModel</em>, <em>solver_type='PROFILE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class to make the constraints for the solver</p>
 <dl class="method">
@@ -358,7 +358,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

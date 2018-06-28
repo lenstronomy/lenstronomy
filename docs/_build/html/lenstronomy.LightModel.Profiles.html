@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -58,6 +58,49 @@
 <h1>lenstronomy.LightModel.Profiles package<a class="headerlink" href="#lenstronomy-lightmodel-profiles-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.chameleon">
+<span id="lenstronomy-lightmodel-profiles-chameleon-module"></span><h2>lenstronomy.LightModel.Profiles.chameleon module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.chameleon" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">Chameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>w_c</em>, <em>w_t</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – ra-coordinate</li>
+<li><strong>y</strong> – dec-coordinate</li>
+<li><strong>amp</strong> – amplitude of first power-law flux</li>
+<li><strong>flux_ratio</strong> – ratio of amplitudes of first to second power-law profile</li>
+<li><strong>gamma1</strong> – power-law slope</li>
+<li><strong>gamma2</strong> – power-law slope</li>
+<li><strong>e1</strong> – ellipticity parameter</li>
+<li><strong>e2</strong> – ellipticity parameter</li>
+<li><strong>center_x</strong> – center</li>
+<li><strong>center_y</strong> – center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">flux of chameleon profile</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.LightModel.Profiles.gaussian">
 <span id="lenstronomy-lightmodel-profiles-gaussian-module"></span><h2>lenstronomy.LightModel.Profiles.gaussian module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.gaussian" title="Permalink to this headline">¶</a></h2>
@@ -113,6 +156,66 @@
 </tbody>
 </table>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">GaussianEllipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for Gaussian light profile</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>sigma0</strong> – </li>
+<li><strong>a</strong> – </li>
+<li><strong>s</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y</strong> – </li>
+<li><strong>sigma0</strong> – </li>
+<li><strong>Rs</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -174,6 +277,76 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">MultiGaussianEllipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussianEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for elliptical multi Gaussian profile</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussianEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>sigma0</strong> – </li>
+<li><strong>a</strong> – </li>
+<li><strong>s</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.function_split">
+<code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussianEllipse.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.function_split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussianEllipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y</strong> – </li>
+<li><strong>sigma0</strong> – </li>
+<li><strong>Rs</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -186,7 +359,7 @@
 <p>class for pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Rs</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>Rs</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -211,14 +384,14 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>Rs</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
@@ -241,7 +414,7 @@
 <p>class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -249,7 +422,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>a</strong> – </li>
 <li><strong>s</strong> – </li>
 <li><strong>center_x</strong> – </li>
@@ -266,14 +439,14 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>Rs</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
@@ -286,6 +459,11 @@
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -306,6 +484,47 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.nie">
+<span id="lenstronomy-lightmodel-profiles-nie-module"></span><h2>lenstronomy.LightModel.Profiles.nie module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.nie" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.nie.</code><code class="descname">NIE</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>non-divergent isothermal ellipse (projected)</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>theta_E</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+<li><strong>s_scale</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'e1', 'e2', 's_scale', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LightModel.Profiles.p_jaffe">
 <span id="lenstronomy-lightmodel-profiles-p-jaffe-module"></span><h2>lenstronomy.LightModel.Profiles.p_jaffe module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.p_jaffe" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -315,7 +534,7 @@
 <p>class for pseudo Jaffe lens light (2d projected light/mass distribution)</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>Ra</em>, <em>Rs</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -323,7 +542,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>a</strong> – </li>
 <li><strong>s</strong> – </li>
 <li><strong>center_x</strong> – </li>
@@ -340,14 +559,14 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>Ra</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>Rs</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
@@ -361,6 +580,11 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'Ra', 'Rs', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -370,7 +594,7 @@
 <p>calss for elliptical pseudo Jaffe lens light</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>Ra</em>, <em>Rs</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -378,7 +602,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>Ra</strong> – </li>
 <li><strong>Rs</strong> – </li>
 <li><strong>center_x</strong> – </li>
@@ -395,14 +619,14 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Ra</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>Ra</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
+<li><strong>amp</strong> – </li>
 <li><strong>Rs</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
@@ -416,6 +640,74 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.power_law">
+<span id="lenstronomy-lightmodel-profiles-power-law-module"></span><h2>lenstronomy.LightModel.Profiles.power_law module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.power_law" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.power_law.</code><code class="descname">PowerLaw</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/power_law.html#PowerLaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for power-law elliptical mass distribution</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/power_law.html#PowerLaw.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – ra-coordinate</li>
+<li><strong>y</strong> – dec-coordinate</li>
+<li><strong>gamma</strong> – projected power-law slope</li>
+<li><strong>e1</strong> – ellipticity</li>
+<li><strong>e2</strong> – ellipticity</li>
+<li><strong>center_x</strong> – center</li>
+<li><strong>center_y</strong> – center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">projected flux</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/power_law.html#PowerLaw.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>gamma</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -428,9 +720,14 @@
 <p>this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Core-Sersic function</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'Re', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -441,9 +738,14 @@
 <p>this class contains functions to evaluate an spherical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Sersic profile</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -454,9 +756,14 @@
 <p>this class contains functions to evaluate an elliptical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>I0_sersic</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic_elliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic_elliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Sersic profile</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -509,6 +816,11 @@
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split">
 <code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>n_max</em>, <em>beta</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets.html#ShapeletSet.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'n_max', 'beta', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -586,6 +898,11 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.phi_n">
 <code class="descname">phi_n</code><span class="sig-paren">(</span><em>n</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets.html#Shapelets.phi_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.phi_n" title="Permalink to this definition">¶</a></dt>
@@ -645,7 +962,7 @@
 <p>class for Gaussian light profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/uniform.html#Uniform.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/uniform.html#Uniform.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -668,6 +985,11 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -686,10 +1008,13 @@
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.LightModel.Profiles package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.chameleon">lenstronomy.LightModel.Profiles.chameleon module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.nie">lenstronomy.LightModel.Profiles.nie module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.power_law">lenstronomy.LightModel.Profiles.power_law module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
@@ -741,7 +1066,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

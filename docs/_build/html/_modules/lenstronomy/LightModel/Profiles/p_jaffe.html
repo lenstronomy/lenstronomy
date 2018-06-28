@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.p_jaffe &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.p_jaffe &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,36 +54,38 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class for pseudo Jaffe lens light (2d projected light/mass distribution)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe</span> <span class="k">import</span> <span class="n">PJaffe</span> <span class="k">as</span> <span class="n">PJaffe_lens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lens</span> <span class="o">=</span> <span class="n">PJaffe_lens</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PJaffe.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="PJaffe.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
 <span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0:</span>
+<span class="sd">        :param amp:</span>
 <span class="sd">        :param a:</span>
 <span class="sd">        :param s:</span>
 <span class="sd">        :param center_x:</span>
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PJaffe.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+<div class="viewcode-block" id="PJaffe.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0:</span>
+<span class="sd">        :param amp:</span>
 <span class="sd">        :param Rs:</span>
 <span class="sd">        :param center_x:</span>
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div></div>
 
 
@@ -91,17 +93,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    calss for elliptical pseudo Jaffe lens light</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe</span> <span class="k">import</span> <span class="n">PJaffe</span> <span class="k">as</span> <span class="n">PJaffe_lens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lens</span> <span class="o">=</span> <span class="n">PJaffe_lens</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="n">PJaffe</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PJaffe_Ellipse.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="PJaffe_Ellipse.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
 <span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0:</span>
+<span class="sd">        :param amp:</span>
 <span class="sd">        :param Ra:</span>
 <span class="sd">        :param Rs:</span>
 <span class="sd">        :param center_x:</span>
@@ -110,19 +114,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
         <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_transf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PJaffe_Ellipse.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="PJaffe_Ellipse.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0:</span>
+<span class="sd">        :param amp:</span>
 <span class="sd">        :param Rs:</span>
 <span class="sd">        :param center_x:</span>
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_coord_transf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -173,7 +177,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,7 +59,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to make the constraints for the solver</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">,</span> <span class="n">decoupling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;PROFILE&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;PROFILE&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">=</span> <span class="n">solver_type</span>  <span class="c1"># supported:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;COMPOSITE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;first lens model must be supported by the solver: &#39;SPEP&#39;, &#39;SPEMD&#39;, &#39;SIE&#39; &quot;</span>
@@ -72,10 +72,10 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;second lens model must be SHEAR to enable solver type </span><span class="si">%s</span><span class="s2">!&quot;</span> <span class="o">%</span> <span class="n">solver_type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span> <span class="o">=</span> <span class="n">lensModel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lens_mode_list</span> <span class="o">=</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model_list</span>
-        <span class="k">if</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="s1">&#39;FOREGROUND_SHEAR&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_mode_list</span> <span class="ow">or</span> <span class="n">solver_type</span> <span class="o">==</span> <span class="s1">&#39;PROFILE_SHEAR&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="s1">&#39;FOREGROUND_SHEAR&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_mode_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_decoupling</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_decoupling</span> <span class="o">=</span> <span class="n">decoupling</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_decoupling</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Solver4Point.constraint_lensmodel"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel">[docs]</a>    <span class="k">def</span> <span class="nf">constraint_lensmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-12</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -91,6 +91,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoupling</span><span class="p">:</span>
             <span class="n">alpha_0_x</span><span class="p">,</span> <span class="n">alpha_0_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="n">alpha_1_x</span><span class="p">,</span> <span class="n">alpha_1_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;PROFILE_SHEAR&#39;</span><span class="p">:</span>
+                <span class="n">alpha_shear_x</span><span class="p">,</span> <span class="n">alpha_shear_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">alpha_1_x</span> <span class="o">+=</span> <span class="n">alpha_shear_x</span>
+                <span class="n">alpha_1_y</span> <span class="o">+=</span> <span class="n">alpha_shear_y</span>
             <span class="n">x_sub</span> <span class="o">=</span> <span class="n">alpha_1_x</span> <span class="o">-</span> <span class="n">alpha_0_x</span>
             <span class="n">y_sub</span> <span class="o">=</span> <span class="n">alpha_1_y</span> <span class="o">-</span> <span class="n">alpha_0_y</span>
         <span class="k">else</span><span class="p">:</span>
@@ -109,7 +113,13 @@
     <span class="k">def</span> <span class="nf">_F</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)):</span>
         <span class="n">kwargs_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_kwargs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoupling</span><span class="p">:</span>
-            <span class="n">beta_x</span><span class="p">,</span> <span class="n">beta_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;PROFILE_SHEAR&#39;</span><span class="p">:</span>
+                <span class="n">alpha_x_shear</span><span class="p">,</span> <span class="n">alpha_y_shear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">alpha_x</span> <span class="o">+=</span> <span class="n">alpha_x_shear</span>
+                <span class="n">alpha_y</span> <span class="o">+=</span> <span class="n">alpha_y_shear</span>
+            <span class="n">beta_x</span> <span class="o">=</span> <span class="n">x_pos</span> <span class="o">-</span> <span class="n">alpha_x</span>
+            <span class="n">beta_y</span> <span class="o">=</span> <span class="n">y_pos</span> <span class="o">-</span> <span class="n">alpha_y</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">beta_x</span><span class="p">,</span> <span class="n">beta_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
@@ -273,7 +283,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -148,7 +148,7 @@
 <span id="lenstronomy-cosmo-cosmo-param-module"></span><h2>lenstronomy.Cosmo.cosmo_param module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmo_param" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam">
-<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_param.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>cosmo_type=None</em>, <em>mass_scaling=False</em>, <em>kwargs_fixed={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_param.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>cosmo_type=None</em>, <em>mass_scaling=False</em>, <em>kwargs_fixed={}</em>, <em>num_scale_factor=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>class that handles the cosmology relevant parameters</p>
 <dl class="method">
@@ -286,6 +286,167 @@ the angular diameter distance relations</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.cosmography">
+<span id="lenstronomy-cosmo-cosmography-module"></span><h2>lenstronomy.Cosmo.cosmography module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmography" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmography.</code><code class="descname">CosmoLikelihood</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em>, <em>D_d_sample</em>, <em>D_delta_t_sample</em>, <em>sampling_option='H0_only'</em>, <em>omega_m_fixed=0.3</em>, <em>omega_mh2_fixed=0.14157</em>, <em>kde_type='scipy_gaussian'</em>, <em>bandwidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>this class contains the likelihood function of the Strong lensing analysis</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.LCDM_lensLikelihood">
+<code class="descname">LCDM_lensLikelihood</code><span class="sig-paren">(</span><em>H0</em>, <em>omega_m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.LCDM_lensLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.LCDM_lensLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0">
+<code class="descname">X2_chain_H0</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.X2_chain_H0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute X2 given variable parameters for a MCMC/PSO chainF</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0_omgega_m">
+<code class="descname">X2_chain_H0_omgega_m</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.X2_chain_H0_omgega_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0_omgega_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute X^2 value of lens light profile
+:param args:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_omega_mh2">
+<code class="descname">X2_chain_omega_mh2</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.X2_chain_omega_mh2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_omega_mh2" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute the log likelihood given a omega_m h**2 prior fixed
+:param args:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.computeLikelihood">
+<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.computeLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.lensLikelihood">
+<code class="descname">lensLikelihood</code><span class="sig-paren">(</span><em>Dd</em>, <em>Ddt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.lensLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.lensLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>alpha</strong> – </li>
+<li><strong>beta</strong> – </li>
+<li><strong>sigma_D</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.likelihood">
+<code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0">
+<code class="descname">prior_H0</code><span class="sig-paren">(</span><em>H0</em>, <em>H0_min=0</em>, <em>H0_max=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_H0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether the parameter vector has left its bound, if so, adds a big number</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m">
+<code class="descname">prior_omega_m</code><span class="sig-paren">(</span><em>omega_m</em>, <em>omega_m_min=0</em>, <em>omega_m_max=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_omega_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether the parameter omega_m is within the given bounds
+:param omega_m:
+:param omega_m_min:
+:param omega_m_max:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_mh2">
+<code class="descname">prior_omega_mh2</code><span class="sig-paren">(</span><em>h</em>, <em>omega_m</em>, <em>h_max=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_omega_mh2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_mh2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoParam">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmography.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>sampling_option</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class for managing the parameters involved</p>
+<dl class="attribute">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoParam.numParam">
+<code class="descname">numParam</code><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoParam.numParam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.CosmoParam.param_bounds">
+<code class="descname">param_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoParam.param_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoParam.param_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmography.KDELikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmography.</code><code class="descname">KDELikelihood</code><span class="sig-paren">(</span><em>D_d_sample</em>, <em>D_delta_t_sample</em>, <em>kde_type='scipy_gaussian'</em>, <em>bandwidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#KDELikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.KDELikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class that samples the cosmographic likelihood given a distribution of points in the 2-dimensional distribution
+of D_d and D_delta_t</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.KDELikelihood.logLikelihood">
+<code class="descname">logLikelihood</code><span class="sig-paren">(</span><em>D_d</em>, <em>D_delta_t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#KDELikelihood.logLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.KDELikelihood.logLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>likelihood of the data (represented in the distribution of this class) given a model with predicted angular
+diameter distances.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>D_d</strong> – model predicted angular diameter distance</li>
+<li><strong>D_delta_t</strong> – model predicted time-delay distance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">loglikelihood (log of KDE value)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.cosmography.MCMC_sampler">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmography.</code><code class="descname">MCMC_sampler</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em>, <em>D_d_sample</em>, <em>D_dt_sample</em>, <em>sampling_option='H0_only'</em>, <em>omega_m_fixed=0.3</em>, <em>omega_mh2_fixed=0.14157</em>, <em>kde_type='scipy_gaussian'</em>, <em>bandwidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#MCMC_sampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.MCMC_sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class which executes the different sampling  methods</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.MCMC_sampler.mcmc_CH">
+<code class="descname">mcmc_CH</code><span class="sig-paren">(</span><em>walkerRatio</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi_monch=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#MCMC_sampler.mcmc_CH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.MCMC_sampler.mcmc_CH" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
+returns the chain</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.cosmography.MCMC_sampler.mcmc_emcee">
+<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#MCMC_sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.MCMC_sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the mcmc analysis of the parameter space</p>
 </dd></dl>
 
 </dd></dl>
@@ -496,6 +657,7 @@ the angular diameter distance relations</p>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.background">lenstronomy.Cosmo.background module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmo_param">lenstronomy.Cosmo.cosmo_param module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmo_solver">lenstronomy.Cosmo.cosmo_solver module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.cosmography">lenstronomy.Cosmo.cosmography module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo.lens_cosmo">lenstronomy.Cosmo.lens_cosmo module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.Cosmo">Module contents</a></li>
 </ul>
@@ -544,7 +706,7 @@ the angular diameter distance relations</p>
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

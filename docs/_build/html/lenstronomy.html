@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="usage.html" title="Usage"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.background">lenstronomy.Cosmo.background module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.cosmo_param">lenstronomy.Cosmo.cosmo_param module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.cosmo_solver">lenstronomy.Cosmo.cosmo_solver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.cosmography">lenstronomy.Cosmo.cosmography module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo.lens_cosmo">lenstronomy.Cosmo.lens_cosmo module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.Cosmo.html#module-lenstronomy.Cosmo">Module contents</a></li>
 </ul>
@@ -111,11 +112,13 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html">lenstronomy.LensModel.Profiles package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.chameleon">lenstronomy.LensModel.Profiles.chameleon module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.external_shear">lenstronomy.LensModel.Profiles.external_shear module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian">lenstronomy.LensModel.Profiles.gaussian module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_kappa">lenstronomy.LensModel.Profiles.gaussian_kappa module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse">lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_potential">lenstronomy.LensModel.Profiles.gaussian_potential module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.hernquist">lenstronomy.LensModel.Profiles.hernquist module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.hernquist_ellipse">lenstronomy.LensModel.Profiles.hernquist_ellipse module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.interpol">lenstronomy.LensModel.Profiles.interpol module</a></li>
@@ -123,6 +126,7 @@
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.multi_gaussian_kappa">lenstronomy.LensModel.Profiles.multi_gaussian_kappa module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.nfw">lenstronomy.LensModel.Profiles.nfw module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.nfw_ellipse">lenstronomy.LensModel.Profiles.nfw_ellipse module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.nie">lenstronomy.LensModel.Profiles.nie module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.no_lens">lenstronomy.LensModel.Profiles.no_lens module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.p_jaffe">lenstronomy.LensModel.Profiles.p_jaffe module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.p_jaffe_ellipse">lenstronomy.LensModel.Profiles.p_jaffe_ellipse module</a></li>
@@ -169,10 +173,13 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html">lenstronomy.LightModel.Profiles package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.chameleon">lenstronomy.LightModel.Profiles.chameleon module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.nie">lenstronomy.LightModel.Profiles.nie module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.power_law">lenstronomy.LightModel.Profiles.power_law module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
@@ -308,7 +315,7 @@
         <li class="right" >
           <a href="usage.html" title="Usage"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

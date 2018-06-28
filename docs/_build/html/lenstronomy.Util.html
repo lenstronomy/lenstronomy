@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -70,6 +70,28 @@ image (including fracitonal pixels).</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.analysis_util.ellipticities">
+<code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">ellipticities</code><span class="sig-paren">(</span><em>I_xy</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#ellipticities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.ellipticities" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute ellipticities of a light distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>I_xy</strong> – </li>
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.analysis_util.half_light_radius">
 <code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">half_light_radius</code><span class="sig-paren">(</span><em>lens_light</em>, <em>x_grid</em>, <em>y_grid</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#half_light_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.half_light_radius" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -86,6 +108,28 @@ image (including fracitonal pixels).</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.analysis_util.moments">
+<code class="descclassname">lenstronomy.Util.analysis_util.</code><code class="descname">moments</code><span class="sig-paren">(</span><em>I_xy_input</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/analysis_util.html#moments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.analysis_util.moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute quadrupole moments from a light distribution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>I_xy</strong> – light distribution</li>
+<li><strong>x</strong> – x-coordinates of I_xy</li>
+<li><strong>y</strong> – y-coordinates of I_xy</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Q_xx, Q_xy, Q_yy</p>
 </td>
 </tr>
 </tbody>
@@ -853,6 +897,31 @@ iterative approach</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.transform_e1e2">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">transform_e1e2</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#transform_e1e2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.transform_e1e2" title="Permalink to this definition">¶</a></dt>
+<dd><p>maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordiante system</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.Util.prob_density">
 <span id="lenstronomy-util-prob-density-module"></span><h2>lenstronomy.Util.prob_density module<a class="headerlink" href="#module-lenstronomy.Util.prob_density" title="Permalink to this headline">¶</a></h2>
@@ -1255,6 +1324,27 @@ into pixel coordinates in an image
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.util.rotate">
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">rotate</code><span class="sig-paren">(</span><em>xcoords</em>, <em>ycoords</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xcoords</strong> – x points</li>
+<li><strong>ycoords</strong> – y points</li>
+<li><strong>angle</strong> – angle in radians</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x points and y points rotated ccw by angle theta</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.util.selectBest">
 <code class="descclassname">lenstronomy.Util.util.</code><code class="descname">selectBest</code><span class="sig-paren">(</span><em>array</em>, <em>criteria</em>, <em>numSelect</em>, <em>highest=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#selectBest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.selectBest" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -1366,7 +1456,7 @@ into pixel coordinates in an image
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

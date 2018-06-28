@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.LightModel package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -61,10 +61,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html">lenstronomy.LightModel.Profiles package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.chameleon">lenstronomy.LightModel.Profiles.chameleon module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.nie">lenstronomy.LightModel.Profiles.nie module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.power_law">lenstronomy.LightModel.Profiles.power_law module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LightModel.Profiles.html#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
@@ -112,6 +115,20 @@
 <dd><p>computes 3d density at radius r
 :param x: coordinate in units of arcsec relative to the center of the image
 :type x: set or single 1d numpy array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.light_model.LightModel.param_name_list">
+<code class="descname">param_name_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel.param_name_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel.param_name_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the list of all parameter names</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of list of strings (for each light model separately)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -240,9 +257,14 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.light_param.LightParam.param_name_list">
+<code class="descname">param_name_list</code><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.param_name_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LightModel.light_param.LightParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -328,7 +350,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

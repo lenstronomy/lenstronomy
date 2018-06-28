@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.2.8 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.8',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -188,6 +188,11 @@
 <dt id="lenstronomy.Workflow.parameters.Param">
 <em class="property">class </em><code class="descclassname">lenstronomy.Workflow.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_constraints</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_cosmo=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>fix_lens_solver=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class that handles the parameter constraints. In particular when different model profiles share joint constraints.</p>
+<p>Options:
+‘joint_with_light_list’: bool/int list of length of lens models. Indices correspond to lens models, entry (int)
+corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
+same name. The normalisation ‘amp’ is not shared and the lens models have the amplitude to be fit independently.</p>
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>bijective=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.getParams" title="Permalink to this definition">¶</a></dt>
@@ -247,7 +252,7 @@ might be migrated to the param class</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo=None</em>, <em>bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.setParams" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_cosmo=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.setParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>inverse of getParam function
 :param kwargs_lens: keyword arguments depending on model options
 :param kwargs_source: keyword arguments depending on model options
@@ -333,7 +338,7 @@ might be migrated to the param class</p>
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.2.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

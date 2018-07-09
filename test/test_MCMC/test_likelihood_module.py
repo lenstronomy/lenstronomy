@@ -66,7 +66,11 @@ class TestLikelihood(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {
+            'subgrid_res': 5,
+            'psf_subgrid': True,
+            'subsampling_size': 25
+        }
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -84,8 +88,10 @@ class TestLikelihood(object):
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = {
-                               'subgrid_res': 2,
-                               'psf_subgrid': True}
+                               'subgrid_res': 3,
+                               'psf_subgrid': True,
+                               'subsampling_size': 5
+                            }
 
         num_source_model = len(source_model_list)
 

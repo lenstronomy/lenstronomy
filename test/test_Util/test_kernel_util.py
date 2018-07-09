@@ -180,6 +180,19 @@ def test_pixel_kernel():
     npt.assert_almost_equal(pixel_kernel[4, 4], 0.7438187859168478, decimal=3)
 
 
+def test_split_kernel():
+    kernel = np.zeros((9, 9))
+    kernel[4, 4] = 1
+    subgrid_res = 3
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=subgrid_res, odd=True)
+    subsampling_size = 3
+    kernel_hole, kernel_cutout = kernel_util.split_kernel(kernel, subgrid_kernel, subsampling_size=subsampling_size,
+                                                          subgrid_res=subgrid_res)
+
+    assert kernel_hole[4, 4] == 0
+    assert len(kernel_cutout) == subgrid_res*subsampling_size
+
+
 def test_cutout_source2():
     grid2d = np.zeros((20, 20))
     grid2d[7:9, 7:9] = 1

@@ -195,6 +195,32 @@ def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     return kernel
 
 
+def split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res):
+    """
+
+    :param kernel: PSF kernel of the size of the pixel
+    :param kernel_subgrid: subsampled kernel
+    :param subsampling_size: size of subsampling PSF in units of image pixels
+    :return: pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
+    performed, i.e. smaller subsampling PSF and hole in larger PSF
+    """
+    n = len(kernel)
+    n_sub = len(kernel_subgrid)
+    if subsampling_size % 2 == 0:
+        subsampling_size += 1
+    if subsampling_size > n:
+        subsampling_size = n
+
+    kernel_hole = copy.deepcopy(kernel)
+    n_min = (n-1)/2 - (subsampling_size-1)/2
+    n_max = (n-1)/2 + (subsampling_size-1)/2 + 1
+    kernel_hole[n_min:n_max, n_min:n_max] = 0
+    n_min_sub = (n_sub - 1) / 2 - (subsampling_size*subgrid_res - 1) / 2
+    n_max_sub = (n_sub - 1) / 2 + (subsampling_size * subgrid_res - 1) / 2 + 1
+    kernel_subgrid_cut = kernel_subgrid[n_min_sub:n_max_sub, n_min_sub:n_max_sub]
+    return kernel_hole, kernel_subgrid_cut
+
+
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     """
     cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel

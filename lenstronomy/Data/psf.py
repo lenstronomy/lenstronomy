@@ -1,7 +1,9 @@
 import scipy.ndimage as ndimage
 import scipy.signal as signal
 import numpy as np
+import copy
 import lenstronomy.Util.kernel_util as kernel_util
+import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.util as util
 
 
@@ -15,7 +17,7 @@ class PSF(object):
             kwargs:
                 'fwhm': full width at half maximum of Gaussian kernel (arcsec)
             required for point sources:
-                'pixel_size'
+                'pixel_size': width of kernel in units of pixels
             optional:
                 'truncation': truncation of the Gaussian convolution, default: 5*fwhm
                 the kernel size will be set to cover everything within the truncation
@@ -32,6 +34,9 @@ class PSF(object):
                 'psf_error_map': uncertainty in the PSF model. Same shape as 'kernel_point_source'.
                     This error will be added to the pixel error around the position of point sources as follows:
                      \sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
+                'sub_sampling_size': subsampling of the PSF performed at the size (in units of pixels of the original PSF)
+                    This number has to be smaller or equal the original pixel size. A smaller subsampling size leads to
+                     performance improvements.
 
 
 
@@ -142,6 +147,37 @@ class PSF(object):
             return img_conv1
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
+
+    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=1):
+        """
+
+        :param unconvolved_image: 2d image with subsampled pixels with subgrid_res
+        :param subgrid_res: subsampling
+        :param subsampling_size: size of the subsampling convolution in units of image pixels
+        :return: convolved 2d image in units of the pixels
+        """
+        unconvolved_image_resized = image_util.re_size(unconvolved_image, subgrid_res)
+        if self.psf_type == 'NONE':
+            image_conv_resized = unconvolved_image_resized
+        elif self.psf_type == 'GAUSSIAN':
+            grid_scale = self._pixel_size / float(subgrid_res)
+            sigma = self._sigma_gaussian/grid_scale
+            image_conv = ndimage.filters.gaussian_filter(unconvolved_image, sigma, mode='nearest', truncate=self._truncation)
+            image_conv_resized = image_util.re_size(image_conv, subgrid_res)
+        elif self.psf_type == 'PIXEL':
+            kernel = self._kernel_pixel
+            if subgrid_res > 1:
+                kernel_subgrid = self._subgrid_kernel(subgrid_res)
+                kernel, kernel_subgrid = kernel_util.split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res)
+                image_conv_subgrid = signal.fftconvolve(unconvolved_image, kernel_subgrid, mode='same')
+                image_conv_resized_1 = image_util.re_size(image_conv_subgrid, subgrid_res)
+                image_conv_resized_2 = signal.fftconvolve(unconvolved_image_resized, kernel, mode='same')
+                image_conv_resized = image_conv_resized_1 + image_conv_resized_2
+            else:
+                image_conv_resized = signal.fftconvolve(unconvolved_image_resized, kernel, mode='same')
+        else:
+            raise ValueError('PSF type %s not valid!' % self.psf_type)
+        return image_conv_resized
 
     def _subgrid_kernel(self, subgrid_res):
         """

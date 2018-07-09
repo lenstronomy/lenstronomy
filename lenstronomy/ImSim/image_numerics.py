@@ -19,6 +19,8 @@ class ImageNumerics(object):
         convolved to enable an impact on other pixels.
 
         'point_source_subgrid': sub-sampling resolution of the point source placing
+        'subsampling_size': sub-sampling kernel size (in units of the pixel size), default is the size of the PSF
+            for computational speed, smaller subsampling psf sizes are faster but less accurate.
 
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics
@@ -57,6 +59,7 @@ class ImageNumerics(object):
         self._point_source_subgrid = kwargs_numerics.get('point_source_subgrid', 3)
         if self._point_source_subgrid %2 == 0:
             raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
+        self._subsampling_size = kwargs_numerics.get('subsampling_size', 5)
 
     @property
     def exposure_map_array(self):
@@ -181,19 +184,12 @@ class ImageNumerics(object):
         """
         image = self.array2image(array, self._subgrid_res)
         image = self._cutout_psf(image, self._subgrid_res)
-        if unconvolved is True or self._PSF.psf_type == 'NONE':
-            grid_re_sized = image_util.re_size(image, self._subgrid_res)
-            grid_final = grid_re_sized
+        if unconvolved is True:
+            image_convolved = image_util.re_size(image, self._subgrid_res)
         else:
-            gridScale = self._Data.deltaPix/float(self._subgrid_res)
-            if not self._psf_subgrid:
-                grid_re_sized = image_util.re_size(image, self._subgrid_res)
-                grid_final = self._PSF.psf_convolution(grid_re_sized, gridScale, psf_subgrid=False, subgrid_res=1)
-            else:
-                grid_conv = self._PSF.psf_convolution(image, gridScale, psf_subgrid=self._psf_subgrid, subgrid_res=self._subgrid_res)
-                grid_final = image_util.re_size(grid_conv, self._subgrid_res)
-        grid_final = self._add_psf(grid_final)
-        return grid_final
+            image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res, subsampling_size=self._subsampling_size)
+        image_full = self._add_psf(image_convolved)
+        return image_full
 
     def _init_mask_psf(self):
         """

@@ -37,3 +37,35 @@ class Chameleon(object):
         flux2 = self.nie.function(x, y, 1, e1, e2, s_scale_2, center_x, center_y)
         flux = amp / (1. + q) * (flux1 - flux2)
         return flux
+
+
+class DoubleChameleon(object):
+    """
+    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+
+    """
+    param_names = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
+
+    def __init__(self):
+        self.chameleon = Chameleon()
+
+    def function(self, x, y, amp, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param ratio:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_1 = self.chameleon.function(x, y, amp, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, amp/ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2

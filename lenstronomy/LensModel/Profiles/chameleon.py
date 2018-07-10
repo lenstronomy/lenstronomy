@@ -90,3 +90,77 @@ class Chameleon(object):
         f_yy = f_yy_1 - f_yy_2
         f_xy = f_xy_1 - f_xy_2
         return f_xx, f_yy, f_xy
+
+
+class DoubleChameleon(object):
+    """
+    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+
+    """
+    param_names = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
+
+    def __init__(self):
+        self.chameleon = Chameleon()
+
+    def function(self, x, y, theta_E, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param ratio:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_1 = self.chameleon.function(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2
+
+    def derivatives(self, x, y, theta_E, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param ratio:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_x1, f_y1 = self.chameleon.derivatives(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_x1 + f_x2, f_y1 + f_y2
+
+    def hessian(self, x, y, theta_E, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param ratio:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2

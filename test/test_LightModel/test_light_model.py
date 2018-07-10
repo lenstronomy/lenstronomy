@@ -37,7 +37,7 @@ class TestLightModel(object):
         self.LightModel = LightModel(light_model_list=self.light_model_list)
 
     def test_init(self):
-        model_list = ['CORE_SERSIC', 'SHAPELETS', 'UNIFORM']
+        model_list = ['CORE_SERSIC', 'SHAPELETS', 'UNIFORM', 'CHAMELEON', 'DOUBLE_CHAMELEON']
         lightModel = LightModel(light_model_list=model_list)
         assert len(lightModel.profile_type_list) == len(model_list)
 
@@ -59,7 +59,7 @@ class TestLightModel(object):
 
     def test_param_name_list(self):
         param_name_list = self.LightModel.param_name_list()
-        assert len(self.light_model_list)  == len(param_name_list)
+        assert len(self.light_model_list) == len(param_name_list)
 
 
 if __name__ == '__main__':

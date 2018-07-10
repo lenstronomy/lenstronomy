@@ -62,6 +62,9 @@ class LightModel(object):
             elif profile_type == 'CHAMELEON':
                 from lenstronomy.LightModel.Profiles.chameleon import Chameleon
                 self.func_list.append(Chameleon())
+            elif profile_type == 'DOUBLE_CHAMELEON':
+                from lenstronomy.LightModel.Profiles.chameleon import DoubleChameleon
+                self.func_list.append(DoubleChameleon())
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
 
@@ -122,7 +125,7 @@ class LightModel(object):
         n = 0
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'UNIFORM']:
+                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM']:
                 new = {'amp': 1}
                 kwargs_new = kwargs_list[k].copy()
                 kwargs_new.update(new)
@@ -159,7 +162,7 @@ class LightModel(object):
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'UNIFORM']:
+                         'DOUBLE_CHAMELEON', 'UNIFORM']:
                 kwargs_list[k]['amp'] = param[i]
                 i += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:

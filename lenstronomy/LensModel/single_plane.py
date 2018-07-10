@@ -51,6 +51,9 @@ class SinglePlane(object):
             elif lens_type == 'CHAMELEON':
                 from lenstronomy.LensModel.Profiles.chameleon import Chameleon
                 self.func_list.append(Chameleon())
+            elif lens_type == 'DOUBLE_CHAMELEON':
+                from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
+                self.func_list.append(DoubleChameleon())
             elif lens_type == 'SPEP':
                 from lenstronomy.LensModel.Profiles.spep import SPEP
                 self.func_list.append(SPEP())

@@ -3,11 +3,11 @@ import pytest
 import numpy as np
 import numpy.testing as npt
 from lenstronomy.LightModel.Profiles.nie import NIE
-from lenstronomy.LightModel.Profiles.chameleon import Chameleon
+from lenstronomy.LightModel.Profiles.chameleon import Chameleon, DoubleChameleon
 import lenstronomy.Util.param_util as param_util
 
 
-class TestPowerLaw(object):
+class TestChameleon(object):
     """
     class to test the Moffat profile
     """
@@ -40,6 +40,39 @@ class TestPowerLaw(object):
         flux1 = nie.function(x=x, y=1., **kwargs_1)
         flux2 = nie.function(x=x, y=1., **kwargs_2)
         npt.assert_almost_equal(flux, (flux1 - flux2) / (1. + q), decimal=5)
+
+
+class TestDoubleChameleon(object):
+    """
+    class to test the Moffat profile
+    """
+    def setup(self):
+        pass
+
+    def test_param_name(self):
+        chameleon = DoubleChameleon()
+        names = chameleon.param_names
+        assert names[0] == 'amp'
+
+    def test_function(self):
+        """
+
+        :return:
+        """
+        chameleon = Chameleon()
+        doublechameleon = DoubleChameleon()
+
+        x = np.linspace(0.1, 10, 10)
+        w_c, w_t = 0.5, 1.
+        phi_G, q = 0.3, 0.8
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        kwargs_light = {'amp': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
+        kwargs_1 = {'amp': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        kwargs_2 = {'amp': 1./2., 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
+        flux = doublechameleon.function(x=x, y=1., **kwargs_light)
+        flux1 = chameleon.function(x=x, y=1., **kwargs_1)
+        flux2 = chameleon.function(x=x, y=1., **kwargs_2)
+        npt.assert_almost_equal(flux, flux1 + flux2, decimal=8)
 
 
 if __name__ == '__main__':

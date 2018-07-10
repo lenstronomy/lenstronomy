@@ -212,12 +212,12 @@ def split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res):
         subsampling_size = n
 
     kernel_hole = copy.deepcopy(kernel)
-    n_min = (n-1)/2 - (subsampling_size-1)/2
-    n_max = (n-1)/2 + (subsampling_size-1)/2 + 1
+    n_min = int((n-1)/2 - (subsampling_size-1)/2)
+    n_max = int((n-1)/2 + (subsampling_size-1)/2 + 1)
     kernel_hole[n_min:n_max, n_min:n_max] = 0
-    n_min_sub = (n_sub - 1) / 2 - (subsampling_size*subgrid_res - 1) / 2
-    n_max_sub = (n_sub - 1) / 2 + (subsampling_size * subgrid_res - 1) / 2 + 1
-    kernel_subgrid_cut = kernel_subgrid[int(n_min_sub):int(n_max_sub), int(n_min_sub):int(n_max_sub)]
+    n_min_sub = int((n_sub - 1) / 2 - (subsampling_size*subgrid_res - 1) / 2)
+    n_max_sub = int((n_sub - 1) / 2 + (subsampling_size * subgrid_res - 1) / 2 + 1)
+    kernel_subgrid_cut = kernel_subgrid[n_min_sub:n_max_sub, n_min_sub:n_max_sub]
     return kernel_hole, kernel_subgrid_cut
 
 

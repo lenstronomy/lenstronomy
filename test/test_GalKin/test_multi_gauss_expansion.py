@@ -202,7 +202,7 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # Hernquist fit to Sersic profile
-        lens_analysis = LensAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': ['NONE']})
+        lens_analysis = LensAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': []})
         r_eff = lens_analysis.half_light_radius_lens(kwargs_light)
         print(r_eff)
         light_profile_list_hernquist = ['HERNQUIST']

@@ -126,7 +126,7 @@ class TestLensAnalysis(object):
         npt.assert_almost_equal(flux_list[1], 3.0565768930826662, decimal=8)
 
         kwargs_profile = [{'amp': 1.}]
-        kwargs_options = {'lens_light_model_list': ['UNIFORM'], 'lens_model_list': ['NONE']}
+        kwargs_options = {'lens_light_model_list': ['UNIFORM'], 'lens_model_list': []}
         lensAnalysis = LensAnalysis(kwargs_options)
         flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="lens")
         assert len(flux_list) == 1

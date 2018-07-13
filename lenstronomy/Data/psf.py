@@ -1,7 +1,6 @@
 import scipy.ndimage as ndimage
 import scipy.signal as signal
 import numpy as np
-import copy
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.util as util
@@ -26,7 +25,13 @@ class PSF(object):
     - 'PIXEL': pixelized convolution kernel with odd pixel numbers
             kwargs:
                 'kernel_point_source': the pixelized kernel from a point source in its center
+
             optional:
+                'kernel_point_source_subsampled': subsampled point source PSF, this keyword replaces
+                    the 'kernel_point_source' with the lower resolution of teh subsampled PSF model.
+
+                'subsampling_factor': int() factor of higher resolution subsampling psf
+
                 'kernel_pixel': PSF of an extended pixel, can be different size (odd axis number) for faster numerical
                     convolution. If not specified, it will take the full point source kernel and numerically convolve it
                     over the size of a pixel
@@ -38,13 +43,12 @@ class PSF(object):
                     This number has to be smaller or equal the original pixel size. A smaller subsampling size leads to
                      performance improvements.
 
-
-
     - 'NONE': default option, results in no convolution, point sources will not be displayed
 
     """
 
     def __init__(self, kwargs_psf):
+        self._subsampling_kernel_init = False
         self.psf_type = kwargs_psf.get('psf_type', 'NONE')
         if self.psf_type == 'GAUSSIAN':
             self._fwhm = kwargs_psf['fwhm']
@@ -53,7 +57,16 @@ class PSF(object):
             if 'pixel_size' in kwargs_psf:
                 self._pixel_size = kwargs_psf['pixel_size']
         elif self.psf_type == 'PIXEL':
-            self._kernel_point_source = kwargs_psf['kernel_point_source']
+            if 'kernel_point_source_subsampled' in kwargs_psf:
+                self._subsampling_kernel_init = True
+                self._subgrid_kernel_out = kwargs_psf['kernel_point_source_subsampled']
+                n_high = len(self._subgrid_kernel_out)
+                subsampling_factor = kwargs_psf['subsampling_factor']
+                numPix = int(n_high / subsampling_factor)
+                self._kernel_point_source = util.averaging(self._subgrid_kernel_out, numGrid=n_high, numPix=numPix)
+            else:
+                self._kernel_point_source = kwargs_psf['kernel_point_source']
+
             if 'kernel_pixel' in kwargs_psf:
                 self._kernel_pixel = kwargs_psf['kernel_pixel']
             else:
@@ -81,6 +94,8 @@ class PSF(object):
             kwargs_psf['kernel_point_source'] = self.kernel_point_source
         if hasattr(self, '_psf_error_map'):
             kwargs_psf['psf_error_map'] = self._psf_error_map
+        if self._subsampling_kernel_init is True:
+            kwargs_psf['kernel_point_source_subsampled'] = self._subgrid_kernel_out
         return kwargs_psf
 
     @property

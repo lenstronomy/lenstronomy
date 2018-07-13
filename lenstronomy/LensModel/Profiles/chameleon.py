@@ -97,7 +97,7 @@ class DoubleChameleon(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
-    param_names = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
+    param_names = ['theta_E', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
 
     def __init__(self):
         self.chameleon = Chameleon()

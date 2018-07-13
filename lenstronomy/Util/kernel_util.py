@@ -100,7 +100,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
 
 def averaging_odd_kernel(kernel_high_res, subgrid_res):
     """
-    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (evenn_l number), both
+    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
     meant to be centered.
 
     :param kernel_high_res:

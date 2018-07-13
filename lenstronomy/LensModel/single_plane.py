@@ -120,9 +120,6 @@ class SinglePlane(object):
             elif lens_type == 'DIPOLE':
                 from lenstronomy.LensModel.Profiles.dipole import Dipole
                 self.func_list.append(Dipole())
-            elif lens_type == 'NONE':
-                from lenstronomy.LensModel.Profiles.no_lens import NoLens
-                self.func_list.append(NoLens())
             elif lens_type == 'FOREGROUND_SHEAR':
                 from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())

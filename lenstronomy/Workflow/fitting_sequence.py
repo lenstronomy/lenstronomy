@@ -132,6 +132,7 @@ class FittingSequence(object):
                                                        symmetry=psf_symmetry, verbose=self._verbose,
                                                        no_break=True)
                 self.multi_band_list[i][1] = kwargs_psf
+                self.fitting.multi_band_list[i][1] = kwargs_psf
         return 0
 
     def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):

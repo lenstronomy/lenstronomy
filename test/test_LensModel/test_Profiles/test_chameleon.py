@@ -87,7 +87,7 @@ class TestDoubleChameleon(object):
     def test_param_name(self):
         chameleon = DoubleChameleon()
         names = chameleon.param_names
-        assert names[0] == 'amp'
+        assert names[0] == 'theta_E'
 
     def test_function(self):
         """
@@ -108,10 +108,6 @@ class TestDoubleChameleon(object):
         flux1 = chameleon.function(x=x, y=1., **kwargs_1)
         flux2 = chameleon.function(x=x, y=1., **kwargs_2)
         npt.assert_almost_equal(flux, flux1 + flux2, decimal=8)
-
-
-
-        kwargs_lens = {'theta_E': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
 
     def test_derivatives(self):
         """

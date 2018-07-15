@@ -2,8 +2,8 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
-from lenstronomy.MCMC.mcmc import MCMCSampler
-from lenstronomy.MCMC.reinitialize import ReusePositionGenerator
+from lenstronomy.Sampling.mcmc import MCMCSampler
+from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.parameters import Param, ParamUpdate
 
 

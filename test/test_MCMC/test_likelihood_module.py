@@ -9,7 +9,7 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.MCMC.likelihood_module import LikelihoodModule
+from lenstronomy.Sampling.likelihood_module import LikelihoodModule
 from lenstronomy.Workflow.parameters import Param
 
 

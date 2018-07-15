@@ -76,7 +76,7 @@ class LikelihoodModule(object):
         if self._image_likelihood:
             logL += self.Multiband.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                           source_marg=self._source_marg, compute_bool=self._compute_bool)
-            x_mins, y_mins = self.Multiband.image_positions(kwargs_ps, kwargs_lens)
+            #x_mins, y_mins = self.Multiband.image_positions(kwargs_ps, kwargs_lens)
         if self._point_source_likelihood:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
         # logL -= self.bounds_convergence(kwargs_lens)
@@ -229,16 +229,20 @@ class LikelihoodModule(object):
 
     def _check_positive_flux_sersic(self, kwargs_source, kwargs_lens_light):
         pos_bool = True
-        for kwargs in kwargs_source:
-            if 'I0_sersic' in kwargs:
-                if kwargs['I0_sersic'] < 0:
-                    pos_bool = False
-                    break
-        for kwargs in kwargs_lens_light:
-            if 'I0_sersic' in kwargs:
-                if kwargs['I0_sersic'] < 0:
-                    pos_bool = False
-                    break
+        source_model_list = self.param.souceParams.model_list
+        lens_light_model_list = self.param.lensLightParams.model_list
+        for i, kwargs in enumerate(kwargs_source):
+            if 'amp' in kwargs:
+                if source_model_list[i] in ['SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE']:
+                    if kwargs['amp'] < 0:
+                        pos_bool = False
+                        break
+        for i, kwargs in enumerate(kwargs_lens_light):
+            if 'amp' in kwargs:
+                if lens_light_model_list[i] in ['SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE']:
+                    if kwargs['amp'] < 0:
+                        pos_bool = False
+                        break
         return pos_bool
 
     def __call__(self, a):

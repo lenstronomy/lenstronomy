@@ -67,6 +67,7 @@ class MamonLokasAnisotropy(object):
             return self.radial()
         else:
             raise ValueError('anisotropy type %s not supported!' % self._type)
+
     def _B(self, x, a, b):
         """
         incomplete Beta function as described in Mamon&Lokas A13

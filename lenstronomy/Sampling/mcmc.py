@@ -14,7 +14,7 @@ from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
-from lenstronomy.MCMC.likelihood_module import LikelihoodModule
+from lenstronomy.Sampling.likelihood_module import LikelihoodModule
 
 
 class MCMCSampler(object):

@@ -71,7 +71,7 @@ class TestParam(object):
 
     def test_add_fixed_source(self):
         kwargs_fixed = [{}]
-        kwargs_fixed = self.param_class._add_fixed_source(kwargs_fixed, kwargs_init=None, source_light_model_list=['GAUSSIAN'])
+        kwargs_fixed = self.param_class._add_fixed_source(kwargs_fixed)
         assert 1 == 1
 
     def test_get_cosmo(self):

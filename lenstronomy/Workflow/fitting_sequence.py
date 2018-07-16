@@ -120,7 +120,7 @@ class FittingSequence(object):
         gamma_fixed = fitting_kwargs.get('gamma_fixed', False)
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
-        self._fix_shapelets(shapelet_beta_fixed)
+        self._fix_shapelets(shapelet_beta_fixed, source_input)
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -227,4 +227,3 @@ class FittingSequence(object):
                 else:
                     if 'beta' not in self._kwargs_source_fixed[i] and 'beta' in kwargs_fixed[i]:
                         del kwargs_fixed[i]['beta']
-

@@ -14,6 +14,8 @@ class Multiband(object):
         self._num_bands = len(multi_band_list)
         self.lensModel = lens_model_class
         self.pointSource = point_source_class
+        self.sourceModel = source_model_class
+        self.lensLightModel = lens_light_model_class
         self._imageModel_list = []
         for i in range(self._num_bands):
             kwargs_data = multi_band_list[i][0]

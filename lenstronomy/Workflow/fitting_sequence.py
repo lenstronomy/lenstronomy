@@ -74,7 +74,11 @@ class FittingSequence(object):
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
-
+        n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
+        if n_max_new is False:
+            pass
+        else:
+            self._change_shapelet_coeffs(n_max_new)
         fix_lens = fitting_kwargs.get('fix_lens', False)
         fix_source = fitting_kwargs.get('fix_source', False)
         fix_lens_light = fitting_kwargs.get('fix_lens_light', False)
@@ -113,7 +117,11 @@ class FittingSequence(object):
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
-
+        n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
+        if n_max_new is False:
+            pass
+        else:
+            self._change_shapelet_coeffs(n_max_new)
         fix_lens = fitting_kwargs.get('fix_lens', False)
         fix_source = fitting_kwargs.get('fix_source', False)
         fix_lens_light = fitting_kwargs.get('fix_lens_light', False)
@@ -182,3 +190,16 @@ class FittingSequence(object):
                     print('Align completed for band %s.' % i)
                     self.multi_band_list[i][0] = kwargs_data
         return 0
+
+    def _change_shapelet_coeffs(self, n_max):
+        """
+
+        :param n_max: new number of shapelet coefficients
+        :return: params with the new number of shapelet coefficients fixed
+        """
+        kwargs_init, _, kwargs_fixed, _ , _ = self.kwargs_params['source_model']
+        source_model_list = self.kwargs_model.get('source_light_model_list', [])
+        for i, model in enumerate(source_model_list):
+            if model == 'SHAPELETS':
+                kwargs_init[i]['n_max'] = n_max
+                kwargs_fixed[i]['n_max'] = n_max

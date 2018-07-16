@@ -170,10 +170,13 @@ class LikelihoodModule(object):
 
     def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
         penalty = 0
-        pos_bool = self._check_positive_flux_point_source(kwargs_ps)
+        pos_bool = self.Multiband.pointSource.check_positive_flux(kwargs_ps)
         if pos_bool is False:
             penalty += 10**15
-        pos_bool = self._check_positive_flux_sersic(kwargs_source, kwargs_lens_light)
+        pos_bool = self.Multiband.sourceModel.check_positive_flux_profile(kwargs_source)
+        if pos_bool is False:
+            penalty += 10**15
+        pos_bool = self.Multiband.lensLightModel.check_positive_flux_profile(kwargs_lens_light)
         if pos_bool is False:
             penalty += 10 ** 15
         return penalty
@@ -210,40 +213,6 @@ class LikelihoodModule(object):
         n = self.Multiband.numData_evaluate(compute_bool=self._compute_bool)
         num_param, _ = self.param.num_param()
         return n - num_param - 1
-
-    def _check_positive_flux_point_source(self, kwargs_ps):
-        """
-        check whether inferred linear parameters are positive
-
-        :param kwargs_ps:
-        :return: bool
-        """
-        pos_bool = True
-        for kwargs in kwargs_ps:
-            point_amp = kwargs['point_amp']
-            for amp in point_amp:
-                if amp < 0:
-                    pos_bool = False
-                    break
-        return pos_bool
-
-    def _check_positive_flux_sersic(self, kwargs_source, kwargs_lens_light):
-        pos_bool = True
-        source_model_list = self.param.souceParams.model_list
-        lens_light_model_list = self.param.lensLightParams.model_list
-        for i, kwargs in enumerate(kwargs_source):
-            if 'amp' in kwargs:
-                if source_model_list[i] in ['SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE']:
-                    if kwargs['amp'] < 0:
-                        pos_bool = False
-                        break
-        for i, kwargs in enumerate(kwargs_lens_light):
-            if 'amp' in kwargs:
-                if lens_light_model_list[i] in ['SERSIC', 'SERSIC_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE']:
-                    if kwargs['amp'] < 0:
-                        pos_bool = False
-                        break
-        return pos_bool
 
     def __call__(self, a):
         return self.X2_chain(a)

@@ -21,6 +21,9 @@ class FittingSequence(object):
                                kwargs_constraints=self.kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
                                kwargs_params=self.kwargs_params)
         self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
+        kwargs_init, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        self._kwargs_source_init = copy.deepcopy(kwargs_init)
+        self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
 
     def fit_sequence(self, fitting_kwargs_list, bijective=True):
         """
@@ -71,6 +74,8 @@ class FittingSequence(object):
 
         gamma_fixed = fitting_kwargs.get('gamma_fixed', False)
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
+        shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
+        self._fix_shapelets(shapelet_beta_fixed, source_input)
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -114,9 +119,12 @@ class FittingSequence(object):
 
         gamma_fixed = fitting_kwargs.get('gamma_fixed', False)
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
+        shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
+        self._fix_shapelets(shapelet_beta_fixed)
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
+        kwargs_constraints['fix_shapelet_beta'] = shapelet_beta_fixed
         n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
         if n_max_new is False:
             pass
@@ -203,3 +211,20 @@ class FittingSequence(object):
             if model == 'SHAPELETS':
                 kwargs_init[i]['n_max'] = n_max
                 kwargs_fixed[i]['n_max'] = n_max
+
+    def _fix_shapelets(self, bool=False, kwargs_input=None):
+        """
+        fix beta in shapelets
+        :return:
+        """
+        _, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        source_model_list = self.kwargs_model.get('source_light_model_list', [])
+        for i, model in enumerate(source_model_list):
+            if model == 'SHAPELETS':
+                if bool is True:
+                    if 'beta' not in kwargs_fixed[i]:
+                        kwargs_fixed[i]['beta'] = kwargs_input[i]['beta']
+                else:
+                    if 'beta' not in self._kwargs_source_fixed[i] and 'beta' in kwargs_fixed[i]:
+                        del kwargs_fixed[i]['beta']
+

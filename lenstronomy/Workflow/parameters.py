@@ -21,6 +21,7 @@ class Param(object):
 
     'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
     'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
+    'fix_shapelet_beta': bool, if True, fixes the shapelet scale beta
     """
 
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens=None, kwargs_fixed_source=None,

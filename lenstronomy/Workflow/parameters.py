@@ -19,6 +19,8 @@ class Param(object):
     corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
     same name. The normalisation 'amp' is not shared and the lens models have the amplitude to be fit independently.
 
+    'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
+    'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
     """
 
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens=None, kwargs_fixed_source=None,
@@ -28,6 +30,8 @@ class Param(object):
 
         :return:
         """
+        self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
+        self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
         source_light_model_list = kwargs_model.get('source_light_model_list', [])
         lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
@@ -68,11 +72,11 @@ class Param(object):
             self._num_images = num_point_source_list[0]
         except:
             self._num_images = 0
-        if fix_lens_solver:
+        if fix_lens_solver is True:
             self._solver = False
         else:
             self._solver = kwargs_constraints.get('solver', False)
-        if self._solver:
+        if self._solver is True:
             self._solver_type = kwargs_constraints.get('solver_type', 'PROFILE')
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=self.lensModel, num_images=self._num_images)
         else:
@@ -115,12 +119,12 @@ class Param(object):
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_cosmo, i = self.cosmoParams.getParams(args, i)
         kwargs_lens = self._update_lens_light_joint(kwargs_lens, kwargs_lens_light)
-        kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens)
+        kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens)
         if self._solver:
             kwargs_lens = self._update_solver(kwargs_lens, kwargs_ps)
         kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         if bijective is True:
-            kwargs_lens = self._update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
+            kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
         kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
@@ -225,7 +229,7 @@ class Param(object):
                         kwargs_lens[i][name] = kwargs_light[entry][name]
         return kwargs_lens
 
-    def _update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
+    def update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
         """
         multiplies the scaling parameters of the profiles
 
@@ -346,6 +350,17 @@ class Param(object):
                 for name in param_names:
                     if name is not 'amp':
                         kwargs_fixed_update[i][name] = 0
+        if self._fix_foreground_shear is True:
+            for i, model in enumerate(self.lensModel.lens_model_list):
+                if model == 'FOREGROUND_SHEAR':
+                    if 'e1' not in kwargs_fixed_update[i]:
+                        kwargs_fixed_update[i]['e1'] = kwargs_init[i]['e1']
+                    if 'e2' not in kwargs_fixed_update[i]:
+                        kwargs_fixed_update[i]['e2'] = kwargs_init[i]['e2']
+        if self._fix_gamma is True:
+            for i, model in enumerate(self.lensModel.lens_model_list):
+                if 'gamma' in kwargs_init[i]:
+                    kwargs_fixed_update[i]['gamma'] = kwargs_init[i]['gamma']
         return kwargs_fixed_update
 
 
@@ -357,7 +372,7 @@ class ParamUpdate(object):
                                            kwargs_fixed_ps, kwargs_fixed_cosmo])
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
-                             fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False, gamma_fixed=False):
+                             fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False):
         if fix_lens:
             add_fixed_lens = kwargs_lens
         else:
@@ -381,11 +396,6 @@ class ParamUpdate(object):
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._update_fixed(
             add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
             add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
-
-        if gamma_fixed is True:
-            if len(kwargs_lens) > 0 :
-                if 'gamma' in kwargs_lens[0]:
-                    kwargs_fixed_lens[0]['gamma'] = kwargs_lens[0]['gamma']
 
         return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
 

@@ -140,7 +140,7 @@ class Fitting(object):
         return samples, param_list, dist
 
     def pso_run(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo,
-                n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1, gamma_fixed=False,
+                n_particles, n_iterations, mpi=False, threadCount=1, sigma_factor=1,
                 compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False, fix_point_source=False,
                 fix_cosmo=False, print_key='find_model'):
         """
@@ -149,7 +149,7 @@ class Fitting(object):
         """
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._paramUpdate.update_fixed_simple(
             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=fix_lens, fix_source=fix_source,
-            fix_lens_light=fix_lens_light, fix_point_source=fix_point_source, fixed_cosmo=fix_cosmo, gamma_fixed=gamma_fixed)
+            fix_lens_light=fix_lens_light, fix_point_source=fix_point_source, fixed_cosmo=fix_cosmo)
         kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma, kwargs_cosmo_sigma = self.sigma_kwargs()
         lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list = self._run_pso(
             n_particles, n_iterations,
@@ -164,14 +164,14 @@ class Fitting(object):
 
     def mcmc_run(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo,
                  n_burn, n_run, walkerRatio, threadCount=1, mpi=False, init_samples=None, sigma_factor=1,
-                 gamma_fixed=False, compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False,
+                 compute_bool=None, fix_lens=False, fix_source=False, fix_lens_light=False,
                  fix_point_source=False):
         """
         MCMC
         """
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._paramUpdate.update_fixed_simple(
             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=fix_lens, fix_source=fix_source,
-            fix_lens_light=fix_lens_light, fix_point_source=fix_point_source, gamma_fixed=gamma_fixed)
+            fix_lens_light=fix_lens_light, fix_point_source=fix_point_source)
         kwargs_lens_sigma, kwargs_source_sigma, kwargs_lens_light_sigma, kwargs_ps_sigma, kwargs_cosmo_sigma = self.sigma_kwargs()
         samples, param_list, dist = self._mcmc_run(
             n_burn, n_run, walkerRatio,

@@ -154,7 +154,7 @@ class TestParamUpdate(object):
         kwargs_lens_light = [{'test_lens_light': 1}]
         kwargs_ps = [{'test_point_source': 1}]
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self.paramUpdate.update_fixed_simple(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo={}, fix_lens=True,
-                             fix_source=True, fix_lens_light=True, fix_point_source=True, gamma_fixed=True)
+                             fix_source=True, fix_lens_light=True, fix_point_source=True)
         assert kwargs_fixed_lens[0]['gamma'] == 2
         assert kwargs_fixed_source[0]['test_source'] == 1
         assert kwargs_fixed_lens_light[0]['test_lens_light'] == 1

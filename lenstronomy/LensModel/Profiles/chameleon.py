@@ -28,13 +28,14 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
+        theta_E_conv = self._theta_E_convert(theta_E, w_c, w_t)
         if not w_t > w_c:
             w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
-        f_1 = self.nie.function(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
-        f_2 = self.nie.function(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
+        f_1 = self.nie.function(x, y, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_2 = self.nie.function(x, y, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
         f_ = f_1 - f_2
         return f_
 
@@ -53,13 +54,14 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
+        theta_E_conv = self._theta_E_convert(theta_E, w_c, w_t)
         if not w_t > w_c:
             w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
-        f_x_1, f_y_1 = self.nie.derivatives(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
-        f_x_2, f_y_2 = self.nie.derivatives(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
+        f_x_1, f_y_1 = self.nie.derivatives(x, y, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_x_2, f_y_2 = self.nie.derivatives(x, y, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
         f_x = f_x_1 - f_x_2
         f_y = f_y_1 - f_y_2
         return f_x, f_y
@@ -79,17 +81,38 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
+        theta_E_conv = self._theta_E_convert(theta_E, w_c, w_t)
         if not w_t > w_c:
             w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
-        f_xx_1, f_yy_1, f_xy_1 = self.nie.hessian(x, y, theta_E, e1, e2, s_scale_1, center_x, center_y)
-        f_xx_2, f_yy_2, f_xy_2 = self.nie.hessian(x, y, theta_E, e1, e2, s_scale_2, center_x, center_y)
+        f_xx_1, f_yy_1, f_xy_1 = self.nie.hessian(x, y, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_xx_2, f_yy_2, f_xy_2 = self.nie.hessian(x, y, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
         f_xx = f_xx_1 - f_xx_2
         f_yy = f_yy_1 - f_yy_2
         f_xy = f_xy_1 - f_xy_2
         return f_xx, f_yy, f_xy
+
+    def _theta_E_convert(self, theta_E, w_c, w_t):
+        """
+        convert the parameter theta_E (deflection angle one arcsecond from the center) into the
+        "Einstein radius" scale parameter of the two NIE profiles
+
+        :param theta_E:
+        :param w_c:
+        :param w_t:
+        :return:
+        """
+        if not w_t > w_c:
+            w_t, w_c = w_c, w_t
+        s_scale_1 = w_c
+        s_scale_2 = w_t
+        f_x_1, f_y_1 = self.nie.derivatives(1, 0, theta_E=1, e1=0, e2=0, s_scale=s_scale_1)
+        f_x_2, f_y_2 = self.nie.derivatives(1, 0, theta_E=1, e1=0, e2=0, s_scale=s_scale_2)
+        f_x = f_x_1 - f_x_2
+        theta_E_convert = theta_E / f_x
+        return theta_E_convert
 
 
 class DoubleChameleon(object):

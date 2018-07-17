@@ -79,14 +79,14 @@ class MultiLens(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
-        :param keep_range: bool, if True, only computes the angular diamter ratio between the first and last step once
-        :return: co-moving position and angles at redshfit z_stop
+        :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
+        :return: co-moving position and angles at redshift z_stop
         """
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            if z_lens >= z_start and z_lens < z_stop:
+            if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if keep_range is True:
                         if not hasattr(self, '_cosmo_bkg_T_start'):

@@ -209,9 +209,9 @@ class LensModelExtensions(LensModel):
         x_grid += center_x
         y_grid += center_y
         kappa = self.kappa(x_grid, y_grid, kwargs_lens_list, k=k)
-        if self.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
-            center_x = x_grid[kappa == np.max(kappa)]
-            center_y = y_grid[kappa == np.max(kappa)]
+        #if self.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
+        center_x = x_grid[kappa == np.max(kappa)]
+        center_y = y_grid[kappa == np.max(kappa)]
         kappa = util.array2image(kappa)
         r_array = np.linspace(0.0001, numPix*deltaPix/2., 200)
         for r in r_array:

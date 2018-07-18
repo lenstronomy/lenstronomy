@@ -25,7 +25,10 @@ class MultiLens(object):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
         self._lens_model_list = lens_model_list
         self._redshift_list = redshift_list
-        self._sorted_redshift_index = self._index_ordering(redshift_list)
+        if len(lens_model_list) < 1:
+            self._sorted_redshift_index = []
+        else:
+            self._sorted_redshift_index = self._index_ordering(redshift_list)
         self._lens_model = SinglePlane(lens_model_list)
         z_before = 0
         self._T_ij_list = []
@@ -57,7 +60,7 @@ class MultiLens(object):
         y = np.zeros_like(theta_y)
         alpha_x = theta_x
         alpha_y = theta_y
-        i = 0
+        i = -1
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
             x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)

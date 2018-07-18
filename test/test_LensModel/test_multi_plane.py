@@ -55,6 +55,18 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(f_yx_simple, f_yx_multi, decimal=5)
         npt.assert_almost_equal(f_yy_simple, f_yy_multi, decimal=5)
 
+    def test_empty(self):
+        z_source = 1.5
+        lens_model_list = []
+        redshift_list = []
+        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        kwargs_lens = []
+        f_xx_multi, f_xy_multi, f_yx_multi, f_yy_multi = lensModelMutli.hessian(1, 0, kwargs_lens, diff=0.000001)
+        npt.assert_almost_equal(0, f_xx_multi, decimal=5)
+        npt.assert_almost_equal(0, f_xy_multi, decimal=5)
+        npt.assert_almost_equal(0, f_yx_multi, decimal=5)
+        npt.assert_almost_equal(0, f_yy_multi, decimal=5)
+
     def test_sis_kappa_gamma_mag(self):
         z_source = 1.5
         lens_model_list = ['SIS']

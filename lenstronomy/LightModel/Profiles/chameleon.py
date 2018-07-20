@@ -69,6 +69,6 @@ class DoubleChameleon(object):
         :param center_y:
         :return:
         """
-        f_1 = self.chameleon.function(x, y, amp, w_c1, w_t1, e11, e21, center_x, center_y)
-        f_2 = self.chameleon.function(x, y, amp/ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_1 = self.chameleon.function(x, y, amp / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, amp / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_1 + f_2

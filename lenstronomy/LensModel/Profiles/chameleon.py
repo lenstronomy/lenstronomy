@@ -142,8 +142,8 @@ class DoubleChameleon(object):
         :param center_y:
         :return:
         """
-        f_1 = self.chameleon.function(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
-        f_2 = self.chameleon.function(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_1 = self.chameleon.function(x, y, theta_E / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, theta_E / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_1 + f_2
 
     def derivatives(self, x, y, theta_E, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
@@ -163,8 +163,8 @@ class DoubleChameleon(object):
         :param center_y:
         :return:
         """
-        f_x1, f_y1 = self.chameleon.derivatives(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
-        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_x1, f_y1 = self.chameleon.derivatives(x, y, theta_E / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_E / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_x1 + f_x2, f_y1 + f_y2
 
     def hessian(self, x, y, theta_E, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
@@ -184,6 +184,6 @@ class DoubleChameleon(object):
         :param center_y:
         :return:
         """
-        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, theta_E, w_c1, w_t1, e11, e21, center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_E / ratio, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, theta_E / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_E / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2

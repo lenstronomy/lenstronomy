@@ -160,10 +160,10 @@ class FittingSequence(object):
                 kwargs_psf = self.multi_band_list[i][1]
                 kwargs_numerics = self.multi_band_list[i][2]
                 psf_symmetry = kwargs_psf.get('psf_symmetry', 1)
-                image_model = class_creator.creat_image_model(kwargs_data=kwargs_data,
-                                                                  kwargs_psf=kwargs_psf,
-                                                                  kwargs_numerics=kwargs_numerics,
-                                                                  kwargs_model=self.kwargs_model)
+                image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
+                                                               kwargs_psf=kwargs_psf,
+                                                               kwargs_numerics=kwargs_numerics,
+                                                               kwargs_model=self.kwargs_model)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        lens_light_input, ps_input,

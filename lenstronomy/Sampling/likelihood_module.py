@@ -18,7 +18,7 @@ class LikelihoodModule(object):
         """
         # print('initialized on cpu', threading.current_thread())
         kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = kwargs_fixed
-        self.Multiband = class_creator.creat_multiband(multi_band_list, kwargs_model)
+        self.Multiband = class_creator.create_multiband(multi_band_list, kwargs_model)
         self.lensModel = self.Multiband.lensModel
         # this part is not yet fully implemented
         self._time_delay_likelihood = kwargs_likelihood.get('time_delay_likelihood', False)

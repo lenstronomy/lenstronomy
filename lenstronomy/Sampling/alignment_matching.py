@@ -87,7 +87,7 @@ class AlignmentLikelihood(object):
         """
         #generate image and computes likelihood
         kwargs_data = self.update_data(args)
-        imageModel = class_creator.creat_image_model(kwargs_data, self._kwargs_psf, self._kwargs_numerics, self._kwargs_model)
+        imageModel = class_creator.create_image_model(kwargs_data, self._kwargs_psf, self._kwargs_numerics, self._kwargs_model)
         logL = imageModel.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
         return logL, None
 

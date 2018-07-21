@@ -8,7 +8,7 @@ from lenstronomy.ImSim.multiband import Multiband
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
-def creat_lens_model_extension(lensModel):
+def create_lens_model_extension(lensModel):
     """
     create instance of LensModelExtensions given an instance of LensModel
     
@@ -21,7 +21,7 @@ def creat_lens_model_extension(lensModel):
     return lensModelExtensions
 
 
-def creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
+def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
     """
 
     :param kwargs_data:
@@ -31,23 +31,13 @@ def creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
     """
     data_class = Data(kwargs_data)
     psf_class = PSF(kwargs_psf)
-    if 'lens_model_list' in kwargs_model:
-        lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', None),
+    lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
-    else:
-        lens_model_class = None
-    if 'source_light_model_list' in kwargs_model:
-        source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []))
-    else:
-        source_model_class = None
-    if 'lens_light_model_list' in kwargs_model:
-        lens_light_model_class = LightModel(light_model_list=kwargs_model.get('lens_light_model_list', []))
-    else:
-        lens_light_model_class = None
-    if 'point_source_model_list' in kwargs_model:
-        point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []),
+    source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []))
+    lens_light_model_class = LightModel(light_model_list=kwargs_model.get('lens_light_model_list', []))
+    point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []),
                                          lensModel=lens_model_class,
                                          fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
                                          additional_images_list=kwargs_model.get('additional_images_list', None),
@@ -55,14 +45,12 @@ def creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
                                          search_window=kwargs_model.get('search_window', 5),
                                          precision_limit=kwargs_model.get('precision_limit', 10**(-10)),
                                          num_iter_max=kwargs_model.get('num_iter_max', 100))
-    else:
-        point_source_class = None
     imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                             point_source_class, kwargs_numerics)
     return imageModel
 
 
-def creat_multiband(multi_band_list, kwargs_model):
+def create_multiband(multi_band_list, kwargs_model):
     """
 
     :param kwargs_data:
@@ -70,31 +58,18 @@ def creat_multiband(multi_band_list, kwargs_model):
     :param kwargs_options:
     :return:
     """
-
-    if 'lens_model_list' in kwargs_model:
-        lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', None),
+    lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
-    else:
-        lens_model_class = None
-    if 'source_light_model_list' in kwargs_model:
-        source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []))
-    else:
-        source_model_class = None
-    if 'lens_light_model_list' in kwargs_model:
-        lens_light_model_class = LightModel(light_model_list=kwargs_model.get('lens_light_model_list', []))
-    else:
-        lens_light_model_class = None
-    if 'point_source_model_list' in kwargs_model:
-        point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []),
+    source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []))
+    lens_light_model_class = LightModel(light_model_list=kwargs_model.get('lens_light_model_list', []))
+    point_source_class = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []),
                                          fixed_magnification_list=kwargs_model.get('fixed_magnification_list', None),
                                          additional_images_list=kwargs_model.get('additional_images_list', None),
                                          min_distance=kwargs_model.get('min_distance', 0.01),
                                          search_window=kwargs_model.get('search_window', 5),
                                          precision_limit=kwargs_model.get('precision_limit', 10 ** (-10)),
                                          num_iter_max=kwargs_model.get('num_iter_max', 100))
-    else:
-        point_source_class = None
     multiband = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     return multiband

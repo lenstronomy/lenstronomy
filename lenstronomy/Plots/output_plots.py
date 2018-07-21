@@ -122,7 +122,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     _frame_size = numPix * deltaPix
     _coords = data._coords
     x_grid, y_grid = data.coordinates
-    lensModelExt = class_creator.creat_lens_model_extension(lensModel)
+    lensModelExt = class_creator.create_lens_model_extension(lensModel)
 
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -194,7 +194,7 @@ class LensModelPlot(object):
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
-        self._imageModel = class_creator.creat_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
+        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
         self._analysis = LensAnalysis(kwargs_model)
         self._lensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']),
                                  z_source=kwargs_model.get('z_source', None),

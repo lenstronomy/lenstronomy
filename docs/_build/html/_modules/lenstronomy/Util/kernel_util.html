@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.3.0 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.3.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -148,7 +148,7 @@
 
 <div class="viewcode-block" id="averaging_odd_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.averaging_odd_kernel">[docs]</a><span class="k">def</span> <span class="nf">averaging_odd_kernel</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (evenn_l number), both</span>
+<span class="sd">    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both</span>
 <span class="sd">    meant to be centered.</span>
 
 <span class="sd">    :param kernel_high_res:</span>
@@ -241,6 +241,32 @@
     <span class="n">kernel</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">kernel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kernel</span></div>
+
+
+<div class="viewcode-block" id="split_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.split_kernel">[docs]</a><span class="k">def</span> <span class="nf">split_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">subsampling_size</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param kernel: PSF kernel of the size of the pixel</span>
+<span class="sd">    :param kernel_subgrid: subsampled kernel</span>
+<span class="sd">    :param subsampling_size: size of subsampling PSF in units of image pixels</span>
+<span class="sd">    :return: pixel kernel and subsampling kernel such that the convolution of both applied on an image can be</span>
+<span class="sd">    performed, i.e. smaller subsampling PSF and hole in larger PSF</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">n_sub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subsampling_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">subsampling_size</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">subsampling_size</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">subsampling_size</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="n">kernel_hole</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">n_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">subsampling_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">n_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">subsampling_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">kernel_hole</span><span class="p">[</span><span class="n">n_min</span><span class="p">:</span><span class="n">n_max</span><span class="p">,</span> <span class="n">n_min</span><span class="p">:</span><span class="n">n_max</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_min_sub</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_sub</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">subsampling_size</span><span class="o">*</span><span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">n_max_sub</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_sub</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">subsampling_size</span> <span class="o">*</span> <span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">kernel_subgrid_cut</span> <span class="o">=</span> <span class="n">kernel_subgrid</span><span class="p">[</span><span class="n">n_min_sub</span><span class="p">:</span><span class="n">n_max_sub</span><span class="p">,</span> <span class="n">n_min_sub</span><span class="p">:</span><span class="n">n_max_sub</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">kernel_hole</span><span class="p">,</span> <span class="n">kernel_subgrid_cut</span></div>
 
 
 <div class="viewcode-block" id="cutout_source"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cutout_source">[docs]</a><span class="k">def</span> <span class="nf">cutout_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -355,7 +381,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

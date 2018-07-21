@@ -196,7 +196,7 @@ class LensModelPlot(object):
 
         self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
         self._analysis = LensAnalysis(kwargs_model)
-        self._lensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', ['NONE']),
+        self._lensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', []),
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))

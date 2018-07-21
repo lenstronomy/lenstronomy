@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.3.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.3.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.MCMC package" href="lenstronomy.MCMC.html" />
+    <link rel="next" title="lenstronomy.Plots package" href="lenstronomy.Plots.html" />
     <link rel="prev" title="lenstronomy.LightModel package" href="lenstronomy.LightModel.html" /> 
   </head>
   <body>
@@ -38,12 +38,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+          <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -97,6 +97,48 @@
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">DoubleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>amp</strong> – </li>
+<li><strong>ratio</strong> – </li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1028,8 +1070,8 @@
   <p class="topless"><a href="lenstronomy.LightModel.html"
                         title="previous chapter">lenstronomy.LightModel package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.MCMC.html"
-                        title="next chapter">lenstronomy.MCMC package</a></p>
+  <p class="topless"><a href="lenstronomy.Plots.html"
+                        title="next chapter">lenstronomy.Plots package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1061,12 +1103,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.MCMC.html" title="lenstronomy.MCMC package"
+          <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              >next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.3.0 documentation</title>
+    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.3.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -110,6 +110,9 @@
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">Chameleon</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Chameleon</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">DoubleChameleon</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DoubleChameleon</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Warning! No light model of type&#39;</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">,</span> <span class="s1">&#39; found!&#39;</span><span class="p">)</span>
 
@@ -170,7 +173,7 @@
         <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
+                         <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
                 <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
                 <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
@@ -207,7 +210,7 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
+                         <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
                 <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
@@ -235,7 +238,19 @@
             <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list_k</span><span class="p">:</span>
                 <span class="n">kwargs_list_k</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
             <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_list_k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_list_new</span></div></div>
+        <span class="k">return</span> <span class="n">kwargs_list_new</span></div>
+
+<div class="viewcode-block" id="LightModel.check_positive_flux_profile"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.check_positive_flux_profile">[docs]</a>    <span class="k">def</span> <span class="nf">check_positive_flux_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+        <span class="n">pos_bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">pos_bool</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+        <span class="k">return</span> <span class="n">pos_bool</span></div></div>
 </pre></div>
 
           </div>
@@ -266,7 +281,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

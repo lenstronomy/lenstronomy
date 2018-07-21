@@ -13,9 +13,9 @@ Subpackages
     lenstronomy.ImSim
     lenstronomy.LensModel
     lenstronomy.LightModel
-    lenstronomy.MCMC
     lenstronomy.Plots
     lenstronomy.PointSource
+    lenstronomy.Sampling
     lenstronomy.SimulationAPI
     lenstronomy.Util
     lenstronomy.Workflow

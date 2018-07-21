@@ -13,7 +13,6 @@ History
 
 * Improved testing and stability
 
-
 0.0.6 (2018-01-29)
 ++++++++++++++++++
 
@@ -55,3 +54,11 @@ History
 * improved GalKin module
 * minor improvements in PSF reconstruction
 * mass-to-light ratio parameterization
+
+0.3.1 (2018-07-21)
+++++++++++++++++++
+
+* subgrid psf sampling for inner parts of psf exclusively
+* minor stability improvements
+* cleaner likelihood definition
+* additional Chameleon lens and light profiles

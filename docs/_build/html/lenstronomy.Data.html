@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data package &#8212; lenstronomy 0.3.0 documentation</title>
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.3.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -425,7 +425,7 @@ This can e.g. come from model errors in the PSF estimation.</li>
 <dd><p class="first last">‘fwhm’: full width at half maximum of Gaussian kernel (arcsec)</p>
 </dd>
 <dt>required for point sources:</dt>
-<dd><p class="first last">‘pixel_size’</p>
+<dd><p class="first last">‘pixel_size’: width of kernel in units of pixels</p>
 </dd>
 <dt>optional:</dt>
 <dd><p class="first last">‘truncation’: truncation of the Gaussian convolution, default: 5*fwhm
@@ -442,7 +442,13 @@ the kernel size will be set to cover everything within the truncation</p>
 <dd><p class="first last">‘kernel_point_source’: the pixelized kernel from a point source in its center</p>
 </dd>
 <dt>optional:</dt>
-<dd><dl class="first last docutils">
+<dd><dl class="first docutils">
+<dt>‘kernel_point_source_subsampled’: subsampled point source PSF, this keyword replaces</dt>
+<dd><p class="first last">the ‘kernel_point_source’ with the lower resolution of teh subsampled PSF model.</p>
+</dd>
+</dl>
+<p>‘subsampling_factor’: int() factor of higher resolution subsampling psf</p>
+<dl class="last docutils">
 <dt>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical</dt>
 <dd><p class="first last">convolution. If not specified, it will take the full point source kernel and numerically convolve it
 over the size of a pixel</p>
@@ -451,6 +457,13 @@ over the size of a pixel</p>
 <dd><dl class="first last docutils">
 <dt>This error will be added to the pixel error around the position of point sources as follows:</dt>
 <dd><p class="first last">sigma^2_i += ‘psf_error_map’_j * (point_source_flux_i)**2</p>
+</dd>
+</dl>
+</dd>
+<dt>‘sub_sampling_size’: subsampling of the PSF performed at the size (in units of pixels of the original PSF)</dt>
+<dd><dl class="first last docutils">
+<dt>This number has to be smaller or equal the original pixel size. A smaller subsampling size leads to</dt>
+<dd><p class="first last">performance improvements.</p>
 </dd>
 </dl>
 </dd>
@@ -499,6 +512,27 @@ over the size of a pixel</p>
 <dt id="lenstronomy.Data.psf.PSF.psf_convolution">
 <code class="descname">psf_convolution</code><span class="sig-paren">(</span><em>grid</em>, <em>grid_scale</em>, <em>psf_subgrid=False</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_convolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_convolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>convolves a given pixel grid with a PSF</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.psf_convolution_new">
+<code class="descname">psf_convolution_new</code><span class="sig-paren">(</span><em>unconvolved_image</em>, <em>subgrid_res=1</em>, <em>subsampling_size=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_convolution_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_convolution_new" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>unconvolved_image</strong> – 2d image with subsampled pixels with subgrid_res</li>
+<li><strong>subgrid_res</strong> – subsampling</li>
+<li><strong>subsampling_size</strong> – size of the subsampling convolution in units of image pixels</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">convolved 2d image in units of the pixels</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -605,7 +639,7 @@ over the size of a pixel</p>
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

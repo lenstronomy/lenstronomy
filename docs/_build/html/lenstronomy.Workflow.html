@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.3.0 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.3.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -77,13 +77,13 @@
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting.Fitting.mcmc_run">
-<code class="descname">mcmc_run</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>threadCount=1</em>, <em>mpi=False</em>, <em>init_samples=None</em>, <em>sigma_factor=1</em>, <em>gamma_fixed=False</em>, <em>compute_bool=None</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting.mcmc_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting.mcmc_run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mcmc_run</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>threadCount=1</em>, <em>mpi=False</em>, <em>init_samples=None</em>, <em>sigma_factor=1</em>, <em>compute_bool=None</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting.mcmc_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting.mcmc_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>MCMC</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting.Fitting.pso_run">
-<code class="descname">pso_run</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>n_particles</em>, <em>n_iterations</em>, <em>mpi=False</em>, <em>threadCount=1</em>, <em>sigma_factor=1</em>, <em>gamma_fixed=False</em>, <em>compute_bool=None</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em>, <em>fix_cosmo=False</em>, <em>print_key='find_model'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting.pso_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting.pso_run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pso_run</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>n_particles</em>, <em>n_iterations</em>, <em>mpi=False</em>, <em>threadCount=1</em>, <em>sigma_factor=1</em>, <em>compute_bool=None</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em>, <em>fix_cosmo=False</em>, <em>print_key='find_model'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting.html#Fitting.pso_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting.Fitting.pso_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>finds lens light and lens model combined fit
 :return: constraints of lens model</p>
 </dd></dl>
@@ -193,6 +193,9 @@
 ‘joint_with_light_list’: bool/int list of length of lens models. Indices correspond to lens models, entry (int)
 corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
 same name. The normalisation ‘amp’ is not shared and the lens models have the amplitude to be fit independently.</p>
+<p>‘fix_foreground_shear’: bool, if True, fixes by default the foreground shear values
+‘fix_gamma’: bool, if True, fixes by default the power-law slop of lens profiles
+‘fix_shapelet_beta’: bool, if True, fixes the shapelet scale beta</p>
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.Param.getParams">
 <code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>bijective=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.getParams" title="Permalink to this definition">¶</a></dt>
@@ -259,6 +262,29 @@ might be migrated to the param class</p>
 :return: tuple of parameters</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Workflow.parameters.Param.update_lens_scaling">
+<code class="descname">update_lens_scaling</code><span class="sig-paren">(</span><em>kwargs_cosmo</em>, <em>kwargs_lens</em>, <em>inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.update_lens_scaling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.update_lens_scaling" title="Permalink to this definition">¶</a></dt>
+<dd><p>multiplies the scaling parameters of the profiles</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – </li>
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>i</strong> – </li>
+<li><strong>inverse</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -267,7 +293,7 @@ might be migrated to the param class</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.Workflow.parameters.ParamUpdate.update_fixed_simple">
-<code class="descname">update_fixed_simple</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em>, <em>fixed_cosmo=False</em>, <em>gamma_fixed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#ParamUpdate.update_fixed_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.ParamUpdate.update_fixed_simple" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_fixed_simple</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em>, <em>fix_lens=False</em>, <em>fix_source=False</em>, <em>fix_lens_light=False</em>, <em>fix_point_source=False</em>, <em>fixed_cosmo=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#ParamUpdate.update_fixed_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.ParamUpdate.update_fixed_simple" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -338,7 +364,7 @@ might be migrated to the param class</p>
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

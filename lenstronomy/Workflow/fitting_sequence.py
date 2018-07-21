@@ -21,7 +21,10 @@ class FittingSequence(object):
                                kwargs_constraints=self.kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
                                kwargs_params=self.kwargs_params)
         self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
-        kwargs_init, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        if 'source_model' in self.kwargs_params:
+            kwargs_init, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        else:
+            kwargs_init, kwargs_fixed = [], []
         self._kwargs_source_init = copy.deepcopy(kwargs_init)
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
 
@@ -217,7 +220,10 @@ class FittingSequence(object):
         fix beta in shapelets
         :return:
         """
-        _, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        if 'source_model' in self.kwargs_params:
+            _, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
+        else:
+            kwargs_fixed = []
         source_model_list = self.kwargs_model.get('source_light_model_list', [])
         for i, model in enumerate(source_model_list):
             if model == 'SHAPELETS':

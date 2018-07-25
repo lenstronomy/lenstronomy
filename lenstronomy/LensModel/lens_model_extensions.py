@@ -244,14 +244,18 @@ class LensModelExtensions(LensModel):
         gamma = -slope + 2
         return gamma
 
-    def external_shear(self, kwargs_lens_list):
+    def external_shear(self, kwargs_lens_list, foreground=False):
         """
 
         :param kwargs_lens_list:
         :return:
         """
         for i, model in enumerate(self.lens_model_list):
-            if model == 'SHEAR':
+            if foreground is True:
+                shear_model = 'FOREGROUND_SHEAR'
+            else:
+                shear_model = 'SHEAR'
+            if model == shear_model:
                 e1 = kwargs_lens_list[i]['e1']
                 e2 = kwargs_lens_list[i]['e2']
                 phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)

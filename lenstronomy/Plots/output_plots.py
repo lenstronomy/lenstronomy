@@ -573,7 +573,7 @@ class LensModelPlot(object):
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
 
-    f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
+    f, axes = plt.subplots(1, 3, figsize=(18, 6))
     ax = axes[0]
     ax.plot(np.log10(-np.array(X2_list)))
     ax.set_title('-logL')
@@ -636,7 +636,7 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     radius = (np.max(x_grid) - np.min(x_grid))/4
     circle_shear = util_maskl.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
     circle_foreground = util_maskl.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
-    f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
+    f, ax = plt.subplots(1, 1, figsize=(16, 8))
     im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
@@ -660,10 +660,14 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     if not 'cmap' in kwargs:
         kwargs['cmap'] = 'seismic'
 
-    f, axes = plt.subplots(1, 3, figsize=(15, 5), sharex=False, sharey=False)
+    f, axes = plt.subplots(1, 3, figsize=(15, 5))
     ax = axes[0]
     im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
+    if not 'vmin' in kwargs:
+        kwargs['vmin'] = v_min
+    if not 'vmax' in kwargs:
+        kwargs['vmax'] = v_max
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -672,7 +676,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, **kwargs)
+    im = ax.matshow(np.log10(psf_out), origin='lower', **kwargs)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -681,7 +685,13 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax.text(delta_x, n_kernel-delta_y, "iterative reconstruction", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[2]
-    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs)
+    kwargs_new = copy.deepcopy(kwargs)
+    try:
+        del kwargs_new['vmin']
+        del kwargs_new['vmax']
+    except:
+        pass
+    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs_new)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)

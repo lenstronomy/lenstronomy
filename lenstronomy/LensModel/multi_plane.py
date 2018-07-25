@@ -134,12 +134,15 @@ class MultiLens(object):
             delta_T = self._T_ij_list[i]
             dt_geo_new = self._geometrical_delay(alpha_x, alpha_y, delta_T)
             x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
-            dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, idex, z_lens)
+            dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, i, z_lens)
             alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
             dt_geo = dt_geo + dt_geo_new
             dt_grav = dt_grav + dt_grav_new
         delta_T = self._T_ij_list[i + 1]
         dt_geo += self._geometrical_delay(alpha_x, alpha_y, delta_T)
+        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+        beta_x, beta_y = self._co_moving2angle_source(x, y)
+        dt_geo -= self._geometrical_delay(beta_x, beta_y, self._T_z_source)
         return dt_grav + dt_geo
 
     def alpha(self, theta_x, theta_y, kwargs_lens, k=None):

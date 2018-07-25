@@ -184,7 +184,10 @@ class SinglePlane(object):
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                potential += func.function(x_, y_, **kwargs[i])
+                if self._model_list[i] == 'SHEAR':
+                    potential += func.function(x, y, **kwargs[i])
+                else:
+                    potential += func.function(x_, y_, **kwargs[i])
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -212,7 +215,10 @@ class SinglePlane(object):
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                if self._model_list[i] == 'SHEAR':
+                    f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
+                else:
+                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
         return f_x, f_y

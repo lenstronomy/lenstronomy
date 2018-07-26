@@ -30,7 +30,10 @@ class ImageModel(object):
         self.PointSource = point_source_class
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
-            self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
+            if self.PSF.psf_error_map is not None:
+                self._psf_error_map = kwargs_numerics.get('psf_error_map', True)
+            else:
+                self._psf_error_map = False
         else:
             self._psf_error_map = False
         self.SourceModel = source_model_class

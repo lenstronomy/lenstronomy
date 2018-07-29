@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 0.3.1 documentation</title>
+    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 0.3.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -69,7 +69,10 @@
                                <span class="n">kwargs_constraints</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_likelihood</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span><span class="p">,</span>
                                <span class="n">kwargs_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">fix_lens_solver</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">kwargs_init</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;source_model&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;source_model&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">:</span>
+            <span class="n">kwargs_init</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;source_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs_init</span><span class="p">,</span> <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_source_init</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_init</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_source_fixed</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_fixed</span><span class="p">)</span>
 
@@ -96,8 +99,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">psf_iteration</span><span class="p">(</span><span class="n">fitting_kwargs</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">fitting_routine</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;align_images&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">align_images</span><span class="p">(</span><span class="n">fitting_kwargs</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">fitting_routine</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;add_shapelets&#39;</span><span class="p">]:</span>
-                <span class="k">pass</span>
         <span class="k">if</span> <span class="n">bijective</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">lens_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="o">.</span><span class="n">update_lens_scaling</span><span class="p">(</span><span class="n">cosmo_temp</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">source_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param</span><span class="o">.</span><span class="n">image2source_plane</span><span class="p">(</span><span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">)</span>
@@ -234,17 +235,17 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">kwargs_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">kwargs_numerics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="n">alignmentFitting</span> <span class="o">=</span> <span class="n">AlignmentFitting</span><span class="p">(</span><span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">,</span> <span class="n">source_updated</span><span class="p">,</span>
+                <span class="n">kwargs_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">kwargs_numerics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">alignmentFitting</span> <span class="o">=</span> <span class="n">AlignmentFitting</span><span class="p">(</span><span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">,</span> <span class="n">source_updated</span><span class="p">,</span>
                                                         <span class="n">lens_light_input</span><span class="p">,</span> <span class="n">ps_input</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="n">compute_bool</span><span class="p">)</span>
 
-                    <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">alignmentFitting</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span>
+                <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">alignmentFitting</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span>
                                                               <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span>
                                                               <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;Alignment fitting for band </span><span class="si">%s</span><span class="s1"> ...&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Align completed for band </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_data</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Align completed for band </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_data</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
     <span class="k">def</span> <span class="nf">_change_shapelet_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_max</span><span class="p">):</span>
@@ -265,7 +266,10 @@
 <span class="sd">        fix beta in shapelets</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;source_model&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;source_model&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;source_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">source_model_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_light_model_list&#39;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">source_model_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
@@ -305,7 +309,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

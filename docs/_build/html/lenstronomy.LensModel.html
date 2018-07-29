@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.3.1 documentation</title>
+    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.3.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -461,15 +461,20 @@ A = 1 - d^2phi/d_ij</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius">
-<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
+<code class="descname">effective_einstein_radius</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>k=None</em>, <em>spacing=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.effective_einstein_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.effective_einstein_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the radius with mean convergence=1</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>spacing</strong> – number of annular bins to compute the convergence (resolution of the Einstein radius estimate)</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -493,7 +498,7 @@ A = 1 - d^2phi/d_ij</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_shear">
-<code class="descname">external_shear</code><span class="sig-paren">(</span><em>kwargs_lens_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.external_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_shear" title="Permalink to this definition">¶</a></dt>
+<code class="descname">external_shear</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>foreground=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.external_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.external_shear" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -542,8 +547,25 @@ A = 1 - d^2phi/d_ij</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope">
-<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>lens_model_internal_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">profile_slope</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>lens_model_internal_bool=None</em>, <em>num_points=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.profile_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.profile_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the logarithmic power-law slope of a profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens_list</strong> – lens model keyword argument list</li>
+<li><strong>lens_model_internal_bool</strong> – bool list, indicate which part of the model to consider</li>
+<li><strong>num_points</strong> – number of estimates around the Einstein radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -1067,7 +1089,7 @@ and then backwards to redshfit z_stop</p>
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

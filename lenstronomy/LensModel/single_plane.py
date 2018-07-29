@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 #file which contains class for lens model routines
 import numpy as np
+import copy
 
 
 class SinglePlane(object):
@@ -174,20 +175,14 @@ class SinglePlane(object):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         bool_list = self._bool_list(k)
-        if self._foreground_shear:
-            f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[self._foreground_shear_idex])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-        else:
-            x_ = x
-            y_ = y
+        x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 if self._model_list[i] == 'SHEAR':
                     potential += func.function(x, y, **kwargs[i])
                 else:
-                    potential += func.function(x_, y_, **kwargs[i])
+                    potential += func.function(x_, y_, **kwargs_copy[i])
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -204,21 +199,14 @@ class SinglePlane(object):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         bool_list = self._bool_list(k)
-        if self._foreground_shear:
-            f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[
-                self._foreground_shear_idex])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-        else:
-            x_ = x
-            y_ = y
+        x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 if self._model_list[i] == 'SHEAR':
                     f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 else:
-                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs[i])
+                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
                 f_x += f_x_i
                 f_y += f_y_i
         return f_x, f_y
@@ -343,4 +331,25 @@ class SinglePlane(object):
         if self._foreground_shear is True:
             bool_list[self._foreground_shear_idex] = False
         return bool_list
+
+    def _update_foreground(self, x, y, kwargs, image_plane=True):
+        if self._foreground_shear:
+            f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[self._foreground_shear_idex])
+            x_ = x - f_x_shear1
+            y_ = y - f_y_shear1
+            if image_plane is True:
+                kwargs_copy = copy.deepcopy(kwargs)
+                for i, func in enumerate(self.func_list):
+                    if 'center_x' in kwargs_copy[i]:
+                        f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(kwargs_copy[i]['center_x'], kwargs_copy[i]['center_y'], **kwargs[
+                            self._foreground_shear_idex])
+                        kwargs_copy[i]['center_x'] -= f_x_shear1
+                        kwargs_copy[i]['center_y'] -= f_y_shear1
+            else:
+                kwargs_copy = kwargs
+        else:
+            x_ = x
+            y_ = y
+            kwargs_copy = kwargs
+        return x_, y_, kwargs_copy
 

@@ -105,7 +105,7 @@ class Optimizer(object):
         optimized_PSO = self._pso(n_particles,n_iterations,self.optimizer)
 
         if self.verbose:
-            print 'starting amoeba... '
+            print('starting amoeba... ')
 
         # downhill simplex optimization
         self.optimizer_amoeba._init_particles(n_particles, n_iterations)

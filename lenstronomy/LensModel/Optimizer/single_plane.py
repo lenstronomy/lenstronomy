@@ -162,9 +162,9 @@ class SinglePlaneOptimizer(object):
 
         if self._counter % 500 == 0 and self.verbose:
 
-            print 'source penalty: ', src_penalty
+            print('source penalty: '), src_penalty
             if self.mag_penalty is not None:
-                print 'mag penalty: ', mag_penalty
+                print('mag penalty: '), mag_penalty
 
         self.lens_args_latest = lens_args_tovary + params_fixed
 

@@ -155,9 +155,9 @@ class MultiPlaneOptimizer(object):
 
         if self._counter % 500 == 0 and self.verbose:
 
-            print 'source penalty: ', src_penalty
+            print('source penalty: '), src_penalty
             if self.mag_penalty is not None:
-                print 'mag penalty: ', mag_penalty
+                print('mag penalty: '), mag_penalty
 
         self.lens_args_latest = lens_args_tovary + params_fixed
 
@@ -244,7 +244,7 @@ class SplitMultiplane(object):
                 count = 1
                 for xi,yi in zip(x,y):
 
-                    print 'interpolating field behind image '+str(count)+'...'
+                    print('interpolating field behind image '+str(count)+'...')
                     count+=1
                     interp_model_i,interp_args_i = self._lensmodel_interpolated((x_values+xi)*T_z_interp**-1,
                                                         (y_values+yi)*T_z_interp**-1, self.background_lensmodel,self.background_args)

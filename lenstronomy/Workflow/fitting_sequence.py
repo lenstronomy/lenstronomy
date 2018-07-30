@@ -28,7 +28,7 @@ class FittingSequence(object):
         self._kwargs_source_init = copy.deepcopy(kwargs_init)
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
 
-    def fit_sequence(self, fitting_kwargs_list, bijective=True):
+    def fit_sequence(self, fitting_kwargs_list, bijective=True, thread_count = 1):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
@@ -41,10 +41,10 @@ class FittingSequence(object):
         for fitting_kwargs in fitting_kwargs_list:
             fitting_routine = fitting_kwargs['fitting_routine']
             if fitting_routine in ['MCMC']:
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, threadCount = thread_count)
             elif fitting_routine in ['PSO']:
                 lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain, param = self.pso(fitting_kwargs,
-                                                                                            lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                                                                                            lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, threadCount = thread_count)
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_routine in ['psf_iteration']:
@@ -58,7 +58,7 @@ class FittingSequence(object):
             source_temp = self._param.image2source_plane(lens_temp, source_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
-    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
+    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input, threadCount = 1):
         """
 
         :param fitting_kwargs:
@@ -98,13 +98,13 @@ class FittingSequence(object):
 
         samples, param, dist = fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, ps_input, cosmo_input,
-                                  n_burn, n_run, walkerRatio, threadCount=1, mpi=mpi, init_samples=None,
+                                  n_burn, n_run, walkerRatio, threadCount=threadCount, mpi=mpi, init_samples=None,
                                   sigma_factor=sigma_scale, compute_bool=compute_bool,
                                   fix_lens=fix_lens, fix_source=fix_source, fix_lens_light=fix_lens_light,
                                   fix_point_source=fix_point_source)
         return samples, param, dist
 
-    def pso(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
+    def pso(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input, threadCount= 1):
         """
 
         :param fitting_kwargs:
@@ -147,7 +147,7 @@ class FittingSequence(object):
                 lens_input, source_input, lens_light_input, ps_input, cosmo_input,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool,
                 fix_lens=fix_lens, fix_source=fix_source, fix_lens_light=fix_lens_light,
-                fix_point_source=fix_point_source, print_key=print_key)
+                fix_point_source=fix_point_source, print_key=print_key, threadCount = threadCount)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):

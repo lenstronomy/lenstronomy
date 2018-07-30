@@ -6,6 +6,38 @@ this file contains standard routines
 
 import numpy as np
 import mpmath
+import itertools
+
+def sort_image_index(ximg,yimg,xref,yref):
+    """
+
+    :param ximg: x coordinates of image
+    :param yimg: y coordinates of image
+    :param xref: reference x coordinates
+    :param yref: reference y coordinates
+    :return: list of indexes such that the offset between ximg/xref and yimg/yref is minimized;
+    useful for sorting images by position rather than arrival time
+
+    """
+    assert len(xref) == len(ximg)
+
+    x_self = np.array(list(itertools.permutations(ximg)))
+    y_self = np.array(list(itertools.permutations(yimg)))
+
+    indexes = [0, 1, 2, 3]
+    index_iterations = list(itertools.permutations(indexes))
+    delta_r = []
+
+    for i in range(0, int(len(x_self))):
+        dr = 0
+        for j in range(0, int(len(x_self[0]))):
+            dr += (x_self[i][j] - xref[j]) ** 2 + (y_self[i][j] - yref[j]) ** 2
+
+        delta_r.append(dr ** .5)
+
+    min_indexes = np.array(index_iterations[np.argmin(delta_r)])
+
+    return min_indexes
 
 def rotate(xcoords, ycoords, angle):
     """

@@ -23,15 +23,15 @@ class TestSinglePlaneOptimizer(object):
                                  lens_model_list=lens_model_list_simple, kwargs_lens=kwargs_lens_simple, multiplane=False, verbose=False)
 
     optimizer_subs = Optimizer(x_pos, y_pos, magnification_target=magnification_simple, redshift_list=redshift_list_subs,
-                               lens_model_list=lens_model_list_subs, kwargs_lens=kwargs_lens_subs, multiplane=False, verbose=False)
+                               lens_model_list=lens_model_list_subs, kwargs_lens=kwargs_lens_subs, multiplane=False, verbose=True)
 
-    def test_multi_plane_correct_model(self):
+    def test_single_plane_correct_model(self):
 
         """
         test the model used to create the data; should be a perfect fit
         :return:
         """
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50,n_iterations=200)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50,n_iterations=250)
         index = sort_image_index(x_image, y_image, self.x_pos, self.y_pos)
 
         x_image = x_image[index]
@@ -44,14 +44,14 @@ class TestSinglePlaneOptimizer(object):
         npt.assert_almost_equal(y_image, self.y_pos, decimal=4)
         npt.assert_almost_equal(self.magnification_simple,mags,decimal=2)
 
-    def test_multi_plane_incorrect_model(self,tol=0.003):
+    def test_single_plane_incorrect_model(self,tol=0.0035):
 
         """
         test a model with additional subhalos added; should fit images to within a few m.a.s.
         :param tol:
         :return:
         """
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50,n_iterations=200)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50,n_iterations=250)
         index = sort_image_index(x_image, y_image, self.x_pos, self.y_pos)
         x_image = x_image[index]
         y_image = y_image[index]
@@ -61,7 +61,6 @@ class TestSinglePlaneOptimizer(object):
 
         npt.assert_array_less(dx,[tol]*len(dx))
         npt.assert_array_less(dy,[tol]*len(dy))
-
 
 if __name__ == '__main__':
     pytest.main()

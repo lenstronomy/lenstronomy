@@ -90,7 +90,7 @@ class Optimizer(object):
                                                         astropy_instance, interpolated=interpolate, return_mode='amoeba', mag_penalty=True,
                                                         return_array=False, verbose=verbose)
 
-    def optimize(self,n_particles=None,n_iterations=None):
+    def optimize(self,n_particles=None,n_iterations=None, restart = 1):
 
         """
 
@@ -101,23 +101,49 @@ class Optimizer(object):
         """
 
         # particle swarm optimization
-        self.optimizer._init_particles(n_particles,n_iterations)
-        optimized_PSO = self._pso(n_particles,n_iterations,self.optimizer)
+        penalties,parameters = [],[]
+
+        for run in range(0,restart):
+
+            penalty,params,optimizer = self._single_optimization(n_particles, n_iterations)
+            penalties.append(penalty)
+            parameters.append(params)
+
+        # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
+        kwargs_varied = self.Params.argstovary_todictionary(parameters[np.argmin(penalty)])
+        kwargs_lens_final = kwargs_varied + self.Params.argsfixed_todictionary()
+
+        # solve for the optimized image positions
+
+        ximg,yimg,source_x,source_y = self.optimizer_amoeba._get_images(kwargs_varied)
+
+        return kwargs_lens_final, [source_x, source_y], [ximg, yimg]
+
+    def _single_optimization(self, n_particles, n_iterations):
+
+        self.optimizer._init_particles(n_particles, n_iterations)
+        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer)
 
         if self.verbose:
             print('starting amoeba... ')
 
+        if self.multiplane:
+            models, args = self.optimizer.multiplane_optimizer._get_interpolated_models()
+            self.optimizer_amoeba.multiplane_optimizer.set_interpolated(models, args)
+            #self.optimizer_amoeba.multiplane_optimizer. \
+            #    _set_precomputed_deflections(self.optimizer.multiplane_optimizer._get_computed_rays())
+
         # downhill simplex optimization
         self.optimizer_amoeba._init_particles(n_particles, n_iterations)
-        optimized_downhill_simplex = minimize(self.optimizer_amoeba,x0=optimized_PSO,method='Nelder-Mead',tol=1e-11)
+        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=optimized_PSO, method='Nelder-Mead', tol=1e-10)
 
-        # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
-        kwargs_lens = self.Params.argstovary_todictionary(optimized_downhill_simplex['x']) + self.Params.argsfixed_todictionary()
+        penalty = self.optimizer_amoeba.get_best()
+        parameters = optimized_downhill_simplex['x']
 
-        # solve for the optimized image positions
-        ximg,yimg = self.optimizer_amoeba._get_images(kwargs_lens)
+        self.optimizer.reset()
+        self.optimizer_amoeba.reset()
 
-        return kwargs_lens, [self.optimizer_amoeba.source_x, self.optimizer_amoeba.source_y], [ximg, yimg]
+        return penalty, parameters, self.optimizer_amoeba
 
     def _pso(self, n_particles, n_iterations, optimizer, lowerLimit=None, upperLimit=None, threadCount=1,social_influence = 0.9,
              personal_influence=1.3):
@@ -164,9 +190,10 @@ class Optimizer(object):
         assert len(y_pos) == 4
         assert len(magnification_target) == len(x_pos)
         assert tol_source is not None
-        assert len(zlist) == len(lens_list) == len(arg_list)
+        assert len(lens_list) == len(arg_list)
 
         if multiplane is True:
+            assert len(zlist) == len(lens_list)
             assert z_source is not None
             assert z_main is not None
             assert astropy_instance is not None

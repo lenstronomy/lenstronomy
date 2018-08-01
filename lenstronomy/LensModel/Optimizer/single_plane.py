@@ -15,22 +15,18 @@ class SinglePlaneOptimizer(object):
 
         self.magnification_target = magnification_target
         self.tol_mag = tol_mag
-        self._compute_mags = mag_penalty
+        self._compute_mags_flag = mag_penalty
 
         self.centroid_0 = centroid_0
         self.tol_centroid = tol_centroid
 
-        self._x_pos = x_pos
-        self._y_pos = y_pos
-        self.mag_penalty, self.src_penalty, self.parameters = [], [], []
+        self._x_pos, self._y_pos = np.array(x_pos), np.array(y_pos)
 
         self.verbose=verbose
 
         self.all_lensmodel_args = arg_list
 
         self._return_mode = return_mode
-
-        self._counter = 1
 
         # compute the foreground deflections and second derivatives from subhalos
         if k_start > 0 and len(arg_list)>k_start:
@@ -51,27 +47,44 @@ class SinglePlaneOptimizer(object):
             self.alpha_x_sub, self.alpha_y_sub = 0, 0
             self.sub_fxx, self.sub_fyy, self.sub_fxy = 0,0,0
 
+    def reset(self):
+
+        self.mag_penalty, self.src_penalty, self.parameters = [], [], []
+        self._counter = 1
+        self._compute_mags = self._compute_mags_flag
+
+    def get_best(self):
+
+        total = np.array(self.src_penalty) + np.array(self.mag_penalty)
+
+        return total[np.argmin(total)]
+
     def _init_particles(self,n_particles,n_iterations):
 
         self._n_total_iter = n_iterations*n_particles
         self._n_particles = n_particles
         self._mag_penalty_switch = 1
 
-    def _get_images(self,args):
+    def _get_images(self,kwargs_varied):
+
+        args = kwargs_varied + self.Params.argsfixed_todictionary()
 
         srcx, srcy = self.lensModel.ray_shooting(self._x_pos, self._y_pos, args, None)
 
-        self.source_x, self.source_y = np.mean(srcx), np.mean(srcy)
-        x_image, y_image = self.solver.image_position_from_source(self.source_x, self.source_y,args,precision_limit=10**-10)
+        source_x, source_y = np.mean(srcx), np.mean(srcy)
 
-        return x_image, y_image
+        x_image, y_image = self.solver.findBrightImage(source_x, source_y,args,precision_limit=10**-10)
+
+        return x_image, y_image, source_x, source_y
 
     def _source_position_penalty(self, lens_args):
 
-        # compute the source position associated with only the macromodel
-        betax, betay = self.lensModel.ray_shooting(self._x_pos, self._y_pos, lens_args, k=self._k_macro)
-        # add the subhalo deflections; can't do this in multi-plane
-        betax,betay = betax + self.alpha_x_sub, betay + self.alpha_y_sub
+        # compute the macromodel deflection
+        alphax_macro,alphay_macro = self.lensModel.alpha(self._x_pos,self._y_pos,lens_args,k=self._k_macro)
+
+        # compute the source position
+        betax = self._x_pos - alphax_macro - self.alpha_x_sub
+        betay = self._y_pos - alphay_macro - self.alpha_y_sub
 
         dx = ((betax[0] - betax[1]) ** 2 + (betax[0] - betax[2]) ** 2 + (betax[0] - betax[3]) ** 2 + (
                     betax[1] - betax[2]) ** 2 +

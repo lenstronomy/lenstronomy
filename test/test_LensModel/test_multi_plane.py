@@ -36,10 +36,10 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         beta_x_simple, beta_y_simple = lensModel.ray_shooting(1, 0, kwargs_lens)
         beta_x_multi, beta_y_multi = lensModelMutli.ray_shooting(1, 0, kwargs_lens)
-        assert beta_x_simple == beta_x_multi
-        assert beta_y_simple == beta_y_multi
-        assert beta_x_simple == 0
-        assert beta_y_simple == 0
+        npt.assert_almost_equal(beta_x_simple, beta_x_multi, decimal=10)
+        npt.assert_almost_equal(beta_y_simple, beta_y_multi, decimal=10)
+        npt.assert_almost_equal(beta_x_simple, 0, decimal=10)
+        npt.assert_almost_equal(beta_y_simple, 0, decimal=10)
 
     def test_sis_hessian(self):
         z_source = 1.5

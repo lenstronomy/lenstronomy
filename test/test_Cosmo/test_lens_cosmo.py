@@ -4,7 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
-from lenstronomy.Cosmo.lens_cosmo import LensCosmo, FlatLCDM
+from lenstronomy.Cosmo.lens_cosmo import LensCosmo, LCDM
 
 
 class TestLensCosmo(object):
@@ -64,7 +64,7 @@ class TestLensCosmo(object):
 
 class TestFlatLCDM(object):
     def setup(self):
-        self.cosmo = FlatLCDM(z_lens=0.5, z_source=1.5)
+        self.cosmo = LCDM(z_lens=0.5, z_source=1.5)
 
     def test_D_d(self):
         D_d = self.cosmo.D_d(H_0=70, Om0=0.3)

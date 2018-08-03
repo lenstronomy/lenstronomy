@@ -1,11 +1,11 @@
 __author__ = 'dgilman'
 
 import numpy as np
-from PSO_optimizer import ParticleSwarmOptimizer
-from params import Params
+from lenstronomy.LensModel.Optimizer.PSO_optimizer import ParticleSwarmOptimizer
+from lenstronomy.LensModel.Optimizer.params import Params
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from single_plane import SinglePlaneOptimizer
-from multi_plane import MultiPlaneOptimizer
+from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneOptimizer
+from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneOptimizer
 from scipy.optimize import minimize
 
 class Optimizer(object):
@@ -130,8 +130,7 @@ class Optimizer(object):
         if self.multiplane:
             models, args = self.optimizer.multiplane_optimizer._get_interpolated_models()
             self.optimizer_amoeba.multiplane_optimizer.set_interpolated(models, args)
-            #self.optimizer_amoeba.multiplane_optimizer. \
-            #    _set_precomputed_deflections(self.optimizer.multiplane_optimizer._get_computed_rays())
+            self.optimizer_amoeba.multiplane_optimizer.inherit_rays(self.optimizer)
 
         # downhill simplex optimization
         self.optimizer_amoeba._init_particles(n_particles, n_iterations)

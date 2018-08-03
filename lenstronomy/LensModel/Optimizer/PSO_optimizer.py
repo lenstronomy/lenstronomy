@@ -66,6 +66,9 @@ class ParticleSwarmOptimizer(object):
                     print("max iteration reached! stoping")
                 return
 
+            if self.func.is_converged:
+                return
+
             if self._converged_likelihood(maxIter*lookback,self.particleCount,standard_dev):
                 return
 

@@ -52,6 +52,7 @@ class SinglePlaneOptimizer(object):
         self.mag_penalty, self.src_penalty, self.parameters = [], [], []
         self._counter = 1
         self._compute_mags = self._compute_mags_flag
+        self.is_converged = False
 
     def get_best(self):
 
@@ -142,10 +143,17 @@ class SinglePlaneOptimizer(object):
         if self._compute_mags:
             return True
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 1:
+        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 5:
             return True
         else:
             return False
+
+    def _test_convergence(self):
+
+        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 1:
+            self.is_converged = True
+        else:
+            self.is_converged = False
 
     def __call__(self, lens_values_tovary,src_penalty=None,mag_penalty=None,centroid_penalty=None):
 
@@ -182,6 +190,8 @@ class SinglePlaneOptimizer(object):
         self.lens_args_latest = lens_args_tovary + params_fixed
 
         self._log(src_penalty, mag_penalty)
+
+        self._test_convergence()
 
         if self._return_mode == 'PSO':
             return -1 * penalty, None

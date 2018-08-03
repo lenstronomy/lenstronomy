@@ -8,6 +8,7 @@ from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneOptimizer
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneOptimizer
 from scipy.optimize import minimize
 
+
 class Optimizer(object):
 
     """
@@ -71,11 +72,11 @@ class Optimizer(object):
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
 
-            self.optimizer = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params, \
+            self.optimizer = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params,
                                                   magnification_target, tol_mag, centroid_0, tol_centroid,
                                                   k_start=self.Params.k_start, arg_list=kwargs_lens,verbose=verbose)
 
-            self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params, \
+            self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params,
                                                          magnification_target, tol_mag, centroid_0, tol_centroid,
                                                          k_start=self.Params.k_start, arg_list=kwargs_lens, mag_penalty=True,
                                                          return_mode='amoeba', verbose=verbose)
@@ -94,7 +95,7 @@ class Optimizer(object):
                                                         astropy_instance, interpolated=interpolate, return_mode='amoeba', mag_penalty=True,
                                                         return_array=False, verbose=verbose)
 
-    def optimize(self,n_particles=None,n_iterations=None, restart = 1):
+    def optimize(self,n_particles=None,n_iterations=None, restart=1):
 
         """
 
@@ -103,18 +104,20 @@ class Optimizer(object):
         total number of lens models sovled: n_particles*n_iterations
         :return: lens model keywords, [optimized source position], best fit image positions
         """
-
+        #TODO: document parameter restart
+        if restart < 0:
+            raise ValueError("parameter 'restart' must be integer of value > 0")
         # particle swarm optimization
-        penalties,parameters = [],[]
+        penalties, parameters = [],[]
 
-        for run in range(0,restart):
+        for run in range(0, restart):
 
-            penalty,params,optimizer = self._single_optimization(n_particles, n_iterations)
+            penalty, params, optimizer = self._single_optimization(n_particles, n_iterations)
             penalties.append(penalty)
             parameters.append(params)
 
         # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
-
+        #TODO: do you mean 'penalties' in the line below? Note: 'penalty' or 'index' variable might not be defined while executing this line
         index = np.argmin(penalty)
 
         kwargs_varied = self.Params.argstovary_todictionary(parameters[index])

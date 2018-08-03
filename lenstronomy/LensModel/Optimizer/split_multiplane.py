@@ -1,6 +1,7 @@
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
+
 class SplitMultiplane(object):
 
     z_epsilon = 1e-9

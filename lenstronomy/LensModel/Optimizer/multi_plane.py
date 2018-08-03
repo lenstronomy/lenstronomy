@@ -2,6 +2,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.Optimizer.split_multiplane import SplitMultiplane as split_multi
 import numpy as np
 
+
 class MultiPlaneOptimizer(object):
 
     def __init__(self, lensmodel_full, all_args, x_pos, y_pos, tol_source, Params, magnification_target,
@@ -178,9 +179,9 @@ class MultiPlaneOptimizer(object):
 
         if self._counter % 500 == 0 and self.verbose:
 
-            print('source penalty: '), src_penalty
+            print('source penalty: ', src_penalty)
             if self.mag_penalty is not None:
-                print('mag penalty: '), mag_penalty
+                print('mag penalty: ', mag_penalty)
 
         self.lens_args_latest = lens_args_tovary + params_fixed
 
@@ -191,5 +192,4 @@ class MultiPlaneOptimizer(object):
         if self._return_mode == 'PSO':
             return -1 * penalty, None
         else:
-
             return np.array(penalty)

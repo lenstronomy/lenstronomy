@@ -1,6 +1,7 @@
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
 import numpy as np
 
+
 class Params(object):
 
     known_routines = ['optimize_SIE_shear','optimize_SPEP_shear']
@@ -14,6 +15,8 @@ class Params(object):
             routine = SIE_shear(lens_list,arg_list)
         elif optimizer_routine == 'optimize_SPEP_shear':
             routine = SPEP_shear(lens_list,arg_list)
+        else:
+            raise ValueError("optimizer_routine must be called %s" %self.known_routines)
 
         self.zlist = zlist
         self.lens_list = lens_list

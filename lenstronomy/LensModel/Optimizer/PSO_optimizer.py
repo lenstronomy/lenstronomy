@@ -6,6 +6,7 @@ import numpy
 This class is adapted from the CosmoHammer Particle Swarm Optimizer routine.
 """
 
+
 class ParticleSwarmOptimizer(object):
 
     '''
@@ -170,6 +171,7 @@ class ParticleSwarmOptimizer(object):
         # compute the standard deviation of the last number (look_back) of particles
 
         return numpy.std(likelihood[-look_back:]) < standard_dev
+
 
 class Particle(object):
     """

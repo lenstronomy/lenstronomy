@@ -9,7 +9,7 @@ class SIE_shear(object):
         self.tovary_indicies = [0,1]
         self.kwargs_lens = kwargs_lens
 
-        self.to_vary_names = [['theta_E','center_x','center_y','e1','e2'],['e1','e2']]
+        self.to_vary_names = [['theta_E','center_x','center_y','e1','e2'], ['e1','e2']]
 
     def vary_model_fixed(self):
 
@@ -41,6 +41,7 @@ class SIE_shear(object):
         shear_list_high = [high_shear_e1,high_shear_e2]
 
         return sie_list_low+shear_list_low,sie_list_high+shear_list_high
+
 
 class SPEP_shear(object):
 

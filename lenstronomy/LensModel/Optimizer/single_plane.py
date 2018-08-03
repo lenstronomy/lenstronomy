@@ -1,9 +1,10 @@
 import numpy as np
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
+
 class SinglePlaneOptimizer(object):
 
-    def __init__(self, lensmodel, x_pos, y_pos, tol_source, params, \
+    def __init__(self, lensmodel, x_pos, y_pos, tol_source, params,
                  magnification_target, tol_mag, centroid_0, tol_centroid, k_start=0, arg_list=[],
                  return_mode='PSO',verbose=False,mag_penalty=False):
 
@@ -186,16 +187,12 @@ class SinglePlaneOptimizer(object):
 
         if self._counter % 500 == 0 and self.verbose:
 
-            print('source penalty: '), src_penalty
+            print('source penalty: ', src_penalty)
             if self.mag_penalty is not None:
-                print('mag penalty: '), mag_penalty
-
+                print('mag penalty: ', mag_penalty)
         self.lens_args_latest = lens_args_tovary + params_fixed
-
         self._log(src_penalty, mag_penalty)
-
         self._test_convergence()
-
         if self._return_mode == 'PSO':
             return -1 * penalty, None
         else:

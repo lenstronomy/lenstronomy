@@ -47,6 +47,7 @@ class SinglePlaneOptimizer(object):
             self.alpha_x_sub, self.alpha_y_sub = 0, 0
             self.sub_fxx, self.sub_fyy, self.sub_fxy = 0,0,0
 
+        self._counter = 1
         self.reset()
 
     def reset(self):

@@ -226,9 +226,6 @@ class TestMultiPlaneOptimizer(object):
 
         assert T_reopt < T
 
-t = TestMultiPlaneOptimizer()
-t.test_fixed_routines()
-exit(1)
 if __name__ == '__main__':
     pytest.main()
 

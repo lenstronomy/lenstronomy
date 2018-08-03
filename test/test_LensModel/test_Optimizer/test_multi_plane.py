@@ -7,6 +7,7 @@ import pytest
 from time import time
 from lenstronomy.LensModel.Optimizer.split_multiplane import SplitMultiplane
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Optimizer.fixed_routines import *
 
 class TestMultiPlaneOptimizer(object):
 
@@ -68,6 +69,37 @@ class TestMultiPlaneOptimizer(object):
 
     lensmodel_kwargs = {'z_source':1.5,'cosmo':cosmo,'multi_plane':True}
 
+    def test_params(self):
+
+        param_class = self.optimizer_subs.Params
+
+        all = self.front_args + self.main_args + self.back_args
+        assert param_class.tovary_indicies == [0,1]
+        assert param_class.args_tovary == self.kwargs_lens_simple
+        assert param_class.args_fixed == self.front_args + self.main_args + self.back_args
+        assert param_class.argsfixed_todictionary() == all
+
+    def test_fixed_routines(self):
+
+        sie = SIE_shear(['SPEMD','SHEAR'],self.kwargs_lens_simple)
+
+        for i,group in enumerate(sie.to_vary_names):
+            for name in group:
+                assert name in self.kwargs_lens_simple[i]
+        assert len(sie.to_vary_names) == len(sie.tovary_indicies)
+
+        low,high = sie.get_param_ranges()
+        assert len(low) == len(high)
+
+        spep = SPEP_shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple)
+
+        for i, group in enumerate(sie.to_vary_names):
+            for name in group:
+                assert name in self.kwargs_lens_simple[i]
+        assert len(spep.to_vary_names) == len(spep.tovary_indicies)
+
+        low, high = spep.get_param_ranges()
+        assert len(low) == len(high)
 
     def test_split_multi_plane_lensmodels(self):
 
@@ -194,6 +226,9 @@ class TestMultiPlaneOptimizer(object):
 
         assert T_reopt < T
 
+t = TestMultiPlaneOptimizer()
+t.test_fixed_routines()
+exit(1)
 if __name__ == '__main__':
     pytest.main()
 

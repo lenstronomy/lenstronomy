@@ -4,7 +4,7 @@ import numpy.testing as npt
 import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 import pytest
-from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from time import time
 from lenstronomy.LensModel.Optimizer.split_multiplane import SplitMultiplane
 from lenstronomy.LensModel.lens_model import LensModel
 
@@ -143,6 +143,7 @@ class TestMultiPlaneOptimizer(object):
         Should be a near perfect fit since the LOS model is the same used to create the data.
         :return:
         """
+        t0 = time()
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50,n_iterations=200, restart = 1)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
@@ -159,6 +160,39 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_array_less(dx, [tol] * len(dx))
         npt.assert_array_less(dy, [tol] * len(dy))
         npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
+
+        t_end = time()
+        T = t_end - t0
+        t0 = time()
+
+        reopt = Optimizer(self.x_pos_simple,self.y_pos_simple, magnification_target=self.magnification_simple, redshift_list=self.redshift_list_full,
+                               lens_model_list=self.lens_model_list_full, kwargs_lens=self.kwargs_lens_full, multiplane=True, verbose=True,
+                               z_source=1.5,z_main=0.5,astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear',re_optimize=True,
+                          optimizer_start=self.optimizer_subs)
+
+
+        kwargs_lens, source, [x_image, y_image] = reopt.optimize(n_particles=50, n_iterations=200,
+                                                                               restart=1)
+
+        index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
+        x_image = x_image[index]
+        y_image = y_image[index]
+
+        mags = reopt.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+        mags = np.absolute(mags)
+        mags *= max(mags) ** -1
+
+        dx = np.absolute(x_image - self.x_pos_simple)
+        dy = np.absolute(y_image - self.y_pos_simple)
+
+        npt.assert_array_less(dx, [tol] * len(dx))
+        npt.assert_array_less(dy, [tol] * len(dy))
+        npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
+
+        t_end = time()
+        T_reopt = t_end - t0
+
+        assert T_reopt < T
 
 if __name__ == '__main__':
     pytest.main()

@@ -14,7 +14,7 @@ class ParticleSwarmOptimizer(object):
     '''
 
 
-    def __init__(self, func, low, high, particleCount=25, threads=1, pool=None, verbose=False):
+    def __init__(self, func, low, high, particleCount=25, threads=1, pool=None, verbose=False, inherited_swarm=None):
         '''
         Constructor
         '''
@@ -27,16 +27,33 @@ class ParticleSwarmOptimizer(object):
         self.verbose = verbose
 
         self.paramCount = len(self.low)
-
-        self.swarm = self._initSwarm()
         self.gbest = Particle.create(self.paramCount)
 
-    def _initSwarm(self):
-        swarm = []
-        for _ in range(self.particleCount):
-            swarm.append(Particle(numpy.random.uniform(self.low, self.high, size=self.paramCount), numpy.zeros(self.paramCount)))
+        if inherited_swarm is not None:
 
-        return swarm
+            self.swarm = self._initSwarm(inherited_swarm[0])
+
+        else:
+            self.swarm = self._initSwarm()
+
+    def _initSwarm(self, inherited_swarm=None):
+
+        if inherited_swarm is not None:
+
+            swarm = []
+            for particle in inherited_swarm:
+                swarm.append(Particle(position=particle.position,velocity=particle.velocity,
+                                      fitness=particle.fitness))
+
+            return swarm
+
+        else:
+
+            swarm = []
+            for _ in range(self.particleCount):
+                swarm.append(Particle(numpy.random.uniform(self.low, self.high, size=self.paramCount), numpy.zeros(self.paramCount)))
+
+            return swarm
 
     def sample(self, maxIter=1000, c1=1.193, c2=1.193, lookback = 0.25, standard_dev = 0.01):
         """
@@ -106,13 +123,15 @@ class ParticleSwarmOptimizer(object):
         :return swarms, gBests: the swarms and the global bests of all iterations
         """
 
-        swarms = []
+        #swarms = []
         gBests = []
-        for swarm in self.sample(maxIter,c1,c2,lookback,standard_dev):
-            swarms.append(swarm)
-            gBests.append(self.gbest.copy())
 
-        return swarms, gBests
+        for swarm in self.sample(maxIter,c1,c2,lookback,standard_dev):
+
+            #swarms.append(swarm)
+            gBests.append(self.gbest.copy())
+        print('done.')
+        return gBests
 
     def _get_fitness(self,swarm):
 

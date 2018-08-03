@@ -87,18 +87,11 @@ class MultiLens(object):
         :return: co-moving position and angles at redshift z_stop
         """
 
-        def start_condition(inclusive,_z_lens,_z_start):
-
-            if inclusive:
-                return _z_lens >= _z_start
-            else:
-                return _z_lens > z_start
-
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            if start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
+            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
             #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if keep_range is True:
@@ -326,3 +319,10 @@ class MultiLens(object):
         alpha_x_new = alpha_x - alpha_x_phys
         alpha_y_new = alpha_y - alpha_y_phys
         return alpha_x_new, alpha_y_new
+
+    def _start_condition(self, inclusive, z_lens, z_start):
+
+        if inclusive:
+            return z_lens >= z_start
+        else:
+            return z_lens > z_start

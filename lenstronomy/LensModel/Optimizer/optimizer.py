@@ -21,8 +21,7 @@ class Optimizer(object):
     def __init__(self, x_pos, y_pos, magnification_target=None, redshift_list=[], lens_model_list=[], kwargs_lens=[], optimizer_routine='optimize_SIE_shear',
                  multiplane=None, z_main = None, z_source=None,
                   tol_source=1e-5, tol_mag=0.3, tol_centroid=0.5, centroid_0=[0,0],
-                 astropy_instance=None,
-                 interpolate=False, verbose=False):
+                 astropy_instance=None,interpolate=False, verbose=False, re_optimize=False,optimizer_start=None):
         """
 
         :param x_pos: observed position in arcsec
@@ -47,6 +46,9 @@ class Optimizer(object):
         self.multiplane = multiplane
         self.verbose = verbose
         x_pos, y_pos = np.array(x_pos), np.array(y_pos)
+        self.re_optimize = re_optimize
+        if self.re_optimize:
+            self.optimized_PSO = optimizer_start.optimized_PSO
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -56,7 +58,9 @@ class Optimizer(object):
         lensModel = LensModelExtensions(lens_model_list=lens_model_list, redshift_list=redshift_list, z_source=z_source,
                                         cosmo=astropy_instance, multi_plane=multiplane)
 
+
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
+
         self.Params = Params(zlist=lensModel.redshift_list, lens_list=lensModel.lens_model_list, arg_list=kwargs_lens,
                              optimizer_routine=optimizer_routine)
 
@@ -110,7 +114,10 @@ class Optimizer(object):
             parameters.append(params)
 
         # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
-        kwargs_varied = self.Params.argstovary_todictionary(parameters[np.argmin(penalty)])
+
+        index = np.argmin(penalty)
+
+        kwargs_varied = self.Params.argstovary_todictionary(parameters[index])
         kwargs_lens_final = kwargs_varied + self.Params.argsfixed_todictionary()
 
         # solve for the optimized image positions
@@ -122,7 +129,9 @@ class Optimizer(object):
     def _single_optimization(self, n_particles, n_iterations):
 
         self.optimizer._init_particles(n_particles, n_iterations)
-        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer)
+
+        if not self.re_optimize:
+            self.optimized_PSO = self._single_PSO_optimization(n_particles,n_iterations)
 
         if self.verbose:
             print('starting amoeba... ')
@@ -134,7 +143,7 @@ class Optimizer(object):
 
         # downhill simplex optimization
         self.optimizer_amoeba._init_particles(n_particles, n_iterations)
-        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=optimized_PSO, method='Nelder-Mead', tol=1e-10)
+        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=self.optimized_PSO, method='Nelder-Mead', tol=1e-10)
 
         penalty = self.optimizer_amoeba.get_best()
         parameters = optimized_downhill_simplex['x']
@@ -144,8 +153,14 @@ class Optimizer(object):
 
         return penalty, parameters, self.optimizer_amoeba
 
-    def _pso(self, n_particles, n_iterations, optimizer, lowerLimit=None, upperLimit=None, threadCount=1,social_influence = 0.9,
-             personal_influence=1.3):
+    def _single_PSO_optimization(self, n_particles, n_iterations, inherited_swarm=None):
+
+        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer, inherited_swarm=inherited_swarm)
+
+        return optimized_PSO
+
+    def _pso(self, n_particles, n_iterations, optimizer, inherited_swarm=None, lowerLimit=None, upperLimit=None, threadCount=1,
+             social_influence = 0.9,personal_influence=1.3):
 
         """
 
@@ -168,10 +183,10 @@ class Optimizer(object):
             lowerLimit = np.maximum(lowerLimit, self.lower_limit)
             upperLimit = np.minimum(upperLimit, self.upper_limit)
 
-        pso = ParticleSwarmOptimizer(optimizer, lowerLimit, upperLimit, n_particles, threads=threadCount)
+        pso = ParticleSwarmOptimizer(optimizer, lowerLimit, upperLimit, n_particles, threads=threadCount,
+                                     inherited_swarm=inherited_swarm)
 
-        #swarms, gBests = pso.optimize(maxIter=n_iterations,c1=social_influence,c2=personal_influence)
-        swarms, gBests = pso.optimize(maxIter=n_iterations)
+        gBests = pso.optimize(maxIter=n_iterations)
 
         likelihoods = [particle.fitness for particle in gBests]
         ind = np.argmax(likelihoods)

@@ -45,8 +45,13 @@ class SplitMultiplane(object):
 
         if plane == 'foreground':
 
-            true_rays = optimizer_class.multiplane_optimizer.foreground.rays
-            diff_rays = optimizer_class.multiplane_optimizer.foreground.diff_rays
+            true_rays, diff_rays = None,None
+
+            if hasattr(optimizer_class.multiplane_optimizer.foreground,'rays'):
+                true_rays = optimizer_class.multiplane_optimizer.foreground.rays
+            if hasattr(optimizer_class.multiplane_optimizer.foreground,'diff_rays'):
+                diff_rays = optimizer_class.multiplane_optimizer.foreground.diff_rays
+
             self.foreground.set_precomputed(true_rays,diff_rays)
 
     def ray_shooting(self, thetax, thetay, macromodel_args):

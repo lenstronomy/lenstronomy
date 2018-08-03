@@ -4,14 +4,13 @@ import numpy as np
 
 class SplitMultiplane(object):
 
-    z_epsilon = 1e-9
-
     def __init__(self, x_pos, y_pos, full_lensmodel, lensmodel_params=[], interpolated=False, z_source=None, interp_range=0.001,
                  interp_res = 0.0001, z_macro=None, astropy_instance=None,verbose=False,macro_indicies = None):
 
         self.interpolated = interpolated
 
         if self.interpolated and verbose:
+
             print('interpolation range: '+str(interp_range))
             print('interpolation resolution: '+str(interp_res))
             #print('pixels: '+str(2*interp_range*interp_res**-1)+' pixels per img.')
@@ -60,7 +59,10 @@ class SplitMultiplane(object):
         # get the deflection angles from foreground and main lens plane subhalos (once)
         x, y, alphax, alphay = self.foreground.ray_shooting(self.halo_args,thetax=thetax,thetay=thetay)
 
-        x_source, y_source = self._after_foreground(x, y, alphax, alphay, macromodel_args)
+        x, y, alphax, alphay = self.model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
+
+        # compute the angular position on the source plane
+        x_source, y_source, _, _ = self.background.ray_shooting(alphax, alphay, self.halo_args, x, y)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
@@ -73,7 +75,10 @@ class SplitMultiplane(object):
                                                             offset_index=offset_index,thetax=thetax,thetay=thetay
                                                             ,force_compute=False)
 
-        x_source,y_source = self._after_foreground(x,y,alphax,alphay,macromodel_args)
+        x, y, alphax, alphay = self.model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
+
+        # compute the angular position on the source plane
+        x_source, y_source, _, _ = self.background.ray_shooting(alphax, alphay, self.halo_args, x, y)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
@@ -157,15 +162,6 @@ class SplitMultiplane(object):
         alpha_y = np.array(y_pos - beta_y)
 
         return alpha_x, alpha_y
-
-    def _after_foreground(self,x,y,alphax,alphay,args):
-
-        x, y, alphax, alphay = self.model_to_vary.ray_shooting(alphax, alphay, args, x, y)
-
-        # compute the angular position on the source plane
-        x_source, y_source, _, _ = self.background.ray_shooting(alphax, alphay, self.halo_args, x, y)
-
-        return x_source,y_source
 
     def _get_interpolated_models(self):
 

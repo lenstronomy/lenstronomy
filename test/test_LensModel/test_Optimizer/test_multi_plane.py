@@ -59,6 +59,14 @@ class TestMultiPlaneOptimizer(object):
     lens_model_full = LensModel(lens_model_list_full, z_source=1.5, redshift_list=redshift_list_full, cosmo=cosmo,
                            multi_plane=True)
 
+    lens_model_front = LensModel(front_halos + main_halos, redshift_list=front_redshifts + main_redshifts, z_source=1.5,
+                                 cosmo=cosmo, multi_plane=True)
+    kwargs_front = front_args + main_args
+
+    lens_model_back = LensModel(back_halos, redshift_list=back_redshifts, z_source=1.5,
+                                 cosmo=cosmo, multi_plane=True)
+    kwargs_back = back_args
+
     optimizer_simple = Optimizer(x_pos_simple, y_pos_simple, magnification_target=magnification_simple, redshift_list=redshift_list_simple,
                                  lens_model_list=lens_model_list_simple, kwargs_lens=kwargs_lens_simple, multiplane=True, verbose=True,
                                  z_source=1.5,z_main=0.5,astropy_instance=cosmo,optimizer_routine='optimize_SPEP_shear')
@@ -71,7 +79,7 @@ class TestMultiPlaneOptimizer(object):
 
     def test_params(self):
 
-        param_class = self.optimizer_subs.Params
+        param_class = self.optimizer_subs.params
 
         all = self.front_args + self.main_args + self.back_args
         assert param_class.tovary_indicies == [0,1]
@@ -114,6 +122,26 @@ class TestMultiPlaneOptimizer(object):
 
         assert halos_args == self.front_args+self.main_args+self.back_args
 
+        fore = split.foreground
+        main = split.model_to_vary
+        back = split.background
+
+        _ = fore.ray_shooting(split.halo_args,true_foreground=True)
+
+        assert fore.z_to_vary == 0.5
+        assert back.z_source == 1.5
+        assert back.z_background == 0.5
+        assert main.z_to_vary == 0.5
+
+        output = fore.rays['x'],fore.rays['y'],fore.rays['alphax'],fore.rays['alphay']
+        output_true = self.lens_model_front.lens_model.ray_shooting_partial(np.zeros_like(self.x_pos_simple),
+                                                                            np.zeros_like(self.y_pos_simple),
+                                                                            self.x_pos_simple, self.y_pos_simple, 0, 0.5,
+                                                                            self.kwargs_front)
+
+        for (_split,true) in zip(output,output_true):
+            npt.assert_almost_equal(_split,true)
+
     def test_split_multiplane_rayshooting(self):
 
         model = self.lens_model_full
@@ -137,6 +165,20 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_almost_equal(betax_true, betax_fast)
         npt.assert_almost_equal(betay_true, betay_fast)
 
+    def test_split_multiplane_hessian(self):
+
+        split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=self.lens_model_full,
+                                lensmodel_params=self.kwargs_lens_full, interpolated=False, z_source=1.5, z_macro=0.5,
+                                astropy_instance=self.cosmo, verbose=True, macro_indicies=[0, 1])
+
+        output = split.hessian(self.x_pos_simple,self.y_pos_simple,split.macro_args)
+        output_fast = split.hessian_fast(split.macro_args)
+        output_true = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
+
+        for (split,truth,fast) in zip(output,output_true,output_fast):
+            npt.assert_almost_equal(split,truth)
+            npt.assert_almost_equal(truth,fast)
+
     def test_split_multi_plane_magnification(self):
 
         split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=self.lens_model_full,
@@ -147,8 +189,12 @@ class TestMultiPlaneOptimizer(object):
                                                                             self.y_pos_simple,self.kwargs_lens_full))
         magnification_split = split.magnification_fast(self.kwargs_lens_simple)
 
+        magnification = split.magnification(self.x_pos_simple,self.y_pos_simple,split.macro_args)
+
         npt.assert_almost_equal(magnification_true*max(magnification_true)**-1,
                                 magnification_split*max(magnification_split)**-1,2)
+        npt.assert_almost_equal(magnification_true * max(magnification_true) ** -1,
+                                magnification * max(magnification) ** -1, 2)
 
 
     def test_multi_plane_simple(self):
@@ -192,39 +238,6 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_array_less(dx, [tol] * len(dx))
         npt.assert_array_less(dy, [tol] * len(dy))
         npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
-
-        t_end = time()
-        T = t_end - t0
-        t0 = time()
-
-        reopt = Optimizer(self.x_pos_simple,self.y_pos_simple, magnification_target=self.magnification_simple, redshift_list=self.redshift_list_full,
-                               lens_model_list=self.lens_model_list_full, kwargs_lens=self.kwargs_lens_full, multiplane=True, verbose=True,
-                               z_source=1.5,z_main=0.5,astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear',re_optimize=True,
-                          optimizer_start=self.optimizer_subs)
-
-
-        kwargs_lens, source, [x_image, y_image] = reopt.optimize(n_particles=50, n_iterations=200,
-                                                                               restart=2)
-
-        index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
-        x_image = x_image[index]
-        y_image = y_image[index]
-
-        mags = reopt.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
-        mags = np.absolute(mags)
-        mags *= max(mags) ** -1
-
-        dx = np.absolute(x_image - self.x_pos_simple)
-        dy = np.absolute(y_image - self.y_pos_simple)
-
-        npt.assert_array_less(dx, [tol] * len(dx))
-        npt.assert_array_less(dy, [tol] * len(dy))
-        npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
-
-        t_end = time()
-        T_reopt = t_end - t0
-
-        assert T_reopt < T
 
 if __name__ == '__main__':
     pytest.main()

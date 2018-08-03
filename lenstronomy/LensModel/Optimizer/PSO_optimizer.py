@@ -15,7 +15,7 @@ class ParticleSwarmOptimizer(object):
     '''
 
 
-    def __init__(self, func, low, high, particleCount=25, threads=1, pool=None, verbose=False, inherited_swarm=None):
+    def __init__(self, func, low, high, particleCount=25, verbose=False):
         '''
         Constructor
         '''
@@ -23,38 +23,19 @@ class ParticleSwarmOptimizer(object):
         self.low = low
         self.high = high
         self.particleCount = particleCount
-        self.threads = threads
-        self.pool = pool
         self.verbose = verbose
 
         self.paramCount = len(self.low)
         self.gbest = Particle.create(self.paramCount)
+        self.swarm = self._initSwarm()
 
-        if inherited_swarm is not None:
+    def _initSwarm(self):
 
-            self.swarm = self._initSwarm(inherited_swarm[0])
+        swarm = []
+        for _ in range(self.particleCount):
+            swarm.append(Particle(numpy.random.uniform(self.low, self.high, size=self.paramCount), numpy.zeros(self.paramCount)))
 
-        else:
-            self.swarm = self._initSwarm()
-
-    def _initSwarm(self, inherited_swarm=None):
-
-        if inherited_swarm is not None:
-
-            swarm = []
-            for particle in inherited_swarm:
-                swarm.append(Particle(position=particle.position,velocity=particle.velocity,
-                                      fitness=particle.fitness))
-
-            return swarm
-
-        else:
-
-            swarm = []
-            for _ in range(self.particleCount):
-                swarm.append(Particle(numpy.random.uniform(self.low, self.high, size=self.paramCount), numpy.zeros(self.paramCount)))
-
-            return swarm
+        return swarm
 
     def sample(self, maxIter=1000, c1=1.193, c2=1.193, lookback = 0.25, standard_dev = 0.01):
         """
@@ -136,13 +117,7 @@ class ParticleSwarmOptimizer(object):
 
     def _get_fitness(self,swarm):
 
-        # If the `pool` property of the pso has been set (i.e. we want
-        # to use `multiprocessing`), use the `pool`'s map method. Otherwise,
-        # just use the built-in `map` function.
-        if self.pool is not None:
-            mapFunction = self.pool.map
-        else:
-            mapFunction = map
+        mapFunction = map
 
         pos = numpy.array([part.position for part in swarm])
         results =  mapFunction(self.func, pos)

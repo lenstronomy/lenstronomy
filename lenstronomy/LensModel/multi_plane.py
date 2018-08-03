@@ -70,7 +70,8 @@ class MultiLens(object):
         beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
-    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False):
+    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False,
+                             include_z_start=False):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshfit z_stop
@@ -85,11 +86,13 @@ class MultiLens(object):
         :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
         :return: co-moving position and angles at redshift z_stop
         """
+
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            if z_lens > z_start and z_lens <= z_stop:
+            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
+            #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if keep_range is True:
                         if not hasattr(self, '_cosmo_bkg_T_start'):
@@ -316,3 +319,10 @@ class MultiLens(object):
         alpha_x_new = alpha_x - alpha_x_phys
         alpha_y_new = alpha_y - alpha_y_phys
         return alpha_x_new, alpha_y_new
+
+    def _start_condition(self, inclusive, z_lens, z_start):
+
+        if inclusive:
+            return z_lens >= z_start
+        else:
+            return z_lens > z_start

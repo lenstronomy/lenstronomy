@@ -42,14 +42,20 @@ class Optimizer(object):
         :param astropy_instance: instance of astropy
         :param interpolate: if multi-plane; flag to interpolate the background lens models
         :param verbose: flag to print status updates during optimization
+        :param re_optimize: flag to skip the particle swarm optimization and go straight to downhill simplex;
+        should only be used if the specified lens model is reasonably close to the 'correct' model
+        :param optimizer_start: an instance of this class which was previously used to perform an initial optimization;
+        the re-optimization routine will use the '_optimized_PSO' attribute from the class and go straight to downhill simplex
         """
 
         self.multiplane = multiplane
         self.verbose = verbose
         x_pos, y_pos = np.array(x_pos), np.array(y_pos)
-        self.re_optimize = re_optimize
-        if self.re_optimize:
-            self.optimized_PSO = optimizer_start.optimized_PSO
+        self._re_optimize = re_optimize
+
+        if self._re_optimize:
+            raise ValueError('Re-optimization mode not yet implemented.')
+            self._optimized_PSO = optimizer_start._optimized_PSO
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -59,37 +65,36 @@ class Optimizer(object):
         lensModel = LensModelExtensions(lens_model_list=lens_model_list, redshift_list=redshift_list, z_source=z_source,
                                         cosmo=astropy_instance, multi_plane=multiplane)
 
-
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
 
-        self.Params = Params(zlist=lensModel.redshift_list, lens_list=lensModel.lens_model_list, arg_list=kwargs_lens,
+        self.params = Params(zlist=lensModel.redshift_list, lens_list=lensModel.lens_model_list, arg_list=kwargs_lens,
                              optimizer_routine=optimizer_routine)
 
         # initialize particle swarm inital param limits
-        self.lower_limit = self.Params.tovary_lower_limit
-        self.upper_limit = self.Params.tovary_upper_limit
+        self.lower_limit = self.params.tovary_lower_limit
+        self.upper_limit = self.params.tovary_upper_limit
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
 
-            self.optimizer = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params,
+            self.optimizer = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.params,
                                                   magnification_target, tol_mag, centroid_0, tol_centroid,
-                                                  k_start=self.Params.k_start, arg_list=kwargs_lens,verbose=verbose)
+                                                  k_start=self.params.k_start, arg_list=kwargs_lens, verbose=verbose)
 
-            self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.Params,
+            self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.params,
                                                          magnification_target, tol_mag, centroid_0, tol_centroid,
-                                                         k_start=self.Params.k_start, arg_list=kwargs_lens, mag_penalty=True,
+                                                         k_start=self.params.k_start, arg_list=kwargs_lens, mag_penalty=True,
                                                          return_mode='amoeba', verbose=verbose)
 
 
         else:
 
-            self.optimizer = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.Params,
+            self.optimizer = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.params,
                                                  magnification_target,
                                                  tol_mag, centroid_0, tol_centroid, z_main, z_source,
                                                  astropy_instance, interpolated=interpolate, verbose=verbose)
 
-            self.optimizer_amoeba = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.Params,
+            self.optimizer_amoeba = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.params,
                                                         magnification_target,
                                                         tol_mag, centroid_0, tol_centroid, z_main, z_source,
                                                         astropy_instance, interpolated=interpolate, return_mode='amoeba', mag_penalty=True,
@@ -101,27 +106,30 @@ class Optimizer(object):
 
         :param n_particles: number of particle swarm particles
         :param n_iterations: number of particle swarm iternations
+        :param restart: number of times to execute the optimization;
+        the best result of all optimizations will be returned.
         total number of lens models sovled: n_particles*n_iterations
         :return: lens model keywords, [optimized source position], best fit image positions
         """
-        #TODO: document parameter restart
+
         if restart < 0:
             raise ValueError("parameter 'restart' must be integer of value > 0")
+
         # particle swarm optimization
         penalties, parameters = [],[]
 
         for run in range(0, restart):
 
-            penalty, params, optimizer = self._single_optimization(n_particles, n_iterations)
+            penalty, params = self._single_optimization(n_particles, n_iterations)
             penalties.append(penalty)
             parameters.append(params)
 
-        # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
-        #TODO: do you mean 'penalties' in the line below? Note: 'penalty' or 'index' variable might not be defined while executing this line
-        index = np.argmin(penalty)
+        # select the best optimization
+        best_index = np.argmin(penalties)
 
-        kwargs_varied = self.Params.argstovary_todictionary(parameters[index])
-        kwargs_lens_final = kwargs_varied + self.Params.argsfixed_todictionary()
+        # combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens
+        kwargs_varied = self.params.argstovary_todictionary(parameters[best_index])
+        kwargs_lens_final = kwargs_varied + self.params.argsfixed_todictionary()
 
         # solve for the optimized image positions
 
@@ -133,8 +141,8 @@ class Optimizer(object):
 
         self.optimizer._init_particles(n_particles, n_iterations)
 
-        if not self.re_optimize:
-            self.optimized_PSO = self._single_PSO_optimization(n_particles,n_iterations)
+        if not self._re_optimize:
+            self._optimized_PSO = self._single_PSO_optimization(n_particles, n_iterations)
 
         if self.verbose:
             print('starting amoeba... ')
@@ -146,7 +154,7 @@ class Optimizer(object):
 
         # downhill simplex optimization
         self.optimizer_amoeba._init_particles(n_particles, n_iterations)
-        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=self.optimized_PSO, method='Nelder-Mead', tol=1e-10)
+        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=self._optimized_PSO, method='Nelder-Mead', tol=1e-10)
 
         penalty = self.optimizer_amoeba.get_best()
         parameters = optimized_downhill_simplex['x']
@@ -154,16 +162,15 @@ class Optimizer(object):
         self.optimizer.reset()
         self.optimizer_amoeba.reset()
 
-        return penalty, parameters, self.optimizer_amoeba
+        return penalty, parameters
 
-    def _single_PSO_optimization(self, n_particles, n_iterations, inherited_swarm=None):
+    def _single_PSO_optimization(self, n_particles, n_iterations):
 
-        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer, inherited_swarm=inherited_swarm)
+        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer)
 
         return optimized_PSO
 
-    def _pso(self, n_particles, n_iterations, optimizer, inherited_swarm=None, lowerLimit=None, upperLimit=None, threadCount=1,
-             social_influence = 0.9,personal_influence=1.3):
+    def _pso(self, n_particles, n_iterations, optimizer, inherited_swarm=None, lowerLimit=None, upperLimit=None):
 
         """
 
@@ -186,8 +193,7 @@ class Optimizer(object):
             lowerLimit = np.maximum(lowerLimit, self.lower_limit)
             upperLimit = np.minimum(upperLimit, self.upper_limit)
 
-        pso = ParticleSwarmOptimizer(optimizer, lowerLimit, upperLimit, n_particles, threads=threadCount,
-                                     inherited_swarm=inherited_swarm)
+        pso = ParticleSwarmOptimizer(optimizer, low=lowerLimit, high=upperLimit, particleCount=n_particles)
 
         gBests = pso.optimize(maxIter=n_iterations)
 

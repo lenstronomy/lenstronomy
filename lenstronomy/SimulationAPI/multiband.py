@@ -105,7 +105,7 @@ class MultiBand(object):
         return image_list
 
     def _find_point_sources(self, kwargs_options, kwargs_lens, kwargs_else):
-        lensModel = LensModel(kwargs_options.get('lens_model_list', ['NONE']))
+        lensModel = LensModel(kwargs_options.get('lens_model_list', []))
         imPos = LensEquationSolver(lensModel)
         if kwargs_options.get('point_source', False):
             min_distance = 0.05
@@ -161,10 +161,10 @@ class SingleBand(object):
         :param no_noise:
         :return:
         """
-        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
-        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
+        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', []))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', []))
+        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', []))
+        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', []),
                                   lensModel=lensModel,
                                   fixed_magnification_list=kwargs_options.get('fixed_magnification_list', None),
                                   additional_images_list=kwargs_options.get('additional_images', None))

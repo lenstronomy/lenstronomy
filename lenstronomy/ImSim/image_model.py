@@ -324,7 +324,7 @@ class ImageModel(object):
         else:
             source_light_response, n_source = [], 0
         if not self.LensLightModel is None:
-            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid,                                                                               kwargs_lens_light)
+            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
         else:
             lens_light_response, n_lens_light = [], 0
         if not self.PointSource is None:
@@ -354,13 +354,7 @@ class ImageModel(object):
             A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         A = self._add_mask(A, mask)
-        # error_map
-        #error_map = np.zeros(num_response)
-        #if self._psf_error_map:
-        #    for i in range(0, n_points):
-        #        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
-        #        error_map += self.ImageNumerics.image2array(error_map_add)
-        return A#, error_map
+        return A
 
     def _add_mask(self, A, mask):
         """

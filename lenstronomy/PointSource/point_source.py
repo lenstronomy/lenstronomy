@@ -36,8 +36,6 @@ class PointSource(object):
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
                                                                  fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
-            elif model == 'NONE':
-                pass
             else:
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max = min_distance, search_window, precision_limit, num_iter_max
@@ -130,11 +128,10 @@ class PointSource(object):
         n = 0
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_type_list):
-            if not model == 'NONE':
-                if self._fixed_magnification_list[i]:
-                    n += 1
-                else:
-                    n += len(ra_pos_list[i])
+            if self._fixed_magnification_list[i]:
+                n += 1
+            else:
+                n += len(ra_pos_list[i])
         return n
 
     def image_amplitude(self, kwargs_ps, kwargs_lens):
@@ -147,8 +144,7 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            if not self._point_source_type_list[i] == 'NONE':
-                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+            amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -161,8 +157,7 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            if not self._point_source_type_list[i] == 'NONE':
-                amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+            amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False, k=None):
@@ -172,12 +167,12 @@ class PointSource(object):
         :param kwargs_lens:
         :return:
         """
+        #TODO change for error_map
         ra_pos = []
         dec_pos = []
         amp = []
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
-            if not self._point_source_type_list[i] == 'NONE':
                 if k == i or k is None:
                     x_pos = x_image_list[i]
                     y_pos = y_image_list[i]
@@ -214,15 +209,14 @@ class PointSource(object):
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for k, model in enumerate(self._point_source_list):
             kwargs = kwargs_ps[k]
-            if not self._point_source_type_list[k] == 'NONE':
-                if self._fixed_magnification_list[k]:
-                    mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
-                    kwargs['point_amp'] = np.abs(mag) * param[i]
-                    i += 1
-                else:
-                    n_points = len(ra_pos_list[k])
-                    kwargs['point_amp'] = param[i:i + n_points]
-                    i += n_points
+            if self._fixed_magnification_list[k]:
+                mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
+                kwargs['point_amp'] = np.abs(mag) * param[i]
+                i += 1
+            else:
+                n_points = len(ra_pos_list[k])
+                kwargs['point_amp'] = param[i:i + n_points]
+                i += n_points
         return kwargs_ps, i
 
     def check_image_multiplicity(self, kwargs_ps, kwargs_lens):
@@ -246,7 +240,7 @@ class PointSource(object):
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
-            if not self._point_source_type_list[i] == 'NONE':
+            if model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 x_pos = x_image_list[i]
                 y_pos = y_image_list[i]
                 x_source, y_source = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
@@ -264,9 +258,7 @@ class PointSource(object):
         :return:
         """
         for i, model in enumerate(self._point_source_type_list):
-            if model == 'NONE':
-                pass
-            elif model == 'UNLENSED':
+            if model == 'UNLENSED':
                 kwargs_ps[i]['point_amp'] *= norm_factor
             elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 if self._fixed_magnification_list:
@@ -276,7 +268,7 @@ class PointSource(object):
         return kwargs_ps
 
     @classmethod
-    def check_positive_flux(self, kwargs_ps):
+    def check_positive_flux(cls, kwargs_ps):
         """
         check whether inferred linear parameters are positive
 

@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.Profiles.nie import NIE
+from lenstronomy.LensModel.Profiles.point_mass import PointMass
 import lenstronomy.Util.param_util as param_util
 import numpy as np
 
@@ -186,4 +187,95 @@ class DoubleChameleon(object):
         """
         f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, theta_E / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
         f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_E / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
+
+
+class DoubleChameleonPointSource(object):
+    """
+    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+
+    """
+    param_names = ['theta_E', 'ratio_chameleon', 'ratio_pointsource', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2',
+                   'e12', 'e22', 'center_x', 'center_y']
+
+    def __init__(self):
+        self.chameleon = DoubleChameleon()
+        self.pointMass = PointMass()
+
+    def function(self, x, y, theta_E, ratio_pointsource, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+                 center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param ratio_pointsource:
+        :param ratio_chameleon:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_1 = self.pointMass.function(x, y, theta_E / (1. + 1./ratio_pointsource), center_x, center_y)
+        f_2 = self.chameleon.function(x, y, theta_E / (1. + ratio_pointsource), ratio_chameleon, w_c1, w_t1, e11, e21,
+                                      w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2
+
+    def derivatives(self, x, y, theta_E, ratio_pointsource, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+                 center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param ratio_pointsource:
+        :param ratio_chameleon:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_x1, f_y1 = self.pointMass.derivatives(x, y, theta_E / (1. + 1. / ratio_pointsource), center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_E / (1. + ratio_pointsource), ratio_chameleon, w_c1, w_t1,
+                                                e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_x1 + f_x2, f_y1 + f_y2
+
+    def hessian(self, x, y, theta_E, ratio_pointsource, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+                 center_x=0, center_y=0):
+        """
+
+        :param x:
+        :param y:
+        :param theta_E:
+        :param ratio_pointsource:
+        :param ratio_chameleon:
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        f_xx1, f_yy1, f_xy1 = self.pointMass.hessian(x, y, theta_E / (1. + 1. / ratio_pointsource), center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_E / (1. + ratio_pointsource), ratio_chameleon, w_c1, w_t1,
+                                                e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2

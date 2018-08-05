@@ -316,8 +316,8 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_lens_light_list):
             if self._joint_lens_light_with_point_source_list[i] is not False:
                 k = self._joint_lens_light_with_point_source_list[i]
-                kwargs['center_x'] = kwargs_ps[k]['ra_image']
-                kwargs['center_y'] = kwargs_ps[k]['dec_image']
+                kwargs['center_x'] = kwargs_ps[k]['ra_image'][0]
+                kwargs['center_y'] = kwargs_ps[k]['dec_image'][0]
             if self._joint_with_other_lens_light_list[i] is not False:
                 k = self._joint_with_other_lens_light_list[i]
                 kwargs['center_x'] = kwargs_lens_light_list[k]['center_x']

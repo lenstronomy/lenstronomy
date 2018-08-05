@@ -13,12 +13,12 @@ from lenstronomy.LensModel.Optimizer.fixed_routines import *
 class TestMultiPlaneOptimizer(object):
 
     def setup(self):
-        np.random.seed(42)
+        np.random.seed(0)
         self.cosmo = FlatLambdaCDM(H0=70,Om0=0.3)
 
-        self.x_pos_simple, self.y_pos_simple = np.array([-0.45328229,  0.57461556,  0.53757501, -0.42312438]),\
-                                    np.array([ 0.69582971, -0.51226356,  0.37577509, -0.40245467])
-        self.magnification_simple = np.array([2.79394452,3.28101725,2.29495699,1.63409843])*3.28101725**-1
+        self.x_pos_simple = np.array([-0.45328229,  0.57461556,  0.53757501, -0.42312438])
+        self.y_pos_simple = np.array([ 0.69582971, -0.51226356,  0.37577509, -0.40245467])
+        self.magnification_simple = np.array([2.79394452, 3.28101725, 2.29495699, 1.63409843]) * 3.28101725 ** -1
 
         redshift_list_simple = [0.5,0.5]
         lens_model_list_simple = ['SPEP', 'SHEAR']

@@ -75,6 +75,13 @@ class TestMultiPlaneOptimizer(object):
                                lens_model_list=lens_model_list_full, kwargs_lens=kwargs_lens_full, multiplane=True, verbose=True,
                                z_source=1.5,z_main=0.5,astropy_instance=cosmo,optimizer_routine='optimize_SPEP_shear')
 
+    lens_model_list_reoptimize,redshift_list_reoptimize = lens_model_list_full + ['NFW']*2, \
+                                                                            redshift_list_full+ [0.8,0.85]
+    kwargs_lens_reoptimize = kwargs_lens_full + [{'theta_Rs': 0.01,
+                                                     'center_y': 0.16, 'center_x': 0.67, 'Rs': 0.15},{'theta_Rs': 0.016,
+                                                     'center_y': 0.29, 'center_x': -0.7, 'Rs': 0.18}]
+
+
     lensmodel_kwargs = {'z_source':1.5,'cosmo':cosmo,'multi_plane':True}
 
     def test_params(self):
@@ -203,7 +210,7 @@ class TestMultiPlaneOptimizer(object):
         :param tol: image position tolerance
         :return:
         """
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50,n_iterations=200, restart = 2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(restart = 2)
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         x_image = x_image[index]
@@ -222,7 +229,7 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
         t0 = time()
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50,n_iterations=200, restart = 2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize()
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]
@@ -238,6 +245,57 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_array_less(dx, [tol] * len(dx))
         npt.assert_array_less(dy, [tol] * len(dy))
         npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
+
+    def test_multi_plane_reoptimize(self,tol=0.004):
+
+        reoptimize_kwargs = [{'center_x': -0.0016883963824907275, 'center_y': -0.0026490918772723456, 'theta_E': 0.7001322022034508,
+          'e1': 0.020713838991343478, 'gamma': 2.0, 'e2': 0.10199378451842822},
+         {'e1': 0.006237366050564872, 'e2': -0.01588856702603745},
+         {'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 1.2, 'Rs': 0.13},
+         {'theta_Rs': 0.002, 'center_y': -0.2, 'center_x': 1, 'Rs': 0.11},
+         {'theta_Rs': 0.004, 'center_y': 0.12, 'center_x': -1.2, 'Rs': 0.13},
+         {'theta_Rs': 0.0001, 'center_y': 0.32, 'center_x': -0.2, 'Rs': 0.13},
+         {'theta_Rs': 0.003, 'center_y': 0.82, 'center_x': 0.78, 'Rs': 0.13},
+         {'theta_Rs': 0.008, 'center_y': 1, 'center_x': 0.75, 'Rs': 0.16},
+         {'theta_Rs': 0.001, 'center_y': 1.2, 'center_x': 0.2, 'Rs': 0.13},
+         {'theta_Rs': 0.002, 'center_y': -0.1, 'center_x': 0.91, 'Rs': 0.11},
+         {'theta_Rs': 0.009, 'center_y': 0.18, 'center_x': -0.42, 'Rs': 0.13},
+         {'theta_Rs': 0.0001, 'center_y': 0.42, 'center_x': -0.92, 'Rs': 0.13},
+         {'theta_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
+         {'theta_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16},
+         {'theta_Rs': 0.004, 'center_y': 0.1, 'center_x': 1, 'Rs': 0.13},
+         {'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 0.7, 'Rs': 0.11},
+         {'theta_Rs': 0.003, 'center_y': -0.1, 'center_x': -1, 'Rs': 0.13},
+         {'theta_Rs': 0.0008, 'center_y': 0.42, 'center_x': 0.1, 'Rs': 0.13},
+         {'theta_Rs': 0.0014, 'center_y': 0.42, 'center_x': 1.08, 'Rs': 0.13},
+         {'theta_Rs': 0.006, 'center_y': 0.5, 'center_x': 0.75, 'Rs': 0.16}]
+
+        for val in [True,False]:
+            reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple, magnification_target=self.magnification_simple,
+                                       redshift_list=self.redshift_list_reoptimize,
+                                       lens_model_list=self.lens_model_list_reoptimize, kwargs_lens=reoptimize_kwargs+
+                                                  self.kwargs_lens_reoptimize[-2:], multiplane=True,
+                                       verbose=True,
+                                       z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
+                                       optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val)
+
+            t0 = time()
+            kwargs_lens, source, [x_image,y_image] = reoptimizer.optimize(restart = 2)
+
+            index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
+            x_image = x_image[index]
+            y_image = y_image[index]
+
+            mags = reoptimizer.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+            mags = np.absolute(mags)
+            mags *= max(mags) ** -1
+
+            dx = np.absolute(x_image - self.x_pos_simple)
+            dy = np.absolute(y_image - self.y_pos_simple)
+
+            npt.assert_array_less(dx, [tol] * len(dx))
+            npt.assert_array_less(dy, [tol] * len(dy))
+            npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
 
 if __name__ == '__main__':
     pytest.main()

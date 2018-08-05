@@ -37,7 +37,7 @@ class ParticleSwarmOptimizer(object):
 
         return swarm
 
-    def sample(self, maxIter=1000, c1=1.193, c2=1.193, lookback = 0.25, standard_dev = 0.01):
+    def _sample(self, maxIter=1000, c1=1.193, c2=1.193, lookback = 0.25, standard_dev = None):
         """
         Launches the PSO. Yields the complete swarm per iteration
 
@@ -91,28 +91,24 @@ class ParticleSwarmOptimizer(object):
             i+=1
             self.i = i
 
-    def optimize(self, maxIter=1000, c1=1.193, c2=1.193, lookback=0.25, standard_dev=0.01):
+    def _optimize(self, maxIter=1000, c1=1.193, c2=1.193, lookback=0.25, standard_dev=None):
         """
-        Runs the complete optimiziation.
-
-        :param maxIter: maximum iterations
-        :param c1: cognitive weight
-        :param c2: social weight
-        :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global best
-        :param n: stop criterion, difference between norm of the particle vector and norm of the global best
-
-        :return swarms, gBests: the swarms and the global bests of all iterations
+        
+        :param maxIter: maximum number of swarm iterations
+        :param c1: social weight
+        :param c2: personal weight
+        :param lookback: how many particles to assess when considering convergence
+        :param standard_dev: the standard deviation of the last lookback # of particles used to determine convergence
+        :return: 
         """
-
-        #swarms = []
+        
         gBests = []
 
-        for swarm in self.sample(maxIter,c1,c2,lookback,standard_dev):
+        for swarm in self._sample(maxIter, c1, c2, lookback, standard_dev):
 
             #swarms.append(swarm)
             gBests.append(self.gbest.copy())
-        print('done.')
+        print('PSO done.')
         return gBests
 
     def _get_fitness(self,swarm):

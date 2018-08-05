@@ -45,7 +45,7 @@ class PsfFitting(object):
             kwargs_psf_new['psf_error_map'] /= 10
         self._image_model_class.update_numerics(kwargs_numerics_psf)
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
+        ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=0)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
         mask = self._image_model_class.ImageNumerics.mask
         x_grid, y_grid = self._image_model_class.Data.coordinates

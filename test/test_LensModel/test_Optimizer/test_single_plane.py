@@ -4,8 +4,9 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 
-class TestSinglePlaneOptimizer(object):
 
+class TestSinglePlaneOptimizer(object):
+    np.random.seed(42)
     x_pos_simple,y_pos_simple = np.array([ 0.69190974, -0.58959536,  0.75765166, -0.70329933]),\
                                 np.array([-0.94251661,  1.01956872,  0.45230274, -0.43988017])
     magnification_simple = [1,0.9848458,0.63069122,0.54312452]
@@ -66,6 +67,6 @@ class TestSinglePlaneOptimizer(object):
         npt.assert_array_less(dx,[tol]*len(dx))
         npt.assert_array_less(dy,[tol]*len(dy))
 
+
 if __name__ == '__main__':
     pytest.main()
-

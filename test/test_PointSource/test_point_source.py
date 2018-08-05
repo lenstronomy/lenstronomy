@@ -116,6 +116,10 @@ class TestPointSource_fixed_mag(object):
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
 
+    def test_check_image_positions(self):
+        bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
+        assert bool == True
+
 
 if __name__ == '__main__':
     pytest.main()

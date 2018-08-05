@@ -63,7 +63,7 @@ class SPEMD_SMOOTH(object):
         if self._fastell4py_bool:
             potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            return np.zeros_like(x1)
+            potential =  np.zeros_like(x1)
         n = len(np.atleast_1d(x))
         if n <= 1:
             if np.shape(x) == ():
@@ -87,7 +87,7 @@ class SPEMD_SMOOTH(object):
         if self._fastell4py_bool:
             f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            return np.zeros_like(x1), np.zeros_like(x1)
+            f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
         f_x = cos_phi*f_x_prim - sin_phi*f_y_prim
         f_y = sin_phi*f_x_prim + cos_phi*f_y_prim
         n = len(np.atleast_1d(x))
@@ -113,11 +113,11 @@ class SPEMD_SMOOTH(object):
         if self._fastell4py_bool:
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
-            return np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
+            f_xx_prim, f_yy_prim, f_xy_prim =  np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
         n = len(np.atleast_1d(x))
         if n <= 1:
             if np.shape(x) == ():
-                f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = np.array(f_x_prim[0]), np.array(f_y_prim[0]), np.array(f_xx_prim[0]), np.array(f_yy_prim[0]), np.array(f_xy_prim[0])
+                f_xx_prim, f_yy_prim, f_xy_prim = np.array(f_xx_prim[0]), np.array(f_yy_prim[0]), np.array(f_xy_prim[0])
         kappa = (f_xx_prim + f_yy_prim)/2
         gamma1_value = (f_xx_prim - f_yy_prim)/2
         gamma2_value = f_xy_prim
@@ -134,9 +134,9 @@ class SPEMD_SMOOTH(object):
         """
 
         :param theta_E: Einstein radius
-        :param gamma: power law slope
+        :param gamma: power-law slope
         :param q: axis ratio
-        :return: pre-factor to SPEMP profile for FASTELL
+        :return: pre-factors to SPEMP profile for FASTELL
         """
         gam = (gamma-1)/2.
         q_fastell = (3-gamma)/2. * (theta_E ** 2 / q) ** gam

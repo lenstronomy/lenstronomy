@@ -167,13 +167,12 @@ class PointSource(object):
         :param kwargs_lens:
         :return:
         """
-        #TODO change for error_map
         ra_pos = []
         dec_pos = []
         amp = []
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
-                if k == i or k is None:
+                if i == k or k is None:
                     x_pos = x_image_list[i]
                     y_pos = y_image_list[i]
                     if self._fixed_magnification_list[i]:
@@ -218,15 +217,6 @@ class PointSource(object):
                 kwargs['point_amp'] = param[i:i + n_points]
                 i += n_points
         return kwargs_ps, i
-
-    def check_image_multiplicity(self, kwargs_ps, kwargs_lens):
-        """
-
-        :param kwargs_ps:
-        :param kwargs_lens:
-        :return:
-        """
-        pass
 
     def check_image_positions(self, kwargs_ps, kwargs_lens, tolerance=0.001):
         """

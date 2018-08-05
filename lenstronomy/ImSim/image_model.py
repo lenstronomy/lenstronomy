@@ -206,7 +206,7 @@ class ImageModel(object):
                         error_map += error_map_add
         return error_map
 
-    def point_sources_list(self, kwargs_ps, kwargs_lens):
+    def point_sources_list(self, kwargs_ps, kwargs_lens, k=None):
         """
 
         :param kwargs_ps:
@@ -215,7 +215,7 @@ class ImageModel(object):
         point_list = []
         if self.PointSource is None:
             return point_list
-        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens)
+        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
         for i in range(len(ra_array)):
             point_source = self.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
             point_list.append(point_source)

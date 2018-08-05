@@ -87,7 +87,7 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens):
+    def image_position(self, kwargs_ps, kwargs_lens, k=None):
         """
 
         :param kwargs_ps:
@@ -98,15 +98,16 @@ class PointSource(object):
         x_image_list = []
         y_image_list = []
         for i, model in enumerate(self._point_source_list):
-            kwargs = kwargs_ps[i]
-            x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
-                                                    search_window=self._search_window, precision_limit=self._precision_limit,
-                                                    num_iter_max=self._num_iter_max)
-            x_image_list.append(x_image)
-            y_image_list.append(y_image)
+            if k is None or k == i:
+                kwargs = kwargs_ps[i]
+                x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
+                                                        search_window=self._search_window, precision_limit=self._precision_limit,
+                                                        num_iter_max=self._num_iter_max)
+                x_image_list.append(x_image)
+                y_image_list.append(y_image)
         return x_image_list, y_image_list
 
-    def point_source_list(self, kwargs_ps, kwargs_lens):
+    def point_source_list(self, kwargs_ps, kwargs_lens, k=None):
         """
         returns the coordinates and amplitudes of all point sources in a single array
 
@@ -114,7 +115,7 @@ class PointSource(object):
         :param kwargs_lens:
         :return:
         """
-        ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens)
+        ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
         amp_list = self.image_amplitude(kwargs_ps, kwargs_lens)
         ra_array, dec_array, amp_array = [], [], []
         for i, ra in enumerate(ra_list):

@@ -146,7 +146,7 @@ class PsfFitting(object):
                                            kwargs_lens_light, kwargs_ps, point_source_add=True)
         data = image_model_class.Data.data
         mask = image_model_class.ImageNumerics.mask
-        point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens)
+        point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens, k=0)
         n = len(point_source_list)
         model_single_source_list = []
         for i in range(n):

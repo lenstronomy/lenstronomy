@@ -8,7 +8,6 @@ from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneOptimizer
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneOptimizer
 from scipy.optimize import minimize
 
-
 class Optimizer(object):
 
     """
@@ -22,8 +21,8 @@ class Optimizer(object):
                  magnification_target=None, multiplane=None, z_main = None, z_source=None,
                  tol_source=1e-5, tol_mag=0.2, tol_centroid=None, centroid_0=[0,0],
                  astropy_instance=None, interpolate=False, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.025, pso_convergence_mean=2, pso_compute_magnification=5,
-                 tol_simplex=1e-9):
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=1, pso_compute_magnification=5,
+                 tol_simplex=1e-10):
 
         """
 
@@ -92,7 +91,7 @@ class Optimizer(object):
                                                          magnification_target, tol_mag, centroid_0, tol_centroid,
                                                          k_start=self.params.k_start, arg_list=kwargs_lens, mag_penalty=True,
                                                          return_mode='amoeba', verbose=verbose,pso_convergence_mean=pso_convergence_mean,
-                                                            pso_compute_magnification=pso_compute_magnification)
+                                                        pso_compute_magnification=pso_compute_magnification)
 
 
         else:

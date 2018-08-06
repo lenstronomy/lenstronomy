@@ -12,6 +12,7 @@ from lenstronomy.LensModel.Optimizer.fixed_routines import *
 class TestMultiPlaneOptimizer(object):
 
     def setup(self):
+
         np.random.seed(0)
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
@@ -279,8 +280,7 @@ class TestMultiPlaneOptimizer(object):
                                        redshift_list=self.redshift_list_reoptimize,
                                        lens_model_list=self.lens_model_list_reoptimize, kwargs_lens=reoptimize_kwargs+
                                                   self.kwargs_lens_reoptimize[-2:], multiplane=True,
-                                       verbose=True,
-                                       z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
+                                       verbose=True,z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                        optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val)
 
             t0 = time()

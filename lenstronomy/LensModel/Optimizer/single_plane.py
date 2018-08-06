@@ -151,14 +151,18 @@ class SinglePlaneOptimizer(object):
 
     def _compute_mags_criterion(self):
 
-        if self._compute_mags:
-            return True
+        def _compute_mags_criterion(self):
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < \
-                self._pso_compute_magnification:
-            return True
-        else:
-            return False
+            if self._compute_mags:
+                return True
+
+            if self._counter <= self._n_particles:
+                return False
+
+            if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_compute_magnification:
+                return True
+            else:
+                return False
 
     def _test_convergence(self):
 

@@ -143,7 +143,11 @@ class MultiPlaneOptimizer(object):
 
     def _test_convergence(self):
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < self._pso_convergence_mean:
+        if self._counter <= self._n_particles:
+            self.is_converged = False
+            return
+
+        if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_convergence_mean:
             self.is_converged = True
         else:
             self.is_converged = False

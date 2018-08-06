@@ -1,6 +1,8 @@
+import numpy as np
+
 class SIE_shear(object):
 
-    def __init__(self,lens_model_list,kwargs_lens):
+    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos):
 
         assert lens_model_list[0] == 'SPEMD'
         assert lens_model_list[1] == 'SHEAR'
@@ -9,7 +11,30 @@ class SIE_shear(object):
         self.tovary_indicies = [0,1]
         self.kwargs_lens = kwargs_lens
 
+        self.theta_E_start = self._estimate_theta_E(xpos,ypos)
+
         self.to_vary_names = [['theta_E','center_x','center_y','e1','e2'], ['e1','e2']]
+
+    def _estimate_theta_E(self,ximg,yimg):
+
+        dis = []
+        xinds,yinds = [0,0,0,1,1,2],[1,2,3,2,3,3]
+
+        for (i,j) in zip(xinds,yinds):
+
+            dx,dy = ximg[i] - ximg[j], yimg[i] - yimg[j]
+            dr = (dx**2+dy**2)**0.5
+            dis.append(dr)
+        dis = np.array(dis)
+
+        greatest = np.argmax(dis)
+        dr_greatest = dis[greatest]
+        dis[greatest] = 0
+
+        second_greatest = np.argmax(dis)
+        dr_second = dis[second_greatest]
+
+        return 0.5*(dr_greatest*dr_second)**0.5
 
     def vary_model_fixed(self):
 
@@ -19,10 +44,10 @@ class SIE_shear(object):
 
         if reoptimize:
 
-            e1_e2 = 0.005
-            e1_e2_shear = 0.005
-            theta_E = 0.001
-            center = 0.001
+            e1_e2 = 0.01
+            e1_e2_shear = 0.01
+            theta_E = 0.005
+            center = 0.005
 
             low_e1 = self.kwargs_lens[0]['e1'] - e1_e2
             low_e2 = self.kwargs_lens[0]['e2'] - e1_e2
@@ -54,8 +79,8 @@ class SIE_shear(object):
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
-            low_Rein = 0.7
-            hi_Rein = 1.4
+            low_Rein = self.theta_E_start - 0.1
+            hi_Rein = self.theta_E_start + 0.1
 
             low_centerx = -0.01
             hi_centerx = 0.01
@@ -71,7 +96,7 @@ class SIE_shear(object):
 
 class SPEP_shear(object):
 
-    def __init__(self,lens_model_list,kwargs_lens):
+    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos):
 
         assert lens_model_list[0] == 'SPEP'
         assert lens_model_list[1] == 'SHEAR'
@@ -80,7 +105,30 @@ class SPEP_shear(object):
         self.tovary_indicies = [0, 1]
         self.kwargs_lens = kwargs_lens
 
+        self.theta_E_start = self._estimate_theta_E(xpos, ypos)
+
         self.to_vary_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2'], ['e1', 'e2']]
+
+    def _estimate_theta_E(self,ximg,yimg):
+
+        dis = []
+        xinds,yinds = [0,0,0,1,1,2],[1,2,3,2,3,3]
+
+        for (i,j) in zip(xinds,yinds):
+
+            dx,dy = ximg[i] - ximg[j], yimg[i] - yimg[j]
+            dr = (dx**2+dy**2)**0.5
+            dis.append(dr)
+        dis = np.array(dis)
+
+        greatest = np.argmax(dis)
+        dr_greatest = dis[greatest]
+        dis[greatest] = 0
+
+        second_greatest = np.argmax(dis)
+        dr_second = dis[second_greatest]
+
+        return 0.5*(dr_greatest*dr_second)**0.5
 
     def vary_model_fixed(self):
 
@@ -90,10 +138,10 @@ class SPEP_shear(object):
 
         if reoptimize:
 
-            e1_e2 = 0.005
-            e1_e2_shear = 0.005
-            theta_E = 0.001
-            center = 0.001
+            e1_e2 = 0.01
+            e1_e2_shear = 0.01
+            theta_E = 0.005
+            center = 0.005
 
             low_e1 = self.kwargs_lens[0]['e1'] - e1_e2
             low_e2 = self.kwargs_lens[0]['e2'] - e1_e2
@@ -125,8 +173,8 @@ class SPEP_shear(object):
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
-            low_Rein = 0.7
-            hi_Rein = 1.4
+            low_Rein = self.theta_E_start - 0.1
+            hi_Rein = self.theta_E_start + 0.1
 
             low_centerx = -0.01
             hi_centerx = 0.01

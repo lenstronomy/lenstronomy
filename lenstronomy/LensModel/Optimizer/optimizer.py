@@ -19,7 +19,7 @@ class Optimizer(object):
 
     def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], optimizer_routine='optimize_SIE_shear',
                  magnification_target=None, multiplane=None, z_main = None, z_source=None,
-                 tol_source=1e-5, tol_mag=0.2, tol_centroid=None, centroid_0=[0,0],
+                 tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, interpolate=False, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=1, pso_compute_magnification=5,
                  tol_simplex=1e-10):
@@ -72,12 +72,12 @@ class Optimizer(object):
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
 
         self.params = Params(zlist=lensModel.redshift_list, lens_list=lensModel.lens_model_list, arg_list=kwargs_lens,
-                             optimizer_routine=optimizer_routine)
-
+                             optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
+        
         # initialize particle swarm inital param limits
 
         self.lower_limit,self.upper_limit = self.params.to_vary_limits(self._re_optimize)
-
+        
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
 
@@ -107,11 +107,11 @@ class Optimizer(object):
                                                         magnification_target,
                                                         tol_mag, centroid_0, tol_centroid, z_main, z_source,
                                                         astropy_instance, interpolated=interpolate, return_mode='amoeba',
-                                                        mag_penalty=True,return_array=False, verbose=verbose,
+                                                        mag_penalty=True,verbose=verbose,
                                                         pso_convergence_mean=pso_convergence_mean,
                                                         pso_compute_magnification=pso_compute_magnification)
 
-    def optimize(self, n_particles=None, n_iterations=None, restart=1):
+    def optimize(self, n_particles=50, n_iterations=500, restart=1):
 
         """
 
@@ -158,7 +158,7 @@ class Optimizer(object):
 
         if self.verbose:
             print('starting amoeba... ')
-
+           
         if self.multiplane:
             models, args = self.optimizer.multiplane_optimizer._get_interpolated_models()
             self.optimizer_amoeba.multiplane_optimizer.set_interpolated(models, args)

@@ -138,15 +138,16 @@ class SinglePlaneOptimizer(object):
     def _log(self,src_penalty,mag_penalty,centroid_penalty):
 
         if mag_penalty is None:
-            mag_penalty = np.inf
+            mag_penalty = 10**10
         if src_penalty is None:
-            src_penalty = np.inf
+            src_penalty = 10**10
         if centroid_penalty is None:
-            centroid_penalty = np.inf
+            centroid_penalty = 10**10
 
-        self.src_penalty.append(src_penalty)
-        self.mag_penalty.append(mag_penalty)
-        self.centroid_penalty.append(centroid_penalty)
+        self.src_penalty.append(np.sum(src_penalty))
+        self.mag_penalty.append(np.sum(mag_penalty))
+        self.centroid_penalty.append(np.sum(centroid_penalty))
+
         self.parameters.append(self.lens_args_latest)
 
     def _compute_mags_criterion(self):
@@ -204,8 +205,11 @@ class SinglePlaneOptimizer(object):
         if self._counter % 500 == 0 and self.verbose:
 
             print('source penalty: ', src_penalty)
+            print('centroid penalty: ', centroid_penalty)
+
             if self.mag_penalty is not None:
                 print('mag penalty: ', mag_penalty)
+
         self.lens_args_latest = lens_args_tovary + params_fixed
         self._log(src_penalty, mag_penalty, centroid_penalty)
         self._test_convergence()

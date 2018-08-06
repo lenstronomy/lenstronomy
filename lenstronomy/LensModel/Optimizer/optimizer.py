@@ -6,7 +6,6 @@ from lenstronomy.LensModel.Optimizer.params import Params
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneOptimizer
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneOptimizer
-from lenstronomy.LensModel.Optimizer.default_settings import *
 from scipy.optimize import minimize
 
 
@@ -20,11 +19,11 @@ class Optimizer(object):
     """
 
     def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], optimizer_routine='optimize_SIE_shear',
-                 magnification_target=None,multiplane=None, z_main = None, z_source=None,
-                  tol_source=None, tol_mag=None, tol_centroid=None, centroid_0=[0,0],
-                 astropy_instance=None,interpolate=False, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=None,pso_convergence_mean=None, pso_compute_magnificatio=None,
-                 tol_simplex=None):
+                 magnification_target=None, multiplane=None, z_main = None, z_source=None,
+                 tol_source=1e-5, tol_mag=0.2, tol_centroid=None, centroid_0=[0,0],
+                 astropy_instance=None, interpolate=False, verbose=False, re_optimize=False, particle_swarm=True,
+                 pso_convergence_standardDEV=0.025, pso_convergence_mean=2, pso_compute_magnification=5,
+                 tol_simplex=1e-9):
 
         """
 
@@ -60,23 +59,8 @@ class Optimizer(object):
         self._particle_swarm = particle_swarm
         self._init_kwargs = kwargs_lens
 
-        if tol_source is None:
-            tol_source = default_tol_source
-        if tol_mag is None:
-            tol_mag = default_tol_mag
-        if tol_centroid is None:
-            tol_centroid = default_tol_centroid
-        if pso_convergence_standardDEV is None:
-            self._pso_convergence_standardDEV = default_pso_convergence_standardDEV
-        else:
-            self._pso_convergence_standardDEV = pso_convergence_standardDEV
-        if pso_convergence_mean is None:
-            pso_convergence_mean = default_pso_convergence_mean
-        if pso_compute_magnificatio is None:
-            pso_compute_magnification = default_pso_compute_magnification
-        if tol_simplex is None:
-            self._tol_simplex = default_tol_simplex
-
+        self._pso_convergence_standardDEV = pso_convergence_standardDEV
+        self._tol_simplex = tol_simplex
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -125,7 +109,7 @@ class Optimizer(object):
                                                         astropy_instance, interpolated=interpolate, return_mode='amoeba', mag_penalty=True,
                                                         return_array=False, verbose=verbose)
 
-    def optimize(self,n_particles=None,n_iterations=None, restart=1):
+    def optimize(self, n_particles=None, n_iterations=None, restart=1):
 
         """
 
@@ -136,11 +120,6 @@ class Optimizer(object):
         total number of lens models sovled: n_particles*n_iterations
         :return: lens model keywords, [optimized source position], best fit image positions
         """
-
-        if n_particles is None:
-            n_particles = default_n_particles
-        if n_iterations is None:
-            n_iterations = default_n_iterations
 
         if restart < 0:
             raise ValueError("parameter 'restart' must be integer of value > 0")

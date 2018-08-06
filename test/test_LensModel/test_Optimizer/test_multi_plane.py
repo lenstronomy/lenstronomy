@@ -214,7 +214,7 @@ class TestMultiPlaneOptimizer(object):
         :param tol: image position tolerance
         :return:
         """
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(restart = 2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=200, restart = 2)
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         x_image = x_image[index]
@@ -233,7 +233,7 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
         t0 = time()
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize()
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=200, restart = 2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]
@@ -284,7 +284,7 @@ class TestMultiPlaneOptimizer(object):
                                        optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val)
 
             t0 = time()
-            kwargs_lens, source, [x_image,y_image] = reoptimizer.optimize(restart = 2)
+            kwargs_lens, source, [x_image,y_image] = reoptimizer.optimize(n_particles=50, n_iterations=200, restart = 2)
 
             index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
             x_image = x_image[index]

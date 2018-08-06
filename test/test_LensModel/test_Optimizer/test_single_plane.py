@@ -57,6 +57,7 @@ class TestSinglePlaneOptimizer(object):
         npt.assert_array_less(dx,[tol]*len(dx))
         npt.assert_array_less(dy,[tol]*len(dy))
 
+
 if __name__ == '__main__':
     pytest.main()
 

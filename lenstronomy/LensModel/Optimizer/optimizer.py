@@ -157,6 +157,7 @@ class Optimizer(object):
             params = self.params._kwargs_to_tovary(self._init_kwargs)
 
         if self.verbose:
+            print('PSO done.')
             print('starting amoeba... ')
            
         if self.multiplane:

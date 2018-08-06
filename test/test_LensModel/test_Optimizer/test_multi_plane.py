@@ -93,8 +93,9 @@ class TestMultiPlaneOptimizer(object):
 
     def test_fixed_routines(self):
 
-        sie = SIE_shear(['SPEMD','SHEAR'],self.kwargs_lens_simple)
+        sie = SIE_shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
 
+        assert np.absolute(sie._estimate_theta_E(self.x_pos_simple,self.y_pos_simple) - 0.7) < 0.2
         for i,group in enumerate(sie.to_vary_names):
             for name in group:
                 assert name in self.kwargs_lens_simple[i]
@@ -103,8 +104,8 @@ class TestMultiPlaneOptimizer(object):
         low,high = sie.get_param_ranges()
         assert len(low) == len(high)
 
-        spep = SPEP_shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple)
-
+        spep = SPEP_shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        assert np.absolute(spep._estimate_theta_E(self.x_pos_simple,self.y_pos_simple) - 0.7) < 0.2
         for i, group in enumerate(sie.to_vary_names):
             for name in group:
                 assert name in self.kwargs_lens_simple[i]

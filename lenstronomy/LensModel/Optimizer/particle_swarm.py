@@ -108,7 +108,7 @@ class ParticleSwarmOptimizer(object):
 
             #swarms.append(swarm)
             gBests.append(self.gbest.copy())
-        print('PSO done.')
+
         return gBests
 
     def _get_fitness(self,swarm):

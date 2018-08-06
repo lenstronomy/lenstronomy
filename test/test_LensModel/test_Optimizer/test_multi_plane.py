@@ -211,7 +211,7 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=200, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=300, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
@@ -227,7 +227,7 @@ class TestMultiPlaneOptimizer(object):
 
     def test_multi_plane_reoptimize(self, tol=0.004):
 
-        kwargs_lens, _, [_,_] = self.optimizer_subs.optimize(n_particles=50, n_iterations=200,
+        kwargs_lens, _, [_,_] = self.optimizer_subs.optimize(n_particles=50, n_iterations=300,
                                                                                restart=1)
 
         reoptimize_kwargs = kwargs_lens
@@ -267,7 +267,7 @@ class TestMultiPlaneOptimizer(object):
         """
         t0 = time()
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=200, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=300, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]

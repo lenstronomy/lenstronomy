@@ -91,7 +91,8 @@ class Optimizer(object):
             self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.params,
                                                          magnification_target, tol_mag, centroid_0, tol_centroid,
                                                          k_start=self.params.k_start, arg_list=kwargs_lens, mag_penalty=True,
-                                                         return_mode='amoeba', verbose=verbose)
+                                                         return_mode='amoeba', verbose=verbose,pso_convergence_mean=pso_convergence_mean,
+                                                            pso_compute_magnification=pso_compute_magnification)
 
 
         else:
@@ -106,8 +107,10 @@ class Optimizer(object):
             self.optimizer_amoeba = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.params,
                                                         magnification_target,
                                                         tol_mag, centroid_0, tol_centroid, z_main, z_source,
-                                                        astropy_instance, interpolated=interpolate, return_mode='amoeba', mag_penalty=True,
-                                                        return_array=False, verbose=verbose)
+                                                        astropy_instance, interpolated=interpolate, return_mode='amoeba',
+                                                        mag_penalty=True,return_array=False, verbose=verbose,
+                                                        pso_convergence_mean=pso_convergence_mean,
+                                                        pso_compute_magnification=pso_compute_magnification)
 
     def optimize(self, n_particles=None, n_iterations=None, restart=1):
 

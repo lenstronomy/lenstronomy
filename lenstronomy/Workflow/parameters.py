@@ -19,6 +19,9 @@ class Param(object):
     corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
     same name. The normalisation 'amp' is not shared and the lens models have the amplitude to be fit independently.
 
+    'joint_lens_light_with_point_source_list': bool/int list of length of lens light models. Indices correspond to lens
+    light models whose center is joint with a point source center
+
     'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
     'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
     'fix_shapelet_beta': bool, if True, fixes the shapelet scale beta
@@ -64,6 +67,8 @@ class Param(object):
                                                                   [False] * len(source_light_model_list))
         self._joint_with_other_lens_light_list = kwargs_constraints.get('joint_with_other_lens_light_list',
                                                                   [False] * len(lens_light_model_list))
+        self._joint_lens_light_with_point_source_list = kwargs_constraints.get('joint_lens_light_with_point_source_list',
+                                                                               [False] * len(lens_light_model_list))
         self._joint_center_source = kwargs_constraints.get('joint_center_source_light', False)
         self._joint_center_lens_light = kwargs_constraints.get('joint_center_lens_light', False)
 
@@ -126,7 +131,7 @@ class Param(object):
         kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         if bijective is True:
             kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
-        kwargs_lens_light = self._update_lens_light(kwargs_lens_light)
+        kwargs_lens_light = self._update_lens_light(kwargs_lens_light, kwargs_ps)
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
 
@@ -301,7 +306,7 @@ class Param(object):
                 kwargs['center_y'] = 0
         return kwargs_fixed_update
 
-    def _update_lens_light(self, kwargs_lens_light_list):
+    def _update_lens_light(self, kwargs_lens_light_list, kwargs_ps):
         """
         update the lens light parameters based on the constraint options
 
@@ -309,6 +314,10 @@ class Param(object):
         :return:
         """
         for i, kwargs in enumerate(kwargs_lens_light_list):
+            if self._joint_lens_light_with_point_source_list[i] is not False:
+                k = self._joint_lens_light_with_point_source_list[i]
+                kwargs['center_x'] = kwargs_ps[k]['ra_image'][0]
+                kwargs['center_y'] = kwargs_ps[k]['dec_image'][0]
             if self._joint_with_other_lens_light_list[i] is not False:
                 k = self._joint_with_other_lens_light_list[i]
                 kwargs['center_x'] = kwargs_lens_light_list[k]['center_x']
@@ -334,6 +343,9 @@ class Param(object):
                     kwargs['center_x'] = 0
                     kwargs['center_y'] = 0
             if self._joint_with_other_lens_light_list[i] is not False:
+                kwargs['center_x'] = 0
+                kwargs['center_y'] = 0
+            if self._joint_lens_light_with_point_source_list[i] is not False:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0
         return kwargs_fixed_update

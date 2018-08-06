@@ -4,11 +4,12 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 
-class TestSinglePlaneOptimizer(object):
 
+class TestSinglePlaneOptimizer(object):
+    np.random.seed(0)
     x_pos_simple,y_pos_simple = np.array([ 0.69190974, -0.58959536,  0.75765166, -0.70329933]),\
                                 np.array([-0.94251661,  1.01956872,  0.45230274, -0.43988017])
-    magnification_simple = [1,0.9848458,0.63069122,0.54312452]
+    magnification_simple = [1., 0.9848458, 0.63069122, 0.54312452]
 
     lens_model_list_simple = ['SPEP', 'SHEAR']
     kwargs_lens_simple = [{'theta_E': 0.7, 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
@@ -60,4 +61,3 @@ class TestSinglePlaneOptimizer(object):
 
 if __name__ == '__main__':
     pytest.main()
-

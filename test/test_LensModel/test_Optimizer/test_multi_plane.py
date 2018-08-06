@@ -9,11 +9,12 @@ from lenstronomy.LensModel.Optimizer.split_multiplane import SplitMultiplane
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
 
+
 class TestMultiPlaneOptimizer(object):
 
     def setup(self):
 
-        #np.random.seed(1)
+        np.random.seed(0)
         self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
         self.x_pos_simple = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
@@ -43,6 +44,7 @@ class TestMultiPlaneOptimizer(object):
                           {'theta_Rs': 0.0001, 'center_y': 0.42, 'center_x': -0.92, 'Rs': 0.13},
                           {'theta_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
                           {'theta_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16}]
+
 
         back_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'NFW', 'NFW']
         back_redshifts = [0.55, 0.6, 0.6, 0.74, 0.74, 0.8]
@@ -74,12 +76,13 @@ class TestMultiPlaneOptimizer(object):
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                           astropy_instance=self.cosmo, optimizer_routine='optimize_SPEP_shear')
 
+
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                         magnification_target=self.magnification_simple,
                                         redshift_list=redshift_list_full,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                        astropy_instance=self.cosmo, optimizer_routine='optimize_SPEP_shear')
+                                        astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear')
 
     def test_params(self):
 
@@ -201,14 +204,15 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_almost_equal(magnification_true * max(magnification_true) ** -1,
                                 magnification * max(magnification) ** -1, 2)
 
-
     def test_multi_plane_simple(self):
         """
 
         :param tol: image position tolerance
         :return:
         """
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=200, restart = 2)
+
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=200, restart=2)
+
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         x_image = x_image[index]
@@ -262,7 +266,8 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
         t0 = time()
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=200, restart = 2)
+
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=200, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]
@@ -279,6 +284,6 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_array_less(dy, [tol] * len(dy))
         npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
 
+
 if __name__ == '__main__':
     pytest.main()
-

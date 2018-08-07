@@ -69,21 +69,21 @@ class SIE_shear(object):
 
         else:
 
-            low_e1 = -0.1
+            low_e1 = -0.3
             low_e2 = low_e1
-            hi_e1 = 0.1
+            hi_e1 = 0.3
             hi_e2 = hi_e1
 
-            low_shear_e1 = -0.05
-            high_shear_e1 = 0.05
+            low_shear_e1 = -0.065
+            high_shear_e1 = 0.065
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
             low_Rein = self.theta_E_start - 0.1
             hi_Rein = self.theta_E_start + 0.1
 
-            low_centerx = -0.01
-            hi_centerx = 0.01
+            low_centerx = -0.015
+            hi_centerx = 0.015
             low_centery = low_centerx
             hi_centery = hi_centerx
 
@@ -163,21 +163,21 @@ class SPEP_shear(object):
 
         else:
 
-            low_e1 = -0.1
+            low_e1 = -0.3
             low_e2 = low_e1
-            hi_e1 = 0.1
+            hi_e1 = 0.3
             hi_e2 = hi_e1
 
-            low_shear_e1 = -0.05
-            high_shear_e1 = 0.05
+            low_shear_e1 = -0.065
+            high_shear_e1 = 0.065
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
             low_Rein = self.theta_E_start - 0.1
             hi_Rein = self.theta_E_start + 0.1
 
-            low_centerx = -0.01
-            hi_centerx = 0.01
+            low_centerx = -0.015
+            hi_centerx = 0.015
             low_centery = low_centerx
             hi_centery = hi_centerx
 

@@ -7,7 +7,8 @@ class MultiPlaneOptimizer(object):
 
     def __init__(self, lensmodel_full, all_args, x_pos, y_pos, tol_source, Params, magnification_target,
                  tol_mag, centroid_0, tol_centroid, z_main, z_src, astropy_instance, interpolated,return_mode = 'PSO',
-                 mag_penalty=False,return_array = False, verbose=False):
+                 mag_penalty=False,verbose=False,
+                  pso_convergence_mean=None,pso_compute_magnification=None):
 
         self.Params = Params
         self.lensModel = lensmodel_full
@@ -21,7 +22,8 @@ class MultiPlaneOptimizer(object):
 
         self._compute_mags_flag = mag_penalty
 
-        self._return_array = return_array
+        self._pso_convergence_mean = pso_convergence_mean
+        self._pso_compute_magnification = pso_compute_magnification
 
         self.centroid_0 = centroid_0
         self.tol_centroid = tol_centroid
@@ -41,7 +43,7 @@ class MultiPlaneOptimizer(object):
 
     def reset(self):
 
-        self.mag_penalty, self.src_penalty, self.parameters = [], [], []
+        self.mag_penalty, self.src_penalty, self.centroid_penalty, self.parameters = [], [], [], []
         self._converged = False
         self._counter = 1
         self._compute_mags = self._compute_mags_flag
@@ -49,9 +51,10 @@ class MultiPlaneOptimizer(object):
 
     def get_best(self):
 
-        total = np.array(self.src_penalty) + np.array(self.mag_penalty)
+        total = np.array(self.src_penalty)+np.array(self.mag_penalty)+np.array(self.centroid_penalty)
+        index = np.argmin(total)
 
-        return total[np.argmin(total)]
+        return total[index]
 
     def _init_particles(self,n_particles,n_iterations):
 
@@ -73,7 +76,6 @@ class MultiPlaneOptimizer(object):
     def _source_position_penalty(self, lens_args_tovary):
 
         betax,betay = self.multiplane_optimizer.ray_shooting_fast(lens_args_tovary)
-        self._betax,self._betay = betax,betay
 
         dx = ((betax[0] - betax[1]) ** 2 + (betax[0] - betax[2]) ** 2 + (betax[0] - betax[3]) ** 2 + (
                 betax[1] - betax[2]) ** 2 +
@@ -81,11 +83,7 @@ class MultiPlaneOptimizer(object):
         dy = ((betay[0] - betay[1]) ** 2 + (betay[0] - betay[2]) ** 2 + (betay[0] - betay[3]) ** 2 + (
                 betay[1] - betay[2]) ** 2 +
               (betay[1] - betay[3]) ** 2 + (betay[2] - betay[3]) ** 2)
-
-        if self._return_array:
-            return 0.5 * np.array([dx,dy]) * self.tol_source ** -2
-        else:
-            return 0.5 * (dx + dy) * self.tol_source ** -2
+        return 0.5 * (dx + dy) * self.tol_source ** -2
 
     def _magnification_penalty(self, lens_args,magnification_target, tol):
 
@@ -101,10 +99,7 @@ class MultiPlaneOptimizer(object):
 
         dM = np.array(dM)
 
-        if self._return_array:
-            return 0.5*dM**2
-        else:
-            return 0.5 * np.sum(dM ** 2)
+        return 0.5 * np.sum(dM ** 2)
 
     def _centroid_penalty(self, values_dic, tol_centroid):
 
@@ -113,15 +108,19 @@ class MultiPlaneOptimizer(object):
 
         return 0.5 * d_centroid
 
-    def _log(self,src_penalty,mag_penalty):
+    def _log(self,src_penalty,mag_penalty,centroid_penalty):
 
         if mag_penalty is None:
-            mag_penalty = np.inf
+            mag_penalty = 10**10
         if src_penalty is None:
-            src_penalty = np.inf
+            src_penalty = 10**10
+        if centroid_penalty is None:
+            centroid_penalty = 10**10
 
         self.src_penalty.append(np.sum(src_penalty))
         self.mag_penalty.append(np.sum(mag_penalty))
+        self.centroid_penalty.append(np.sum(centroid_penalty))
+
         self.parameters.append(self.lens_args_latest)
 
     def _compute_mags_criterion(self):
@@ -129,14 +128,21 @@ class MultiPlaneOptimizer(object):
         if self._compute_mags:
             return True
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 5:
+        if self._counter <= self._n_particles:
+            return False
+
+        if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_compute_magnification:
             return True
         else:
             return False
 
     def _test_convergence(self):
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 1:
+        if self._counter <= self._n_particles:
+            self.is_converged = False
+            return
+
+        if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_convergence_mean:
             self.is_converged = True
         else:
             self.is_converged = False
@@ -160,32 +166,24 @@ class MultiPlaneOptimizer(object):
         if self.tol_centroid is not None:
             centroid_penalty = self._centroid_penalty(lens_args_tovary,self.tol_centroid)
 
-        if self._return_array:
-            penalty = src_penalty
+        _penalty = [src_penalty,mag_penalty,centroid_penalty]
 
-            if self._compute_mags and self.tol_mag is not None:
-                penalty = np.append(penalty,mag_penalty)
-
-            if self.tol_centroid is not None:
-                penalty = np.append(penalty,centroid_penalty)
-
-        else:
-            _penalty = [src_penalty,mag_penalty,centroid_penalty]
-
-            penalty = 0
-            for pen in _penalty:
-                if pen is not None:
-                    penalty += pen
+        penalty = 0
+        for pen in _penalty:
+            if pen is not None:
+                penalty += pen
 
         if self._counter % 500 == 0 and self.verbose:
 
             print('source penalty: ', src_penalty)
+            print('centroid penalty: ', centroid_penalty)
+
             if self.mag_penalty is not None:
                 print('mag penalty: ', mag_penalty)
 
         self.lens_args_latest = lens_args_tovary + params_fixed
 
-        self._log(src_penalty,mag_penalty)
+        self._log(src_penalty,mag_penalty,centroid_penalty)
 
         self._test_convergence()
 

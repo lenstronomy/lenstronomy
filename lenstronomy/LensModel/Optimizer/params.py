@@ -7,14 +7,14 @@ class Params(object):
     known_routines = ['optimize_SIE_shear','optimize_SPEP_shear']
 
     def __init__(self, zlist=None, lens_list=None, arg_list=None,
-                 optimizer_routine=str):
+                 optimizer_routine=str, xpos = None, ypos = None):
 
         assert optimizer_routine in self.known_routines
 
         if optimizer_routine == 'optimize_SIE_shear':
-            routine = SIE_shear(lens_list,arg_list)
+            routine = SIE_shear(lens_list,arg_list,xpos,ypos)
         elif optimizer_routine == 'optimize_SPEP_shear':
-            routine = SPEP_shear(lens_list,arg_list)
+            routine = SPEP_shear(lens_list,arg_list,xpos,ypos)
         else:
             raise ValueError("optimizer_routine must be called %s" %self.known_routines)
 
@@ -30,7 +30,12 @@ class Params(object):
         self.zlist_tovary,self.lenslist_tovary,self.args_tovary = self.to_vary()
         self.zlist_fixed, self.lenslist_fixed, self.args_fixed = self.fixed()
         self.model_fixed = routine.vary_model_fixed()
-        self.tovary_lower_limit,self.tovary_upper_limit = routine.get_param_ranges()
+
+    def to_vary_limits(self,re_optimize):
+
+        lower_limit,upper_limit = self.routine.get_param_ranges(re_optimize)
+
+        return lower_limit,upper_limit
 
     def to_vary(self):
         zlist_tovary = self.zlist[0:self.Ntovary]
@@ -84,6 +89,17 @@ class Params(object):
 
         return self.args_fixed
 
+    def _kwargs_to_tovary(self,kwargs):
+
+        values = []
+
+        for index in self.tovary_indicies:
+
+            for param_name in self.routine.to_vary_names[index]:
+
+                values.append(kwargs[index][param_name])
+
+        return np.array(values)
 
 
 

@@ -55,11 +55,11 @@ class SinglePlaneOptimizer(object):
         self._counter = 1
         self.reset()
 
-    def reset(self):
+    def reset(self,compute_mags=False):
 
         self.mag_penalty, self.src_penalty, self.parameters, self.centroid_penalty = [], [], [], []
         self._counter = 1
-        self._compute_mags = self._compute_mags_flag
+        self._compute_mags = compute_mags
         self.is_converged = False
 
     def get_best(self):
@@ -211,7 +211,9 @@ class SinglePlaneOptimizer(object):
         self.lens_args_latest = lens_args_tovary + params_fixed
         self._log(src_penalty, mag_penalty, centroid_penalty)
         self._test_convergence()
-        if self._return_mode == 'PSO':
-            return -1 * penalty, None
-        else:
-            return penalty
+
+        return penalty
+        #if self._return_mode == 'PSO':
+        #    return -1 * penalty, None
+        #else:
+        #    return penalty

@@ -116,9 +116,9 @@ class ParticleSwarmOptimizer(object):
         mapFunction = map
 
         pos = numpy.array([part.position for part in swarm])
-        results =  mapFunction(self.func, pos)
+        results = mapFunction(self.func, pos)
 
-        lnprob = numpy.array([l[0] for l in results])
+        lnprob = numpy.array([-l for l in results])
         for i, particle in enumerate(swarm):
             particle.fitness = lnprob[i]
 

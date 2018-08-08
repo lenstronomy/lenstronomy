@@ -6,7 +6,8 @@ class SinglePlaneOptimizer(object):
 
     def __init__(self, lensmodel, x_pos, y_pos, tol_source, params,
                  magnification_target, tol_mag, centroid_0, tol_centroid, k_start=0, arg_list=[],
-                 return_mode='PSO',verbose=False,mag_penalty=False):
+                 return_mode='PSO',verbose=False,mag_penalty=False,pso_convergence_mean=None,
+                 pso_compute_magnification=None):
 
         self.Params = params
         self.lensModel = lensmodel
@@ -20,6 +21,9 @@ class SinglePlaneOptimizer(object):
 
         self.centroid_0 = centroid_0
         self.tol_centroid = tol_centroid
+
+        self._pso_convergence_mean = pso_convergence_mean
+        self._pso_compute_magnification = pso_compute_magnification
 
         self._x_pos, self._y_pos = np.array(x_pos), np.array(y_pos)
 
@@ -53,14 +57,14 @@ class SinglePlaneOptimizer(object):
 
     def reset(self):
 
-        self.mag_penalty, self.src_penalty, self.parameters = [], [], []
+        self.mag_penalty, self.src_penalty, self.parameters, self.centroid_penalty = [], [], [], []
         self._counter = 1
         self._compute_mags = self._compute_mags_flag
         self.is_converged = False
 
     def get_best(self):
 
-        total = np.array(self.src_penalty) + np.array(self.mag_penalty)
+        total = np.array(self.src_penalty) + np.array(self.mag_penalty) + np.array(self.centroid_penalty)
 
         return total[np.argmin(total)]
 
@@ -126,20 +130,24 @@ class SinglePlaneOptimizer(object):
 
     def _centroid_penalty(self, values_dic, tol_centroid):
 
-        dx = (values_dic[0]['center_x'] - self.centroid_0[0])*self.tol_centroid**-1
-        dy = (values_dic[0]['center_y'] - self.centroid_0[1])*self.tol_centroid**-1
+        dx = (values_dic[0]['center_x'] - self.centroid_0[0])*tol_centroid**-1
+        dy = (values_dic[0]['center_y'] - self.centroid_0[1])*tol_centroid**-1
 
         return 0.5*(dx**2+dy**2)
 
-    def _log(self,src_penalty,mag_penalty):
+    def _log(self,src_penalty,mag_penalty,centroid_penalty):
 
         if mag_penalty is None:
-            mag_penalty = np.inf
+            mag_penalty = 10**10
         if src_penalty is None:
-            src_penalty = np.inf
+            src_penalty = 10**10
+        if centroid_penalty is None:
+            centroid_penalty = 10**10
 
-        self.src_penalty.append(src_penalty)
-        self.mag_penalty.append(mag_penalty)
+        self.src_penalty.append(np.sum(src_penalty))
+        self.mag_penalty.append(np.sum(mag_penalty))
+        self.centroid_penalty.append(np.sum(centroid_penalty))
+
         self.parameters.append(self.lens_args_latest)
 
     def _compute_mags_criterion(self):
@@ -147,14 +155,21 @@ class SinglePlaneOptimizer(object):
         if self._compute_mags:
             return True
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 5:
+        if self._counter <= self._n_particles:
+            return False
+
+        if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_compute_magnification:
             return True
         else:
             return False
 
     def _test_convergence(self):
 
-        if self._counter > self._n_particles and np.mean(self.src_penalty[-self._n_particles:]) < 1:
+        if self._counter <= self._n_particles:
+            self.is_converged = False
+            return
+
+        if np.mean(self.src_penalty[-self._n_particles:]) < self._pso_convergence_mean:
             self.is_converged = True
         else:
             self.is_converged = False
@@ -188,10 +203,13 @@ class SinglePlaneOptimizer(object):
         if self._counter % 500 == 0 and self.verbose:
 
             print('source penalty: ', src_penalty)
+            print('centroid penalty: ', centroid_penalty)
+
             if self.mag_penalty is not None:
                 print('mag penalty: ', mag_penalty)
+
         self.lens_args_latest = lens_args_tovary + params_fixed
-        self._log(src_penalty, mag_penalty)
+        self._log(src_penalty, mag_penalty, centroid_penalty)
         self._test_convergence()
         if self._return_mode == 'PSO':
             return -1 * penalty, None

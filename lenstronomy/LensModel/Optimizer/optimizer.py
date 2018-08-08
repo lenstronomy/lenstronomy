@@ -77,7 +77,7 @@ class Optimizer(object):
         # initialize particle swarm inital param limits
 
         self.lower_limit,self.upper_limit = self.params.to_vary_limits(self._re_optimize)
-        
+
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
 
@@ -86,13 +86,6 @@ class Optimizer(object):
                                                   k_start=self.params.k_start, arg_list=kwargs_lens, verbose=verbose,
                                                   pso_convergence_mean=pso_convergence_mean,
                                                   pso_compute_magnification=pso_compute_magnification)
-
-            self.optimizer_amoeba = SinglePlaneOptimizer(lensModel, x_pos, y_pos, tol_source, self.params,
-                                                         magnification_target, tol_mag, centroid_0, tol_centroid,
-                                                         k_start=self.params.k_start, arg_list=kwargs_lens, mag_penalty=True,
-                                                         return_mode='amoeba', verbose=verbose,pso_convergence_mean=pso_convergence_mean,
-                                                        pso_compute_magnification=pso_compute_magnification)
-
 
         else:
 
@@ -103,15 +96,7 @@ class Optimizer(object):
                                                  pso_convergence_mean=pso_convergence_mean,
                                                  pso_compute_magnification=pso_compute_magnification)
 
-            self.optimizer_amoeba = MultiPlaneOptimizer(lensModel, kwargs_lens, x_pos, y_pos, tol_source, self.params,
-                                                        magnification_target,
-                                                        tol_mag, centroid_0, tol_centroid, z_main, z_source,
-                                                        astropy_instance, interpolated=interpolate, return_mode='amoeba',
-                                                        mag_penalty=True,verbose=verbose,
-                                                        pso_convergence_mean=pso_convergence_mean,
-                                                        pso_compute_magnification=pso_compute_magnification)
-
-    def optimize(self, n_particles=50, n_iterations=500, restart=1):
+    def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
         """
 
@@ -143,7 +128,7 @@ class Optimizer(object):
         kwargs_lens_final = kwargs_varied + self.params.argsfixed_todictionary()
 
         # solve for the optimized image positions
-        ximg,yimg,source_x,source_y = self.optimizer_amoeba._get_images(kwargs_varied)
+        ximg,yimg,source_x,source_y = self.optimizer._get_images(kwargs_varied)
 
         return kwargs_lens_final, [source_x, source_y], [ximg, yimg]
 
@@ -152,37 +137,28 @@ class Optimizer(object):
         self.optimizer._init_particles(n_particles, n_iterations)
 
         if self._particle_swarm:
-            params = self._single_PSO_optimization(n_particles, n_iterations)
+            params = self._pso(n_particles, n_iterations, self.optimizer)
+
         else:
             params = self.params._kwargs_to_tovary(self._init_kwargs)
+
+        self.optimizer.reset(compute_mags=True)
 
         if self.verbose:
             print('PSO done.')
             print('starting amoeba... ')
-           
-        if self.multiplane:
-            models, args = self.optimizer.multiplane_optimizer._get_interpolated_models()
-            self.optimizer_amoeba.multiplane_optimizer.set_interpolated(models, args)
-            self.optimizer_amoeba.multiplane_optimizer.inherit_rays(self.optimizer)
 
         # downhill simplex optimization
-        self.optimizer_amoeba._init_particles(n_particles, n_iterations)
-        optimized_downhill_simplex = minimize(self.optimizer_amoeba, x0=params, method='Nelder-Mead',
+        self.optimizer._init_particles(n_particles, n_iterations)
+        optimized_downhill_simplex = minimize(self.optimizer, x0=params, method='Nelder-Mead',
                                               tol=self._tol_simplex)
 
-        penalty = self.optimizer_amoeba.get_best()
+        penalty = self.optimizer.get_best()
         parameters = optimized_downhill_simplex['x']
 
         self.optimizer.reset()
-        self.optimizer_amoeba.reset()
 
         return penalty, parameters
-
-    def _single_PSO_optimization(self, n_particles, n_iterations):
-
-        optimized_PSO = self._pso(n_particles, n_iterations, self.optimizer)
-
-        return optimized_PSO
 
     def _pso(self, n_particles, n_iterations, optimizer):
 

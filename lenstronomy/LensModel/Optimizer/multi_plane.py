@@ -6,9 +6,8 @@ import numpy as np
 class MultiPlaneOptimizer(object):
 
     def __init__(self, lensmodel_full, all_args, x_pos, y_pos, tol_source, Params, magnification_target,
-                 tol_mag, centroid_0, tol_centroid, z_main, z_src, astropy_instance, interpolated,return_mode = 'PSO',
-                 mag_penalty=False,verbose=False,
-                  pso_convergence_mean=None,pso_compute_magnification=None):
+                 tol_mag, centroid_0, tol_centroid, z_main, z_src, astropy_instance, interpolated,
+                 mag_penalty=False,verbose=False,pso_convergence_mean=None,pso_compute_magnification=None):
 
         self.Params = Params
         self.lensModel = lensmodel_full
@@ -37,16 +36,14 @@ class MultiPlaneOptimizer(object):
                                                     z_source=z_src,z_macro=z_main,astropy_instance=astropy_instance,verbose=verbose,
                                                     macro_indicies=self.Params.tovary_indicies)
 
-        self._return_mode = return_mode
-
         self.reset()
 
-    def reset(self):
+    def reset(self,compute_mags=False):
 
         self.mag_penalty, self.src_penalty, self.centroid_penalty, self.parameters = [], [], [], []
         self._converged = False
         self._counter = 1
-        self._compute_mags = self._compute_mags_flag
+        self._compute_mags = compute_mags
         self.is_converged = False
 
     def get_best(self):
@@ -173,7 +170,7 @@ class MultiPlaneOptimizer(object):
             if pen is not None:
                 penalty += pen
 
-        if self._counter % 500 == 0 and self.verbose:
+        if self._counter % 1000 == 0 and self.verbose:
 
             print('source penalty: ', src_penalty)
             print('centroid penalty: ', centroid_penalty)
@@ -187,7 +184,9 @@ class MultiPlaneOptimizer(object):
 
         self._test_convergence()
 
-        if self._return_mode == 'PSO':
-            return -1 * penalty, None
-        else:
-            return np.array(penalty)
+        return penalty
+
+        #if self._return_mode == 'PSO':
+        #    return -1 * penalty, None
+        #else:
+        #    return np.array(penalty)

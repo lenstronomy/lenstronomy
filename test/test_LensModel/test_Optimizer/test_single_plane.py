@@ -24,11 +24,11 @@ class TestSinglePlaneOptimizer(object):
 
     optimizer_simple = Optimizer(x_pos_simple, y_pos_simple, magnification_target=magnification_simple, redshift_list=[],
                                  lens_model_list=lens_model_list_simple, kwargs_lens=kwargs_lens_simple, multiplane=False, verbose=True,
-                                 optimizer_routine='optimize_SPEP_shear')
+                                 optimizer_routine='fixed_powerlaw_shear')
 
     optimizer_subs = Optimizer(x_pos_simple, y_pos_simple, magnification_target=magnification_simple, redshift_list=[],
                                lens_model_list=lens_model_list_subs, kwargs_lens=kwargs_lens_subs, multiplane=False, verbose=True,
-                               optimizer_routine='optimize_SPEP_shear')
+                               optimizer_routine='fixed_powerlaw_shear')
 
     def test_single_plane_simple(self):
 
@@ -37,7 +37,7 @@ class TestSinglePlaneOptimizer(object):
 
         #x_image = x_image[index]
         #y_image = y_image[index]
-        mags = self.optimizer_simple.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+        mags = self.optimizer_simple.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
         #mags = np.absolute(mags)
         #mags *= max(mags)**-1
 
@@ -48,7 +48,7 @@ class TestSinglePlaneOptimizer(object):
     def test_single_plane_subs(self,tol=0.003):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=2)
-        mags = self.optimizer_subs.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+        mags = self.optimizer_subs.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         #x_image = x_image[index]
         #y_image = y_image[index]

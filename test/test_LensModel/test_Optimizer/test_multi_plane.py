@@ -74,7 +74,7 @@ class TestMultiPlaneOptimizer(object):
                                           redshift_list=redshift_list_simple,
                                           lens_model_list=lens_model_list_simple, kwargs_lens=self.kwargs_lens_simple,
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                          astropy_instance=self.cosmo, optimizer_routine='optimize_SPEP_shear',tol_simplex=1e-5)
+                                          astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear',tol_simplex=1e-5)
 
 
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
@@ -82,7 +82,7 @@ class TestMultiPlaneOptimizer(object):
                                         redshift_list=redshift_list_full,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                        astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear',tol_simplex=1e-5)
+                                        astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',tol_simplex=1e-5)
 
     def test_params(self):
 
@@ -96,23 +96,21 @@ class TestMultiPlaneOptimizer(object):
 
     def test_fixed_routines(self):
 
-        sie = SIE_shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
 
         assert np.absolute(sie._estimate_theta_E(self.x_pos_simple,self.y_pos_simple) - 0.7) < 0.2
-        for i,group in enumerate(sie.to_vary_names):
+        for i,group in enumerate(sie.param_names):
             for name in group:
                 assert name in self.kwargs_lens_simple[i]
-        assert len(sie.to_vary_names) == len(sie.tovary_indicies)
 
         low,high = sie.get_param_ranges()
         assert len(low) == len(high)
 
-        spep = SPEP_shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
         assert np.absolute(spep._estimate_theta_E(self.x_pos_simple,self.y_pos_simple) - 0.7) < 0.2
-        for i, group in enumerate(sie.to_vary_names):
+        for i, group in enumerate(sie.param_names):
             for name in group:
                 assert name in self.kwargs_lens_simple[i]
-        assert len(spep.to_vary_names) == len(spep.tovary_indicies)
 
         low, high = spep.get_param_ranges()
         assert len(low) == len(high)
@@ -212,7 +210,7 @@ class TestMultiPlaneOptimizer(object):
         """
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
-        _ = self.optimizer_simple.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+        _ = self.optimizer_simple.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         #x_image = x_image[index]
@@ -237,12 +235,12 @@ class TestMultiPlaneOptimizer(object):
                                     redshift_list=redshift_list_reoptimize,
                                     lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val,
+                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
                                     tol_simplex=1e-5)
 
 
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
-            _ = reoptimizer.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+            _ = reoptimizer.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
 
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         #x_image = x_image[index]

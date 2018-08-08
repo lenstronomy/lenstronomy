@@ -606,15 +606,16 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=100
     :return:
     """
     num_samples = len(samples_mcmc[:, 0])
-    n_points = (num_samples - num_samples % num_average) / num_average
+    num_average = int(num_average)
+    n_points = int((num_samples - num_samples % num_average) / num_average)
     for i, param_name in enumerate(param_mcmc):
         samples = samples_mcmc[:, i]
-        samples_averaged = np.average(samples[:n_points * num_average].reshape(n_points, num_average), axis=1)
+        samples_averaged = np.average(samples[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
         end_point = np.mean(samples_averaged)
         samples_renormed = (samples_averaged - end_point) / np.std(samples_averaged)
         ax.plot(samples_renormed, label=param_name)
 
-    dist_averaged = -np.max(dist_mcmc[:n_points * num_average].reshape(n_points, num_average), axis=1)
+    dist_averaged = -np.max(dist_mcmc[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
     dist_normed = (dist_averaged - np.max(dist_averaged)) / (np.max(dist_averaged) - np.min(dist_averaged))
     ax.plot(dist_normed, label="logL", color='k', linewidth=2)
     ax.legend()

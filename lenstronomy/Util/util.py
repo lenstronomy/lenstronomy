@@ -11,8 +11,17 @@ import itertools
 
 def sort_image_index(ximg,yimg,xref,yref):
 
-    assert len(xref) == len(ximg)
+    """
 
+    :param ximg: x coordinates to sort
+    :param yimg: y coordinates to sort
+    :param xref: reference x coordinate
+    :param yref: reference y coordinate
+    :return: indexes such that ximg[indexes],yimg[indexes] matches xref,yref
+    """
+
+    assert len(xref) == len(ximg)
+    ximg,yimg = np.array(ximg),np.array(yimg)
     x_self = np.array(list(itertools.permutations(ximg)))
     y_self = np.array(list(itertools.permutations(yimg)))
 

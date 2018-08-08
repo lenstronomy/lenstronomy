@@ -6,6 +6,22 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+def test_sort_img_index():
+
+    ximg,yimg = np.array([1,2,3,4]),np.array([0,0,1,2])
+
+    xref,yref = np.array([2,3,1,4]),np.array([0,1,0,2])
+
+    indexes = Util.sort_image_index(ximg,yimg,xref,yref)
+
+    npt.assert_allclose(ximg[indexes], xref)
+    npt.assert_allclose(yimg[indexes], yref)
+
+    xref, yref = np.array([2, 3, 1, 4]), np.array([0, 1, 0, 2])
+
+    indexes = Util.sort_image_index(xref, yref, xref, yref)
+
+    npt.assert_allclose(np.array(indexes),[0,1,2,3])
 
 def test_map_coord2pix():
     ra = 0

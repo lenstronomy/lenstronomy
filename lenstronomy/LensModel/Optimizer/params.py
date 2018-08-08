@@ -4,17 +4,16 @@ import numpy as np
 
 class Params(object):
 
-    known_routines = ['optimize_SIE_shear','optimize_SPEP_shear']
+    known_routines = ['fixed_powerlaw_shear']
 
     def __init__(self, zlist=None, lens_list=None, arg_list=None,
                  optimizer_routine=str, xpos = None, ypos = None):
 
         assert optimizer_routine in self.known_routines
 
-        if optimizer_routine == 'optimize_SIE_shear':
-            routine = SIE_shear(lens_list,arg_list,xpos,ypos)
-        elif optimizer_routine == 'optimize_SPEP_shear':
-            routine = SPEP_shear(lens_list,arg_list,xpos,ypos)
+        if optimizer_routine == 'fixed_powerlaw_shear':
+            routine = FixedPowerLaw_Shear(lens_list,arg_list,xpos,ypos)
+
         else:
             raise ValueError("optimizer_routine must be called %s" %self.known_routines)
 
@@ -29,7 +28,6 @@ class Params(object):
 
         self.zlist_tovary,self.lenslist_tovary,self.args_tovary = self.to_vary()
         self.zlist_fixed, self.lenslist_fixed, self.args_fixed = self.fixed()
-        self.model_fixed = routine.vary_model_fixed()
 
     def to_vary_limits(self,re_optimize):
 
@@ -73,10 +71,10 @@ class Params(object):
 
             args = {}
 
-            for key in self.args_tovary[n].keys():
+            for key in self.routine.param_names[n]:
 
-                if key in self.model_fixed:
-                    args.update({key:self.model_fixed[key]})
+                if key in self.routine.fixed_names[n]:
+                    args.update({key:self.routine.fixed_values[n][key]})
                 else:
                     args.update({key:values[count]})
                     count += 1
@@ -93,11 +91,12 @@ class Params(object):
 
         values = []
 
-        for index in self.tovary_indicies:
+        for n in range(0, int(self.Ntovary)):
 
-            for param_name in self.routine.to_vary_names[index]:
+            for key in self.routine.param_names[n]:
 
-                values.append(kwargs[index][param_name])
+                if key not in self.routine.fixed_names[n]:
+                    values.append(kwargs[n][key])
 
         return np.array(values)
 

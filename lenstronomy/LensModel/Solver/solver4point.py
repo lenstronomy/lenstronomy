@@ -13,9 +13,9 @@ class Solver4Point(object):
     """
     def __init__(self, lensModel, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
-        if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
-            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE' "
-                             " 'NFW_ELLIPSE', 'SHAPELETS_CART'. Your choice was %s" % solver_type)
+        if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE', 'SHAPELETS_CART']:
+            raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SIE', 'NIE', "
+                             "'NFW_ELLIPSE', 'SHAPELETS_CART'. Your choice was %s" % solver_type)
         if not solver_type in ['PROFILE', 'PROFILE_SHEAR']:
             raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
                              % solver_type)
@@ -115,7 +115,7 @@ class Solver4Point(object):
             kwargs_list[1]['e1'] = e1
             kwargs_list[1]['e2'] = e2
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
             kwargs_list[0]['theta_E'] = theta_E
             kwargs_list[0]['e1'] = e1
@@ -151,7 +151,7 @@ class Solver4Point(object):
         else:
             phi_ext = 0
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             e1 = kwargs_list[0]['e1']
             e2 = kwargs_list[0]['e2']
             center_x = kwargs_list[0]['center_x']
@@ -184,7 +184,7 @@ class Solver4Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']
             kwargs_fixed['e2'] = kwargs_lens['e2']

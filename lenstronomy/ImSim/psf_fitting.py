@@ -113,7 +113,7 @@ class PsfFitting(object):
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 logL_best = logL_after
-                i_best = i
+                i_best = i + 1
             else:
                 if not no_break:
                     if verbose:
@@ -140,10 +140,9 @@ class PsfFitting(object):
         :return:
         """
         # reconstructed model with given psf
-        wls_model, error_map, cov_param, param = image_model_class.image_linear_solve(kwargs_lens, kwargs_source,
+        model, error_map, cov_param, param = image_model_class.image_linear_solve(kwargs_lens, kwargs_source,
                                                                               kwargs_lens_light, kwargs_ps)
-        model = image_model_class.image(kwargs_lens, kwargs_source,
-                                           kwargs_lens_light, kwargs_ps, point_source_add=True)
+        #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
         mask = image_model_class.ImageNumerics.mask
         point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens, k=0)
@@ -225,7 +224,7 @@ class PsfFitting(object):
 
         kernel_bkg = copy.deepcopy(kernel_return)
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
-        error_map = np.var(kernel_list_new, axis=0)/(kernel_bkg)**2 / 2.
+        error_map = np.var(kernel_list_new, axis=0) / kernel_bkg**2 / 2.
         return kernel_return, error_map
 
     def mask_point_source(self, x_pos, y_pos, x_grid, y_grid, radius, i=0):

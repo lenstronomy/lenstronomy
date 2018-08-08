@@ -16,6 +16,8 @@ class Param(object):
 
     Options:
     'joint_with_light_list': bool/int list of length of lens models. Indices correspond to lens models, entry (int)
+    'joint_center_lens_with_center_light': bool/int list of length of lens models Indices correspond to light model
+    entry of joint center
     corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
     same name. The normalisation 'amp' is not shared and the lens models have the amplitude to be fit independently.
 
@@ -62,6 +64,7 @@ class Param(object):
         self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * n_source_model)
         self._fix_to_point_source_list = kwargs_constraints.get('fix_to_point_source_list', [False] * n_source_model)
         self._joint_with_light_list = kwargs_constraints.get('joint_with_light_list', [False] * len(self._lens_model_list))
+        self._joint_center_lens_with_center_light = kwargs_constraints.get('joint_center_lens_with_center_light', [False] * len(self._lens_model_list))
         self._joint_with_other_lens_list = kwargs_constraints.get('joint_with_other_lens_list', [False] * len(self._lens_model_list))
         self._joint_with_other_source_list = kwargs_constraints.get('joint_with_other_source_list',
                                                                   [False] * len(source_light_model_list))
@@ -233,6 +236,10 @@ class Param(object):
                 for name in param_names:
                     if name is not 'amp':
                         kwargs_lens[i][name] = kwargs_light[entry][name]
+        for i, entry in enumerate(self._joint_center_lens_with_center_light):
+            if entry is not False:
+                kwargs_lens[i]['center_x'] = kwargs_light[entry]['center_x']
+                kwargs_lens[i]['center_y'] = kwargs_light[entry]['center_y']
         return kwargs_lens
 
     def update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
@@ -342,10 +349,8 @@ class Param(object):
                 if i > 0:
                     kwargs['center_x'] = 0
                     kwargs['center_y'] = 0
-            if self._joint_with_other_lens_light_list[i] is not False:
-                kwargs['center_x'] = 0
-                kwargs['center_y'] = 0
-            if self._joint_lens_light_with_point_source_list[i] is not False:
+            if self._joint_with_other_lens_light_list[i] is not False or \
+                    self._joint_lens_light_with_point_source_list[i] is not False:
                 kwargs['center_x'] = 0
                 kwargs['center_y'] = 0
         return kwargs_fixed_update
@@ -363,6 +368,10 @@ class Param(object):
                 for name in param_names:
                     if name is not 'amp':
                         kwargs_fixed_update[i][name] = 0
+        for i, entry in enumerate(self._joint_center_lens_with_center_light):
+            if entry is not False:
+                kwargs_fixed_update[i]['center_x'] = 0
+                kwargs_fixed_update[i]['center_y'] = 0
         if self._fix_foreground_shear is True:
             for i, model in enumerate(self.lensModel.lens_model_list):
                 if model == 'FOREGROUND_SHEAR':

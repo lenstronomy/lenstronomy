@@ -596,6 +596,31 @@ def plot_chain(chain, param_list):
     return f, axes
 
 
+def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=100):
+    """
+    plots the MCMC behaviour and looks for convergence of the chain
+    :param samples_mcmc: parameters sampled 2d numpy array
+    :param param_mcmc: list of parameters
+    :param dist_mcmc: log likelihood of the chain
+    :param num_average: number of samples to average (should coincide with the number of samples in the emcee process)
+    :return:
+    """
+    num_samples = len(samples_mcmc[:, 0])
+    n_points = (num_samples - num_samples % num_average) / num_average
+    for i, param_name in enumerate(param_mcmc):
+        samples = samples_mcmc[:, i]
+        samples_averaged = np.average(samples[:n_points * num_average].reshape(n_points, num_average), axis=1)
+        end_point = np.mean(samples_averaged)
+        samples_renormed = (samples_averaged - end_point) / np.std(samples_averaged)
+        ax.plot(samples_renormed, label=param_name)
+
+    dist_averaged = -np.max(dist_mcmc[:n_points * num_average].reshape(n_points, num_average), axis=1)
+    dist_normed = (dist_averaged - np.max(dist_averaged)) / (np.max(dist_averaged) - np.min(dist_averaged))
+    ax.plot(dist_normed, label="logL", color='k', linewidth=2)
+    ax.legend()
+    return ax
+
+
 def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_multiply=10):
     """
 

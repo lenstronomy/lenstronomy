@@ -13,6 +13,7 @@ import lenstronomy.Plots.output_plots as output_plots
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class TestOutputPlots(object):
@@ -163,6 +164,14 @@ class TestOutputPlots(object):
         param_list = ['test1', 'test2']
         chain = X2_list, pos_list, vel_list, None
         output_plots.plot_chain(chain=chain, param_list=param_list)
+        plt.close()
+
+    def test_plot_mcmc_behaviour(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        param_mcmc = ['a', 'b']
+        samples_mcmc = np.random.random((10, 1000))
+        dist_mcmc = np.random.random(1000)
+        output_plots.plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=10)
         plt.close()
 
 

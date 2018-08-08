@@ -31,6 +31,7 @@ def sort_image_index(ximg,yimg,xref,yref):
 
     return min_indexes
 
+
 def rotate(xcoords, ycoords, angle):
     """
 

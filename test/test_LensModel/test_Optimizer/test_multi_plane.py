@@ -211,7 +211,7 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=50, n_iterations=300, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=100, n_iterations=10000, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
@@ -227,8 +227,8 @@ class TestMultiPlaneOptimizer(object):
 
     def test_multi_plane_reoptimize(self, tol=0.004):
 
-        kwargs_lens, _, [_,_] = self.optimizer_subs.optimize(n_particles=50, n_iterations=300,
-                                                                               restart=1)
+        kwargs_lens, _, [_,_] = self.optimizer_subs.optimize(n_particles=100, n_iterations=10000,
+                                                                               restart=2)
 
         reoptimize_kwargs = kwargs_lens
 
@@ -240,10 +240,10 @@ class TestMultiPlaneOptimizer(object):
                                     redshift_list=redshift_list_reoptimize,
                                     lens_model_list=lens_model_list_reoptimize, kwargs_lens=reoptimize_kwargs, multiplane=True,
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=True)
+                                    optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=False)
 
         t0 = time()
-        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=50, n_iterations=500, restart=2)
+        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=100, n_iterations=10000, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]
@@ -267,7 +267,7 @@ class TestMultiPlaneOptimizer(object):
         """
         t0 = time()
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=50, n_iterations=300, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=100, n_iterations=10000, restart=2)
 
         index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         x_image = x_image[index]
@@ -283,7 +283,6 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_array_less(dx, [tol] * len(dx))
         npt.assert_array_less(dy, [tol] * len(dy))
         npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
-
 
 if __name__ == '__main__':
     pytest.main()

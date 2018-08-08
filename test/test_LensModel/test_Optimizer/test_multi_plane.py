@@ -74,7 +74,7 @@ class TestMultiPlaneOptimizer(object):
                                           redshift_list=redshift_list_simple,
                                           lens_model_list=lens_model_list_simple, kwargs_lens=self.kwargs_lens_simple,
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                          astropy_instance=self.cosmo, optimizer_routine='optimize_SPEP_shear')
+                                          astropy_instance=self.cosmo, optimizer_routine='optimize_SPEP_shear',tol_simplex=1e-5)
 
 
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
@@ -82,7 +82,7 @@ class TestMultiPlaneOptimizer(object):
                                         redshift_list=redshift_list_full,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                        astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear')
+                                        astropy_instance=self.cosmo,optimizer_routine='optimize_SPEP_shear',tol_simplex=1e-5)
 
     def test_params(self):
 
@@ -211,13 +211,13 @@ class TestMultiPlaneOptimizer(object):
         :return:
         """
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=100, n_iterations=10000, restart=2)
-
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
+        _ = self.optimizer_simple.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         #x_image = x_image[index]
         #y_image = y_image[index]
-        mags = self.optimizer_simple.optimizer_amoeba.lensModel.magnification(x_image, y_image, kwargs_lens)
+
         #mags = np.absolute(mags)
         #mags *= max(mags) ** -1
 
@@ -237,7 +237,8 @@ class TestMultiPlaneOptimizer(object):
                                     redshift_list=redshift_list_reoptimize,
                                     lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val)
+                                    optimizer_routine='optimize_SPEP_shear', re_optimize=True, particle_swarm=val,
+                                    tol_simplex=1e-5)
 
 
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)

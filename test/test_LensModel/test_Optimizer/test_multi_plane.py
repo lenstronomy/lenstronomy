@@ -1,13 +1,11 @@
 from lenstronomy.LensModel.Optimizer.optimizer import Optimizer
-from lenstronomy.Util.util import sort_image_index
 import numpy.testing as npt
-import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 import pytest
 from time import time
-from lenstronomy.LensModel.Optimizer.split_multiplane import SplitMultiplane
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
+from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 
 
 class TestMultiPlaneOptimizer(object):
@@ -84,9 +82,32 @@ class TestMultiPlaneOptimizer(object):
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',tol_simplex=1e-5)
 
+        self.optimizer_params = Optimizer(self.x_pos_simple, self.y_pos_simple,
+                                        magnification_target=self.magnification_simple,
+                                        redshift_list=redshift_list_full,
+                                        lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
+                                        multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
+                                        astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',
+                                          tol_simplex=1e-5,constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10]})
+
+    def test_param_transform(self):
+
+        args = self.optimizer_params._lower_limit
+
+        args_dictionary = self.optimizer_params._params.argstovary_todictionary(args)
+        args_array = self.optimizer_params._params._kwargs_to_tovary(args_dictionary)
+
+        npt.assert_allclose(args,args_array)
+
+    def test_penalties(self):
+
+        args = self.optimizer_params._lower_limit
+
+        self.optimizer_params._optimizer._param_penalties(args)
+
     def test_params(self):
 
-        param_class = self.optimizer_subs.params
+        param_class = self.optimizer_subs._params
 
         all = self.front_args + self.main_args + self.back_args
         assert param_class.tovary_indicies == [0,1]
@@ -117,9 +138,8 @@ class TestMultiPlaneOptimizer(object):
 
     def test_split_multi_plane_lensmodels(self):
 
-        split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=self.lens_model_full,
-                                lensmodel_params=self.kwargs_lens_full, interpolated=False, z_source=1.5, z_macro=0.5,
-                                astropy_instance=self.cosmo, verbose=True, macro_indicies=[0,1])
+        split = MultiPlaneLensing(self.lens_model_full,self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full,
+                                  1.5,0.5,self.cosmo,[0,1])
 
         macromodel_lensmodel, macro_args, halos_lensmodel, halos_args,_ = \
             split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, z_break=0.5, macro_indicies=[0, 1])
@@ -154,9 +174,8 @@ class TestMultiPlaneOptimizer(object):
 
         kwargs = self.kwargs_lens_full
 
-        split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=model,
-                                lensmodel_params=kwargs, interpolated=False, z_source=1.5, z_macro=0.5,
-                                astropy_instance=self.cosmo, verbose=True, macro_indicies=[0,1])
+        split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
+                                  1.5, 0.5, self.cosmo, [0, 1])
 
         betax_true, betay_true = model.ray_shooting(self.x_pos_simple, self.y_pos_simple,
                                                     kwargs)
@@ -173,9 +192,8 @@ class TestMultiPlaneOptimizer(object):
 
     def test_split_multiplane_hessian(self):
 
-        split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=self.lens_model_full,
-                                lensmodel_params=self.kwargs_lens_full, interpolated=False, z_source=1.5, z_macro=0.5,
-                                astropy_instance=self.cosmo, verbose=True, macro_indicies=[0, 1])
+        split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
+                                  1.5, 0.5, self.cosmo, [0, 1])
 
         output = split.hessian(self.x_pos_simple,self.y_pos_simple,split.macro_args)
         output_fast = split.hessian_fast(split.macro_args)
@@ -187,9 +205,8 @@ class TestMultiPlaneOptimizer(object):
 
     def test_split_multi_plane_magnification(self):
 
-        split = SplitMultiplane(x_pos=self.x_pos_simple, y_pos=self.y_pos_simple, full_lensmodel=self.lens_model_full,
-                                lensmodel_params=self.kwargs_lens_full, interpolated=False, z_source=1.5, z_macro=0.5,
-                                astropy_instance=self.cosmo, verbose=True,macro_indicies=[0,1])
+        split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
+                                  1.5, 0.5, self.cosmo, [0, 1])
 
         magnification_true = np.absolute(self.lens_model_full.magnification(self.x_pos_simple,
                                                                             self.y_pos_simple,self.kwargs_lens_full))
@@ -210,7 +227,7 @@ class TestMultiPlaneOptimizer(object):
         """
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
-        _ = self.optimizer_simple.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
+        _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
 
         #x_image = x_image[index]
@@ -240,7 +257,7 @@ class TestMultiPlaneOptimizer(object):
 
 
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
-            _ = reoptimizer.optimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
+            _ = reoptimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
 
         #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
         #x_image = x_image[index]

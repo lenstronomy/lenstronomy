@@ -1,4 +1,5 @@
 import numpy as np
+from lenstronomy.Util.param_util import phi_gamma_ellipticity,ellipticity2phi_gamma,phi_q2_ellipticity,ellipticity2phi_q
 
 class FixedPowerLaw_Shear(object):
 
@@ -39,24 +40,47 @@ class FixedPowerLaw_Shear(object):
 
         return 0.5*(dr_greatest*dr_second)**0.5
 
+    def _new_ellip(self,start_e1,start_e2,delta_phi,delta_gamma):
+
+        phi_start, gamma_start = ellipticity2phi_q(start_e1,start_e2)
+
+        phi_min,phi_max = phi_start + delta_phi, phi_start-delta_phi
+        gamma_min,gamma_max = max(0.001,gamma_start-delta_gamma),min(0.99,gamma_start+delta_gamma)
+
+        e1_min, e2_min = phi_q2_ellipticity(phi_min, gamma_min)
+        e1_max, e2_max = phi_q2_ellipticity(phi_max, gamma_max)
+
+        return e1_min,e2_min,e1_max,e2_max
+
+    def _new_shear(self, start_e1, start_e2, delta_phi, delta_gamma):
+
+        phi_start, gamma_start = ellipticity2phi_gamma(start_e1, start_e2)
+
+        phi_min, phi_max = phi_start + delta_phi, phi_start - delta_phi
+
+        gamma_min, gamma_max = max(0.0001,gamma_start - delta_gamma), gamma_start + delta_gamma
+
+        e1_min, e2_min = phi_gamma_ellipticity(phi_min, gamma_min)
+        e1_max, e2_max = phi_gamma_ellipticity(phi_max, gamma_max)
+
+        return e1_min, e2_min, e1_max, e2_max
+
+
     def get_param_ranges(self,reoptimize=False):
 
         if reoptimize:
 
-            e1_e2 = 0.01
-            e1_e2_shear = 0.01
+            delta_phi,delta_ellip = 20*np.pi*180**-1, 0.1
+            delta_shear_phi,delta_shear = 20*np.pi*180**-1, 0.015
+
+            low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self.kwargs_lens[0]['e1'],self.kwargs_lens[0]['e2'],
+                                                              delta_phi,delta_ellip)
+
+            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self.kwargs_lens[1]['e1'],
+                                                                                   self.kwargs_lens[1]['e2'],
+                                                                                    delta_shear_phi,delta_shear)
             theta_E = 0.005
             center = 0.005
-
-            low_e1 = self.kwargs_lens[0]['e1'] - e1_e2
-            low_e2 = self.kwargs_lens[0]['e2'] - e1_e2
-            hi_e1 = self.kwargs_lens[0]['e1'] + e1_e2
-            hi_e2 = self.kwargs_lens[0]['e2'] + e1_e2
-
-            low_shear_e1 = self.kwargs_lens[1]['e1'] - e1_e2_shear
-            high_shear_e1 = self.kwargs_lens[1]['e1'] + e1_e2_shear
-            low_shear_e2 = self.kwargs_lens[1]['e2'] - e1_e2_shear
-            high_shear_e2 = self.kwargs_lens[1]['e2'] + e1_e2_shear
 
             low_Rein = self.kwargs_lens[0]['theta_E'] - theta_E
             hi_Rein = self.kwargs_lens[0]['theta_E'] + theta_E
@@ -70,11 +94,11 @@ class FixedPowerLaw_Shear(object):
 
             low_e1 = -0.3
             low_e2 = low_e1
-            hi_e1 = 0.3
-            hi_e2 = hi_e1
+            high_e1 = 0.3
+            high_e2 = high_e1
 
-            low_shear_e1 = -0.065
-            high_shear_e1 = 0.065
+            low_shear_e1 = -0.08
+            high_shear_e1 = 0.08
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
@@ -87,7 +111,7 @@ class FixedPowerLaw_Shear(object):
             hi_centery = hi_centerx
 
         sie_list_low = [low_Rein, low_centerx, low_centery, low_e1, low_e2]
-        sie_list_high = [hi_Rein, hi_centerx, hi_centery, hi_e1, hi_e2]
+        sie_list_high = [hi_Rein, hi_centerx, hi_centery, high_e1, high_e2]
         shear_list_low = [low_shear_e1, low_shear_e2]
         shear_list_high = [high_shear_e1, high_shear_e2]
 

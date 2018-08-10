@@ -24,6 +24,9 @@ class Penalties(object):
         :param verbose: print things
         """
         self.tol_source = tol_source
+
+        if not np.logical_or(isinstance(tol_mag,list),isinstance(tol_mag,np.ndarray)):
+            tol_mag = [tol_mag]*4
         self.tol_mag = tol_mag
         self.magnification_target = magnification_target
         self.tol_centroid = tol_centroid
@@ -199,7 +202,7 @@ class Penalties(object):
 
         for i, target in enumerate(self.magnification_target):
             if target != 0:
-                mag_tol = self.tol_mag * target
+                mag_tol = self.tol_mag[i] * target
                 dM.append((magnifications[i] - target) * mag_tol ** -1)
 
         dM = np.array(dM)

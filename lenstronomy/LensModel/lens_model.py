@@ -10,13 +10,21 @@ class LensModel(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, z_source=None, redshift_list=None, cosmo=None, multi_plane=False):
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, redshift_list=None, cosmo=None, multi_plane=False):
         """
 
         :param lens_model_list: list of strings with lens model names
-        :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
+        :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
+        Is only needed for specific functions that require a cosmology.
+        :param z_source: redshift of the source: Needed in multi_plane option,
+        not required for the core functionalities in the single plane mode.
+        :param redshift_list: list of deflector redshift (corresponding to the lens model list),
+        only applicable in multi_plane mode.
+        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
+        :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         """
         self.lens_model_list = lens_model_list
+        self.z_lens = z_lens
         self.z_source = z_source
         self.redshift_list = redshift_list
         self.cosmo = cosmo
@@ -25,6 +33,8 @@ class LensModel(object):
             self.lens_model = MultiLens(z_source, lens_model_list, redshift_list, cosmo=cosmo)
         else:
             self.lens_model = SinglePlane(lens_model_list)
+        if z_lens is not None and z_source is not None:
+            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
 
     def param_name_list(self):
         """
@@ -67,14 +77,12 @@ class LensModel(object):
         else:
             return self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
 
-    def arrival_time(self, x_image, y_image, kwargs_lens, z_lens=None, z_source=None):
+    def arrival_time(self, x_image, y_image, kwargs_lens):
         """
 
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
-        :param z_lens: redshift of deflector (only needed in single plane mode)
-        :param z_source: redshift of source (only needed in single plane mode)
         :return:
         """
         if self.multi_plane:
@@ -82,10 +90,9 @@ class LensModel(object):
         else:
             x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
             fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
-            if z_lens is None or z_source is None:
-                raise ValueError("Please specify the redshift of the lens and source plane!")
-            lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
-            arrival_time = lensCosmo.time_delay_units(fermat_pot)
+            if not hasattr(self, '_lensCosmo'):
+                raise ValueError("LensModel class was not initalized with lens and source redshifts!")
+            arrival_time = self._lensCosmo.time_delay_units(fermat_pot)
         return arrival_time
 
     def mass(self, x, y, epsilon_crit, kwargs):

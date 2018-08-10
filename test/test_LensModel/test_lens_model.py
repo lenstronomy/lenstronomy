@@ -75,8 +75,8 @@ class TestLensModel(object):
         lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, redshift_list=[z_lens], z_source=z_source)
         kwargs = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         arrival_time_mp = lensModel.arrival_time(x_image, y_image, kwargs)
-        lensModel_sp = LensModel(lens_model_list=['SIS'])
-        arrival_time_sp = lensModel_sp.arrival_time(x_image, y_image, kwargs, z_lens=z_lens, z_source=z_source)
+        lensModel_sp = LensModel(lens_model_list=['SIS'], z_source=z_source, z_lens=z_lens)
+        arrival_time_sp = lensModel_sp.arrival_time(x_image, y_image, kwargs)
         npt.assert_almost_equal(arrival_time_sp, arrival_time_mp, decimal=8)
 
 

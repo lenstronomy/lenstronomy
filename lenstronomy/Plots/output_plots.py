@@ -164,7 +164,8 @@ class LensModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", high_res=5):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source,
+                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat"):
         """
 
         :param kwargs_options:
@@ -258,7 +259,7 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def model_plot(self, ax, v_min=None, v_max=None):
+    def model_plot(self, ax, v_min=None, v_max=None, image_names=False):
         """
 
         :param ax:
@@ -286,8 +287,9 @@ class LensModelPlot(object):
 
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        #ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        #image_position_plot(ax, self._coords, ra_image, dec_image)
+        if image_names is True:
+            ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+            image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, v_min=None, v_max=None):

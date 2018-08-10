@@ -91,9 +91,9 @@ class TestOutputPlots(object):
 
         lensPlot = LensModelPlot(self.kwargs_data, self.kwargs_psf, self.kwargs_numerics, self.kwargs_model,
                                      self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
-                                     arrow_size=0.02, cmap_string="gist_heat", high_res=5)
+                                     arrow_size=0.02, cmap_string="gist_heat")
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.data_plot(ax=axes[0, 0])
         lensPlot.model_plot(ax=axes[0, 1])
@@ -103,7 +103,7 @@ class TestOutputPlots(object):
         lensPlot.magnification_plot(ax=axes[1, 2])
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
         lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
@@ -115,7 +115,7 @@ class TestOutputPlots(object):
                                         lens_light_add=True, point_source_add=True)
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
         lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)

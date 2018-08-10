@@ -27,9 +27,8 @@ def delay_arcsec2days(delay_arcsec, D_dt):
     """
     given a delay in arcsec^2 and a Delay distance, the delay is computed in days
 
-    :param delay_arc_sec: gravitational delay in units of arcsec^2 (e.g. Fermat potential)
+    :param delay_arcsec: gravitational delay in units of arcsec^2 (e.g. Fermat potential)
     :param D_dt: Time delay distance (in units of Mpc)
     :return: time-delay in units of days
     """
-    D_dt = D_dt * Mpc  # eqn 7 in Suyu et al.
-    return D_dt / c * delay_arcsec / day_s * arcsec**2
+    return D_dt * Mpc / c * delay_arcsec / day_s * arcsec**2

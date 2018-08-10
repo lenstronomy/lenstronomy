@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.multi_plane import MultiLens
+from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 
 class LensModel(object):
@@ -66,19 +67,26 @@ class LensModel(object):
         else:
             return self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
 
-    def arrival_time(self, x_image, y_image, kwargs_lens):
+    def arrival_time(self, x_image, y_image, kwargs_lens, z_lens=None, z_source=None):
         """
 
-        :param x_image:
-        :param y_image:
-        :param kwargs_lens:
+        :param x_image: image position
+        :param y_image: image position
+        :param kwargs_lens: lens model parameter keyword argument list
+        :param z_lens: redshift of deflector (only needed in single plane mode)
+        :param z_source: redshift of source (only needed in single plane mode)
         :return:
         """
         if self.multi_plane:
-            return self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
         else:
-            raise ValueError(
-                "arrival_time routine not defined for single plane lensing. Please use Fermat potential instead")
+            x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
+            if z_lens is None or z_source is None:
+                raise ValueError("Please specify the redshift of the lens and source plane!")
+            lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
+            arrival_time = lensCosmo.time_delay_units(fermat_pot)
+        return arrival_time
 
     def mass(self, x, y, epsilon_crit, kwargs):
         """

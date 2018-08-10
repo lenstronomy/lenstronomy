@@ -19,21 +19,21 @@ class ParticleSwarmOptimizer(object):
         '''
         Constructor
         '''
-        self.func = func
-        self.low = low
-        self.high = high
-        self.particleCount = particleCount
-        self.verbose = verbose
+        self._func = func
+        self._low = low
+        self._high = high
+        self._particleCount = particleCount
+        self._verbose = verbose
 
-        self.paramCount = len(self.low)
-        self.gbest = Particle.create(self.paramCount)
+        self._paramCount = len(self._low)
+        self._gbest = Particle.create(self._paramCount)
         self.swarm = self._initSwarm()
 
     def _initSwarm(self):
 
         swarm = []
-        for _ in range(self.particleCount):
-            swarm.append(Particle(numpy.random.uniform(self.low, self.high, size=self.paramCount), numpy.zeros(self.paramCount)))
+        for _ in range(self._particleCount):
+            swarm.append(Particle(numpy.random.uniform(self._low, self._high, size=self._paramCount), numpy.zeros(self._paramCount)))
 
         return swarm
 
@@ -53,31 +53,31 @@ class ParticleSwarmOptimizer(object):
         while True:
 
             for particle in self.swarm:
-                if ((self.gbest.fitness)<particle.fitness):
+                if ((self._gbest.fitness)<particle.fitness):
 
-                    self.gbest = particle.copy()
+                    self._gbest = particle.copy()
 
                 if (particle.fitness > particle.pbest.fitness):
                     particle.updatePBest()
 
             if(i>=maxIter):
-                if self.verbose:
+                if self._verbose:
                     print("max iteration reached! stoping")
                 return
 
-            if self.func.is_converged:
+            if self._func.is_converged:
                 return
 
-            if self._converged_likelihood(maxIter*lookback,self.particleCount,standard_dev):
+            if self._converged_likelihood(maxIter*lookback, self._particleCount, standard_dev):
                 return
 
             for particle in self.swarm:
 
-                w = 0.5 + numpy.random.uniform(0,1,size=self.paramCount)/2
+                w = 0.5 + numpy.random.uniform(0, 1, size=self._paramCount) / 2
                 #w=0.72
                 part_vel = w * particle.velocity
-                cog_vel = c1 * numpy.random.uniform(0,1,size=self.paramCount) * (particle.pbest.position - particle.position)
-                soc_vel = c2 * numpy.random.uniform(0,1,size=self.paramCount) * (self.gbest.position - particle.position)
+                cog_vel = c1 * numpy.random.uniform(0, 1, size=self._paramCount) * (particle.pbest.position - particle.position)
+                soc_vel = c2 * numpy.random.uniform(0, 1, size=self._paramCount) * (self._gbest.position - particle.position)
                 particle.velocity = part_vel + cog_vel + soc_vel
                 particle.position = particle.position + particle.velocity
 
@@ -107,7 +107,7 @@ class ParticleSwarmOptimizer(object):
         for swarm in self._sample(maxIter, c1, c2, lookback, standard_dev):
 
             #swarms.append(swarm)
-            gBests.append(self.gbest.copy())
+            gBests.append(self._gbest.copy())
 
         return gBests
 
@@ -116,7 +116,7 @@ class ParticleSwarmOptimizer(object):
         mapFunction = map
 
         pos = numpy.array([part.position for part in swarm])
-        results = mapFunction(self.func, pos)
+        results = mapFunction(self._func, pos)
 
         lnprob = numpy.array([-l for l in results])
         for i, particle in enumerate(swarm):

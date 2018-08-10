@@ -106,7 +106,7 @@ class Optimizer(object):
         else:
 
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                              astropy_instance, self._params.routine.tovary_indicies)
+                                              astropy_instance, self._params.tovary_indicies)
 
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,

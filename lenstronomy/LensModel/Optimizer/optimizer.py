@@ -7,7 +7,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
-from scipy.optimize import minimize
+from scipy.optimize import minimize,fmin
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class Optimizer(object):
@@ -24,7 +24,7 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=50,
-                 tol_simplex=1e-10,constrain_params=None):
+                 tol_simplex=1e-5,constrain_params=None,simplex_n_iterations=6000):
 
         """
 
@@ -60,7 +60,8 @@ class Optimizer(object):
         e.g.
         {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear (converting to polar coorindates each time)
         {'theta_E:[1,0.01]} will constrain the Einstein radius
-        The parameter name must be part of the 'params_to_vary' of the optimization routine (see class 'fixed_routines')
+        The parameter name must be part of the 'params_to_vary' attribute of the optimization routine
+        (see class 'fixed_routines')
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -76,6 +77,7 @@ class Optimizer(object):
 
         self._pso_convergence_standardDEV = pso_convergence_standardDEV
         self._tol_simplex = tol_simplex
+        self._simplex_iter = simplex_n_iterations
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -161,39 +163,33 @@ class Optimizer(object):
 
         if self._particle_swarm:
             params = self._pso(n_particles, n_iterations, self._optimizer)
+            print('PSO done.')
 
         else:
             params = self._params._kwargs_to_tovary(self._init_kwargs)
 
         if self._verbose:
-            print('PSO done.')
             print('starting amoeba... ')
 
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=True)
+        options = {'adaptive': True, 'fatol': self._tol_simplex,'xatol':self._tol_simplex,
+                             'maxiter': self._simplex_iter * len(params)}
         optimized_downhill_simplex = minimize(self._optimizer, x0=params, method='Nelder-Mead',
-                                              tol=self._tol_simplex)
+                             options=options)
 
         penalty = self._optimizer._get_best()
-        parameters = optimized_downhill_simplex['x']
 
         self._optimizer._reset()
 
-        return penalty, parameters
+        return penalty, optimized_downhill_simplex['x']
 
     def _pso(self, n_particles, n_iterations, optimizer):
 
         """
-
         :param n_particles: number of PSO particles
         :param n_iterations: number of PSO iterations
         :param optimizer: instance of SinglePlaneOptimizer or MultiPlaneOptimizer
-        :param lowerLimit: lower limit for PSO particles
-        :param upperLimit: upper limit for PSO particles
-        :param threadCount:
-        :param social_influence:
-        :param personal_influence:
-
         :return: optimized kwargs_lens
         """
 

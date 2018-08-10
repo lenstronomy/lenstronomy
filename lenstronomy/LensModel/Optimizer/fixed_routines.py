@@ -70,8 +70,8 @@ class FixedPowerLaw_Shear(object):
 
         if reoptimize:
 
-            delta_phi,delta_ellip = 20*np.pi*180**-1, 0.1
-            delta_shear_phi,delta_shear = 20*np.pi*180**-1, 0.015
+            delta_phi,delta_ellip = 30*np.pi*180**-1, 0.15
+            delta_shear_phi,delta_shear = 30*np.pi*180**-1, 0.02
 
             low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self.kwargs_lens[0]['e1'],self.kwargs_lens[0]['e2'],
                                                               delta_phi,delta_ellip)

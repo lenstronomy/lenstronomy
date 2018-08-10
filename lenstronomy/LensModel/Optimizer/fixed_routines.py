@@ -16,6 +16,7 @@ class FixedPowerLaw_Shear(object):
         self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['e1', 'e2']]
         self.fixed_names = [['gamma'], []]
         self.fixed_values = [{'gamma': kwargs_lens[0]['gamma']}, {}]
+        self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','shear_e1','shear_e2']
 
     def _estimate_theta_E(self,ximg,yimg):
 

@@ -98,65 +98,51 @@ class TestMultiPlaneOptimizer(object):
         z_list_simple = [0.5, 0.5]
         kwargs_lens_simple_background = [{'theta_E': 0.7, 'center_x': -0.01, 'center_y': 0.001, 'e1': 0.018, 'gamma': 2.,
                                'e2': 0.089}, {'e1': 0.0041, 'e2': -0.029}]
-        sub_1 = {'theta_Rs': 0.01, 'center_y': 0.6, 'center_x': -0.5, 'Rs': 0.13}
-        sub_2 = {'theta_Rs': 0.012, 'center_y': -0.3, 'center_x': -0.48, 'Rs': 0.08}
+        sub_1 = {'theta_Rs': 0.01, 'center_y': 0.55, 'center_x': -0.54, 'Rs': 0.13}
+        sub_2 = {'theta_Rs': 0.012, 'center_y': -0.3, 'center_x': -0.1, 'Rs': 0.1}
         sub_3 = {'theta_Rs': 0.0011, 'center_y': 0.92, 'center_x': -0.81, 'Rs': 0.13}
-        sub_4 = {'theta_Rs': 0.0009, 'center_y': -0.2, 'center_x': -1.0, 'Rs': 0.13}
+        sub_4 = {'theta_Rs': 0.0009, 'center_y': 0.4, 'center_x': -0.41, 'Rs': 0.13}
         sub_5 = {'theta_Rs': 0.002, 'center_y': 0.5, 'center_x': 0.25, 'Rs': 0.13}
         kwargs_lens_subs = [sub_1, sub_2, sub_3, sub_4, sub_5]
         z_list_subs = [0.6, 0.65, 0.7, 0.7, 0.8]
         lens_model_list_subs = ['NFW'] * 5
 
         self.kwargs_lens_full_background = kwargs_lens_simple_background + kwargs_lens_subs
-        self.kwargs_lens_simple_background = kwargs_lens_simple_background
 
         self.lensmodel_fixed_background = LensModel(lens_model_list=lens_model_list_simple_background + lens_model_list_subs,
                           redshift_list=z_list_simple + z_list_subs,z_source=1.5,
                           cosmo=self.cosmo, multi_plane=True)
 
-        self.lensmodel_fixed_background_simple = LensModel(lens_model_list=lens_model_list_simple_background,
-                          redshift_list=z_list_simple,z_source=1.5,
-                          cosmo=self.cosmo, multi_plane=True)
-
-        self.x_pos_single_background = np.array([-0.4888515, 0.524507, 0.44983339, -0.49479446])
-        self.y_pos_single_background = np.array([0.61046054, -0.5906883, 0.43210016, -0.36677948])
-
-        self.x_pos_single_background_simple = np.array([0.52588062,-0.50568789,0.45927604,-0.48694143])
-        self.y_pos_single_background_simple = np.array([-0.58800167,0.60515384,0.41902069,-0.38707986])
+        self.x_pos_single_background = np.array([0.52879627,-0.51609593,-0.55462914, 0.39140589])
+        self.y_pos_single_background = np.array([-0.6484213, 0.54131023, -0.34026707, 0.46996126])
 
     def test_single_background(self):
 
-        split = MultiPlaneLensing(self.lensmodel_fixed_background_simple,self.x_pos_single_background_simple,
-                                  self.y_pos_single_background_simple,self.kwargs_lens_simple_background,1.5,0.5,self.cosmo,
-                                  [0,1],single_background=True)
+        alpha_x_true = np.array([-0.36907648, 0.41860318, 0.42265953, -0.26021003])
+        alpha_y_true = np.array([0.4160718, -0.48592582, 0.17717094, -0.42390834])
+        x_in_true = np.array([998.6980648, -974.71188014, -1047.48667913, 739.21910397])
+        y_in_true = np.array([-1224.62493444, 1022.33224746, -642.6370298, 887.58077074])
+        fixed_alpha = [alpha_x_true,alpha_y_true]
 
         split_true = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo, [0, 1], single_background=False)
+
         betax_true, betay_true = split_true.ray_shooting(self.x_pos_single_background, self.y_pos_single_background,
                                                     self.kwargs_lens_full_background)
 
-        split = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
+        split_1 = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo,[0, 1], single_background=True)
-        alpha_x_true,alpha_y_true = np.array([0.38735159,-0.40028609,-0.33133821,0.39886726]), np.array([-0.4679614,0.44811147,
-                                                                   -0.33744553,0.27201552])
-        x_in_true = np.array([-923.25735774, 990.59724054, 849.56676429, -934.48138292])
-        y_in_true = np.array([1152.93127906, -1115.58892446, 816.07533576, -692.70904064])
-
-        x, y = split._background._fixed_background(x_in_true,y_in_true,self.kwargs_lens_full_background[2:],
-                                                   alpha=[alpha_x_true,alpha_y_true])
-        x_approx = x_in_true + alpha_x_true*split._background._T_main_src - x
-        y_approx = y_in_true + alpha_y_true*split._background._T_main_src - y
-
-        print(betax_true,betay_true)
-        print(x_approx*split._T_z_source**-1,y_approx*split._T_z_source**-1)
 
 
-        betax, betay = split.ray_shooting_fast(self.kwargs_lens_simple_background)
+        x,y = split_1._background._fixed_background(x_in_true,y_in_true,
+                                                    self.kwargs_lens_full_background[2:],alpha=fixed_alpha)
 
-        #npt.assert_almost_equal(betax, np.zeros_like(betax), decimal=8)
-        #npt.assert_almost_equal(betay, np.zeros_like(betay), decimal=8)
+        betax,betay = x*split_1._T_z_source**-1,y*split_1._T_z_source**-1
+
+        npt.assert_almost_equal(betax,betax_true)
+        npt.assert_almost_equal(betay,betay_true)
 
     def test_param_transform(self):
 
@@ -239,18 +225,20 @@ class TestMultiPlaneOptimizer(object):
 
     def test_split_multiplane_rayshooting(self):
 
-        model = self.lens_model_full
+        model = self.lensmodel_fixed_background
 
-        kwargs = self.kwargs_lens_full
+        kwargs = self.kwargs_lens_full_background
 
-        split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
+        xpos,ypos = self.x_pos_single_background, self.y_pos_single_background
+
+        split = MultiPlaneLensing(model, xpos, ypos, kwargs,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        betax_true, betay_true = model.ray_shooting(self.x_pos_simple, self.y_pos_simple,
-                                                    kwargs)
+        betax_true, betay_true = model.ray_shooting(xpos, ypos, kwargs)
 
-        betax, betay = split.ray_shooting(self.x_pos_simple, self.y_pos_simple,
-                                          macromodel_args=split._macro_args)
+        args = self.kwargs_lens_full_background[0:2]
+        betax, betay = split.ray_shooting(xpos, ypos,
+                                          macromodel_args=args)
         betax_fast, betay_fast = split.ray_shooting_fast(split._macro_args)
 
         npt.assert_almost_equal(betax, betax_fast)
@@ -367,6 +355,7 @@ class TestMultiPlaneOptimizer(object):
 
 t = TestMultiPlaneOptimizer()
 t.setup()
+t.test_split_multiplane_rayshooting()
 t.test_single_background()
 exit(1)
 

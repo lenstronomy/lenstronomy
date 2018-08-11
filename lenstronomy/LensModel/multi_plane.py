@@ -86,7 +86,6 @@ class MultiLens(object):
         :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
         :return: co-moving position and angles at redshift z_stop
         """
-
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
@@ -112,6 +111,7 @@ class MultiLens(object):
             delta_T = self._cosmo_bkg_T_stop
         else:
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 

@@ -24,7 +24,7 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=50,
-                 tol_simplex=1e-5,constrain_params=None,simplex_n_iterations=6000):
+                 tol_simplex=1e-5,constrain_params=None,simplex_n_iterations=6000, single_background=False):
 
         """
 
@@ -62,6 +62,10 @@ class Optimizer(object):
         {'theta_E:[1,0.01]} will constrain the Einstein radius
         The parameter name must be part of the 'params_to_vary' attribute of the optimization routine
         (see class 'fixed_routines')
+
+        :param single_background: uses an approximation in which the path through background halos is only computed
+        once; useful for models with a lot of background subhalos that are otherwise very computationally expensive to
+        handle. WARNING: Magnification not yet well definied when using this approximation
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -106,7 +110,7 @@ class Optimizer(object):
         else:
 
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                              astropy_instance, self._params.tovary_indicies)
+                                              astropy_instance, self._params.tovary_indicies, single_background)
 
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,

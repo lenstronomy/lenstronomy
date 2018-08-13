@@ -34,6 +34,15 @@ class SinglePlaneLensing(object):
             self._alpha_x_sub, self._alpha_y_sub = 0, 0
             self._sub_fxx, self._sub_fyy, self._sub_fxy = 0, 0, 0
 
+    def _ray_shooting(self, thetax, thetay, full_kwargs):
+
+        alphax_macro, alphay_macro = self._lensModel.alpha(thetax, thetay, full_kwargs, k=self._k_macro)
+
+        betax = self._x_pos - alphax_macro - self._alpha_x_sub
+        betay = self._y_pos - alphay_macro - self._alpha_y_sub
+
+        return betax, betay
+
     def ray_shooting_fast(self, lens_args):
 
         # compute the macromodel deflection
@@ -45,17 +54,23 @@ class SinglePlaneLensing(object):
 
         return betax,betay
 
-    def magnification_fast(self,  args):
+    def hessian_fast(self, args):
 
         if not hasattr(self,'_sub_fxx'):
             self._sub_fxx, self._sub_fxy, _, self._sub_fyy = self._lensModel.hessian(self._x_pos, self._y_pos,
                                                                                      self._all_lensmodel_args, self._k_sub)
 
-        fxx_macro,fxy_macro,_,fyy_macro = self._lensModel.hessian(self._x_pos, self._y_pos, args, k=self._k_macro)
+        fxx_macro, fxy_macro, _, fyy_macro = self._lensModel.hessian(self._x_pos, self._y_pos, args, k=self._k_macro)
 
         fxx = fxx_macro + self._sub_fxx
         fyy = fyy_macro + self._sub_fyy
         fxy = fxy_macro + self._sub_fxy
+
+        return fxx, fxy, fxy, fyy
+
+    def magnification_fast(self,  args):
+
+        fxx, fxy, _, fyy = self.hessian_fast(args)
 
         det_J = (1-fxx)*(1-fyy) - fxy**2
 

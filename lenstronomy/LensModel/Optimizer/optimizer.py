@@ -24,7 +24,7 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=50,
-                 tol_simplex=1e-5,constrain_params=None,simplex_n_iterations=6000, single_background=False):
+                 tol_simplex=1e-4,constrain_params=None,simplex_n_iterations=1000, single_background=False):
 
         """
 
@@ -82,6 +82,7 @@ class Optimizer(object):
         self._pso_convergence_standardDEV = pso_convergence_standardDEV
         self._tol_simplex = tol_simplex
         self._simplex_iter = simplex_n_iterations
+        self._single_background = single_background
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -111,6 +112,12 @@ class Optimizer(object):
 
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                               astropy_instance, self._params.tovary_indicies, single_background)
+
+            if self._single_background:
+                self.finite_mag_shooting = lensing_class.ray_shooting_mag_finite
+
+            else:
+                self.finite_mag_shooting = lensing_class._ray_shooting
 
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
@@ -150,13 +157,18 @@ class Optimizer(object):
         kwargs_lens_final = kwargs_varied + self._params.argsfixed_todictionary()
 
         # solve for the optimized image positions
-        srcx, srcy = self.lensModel.ray_shooting(self.x_pos, self.y_pos, kwargs_lens_final)
+        print('optimization done.')
+        srcx,srcy = self.lensModel.ray_shooting(self.x_pos,self.y_pos,kwargs_lens_final)
+        source_x, source_y = np.mean(srcx), np.mean(srcy)
+
+        if self._single_background:
+            x_image, y_image = self.x_pos, self.y_pos
+        else:
+            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,
+                                                           precision_limit=10 ** -10)
 
         if self._verbose:
             print('Recovered source position: ', (srcx, srcy))
-
-        source_x, source_y = np.mean(srcx), np.mean(srcy)
-        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, precision_limit=10 ** -10)
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 

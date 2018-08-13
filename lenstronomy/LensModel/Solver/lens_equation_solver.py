@@ -29,6 +29,7 @@ class LensEquationSolver(object):
         :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
+
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)
@@ -45,7 +46,8 @@ class LensEquationSolver(object):
         #y_mins = y_mins[delta_map*mag <= min_distance*5]
         #print(x_mins, y_mins, 'after requirement of min_distance')
         # iterative solving of the lens equation for the selected grid points
-        x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit, num_iter_max)
+        x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
+                                                               precision_limit, num_iter_max)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -58,7 +60,8 @@ class LensEquationSolver(object):
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
         return x_mins, y_mins
 
-    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10), num_iter_max=100):
+    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10),
+                       num_iter_max=100):
         """
         find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
 
@@ -71,6 +74,7 @@ class LensEquationSolver(object):
         x_mins = np.zeros(num_candidates)
         y_mins = np.zeros(num_candidates)
         solver_precision = np.zeros(num_candidates)
+
         for i in range(len(x_min)):
             l = 0
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
@@ -94,7 +98,8 @@ class LensEquationSolver(object):
         return x_mins, y_mins, solver_precision
 
     def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5,
-                        precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True):
+                        precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True, ray_shooting_function=None,
+                        hessian_function=None, magnification_function=None):
         """
 
         :param sourcePos_x:
@@ -106,12 +111,19 @@ class LensEquationSolver(object):
         :param kwargs_lens:
         :return:
         """
+
+        if magnification_function is None:
+            magnification_function = self.lensModel.magnification
+            if hessian_function is not None or ray_shooting_function is not None:
+                print('Warning: when specifying special functions for the magnification, hessian, and ray shooting, all three'
+                      'should be specified.')
+
         x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance,
                                                          search_window, precision_limit, num_iter_max,
                                                          arrival_time_sort=arrival_time_sort)
         mag_list = []
         for i in range(len(x_mins)):
-            mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
+            mag = magnification_function(x_mins[i], y_mins[i], kwargs_lens)
             mag_list.append(abs(mag))
         mag_list = np.array(mag_list)
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)

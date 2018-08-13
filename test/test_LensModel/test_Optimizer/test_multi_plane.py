@@ -128,21 +128,27 @@ class TestMultiPlaneOptimizer(object):
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo, [0, 1], single_background=False)
 
-        betax_true, betay_true = split_true.ray_shooting(self.x_pos_single_background, self.y_pos_single_background,
-                                                    self.kwargs_lens_full_background)
+        betax_true, betay_true = split_true.ray_shooting_fast(self.kwargs_lens_full_background[0:2],thetax=self.x_pos_single_background,thetay=self.y_pos_single_background)
 
-        split_1 = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
+        split = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo,[0, 1], single_background=True)
 
-
-        x,y = split_1._background._fixed_background(x_in_true,y_in_true,
+        x,y = split._background._fixed_background(x_in_true,y_in_true,
                                                     self.kwargs_lens_full_background[2:],alpha=fixed_alpha)
 
-        betax,betay = x*split_1._T_z_source**-1,y*split_1._T_z_source**-1
+        betax,betay = x*split._T_z_source**-1,y*split._T_z_source**-1
 
         npt.assert_almost_equal(betax,betax_true)
         npt.assert_almost_equal(betay,betay_true)
+
+        lens_ext = self.optimizer_params.lensModel
+        mag_finite = lens_ext.magnification_finite(self.x_pos_single_background, self.y_pos_single_background, self.kwargs_lens_full_background,
+                                                       source_sigma=0.0005,ray_shooting_function=split_true.ray_shooting_mag_finite)
+        mag_point = split_true.magnification_fast(self.kwargs_lens_full_background[0:2])
+
+        npt.assert_almost_equal(mag_finite,mag_point,decimal=2)
+
 
     def test_param_transform(self):
 
@@ -237,8 +243,7 @@ class TestMultiPlaneOptimizer(object):
         betax_true, betay_true = model.ray_shooting(xpos, ypos, kwargs)
 
         args = self.kwargs_lens_full_background[0:2]
-        betax, betay = split.ray_shooting(xpos, ypos,
-                                          macromodel_args=args)
+        betax, betay = split.ray_shooting_fast(macromodel_args=args,thetax=xpos,thetay=ypos,force_compute=True)
         betax_fast, betay_fast = split.ray_shooting_fast(split._macro_args)
 
         npt.assert_almost_equal(betax, betax_fast)
@@ -252,13 +257,13 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        output = split.hessian(self.x_pos_simple, self.y_pos_simple, split._macro_args)
-        output_fast = split.hessian_fast(split._macro_args)
-        output_true = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
+        f1,f2,f3,f4 = split.hessian_fast(split._macro_args)
+        t1,t2,t3,t4 = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
 
-        for (split,truth,fast) in zip(output,output_true,output_fast):
-            npt.assert_almost_equal(split,truth)
-            npt.assert_almost_equal(truth,fast)
+        npt.assert_almost_equal(f1,t1)
+        npt.assert_almost_equal(f2,t2)
+        npt.assert_almost_equal(f3, t3)
+        npt.assert_almost_equal(f4, t4)
 
     def test_split_multi_plane_magnification(self):
 
@@ -269,12 +274,8 @@ class TestMultiPlaneOptimizer(object):
                                                                             self.y_pos_simple,self.kwargs_lens_full))
         magnification_split = split.magnification_fast(self.kwargs_lens_simple)
 
-        magnification = split.magnification(self.x_pos_simple, self.y_pos_simple, split._macro_args)
-
         npt.assert_almost_equal(magnification_true*max(magnification_true)**-1,
                                 magnification_split*max(magnification_split)**-1,2)
-        npt.assert_almost_equal(magnification_true * max(magnification_true) ** -1,
-                                magnification * max(magnification) ** -1, 2)
 
     def test_multi_plane_simple(self):
         """
@@ -285,17 +286,6 @@ class TestMultiPlaneOptimizer(object):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
         _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
-        #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
-
-        #x_image = x_image[index]
-        #y_image = y_image[index]
-
-        #mags = np.absolute(mags)
-        #mags *= max(mags) ** -1
-
-        #npt.assert_almost_equal(x_image, self.x_pos_simple, decimal=3)
-        #npt.assert_almost_equal(y_image, self.y_pos_simple, decimal=3)
-        #npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
 
     def test_multi_plane_reoptimize(self, tol=0.004):
 
@@ -316,48 +306,9 @@ class TestMultiPlaneOptimizer(object):
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
             _ = reoptimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
 
-        #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
-        #x_image = x_image[index]
-        #y_image = y_image[index]
-
-        #mags = np.absolute(mags)
-        #mags *= max(mags) ** -1
-
-        #dx = np.absolute(x_image - self.x_pos_simple)
-        #dy = np.absolute(y_image - self.y_pos_simple)
-
-        #npt.assert_array_less(dx, [tol] * len(dx))
-        #npt.assert_array_less(dy, [tol] * len(dy))
-        #npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
-
     def test_multi_plane_subs(self,tol=0.004):
-        """
-        Should be a near perfect fit since the LOS model is the same used to create the data.
-        :return:
-        """
-        t0 = time()
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
-
-        #index = sort_image_index(x_image, y_image, self.x_pos_simple, self.y_pos_simple)
-        #x_image = x_image[index]
-        #y_image = y_image[index]
-
-        #mags = np.absolute(mags)
-        #mags *= max(mags) ** -1
-
-        #dx = np.absolute(x_image - self.x_pos_simple)
-        #dy = np.absolute(y_image - self.y_pos_simple)
-
-        #npt.assert_array_less(dx, [tol] * len(dx))
-        #npt.assert_array_less(dy, [tol] * len(dy))
-        #npt.assert_array_less(np.absolute(self.magnification_simple - mags) * 0.2 ** -1, [1, 1, 1, 1])
-
-t = TestMultiPlaneOptimizer()
-t.setup()
-t.test_split_multiplane_rayshooting()
-t.test_single_background()
-exit(1)
 
 if __name__ == '__main__':
     pytest.main()

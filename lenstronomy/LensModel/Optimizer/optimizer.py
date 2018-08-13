@@ -105,19 +105,16 @@ class Optimizer(object):
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
-
             lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
 
         else:
-
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                               astropy_instance, self._params.tovary_indicies, single_background)
 
-            if self._single_background:
-                self.finite_mag_shooting = lensing_class.ray_shooting_mag_finite
-
-            else:
-                self.finite_mag_shooting = lensing_class._ray_shooting
+        if self._single_background and self._multiplane:
+            self.ray_shooting_function = lensing_class.ray_shooting_mag_finite
+        else:
+            self.ray_shooting_function = self.lensModel.ray_shooting
 
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
@@ -158,7 +155,13 @@ class Optimizer(object):
 
         # solve for the optimized image positions
         print('optimization done.')
-        srcx,srcy = self.lensModel.ray_shooting(self.x_pos,self.y_pos,kwargs_lens_final)
+
+        if self._single_background:
+            # TODO: fix find_image_from_source routines so that I can find the images with altered ray shooting
+            srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
+        else:
+            srcx,srcy = self.lensModel.ray_shooting(self.x_pos,self.y_pos,kwargs_lens_final)
+
         source_x, source_y = np.mean(srcx), np.mean(srcy)
 
         if self._single_background:

@@ -50,7 +50,7 @@ class LensModelExtensions(LensModel):
             if ray_shooting_function is None:
                 center_x, center_y = self.ray_shooting(ra, dec, kwargs_lens)
             else:
-                center_x, center_y = ray_shooting_function(ra, dec, kwargs_lens, i)
+                center_x, center_y = ray_shooting_function(ra, dec, kwargs_lens)
 
             if polar_grid:
 
@@ -64,7 +64,7 @@ class LensModelExtensions(LensModel):
             if ray_shooting_function is None:
                 x_source, y_source = self.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
             else:
-                x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens, i)
+                x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
 
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2

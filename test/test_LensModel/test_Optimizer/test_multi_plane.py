@@ -88,7 +88,7 @@ class TestMultiPlaneOptimizer(object):
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',
-                                          tol_simplex=1e-5,constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10]})
+                                          tol_simplex=1e-5,constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10],'theta_E':[1,0.1]})
 
     def test_param_transform(self):
 
@@ -102,6 +102,8 @@ class TestMultiPlaneOptimizer(object):
     def test_penalties(self):
 
         args = self.optimizer_params._lower_limit
+
+        self.optimizer_params._optimizer._param_penalties(args)
 
         self.optimizer_params._optimizer._param_penalties(args)
 
@@ -148,18 +150,17 @@ class TestMultiPlaneOptimizer(object):
 
         assert halos_args == self.front_args+self.main_args+self.back_args
 
-        fore = split.foreground
-        main = split.model_to_vary
-        back = split.background
+        fore = split._foreground
+        main = split._model_to_vary
+        back = split._background
 
-        _ = fore.ray_shooting(split.halo_args,true_foreground=True)
+        _ = fore.ray_shooting(split._halo_args, true_foreground=True)
 
-        assert fore.z_to_vary == 0.5
-        assert back.z_source == 1.5
-        assert back.z_background == 0.5
-        assert main.z_to_vary == 0.5
+        assert fore._z_to_vary == 0.5
+        assert back._z_source == 1.5
+        assert main._z_to_vary == 0.5
 
-        output = fore.rays['x'],fore.rays['y'],fore.rays['alphax'],fore.rays['alphay']
+        output = fore._rays['x'],fore._rays['y'],fore._rays['alphax'],fore._rays['alphay']
         output_true = self.lens_model_front.lens_model.ray_shooting_partial(np.zeros_like(self.x_pos_simple),
                                                                             np.zeros_like(self.y_pos_simple),
                                                                             self.x_pos_simple, self.y_pos_simple, 0, 0.5,
@@ -181,8 +182,8 @@ class TestMultiPlaneOptimizer(object):
                                                     kwargs)
 
         betax, betay = split.ray_shooting(self.x_pos_simple, self.y_pos_simple,
-                                          macromodel_args=split.macro_args)
-        betax_fast, betay_fast = split.ray_shooting_fast(split.macro_args)
+                                          macromodel_args=split._macro_args)
+        betax_fast, betay_fast = split.ray_shooting_fast(split._macro_args)
 
         npt.assert_almost_equal(betax, betax_fast)
         npt.assert_almost_equal(betax_true, betax)
@@ -195,8 +196,8 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        output = split.hessian(self.x_pos_simple,self.y_pos_simple,split.macro_args)
-        output_fast = split.hessian_fast(split.macro_args)
+        output = split.hessian(self.x_pos_simple, self.y_pos_simple, split._macro_args)
+        output_fast = split.hessian_fast(split._macro_args)
         output_true = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
 
         for (split,truth,fast) in zip(output,output_true,output_fast):
@@ -212,7 +213,7 @@ class TestMultiPlaneOptimizer(object):
                                                                             self.y_pos_simple,self.kwargs_lens_full))
         magnification_split = split.magnification_fast(self.kwargs_lens_simple)
 
-        magnification = split.magnification(self.x_pos_simple,self.y_pos_simple,split.macro_args)
+        magnification = split.magnification(self.x_pos_simple, self.y_pos_simple, split._macro_args)
 
         npt.assert_almost_equal(magnification_true*max(magnification_true)**-1,
                                 magnification_split*max(magnification_split)**-1,2)

@@ -161,21 +161,33 @@ class Penalties(object):
 
         penalty = 0
 
-        if 'shear' in self.params_to_constrain.keys():
+        for pname in self.params_to_constrain.keys():
 
-            index1 = self.param_class.routine.params_to_vary.index('shear_e1')
-            index2 = self.param_class.routine.params_to_vary.index('shear_e2')
-            shear,_ = cart2polar(lens_args_tovary[index1],lens_args_tovary[index2])
+            if pname == 'shear':
 
-            penalty += 0.5 * ((shear - self.params_to_constrain['shear'][0])*self.params_to_constrain['shear'][1]**-1)**2
+                index1 = self.param_class.routine.params_to_vary.index('shear_e1')
+                index2 = self.param_class.routine.params_to_vary.index('shear_e2')
+                shear,_ = cart2polar(lens_args_tovary[index1],lens_args_tovary[index2])
 
-        if 'shear_pa' in self.params_to_constrain.keys():
-            index1 = self.param_class.routine.params_to_vary.index('shear_e1')
-            index2 = self.param_class.routine.params_to_vary.index('shear_e2')
-            _, shear_pa = cart2polar(lens_args_tovary[index1], lens_args_tovary[index2])
+                penalty += 0.5 * ((shear - self.params_to_constrain['shear'][0])*self.params_to_constrain['shear'][1]**-1)**2
 
-            penalty += 0.5 * (
-                        (shear_pa - self.params_to_constrain['shear_pa'][0]) * self.params_to_constrain['shear_pa'][1] ** -1) ** 2
+            elif pname == 'shear_pa':
+
+                index1 = self.param_class.routine.params_to_vary.index('shear_e1')
+                index2 = self.param_class.routine.params_to_vary.index('shear_e2')
+                _, shear_pa = cart2polar(lens_args_tovary[index1], lens_args_tovary[index2])
+
+                penalty += 0.5 * (
+                            (shear_pa - self.params_to_constrain['shear_pa'][0]) * self.params_to_constrain['shear_pa'][1] ** -1) ** 2
+
+            else:
+
+                index = self.param_class.routine.params_to_vary.index(pname)
+                value = lens_args_tovary[index]
+                target = self.params_to_constrain[pname][0]
+                sigma = self.params_to_constrain[pname][1]
+
+                penalty += 0.5*((value-target)*sigma**-1)**2
 
         return penalty
 

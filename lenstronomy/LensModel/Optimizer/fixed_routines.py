@@ -7,13 +7,13 @@ class FixedPowerLaw_Shear(object):
 
         assert lens_model_list[0] in ['SPEMD','SPEP']
         assert lens_model_list[1] == 'SHEAR'
-        self.Ntovary = 2
-        self.k_start = 2
-        self.tovary_indicies = [0,1]
-        self.kwargs_lens = kwargs_lens
+        self._Ntovary = 2
+        self._k_start = 2
+        self._kwargs_lens = kwargs_lens
 
-        self.theta_E_start = self._estimate_theta_E(xpos,ypos)
+        self._theta_E_start = self._estimate_theta_E(xpos, ypos)
 
+        self._tovary_indicies = [0, 1]
         self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['e1', 'e2']]
         self.fixed_names = [['gamma'], []]
         self.fixed_values = [{'gamma': kwargs_lens[0]['gamma']}, {}]
@@ -70,25 +70,25 @@ class FixedPowerLaw_Shear(object):
 
         if reoptimize:
 
-            delta_phi,delta_ellip = 20*np.pi*180**-1, 0.1
-            delta_shear_phi,delta_shear = 20*np.pi*180**-1, 0.015
+            delta_phi,delta_ellip = 30*np.pi*180**-1, 0.15
+            delta_shear_phi,delta_shear = 30*np.pi*180**-1, 0.02
 
-            low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self.kwargs_lens[0]['e1'],self.kwargs_lens[0]['e2'],
-                                                              delta_phi,delta_ellip)
+            low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self._kwargs_lens[0]['e1'], self._kwargs_lens[0]['e2'],
+                                                              delta_phi, delta_ellip)
 
-            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self.kwargs_lens[1]['e1'],
-                                                                                   self.kwargs_lens[1]['e2'],
-                                                                                    delta_shear_phi,delta_shear)
+            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['e1'],
+                                                                                    self._kwargs_lens[1]['e2'],
+                                                                                    delta_shear_phi, delta_shear)
             theta_E = 0.005
             center = 0.005
 
-            low_Rein = self.kwargs_lens[0]['theta_E'] - theta_E
-            hi_Rein = self.kwargs_lens[0]['theta_E'] + theta_E
+            low_Rein = self._kwargs_lens[0]['theta_E'] - theta_E
+            hi_Rein = self._kwargs_lens[0]['theta_E'] + theta_E
 
-            low_centerx = self.kwargs_lens[0]['center_x'] - center
-            hi_centerx = self.kwargs_lens[0]['center_x'] + center
-            low_centery = self.kwargs_lens[0]['center_y'] - center
-            hi_centery = self.kwargs_lens[0]['center_y'] + center
+            low_centerx = self._kwargs_lens[0]['center_x'] - center
+            hi_centerx = self._kwargs_lens[0]['center_x'] + center
+            low_centery = self._kwargs_lens[0]['center_y'] - center
+            hi_centery = self._kwargs_lens[0]['center_y'] + center
 
         else:
 
@@ -102,8 +102,8 @@ class FixedPowerLaw_Shear(object):
             low_shear_e2 = low_shear_e1
             high_shear_e2 = high_shear_e1
 
-            low_Rein = self.theta_E_start - 0.1
-            hi_Rein = self.theta_E_start + 0.1
+            low_Rein = self._theta_E_start - 0.1
+            hi_Rein = self._theta_E_start + 0.1
 
             low_centerx = -0.015
             hi_centerx = 0.015

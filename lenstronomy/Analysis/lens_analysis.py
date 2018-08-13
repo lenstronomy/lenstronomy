@@ -3,6 +3,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 import lenstronomy.Util.param_util as param_util
+import lenstronomy.Util.mask as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
@@ -298,3 +299,24 @@ class LensAnalysis(object):
                    'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
                            'f_xy': util.array2image(f_xy), 'f_yy': util.array2image(f_yy)}
         return kwargs_interpol
+
+    def mass_fraction_within_radius(self, kwargs_lens, center_x, center_y, theta_E, numPix=100):
+        """
+        computes the mean convergence of all the different lens model components within a spherical aperture
+
+        :param kwargs_lens: lens model keyword argument list
+        :param center_x: center of the aperture
+        :param center_y: center of the aperture
+        :param theta_E: radius of aperture
+        :return: list of average convergences for all the model components
+        """
+        x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=2.*theta_E / numPix)
+        x_grid += center_x
+        y_grid += center_y
+        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, theta_E)
+        kappa_list = []
+        for i in range(len(kwargs_lens)):
+            kappa = self.LensModel.kappa(x_grid, y_grid, kwargs_lens, k=i)
+            kappa_mean = np.sum(kappa * mask) / np.sum(mask)
+            kappa_list.append(kappa_mean)
+        return kappa_list

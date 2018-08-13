@@ -36,10 +36,10 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         beta_x_simple, beta_y_simple = lensModel.ray_shooting(1, 0, kwargs_lens)
         beta_x_multi, beta_y_multi = lensModelMutli.ray_shooting(1, 0, kwargs_lens)
-        assert beta_x_simple == beta_x_multi
-        assert beta_y_simple == beta_y_multi
-        assert beta_x_simple == 0
-        assert beta_y_simple == 0
+        npt.assert_almost_equal(beta_x_simple, beta_x_multi, decimal=10)
+        npt.assert_almost_equal(beta_y_simple, beta_y_multi, decimal=10)
+        npt.assert_almost_equal(beta_x_simple, 0, decimal=10)
+        npt.assert_almost_equal(beta_y_simple, 0, decimal=10)
 
     def test_sis_hessian(self):
         z_source = 1.5
@@ -99,6 +99,22 @@ class TestMultiPlane(object):
         Dt = lensModelMutli._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
         fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
         dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
+        print(dt, dt_simple)
+        npt.assert_almost_equal(dt, dt_simple, decimal=8)
+
+    def test_sis_travel_time_new(self):
+        z_source = 1.5
+        z_lens = 0.5
+        lens_model_list = ['SIS', 'SIS']
+        redshift_list = [z_lens, 0.2]
+        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}, {'theta_E': 0., 'center_x': 0, 'center_y': 0}]
+        dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
+        Dt = lensModelMutli._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
+        fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
+        dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
+        print(dt, dt_simple)
         npt.assert_almost_equal(dt, dt_simple, decimal=8)
 
     def test_sis_ray_shooting(self):
@@ -170,6 +186,64 @@ class TestMultiPlane(object):
         beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+
+
+class TestForegroundShear(object):
+
+    def setup(self):
+        pass
+
+    def test_foreground_shear(self):
+        """
+        scenario: a shear field in the foreground of the main deflector is placed
+        we compute the expected shear on the lens plain and effectively model the same system in a single plane
+        configuration
+        We check for consistency of the two approaches and whether the specific redshift of the foreground shear field has
+        an impact on the arrival time surface
+        :return:
+        """
+        z_source = 1.5
+        z_lens = 0.5
+        z_shear = 0.2
+        x, y = np.array([1., 0.]), np.array([0., 2.])
+        from astropy.cosmology import default_cosmology
+        from lenstronomy.Cosmo.background import Background
+
+        cosmo = default_cosmology.get()
+        cosmo_bkg = Background(cosmo)
+        e1, e2 = 0.01, 0.01 # shear terms caused by z_shear on z_source
+        lens_model_list = ['SIS', 'SHEAR']
+        redshift_list = [z_lens, z_shear]
+        lensModelMutli = MultiLens(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        kwargs_lens_multi = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'e1': e1, 'e2': e2}]
+        alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(x, y, kwargs_lens_multi)
+        t_multi = lensModelMutli.arrival_time(x, y, kwargs_lens_multi)
+        dt_multi = t_multi[0] - t_multi[1]
+        physical_shear = cosmo_bkg.D_xy(0, z_source) / cosmo_bkg.D_xy(z_shear, z_source)
+        foreground_factor = cosmo_bkg.D_xy(z_shear, z_lens) / cosmo_bkg.D_xy(0, z_lens) * physical_shear
+        print(foreground_factor)
+        lens_model_simple_list = ['SIS', 'FOREGROUND_SHEAR', 'SHEAR']
+        kwargs_lens_single = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'e1': e1*foreground_factor, 'e2': e2*foreground_factor}, {'e1': e1, 'e2': e2}]
+        lensModel = LensModel(lens_model_list=lens_model_simple_list)
+        alpha_x_simple, alpha_y_simple = lensModel.alpha(x, y, kwargs_lens_single)
+        npt.assert_almost_equal(alpha_x_simple, alpha_x_multi, decimal=8)
+        npt.assert_almost_equal(alpha_y_simple, alpha_y_multi, decimal=8)
+
+        ra_source, dec_source = lensModel.ray_shooting(x, y, kwargs_lens_single)
+        ra_source_multi, dec_source_multi = lensModelMutli.ray_shooting(x, y, kwargs_lens_multi)
+        npt.assert_almost_equal(ra_source, ra_source_multi, decimal=8)
+        npt.assert_almost_equal(dec_source, dec_source_multi, decimal=8)
+
+        fermat_pot = lensModel.fermat_potential(x, y, ra_source, dec_source, kwargs_lens_single)
+        from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+        lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+        Dt = lensCosmo.D_dt
+        print(lensCosmo.D_dt)
+        #t_simple = const.delay_arcsec2days(fermat_pot, Dt)
+        t_simple = lensCosmo.time_delay_units(fermat_pot)
+        dt_simple = t_simple[0] - t_simple[1]
+        print(t_simple, t_multi)
+        npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
 
 
 if __name__ == '__main__':

@@ -20,6 +20,9 @@ Method papers
 * Cosmic Shear with Einstein Rings; `Birrer et al. 2018 <http://adsabs.harvard.edu/abs/2018ApJ...852L..14B>`_
     *Forecast paper to measure cosmic shear with Einstein ring lenses. The forecast is made based on **lenstronomy** simulations.
 
+* Is every strong lens model unhappy in its own way? Uniform modelling of a sample of 12 quadruply+ imaged quasars; `Shajib et al. 2018 <https://ui.adsabs.harvard.edu//#abs/2018arXiv180709278S/>`_
+    *This work presents a uniform modelling framework to model 12 quadruply lensed quasars in three HST bands.*
+
 
 Science papers
 --------------
@@ -29,3 +32,4 @@ Science papers
 
 * Lensing substructure quantification in RXJ1131-1231: a 2 keV lower bound on dark matter thermal relic mass; `Birrer et al. 2017b <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_
     *This paper quantifies the substructure content of a lens by a sub-clump scanning procedure and the application of Approximate Bayesian Computing.*
+

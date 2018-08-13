@@ -104,10 +104,10 @@ class Simulation(object):
         :param norm_factor:
         :return:
         """
-        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', ['NONE']))
-        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
-        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', ['NONE']))
-        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', ['NONE']),
+        lensLightModel = LightModel(kwargs_options.get('lens_light_model_list', []))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', []))
+        lensModel = LensModel(lens_model_list=kwargs_options.get('lens_model_list', []))
+        pointSource = PointSource(point_source_type_list=kwargs_options.get('point_source_list', []),
                                           lensModel=lensModel, fixed_magnification_list=kwargs_options.get('fixed_magnification_list', [False]),
                                        additional_images_list=kwargs_options.get('additional_images_list', [False]))
         kwargs_source_updated = copy.deepcopy(kwargs_source)
@@ -127,7 +127,7 @@ class Simulation(object):
         :return:
         """
         kwargs_source_updated = copy.deepcopy(kwargs_source)
-        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', []))
         kwargs_source_updated = sourceModel.re_normalize_flux(kwargs_source_updated, norm_factor_source)
         return kwargs_source_updated
 
@@ -164,7 +164,7 @@ class Simulation(object):
         :return:
         """
         x, y = util.make_grid(numPix, deltaPix)
-        sourceModel = LightModel(kwargs_options.get('source_light_model_list', ['NONE']))
+        sourceModel = LightModel(kwargs_options.get('source_light_model_list', []))
         image1d = sourceModel.surface_brightness(x, y, kwargs_source)
         image2d = util.array2image(image1d)
         return image2d

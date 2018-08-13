@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.3.1 documentation</title>
+    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.3.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -78,7 +78,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="n">point_source_class</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">update_lens_model</span><span class="p">(</span><span class="n">lens_model_class</span><span class="o">=</span><span class="n">lens_model_class</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PSF</span><span class="o">.</span><span class="n">psf_error_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span> <span class="o">=</span> <span class="n">source_model_class</span>
@@ -462,7 +465,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

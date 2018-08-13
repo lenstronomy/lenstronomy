@@ -20,7 +20,7 @@ class Data(object):
 
     optional keywords for noise properties:
     - 'background_rms': rms value of the background noise
-    - 'exp_time: float, exposure time to compute the Poisson noise contribution
+    - 'exp_time': float, exposure time to compute the Poisson noise contribution
     - 'exposure_map': 2d numpy array, effective exposure time for each pixel. If set, will replace 'exp_time'
     - 'noise_map': Gaussian noise (1-sigma) for each individual pixel.
     If this keyword is set, the other noise properties will be ignored.

@@ -11,16 +11,16 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None, lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
-
-
-        :param kwargs_options: keywords of the modelling choices
-        'subgrid_res': integer, sub-grid ray-tracing resolution
-        'psf_subgrid': bool, if True, performs the convolution on the subgrid resolution
-        (higher accuracy for higher computational cost)
-        :param kwargs_data: keywords of the data, see Data() class for further information
-        :param kwargs_psf: keywords of the PSF convolution, see PSF() class for further information
+        :param data_class: instance of Data() class
+        :param psf_class: instance of PSF() class
+        :param lens_model_class: instance of LensModel() class
+        :param source_model_class: instance of LightModel() class describing the source parameters
+        :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
+        :param point_source_class: instance of PointSource() class describing the point sources
+        :param kwargs_numerics: keyword argument with various numerics description (see ImageNumerics class for options)
         """
         self.PSF = psf_class
         self.Data = data_class
@@ -28,9 +28,14 @@ class ImageModel(object):
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
+        self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
-            self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
+            if self.PSF.psf_error_map is not None:
+                self._psf_error_map = kwargs_numerics.get('psf_error_map', True)
+                self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
+            else:
+                self._psf_error_map = False
         else:
             self._psf_error_map = False
         self.SourceModel = source_model_class
@@ -193,13 +198,15 @@ class ImageModel(object):
         """
         error_map = np.zeros_like(self.Data.data)
         if self._psf_error_map:
-            ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens)
-            for i in range(0, n_points):
-                error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
-                error_map += error_map_add
+            for k, bool in enumerate(self._error_map_bool_list):
+                if bool is True:
+                    ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
+                    for i in range(0, n_points):
+                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+                        error_map += error_map_add
         return error_map
 
-    def point_sources_list(self, kwargs_ps, kwargs_lens):
+    def point_sources_list(self, kwargs_ps, kwargs_lens, k=None):
         """
 
         :param kwargs_ps:
@@ -208,7 +215,7 @@ class ImageModel(object):
         point_list = []
         if self.PointSource is None:
             return point_list
-        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens)
+        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
         for i in range(len(ra_array)):
             point_source = self.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
             point_list.append(point_source)
@@ -321,7 +328,7 @@ class ImageModel(object):
         else:
             source_light_response, n_source = [], 0
         if not self.LensLightModel is None:
-            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid,                                                                               kwargs_lens_light)
+            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
         else:
             lens_light_response, n_lens_light = [], 0
         if not self.PointSource is None:
@@ -351,13 +358,7 @@ class ImageModel(object):
             A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         A = self._add_mask(A, mask)
-        # error_map
-        #error_map = np.zeros(num_response)
-        #if self._psf_error_map:
-        #    for i in range(0, n_points):
-        #        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
-        #        error_map += self.ImageNumerics.image2array(error_map_add)
-        return A#, error_map
+        return A
 
     def _add_mask(self, A, mask):
         """

@@ -138,7 +138,8 @@ class PSF(object):
     @property
     def psf_error_map(self):
         if not hasattr(self, '_psf_error_map'):
-            raise ValueError("kwargs_psf has no 'psf_error_map' attribute!")
+            print("WARNING: kwargs_psf has no 'psf_error_map' attribute!")
+            return None
         else:
             return self._psf_error_map
 

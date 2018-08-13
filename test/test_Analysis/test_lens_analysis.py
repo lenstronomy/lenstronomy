@@ -212,6 +212,14 @@ class TestLensAnalysis(object):
         npt.assert_almost_equal(e1, e1_in, decimal=3)
         npt.assert_almost_equal(e2, e2_in, decimal=3)
 
+    def test_mass_fraction_within_radius(self):
+        center_x, center_y = 0.5, -1
+        theta_E = 1.1
+        kwargs_lens = [{'theta_E': 1.1, 'center_x': center_x, 'center_y': center_y}]
+        lensAnalysis = LensAnalysis(kwargs_model={'lens_model_list': ['SIS']})
+        kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, numPix=100)
+        npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
+
 
 if __name__ == '__main__':
     pytest.main()

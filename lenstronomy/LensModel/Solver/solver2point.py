@@ -4,6 +4,7 @@ import scipy.optimize
 import numpy as np
 import copy
 
+
 class Solver2Point(object):
     """
     class to make the constraints for the solver
@@ -79,7 +80,7 @@ class Solver2Point(object):
         :return: updated kwargs_list
         """
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
             if self._solver_type == 'CENTER':
                 [center_x, center_y] = x
                 kwargs_list[0]['center_x'] = center_x
@@ -105,7 +106,7 @@ class Solver2Point(object):
         :return:
         """
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'COMPOSITE', 'NFW_ELLIPSE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
             if self._solver_type == 'CENTER':
                 center_x = kwargs_list[0]['center_x']
                 center_y = kwargs_list[0]['center_y']
@@ -134,7 +135,7 @@ class Solver2Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if lens_model in ['SPEP', 'SPEMD', 'NFW_ELLIPSE', 'COMPOSITE']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
             if self._solver_type in ['CENTER']:
                 kwargs_fixed['center_x'] = kwargs_lens['center_x']
                 kwargs_fixed['center_y'] = kwargs_lens['center_y']

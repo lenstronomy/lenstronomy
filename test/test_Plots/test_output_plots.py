@@ -13,6 +13,7 @@ import lenstronomy.Plots.output_plots as output_plots
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class TestOutputPlots(object):
@@ -90,9 +91,9 @@ class TestOutputPlots(object):
 
         lensPlot = LensModelPlot(self.kwargs_data, self.kwargs_psf, self.kwargs_numerics, self.kwargs_model,
                                      self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
-                                     arrow_size=0.02, cmap_string="gist_heat", high_res=5)
+                                     arrow_size=0.02, cmap_string="gist_heat")
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.data_plot(ax=axes[0, 0])
         lensPlot.model_plot(ax=axes[0, 1])
@@ -102,7 +103,7 @@ class TestOutputPlots(object):
         lensPlot.magnification_plot(ax=axes[1, 2])
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
         lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
@@ -114,7 +115,7 @@ class TestOutputPlots(object):
                                         lens_light_add=True, point_source_add=True)
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8), sharex=False, sharey=False)
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
         lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
         lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
@@ -163,6 +164,14 @@ class TestOutputPlots(object):
         param_list = ['test1', 'test2']
         chain = X2_list, pos_list, vel_list, None
         output_plots.plot_chain(chain=chain, param_list=param_list)
+        plt.close()
+
+    def test_plot_mcmc_behaviour(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        param_mcmc = ['a', 'b']
+        samples_mcmc = np.random.random((10, 1000))
+        dist_mcmc = np.random.random(1000)
+        output_plots.plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=10)
         plt.close()
 
 

@@ -51,8 +51,6 @@ class FittingSequence(object):
                 self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
             elif fitting_routine in ['align_images']:
                 self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
-            elif fitting_routine in ['add_shapelets']:
-                pass
         if bijective is False:
             lens_temp = self._param.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
             source_temp = self._param.image2source_plane(lens_temp, source_temp)
@@ -189,17 +187,17 @@ class FittingSequence(object):
 
         for i in range(len(self.multi_band_list)):
             if compute_bool[i] is True:
-                    kwargs_data = self.multi_band_list[i][0]
-                    kwargs_psf = self.multi_band_list[i][1]
-                    kwargs_numerics = self.multi_band_list[i][2]
-                    alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_updated, source_updated,
+                kwargs_data = self.multi_band_list[i][0]
+                kwargs_psf = self.multi_band_list[i][1]
+                kwargs_numerics = self.multi_band_list[i][2]
+                alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_updated, source_updated,
                                                         lens_light_input, ps_input, compute_bool=compute_bool)
 
-                    kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit,
+                kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit,
                                                               threadCount=1, mpi=mpi,
                                                               print_key='Alignment fitting for band %s ...' % i)
-                    print('Align completed for band %s.' % i)
-                    self.multi_band_list[i][0] = kwargs_data
+                print('Align completed for band %s.' % i)
+                self.multi_band_list[i][0] = kwargs_data
         return 0
 
     def _change_shapelet_coeffs(self, n_max):

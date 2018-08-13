@@ -164,7 +164,8 @@ class LensModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", high_res=5):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source,
+                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat"):
         """
 
         :param kwargs_options:
@@ -258,7 +259,7 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def model_plot(self, ax, v_min=None, v_max=None):
+    def model_plot(self, ax, v_min=None, v_max=None, image_names=False):
         """
 
         :param ax:
@@ -286,8 +287,9 @@ class LensModelPlot(object):
 
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
-        #ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
-        #image_position_plot(ax, self._coords, ra_image, dec_image)
+        if image_names is True:
+            ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+            image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, v_min=None, v_max=None):
@@ -573,7 +575,7 @@ class LensModelPlot(object):
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
 
-    f, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False, sharey=False)
+    f, axes = plt.subplots(1, 3, figsize=(18, 6))
     ax = axes[0]
     ax.plot(np.log10(-np.array(X2_list)))
     ax.set_title('-logL')
@@ -594,6 +596,32 @@ def plot_chain(chain, param_list):
     ax.set_title('param velocity')
     ax.legend()
     return f, axes
+
+
+def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=100):
+    """
+    plots the MCMC behaviour and looks for convergence of the chain
+    :param samples_mcmc: parameters sampled 2d numpy array
+    :param param_mcmc: list of parameters
+    :param dist_mcmc: log likelihood of the chain
+    :param num_average: number of samples to average (should coincide with the number of samples in the emcee process)
+    :return:
+    """
+    num_samples = len(samples_mcmc[:, 0])
+    num_average = int(num_average)
+    n_points = int((num_samples - num_samples % num_average) / num_average)
+    for i, param_name in enumerate(param_mcmc):
+        samples = samples_mcmc[:, i]
+        samples_averaged = np.average(samples[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
+        end_point = np.mean(samples_averaged)
+        samples_renormed = (samples_averaged - end_point) / np.std(samples_averaged)
+        ax.plot(samples_renormed, label=param_name)
+
+    dist_averaged = -np.max(dist_mcmc[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
+    dist_normed = (dist_averaged - np.max(dist_averaged)) / (np.max(dist_averaged) - np.min(dist_averaged))
+    ax.plot(dist_normed, label="logL", color='k', linewidth=2)
+    ax.legend()
+    return ax
 
 
 def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_multiply=10):
@@ -636,7 +664,7 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     radius = (np.max(x_grid) - np.min(x_grid))/4
     circle_shear = util_maskl.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
     circle_foreground = util_maskl.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
-    f, ax = plt.subplots(1, 1, figsize=(16, 8), sharex=False, sharey=False)
+    f, ax = plt.subplots(1, 1, figsize=(16, 8))
     im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
     im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
@@ -660,10 +688,14 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     if not 'cmap' in kwargs:
         kwargs['cmap'] = 'seismic'
 
-    f, axes = plt.subplots(1, 3, figsize=(15, 5), sharex=False, sharey=False)
+    f, axes = plt.subplots(1, 3, figsize=(15, 5))
     ax = axes[0]
     im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
+    if not 'vmin' in kwargs:
+        kwargs['vmin'] = v_min
+    if not 'vmax' in kwargs:
+        kwargs['vmax'] = v_max
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -672,7 +704,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
-    im = ax.matshow(np.log10(psf_out), origin='lower', vmin=v_min, vmax=v_max, **kwargs)
+    im = ax.matshow(np.log10(psf_out), origin='lower', **kwargs)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
@@ -681,7 +713,13 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax.text(delta_x, n_kernel-delta_y, "iterative reconstruction", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[2]
-    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs)
+    kwargs_new = copy.deepcopy(kwargs)
+    try:
+        del kwargs_new['vmin']
+        del kwargs_new['vmax']
+    except:
+        pass
+    im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs_new)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)

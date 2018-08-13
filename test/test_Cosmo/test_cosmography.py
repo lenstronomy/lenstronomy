@@ -56,8 +56,6 @@ class TestCosmography(object):
         mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
         H0_mean = np.mean(mcmc_samples[:, 0])
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
-        sigma = np.sqrt(np.var(mcmc_samples[:, 0]))
-        npt.assert_almost_equal(sigma, 2, decimal=0)
 
     def test_sampling_fix_omega_mh2(self):
         mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
@@ -74,6 +72,22 @@ class TestCosmography(object):
         npt.assert_almost_equal(H0_mean / self.H0_true, 1, decimal=1)
         sigma = np.sqrt(np.var(mcmc_samples))
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
+
+    def test_sampling_curvature(self):
+        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m_omega_de",
+                                    omega_m_fixed=self.omega_m_true,
+                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
+        walkerRatio = 4
+        n_run = 10
+        n_burn = 10
+        mean_start = [self.H0_true, self.omega_m_true, 1 - self.omega_m_true]
+        sigma_start = [5, 0.1, 0.1]
+        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1,
+                                            init_pos=None, mpi_monch=False)
+        H0_mean = np.mean(mcmc_samples[:, 0])
+        npt.assert_almost_equal(H0_mean / self.H0_true, 1, decimal=1)
+        Om0_mean = np.mean(mcmc_samples[:, 1])
+        npt.assert_almost_equal(Om0_mean / self.omega_m_true, 1, decimal=0)
 
     def test_sampling_H0_omega_m_sklearn(self):
         mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",

@@ -18,7 +18,7 @@ class TestPointSource(object):
         self.sourcePos_x, self.sourcePos_y = 0.01, -0.01
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
-        self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION', 'NONE'],
+        self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[False]*4, additional_images_list=[False]*4)
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos)},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
@@ -81,7 +81,7 @@ class TestPointSource_fixed_mag(object):
         self.sourcePos_x, self.sourcePos_y = 0.01, -0.01
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
-        self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION', 'NONE'],
+        self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[True]*4, additional_images_list=[False]*4)
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'source_amp': 1},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
@@ -115,6 +115,10 @@ class TestPointSource_fixed_mag(object):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
+
+    def test_check_image_positions(self):
+        bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
+        assert bool == True
 
 
 if __name__ == '__main__':

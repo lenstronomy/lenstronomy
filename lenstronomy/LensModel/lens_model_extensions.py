@@ -189,11 +189,12 @@ class LensModelExtensions(LensModel):
         center_y = y_grid[kappa == np.max(kappa)]
         return center_x, center_y
 
-    def effective_einstein_radius(self, kwargs_lens_list, k=None):
+    def effective_einstein_radius(self, kwargs_lens_list, k=None, spacing=1000):
         """
         computes the radius with mean convergence=1
 
         :param kwargs_lens:
+        :param spacing: number of annular bins to compute the convergence (resolution of the Einstein radius estimate)
         :return:
         """
         if 'center_x' in kwargs_lens_list[0]:
@@ -213,7 +214,7 @@ class LensModelExtensions(LensModel):
             center_x = x_grid[kappa == np.max(kappa)]
             center_y = y_grid[kappa == np.max(kappa)]
         kappa = util.array2image(kappa)
-        r_array = np.linspace(0.0001, numPix*deltaPix/2., 200)
+        r_array = np.linspace(0.0001, numPix*deltaPix/2., spacing)
         for r in r_array:
             mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)
@@ -224,10 +225,19 @@ class LensModelExtensions(LensModel):
         print(kwargs_lens_list, "Warning, no Einstein radius computed!")
         return r_array[-1]
 
-    def profile_slope(self, kwargs_lens_list, lens_model_internal_bool=None):
+    def profile_slope(self, kwargs_lens_list, lens_model_internal_bool=None, num_points=10):
+        """
+        computes the logarithmic power-law slope of a profile
+
+        :param kwargs_lens_list: lens model keyword argument list
+        :param lens_model_internal_bool: bool list, indicate which part of the model to consider
+        :param num_points: number of estimates around the Einstein radius
+        :return:
+        """
         theta_E = self.effective_einstein_radius(kwargs_lens_list)
         x0 = kwargs_lens_list[0]['center_x']
         y0 = kwargs_lens_list[0]['center_y']
+        x, y = util.points_on_circle(theta_E, num_points)
         dr = 0.01
         if lens_model_internal_bool is None:
             lens_model_internal_bool = [True]*len(kwargs_lens_list)
@@ -244,14 +254,18 @@ class LensModelExtensions(LensModel):
         gamma = -slope + 2
         return gamma
 
-    def external_shear(self, kwargs_lens_list):
+    def external_shear(self, kwargs_lens_list, foreground=False):
         """
 
         :param kwargs_lens_list:
         :return:
         """
         for i, model in enumerate(self.lens_model_list):
-            if model == 'SHEAR':
+            if foreground is True:
+                shear_model = 'FOREGROUND_SHEAR'
+            else:
+                shear_model = 'SHEAR'
+            if model == shear_model:
                 e1 = kwargs_lens_list[i]['e1']
                 e2 = kwargs_lens_list[i]['e2']
                 phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)

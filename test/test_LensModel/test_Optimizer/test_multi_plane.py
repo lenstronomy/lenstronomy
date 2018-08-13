@@ -6,6 +6,7 @@ from time import time
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
 class TestMultiPlaneOptimizer(object):
@@ -122,20 +123,23 @@ class TestMultiPlaneOptimizer(object):
         alpha_y_true = np.array([0.4160718, -0.48592582, 0.17717094, -0.42390834])
         x_in_true = np.array([998.6980648, -974.71188014, -1047.48667913, 739.21910397])
         y_in_true = np.array([-1224.62493444, 1022.33224746, -642.6370298, 887.58077074])
-        fixed_alpha = [alpha_x_true,alpha_y_true]
 
-        split_true = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
+        true = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo, [0, 1], single_background=False)
 
-        betax_true, betay_true = split_true.ray_shooting_fast(self.kwargs_lens_full_background[0:2],thetax=self.x_pos_single_background,thetay=self.y_pos_single_background)
+        betax_true, betay_true = true.ray_shooting_fast(self.kwargs_lens_full_background[0:2],
+                                                              thetax=self.x_pos_single_background,thetay=self.y_pos_single_background)
 
         split = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
                                   self.cosmo,[0, 1], single_background=True)
 
+        split._background._alpha_x_approx = alpha_x_true
+        split._background._alpha_y_approx = alpha_y_true
+
         x,y = split._background._fixed_background(x_in_true,y_in_true,
-                                                    self.kwargs_lens_full_background[2:],alpha=fixed_alpha)
+                                                    self.kwargs_lens_full_background[2:],alpha_x_true,alpha_y_true)
 
         betax,betay = x*split._T_z_source**-1,y*split._T_z_source**-1
 
@@ -143,9 +147,11 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_almost_equal(betay,betay_true)
 
         lens_ext = self.optimizer_params.lensModel
+        #exten = LensModelExtensions(lens_model_list=self.lensmodel_fixed_background.lens_model_list,redshift_list=self.lensmodel_fixed_background.redshift_list,z_source=1.5)
+        #mag_finite_true = exten.magnification_finite(self.x_pos_single_background, self.y_pos_single_background,self.kwargs_lens_full_background,source_sigma=0.001)
         mag_finite = lens_ext.magnification_finite(self.x_pos_single_background, self.y_pos_single_background, self.kwargs_lens_full_background,
-                                                       source_sigma=0.0005,ray_shooting_function=split_true.ray_shooting_mag_finite)
-        mag_point = split_true.magnification_fast(self.kwargs_lens_full_background[0:2])
+                                                       source_sigma=0.004,ray_shooting_function=split.ray_shooting_mag_finite,grid_number=200,window_size=0.1)
+        mag_point = true.magnification_fast(self.kwargs_lens_full_background[0:2])
 
         npt.assert_almost_equal(mag_finite,mag_point,decimal=2)
 
@@ -310,5 +316,8 @@ class TestMultiPlaneOptimizer(object):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
 
+t = TestMultiPlaneOptimizer()
+t.setup()
+t.test_single_background()
 if __name__ == '__main__':
     pytest.main()

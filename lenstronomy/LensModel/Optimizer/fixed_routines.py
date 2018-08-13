@@ -1,5 +1,7 @@
 import numpy as np
-from lenstronomy.Util.param_util import phi_gamma_ellipticity,ellipticity2phi_gamma,phi_q2_ellipticity,ellipticity2phi_q
+from lenstronomy.Util.param_util import phi_gamma_ellipticity,ellipticity2phi_gamma,phi_q2_ellipticity,\
+    ellipticity2phi_q
+from lenstronomy.Util.util import approx_theta_E
 
 class FixedPowerLaw_Shear(object):
 
@@ -11,34 +13,13 @@ class FixedPowerLaw_Shear(object):
         self._k_start = 2
         self._kwargs_lens = kwargs_lens
 
-        self._theta_E_start = self._estimate_theta_E(xpos, ypos)
+        self._theta_E_start = approx_theta_E(xpos, ypos)
 
         self._tovary_indicies = [0, 1]
         self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['e1', 'e2']]
         self.fixed_names = [['gamma'], []]
         self.fixed_values = [{'gamma': kwargs_lens[0]['gamma']}, {}]
         self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','shear_e1','shear_e2']
-
-    def _estimate_theta_E(self,ximg,yimg):
-
-        dis = []
-        xinds,yinds = [0,0,0,1,1,2],[1,2,3,2,3,3]
-
-        for (i,j) in zip(xinds,yinds):
-
-            dx,dy = ximg[i] - ximg[j], yimg[i] - yimg[j]
-            dr = (dx**2+dy**2)**0.5
-            dis.append(dr)
-        dis = np.array(dis)
-
-        greatest = np.argmax(dis)
-        dr_greatest = dis[greatest]
-        dis[greatest] = 0
-
-        second_greatest = np.argmax(dis)
-        dr_second = dis[second_greatest]
-
-        return 0.5*(dr_greatest*dr_second)**0.5
 
     def _new_ellip(self,start_e1,start_e2,delta_phi,delta_gamma):
 

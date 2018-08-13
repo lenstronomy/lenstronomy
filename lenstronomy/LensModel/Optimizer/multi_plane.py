@@ -1,5 +1,6 @@
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
+from lenstronomy.Util.util import approx_theta_E
 
 class MultiPlaneLensing(object):
 
@@ -41,21 +42,24 @@ class MultiPlaneLensing(object):
         self._macro_args = macro_args
 
         self._single_background = single_background
-        self._background = Background(halo_lensmodel, self._z_macro, self._z_source,
-                                      single_background=single_background)
 
-    def ray_shooting_fast(self, macromodel_args, true_foreground=True, offset_index=None,thetax=None,thetay=None,
-                         force_compute=False):
+        self._background = Background(halo_lensmodel, self._z_macro, self._z_source,
+                                      single_background=single_background,
+                                      approx_Rein = approx_theta_E(self._x_pos, self._y_pos))
+
+    def ray_shooting_fast(self, macromodel_args, true_path=True, offset_index=None, thetax=None, thetay=None,
+                          force_compute=False):
 
         # get the deflection angles from foreground and main lens plane subhalos (once)
-        x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, true_foreground=true_foreground,
+        x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, true_foreground=true_path,
                                                              offset_index=offset_index, thetax=thetax, thetay=thetay
-                                                             ,force_compute=force_compute)
+                                                             , force_compute=force_compute)
 
         x, y, alphax, alphay = self._model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
 
         # compute the angular position on the source plane
-        x_source, y_source = self._background.ray_shooting(alphax, alphay, self._halo_args, x, y)
+        x_source, y_source = self._background.ray_shooting(alphax, alphay, self._halo_args, x, y, true_background=true_path,
+                                                           offset_index=offset_index)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
@@ -77,15 +81,11 @@ class MultiPlaneLensing(object):
         x, y, alphax, alphay = self._model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
 
         # compute the angular position on the source plane
+
         x_source, y_source = self._background.ray_shooting(alphax, alphay, self._halo_args, x, y, finite_mag_shooting=True,
-                                                           idx=self._mag_idx)
+                                                           true_background=False)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
-
-        if self._mag_idx == self._nimg:
-            self._mag_idx = 0
-        else:
-            self._mag_idx += 1
 
         return betax, betay
 
@@ -99,11 +99,11 @@ class MultiPlaneLensing(object):
 
     def hessian_fast(self,macromodel_args,diff=0.00000001):
 
-        alpha_ra, alpha_dec = self._alpha_fast(self._x_pos, self._y_pos, macromodel_args, true_foreground=True)
+        alpha_ra, alpha_dec = self._alpha_fast(self._x_pos, self._y_pos, macromodel_args, true_path=True)
 
-        alpha_ra_dx, alpha_dec_dx = self._alpha_fast(self._x_pos + diff, self._y_pos, macromodel_args, true_foreground=False,
+        alpha_ra_dx, alpha_dec_dx = self._alpha_fast(self._x_pos + diff, self._y_pos, macromodel_args, true_path=False,
                                                      offset_index=0)
-        alpha_ra_dy, alpha_dec_dy = self._alpha_fast(self._x_pos, self._y_pos + diff, macromodel_args, true_foreground=False,
+        alpha_ra_dy, alpha_dec_dy = self._alpha_fast(self._x_pos, self._y_pos + diff, macromodel_args, true_path=False,
                                                      offset_index=1)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra) * diff ** -1
@@ -118,10 +118,10 @@ class MultiPlaneLensing(object):
 
         return f_xx, f_xy, f_yx, f_yy
 
-    def _alpha_fast(self, x_pos, y_pos, macromodel_args, true_foreground=False, offset_index = None):
+    def _alpha_fast(self, x_pos, y_pos, macromodel_args, true_path=False, offset_index = None):
 
-        beta_x,beta_y = self.ray_shooting_fast(macromodel_args, true_foreground=true_foreground, offset_index=offset_index,
-                                               thetax=x_pos,thetay=y_pos)
+        beta_x,beta_y = self.ray_shooting_fast(macromodel_args, true_path=true_path, offset_index=offset_index,
+                                               thetax=x_pos, thetay=y_pos)
 
         alpha_x = np.array(x_pos - beta_x)
         alpha_y = np.array(y_pos - beta_y)
@@ -248,73 +248,96 @@ class Foreground(object):
 
 class Background(object):
 
-    def __init__(self, background_lensmodel, z_background, z_source, single_background=False):
+    def __init__(self, background_lensmodel, z_background, z_source, single_background=False, approx_Rein=None):
 
         self._halos_lensmodel = background_lensmodel
         self._z_background = z_background
         self._z_source = z_source
         self._single_background = single_background
+        self._offset_beta = [None,None]
 
         self._T_main_src = self._halos_lensmodel.lens_model._cosmo_bkg.T_xy(z_background,z_source)
         self._T_z_source = self._halos_lensmodel.lens_model._T_z_source
         self._T_main = self._halos_lensmodel.lens_model._cosmo_bkg.T_xy(0,z_background)
+        self._reduced_to_phys_main = self._halos_lensmodel.lens_model._cosmo_bkg.D_xy(0, z_source)*\
+                                     self._halos_lensmodel.lens_model._cosmo_bkg.D_xy(z_background, z_source)**-1
 
-    def _approx_alpha(self,x,y,delta_T,beta_x=0,beta_y=0):
+        self._approx_deflector = LensModel(lens_model_list=['SIS'], multi_plane=False)
 
-        angle_x, angle_y = beta_x - x*delta_T**-1, beta_y - y*delta_T**-1
+        self._approx_kwargs = [{'theta_E':approx_Rein,'center_x':0, 'center_y':0}]
 
-        return angle_x, angle_y
+    def _approx_alpha(self,x,y):
 
-    def _fixed_background(self,x_in,y_in,args,alpha=None):
+        alphax, alphay = self._approx_deflector.alpha(x*self._T_main**-1,
+                                                      y*self._T_main**-1,self._approx_kwargs)
 
-        if alpha is None:
-            if not hasattr(self,'_alphax_approx'):
-                self._alphax_approx, self._alphay_approx = self._approx_alpha(x_in, y_in, self._T_main_src)
-                #self._x_in_0, self._y_in_0 = x_in, y_in
-            x, y, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in, y_in, self._alphax_approx,
-                                                                               self._alphay_approx
-                                                                               , self._z_background, self._z_source,
-                                                                               args)
+        return -alphax*self._reduced_to_phys_main, -alphay*self._reduced_to_phys_main
 
-        else:
+    def _fixed_background(self,x_in,y_in,args,alpha_x_approx,alpha_y_approx):
 
-            alphax, alphay = alpha[0], alpha[1]
-            x, y, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in, y_in, alphax, alphay,
-                                                                               self._z_background, self._z_source,
-                                                                               args)
+        x, y, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in, y_in,alpha_x_approx,alpha_y_approx,
+                                                                           self._z_background, self._z_source,args)
 
         return x, y
 
-    def ray_shooting(self, alphax, alphay, args, x_in, y_in, finite_mag_shooting=False, test_alpha=None, idx=None):
+    def ray_shooting(self, alphax, alphay, args, x_in, y_in, true_background=True, finite_mag_shooting=False,
+                     offset_index=None):
 
         if self._single_background:
 
-            if not hasattr(self, '_fixed_beta'):
-                self._fixed_beta = {}
-                _x, _y = self._fixed_background(x_in, y_in, args, test_alpha)
-                self._fixed_beta['x'] = _x
-                self._fixed_beta['y'] = _y
-
-            if finite_mag_shooting:
-
-                if not isinstance(self._alphax_approx, np.ndarray):
-                    raise ValueError('must initialize background ray shooting.')
-
-                alpha_x = self._alphax_approx[idx]*np.ones_like(x_in)
-                alpha_y = self._alphay_approx[idx]*np.ones_like(y_in)
-
-                x, y, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in, y_in,alpha_x,
-                                                                                   alpha_y, self._z_background,
-                                                                                   self._z_source,args)
-
-            else:
-                x = x_in + alphax * self._T_main_src - self._fixed_beta['x']
-                y = y_in + alphay * self._T_main_src - self._fixed_beta['y']
+            x, y = self._ray_shooting_single_background(alphax, alphay, args, x_in, y_in, true_background=true_background,
+                                                        finite_mag_shooting=finite_mag_shooting,
+                                                        offset_index=offset_index)
 
         else:
 
             x, y, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in,
                                y_in, alphax, alphay, z_start=self._z_background, z_stop=self._z_source, kwargs_lens=args)
+
+        return x,y
+
+    def _ray_shooting_single_background(self, alphax, alphay, args, x_in, y_in, true_background=True, finite_mag_shooting=False,
+                     offset_index=None):
+
+        if finite_mag_shooting:
+
+            alpha_x, alpha_y = self._approx_alpha(x_in, y_in)
+
+            beta_x_array, beta_y_array, _, _ = self._halos_lensmodel.lens_model.ray_shooting_partial(x_in, y_in,
+                                                                                                     alpha_x, alpha_y,
+                                                                                                     self._z_background,
+                                                                                                     self._z_source,
+                                                                                                     args)
+
+            x = x_in + alphax * self._T_main_src - beta_x_array
+            y = y_in + alphay * self._T_main_src - beta_y_array
+
+        else:
+
+            if not hasattr(self,'_alpha_x_approx'):
+                self._alpha_x_approx, self._alpha_y_approx = self._approx_alpha(x_in,y_in)
+
+            if not hasattr(self, '_fixed_beta'):
+                self._fixed_beta = {}
+                _x, _y = self._fixed_background(x_in, y_in, args, self._alpha_x_approx, self._alpha_y_approx)
+                self._fixed_beta['x'] = _x
+                self._fixed_beta['y'] = _y
+
+            if true_background:
+                x = x_in + alphax * self._T_main_src - self._fixed_beta['x']
+                y = y_in + alphay * self._T_main_src - self._fixed_beta['y']
+
+            else:
+
+                if self._offset_beta[offset_index] is None:
+
+                    alpha_x_approx, alpha_y_approx = self._approx_alpha(x_in, y_in, self._T_main_src)
+                    _x, _y = self._fixed_background(x_in, y_in, args, alpha_x_approx, alpha_y_approx)
+
+                    self._offset_beta[offset_index] = {'x': _x, 'y': _y}
+
+                x = x_in + alphax * self._T_main_src - self._offset_beta[offset_index]['x']
+                y = y_in + alphay * self._T_main_src - self._offset_beta[offset_index]['y']
 
         return x,y
 

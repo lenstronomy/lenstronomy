@@ -6,7 +6,18 @@ class PointSourceParam(object):
 
     """
 
-    def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True):
+    def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True,
+                 fixed_magnification_list=None):
+        """
+
+        :param model_list: list of point source model names
+        :param kwargs_fixed: list of keyword arguments with parameters to be held fixed
+        :param num_point_source_list: list of number of point sources per point source model class
+        :param linear_solver: bool, if True, does not return linear parameters for the sampler
+        (will be solved linearly instead)
+        :param fixed_magnification_list: list of booleans, if entry is True, keeps one overall scaling among the
+        point sources in this class
+        """
 
         self.model_list = model_list
         if num_point_source_list is None:
@@ -15,6 +26,8 @@ class PointSourceParam(object):
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
             self.kwargs_fixed = self.add_fix_linear(kwargs_fixed)
+        if fixed_magnification_list is None:
+            self._fixed_magnification_list = [False] * len(model_list)
 
     def getParams(self, args, i):
         """
@@ -178,3 +191,17 @@ class PointSourceParam(object):
         for k, model in enumerate(self.model_list):
             kwargs_fixed[k]['point_amp'] = 1
         return kwargs_fixed
+
+    def num_param_linear(self):
+        """
+
+        :return: number of linear parameters
+        """
+        num = 0
+        for k, model in enumerate(self.model_list):
+            if self._fixed_magnification_list[k] is True:
+                num += 1
+            else:
+                num += self._num_point_sources_list[k]
+        return num
+

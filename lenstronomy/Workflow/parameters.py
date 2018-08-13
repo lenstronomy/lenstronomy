@@ -177,7 +177,7 @@ class Param(object):
     def num_param(self):
         """
 
-        :return: number of parameters involved (int)
+        :return: number of parameters involved (int) that are sampled (non-linear parameter)
         """
         num, list = self.lensParams.num_param()
         _num, _list = self.souceParams.num_param()
@@ -193,6 +193,17 @@ class Param(object):
         num += _num
         list += _list
         return num, list
+
+    def num_param_linear(self):
+        """
+
+        :return: number of linear basis set coefficients that are solved for
+        """
+        num = 0
+        num += self.souceParams.num_param_linear()
+        num += self.lensLightParams.num_param_linear()
+        num += self.pointSourceParams.num_param_linear()
+        return num
 
     def _update_solver(self, kwargs_lens, kwargs_ps):
         kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)

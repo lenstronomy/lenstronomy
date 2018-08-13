@@ -183,7 +183,7 @@ class PointSource(object):
                             mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
                         else:
                             mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
-                            mag = np.abs(mag)  # tests fail
+                            mag = np.abs(mag)
                         amp.append(list(mag))
                     else:
                         if with_amp:

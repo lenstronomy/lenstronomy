@@ -14,6 +14,7 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
             self.kwargs_fixed = self.add_fixed_linear(self.kwargs_fixed)
+        self._linear_solve = linear_solver
     
     @property
     def param_name_list(self):
@@ -155,3 +156,23 @@ class LightParam(object):
                 if not 'amp' in kwargs_fixed:
                     kwargs_fixed['amp'] = 1
         return kwargs_fixed_list
+
+    def num_param_linear(self):
+        """
+
+        :return: number of linear basis set coefficients
+        """
+        num = 0
+        for k, model in enumerate(self.model_list):
+            kwargs_fixed = self.kwargs_fixed[k]
+            param_names = self._param_name_list[k]
+            if 'amp' in param_names:
+                if self._linear_solve is True:
+                    if model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                        num += len(kwargs_fixed['sigma'])
+                    elif model in ['SHAPELETS']:
+                        n_max = kwargs_fixed['n_max']
+                        num += (n_max + 1) * (n_max + 2) / 2
+                    else:
+                        num += 1
+        return num

@@ -10,7 +10,7 @@ class TestParam(object):
 
     def setup(self):
         kwargs_fixed = [{}, {}, {}]
-        num_point_sources_list = [4, None, 1]
+        num_point_sources_list = [4, 1, 1]
         point_source_model_list = ['LENSED_POSITION', 'SOURCE_POSITION', 'UNLENSED']
         self.param = PointSourceParam(model_list=point_source_model_list, kwargs_fixed=kwargs_fixed, num_point_source_list=num_point_sources_list)
         self.kwargs =[{'ra_image': np.array([0, 0, 0, 0]), 'dec_image': np.array([0, 0, 0, 0]),
@@ -39,6 +39,10 @@ class TestParam(object):
     def test_num_params(self):
         num, list = self.param.num_param()
         assert num == 12
+
+    def test_num_param_linear(self):
+        num = self.param.num_param_linear()
+        assert num == 6
 
 
 if __name__ == '__main__':

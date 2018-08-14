@@ -39,7 +39,7 @@ class LightParam(object):
                             n_max = kwargs_fixed['n_max']
                         else:
                             n_max = kwargs['n_max']
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
@@ -75,7 +75,7 @@ class LightParam(object):
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             args.append(kwargs[name][i])
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
@@ -104,7 +104,7 @@ class LightParam(object):
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs_mean['n_max'])
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             mean.append(kwargs_mean[name][i])
                             sigma.append(kwargs_mean[name + '_sigma'][i])

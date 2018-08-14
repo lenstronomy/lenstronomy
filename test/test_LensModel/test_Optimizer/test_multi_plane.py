@@ -77,7 +77,7 @@ class TestMultiPlaneOptimizer(object):
                                           redshift_list=redshift_list_simple,
                                           lens_model_list=lens_model_list_simple, kwargs_lens=self.kwargs_lens_simple,
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                          astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear',tol_simplex=1e-5)
+                                          astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear')
 
 
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
@@ -85,7 +85,7 @@ class TestMultiPlaneOptimizer(object):
                                         redshift_list=redshift_list_full,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                        astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',tol_simplex=1e-5)
+                                        astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear')
 
         self.optimizer_params = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                         magnification_target=self.magnification_simple,
@@ -93,7 +93,7 @@ class TestMultiPlaneOptimizer(object):
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',
-                                          tol_simplex=1e-5,constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10],'theta_E':[1,0.1]})
+                                        constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10],'theta_E':[1,0.1]})
 
         lens_model_list_simple_background = ['SPEP', 'SHEAR']
         z_list_simple = [0.5, 0.5]
@@ -305,8 +305,7 @@ class TestMultiPlaneOptimizer(object):
                                     redshift_list=redshift_list_reoptimize,
                                     lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
-                                    tol_simplex=1e-5)
+                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val)
 
 
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)

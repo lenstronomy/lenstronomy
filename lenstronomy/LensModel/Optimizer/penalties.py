@@ -69,6 +69,8 @@ class Penalties(object):
         centroid_penalty = self._centroid_penalty(lens_args_to_vary)
         total_penalty += centroid_penalty
 
+        self._compute_mags = self._compute_mags_criterion()
+
         if self._compute_mags:
             mag_penalty = self._magnification_penalty(lens_args_to_vary)
             total_penalty += mag_penalty
@@ -127,6 +129,7 @@ class Penalties(object):
 
         self.parameters.append(self.lens_args_latest)
         self._test_convergence()
+        self._compute_mags_criterion()
 
     def _init_particles(self,n_particles,n_iterations):
 

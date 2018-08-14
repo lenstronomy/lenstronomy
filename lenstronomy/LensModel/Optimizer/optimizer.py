@@ -23,8 +23,9 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=50,
-                 tol_simplex=1e-4,constrain_params=None,simplex_n_iterations=1000, single_background=False):
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
+                 tol_simplex_params=1e-3,tol_simplex_func = 0.01, constrain_params=None,simplex_n_iterations=250):
+
 
         """
 
@@ -80,7 +81,8 @@ class Optimizer(object):
         self._init_kwargs = kwargs_lens
 
         self._pso_convergence_standardDEV = pso_convergence_standardDEV
-        self._tol_simplex = tol_simplex
+        self._tol_simplex_params = tol_simplex_params
+        self._tol_simplex_func = tol_simplex_func
         self._simplex_iter = simplex_n_iterations
         self._single_background = single_background
 
@@ -125,7 +127,6 @@ class Optimizer(object):
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
         """
-
         :param n_particles: number of particle swarm particles
         :param n_iterations: number of particle swarm iternations
         :param restart: number of times to execute the optimization;
@@ -192,8 +193,9 @@ class Optimizer(object):
 
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=True)
-        options = {'adaptive': True, 'fatol': self._tol_simplex,'xatol':self._tol_simplex,
+        options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                              'maxiter': self._simplex_iter * len(params)}
+
         optimized_downhill_simplex = minimize(self._optimizer, x0=params, method='Nelder-Mead',
                              options=options)
 

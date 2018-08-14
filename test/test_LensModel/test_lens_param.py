@@ -16,7 +16,7 @@ class TestParam(object):
         self.kwargs = [
             {'theta_E': 1., 'gamma': 2, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'SPEP
             {'scale_factor': 1, 'grid_interp_x': None, 'grid_interp_y': None, 'f_x': None, 'f_y': None},  # 'INTERPOL_SCALED'
-            {'coeffs': [1, 1, 1], 'beta': 1., 'center_x': 0, 'center_y': 0},  # 'SHAPELETS_CART'
+            {'coeffs': [1, 1, 1, 1, 1, 1], 'beta': 1., 'center_x': 0, 'center_y': 0},  # 'SHAPELETS_CART'
             {'amp': [1, 2], 'sigma': [0.5, 1], 'center_x': 0, 'center_y': 0, 'scale_factor': 1},  # 'MULTI_GAUSSIAN_KAPPA'
             ]
         self.kwargs_sigma = [
@@ -36,9 +36,9 @@ class TestParam(object):
             kwargs_mean_k.update(self.kwargs_sigma[i])
             self.kwargs_mean.append(kwargs_mean_k)
         self.param = LensParam(lens_model_list=self.lens_model_list,
-                               kwargs_fixed=self.kwargs_fixed, num_images=2, solver_type='SHAPELETS', num_shapelet_lens=3)
+                               kwargs_fixed=self.kwargs_fixed, num_images=2, solver_type='SHAPELETS', num_shapelet_lens=6)
         self.param_fixed = LensParam(lens_model_list=self.lens_model_list,
-                               kwargs_fixed=self.kwargs, num_images=2, solver_type='NONE', num_shapelet_lens=3)
+                               kwargs_fixed=self.kwargs, num_images=4, solver_type='NONE', num_shapelet_lens=6)
 
     def test_get_setParams(self):
         print(self.kwargs, 'kwargs')
@@ -63,7 +63,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 14
+        assert num == 17
 
 
 if __name__ == '__main__':

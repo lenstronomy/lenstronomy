@@ -35,12 +35,18 @@ class LightParam(object):
             for name in param_names:
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
-                        n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
+                        if 'n_max' in kwargs_fixed:
+                            n_max = kwargs_fixed['n_max']
+                        else:
+                            n_max = kwargs['n_max']
                         num_param = (n_max + 1) + (n_max + 2) / 2
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs['sigma'])
+                        if 'sigma' in kwargs_fixed:
+                            num_param = len(kwargs_fixed['sigma'])
+                        else:
+                            num_param = len(kwargs['sigma'])
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     else:
@@ -127,11 +133,13 @@ class LightParam(object):
             for name in param_names:
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
-                        raise ValueError('shapelets amplitude must be fixed in the parameter configuration!')
-                        #n_max = kwargs_fixed.get('n_max', 0)
-                        #num_param = (n_max + 1) + (n_max + 2) / 2
-                        #kwargs['amp'] = args[i:i + num_param]
-                        #i += num_param
+                        if 'n_max' not in kwargs_fixed:
+                            raise ValueError("n_max needs to be fixed in this configuration!")
+                        n_max = kwargs_fixed['n_max']
+                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num += num_param
+                        for i in range(num_param):
+                            list.append(str(name + '_' + self._type))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param

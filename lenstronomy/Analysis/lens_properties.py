@@ -47,7 +47,8 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, lens_light_model_bool_list=None, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
+    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, lens_light_model_bool_list=None, aniso_param=1,
+                            r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -149,10 +150,10 @@ class LensProp(object):
                 kwargs_light.append(kwargs_lens_light_i)
         if r_eff is None:
             lensAnalysis = LensAnalysis({'lens_light_model_list': light_profile_list})
-            r_eff = lensAnalysis.half_light_radius_lens(kwargs_light)
+            r_eff = lensAnalysis.half_light_radius_lens(kwargs_light, model_bool_list=light_model_kinematics_bool)
         if Hernquist_approx is True:
             light_profile_list = ['HERNQUIST']
-            kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]
+            kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]
         else:
             if MGE_light is True:
                 lightModel = LightModel(light_profile_list)

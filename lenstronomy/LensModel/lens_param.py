@@ -45,7 +45,10 @@ class LensParam(object):
                             kwargs['coeffs'] = args[i:i + num_coeffs]
                         i += num_coeffs
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs['sigma'])
+                        if 'sigma' in kwargs_fixed:
+                            num_param = len(kwargs_fixed['sigma'])
+                        else:
+                            num_param = len(kwargs['sigma'])
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':

@@ -318,5 +318,6 @@ class TestMultiPlaneOptimizer(object):
 t = TestMultiPlaneOptimizer()
 t.setup()
 t.test_single_background()
+exit(1)
 if __name__ == '__main__':
     pytest.main()

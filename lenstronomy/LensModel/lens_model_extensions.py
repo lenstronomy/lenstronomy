@@ -65,13 +65,12 @@ class LensModelExtensions(LensModel):
             else:
                 x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
 
-
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             img = I_image.reshape(200,200)
-            import matplotlib.pyplot as plt
-            plt.imshow(img)
-            plt.show()
-            a=input('continue')
+            #import matplotlib.pyplot as plt
+            #plt.imshow(img)
+            #plt.show()
+            #a=input('continue')
             mag_finite[i] = np.sum(I_image) * deltaPix**2
 
         return mag_finite

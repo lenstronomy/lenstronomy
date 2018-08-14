@@ -24,7 +24,8 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
-                 tol_simplex_params=1e-3,tol_simplex_func = 0.01, constrain_params=None,simplex_n_iterations=250):
+                 tol_simplex_params=1e-3,tol_simplex_func = 0.001, constrain_params=None,simplex_n_iterations=250,
+                 single_background=False):
 
 
         """

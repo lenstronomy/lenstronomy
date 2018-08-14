@@ -63,6 +63,8 @@ class MultiPlaneLensing(object):
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
+        if offset_index is None:
+            self._beta_x_last, self._beta_y_last = betax, betay
 
         return betax, betay
 
@@ -119,6 +121,9 @@ class MultiPlaneLensing(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def _alpha_fast(self, x_pos, y_pos, macromodel_args, true_path=False, offset_index = None):
+
+        if offset_index is None:
+            return np.array(x_pos - self._beta_x_last), np.array(y_pos - self._beta_y_last)
 
         beta_x,beta_y = self.ray_shooting_fast(macromodel_args, true_path=true_path, offset_index=offset_index,
                                                thetax=x_pos, thetay=y_pos)

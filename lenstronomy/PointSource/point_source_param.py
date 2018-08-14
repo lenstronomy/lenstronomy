@@ -24,8 +24,9 @@ class PointSourceParam(object):
             num_point_source_list = [0] * len(model_list)
         self._num_point_sources_list = num_point_source_list
         self.kwargs_fixed = kwargs_fixed
-        if linear_solver:
+        if linear_solver is True:
             self.kwargs_fixed = self.add_fix_linear(kwargs_fixed)
+        self._linear_solver = linear_solver
         if fixed_magnification_list is None:
             self._fixed_magnification_list = [False] * len(model_list)
 
@@ -198,10 +199,11 @@ class PointSourceParam(object):
         :return: number of linear parameters
         """
         num = 0
-        for k, model in enumerate(self.model_list):
-            if self._fixed_magnification_list[k] is True:
-                num += 1
-            else:
-                num += self._num_point_sources_list[k]
+        if self._linear_solver is True:
+            for k, model in enumerate(self.model_list):
+                if self._fixed_magnification_list[k] is True:
+                    num += 1
+                else:
+                    num += self._num_point_sources_list[k]
         return num
 

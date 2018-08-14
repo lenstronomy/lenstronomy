@@ -136,7 +136,7 @@ class LightParam(object):
                         if 'n_max' not in kwargs_fixed:
                             raise ValueError("n_max needs to be fixed in this configuration!")
                         n_max = kwargs_fixed['n_max']
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         num += num_param
                         for i in range(num_param):
                             list.append(str(name + '_' + self._type))
@@ -180,7 +180,7 @@ class LightParam(object):
                         num += len(kwargs_fixed['sigma'])
                     elif model in ['SHAPELETS']:
                         n_max = kwargs_fixed['n_max']
-                        num += (n_max + 1) * (n_max + 2) / 2
+                        num += int((n_max + 1) * (n_max + 2) / 2)
                     else:
                         num += 1
         return num

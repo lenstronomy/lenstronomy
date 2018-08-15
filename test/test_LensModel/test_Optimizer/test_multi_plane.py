@@ -352,10 +352,5 @@ class TestMultiPlaneOptimizer(object):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
 
-
-f = TestMultiPlaneOptimizer()
-f.setup()
-f.test_single_background()
-exit(1)
 if __name__ == '__main__':
     pytest.main()

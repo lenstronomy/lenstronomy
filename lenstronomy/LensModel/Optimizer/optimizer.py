@@ -168,11 +168,8 @@ class Optimizer(object):
         srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
         source_x, source_y = np.mean(srcx), np.mean(srcy)
 
-        if self._multiplane:
-            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,**self.lensing_functions)
-
-        else:
-            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final)
+        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False,
+                                                           **self.lensing_functions)
 
         if self._verbose:
             print('optimization done.')

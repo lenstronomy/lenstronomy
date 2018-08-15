@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from lenstronomy.Cosmo.cosmography import KDELikelihood, MCMC_sampler
+from lenstronomy.Cosmo.cosmography import KDELikelihood, MCMCSampler
 
 
 class TestCosmography(object):
@@ -25,16 +25,9 @@ class TestCosmography(object):
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
-    def test_kde_likelihood(self):
-        kdeLikelihood = KDELikelihood(self.D_d_samples, self.D_dt_samples)
-        logL_max = kdeLikelihood.logLikelihood(self.Dd_true, self.D_dt_true)
-        logL_sigma = kdeLikelihood.logLikelihood(self.Dd_true+self.sigma_Dd, self.D_dt_true+self.sigma_Ddt)
-        delta_log = logL_max - logL_sigma
-        npt.assert_almost_equal(delta_log, 1, decimal=1)
-
     def test_sampling_H0_only(self):
-        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
-                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
+                                   omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
         walkerRatio = 10
         n_run = 10
         n_burn = 10
@@ -47,8 +40,8 @@ class TestCosmography(object):
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
 
     def test_sampling_H0_omega_m(self):
-        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
-                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
+                                   omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
         walkerRatio = 10
         n_run = 10
         n_burn = 10
@@ -59,9 +52,9 @@ class TestCosmography(object):
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
 
     def test_sampling_fix_omega_mh2(self):
-        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
-                                    omega_m_fixed=self.omega_m_true,
-                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
+                                   omega_m_fixed=self.omega_m_true,
+                                   omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         walkerRatio = 10
         n_run = 10
         n_burn = 10
@@ -75,9 +68,9 @@ class TestCosmography(object):
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
 
     def test_sampling_curvature(self):
-        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m_omega_de",
-                                    omega_m_fixed=self.omega_m_true,
-                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m_omega_de",
+                                   omega_m_fixed=self.omega_m_true,
+                                   omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         walkerRatio = 4
         n_run = 10
         n_burn = 10
@@ -91,9 +84,9 @@ class TestCosmography(object):
         npt.assert_almost_equal(Om0_mean / self.omega_m_true, 1, decimal=0)
 
     def test_sampling_H0_omega_m_sklearn(self):
-        mcmc_sampler = MCMC_sampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
-                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
-                                    kde_type='gaussian', bandwidth=10)
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
+                                   omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
+                                   kde_type='gaussian', bandwidth=10)
         walkerRatio = 10
         n_run = 10
         n_burn = 10

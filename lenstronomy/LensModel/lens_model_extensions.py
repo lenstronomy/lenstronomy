@@ -10,7 +10,7 @@ class LensModelExtensions(LensModel):
     """
 
     def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
-                             shape="GAUSSIAN",polar_grid=False,aspect_ratio = 0.4, ray_shooting_function=None):
+                             shape="GAUSSIAN",polar_grid=False, aspect_ratio = 0.5, ray_shooting_function=None):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param x_pos: x-axis positons of point sources
@@ -66,11 +66,7 @@ class LensModelExtensions(LensModel):
                 x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
 
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
-            img = I_image.reshape(200,200)
-            #import matplotlib.pyplot as plt
-            #plt.imshow(img)
-            #plt.show()
-            #a=input('continue')
+
             mag_finite[i] = np.sum(I_image) * deltaPix**2
 
         return mag_finite

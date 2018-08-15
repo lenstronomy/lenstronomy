@@ -6,6 +6,14 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+def test_estimate_theta_E():
+
+    x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
+    y = np.array([0.69582971, -0.51226356, 0.37577509, -0.40245467])
+
+    approx = Util.approx_theta_E(x,y)
+    npt.assert_array_less(approx - 1, 0.2)
+
 def test_sort_img_index():
 
     ximg,yimg = np.array([1,2,3,4]),np.array([0,0,1,2])

@@ -29,19 +29,41 @@ class SinglePlaneLensing(object):
             # subhalo deflections
             self._alpha_x_sub, self._alpha_y_sub = self._lensModel.alpha(x_pos, y_pos, arg_list, self._k_sub)
 
+            self._sub_fxx, self._sub_fxy, _, self._sub_fyy = self._lensModel.hessian(self._x_pos, self._y_pos,
+                                                                                     self._all_lensmodel_args,
+                                                                                     self._k_sub)
+
         else:
             self._k_macro, self._k_sub = None, None
             self._alpha_x_sub, self._alpha_y_sub = 0, 0
             self._sub_fxx, self._sub_fyy, self._sub_fxy = 0, 0, 0
 
-    def _ray_shooting(self, thetax, thetay, full_kwargs):
+    def _ray_shooting(self, thetax, thetay, kwargs_lens):
 
-        alphax_macro, alphay_macro = self._lensModel.alpha(thetax, thetay, full_kwargs, k=self._k_macro)
+        alphax_macro, alphay_macro = self._lensModel.alpha(thetax, thetay, kwargs_lens, k=self._k_macro)
 
         betax = self._x_pos - alphax_macro - self._alpha_x_sub
         betay = self._y_pos - alphay_macro - self._alpha_y_sub
 
         return betax, betay
+
+    def _hessian(self, thetax, thetay, kwargs_lens):
+
+        fxx_macro, fxy_macro, _, fyy_macro = self._lensModel.hessian(thetax, thetay, kwargs_lens, k=self._k_macro)
+
+        fxx = fxx_macro + self._sub_fxx
+        fyy = fyy_macro + self._sub_fyy
+        fxy = fxy_macro + self._sub_fxy
+
+        return fxx, fxy, fxy, fyy
+
+    def _magnification(self, x, y, kwargs_lens):
+
+        f_xx, f_xy, f_yx, f_yy = self._hessian(x, y, kwargs_lens)
+
+        det_A = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
+
+        return det_A ** -1
 
     def ray_shooting_fast(self, lens_args):
 
@@ -55,10 +77,6 @@ class SinglePlaneLensing(object):
         return betax,betay
 
     def hessian_fast(self, args):
-
-        if not hasattr(self,'_sub_fxx'):
-            self._sub_fxx, self._sub_fxy, _, self._sub_fyy = self._lensModel.hessian(self._x_pos, self._y_pos,
-                                                                                     self._all_lensmodel_args, self._k_sub)
 
         fxx_macro, fxy_macro, _, fyy_macro = self._lensModel.hessian(self._x_pos, self._y_pos, args, k=self._k_macro)
 

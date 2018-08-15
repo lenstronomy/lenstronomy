@@ -113,19 +113,21 @@ class Optimizer(object):
         if multiplane is False:
             lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
 
-            self.ray_shooting_function_magfinite = lensing_class._ray_shooting
+            self.ray_shooting_function_magfinite = self.lensModel.ray_shooting
+            self.lensing_functions = {'ray_shooting_function': self.lensModel.ray_shooting,
+                                      'hessian_function': self.lensModel.hessian,
+                                      'magnification_function': self.lensModel.magnification}
 
         else:
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                               astropy_instance, self._params.tovary_indicies, single_background)
             self.ray_shooting_function_magfinite = lensing_class.ray_shooting_mag_finite
+            self.lensing_functions = {'ray_shooting_function': lensing_class._ray_shooting,
+                                      'hessian_function': lensing_class._hessian,
+                                      'magnification_function': lensing_class._magnification}
 
         # use these functions to compute the hessian and do ray shooting computations. Can pass these to e.g.
         # "findBrightImage"
-
-        self.lensing_functions = {'ray_shooting_function':lensing_class._ray_shooting, 'hessian_function': lensing_class._hessian,
-                                  'magnification_function':lensing_class._magnification}
-
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,

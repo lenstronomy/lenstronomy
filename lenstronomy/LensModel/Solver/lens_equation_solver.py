@@ -27,6 +27,8 @@ class LensEquationSolver(object):
         :param search_window: window size to be considered by the solver. Will not find image position outside this window
         :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
+        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
+        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
         :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -35,10 +37,15 @@ class LensEquationSolver(object):
 
         if None in func_list:
             if not all(func is None for func in func_list):
-                raise ValueError('if specifying special functions for ray shooting, and hessian, '
+                raise ValueError('If specifying special functions for ray shooting and hessian, '
                                  'you must supply special functions for both.')
             ray_shooting_function = self.lensModel.ray_shooting
             hessian_function = self.lensModel.hessian
+
+        else:
+            if arrival_time_sort is True:
+                raise Exception('cannot compute arrival times with special ray shooting functions.')
+
 
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
@@ -121,6 +128,9 @@ class LensEquationSolver(object):
         :param magThresh: magnification threshold for images to be selected
         :param numImage: number of selected images (will select the highest magnified ones)
         :param kwargs_lens:
+        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
+        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
+        :param magnification_function: same as ray_shooting_function, but for computing magnifications
         :return:
         """
 
@@ -140,7 +150,7 @@ class LensEquationSolver(object):
         y_mins_sorted = util.selectBest(y_mins, mag_list, numImages)
         return x_mins_sorted, y_mins_sorted
 
-    def sort_arrival_times(self, x_mins, y_mins, kwargs_lens, ray_shooting_function=None):
+    def sort_arrival_times(self, x_mins, y_mins, kwargs_lens):
         """
         sort arrival times (fermat potential) of image positions in increasing order of light travel time
         :param x_mins: ra position of images
@@ -149,12 +159,9 @@ class LensEquationSolver(object):
         :return: sorted lists of x_mins and y_mins
         """
 
-        if ray_shooting_function is None:
-            ray_shooting_function = self.lensModel.ray_shooting
-
         if len(x_mins) <= 1:
             return x_mins, y_mins
-        x_source, y_source = ray_shooting_function(x_mins, y_mins, kwargs_lens)
+        x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
         if self.lensModel.multi_plane:

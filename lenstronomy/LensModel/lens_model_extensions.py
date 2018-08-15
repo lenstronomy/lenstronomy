@@ -42,14 +42,14 @@ class LensModelExtensions(LensModel):
             ellipse_inds = (x_grid*a**-1) **2 + (y_grid*b**-1) **2 <= 1
             x_grid, y_grid = x_grid[ellipse_inds], y_grid[ellipse_inds]
 
+        if ray_shooting_function is None:
+            ray_shooting_function = self.ray_shooting
+
         for i in range(len(x_pos)):
 
             ra, dec = x_pos[i], y_pos[i]
 
-            if ray_shooting_function is None:
-                center_x, center_y = self.ray_shooting(ra, dec, kwargs_lens)
-            else:
-                center_x, center_y = ray_shooting_function(ra, dec, kwargs_lens)
+            center_x, center_y = ray_shooting_function(ra, dec, kwargs_lens)
 
             if polar_grid:
 
@@ -60,10 +60,7 @@ class LensModelExtensions(LensModel):
 
                 xcoord, ycoord = x_grid, y_grid
 
-            if ray_shooting_function is None:
-                x_source, y_source = self.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
-            else:
-                x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
+            x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
 
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
 

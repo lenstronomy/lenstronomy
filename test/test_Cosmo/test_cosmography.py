@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import numpy.testing as npt
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Cosmo.cosmography import KDELikelihood, MCMC_sampler
@@ -104,3 +105,7 @@ class TestCosmography(object):
         sigma = np.sqrt(np.var(mcmc_samples[:, 0]))
         print(sigma)
         npt.assert_almost_equal(sigma, 2.6, decimal=0)
+
+
+if __name__ == '__main__':
+    pytest.main()

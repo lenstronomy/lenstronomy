@@ -58,7 +58,7 @@ class TestLensModel(object):
         param_name_list = lensModel.param_name_list()
         assert len(lens_model_list) == len(param_name_list)
 
-    def test_multi_plane(self):
+    def test_arrival_time(self):
         z_lens = 0.5
         z_source = 1.5
         x_image, y_image = 1., 0

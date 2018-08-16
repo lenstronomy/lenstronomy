@@ -99,6 +99,8 @@ class Penalties(object):
 
         index = np.argmin(total)
 
+        self.src_pen_best = self.src_penalty[index]
+
         return total[index]
 
     def _book_keeping(self,src_penalty,centroid_penalty,mag_penalty,param_pen):

@@ -23,7 +23,7 @@ class LensModelExtensions(object):
         self._lensModel = lensModel
 
     def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
-                             shape="GAUSSIAN", polar_grid=False, aspect_ratio=0.5, ray_shooting_function=None):
+                             shape="GAUSSIAN", polar_grid=False, aspect_ratio=0.5):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param x_pos: x-axis positons of point sources
@@ -32,12 +32,9 @@ class LensModelExtensions(object):
         :param source_sigma: Gaussian sigma in arc sec in source
         :param window_size: size of window to compute the finite flux
         :param grid_number: number of grid cells per axis in the window to numerically comute the flux
-        :param ray_shooting_function: a specific function for performing the ray shooting; used in the
-        'fixed_background' approximation for lens models with lots of background structure.
-        NOTE: this should be NONE for most applications
         :return: numerically computed brightness of the sources
         """
-        # TODO: define all input parameters
+
         mag_finite = np.zeros_like(x_pos)
         deltaPix = float(window_size)/grid_number
         if shape == 'GAUSSIAN':
@@ -55,18 +52,15 @@ class LensModelExtensions(object):
             ellipse_inds = (x_grid*a**-1) **2 + (y_grid*b**-1) **2 <= 1
             x_grid, y_grid = x_grid[ellipse_inds], y_grid[ellipse_inds]
 
-        if ray_shooting_function is None:
-            ray_shooting_function = self._lensModel.ray_shooting
-
         for i in range(len(x_pos)):
             ra, dec = x_pos[i], y_pos[i]
-            center_x, center_y = ray_shooting_function(ra, dec, kwargs_lens)
+            center_x, center_y = self._lensModel.ray_shooting(ra, dec, kwargs_lens)
             if polar_grid:
                 theta = np.arctan2(dec,ra)
                 xcoord, ycoord = util.rotate(x_grid, y_grid, theta)
             else:
                 xcoord, ycoord = x_grid, y_grid
-            x_source, y_source = ray_shooting_function(xcoord + ra, ycoord + dec, kwargs_lens)
+            x_source, y_source = self._lensModel.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
             I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2
 

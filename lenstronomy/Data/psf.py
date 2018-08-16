@@ -213,8 +213,9 @@ class PSF(object):
     def psf_fwhm(kwargs, deltaPix):
         """
 
-        :param kwargs_psf:
-        :return: psf fwhm in units of arcsec
+        :param kwargs: keyword arguments of the PSF() class
+        :param deltaPix: pixel size (in the case of subsampled PSF, this is the subsampled pixel size)
+        :return: psf fwhm in units of the deltaPix argument
         """
         psf_type = kwargs.get('psf_type', 'NONE')
         if psf_type == 'NONE':
@@ -222,7 +223,10 @@ class PSF(object):
         elif psf_type == 'GAUSSIAN':
             fwhm = kwargs['fwhm']
         elif psf_type == 'PIXEL':
-            kernel = kwargs['kernel_point_source']
+            if 'kernel_point_source_subsampled' in kwargs:
+                kernel = kwargs['kernel_point_source_subsampled']
+            else:
+                kernel = kwargs['kernel_point_source']
             fwhm = kernel_util.fwhm_kernel(kernel) * deltaPix
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)

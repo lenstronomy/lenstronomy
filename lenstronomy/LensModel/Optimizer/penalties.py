@@ -131,6 +131,8 @@ class Penalties(object):
         self._test_convergence()
         self._compute_mags_criterion()
 
+        self.src_pen_best = min(self.src_penalty)
+
     def _init_particles(self,n_particles,n_iterations):
 
         self._n_total_iter = n_iterations*n_particles

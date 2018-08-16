@@ -321,11 +321,6 @@ class TestMultiPlaneOptimizer(object):
                                 magnification_split*max(magnification_split)**-1,2)
 
     def test_multi_plane_simple(self):
-        """
-
-        :param tol: image position tolerance
-        :return:
-        """
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
         _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
@@ -351,8 +346,7 @@ class TestMultiPlaneOptimizer(object):
     def test_multi_plane_subs(self,tol=0.004):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
-        # TODO: make assert statement
-
+        # this should just finish with no errors raised
 
 if __name__ == '__main__':
     pytest.main()

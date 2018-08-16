@@ -3,6 +3,8 @@ import numpy as np
 
 class SinglePlaneLensing(object):
 
+    _no_potential = True
+
     def __init__(self, lensmodel, x_pos, y_pos, params, arg_list):
 
         """
@@ -38,14 +40,6 @@ class SinglePlaneLensing(object):
             self._k_macro, self._k_sub = None, None
             self._alpha_x_sub, self._alpha_y_sub = 0, 0
             self._sub_fxx, self._sub_fyy, self._sub_fxy = 0, 0, 0
-
-    def _magnification(self, x, y, kwargs_lens):
-
-        f_xx, f_xy, f_yx, f_yy = self._hessian(x, y, kwargs_lens)
-
-        det_A = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
-
-        return det_A ** -1
 
     def ray_shooting_fast(self, lens_args):
 

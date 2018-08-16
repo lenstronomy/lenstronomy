@@ -95,43 +95,31 @@ class Optimizer(object):
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-
         self.lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
                                              z_source=z_source,
                                              cosmo=astropy_instance, multi_plane=multiplane)
-        # TODO: check whether LensModelExtension modules need to be called
-        self.lensModelExtensions = LensModelExtensions(self.lensModel)
-
-        self.solver = LensEquationSolver(self.lensModel)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
-
         self._params = Params(zlist=self.lensModel.redshift_list, lens_list=self.lensModel.lens_model_list, arg_list=kwargs_lens,
                               optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
         
         # initialize particle swarm inital param limits
-
         self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize)
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
             lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
-
-            self.ray_shooting_function_magfinite = self.lensModel.ray_shooting
-            self.lensing_functions = {'ray_shooting_function': self.lensModel.ray_shooting,
-                                      'hessian_function': self.lensModel.hessian,
-                                      'magnification_function': self.lensModel.magnification}
+            # don't bother with anything special here, just use the regular lensmodel class
+            self.solver = LensEquationSolver(self.lensModel)
 
         else:
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                               astropy_instance, self._params.tovary_indicies, single_background)
-            self.ray_shooting_function_magfinite = lensing_class.ray_shooting_mag_finite
-            self.lensing_functions = {'ray_shooting_function': lensing_class._ray_shooting,
-                                      'hessian_function': lensing_class._hessian,
-                                      'magnification_function': lensing_class._magnification}
+            # since 'single_background' might be turned on, lensing_class has routines called ray_shooting, hessian,
+            # etc. that will do the right thing if the approximation is being used. Otherwise they behave the same as
+            # the routines in LensModel.
+            self.solver = LensEquationSolver(lensing_class)
 
-        # use these functions to compute the hessian and do ray shooting computations. Can pass these to e.g.
-        # "findBrightImage"
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
@@ -171,9 +159,13 @@ class Optimizer(object):
         # solve for the optimized image positions
         srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
         source_x, source_y = np.mean(srcx), np.mean(srcy)
-        # TODO: attention, the solver possibly uses the multi-plane ray-tracing without the optimization!
-        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False,
-                                                           **self.lensing_functions)
+
+        # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
+        if self._optimizer.src_pen_best < 0.001:
+            x_image, y_image = self.x_pos, self.y_pos
+        else:
+            # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
+            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
 
         if self._verbose:
             print('optimization done.')
@@ -235,8 +227,7 @@ class Optimizer(object):
         check inputs
         """
 
-        assert len(x_pos) == 4
-        assert len(y_pos) == 4
+        assert len(x_pos) == len(y_pos)
         assert len(magnification_target) == len(x_pos)
         assert tol_source is not None
         assert len(lens_list) == len(arg_list)

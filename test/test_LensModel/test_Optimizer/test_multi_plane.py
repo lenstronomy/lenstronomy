@@ -129,6 +129,7 @@ class TestMultiPlaneOptimizer(object):
         alpha_y_true = np.array([0.4160718, -0.48592582, 0.17717094, -0.42390834])
         x_in_true = np.array([998.6980648, -974.71188014, -1047.48667913, 739.21910397])
         y_in_true = np.array([-1224.62493444, 1022.33224746, -642.6370298, 887.58077074])
+        shear_true = 0.029
 
         true = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
                                   self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
@@ -161,12 +162,20 @@ class TestMultiPlaneOptimizer(object):
 
         extension = LensModelExtensions(self.optimizer_single_background.solver.lensModel)
 
+        self.optimizer_single_background._optimizer.lensing._set_background_shear(0,-0.715)
         mag_finite = extension.magnification_finite(self.x_pos_single_background, self.y_pos_single_background,
-                                                    self.kwargs_lens_full_background,source_sigma=0.01,
-                                             grid_number=200,window_size=0.4)
+                                                    self.kwargs_lens_full_background,source_sigma=0.001,
+                                             grid_number=200,window_size=0.08)
+        delta1 = np.sum(((mag_point - mag_finite) * (mag_point) ** -1) ** 2)
 
-        delta = np.sum(((mag_point - mag_finite)*(mag_point)**-1)**2)
-        npt.assert_(delta < 0.25)
+        self.optimizer_single_background._optimizer.lensing._set_background_shear(0.03, -0.715)
+        mag_finite = extension.magnification_finite(self.x_pos_single_background, self.y_pos_single_background,
+                                                    self.kwargs_lens_full_background, source_sigma=0.001,
+                                                    grid_number=200, window_size=0.08)
+        delta2 = np.sum(((mag_point - mag_finite) * (mag_point) ** -1) ** 2)
+
+        npt.assert_(delta1 > delta2)
+        npt.assert_(delta2 < 0.1)
 
         kwargs_lens, source, [x_image, y_image] = self.optimizer_single_background.optimize(n_particles=10,
                                                           n_iterations=10,restart=2)
@@ -355,5 +364,9 @@ class TestMultiPlaneOptimizer(object):
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
         # this should just finish with no errors raised
 
+t = TestMultiPlaneOptimizer()
+t.setup()
+t.test_single_background()
+exit(1)
 if __name__ == '__main__':
     pytest.main()

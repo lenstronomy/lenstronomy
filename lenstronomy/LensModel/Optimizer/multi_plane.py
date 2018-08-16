@@ -49,6 +49,10 @@ class MultiPlaneLensing(object):
                                       single_background=single_background,
                                       approx_Rein = approx_theta_E(self._x_pos, self._y_pos))
 
+    def _set_background_shear(self,value,angle):
+
+        self._background._set_shear(value,angle)
+
     def ray_shooting(self, x, y, kwargs_lens):
 
         macromodel_args = []
@@ -307,10 +311,25 @@ class Background(object):
 
         self._approx_kwargs = [{'theta_E':approx_Rein,'center_x':0, 'center_y':0}]
 
-    def _approx_alpha(self,x,y):
+    def _set_shear(self,value,angle):
+
+        self.gamma, self.shear_pa = value, angle
+
+    def _shear(self,x,y):
+
+        x_prime = x*np.cos(2*self.shear_pa) + y*np.sin(2*self.shear_pa)
+        y_prime = x*np.sin(2*self.shear_pa) - y*np.cos(2*self.shear_pa)
+
+        return x + self.gamma*x_prime, y + self.gamma*y_prime
+
+    def _approx_alpha(self,x,y,shear=False):
 
         alphax, alphay = self._approx_deflector.alpha(x*self._T_main**-1,
                                                       y*self._T_main**-1,self._approx_kwargs)
+
+        if shear:
+            alphax, alphay = self._shear(alphax, alphay)
+
 
         return -alphax*self._reduced_to_phys_main, -alphay*self._reduced_to_phys_main
 
@@ -341,7 +360,7 @@ class Background(object):
 
         if force_compute:
 
-            alpha_x, alpha_y = self._approx_alpha(x_in, y_in)
+            alpha_x, alpha_y = self._approx_alpha(x_in, y_in, shear=True)
 
             _x, _y = self._fixed_background(x_in, y_in, args, alpha_x, alpha_y)
 
@@ -351,7 +370,7 @@ class Background(object):
         else:
 
             if not hasattr(self,'_alpha_x_approx'):
-                self._alpha_x_approx, self._alpha_y_approx = self._approx_alpha(x_in,y_in)
+                self._alpha_x_approx, self._alpha_y_approx = self._approx_alpha(x_in,y_in,shear=False)
 
             if not hasattr(self, '_fixed_beta'):
                 self._fixed_beta = {}

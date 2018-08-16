@@ -69,6 +69,37 @@ class TestLensProp(object):
         npt.assert_almost_equal(delays[1], 0, decimal=8)
         npt.assert_almost_equal(delays[2], -31.710641699405745, decimal=8)
 
+    def test_angular_diameter_relations(self):
+        z_lens = 0.5
+        z_source = 1.5
+        from astropy.cosmology import FlatLambdaCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensProp = LensProp(z_lens, z_source, kwargs_model={}, cosmo=cosmo)
+        sigma_v_model = 290
+        sigma_v = 310
+        kappa_ext = 0
+        D_dt_model = 3000
+
+        D_d, Ds_Dds = lensProp.angular_diameter_relations(sigma_v_model, sigma_v, kappa_ext, D_dt_model)
+        npt.assert_almost_equal(D_d, 992.768, decimal=1)
+        npt.assert_almost_equal(Ds_Dds, 2.01, decimal=2)
+
+    def test_angular_distances(self):
+        z_lens = 0.5
+        z_source = 1.5
+        from astropy.cosmology import FlatLambdaCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensProp = LensProp(z_lens, z_source, kwargs_model={}, cosmo=cosmo)
+        sigma_v_measured = 290
+        sigma_v_modeled = 310
+        kappa_ext = 0
+        time_delay_measured = 111
+        fermat_pot = 0.7
+        Ds_Dds, DdDs_Dds = lensProp.angular_distances(sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled,
+                                                      fermat_pot)
+        print(Ds_Dds, DdDs_Dds)
+        npt.assert_almost_equal(Ds_Dds, 1.5428, decimal=2)
+        npt.assert_almost_equal(DdDs_Dds, 3775.442, decimal=1)
 
 
 if __name__ == '__main__':

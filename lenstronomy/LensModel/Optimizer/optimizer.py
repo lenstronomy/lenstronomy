@@ -24,7 +24,9 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
-                 tol_simplex_params=1e-3,tol_simplex_func = 0.01, constrain_params=None,simplex_n_iterations=250):
+                 tol_simplex_params=1e-3,tol_simplex_func = 0.001, constrain_params=None,simplex_n_iterations=250,
+                 single_background=False):
+
 
         """
 
@@ -59,9 +61,15 @@ class Optimizer(object):
         Format: {'parameter_name_1':[desired_value,uncertainty], 'parameter_name_2':[desired_value,uncertainty]}
         e.g.
         {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear (converting to polar coorindates each time)
-        {'theta_E:[1,0.01]} will constrain the Einstein radius
+        {'theta_E:[1,0.01]} will constrain the Einstein radius to 1
         The parameter name must be part of the 'params_to_vary' attribute of the optimization routine
         (see class 'fixed_routines')
+
+        :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
+        for the downhill simplex routine
+        :param single_background: uses an approximation in which the path through background halos is only computed
+        once; useful for models with a lot of background subhalos that are otherwise very computationally expensive to
+        handle.
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -79,6 +87,7 @@ class Optimizer(object):
         self._tol_simplex_params = tol_simplex_params
         self._tol_simplex_func = tol_simplex_func
         self._simplex_iter = simplex_n_iterations
+        self._single_background = single_background
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -88,6 +97,7 @@ class Optimizer(object):
         self.lensModel = LensModelExtensions(lens_model_list=lens_model_list, redshift_list=redshift_list,
                                              z_source=z_source,
                                              cosmo=astropy_instance, multi_plane=multiplane)
+
         self.solver = LensEquationSolver(self.lensModel)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
@@ -101,14 +111,23 @@ class Optimizer(object):
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
-
             lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
 
+            self.ray_shooting_function_magfinite = self.lensModel.ray_shooting
+            self.lensing_functions = {'ray_shooting_function': self.lensModel.ray_shooting,
+                                      'hessian_function': self.lensModel.hessian,
+                                      'magnification_function': self.lensModel.magnification}
+
         else:
-
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                              astropy_instance, self._params.tovary_indicies)
+                                              astropy_instance, self._params.tovary_indicies, single_background)
+            self.ray_shooting_function_magfinite = lensing_class.ray_shooting_mag_finite
+            self.lensing_functions = {'ray_shooting_function': lensing_class._ray_shooting,
+                                      'hessian_function': lensing_class._hessian,
+                                      'magnification_function': lensing_class._magnification}
 
+        # use these functions to compute the hessian and do ray shooting computations. Can pass these to e.g.
+        # "findBrightImage"
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
@@ -146,13 +165,15 @@ class Optimizer(object):
         kwargs_lens_final = kwargs_varied + self._params.argsfixed_todictionary()
 
         # solve for the optimized image positions
-        srcx, srcy = self.lensModel.ray_shooting(self.x_pos, self.y_pos, kwargs_lens_final)
+        srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
+        source_x, source_y = np.mean(srcx), np.mean(srcy)
+
+        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False,
+                                                           **self.lensing_functions)
 
         if self._verbose:
+            print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
-
-        source_x, source_y = np.mean(srcx), np.mean(srcy)
-        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, precision_limit=10 ** -10)
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 
@@ -163,12 +184,12 @@ class Optimizer(object):
 
         if self._particle_swarm:
             params = self._pso(n_particles, n_iterations, self._optimizer)
-            print('PSO done.')
 
         else:
             params = self._params._kwargs_to_tovary(self._init_kwargs)
 
         if self._verbose:
+            print('PSO done.')
             print('starting amoeba... ')
 
         # downhill simplex optimization

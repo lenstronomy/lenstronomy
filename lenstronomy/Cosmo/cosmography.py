@@ -43,11 +43,7 @@ class CosmoLikelihood(object):
         omega_m = self.omega_m_fixed
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_H0(H0)
-        if bool is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
-            return logL, None
-        else:
-            pass
+        logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_omega_mh2(self, args):
@@ -61,11 +57,7 @@ class CosmoLikelihood(object):
         omega_m = self.omega_mh2_fixed / h**2
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_omega_mh2(h, omega_m)
-        if bool is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
-            return logL, None
-        else:
-            pass
+        logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_H0_omgega_m(self, args):
@@ -79,12 +71,8 @@ class CosmoLikelihood(object):
         Ode0 = self._omega_lambda_fixed
         logL_H0, bool_H0 = self.prior_H0(H0)
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
-        if bool_H0 is True and bool_omega_m is True:
-            logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
-            return logL + logL_H0 + logL_omega_m, None
-        else:
-            pass
-        return logL_H0 + logL_omega_m, None
+        logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        return logL + logL_H0 + logL_omega_m, None
 
     def X2_chain_H0_omgega_m_omega_de(self, args):
         """
@@ -96,12 +84,8 @@ class CosmoLikelihood(object):
         [H0, omega_m, Ode0] = args
         logL_H0, bool_H0 = self.prior_H0(H0)
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
-        if bool_H0 is True and bool_omega_m is True:
-            logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
-            return logL + logL_H0 + logL_omega_m, None
-        else:
-            pass
-        return logL_H0 + logL_omega_m, None
+        logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        return logL + logL_H0 + logL_omega_m, None
 
     def LCDM_lensLikelihood(self, H0, omega_m, Ode0=None):
         Dd = self.cosmoProp.D_d(H0, omega_m, Ode0)
@@ -186,7 +170,7 @@ class CosmoLikelihood(object):
         elif self.sampling_option == "fix_omega_mh2":
             likelihood, _ = self.X2_chain_omega_mh2(ctx.getParams())
         elif self.sampling_option == 'H0_omega_m_omega_de':
-            likelihood, _ =  self.X2_chain_H0_omgega_m_omega_de(ctx.getParams())
+            likelihood, _ = self.X2_chain_H0_omgega_m_omega_de(ctx.getParams())
         else:
             raise ValueError("wrong sampling option specified")
         return likelihood
@@ -199,8 +183,16 @@ class CosmoParam(object):
     """
     class for managing the parameters involved
     """
-    def __init__(self, sampling_option):
+    def __init__(self, sampling_option, lower_limit=[0, 0, 0], upper_limit=[200, 1, 1]):
+        """
+
+        :param sampling_option: string, sampling option
+        :param lower_limit: lower limit, array [H0, Omega_m, Omega_dm]
+        :param upper_limit: upper limit, array [H0, Omega_m, Omega_dm]
+        """
         self.sampling_option = sampling_option
+        self._lower_limit = lower_limit
+        self._upper_limit = upper_limit
 
     @property
     def numParam(self):
@@ -213,16 +205,17 @@ class CosmoParam(object):
         else:
             raise ValueError("wrong sampling option specified")
 
+    @property
     def param_bounds(self):
         if self.sampling_option == "H0_only" or self.sampling_option == "fix_omega_mh2":
-            lowerlimit = [0]
-            upperlimit = [200]
+            lowerlimit = [self._lower_limit[0]]
+            upperlimit = [self._upper_limit[0]]
         elif self.sampling_option == "H0_omega_m":
-            lowerlimit = [0, 0]  # H0, omega_m
-            upperlimit = [200, 1]
+            lowerlimit = self._lower_limit[0:2] # H0, omega_m
+            upperlimit = self._upper_limit[0:2]
         elif self.sampling_option == 'H0_omega_m_omega_de':
-            lowerlimit = [0, 0, 0]  # H0, omega_m
-            upperlimit = [200, 1, 1]
+            lowerlimit = self._lower_limit[0:3]
+            upperlimit = self._upper_limit[0:3]
         else:
             raise ValueError("wrong sampling option specified")
         return lowerlimit, upperlimit
@@ -233,14 +226,15 @@ class MCMCSampler(object):
     class which executes the different sampling  methods
     """
     def __init__(self, z_d, z_s, D_d_sample, D_dt_sample, sampling_option="H0_only", omega_m_fixed=0.3,
-                 omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1, flat=True):
+                 omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1, flat=True, lower_limit=[0, 0, 0],
+                 upper_limit=[200, 1, 1]):
         """
         initialise the classes of the chain and for parameter options
         """
         self.chain = CosmoLikelihood(z_d, z_s, D_d_sample, D_dt_sample, sampling_option=sampling_option,
                                      omega_m_fixed=omega_m_fixed, omega_mh2_fixed=omega_mh2_fixed,
                                      kde_type=kde_type, bandwidth=bandwidth, flat=flat)
-        self.cosmoParam = CosmoParam(sampling_option)
+        self.cosmoParam = CosmoParam(sampling_option, lower_limit=lower_limit, upper_limit=upper_limit)
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):
         """
@@ -260,7 +254,7 @@ class MCMCSampler(object):
         runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
         returns the chain
         """
-        lowerLimit, upperLimit = self.cosmoParam.param_bounds()
+        lowerLimit, upperLimit = self.cosmoParam.param_bounds
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
 

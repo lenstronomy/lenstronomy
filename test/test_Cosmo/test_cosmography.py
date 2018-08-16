@@ -25,6 +25,18 @@ class TestCosmography(object):
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
+    def test_mcmc_emcee(self):
+        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
+                                   omega_m_fixed=self.omega_m_true,
+                                   omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
+        n_walkers = 2
+        n_run = 2
+        n_burn = 2
+        mean_start = [self.H0_true]
+        sigma_start = [5]
+        samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
+        assert len(samples) == n_walkers*n_run
+
     def test_sampling_H0_only(self):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)

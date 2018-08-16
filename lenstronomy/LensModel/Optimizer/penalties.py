@@ -99,6 +99,8 @@ class Penalties(object):
 
         index = np.argmin(total)
 
+        self.src_pen_best = self.src_penalty[index]
+
         return total[index]
 
     def _book_keeping(self,src_penalty,centroid_penalty,mag_penalty,param_pen):
@@ -130,8 +132,6 @@ class Penalties(object):
         self.parameters.append(self.lens_args_latest)
         self._test_convergence()
         self._compute_mags_criterion()
-
-        self.src_pen_best = min(self.src_penalty)
 
     def _init_particles(self,n_particles,n_iterations):
 

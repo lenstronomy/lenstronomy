@@ -141,13 +141,14 @@ class Optimizer(object):
             raise ValueError("parameter 'restart' must be integer of value > 0")
 
         # particle swarm optimization
-        penalties, parameters = [],[]
+        penalties, parameters, src_pen_best = [],[], []
 
         for run in range(0, restart):
 
             penalty, params = self._single_optimization(n_particles, n_iterations)
             penalties.append(penalty)
             parameters.append(params)
+            src_pen_best.append(self._optimizer.src_pen_best)
 
         # select the best optimization
         best_index = np.argmin(penalties)
@@ -161,7 +162,8 @@ class Optimizer(object):
         source_x, source_y = np.mean(srcx), np.mean(srcy)
 
         # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
-        if self._optimizer.src_pen_best < 0.001:
+        # and will give the same answer
+        if src_pen_best[best_index] < 0.1:
             x_image, y_image = self.x_pos, self.y_pos
         else:
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.

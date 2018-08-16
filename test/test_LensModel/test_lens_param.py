@@ -61,6 +61,15 @@ class TestParam(object):
         mean, sigma = self.param.param_init(self.kwargs_mean)
         assert mean[0] == 1
 
+    def test_param_name_list(self):
+        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
+                           'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
+                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
+            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
+        lensParam = LensParam(lens_model_list, kwargs_fixed=None)
+        param_name_list = lensParam._param_name_list
+        assert len(lens_model_list) == len(param_name_list)
+
     def test_num_params(self):
         num, list = self.param.num_param()
         assert num == 17

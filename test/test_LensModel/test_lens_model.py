@@ -49,15 +49,6 @@ class TestLensModel(object):
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
-    def test_param_name_list(self):
-        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
-                           'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
-            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
-        lensModel = LensModel(lens_model_list)
-        param_name_list = lensModel.param_name_list()
-        assert len(lens_model_list) == len(param_name_list)
-
     def test_arrival_time(self):
         z_lens = 0.5
         z_source = 1.5

@@ -36,17 +36,6 @@ class LensModel(object):
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
 
-    def param_name_list(self):
-        """
-        returns the list of all parameter names
-
-        :return: list of list of strings (for each light model separately)
-        """
-        name_list = []
-        for func in self.lens_model.func_list:
-            name_list.append(func.param_names)
-        return name_list
-
     def ray_shooting(self, x, y, kwargs, k=None):
         """
         maps image to source position (inverse deflection)

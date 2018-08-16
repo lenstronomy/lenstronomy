@@ -25,7 +25,7 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
-                 tol_simplex_params=1e-3,tol_simplex_func = 0.001, constrain_params=None,simplex_n_iterations=250,
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,simplex_n_iterations=250,
                  single_background=False):
 
 
@@ -56,15 +56,21 @@ class Optimizer(object):
         :param pso_convergence_mean: alternate convergence criterion for PSO; usually dominates the former
         :param pso_compute_magnification: flag for computing magnifications in the PSO; useful to avoid computing
         the magnification for lens models that are obviously wrong
-        :param tol_simplex: tolerance for the scipy downhill simplex routine
+        :param tol_simplex_func/params: tolerance for the scipy downhill simplex routine
+        :param tol_src_penalty: if the source penalty is less than this value, the recomputation of the image positions
+        will be skipped. (if the source penalty is good enough, you're guaranteed to match the input image positions so
+        not point in recomputing them)
         :param constrain_params: additional parameters to constrain (type: dictionary)
 
         Format: {'parameter_name_1':[desired_value,uncertainty], 'parameter_name_2':[desired_value,uncertainty]}
         e.g.
-        {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear (converting to polar coorindates each time)
-        {'theta_E:[1,0.01]} will constrain the Einstein radius to 1
-        The parameter name must be part of the 'params_to_vary' attribute of the optimization routine
+        {'theta_E:[1,0.01]} will constrain the Einstein radius to 1 plus/minus 0.01
+        The parameter name must be part of the 'params_to_vary' attribute of the specific optimization routine used
         (see class 'fixed_routines')
+
+        Special cases are constraining shear and shear_pa in polar coordinates:
+        {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear parameters in polar coordinates
+        based on the cartesian e1/e2 values
 
         :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
         for the downhill simplex routine
@@ -87,6 +93,7 @@ class Optimizer(object):
         self._pso_convergence_standardDEV = pso_convergence_standardDEV
         self._tol_simplex_params = tol_simplex_params
         self._tol_simplex_func = tol_simplex_func
+        self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
         self._single_background = single_background
 
@@ -163,7 +170,7 @@ class Optimizer(object):
 
         # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
         # and will give the same answer
-        if src_pen_best[best_index] < 0.1:
+        if src_pen_best[best_index] < self._tol_src_penalty:
             x_image, y_image = self.x_pos, self.y_pos
         else:
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.

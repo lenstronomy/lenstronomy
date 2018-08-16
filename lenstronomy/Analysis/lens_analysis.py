@@ -8,6 +8,7 @@ import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 
@@ -19,10 +20,11 @@ class LensAnalysis(object):
     def __init__(self, kwargs_model):
         self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
         self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
-        self.LensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', []),
+        self.LensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
+        self._lensModelExtensions = LensModelExtensions(self.LensModel)
         self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []))
         self.kwargs_model = kwargs_model
         self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
@@ -157,7 +159,7 @@ class LensAnalysis(object):
             center_y = kwargs_lens[0]['center_y']
         else:
             raise ValueError('no keyword center_x defined!')
-        theta_E = self.LensModel.effective_einstein_radius(kwargs_lens)
+        theta_E = self._lensModelExtensions.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
         x_coords, y_coords = param_util.transform_e1e2(r_array, np.zeros_like(r_array), e1=-e1, e2=-e2)
         x_coords += center_x

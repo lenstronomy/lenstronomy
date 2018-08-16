@@ -7,7 +7,7 @@ import numpy as np
 import scipy.ndimage as ndimage
 from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
@@ -122,7 +122,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     _frame_size = numPix * deltaPix
     _coords = data._coords
     x_grid, y_grid = data.coordinates
-    lensModelExt = class_creator.create_lens_model_extension(lensModel)
+    lensModelExt = LensModelExtensions(lensModel)
 
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -135,7 +135,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     if with_caustics is True:
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
                                                                          start_scale=deltaPix, max_order=10)
-        ra_caustic_list, dec_caustic_list = lensModelExt.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
         plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
         plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
     if point_source:
@@ -197,10 +197,11 @@ class LensModelPlot(object):
 
         self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
         self._analysis = LensAnalysis(kwargs_model)
-        self._lensModel = LensModelExtensions(lens_model_list=kwargs_model.get('lens_model_list', []),
+        self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
+        self._lensModelExt = LensModelExtensions(self._lensModel)
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps, inv_bool=True)
         self._kwargs_lens = kwargs_lens
@@ -220,7 +221,7 @@ class LensModelPlot(object):
 
     def _critical_curves(self):
         if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
-            self._ra_crit_list, self._dec_crit_list = self._lensModel.critical_curve_tiling(self._kwargs_lens,
+            self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens,
                                                                                         compute_window=self._frame_size,
                                                                                         start_scale=self._deltaPix / 5.,
                                                                                         max_order=10)

@@ -116,9 +116,10 @@ class TestMultiPlaneOptimizer(object):
 
         self.kwargs_lens_full_background = kwargs_lens_simple_background + kwargs_lens_subs
 
-        self.lensmodel_fixed_background = LensModelExtensions(lens_model_list=lens_model_list_simple_background + lens_model_list_subs,
+        self.lensmodel_fixed_background = LensModel(lens_model_list=lens_model_list_simple_background + lens_model_list_subs,
                           redshift_list=z_list_simple + z_list_subs,z_source=1.5,
                           cosmo=self.cosmo, multi_plane=True)
+        self.lensmodel_extensions_fixed_background = LensModelExtensions(self.lensmodel_fixed_background)
 
         self.x_pos_single_background = np.array([0.52879627,-0.51609593,-0.55462914, 0.39140589])
         self.y_pos_single_background = np.array([-0.6484213, 0.54131023, -0.34026707, 0.46996126])
@@ -160,7 +161,7 @@ class TestMultiPlaneOptimizer(object):
         mag_point = split.magnification_fast(macro_args)
 
 
-        extension = self.lensmodel_fixed_background
+        extension = self.lensmodel_extensions_fixed_background
 
         mag_finite = extension.magnification_finite(self.x_pos_single_background, self.y_pos_single_background,
                                                     self.kwargs_lens_full_background,source_sigma=0.01,
@@ -171,9 +172,8 @@ class TestMultiPlaneOptimizer(object):
 
         kwargs_lens, source, [x_image, y_image] = self.optimizer_single_background.optimize(n_particles=10,
                                                           n_iterations=10,restart=2)
-        _ = self.optimizer_single_background.lensModel.magnification_finite(x_image,y_image,kwargs_lens,
+        _ = self.optimizer_single_background.lensModelExtensions.magnification_finite(x_image,y_image,kwargs_lens,
                                                      ray_shooting_function=self.optimizer_single_background.ray_shooting_function_magfinite)
-
 
     def test_param_transform(self):
 
@@ -351,6 +351,8 @@ class TestMultiPlaneOptimizer(object):
     def test_multi_plane_subs(self,tol=0.004):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
+        # TODO: make assert statement
+
 
 if __name__ == '__main__':
     pytest.main()

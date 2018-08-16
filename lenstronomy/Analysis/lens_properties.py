@@ -7,6 +7,7 @@ from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 import lenstronomy.Util.constants as const
@@ -30,6 +31,7 @@ class LensProp(object):
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_model)
+        self._lensModelExt = LensModelExtensions(self.lens_analysis.LensModel)
         self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.analytic_kinematics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
@@ -120,7 +122,7 @@ class LensProp(object):
             if lens_model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x, center_y = self.lens_analysis.LensModel.lens_center(kwargs_lens, k=i)
+                    center_x, center_y = self._lensModelExt.lens_center(kwargs_lens, k=i)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
                     kwargs_lens_i['grid_interp_x'] -= center_x
                     kwargs_lens_i['grid_interp_y'] -= center_y
@@ -129,10 +131,11 @@ class LensProp(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_mass is True:
-            massModel = LensModelExtensions(lens_model_list=mass_profile_list)
+            lensModel = LensModel(lens_model_list=mass_profile_list)
+            massModel = LensModelExtensions(lensModel)
             theta_E = massModel.effective_einstein_radius(kwargs_profile)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            mass_r = massModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
+            mass_r = lensModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]

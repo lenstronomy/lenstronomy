@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class SinglePlaneLensing(object):
 
     def __init__(self, lensmodel, x_pos, y_pos, params, arg_list):

@@ -10,13 +10,17 @@ class LensEquationSolver(object):
     def __init__(self, lensModel):
         """
 
-        :param imsim: imsim class
+        :param lensModel: instance of a class according to lenstronomy.LensModel.lens_model
+        This class must contain the following definitions (with same syntax as the standard LensModel() class:
+        def ray_shooting()
+        def hessian()
+        def magnification()
         """
         self.lensModel = lensModel
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                   ray_shooting_function=None,hessian_function=None):
+                                   ray_shooting_function=None, hessian_function=None):
         """
         finds image position source position and lense model
 
@@ -29,7 +33,7 @@ class LensEquationSolver(object):
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
         :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
         :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
-        :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
 
@@ -64,8 +68,9 @@ class LensEquationSolver(object):
         #print(x_mins, y_mins, 'after requirement of min_distance')
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
-                                                               precision_limit, num_iter_max, ray_shooting_function = ray_shooting_function
-                                                               ,hessian_function = hessian_function)
+                                                               precision_limit, num_iter_max,
+                                                               ray_shooting_function=ray_shooting_function,
+                                                               hessian_function=hessian_function)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -81,6 +86,7 @@ class LensEquationSolver(object):
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10),
                        num_iter_max=100, ray_shooting_function=None,
                         hessian_function=None):
+        # TODO: this function will not work when ra_shooting_func=None or hessian_func=None is specified!
         """
         find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
 
@@ -164,8 +170,8 @@ class LensEquationSolver(object):
         x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
-        if self.lensModel.multi_plane:
-            arrival_time = self.lensModel.lens_model.arrival_time(x_mins, y_mins, kwargs_lens)
+        if self.lensModel.multi_plane is True:
+            arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:
             fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
             arrival_time = -fermat_pot

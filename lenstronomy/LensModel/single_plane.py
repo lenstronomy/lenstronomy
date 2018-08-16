@@ -274,6 +274,7 @@ class SinglePlane(object):
     def mass_3d(self, r, kwargs, bool_list=None):
         """
         computes the mass within a 3d sphere of radius r
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output
@@ -293,6 +294,7 @@ class SinglePlane(object):
     def mass_2d(self, r, kwargs, bool_list=None):
         """
         computes the mass enclosed a projected (2d) radius r
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output
@@ -326,8 +328,14 @@ class SinglePlane(object):
             bool_list[k] = True
         else:
             bool_list = [False] * n
-            for k_i in k:
-                bool_list[k_i] = True
+            for i, k_i in enumerate(k):
+                if k_i is not False:
+                    if k_i is True:
+                        bool_list[i] = True
+                    elif k_i < n:
+                        bool_list[k_i] = True
+                    else:
+                        raise ValueError("k as set by %s is not convertable in a bool string!" % k)
         if self._foreground_shear is True:
             bool_list[self._foreground_shear_idex] = False
         return bool_list

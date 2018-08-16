@@ -95,19 +95,6 @@ class LensModel(object):
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)
         return arrival_time
 
-    def mass(self, x, y, epsilon_crit, kwargs):
-        """
-
-        :param x: position
-        :param y: position
-        :param epsilon_crit: critical mass density of a lens
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: projected mass density in units of input epsilon_crit
-        """
-        kappa = self.kappa(x, y, kwargs)
-        mass = epsilon_crit * kappa
-        return mass
-
     def potential(self, x, y, kwargs, k=None):
         """
         lensing potential
@@ -136,6 +123,20 @@ class LensModel(object):
         """
         return self.lens_model.alpha(x, y, kwargs, k=k)
 
+    def hessian(self, x, y, kwargs, k=None):
+        """
+        hessian matrix
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param k: only evaluate the k-th lens model
+        :return: f_xx, f_xy, f_yy components
+        """
+        return self.lens_model.hessian(x, y, kwargs, k=k)
+
     def kappa(self, x, y, kwargs, k=None):
         """
         lensing convergence k = 1/2 laplacian(phi)
@@ -150,7 +151,7 @@ class LensModel(object):
         """
 
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
-        kappa = 1./2 * (f_xx + f_yy)  # attention on units
+        kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
     def gamma(self, x, y, kwargs, k=None):
@@ -169,8 +170,8 @@ class LensModel(object):
         """
 
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
-        gamma1 = 1./2 * (f_xx - f_yy)  # attention on units
-        gamma2 = f_xy  # attention on units
+        gamma1 = 1./2 * (f_xx - f_yy)
+        gamma2 = f_xy
         return gamma1, gamma2
 
     def magnification(self, x, y, kwargs, k=None):
@@ -191,46 +192,3 @@ class LensModel(object):
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
-
-    def hessian(self, x, y, kwargs, k=None):
-        """
-        hessian matrix
-
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: f_xx, f_xy, f_yy components
-        """
-        return self.lens_model.hessian(x, y, kwargs, k=k)
-
-    def mass_3d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass within a 3d sphere of radius r
-
-        :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param bool_list: list of bools that are part of the output
-        :return: mass (in angular units, modulo epsilon_crit)
-        """
-        if self.multi_plane is True:
-            raise ValueError("mass_3d is not supported for multi-lane lensing. Please use single plane instead.")
-        else:
-            return self.lens_model.mass_3d(r, kwargs, bool_list=bool_list)
-
-    def mass_2d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass enclosed a projected (2d) radius r
-
-        :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param bool_list: list of bools that are part of the output
-        :return: projected mass (in angular units, modulo epsilon_crit)
-        """
-        if self.multi_plane is True:
-            raise ValueError("mass_2d is not supported for multi-lane lensing. Please use single plane instead.")
-        else:
-            return self.lens_model.mass_2d(r, kwargs, bool_list=bool_list)
-

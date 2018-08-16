@@ -16,12 +16,6 @@ class TestClassCreator(object):
         self.kwargs_psf = {'psf_type': 'NONE'}
         self.kwargs_data = {'numPix': 10}
 
-    def test_create_lens_model_extension(self):
-        lensModel = LensModel(lens_model_list=['SIS'])
-        lensExtensions = class_creator.create_lens_model_extension(lensModel)
-        theta_E = lensExtensions.effective_einstein_radius(kwargs_lens_list=[{'theta_E': 1, 'center_x': 0, 'center_y': 0}])
-        npt.assert_almost_equal(theta_E, 1, decimal=1)
-
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, kwargs_model=self.kwargs_model)
         assert imageModel.LensModel.lens_model_list[0] == 'SIS'

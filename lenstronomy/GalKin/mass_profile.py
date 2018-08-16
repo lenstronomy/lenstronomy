@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.interpolate import interp1d
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 from lenstronomy.GalKin.cosmo import Cosmo
 
@@ -15,7 +16,7 @@ class MassProfile(object):
         :param profile_list:
         """
         kwargs_options = {'lens_model_list': profile_list}
-        self.model = LensModel(profile_list)
+        self.model = SinglePlane(profile_list)
         self.cosmo = Cosmo(kwargs_cosmo)
         self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
         self._max_interpolate = kwargs_numerics.get('max_integrate', 100)

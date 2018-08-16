@@ -5,20 +5,6 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.ImSim.multiband import Multiband
-from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-
-
-def create_lens_model_extension(lensModel):
-    """
-    create instance of LensModelExtensions given an instance of LensModel
-    
-    :param lensModel: instance of LensModel class
-    :return: instance of LensModelExtensions
-    """
-    lensModelExtensions = LensModelExtensions(lens_model_list=lensModel.lens_model_list, z_source=lensModel.z_source,
-                                              redshift_list=lensModel.redshift_list, cosmo=lensModel.cosmo,
-                                              multi_plane=lensModel.multi_plane)
-    return lensModelExtensions
 
 
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):

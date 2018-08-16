@@ -4,10 +4,11 @@ import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
 from lenstronomy.LensModel.Optimizer.params import Params
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
-from scipy.optimize import minimize,fmin
+from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class Optimizer(object):
@@ -94,9 +95,12 @@ class Optimizer(object):
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-        self.lensModel = LensModelExtensions(lens_model_list=lens_model_list, redshift_list=redshift_list,
+
+        self.lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
                                              z_source=z_source,
                                              cosmo=astropy_instance, multi_plane=multiplane)
+        # TODO: check whether LensModelExtension modules need to be called
+        self.lensModelExtensions = LensModelExtensions(self.lensModel)
 
         self.solver = LensEquationSolver(self.lensModel)
 
@@ -167,7 +171,7 @@ class Optimizer(object):
         # solve for the optimized image positions
         srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
         source_x, source_y = np.mean(srcx), np.mean(srcy)
-
+        # TODO: attention, the solver possibly uses the multi-plane ray-tracing without the optimization!
         x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False,
                                                            **self.lensing_functions)
 

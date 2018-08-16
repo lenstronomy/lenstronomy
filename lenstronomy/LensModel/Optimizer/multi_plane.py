@@ -311,11 +311,13 @@ class Background(object):
 
         self._approx_kwargs = [{'theta_E':approx_Rein,'center_x':0, 'center_y':0}]
 
+        self.gamma, self.shear_pa = 0, 1
+
     def _set_shear(self,value,angle):
 
         self.gamma, self.shear_pa = value, angle
 
-    def _shear(self,x,y):
+    def _add_shear(self, x, y):
 
         x_prime = x*np.cos(2*self.shear_pa) + y*np.sin(2*self.shear_pa)
         y_prime = x*np.sin(2*self.shear_pa) - y*np.cos(2*self.shear_pa)
@@ -328,7 +330,7 @@ class Background(object):
                                                       y*self._T_main**-1,self._approx_kwargs)
 
         if shear:
-            alphax, alphay = self._shear(alphax, alphay)
+            alphax, alphay = self._add_shear(alphax, alphay)
 
 
         return -alphax*self._reduced_to_phys_main, -alphay*self._reduced_to_phys_main

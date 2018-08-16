@@ -316,9 +316,20 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_almost_equal(magnification_true*max(magnification_true)**-1,
                                 magnification_split*max(magnification_split)**-1,2)
 
+        mag_true = self.lens_model_full.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
+        mag_true_split = split.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
+
+        npt.assert_almost_equal(mag_true,mag_true_split)
+
     def test_multi_plane_simple(self):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
+        _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
+
+        self.optimizer_simple._tol_src_penalty = 1e-30
+
+        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
+                                                                                 restart=2)
         _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
 
     def test_multi_plane_reoptimize(self, tol=0.004):

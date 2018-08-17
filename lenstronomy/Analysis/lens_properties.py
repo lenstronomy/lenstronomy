@@ -7,6 +7,7 @@ from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 import lenstronomy.Util.constants as const
@@ -30,6 +31,7 @@ class LensProp(object):
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
         self.lens_analysis = LensAnalysis(kwargs_model)
+        self._lensModelExt = LensModelExtensions(self.lens_analysis.LensModel)
         self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self.analytic_kinematics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
@@ -47,7 +49,8 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, lens_light_model_bool_list=None, aniso_param=1, r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
+    def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, lens_light_model_bool_list=None, aniso_param=1,
+                            r_eff=None, R_slit=0.81, dR_slit=0.1, psf_fwhm=0.7, num_evaluate=1000):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -119,7 +122,7 @@ class LensProp(object):
             if lens_model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x, center_y = self.lens_analysis.LensModel.lens_center(kwargs_lens, k=i)
+                    center_x, center_y = self._lensModelExt.lens_center(kwargs_lens, k=i)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
                     kwargs_lens_i['grid_interp_x'] -= center_x
                     kwargs_lens_i['grid_interp_y'] -= center_y
@@ -128,10 +131,11 @@ class LensProp(object):
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_mass is True:
-            massModel = LensModelExtensions(lens_model_list=mass_profile_list)
+            lensModel = LensModel(lens_model_list=mass_profile_list)
+            massModel = LensModelExtensions(lensModel)
             theta_E = massModel.effective_einstein_radius(kwargs_profile)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            mass_r = massModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
+            mass_r = lensModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
@@ -149,10 +153,10 @@ class LensProp(object):
                 kwargs_light.append(kwargs_lens_light_i)
         if r_eff is None:
             lensAnalysis = LensAnalysis({'lens_light_model_list': light_profile_list})
-            r_eff = lensAnalysis.half_light_radius_lens(kwargs_light)
+            r_eff = lensAnalysis.half_light_radius_lens(kwargs_light, model_bool_list=light_model_kinematics_bool)
         if Hernquist_approx is True:
             light_profile_list = ['HERNQUIST']
-            kwargs_light = [{'Rs':  r_eff, 'sigma0': 1.}]
+            kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]
         else:
             if MGE_light is True:
                 lightModel = LightModel(light_profile_list)
@@ -167,14 +171,14 @@ class LensProp(object):
         sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
         return sigma2
 
-    def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model, z_d):
+    def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model):
         """
 
         :return:
         """
         sigma_v2_model = sigma_v_model**2
         Ds_Dds = sigma_v**2/(1-kappa_ext)/(sigma_v2_model * self.lensCosmo.D_ds / self.lensCosmo.D_s)
-        D_d = D_dt_model/(1+z_d)/Ds_Dds/(1-kappa_ext)
+        D_d = D_dt_model/(1+self.lensCosmo.z_lens)/Ds_Dds/(1-kappa_ext)
         return D_d, Ds_Dds
 
     def angular_distances(self, sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled, fermat_pot):
@@ -188,6 +192,6 @@ class LensProp(object):
         :return: D_d and D_d*D_s/D_ds, units in Mpc physical
         """
 
-        Ds_Dds = (sigma_v_measured/sigma_v_modeled) ** 2 / (self.lensCosmo.D_ds / self.lensCosmo.D_s) / (1 - kappa_ext)
-        DdDs_Dds = 1./(1+self.lensCosmo.z_lens)/(1-kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
+        Ds_Dds = (sigma_v_measured/float(sigma_v_modeled)) ** 2 / (self.lensCosmo.D_ds / self.lensCosmo.D_s) / (1. - kappa_ext)
+        DdDs_Dds = 1./(1+self.lensCosmo.z_lens)/(1. - kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
         return Ds_Dds, DdDs_Dds

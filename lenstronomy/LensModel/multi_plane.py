@@ -4,7 +4,7 @@ from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 
 
-class MultiLens(object):
+class MultiPlane(object):
     """
     Multi-plane lensing class
     """
@@ -15,9 +15,8 @@ class MultiLens(object):
         :param cosmo: instance of astropy.cosmology
         :return: Background class with instance of astropy.cosmology
         """
-        from astropy.cosmology import default_cosmology
-
         if cosmo is None:
+            from astropy.cosmology import default_cosmology
             cosmo = default_cosmology.get()
         self._cosmo_bkg = Background(cosmo)
         self._z_source = z_source
@@ -86,7 +85,6 @@ class MultiLens(object):
         :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
         :return: co-moving position and angles at redshift z_stop
         """
-
         z_lens_last = z_start
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
@@ -112,6 +110,7 @@ class MultiLens(object):
             delta_T = self._cosmo_bkg_T_stop
         else:
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 
@@ -256,7 +255,7 @@ class MultiLens(object):
         delay_days = const.delay_arcsec2days(potential, D_dt)
         return delay_days
 
-    def _co_moving2angle(self, x, y, idex):# z_lens):
+    def _co_moving2angle(self, x, y, idex):
         """
         transforms co-moving distances Mpc into angles on the sky (radian)
 

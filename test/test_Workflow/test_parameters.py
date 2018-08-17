@@ -11,7 +11,7 @@ class TestParam(object):
     def setup(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                           'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
-        kwargs_param = {}
+        kwargs_param = {'num_point_source_list': [2]}
         kwargs_fixed_lens = [{'gamma': 1.9}] #for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
@@ -34,10 +34,14 @@ class TestParam(object):
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = [{}]
         param_class_linear = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
-                                        kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo, linear_solver=False)
+                                        kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo, linear_solver=True)
         num_param, list = param_class_linear.num_param()
         assert list[0] == 'theta_E_lens'
-        assert num_param == 11
+        assert num_param == 9
+
+    def test_num_param_linear(self):
+        num_param = self.param_class.num_param_linear()
+        assert num_param == 4
 
     def test_get_params(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9, 'e1':0.01, 'e2':-0.01, 'center_x':0., 'center_y':0.}] #for SPEP lens

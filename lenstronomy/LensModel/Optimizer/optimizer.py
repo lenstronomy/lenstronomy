@@ -4,10 +4,11 @@ import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
 from lenstronomy.LensModel.Optimizer.params import Params
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
-from scipy.optimize import minimize,fmin
+from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class Optimizer(object):
@@ -23,8 +24,10 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=50,
-                 tol_simplex=1e-5,constrain_params=None,simplex_n_iterations=6000):
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,simplex_n_iterations=250,
+                 single_background=False):
+
 
         """
 
@@ -53,15 +56,27 @@ class Optimizer(object):
         :param pso_convergence_mean: alternate convergence criterion for PSO; usually dominates the former
         :param pso_compute_magnification: flag for computing magnifications in the PSO; useful to avoid computing
         the magnification for lens models that are obviously wrong
-        :param tol_simplex: tolerance for the scipy downhill simplex routine
+        :param tol_simplex_func/params: tolerance for the scipy downhill simplex routine
+        :param tol_src_penalty: if the source penalty is less than this value, the recomputation of the image positions
+        will be skipped. (if the source penalty is good enough, you're guaranteed to match the input image positions so
+        not point in recomputing them)
         :param constrain_params: additional parameters to constrain (type: dictionary)
 
         Format: {'parameter_name_1':[desired_value,uncertainty], 'parameter_name_2':[desired_value,uncertainty]}
         e.g.
-        {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear (converting to polar coorindates each time)
-        {'theta_E:[1,0.01]} will constrain the Einstein radius
-        The parameter name must be part of the 'params_to_vary' attribute of the optimization routine
+        {'theta_E:[1,0.01]} will constrain the Einstein radius to 1 plus/minus 0.01
+        The parameter name must be part of the 'params_to_vary' attribute of the specific optimization routine used
         (see class 'fixed_routines')
+
+        Special cases are constraining shear and shear_pa in polar coordinates:
+        {'shear':[0.05,0.01], 'shear_pa':[30,5]} will constrain the shear parameters in polar coordinates
+        based on the cartesian e1/e2 values
+
+        :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
+        for the downhill simplex routine
+        :param single_background: uses an approximation in which the path through background halos is only computed
+        once; useful for models with a lot of background subhalos that are otherwise very computationally expensive to
+        handle.
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -76,37 +91,41 @@ class Optimizer(object):
         self._init_kwargs = kwargs_lens
 
         self._pso_convergence_standardDEV = pso_convergence_standardDEV
-        self._tol_simplex = tol_simplex
+        self._tol_simplex_params = tol_simplex_params
+        self._tol_simplex_func = tol_simplex_func
+        self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
+        self._single_background = single_background
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-        self.lensModel = LensModelExtensions(lens_model_list=lens_model_list, redshift_list=redshift_list,
+        self.lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
                                              z_source=z_source,
                                              cosmo=astropy_instance, multi_plane=multiplane)
-        self.solver = LensEquationSolver(self.lensModel)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
-
         self._params = Params(zlist=self.lensModel.redshift_list, lens_list=self.lensModel.lens_model_list, arg_list=kwargs_lens,
                               optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
         
         # initialize particle swarm inital param limits
-
         self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize)
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
-
             lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
+            # don't bother with anything special here, just use the regular lensmodel class
+            self.solver = LensEquationSolver(self.lensModel)
 
         else:
-
             lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                              astropy_instance, self._params.tovary_indicies)
+                                              astropy_instance, self._params.tovary_indicies, single_background)
+            # since 'single_background' might be turned on, lensing_class has routines called ray_shooting, hessian,
+            # etc. that will do the right thing if the approximation is being used. Otherwise they behave the same as
+            # the routines in LensModel.
+            self.solver = LensEquationSolver(lensing_class)
 
         self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
@@ -117,7 +136,6 @@ class Optimizer(object):
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
         """
-
         :param n_particles: number of particle swarm particles
         :param n_iterations: number of particle swarm iternations
         :param restart: number of times to execute the optimization;
@@ -130,13 +148,14 @@ class Optimizer(object):
             raise ValueError("parameter 'restart' must be integer of value > 0")
 
         # particle swarm optimization
-        penalties, parameters = [],[]
+        penalties, parameters, src_pen_best = [],[], []
 
         for run in range(0, restart):
 
             penalty, params = self._single_optimization(n_particles, n_iterations)
             penalties.append(penalty)
             parameters.append(params)
+            src_pen_best.append(self._optimizer.src_pen_best)
 
         # select the best optimization
         best_index = np.argmin(penalties)
@@ -146,13 +165,20 @@ class Optimizer(object):
         kwargs_lens_final = kwargs_varied + self._params.argsfixed_todictionary()
 
         # solve for the optimized image positions
-        srcx, srcy = self.lensModel.ray_shooting(self.x_pos, self.y_pos, kwargs_lens_final)
+        srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
+        source_x, source_y = np.mean(srcx), np.mean(srcy)
+
+        # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
+        # and will give the same answer
+        if src_pen_best[best_index] < self._tol_src_penalty:
+            x_image, y_image = self.x_pos, self.y_pos
+        else:
+            # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
+            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
 
         if self._verbose:
+            print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
-
-        source_x, source_y = np.mean(srcx), np.mean(srcy)
-        x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, precision_limit=10 ** -10)
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 
@@ -163,18 +189,19 @@ class Optimizer(object):
 
         if self._particle_swarm:
             params = self._pso(n_particles, n_iterations, self._optimizer)
-            print('PSO done.')
 
         else:
             params = self._params._kwargs_to_tovary(self._init_kwargs)
 
         if self._verbose:
+            print('PSO done.')
             print('starting amoeba... ')
 
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=True)
-        options = {'adaptive': True, 'fatol': self._tol_simplex,'xatol':self._tol_simplex,
+        options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                              'maxiter': self._simplex_iter * len(params)}
+
         optimized_downhill_simplex = minimize(self._optimizer, x0=params, method='Nelder-Mead',
                              options=options)
 
@@ -209,8 +236,7 @@ class Optimizer(object):
         check inputs
         """
 
-        assert len(x_pos) == 4
-        assert len(y_pos) == 4
+        assert len(x_pos) == len(y_pos)
         assert len(magnification_target) == len(x_pos)
         assert tol_source is not None
         assert len(lens_list) == len(arg_list)

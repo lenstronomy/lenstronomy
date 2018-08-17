@@ -65,7 +65,7 @@ class GaussianEllipse(object):
         x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
         return self.gaussian.function(x_, y_, amp, sigma, sigma, center_x, center_y)
 
-    def light_3d(self, r, amp, sigma, e1, e2):
+    def light_3d(self, r, amp, sigma, e1=0, e2=0):
         """
 
         :param y:

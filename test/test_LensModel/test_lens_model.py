@@ -22,10 +22,6 @@ class TestLensModel(object):
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 
-    def test_mass(self):
-        output = self.lensModel.mass(x=1., y=1., epsilon_crit=1.9e+15, kwargs=self.kwargs)
-        npt.assert_almost_equal(output, -11039296368203.469, decimal=5)
-
     def test_kappa(self):
         output = self.lensModel.kappa(x=1., y=1., kwargs=self.kwargs)
         assert output == -0.0058101559832649833
@@ -53,22 +49,7 @@ class TestLensModel(object):
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
         assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
-    def test_mass_2d(self):
-        lensModel = LensModel(['GAUSSIAN_KAPPA'])
-        kwargs = [{'amp': 1., 'sigma': 2.}]
-        output = lensModel.mass_2d(r=1, kwargs=kwargs)
-        assert output == 0.11750309741540453
-
-    def test_param_name_list(self):
-        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
-                           'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
-            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
-        lensModel = LensModel(lens_model_list)
-        param_name_list = lensModel.param_name_list()
-        assert len(lens_model_list) == len(param_name_list)
-
-    def test_multi_plane(self):
+    def test_arrival_time(self):
         z_lens = 0.5
         z_source = 1.5
         x_image, y_image = 1., 0

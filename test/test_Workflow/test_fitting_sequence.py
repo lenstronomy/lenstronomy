@@ -22,17 +22,17 @@ class TestFittingSequence(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        numPix = 50  # cutout pixel size
+        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                     truncate=6,
                                                     kernel=psf_class.kernel_point_source)
 
@@ -77,8 +77,8 @@ class TestFittingSequence(object):
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = {
-                               'subgrid_res': 2,
-                               'psf_subgrid': True}
+                               'subgrid_res': 1,
+                               'psf_subgrid': False}
 
         num_source_model = len(source_model_list)
 
@@ -96,7 +96,7 @@ class TestFittingSequence(object):
                              'source_marg': True,
                              'point_source_likelihood': False,
                              'position_uncertainty': 0.004,
-                             'check_solver': True,
+                             'check_solver': False,
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
                              }
@@ -105,7 +105,7 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
 
     def test_simulationAPI_psf(self):
-        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 1.9948432790647363e-07, decimal=6)
+        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 0.0010335243878451812, decimal=6)
 
     def test_fitting_sequence(self):
         #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
@@ -146,7 +146,7 @@ class TestFittingSequence(object):
         
         fitting_kwargs_list = [
             {'fitting_routine': 'PSO', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
-            {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 2, 'n_run': 2, 'walkerRatio': 2},
+            {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2},
             {'fitting_routine': 'align_images', 'lower_limit_shift': -0.1, 'upper_limit_shift': 0.1, 'n_particles': 2, 'n_iterations': 2},
             {'fitting_routine': 'psf_iteration', 'psf_iter_num': 2, 'psf_iter_factor': 0.5}
         ]

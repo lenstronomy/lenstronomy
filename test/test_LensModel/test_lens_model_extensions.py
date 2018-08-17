@@ -4,6 +4,7 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.param_util as param_util
 
 
@@ -19,7 +20,7 @@ class TestLensModelExtensions(object):
         phi, q = 1., 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
-        lensModel = LensModelExtensions(lens_model_list)
+        lensModel = LensModelExtensions(LensModel(lens_model_list))
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModel.critical_curve_caustics(kwargs_lens,
                                                                                 compute_window=5, grid_scale=0.005)
         print(ra_caustic_list)
@@ -33,7 +34,7 @@ class TestLensModelExtensions(object):
         phi, q = 1., 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
-        lensModel = LensModelExtensions(lens_model_list)
+        lensModel = LensModelExtensions(LensModel(lens_model_list))
         ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01, max_order=10)
         npt.assert_almost_equal(ra_crit[0], -0.5355208333333333, decimal=5)
 
@@ -45,7 +46,7 @@ class TestLensModelExtensions(object):
 
         x_pos = np.array([1., 1., 2.])
         y_pos = np.array([-1., 0., 0.])
-        lens_model = LensModelExtensions(lens_model_list=['GAUSSIAN'])
+        lens_model = LensModelExtensions(LensModel(lens_model_list=['GAUSSIAN']))
         mag = lens_model.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
@@ -55,7 +56,7 @@ class TestLensModelExtensions(object):
 
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},{'e1':0.01,'e2':0.03}]
 
-        extension = LensModelExtensions(lens_model_list)
+        extension = LensModelExtensions(LensModel(lens_model_list))
         x_image, y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
 
         mag_square_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
@@ -67,7 +68,7 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
     def test_profile_slope(self):
-        lens_model = LensModelExtensions(lens_model_list=['SPP'])
+        lens_model = LensModelExtensions(LensModel(lens_model_list=['SPP']))
         gamma_in = 2.
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
         gamma_out = lens_model.profile_slope(kwargs_lens)
@@ -82,7 +83,7 @@ class TestLensModelExtensions(object):
         gamma_out = lens_model.profile_slope(kwargs_lens)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
-        lens_model = LensModelExtensions(lens_model_list=['SPEP'])
+        lens_model = LensModelExtensions(LensModel(lens_model_list=['SPEP']))
         gamma_in = 2.
         phi, q = 0.34403343049704888, 0.89760957136967312
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
@@ -94,7 +95,7 @@ class TestLensModelExtensions(object):
     def test_lens_center(self):
         center_x, center_y = 0.43, -0.67
         kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
-        lensModel = LensModelExtensions(lens_model_list=['SIS'])
+        lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
         center_x_out, center_y_out = lensModel.lens_center(kwargs_lens)
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
@@ -102,7 +103,7 @@ class TestLensModelExtensions(object):
     def test_external_shear(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
-        lensModel = LensModelExtensions(lens_model_list)
+        lensModel = LensModelExtensions(LensModel(lens_model_list))
         phi, gamma = lensModel.external_shear(kwargs_lens)
         npt.assert_almost_equal(phi, 0.049834326245581012, decimal=8)
         npt.assert_almost_equal(gamma, 0.10049875621120891, decimal=8)
@@ -110,7 +111,7 @@ class TestLensModelExtensions(object):
     def test_external_lensing_effect(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
-        lensModel = LensModelExtensions(lens_model_list)
+        lensModel = LensModelExtensions(LensModel(lens_model_list))
         alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.external_lensing_effect(kwargs_lens, lens_model_internal_bool=[False])
         print(alpha0_x, alpha0_y, kappa_ext, shear1, shear2)
         assert alpha0_x == 0

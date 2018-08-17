@@ -10,7 +10,11 @@ class LensEquationSolver(object):
     def __init__(self, lensModel):
         """
 
-        :param imsim: imsim class
+        :param lensModel: instance of a class according to lenstronomy.LensModel.lens_model
+        This class must contain the following definitions (with same syntax as the standard LensModel() class:
+        def ray_shooting()
+        def hessian()
+        def magnification()
         """
         self.lensModel = lensModel
 
@@ -26,9 +30,12 @@ class LensEquationSolver(object):
         :param search_window: window size to be considered by the solver. Will not find image position outside this window
         :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
-        :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
+        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
+
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)
@@ -45,7 +52,8 @@ class LensEquationSolver(object):
         #y_mins = y_mins[delta_map*mag <= min_distance*5]
         #print(x_mins, y_mins, 'after requirement of min_distance')
         # iterative solving of the lens equation for the selected grid points
-        x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit, num_iter_max)
+        x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
+                                                               precision_limit, num_iter_max)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -58,7 +66,9 @@ class LensEquationSolver(object):
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
         return x_mins, y_mins
 
-    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10), num_iter_max=100):
+    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10),
+                       num_iter_max=100):
+
         """
         find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
 
@@ -71,6 +81,7 @@ class LensEquationSolver(object):
         x_mins = np.zeros(num_candidates)
         y_mins = np.zeros(num_candidates)
         solver_precision = np.zeros(num_candidates)
+
         for i in range(len(x_min)):
             l = 0
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
@@ -104,8 +115,12 @@ class LensEquationSolver(object):
         :param magThresh: magnification threshold for images to be selected
         :param numImage: number of selected images (will select the highest magnified ones)
         :param kwargs_lens:
+        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
+        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
+        :param magnification_function: same as ray_shooting_function, but for computing magnifications
         :return:
         """
+
         x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance,
                                                          search_window, precision_limit, num_iter_max,
                                                          arrival_time_sort=arrival_time_sort)
@@ -126,13 +141,18 @@ class LensEquationSolver(object):
         :param kwargs_lens: keyword arguments of lens model
         :return: sorted lists of x_mins and y_mins
         """
+
+        if hasattr(self.lensModel, '_no_potential'):
+            raise Exception('Instance of lensModel passed to this class does not compute the lensing potential, '
+                            'and therefore cannot compute time delays.')
+
         if len(x_mins) <= 1:
             return x_mins, y_mins
         x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
-        if self.lensModel.multi_plane:
-            arrival_time = self.lensModel.lens_model.arrival_time(x_mins, y_mins, kwargs_lens)
+        if self.lensModel.multi_plane is True:
+            arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:
             fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
             arrival_time = -fermat_pot

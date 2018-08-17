@@ -89,6 +89,15 @@ class TestData(object):
         fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
         assert fwhm_compute == fwhm
 
+        kernel = kernel_util.kernel_gaussian(kernel_numPix=11, deltaPix=deltaPix, fwhm=fwhm)
+        kwargs = {'psf_type': 'PIXEL',  'truncate': 5, 'pixel_size': deltaPix, 'kernel_point_source': kernel}
+        fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
+        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=6)
+
+        kwargs = {'psf_type': 'PIXEL', 'truncate': 5, 'pixel_size': deltaPix, 'kernel_point_source_subsampled': kernel}
+        fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
+        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=6)
+
 
 if __name__ == '__main__':
     pytest.main()

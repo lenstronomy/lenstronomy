@@ -1,4 +1,4 @@
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.single_plane import SinglePlane
 
 
 class LensParam(object):
@@ -16,8 +16,11 @@ class LensParam(object):
         self._num_images = num_images
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
-        lensModel = LensModel(lens_model_list=lens_model_list)
-        self._param_name_list = lensModel.param_name_list()
+        lens_model = SinglePlane(lens_model_list=lens_model_list)
+        name_list = []
+        for func in lens_model.func_list:
+            name_list.append(func.param_names)
+        self._param_name_list = name_list
 
     def getParams(self, args, i):
         kwargs_list = []
@@ -45,7 +48,10 @@ class LensParam(object):
                             kwargs['coeffs'] = args[i:i + num_coeffs]
                         i += num_coeffs
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs['sigma'])
+                        if 'sigma' in kwargs_fixed:
+                            num_param = len(kwargs_fixed['sigma'])
+                        else:
+                            num_param = len(kwargs['sigma'])
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':

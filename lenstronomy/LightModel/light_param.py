@@ -14,6 +14,7 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
             self.kwargs_fixed = self.add_fixed_linear(self.kwargs_fixed)
+        self._linear_solve = linear_solver
     
     @property
     def param_name_list(self):
@@ -34,12 +35,18 @@ class LightParam(object):
             for name in param_names:
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
-                        n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        if 'n_max' in kwargs_fixed:
+                            n_max = kwargs_fixed['n_max']
+                        else:
+                            n_max = kwargs['n_max']
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs['sigma'])
+                        if 'sigma' in kwargs_fixed:
+                            num_param = len(kwargs_fixed['sigma'])
+                        else:
+                            num_param = len(kwargs['sigma'])
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     else:
@@ -68,7 +75,7 @@ class LightParam(object):
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             args.append(kwargs[name][i])
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
@@ -97,7 +104,7 @@ class LightParam(object):
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs_mean['n_max'])
-                        num_param = (n_max + 1) + (n_max + 2) / 2
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             mean.append(kwargs_mean[name][i])
                             sigma.append(kwargs_mean[name + '_sigma'][i])
@@ -126,11 +133,13 @@ class LightParam(object):
             for name in param_names:
                 if not name in kwargs_fixed:
                     if model == 'SHAPELETS' and name == 'amp':
-                        raise ValueError('shapelets amplitude must be fixed in the parameter configuration!')
-                        #n_max = kwargs_fixed.get('n_max', 0)
-                        #num_param = (n_max + 1) + (n_max + 2) / 2
-                        #kwargs['amp'] = args[i:i + num_param]
-                        #i += num_param
+                        if 'n_max' not in kwargs_fixed:
+                            raise ValueError("n_max needs to be fixed in this configuration!")
+                        n_max = kwargs_fixed['n_max']
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
+                        num += num_param
+                        for i in range(num_param):
+                            list.append(str(name + '_' + self._type))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
@@ -155,3 +164,23 @@ class LightParam(object):
                 if not 'amp' in kwargs_fixed:
                     kwargs_fixed['amp'] = 1
         return kwargs_fixed_list
+
+    def num_param_linear(self):
+        """
+
+        :return: number of linear basis set coefficients
+        """
+        num = 0
+        for k, model in enumerate(self.model_list):
+            kwargs_fixed = self.kwargs_fixed[k]
+            param_names = self._param_name_list[k]
+            if 'amp' in param_names:
+                if self._linear_solve is True:
+                    if model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                        num += len(kwargs_fixed['sigma'])
+                    elif model in ['SHAPELETS']:
+                        n_max = kwargs_fixed['n_max']
+                        num += int((n_max + 1) * (n_max + 2) / 2)
+                    else:
+                        num += 1
+        return num

@@ -47,6 +47,25 @@ class TestGaussianEllipse(object):
         flux_spherical = gaussian.function(1, 1, amp=1, sigma_x=sigma, sigma_y=sigma)
         npt.assert_almost_equal(flux, flux_spherical, decimal=8)
 
+    def test_light_3d(self):
+        gaussianEllipse = GaussianEllipse()
+        gaussian = Gaussian()
+
+        sigma = 1
+        r = 1.
+        amp = 1.
+        flux_spherical = gaussian.light_3d(r, amp, sigma, sigma)
+        flux = gaussianEllipse.light_3d(r, amp, sigma)
+        npt.assert_almost_equal(flux, flux_spherical, decimal=8)
+
+        multiGaussian = MultiGaussian()
+        multiGaussianEllipse = MultiGaussianEllipse()
+        amp = [1, 2]
+        sigma = [1., 2]
+        flux_spherical = multiGaussian.light_3d(r, amp, sigma)
+        flux = multiGaussianEllipse.light_3d(r, amp, sigma)
+        npt.assert_almost_equal(flux, flux_spherical, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main()

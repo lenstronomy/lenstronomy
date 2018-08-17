@@ -69,6 +69,8 @@ class Penalties(object):
         centroid_penalty = self._centroid_penalty(lens_args_to_vary)
         total_penalty += centroid_penalty
 
+        self._compute_mags = self._compute_mags_criterion()
+
         if self._compute_mags:
             mag_penalty = self._magnification_penalty(lens_args_to_vary)
             total_penalty += mag_penalty
@@ -96,6 +98,8 @@ class Penalties(object):
         total = self._get_total_pen()
 
         index = np.argmin(total)
+
+        self.src_pen_best = self.src_penalty[index]
 
         return total[index]
 
@@ -127,6 +131,7 @@ class Penalties(object):
 
         self.parameters.append(self.lens_args_latest)
         self._test_convergence()
+        self._compute_mags_criterion()
 
     def _init_particles(self,n_particles,n_iterations):
 
@@ -193,14 +198,14 @@ class Penalties(object):
 
     def _source_position_penalty(self,lens_args_tovary):
 
-        betax,betay = self.lensing.ray_shooting_fast(lens_args_tovary)
+        self.betax,self.betay = self.lensing.ray_shooting_fast(lens_args_tovary)
 
-        dx = ((betax[0] - betax[1]) ** 2 + (betax[0] - betax[2]) ** 2 + (betax[0] - betax[3]) ** 2 + (
-                betax[1] - betax[2]) ** 2 +
-              (betax[1] - betax[3]) ** 2 + (betax[2] - betax[3]) ** 2)
-        dy = ((betay[0] - betay[1]) ** 2 + (betay[0] - betay[2]) ** 2 + (betay[0] - betay[3]) ** 2 + (
-                betay[1] - betay[2]) ** 2 +
-              (betay[1] - betay[3]) ** 2 + (betay[2] - betay[3]) ** 2)
+        dx = ((self.betax[0] - self.betax[1]) ** 2 + (self.betax[0] - self.betax[2]) ** 2 + (self.betax[0] - self.betax[3]) ** 2 + (
+                self.betax[1] - self.betax[2]) ** 2 +
+              (self.betax[1] - self.betax[3]) ** 2 + (self.betax[2] - self.betax[3]) ** 2)
+        dy = ((self.betay[0] - self.betay[1]) ** 2 + (self.betay[0] - self.betay[2]) ** 2 + (self.betay[0] - self.betay[3]) ** 2 + (
+                self.betay[1] - self.betay[2]) ** 2 +
+              (self.betay[1] - self.betay[3]) ** 2 + (self.betay[2] - self.betay[3]) ** 2)
 
         return 0.5 * (dx + dy) * self.tol_source ** -2
 
@@ -209,6 +214,8 @@ class Penalties(object):
         magnifications = self.lensing.magnification_fast(lens_args)
 
         magnifications *= max(magnifications) ** -1
+
+        self._mags = magnifications
 
         dM = []
 

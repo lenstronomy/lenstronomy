@@ -263,7 +263,6 @@ class MCMCSampler(object):
         lowerLimit, upperLimit = self.cosmoParam.param_bounds
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
-
         chain = LikelihoodComputationChain(
             min=lowerLimit,
             max=upperLimit)

@@ -2,6 +2,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.mask as mask_util
 import lenstronomy.Util.param_util as param_util
+import matplotlib.pyplot as plt
 
 
 class LensModelExtensions(object):

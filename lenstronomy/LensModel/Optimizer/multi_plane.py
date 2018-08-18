@@ -1,6 +1,7 @@
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 from lenstronomy.Util.util import approx_theta_E
+import matplotlib.pyplot as plt
 
 class MultiPlaneLensing(object):
 
@@ -48,6 +49,10 @@ class MultiPlaneLensing(object):
         self._background = Background(halo_lensmodel, self._z_macro, self._z_source,
                                       single_background=single_background,
                                       approx_Rein = approx_theta_E(self._x_pos, self._y_pos))
+
+    def _set_background_hessian(self,kwargs_true):
+
+        self._background._set_hessian(self._model_to_vary._tovary_lensmodel.hessian, kwargs_true)
 
     def ray_shooting(self, x, y, kwargs_lens):
 
@@ -307,12 +312,36 @@ class Background(object):
 
         self._approx_kwargs = [{'theta_E':approx_Rein,'center_x':0, 'center_y':0}]
 
+        self._hessian = None
+
+    def _set_hessian(self, hessian, kwargs_true):
+
+        self._hessian = hessian
+        self._kwargs_true = kwargs_true
+
+    def _alpha_transform(self,x,y):
+
+        f_xx, f_xy, f_yx, f_yy = self._hessian(x,y,self._kwargs_true)
+
+        return (f_xx*x + f_xy*y), (f_yx*x + dfyy*y)
+
     def _approx_alpha(self,x,y):
 
-        alphax, alphay = self._approx_deflector.alpha(x*self._T_main**-1,
-                                                      y*self._T_main**-1,self._approx_kwargs)
+        thetax, thetay = x*self._T_main**-1, y*self._T_main**-1
 
-        return -alphax*self._reduced_to_phys_main, -alphay*self._reduced_to_phys_main
+        if self._hessian is not None:
+
+            d_alphax, d_alphay = self._alpha_transform(thetax,thetay)
+            #d_alphax += -np.mean(d_alphax)
+            #d_alphay += -np.mean(d_alphay)
+            #plt.scatter(d_alphax,d_alphay,color='r')
+            thetax += d_alphax
+            thetay += d_alphay
+            #plt.scatter(alphax,alphay,color='k')
+            #plt.show()
+            #a=input('continue')
+
+        return thetax, thetay
 
     def _fixed_background(self,x_in,y_in,args,alpha_x_approx,alpha_y_approx):
 
@@ -322,12 +351,12 @@ class Background(object):
         return x, y
 
     def ray_shooting(self, alphax, alphay, args, x_in, y_in, true_background=True,
-                     offset_index=None, force_compute=False):
+                     offset_index=None, force_compute=False,hessian_true=None):
 
         if self._single_background:
 
             x, y = self._ray_shooting_single_background(alphax, alphay, args, x_in, y_in, true_background=true_background,
-                                                        offset_index=offset_index,force_compute=force_compute)
+                                                        offset_index=offset_index,force_compute=force_compute,hessian_true=hessian_true)
 
         else:
 
@@ -337,7 +366,7 @@ class Background(object):
         return x,y
 
     def _ray_shooting_single_background(self, alphax, alphay, args, x_in, y_in, true_background=True,
-                     offset_index=None, force_compute=False):
+                     offset_index=None, force_compute=False, hessian_true=None):
 
         if force_compute:
 
@@ -359,6 +388,7 @@ class Background(object):
                 self._fixed_beta['x'] = _x
                 self._fixed_beta['y'] = _y
 
+            print(list(self._fixed_beta[key]*self._T_z_source**-1 for key in self._fixed_beta.keys()))
             if true_background:
 
                 x = x_in + alphax * self._T_main_src - self._fixed_beta['x']

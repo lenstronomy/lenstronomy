@@ -54,14 +54,18 @@ class LensModelExtensions(object):
 
         for i in range(len(x_pos)):
             ra, dec = x_pos[i], y_pos[i]
+
             center_x, center_y = self._lensModel.ray_shooting(ra, dec, kwargs_lens)
+
             if polar_grid:
                 theta = np.arctan2(dec,ra)
                 xcoord, ycoord = util.rotate(x_grid, y_grid, theta)
             else:
                 xcoord, ycoord = x_grid, y_grid
-            x_source, y_source = self._lensModel.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
-            I_image = quasar.function(x_source, y_source, 1., source_sigma, source_sigma, center_x, center_y)
+
+            betax, betay = self._lensModel.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
+
+            I_image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2
 
         return mag_finite

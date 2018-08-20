@@ -10,6 +10,7 @@ from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
 from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from copy import deepcopy
 
 class Optimizer(object):
 
@@ -24,8 +25,9 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10, pso_compute_magnification=20,
-                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,simplex_n_iterations=250,
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
+                 simplex_n_iterations=250,
                  single_background=False):
 
 
@@ -102,12 +104,12 @@ class Optimizer(object):
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-        self.lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
-                                             z_source=z_source,
-                                             cosmo=astropy_instance, multi_plane=multiplane)
+        self._lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
+                                    z_source=z_source,
+                                    cosmo=astropy_instance, multi_plane=multiplane)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
-        self._params = Params(zlist=self.lensModel.redshift_list, lens_list=self.lensModel.lens_model_list, arg_list=kwargs_lens,
+        self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,
                               optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
         
         # initialize particle swarm inital param limits
@@ -115,19 +117,19 @@ class Optimizer(object):
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
-            lensing_class = SinglePlaneLensing(self.lensModel, x_pos, y_pos, self._params, kwargs_lens)
+            self._lensing_class = SinglePlaneLensing(self._lensModel, x_pos, y_pos, self._params, kwargs_lens)
             # don't bother with anything special here, just use the regular lensmodel class
-            self.solver = LensEquationSolver(self.lensModel)
+            self.solver = LensEquationSolver(self._lensModel)
 
         else:
-            lensing_class = MultiPlaneLensing(self.lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                              astropy_instance, self._params.tovary_indicies, single_background)
-            # since 'single_background' might be turned on, lensing_class has routines called ray_shooting, hessian,
+            self._lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
+                                                    astropy_instance, self._params.tovary_indicies, single_background)
+            # since 'single_background' might be turned on, self._lensing_class has routines called ray_shooting, hessian,
             # etc. that will do the right thing if the approximation is being used. Otherwise they behave the same as
             # the routines in LensModel.
-            self.solver = LensEquationSolver(lensing_class)
+            self.solver = LensEquationSolver(self._lensing_class)
 
-        self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
+        self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, self._lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
@@ -179,6 +181,11 @@ class Optimizer(object):
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
+
+        if self._single_background:
+            self.lensModel = self._lensing_class
+        else:
+            self.lensModel = self._lensModel
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 

@@ -36,12 +36,12 @@ class TestSinglePlaneOptimizer(object):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=30, n_iterations=30,restart=2)
 
-        mags = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
+        mags = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
     def test_single_plane_subs(self,tol=0.003):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=2)
-        mags = self.optimizer_subs.lensModel.magnification(x_image, y_image, kwargs_lens)
+        mags = self.optimizer_subs._lensModel.magnification(x_image, y_image, kwargs_lens)
 
 if __name__ == '__main__':
     pytest.main()

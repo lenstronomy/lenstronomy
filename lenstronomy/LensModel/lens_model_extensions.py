@@ -294,6 +294,6 @@ class LensModelExtensions(object):
         alpha_E_dr_x_i, alpha_E_dr_y_i = self._lensModel.alpha(x0 + x_dr, y0 + y_dr, kwargs_lens_list,
                                                                k=lens_model_internal_bool)
         alpha_E_dr = np.sqrt(alpha_E_dr_x_i ** 2 + alpha_E_dr_y_i ** 2)
-        slope = np.log(alpha_E_dr / alpha_E_r) / np.log((theta_E + dr) / theta_E)
+        slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((theta_E + dr) / theta_E))
         gamma = -slope + 2
         return gamma

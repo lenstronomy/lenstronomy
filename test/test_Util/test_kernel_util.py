@@ -191,6 +191,7 @@ def test_split_kernel():
 
     assert kernel_hole[4, 4] == 0
     assert len(kernel_cutout) == subgrid_res*subsampling_size
+    npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), 1, decimal=4)
 
 
 def test_cutout_source2():

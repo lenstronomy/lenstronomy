@@ -218,6 +218,12 @@ def split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res):
     n_min_sub = int((n_sub - 1) / 2 - (subsampling_size*subgrid_res - 1) / 2)
     n_max_sub = int((n_sub - 1) / 2 + (subsampling_size * subgrid_res - 1) / 2 + 1)
     kernel_subgrid_cut = kernel_subgrid[n_min_sub:n_max_sub, n_min_sub:n_max_sub]
+    flux_subsampled = np.sum(kernel_subgrid_cut)
+    flux_hole = np.sum(kernel_hole)
+    if flux_hole > 0:
+        kernel_hole *= (1. - flux_subsampled) / np.sum(kernel_hole)
+    else:
+        kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
     return kernel_hole, kernel_subgrid_cut
 
 

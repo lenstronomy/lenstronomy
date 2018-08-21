@@ -11,6 +11,8 @@ class Params(object):
 
         assert optimizer_routine in self.known_routines
 
+        self.routine_name = optimizer_routine
+
         if optimizer_routine == 'fixed_powerlaw_shear':
             routine = FixedPowerLaw_Shear(lens_list,arg_list,xpos,ypos)
 

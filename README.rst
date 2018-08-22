@@ -98,6 +98,8 @@ You can find simple examle notebooks for various cases.
 * `Fitting of galaxy light profiles, like e.g. GALFIT <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb>`_
 * `Quasar-host galaxy decomposition <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb>`_
 * `Hiding and seeking a single subclump <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/substructure_challenge_simple.ipynb>`_
+* `Mock generation of realistic images with substructure in the lens <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/substructure_challenge_mock_production.ipynb>`_
+
 
 Shapelet reconstruction demonstration movies
 --------------------------------------------

@@ -198,7 +198,7 @@ class Penalties(object):
 
     def _source_position_penalty(self,lens_args_tovary):
 
-        self.betax,self.betay = self.lensing.ray_shooting_fast(lens_args_tovary)
+        self.betax,self.betay = self.lensing._ray_shooting_fast(lens_args_tovary)
 
         dx = ((self.betax[0] - self.betax[1]) ** 2 + (self.betax[0] - self.betax[2]) ** 2 + (self.betax[0] - self.betax[3]) ** 2 + (
                 self.betax[1] - self.betax[2]) ** 2 +
@@ -211,7 +211,7 @@ class Penalties(object):
 
     def _magnification_penalty(self,lens_args):
 
-        magnifications = self.lensing.magnification_fast(lens_args)
+        magnifications = self.lensing._magnification_fast(lens_args)
 
         magnifications *= max(magnifications) ** -1
 

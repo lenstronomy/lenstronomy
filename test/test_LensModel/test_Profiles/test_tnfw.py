@@ -103,10 +103,5 @@ class TestTNFW(object):
         for (approx,true) in zip(numerical,actual):
             npt.assert_almost_equal(approx,true)
 
-t = TestTNFW()
-t.setup()
-t.test_numerical_derivatives()
-exit(1)
-
 if __name__ == '__main__':
     pytest.main()

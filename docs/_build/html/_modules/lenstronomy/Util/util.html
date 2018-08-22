@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,6 +54,60 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">mpmath</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<div class="viewcode-block" id="approx_theta_E"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.approx_theta_E">[docs]</a><span class="k">def</span> <span class="nf">approx_theta_E</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">):</span>
+
+    <span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">xinds</span><span class="p">,</span><span class="n">yinds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xinds</span><span class="p">,</span><span class="n">yinds</span><span class="p">):</span>
+
+        <span class="n">dx</span><span class="p">,</span><span class="n">dy</span> <span class="o">=</span> <span class="n">ximg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">ximg</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">yimg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">yimg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="p">(</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">dy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+        <span class="n">dis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span>
+    <span class="n">dis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
+
+    <span class="n">greatest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
+    <span class="n">dr_greatest</span> <span class="o">=</span> <span class="n">dis</span><span class="p">[</span><span class="n">greatest</span><span class="p">]</span>
+    <span class="n">dis</span><span class="p">[</span><span class="n">greatest</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">second_greatest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
+    <span class="n">dr_second</span> <span class="o">=</span> <span class="n">dis</span><span class="p">[</span><span class="n">second_greatest</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">dr_greatest</span><span class="o">*</span><span class="n">dr_second</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="sort_image_index"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sort_image_index">[docs]</a><span class="k">def</span> <span class="nf">sort_image_index</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">,</span><span class="n">xref</span><span class="p">,</span><span class="n">yref</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param ximg: x coordinates to sort</span>
+<span class="sd">    :param yimg: y coordinates to sort</span>
+<span class="sd">    :param xref: reference x coordinate</span>
+<span class="sd">    :param yref: reference y coordinate</span>
+<span class="sd">    :return: indexes such that ximg[indexes],yimg[indexes] matches xref,yref</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">xref</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ximg</span><span class="p">)</span>
+    <span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ximg</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yimg</span><span class="p">)</span>
+    <span class="n">x_self</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="n">ximg</span><span class="p">)))</span>
+    <span class="n">y_self</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="n">yimg</span><span class="p">)))</span>
+
+    <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">index_iterations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="n">indexes</span><span class="p">))</span>
+    <span class="n">delta_r</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_self</span><span class="p">))):</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_self</span><span class="p">[</span><span class="mi">0</span><span class="p">]))):</span>
+            <span class="n">dr</span> <span class="o">+=</span> <span class="p">(</span><span class="n">x_self</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">xref</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_self</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">yref</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="n">delta_r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dr</span> <span class="o">**</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">min_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index_iterations</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">delta_r</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">min_indexes</span></div>
+
 
 <div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.rotate">[docs]</a><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">xcoords</span><span class="p">,</span> <span class="n">ycoords</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -484,7 +538,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

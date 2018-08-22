@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,7 +53,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.background</span> <span class="k">import</span> <span class="n">Background</span>
-<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">FlatLambdaCDM</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">FlatLambdaCDM</span><span class="p">,</span> <span class="n">LambdaCDM</span>
 
 
 <div class="viewcode-block" id="LensCosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo">[docs]</a><span class="k">class</span> <span class="nc">LensCosmo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -179,62 +179,75 @@
         <span class="k">return</span> <span class="n">D_dt</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">fermat_pot</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># * self.arcsec2phys_lens(1.)**2</span></div></div>
 
 
-<div class="viewcode-block" id="FlatLCDM"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM">[docs]</a><span class="k">class</span> <span class="nc">FlatLCDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LCDM"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LCDM">[docs]</a><span class="k">class</span> <span class="nc">LCDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param z_lens: redshift of lens</span>
 <span class="sd">        :param z_source: redshift of source</span>
+<span class="sd">        :param flat: bool, if True, flat universe is assumed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flat</span> <span class="o">=</span> <span class="n">flat</span>
 
-<div class="viewcode-block" id="FlatLCDM.D_d"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_d">[docs]</a>    <span class="k">def</span> <span class="nf">D_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_cosom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param H_0:</span>
+<span class="sd">        :param Om0:</span>
+<span class="sd">        :param Ode0:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">LambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="n">Ode0</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lensCosmo</span>
+
+<div class="viewcode-block" id="LCDM.D_d"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LCDM.D_d">[docs]</a>    <span class="k">def</span> <span class="nf">D_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        angular diameter to deflector</span>
 <span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
 <span class="sd">        :param Om0: normalized matter density at present time</span>
 <span class="sd">        :return: float [Mpc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
-        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cosom</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_d</span></div>
 
-<div class="viewcode-block" id="FlatLCDM.D_s"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_s">[docs]</a>    <span class="k">def</span> <span class="nf">D_s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+<div class="viewcode-block" id="LCDM.D_s"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LCDM.D_s">[docs]</a>    <span class="k">def</span> <span class="nf">D_s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        angular diameter to source</span>
 <span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
 <span class="sd">        :param Om0: normalized matter density at present time</span>
 <span class="sd">        :return: float [Mpc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
-        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cosom</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_s</span></div>
 
-<div class="viewcode-block" id="FlatLCDM.D_ds"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_ds">[docs]</a>    <span class="k">def</span> <span class="nf">D_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+<div class="viewcode-block" id="LCDM.D_ds"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LCDM.D_ds">[docs]</a>    <span class="k">def</span> <span class="nf">D_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        angular diameter from deflector to source</span>
 <span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
 <span class="sd">        :param Om0: normalized matter density at present time</span>
 <span class="sd">        :return: float [Mpc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
-        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cosom</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_ds</span></div>
 
-<div class="viewcode-block" id="FlatLCDM.D_dt"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.FlatLCDM.D_dt">[docs]</a>    <span class="k">def</span> <span class="nf">D_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">):</span>
+<div class="viewcode-block" id="LCDM.D_dt"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LCDM.D_dt">[docs]</a>    <span class="k">def</span> <span class="nf">D_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        time delay distance</span>
 <span class="sd">        :param H_0: Hubble parameter [km/s/Mpc]</span>
 <span class="sd">        :param Om0: normalized matter density at present time</span>
 <span class="sd">        :return: float [Mpc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">Om0</span><span class="p">)</span>
-        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cosom</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_dt</span></div></div>
 </pre></div>
 
@@ -266,7 +279,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -143,7 +143,7 @@ class TNFW(object):
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         x = R * Rs ** -1
-        tau = r_trunc * Rs ** -1
+        tau = float(r_trunc) * Rs ** -1
         Fx = self._F(x, tau)
         return 2 * rho0 * Rs * Fx
 
@@ -187,7 +187,7 @@ class TNFW(object):
         :return: Epsilon(R) projected density at radius R
         """
         x = R / Rs
-        tau = r_trunc / Rs
+        tau = float(r_trunc) / Rs
         hx = self._h(x, tau)
         return 2 * rho0 * Rs ** 3 * hx
 
@@ -213,7 +213,7 @@ class TNFW(object):
             R[R <= 0.00001] = 0.00001
 
         x = R / Rs
-        tau = r_trunc / Rs
+        tau = float(r_trunc) / Rs
         gx = self._g(x, tau)
         a = 4 * rho0 * Rs * gx / x ** 2
         return a * ax_x, a * ax_y
@@ -243,7 +243,7 @@ class TNFW(object):
 
         x = R / Rs
 
-        tau = r_trunc * Rs ** -1
+        tau = float(r_trunc) * Rs ** -1
 
         gx = self._g(x, tau)
         Fx = self._F(x, tau)
@@ -279,15 +279,28 @@ class TNFW(object):
         t2 = tau ** 2
         #Fx = self.F(X)
 
-        return t2*(t2+1)**-2*(
-            (t2+1)*(X**2-1)**-1*(1-self.F(X))
-            +
-            2*self.F(X)
-            +
-            -np.pi*(t2+X**2)**-0.5
-            +
-            (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
-        )
+        _F = self.F(X)
+        a = t2*(t2+1)**-2
+        if isinstance(X, np.ndarray):
+            #b = (t2 + 1) * (X ** 2 - 1) ** -1 * (1 - _F)
+            b = np.ones_like(X)
+            b[X == 1] = (t2+1) * 1./3
+            b[X != 1] = (t2 + 1) * (X[X != 1] ** 2 - 1) ** -1 * (1 - _F[X != 1])
+
+        elif isinstance(X, float) or isinstance(X, int):
+            if X == 1:
+                b = (t2+1)* 1./3
+            else:
+                b = (t2+1)*(X**2-1)**-1*(1-_F)
+        else:
+            raise ValueError("The variable type is not compatible with the function, please use float, int or ndarray's.")
+
+        c = 2*_F
+        d = -np.pi*(t2+X**2)**-0.5
+        e = (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
+        result = a * (b + c + d + e)
+
+        return result
 
     def _g(self, x, tau):
         """

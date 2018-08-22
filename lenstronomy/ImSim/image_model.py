@@ -197,7 +197,7 @@ class ImageModel(object):
         :return:
         """
         error_map = np.zeros_like(self.Data.data)
-        if self._psf_error_map:
+        if self._psf_error_map is True:
             for k, bool in enumerate(self._error_map_bool_list):
                 if bool is True:
                     ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)

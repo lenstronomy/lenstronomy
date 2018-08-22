@@ -19,8 +19,8 @@ class TestTNFW(object):
         Rs = 0.2
         theta_Rs = 0.1
         r_trunc = 1000000000000 * Rs
-        x = np.linspace(0.1 * Rs, 5 * Rs, 1000)
-        y = np.linspace(0.2, 1, 1000)
+        x = np.linspace(0.0 * Rs, 5 * Rs, 1000)
+        y = np.linspace(0., 1, 1000)
 
         xdef_t, ydef_t = self.tnfw.derivatives(x, y, Rs, theta_Rs, r_trunc)
         xdef, ydef = self.nfw.derivatives(x, y, Rs, theta_Rs)
@@ -62,10 +62,19 @@ class TestTNFW(object):
 
         xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, theta_Rs, r_trunc)
         xx, yy, xy = self.nfw.hessian(x, y, Rs, theta_Rs)
+<<<<<<< HEAD
 
+=======
+>>>>>>> ca4ce72b69105f7a0a6bb4d245ce87910a9d0fd2
         np.testing.assert_almost_equal(xy, xyt, 4)
         np.testing.assert_almost_equal(yy, yyt, 4)
         np.testing.assert_almost_equal(xy, xyt, 4)
+
+        Rs = 0.2
+        r_trunc = 5
+        xxt, yyt, xyt = self.tnfw.hessian(Rs, 0, Rs, theta_Rs, r_trunc)
+        xxt_delta, yyt_delta, xyt_delta = self.tnfw.hessian(Rs+0.000001, 0, Rs, theta_Rs, r_trunc)
+        npt.assert_almost_equal(xxt, xxt_delta, decimal=6)
 
     def test_density_2d(self):
         Rs = 0.2

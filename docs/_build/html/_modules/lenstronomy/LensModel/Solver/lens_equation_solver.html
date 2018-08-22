@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -58,7 +58,11 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param imsim: imsim class</span>
+<span class="sd">        :param lensModel: instance of a class according to lenstronomy.LensModel.lens_model</span>
+<span class="sd">        This class must contain the following definitions (with same syntax as the standard LensModel() class:</span>
+<span class="sd">        def ray_shooting()</span>
+<span class="sd">        def hessian()</span>
+<span class="sd">        def magnification()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span> <span class="o">=</span> <span class="n">lensModel</span>
 
@@ -74,9 +78,12 @@
 <span class="sd">        :param search_window: window size to be considered by the solver. Will not find image position outside this window</span>
 <span class="sd">        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).</span>
 <span class="sd">        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision</span>
-<span class="sd">        :returns:  (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
+<span class="sd">        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</span>
+<span class="sd">        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix</span>
+<span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
 <span class="sd">        :raises: AttributeError, KeyError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># compute number of pixels to cover the search window with the required min_distance</span>
         <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">search_window</span> <span class="o">/</span> <span class="n">min_distance</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
         <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">)</span>
@@ -93,7 +100,8 @@
         <span class="c1">#y_mins = y_mins[delta_map*mag &lt;= min_distance*5]</span>
         <span class="c1">#print(x_mins, y_mins, &#39;after requirement of min_distance&#39;)</span>
         <span class="c1"># iterative solving of the lens equation for the selected grid points</span>
-        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">solver_precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findIterative</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
+        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">solver_precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findIterative</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                               <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
         <span class="c1"># only select iterative results that match the precision limit</span>
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">x_mins</span><span class="p">[</span><span class="n">solver_precision</span> <span class="o">&lt;=</span> <span class="n">precision_limit</span><span class="p">]</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">solver_precision</span> <span class="o">&lt;=</span> <span class="n">precision_limit</span><span class="p">]</span>
@@ -106,7 +114,9 @@
         <span class="c1">#x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
 
-    <span class="k">def</span> <span class="nf">_findIterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_findIterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
+                       <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position</span>
 
@@ -119,6 +129,7 @@
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_candidates</span><span class="p">)</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_candidates</span><span class="p">)</span>
         <span class="n">solver_precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_candidates</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_min</span><span class="p">)):</span>
             <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">)</span>
@@ -152,8 +163,12 @@
 <span class="sd">        :param magThresh: magnification threshold for images to be selected</span>
 <span class="sd">        :param numImage: number of selected images (will select the highest magnified ones)</span>
 <span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</span>
+<span class="sd">        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix</span>
+<span class="sd">        :param magnification_function: same as ray_shooting_function, but for computing magnifications</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">,</span>
                                                          <span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span>
                                                          <span class="n">arrival_time_sort</span><span class="o">=</span><span class="n">arrival_time_sort</span><span class="p">)</span>
@@ -174,13 +189,18 @@
 <span class="sd">        :param kwargs_lens: keyword arguments of lens model</span>
 <span class="sd">        :return: sorted lists of x_mins and y_mins</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="p">,</span> <span class="s1">&#39;_no_potential&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Instance of lensModel passed to this class does not compute the lensing potential, &#39;</span>
+                            <span class="s1">&#39;and therefore cannot compute time delays.&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span>
         <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="n">x_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_source</span><span class="p">)</span>
         <span class="n">y_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_source</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span><span class="p">:</span>
-            <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
             <span class="n">arrival_time</span> <span class="o">=</span> <span class="o">-</span><span class="n">fermat_pot</span>
@@ -218,7 +238,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

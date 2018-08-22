@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -206,6 +206,29 @@ of the basis set.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.mass_fraction_within_radius">
+<code class="descname">mass_fraction_within_radius</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>center_x</em>, <em>center_y</em>, <em>theta_E</em>, <em>numPix=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.mass_fraction_within_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.mass_fraction_within_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the mean convergence of all the different lens model components within a spherical aperture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>center_x</strong> – center of the aperture</li>
+<li><strong>center_y</strong> – center of the aperture</li>
+<li><strong>theta_E</strong> – radius of aperture</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of average convergences for all the model components</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens">
 <code class="descname">multi_gaussian_lens</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>model_bool_list=None</em>, <em>e1=0</em>, <em>e2=0</em>, <em>n_comp=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_analysis.html#LensAnalysis.multi_gaussian_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_analysis.LensAnalysis.multi_gaussian_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>multi-gaussian lens model in convergence space</p>
@@ -260,7 +283,7 @@ of the basis set.</p>
 for a given lens model</p>
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations">
-<code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em>, <em>z_d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">angular_diameter_relations</code><span class="sig-paren">(</span><em>sigma_v_model</em>, <em>sigma_v</em>, <em>kappa_ext</em>, <em>D_dt_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.angular_diameter_relations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.angular_diameter_relations" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -454,7 +477,7 @@ deflector</li>
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

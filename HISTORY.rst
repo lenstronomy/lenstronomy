@@ -62,3 +62,7 @@ History
 * minor stability improvements
 * cleaner likelihood definition
 * additional Chameleon lens and light profiles
+
+0.3.3 (2018-08-21)
+++++++++++++++++++
+* minor updates, better documentation and handling of parameters

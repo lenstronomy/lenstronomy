@@ -43,7 +43,8 @@ class CosmoLikelihood(object):
         omega_m = self.omega_m_fixed
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_H0(H0)
-        logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        if bool is True:
+            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_omega_mh2(self, args):
@@ -57,7 +58,8 @@ class CosmoLikelihood(object):
         omega_m = self.omega_mh2_fixed / h**2
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_omega_mh2(h, omega_m)
-        logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        if bool is True:
+            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_H0_omgega_m(self, args):
@@ -71,7 +73,9 @@ class CosmoLikelihood(object):
         Ode0 = self._omega_lambda_fixed
         logL_H0, bool_H0 = self.prior_H0(H0)
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
-        logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        logL = logL_H0 + logL_omega_m
+        if bool_H0 is True and bool_omega_m is True:
+            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL + logL_H0 + logL_omega_m, None
 
     def X2_chain_H0_omgega_m_omega_de(self, args):
@@ -84,7 +88,9 @@ class CosmoLikelihood(object):
         [H0, omega_m, Ode0] = args
         logL_H0, bool_H0 = self.prior_H0(H0)
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
-        logL = self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+        logL = logL_H0 + logL_omega_m
+        if bool_H0 is True and bool_omega_m is True:
+            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
         return logL + logL_H0 + logL_omega_m, None
 
     def LCDM_lensLikelihood(self, H0, omega_m, Ode0=None):
@@ -196,7 +202,7 @@ class CosmoParam(object):
 
     @property
     def numParam(self):
-        if self.sampling_option == "H0_only":
+        if self.sampling_option == "H0_only" or self.sampling_option == "fix_omega_mh2":
             return 1
         elif self.sampling_option == "H0_omega_m":
             return 2
@@ -256,7 +262,6 @@ class MCMCSampler(object):
         """
         lowerLimit, upperLimit = self.cosmoParam.param_bounds
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
-
 
         chain = LikelihoodComputationChain(
             min=lowerLimit,

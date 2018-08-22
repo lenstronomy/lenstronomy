@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
+import numpy as np
 import numpy.testing as npt
 
 from lenstronomy.LensModel.lens_model import LensModel
@@ -55,7 +56,10 @@ class TestNumericsProfile(object):
 
     def assert_differentials(self, lens_model, kwargs):
         lensModelNum = NumericLens(lens_model)
-        x, y = 1., 2.
+        lensModelNum.diff = 0.000001
+        #x, y = 1., 2.
+        x = np.linspace(start=0.1, stop=8, num=10)
+        y = 0
         lensModel = LensModel(lens_model)
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
@@ -64,11 +68,11 @@ class TestNumericsProfile(object):
         print(f_xx_num, f_xx)
         print(f_yy_num, f_yy)
         print(f_xy_num, f_xy)
-        npt.assert_almost_equal(f_x, f_x_num, decimal=5)
-        npt.assert_almost_equal(f_y, f_y_num, decimal=5)
-        npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
-        npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
-        npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
+        npt.assert_almost_equal(f_x , f_x_num, decimal=5)
+        npt.assert_almost_equal(f_y , f_y_num, decimal=5)
+        npt.assert_almost_equal(f_xx , f_xx_num, decimal=3)
+        npt.assert_almost_equal(f_yy , f_yy_num, decimal=3)
+        npt.assert_almost_equal(f_xy , f_xy_num, decimal=3)
 
         x, y = 1., 0.
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
@@ -127,6 +131,11 @@ class TestNumericsProfile(object):
     def test_nfw(self):
         kwargs = {'theta_Rs': .1, 'Rs': 5.}
         lens_model = ['NFW']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_tnfw(self):
+        kwargs = {'theta_Rs': .1, 'Rs': 5., 'r_trunc': 7}
+        lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw_ellipse(self):

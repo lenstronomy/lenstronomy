@@ -66,10 +66,10 @@ class SinglePlane(object):
                 self.func_list.append(SPEMD_SMOOTH())
             elif lens_type == 'NFW':
                 from lenstronomy.LensModel.Profiles.nfw import NFW
-                self.func_list.append(NFW(interpol=True, num_interp_X=1000, max_interp_X=10))
+                self.func_list.append(NFW(interpol=False, num_interp_X=1000, max_interp_X=100))
             elif lens_type == 'NFW_ELLIPSE':
                 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
-                self.func_list.append(NFW_ELLIPSE(interpol=True, num_interp_X=1000, max_interp_X=10))
+                self.func_list.append(NFW_ELLIPSE(interpol=False, num_interp_X=1000, max_interp_X=100))
             elif lens_type == 'TNFW':
                 from lenstronomy.LensModel.Profiles.tnfw import TNFW
                 self.func_list.append(TNFW())

@@ -82,6 +82,37 @@ class TestData(object):
         npt.assert_almost_equal(min_diff, 0, decimal=3)
         npt.assert_almost_equal(max_diff, 0, decimal=3)
 
+    def test_kernel_subsampled(self):
+        deltaPix = 0.05  # pixel size of image
+        numPix = 40  # number of pixels per axis
+        subsampling_res = 3  # subsampling scale factor (in each dimension)
+        fwhm = 0.3  # FWHM of the PSF kernel
+        fwhm_object = 0.2  # FWHM of the Gaussian source to be convolved
+
+        # create Gaussian/Pixelized kernels
+        # first we create the sub-sampled kernel
+        kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix=11*subsampling_res, deltaPix=deltaPix/subsampling_res, fwhm=fwhm)
+        # to have the same consistent kernel, we re-size (average over the sub-sampled pixels) the sub-sampled kernel
+        kernel_point_source = image_util.re_size(kernel_point_source_subsampled, subsampling_res)
+        # here we create the two PSF() classes
+        kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source_subsampled': kernel_point_source_subsampled, 'subsampling_factor': subsampling_res}
+        psf_pixel_subsampled = PSF(kwargs_psf=kwargs_pixel_subsampled)
+        kwargs_pixel = {'psf_type': 'PIXEL',
+                        'kernel_point_source': kernel_point_source}
+        psf_pixel = PSF(kwargs_psf=kwargs_pixel)
+
+        # here we create the image of the Gaussian source and convolve it with the regular kernel
+        image_unconvolved = kernel_util.kernel_gaussian(kernel_numPix=numPix, deltaPix=deltaPix, fwhm=fwhm_object)
+        image_convolved_regular = psf_pixel.psf_convolution_new(image_unconvolved, subgrid_res=1, subsampling_size=None)
+
+        # here we create the image by computing the sub-sampled Gaussian source and convolve it with the sub-sampled PSF kernel
+        image_unconvolved_highres = kernel_util.kernel_gaussian(kernel_numPix=numPix*subsampling_res, deltaPix=deltaPix/subsampling_res, fwhm=fwhm_object) * subsampling_res**2
+        image_convolved_subsampled = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres, subgrid_res=subsampling_res, subsampling_size=5)
+
+        # We demand the two procedures to be the same up to the numerics affecting the finite resolution
+        npt.assert_almost_equal(np.sum(image_convolved_regular), np.sum(image_convolved_subsampled), decimal=8)
+        npt.assert_almost_equal((image_convolved_subsampled - image_convolved_regular) / (np.max(image_convolved_subsampled)), 0, decimal=2)
+
     def test_fwhm(self):
         deltaPix = 0.05
         fwhm = 0.1

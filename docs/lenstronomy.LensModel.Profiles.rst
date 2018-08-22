@@ -124,14 +124,6 @@ lenstronomy\.LensModel\.Profiles\.nie module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.LensModel\.Profiles\.no\_lens module
--------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.no_lens
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy\.LensModel\.Profiles\.p\_jaffe module
 -------------------------------------------------
 

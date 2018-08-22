@@ -62,10 +62,7 @@ class TestTNFW(object):
 
         xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, theta_Rs, r_trunc)
         xx, yy, xy = self.nfw.hessian(x, y, Rs, theta_Rs)
-<<<<<<< HEAD
 
-=======
->>>>>>> ca4ce72b69105f7a0a6bb4d245ce87910a9d0fd2
         np.testing.assert_almost_equal(xy, xyt, 4)
         np.testing.assert_almost_equal(yy, yyt, 4)
         np.testing.assert_almost_equal(xy, xyt, 4)

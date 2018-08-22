@@ -113,7 +113,7 @@ class TestSingleBackground(object):
                                  self.cosmo, [0, 1])
         out1 = split.magnification(self.xpos,self.ypos,self.kwargs_lens_full_background)
         out2 = split._magnification_fast(self.kwargs_lens_full_background[0:2])
-        for (val1,val2) in zip(out1,out2):
+        for (val1,val2) in zip(np.absolute(out1),out2):
             npt.assert_almost_equal(val1,val2)
 
     def test_mag_finite(self):

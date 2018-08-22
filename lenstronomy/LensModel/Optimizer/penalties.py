@@ -212,7 +212,7 @@ class Penalties(object):
     def _magnification_penalty(self,lens_args):
 
         magnifications = self.lensing._magnification_fast(lens_args)
-       
+
         magnifications *= max(magnifications) ** -1
 
         self._mags = magnifications

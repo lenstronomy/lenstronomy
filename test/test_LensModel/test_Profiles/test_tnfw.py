@@ -28,8 +28,7 @@ class TestTNFW(object):
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
         f_x_t, f_y_t = self.tnfw.derivatives(1., 0, Rs, theta_Rs, r_trunc=1.)
-        npt.assert_almost_equal(f_x_t, 0.01731384025307516, decimal=5)
-
+        
     def test_potential(self):
         Rs = 0.2
         theta_Rs = 0.1

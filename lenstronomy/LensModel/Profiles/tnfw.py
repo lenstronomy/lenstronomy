@@ -215,7 +215,7 @@ class TNFW(object):
         x = R / Rs
         tau = r_trunc / Rs
         gx = self._g(x, tau)
-        a = 4 * rho0 * Rs * R * gx / x ** 2 / R
+        a = 4 * rho0 * Rs * gx / x ** 2
         return a * ax_x, a * ax_y
 
     def nfwGamma(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
@@ -268,14 +268,6 @@ class TNFW(object):
         m_2d = 4 * rho0 * Rs * R ** 2 * gx / x ** 2 * np.pi
         return m_2d
 
-        #return t2 * (t2 + 1) ** -2 * ((t2 + 1 + 2 * (X ** 2 - 1)) * Fx
-        #                              +
-        #                              np.pi * tau
-        #                              +
-        #                              (t2 - 1) * np.log(tau)
-        #                              +
-        #                              np.sqrt(tau ** 2 + X ** 2) * (-np.pi + (t2 - 1) * self.L(X, tau) * tau ** -1))
-
     def _F(self, X, tau):
         """
         analytic solution of the projection integral
@@ -297,21 +289,17 @@ class TNFW(object):
             (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
         )
 
-    def _g(self, X, tau):
+    def _g(self, x, tau):
         """
         analytic solution of integral for NFW profile to compute deflection angel and gamma
 
         :param x: R/Rs
         :type x: float >0
         """
-        t2 = tau ** 2
-        return t2 * (t2 + 1) ** -2 * (
-            (t2 + 1 + 2 * (X ** 2 - 1)) * self.F(X)
-            +
-            (t2 - 1) * np.log(tau)
-            +
-            np.sqrt(t2 + X ** 2) * (-np.pi + tau ** -1 * (t2 - 1) * self.L(X, tau))
-        )
+        return tau ** 2 * (tau ** 2 + 1) ** -2 * (
+                (tau ** 2 + 1 + 2 * (x ** 2 - 1)) * self.F(x) + tau * np.pi + (tau ** 2 - 1) * np.log(tau) +
+                np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self.L(x, tau) * (tau ** 2 - 1) * tau ** -1))
+
 
     def _h(self, X, tau):
 

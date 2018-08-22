@@ -3,7 +3,7 @@ __author__ = 'dgilman'
 import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
 from lenstronomy.LensModel.Optimizer.params import Params
-from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.Optimizer.single_background import SingleBackground
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
@@ -117,19 +117,23 @@ class Optimizer(object):
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
-            self._lensing_class = SinglePlaneLensing(self._lensModel, x_pos, y_pos, self._params, kwargs_lens)
+            lensing_class = SinglePlaneLensing(self._lensModel, x_pos, y_pos, self._params, kwargs_lens)
             # don't bother with anything special here, just use the regular lensmodel class
             self.solver = LensEquationSolver(self._lensModel)
 
         else:
-            self._lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                    astropy_instance, self._params.tovary_indicies, single_background)
-            # since 'single_background' might be turned on, self._lensing_class has routines called ray_shooting, hessian,
-            # etc. that will do the right thing if the approximation is being used. Otherwise they behave the same as
-            # the routines in LensModel.
-            self.solver = LensEquationSolver(self._lensing_class)
+            if self._single_background:
+                lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
+                                                 astropy_instance, self._params.tovary_indicies)
+            else:
+                lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
+                                                    astropy_instance, self._params.tovary_indicies)
 
-        self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, self._lensing_class, centroid_0, magnification_target,
+            self.solver = LensEquationSolver(lensing_class)
+
+        self.lensModel = self.solver.lensModel
+
+        self._optimizer = Penalties(tol_source, tol_mag, tol_centroid, lensing_class, centroid_0, magnification_target,
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
@@ -167,7 +171,7 @@ class Optimizer(object):
         kwargs_lens_final = kwargs_varied + self._params.argsfixed_todictionary()
 
         # solve for the optimized image positions
-        srcx, srcy = self._optimizer.lensing.ray_shooting_fast(kwargs_varied)
+        srcx, srcy = self._optimizer.lensing._ray_shooting_fast(kwargs_varied)
         source_x, source_y = np.mean(srcx), np.mean(srcy)
 
         # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
@@ -181,11 +185,6 @@ class Optimizer(object):
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
-
-        if self._single_background:
-            self.lensModel = self._lensing_class
-        else:
-            self.lensModel = self._lensModel
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 

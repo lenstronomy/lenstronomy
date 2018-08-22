@@ -28,8 +28,7 @@ class TestTNFW(object):
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
         f_x_t, f_y_t = self.tnfw.derivatives(1., 0, Rs, theta_Rs, r_trunc=1.)
-        npt.assert_almost_equal(f_x_t, 0.01731384025307516, decimal=5)
-
+        
     def test_potential(self):
         Rs = 0.2
         theta_Rs = 0.1
@@ -80,6 +79,28 @@ class TestTNFW(object):
         kappa = self.nfw.density_2d(x, y, Rs, theta_Rs)
         np.testing.assert_almost_equal(kappa, kappa_t, 5)
 
+    def test_numerical_derivatives(self):
+
+        Rs = 0.2
+        theta_Rs = 0.1
+        r_trunc = 1.5 * Rs
+
+        diff = 1e-9
+
+        x0, y0 = 0.1, 0.1
+
+        x_def_t, y_def_t = self.tnfw.derivatives(x0,y0,Rs,theta_Rs,r_trunc)
+        x_def_t_deltax, _ = self.tnfw.derivatives(x0+diff, y0, Rs, theta_Rs,r_trunc)
+        x_def_t_deltay, y_def_t_deltay = self.tnfw.derivatives(x0, y0 + diff, Rs, theta_Rs,r_trunc)
+        actual = self.tnfw.hessian(x0,y0,Rs,theta_Rs,r_trunc)
+
+        f_xx_approx = (x_def_t_deltax - x_def_t) * diff ** -1
+        f_yy_approx = (y_def_t_deltay - y_def_t) * diff ** -1
+        f_xy_approx = (x_def_t_deltay - y_def_t) * diff ** -1
+        numerical = [f_xx_approx,f_yy_approx,f_xy_approx]
+
+        for (approx,true) in zip(numerical,actual):
+            npt.assert_almost_equal(approx,true)
 
 if __name__ == '__main__':
     pytest.main()

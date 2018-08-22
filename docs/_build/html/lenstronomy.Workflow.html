@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -191,8 +191,12 @@
 <p>class that handles the parameter constraints. In particular when different model profiles share joint constraints.</p>
 <p>Options:
 ‘joint_with_light_list’: bool/int list of length of lens models. Indices correspond to lens models, entry (int)
+‘joint_center_lens_with_center_light’: bool/int list of length of lens models Indices correspond to light model
+entry of joint center
 corresponds to merge parameters with light profile. Attention: This only works when the joint parameters have the
 same name. The normalisation ‘amp’ is not shared and the lens models have the amplitude to be fit independently.</p>
+<p>‘joint_lens_light_with_point_source_list’: bool/int list of length of lens light models. Indices correspond to lens
+light models whose center is joint with a point source center</p>
 <p>‘fix_foreground_shear’: bool, if True, fixes by default the foreground shear values
 ‘fix_gamma’: bool, if True, fixes by default the power-law slop of lens profiles
 ‘fix_shapelet_beta’: bool, if True, fixes the shapelet scale beta</p>
@@ -234,7 +238,20 @@ same name. The normalisation ‘amp’ is not shared and the lens models have th
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of parameters involved (int)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of parameters involved (int) that are sampled (non-linear parameter)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Workflow.parameters.Param.num_param_linear">
+<code class="descname">num_param_linear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/parameters.html#Param.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.parameters.Param.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of linear basis set coefficients that are solved for</td>
 </tr>
 </tbody>
 </table>
@@ -364,7 +381,7 @@ might be migrated to the param class</p>
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

@@ -19,8 +19,8 @@ class TestTNFW(object):
         Rs = 0.2
         theta_Rs = 0.1
         r_trunc = 1000000000000 * Rs
-        x = np.linspace(0.1 * Rs, 5 * Rs, 1000)
-        y = np.linspace(0.2, 1, 1000)
+        x = np.linspace(0.0 * Rs, 5 * Rs, 1000)
+        y = np.linspace(0., 1, 1000)
 
         xdef_t, ydef_t = self.tnfw.derivatives(x, y, Rs, theta_Rs, r_trunc)
         xdef, ydef = self.nfw.derivatives(x, y, Rs, theta_Rs)

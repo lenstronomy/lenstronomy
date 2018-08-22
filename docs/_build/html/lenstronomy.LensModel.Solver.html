@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -81,6 +81,9 @@
 <li><strong>magThresh</strong> – magnification threshold for images to be selected</li>
 <li><strong>numImage</strong> – number of selected images (will select the highest magnified ones)</li>
 <li><strong>kwargs_lens</strong> – </li>
+<li><strong>ray_shooting_function</strong> – a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</li>
+<li><strong>hessian_function</strong> – same as ray_shooting_function, but for computing the hessian matrix</li>
+<li><strong>magnification_function</strong> – same as ray_shooting_function, but for computing magnifications</li>
 </ul>
 </td>
 </tr>
@@ -107,6 +110,8 @@
 <li><strong>search_window</strong> – window size to be considered by the solver. Will not find image position outside this window</li>
 <li><strong>precision_limit</strong> – required precision in the lens equation solver (in units of angle in the source plane).</li>
 <li><strong>num_iter_max</strong> – maximum iteration of lens-source mapping conducted by solver to match the required precision</li>
+<li><strong>ray_shooting_function</strong> – a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</li>
+<li><strong>hessian_function</strong> – same as ray_shooting_function, but for computing the hessian matrix</li>
 </ul>
 </td>
 </tr>
@@ -137,7 +142,7 @@
 <span id="lenstronomy-lensmodel-solver-solver-module"></span><h2>lenstronomy.LensModel.Solver.solver module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.solver.Solver">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>solver_type</em>, <em>lensModel=None</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>solver_type</em>, <em>lensModel</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>joint solve class to manage with type of solver to be executed and checks whether the requirements are fulfilled.</p>
 <dl class="method">
@@ -358,7 +363,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

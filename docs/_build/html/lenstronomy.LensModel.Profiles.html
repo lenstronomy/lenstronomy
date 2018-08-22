@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -255,6 +255,117 @@
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.param_names">
 <code class="descname">param_names</code><em class="property"> = ['theta_E', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.chameleon.</code><code class="descname">DoubleChameleonPointSource</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>theta_E</strong> – </li>
+<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_chameleon</strong> – </li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>theta_E</strong> – </li>
+<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_chameleon</strong> – </li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>theta_E</strong> – </li>
+<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_chameleon</strong> – </li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.param_names">
+<code class="descname">param_names</code><em class="property"> = ['theta_E', 'ratio_chameleon', 'ratio_pointsource', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2751,12 +2862,12 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>theta_E</strong> – Einstein radius</li>
-<li><strong>gamma</strong> – power law slope</li>
+<li><strong>gamma</strong> – power-law slope</li>
 <li><strong>q</strong> – axis ratio</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">pre-factor to SPEMP profile for FASTELL</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">pre-factors to SPEMP profile for FASTELL</p>
 </td>
 </tr>
 </tbody>
@@ -3333,7 +3444,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

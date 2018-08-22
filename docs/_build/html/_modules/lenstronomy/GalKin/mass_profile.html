@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.mass_profile &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.GalKin.mass_profile &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,7 +48,8 @@
   <h1>Source code for lenstronomy.GalKin.mass_profile</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model_extensions</span> <span class="k">import</span> <span class="n">LensModelExtensions</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.single_plane</span> <span class="k">import</span> <span class="n">SinglePlane</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.GalKin.cosmo</span> <span class="k">import</span> <span class="n">Cosmo</span>
 
@@ -63,7 +64,7 @@
 <span class="sd">        :param profile_list:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">:</span> <span class="n">profile_list</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">profile_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">profile_list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interpol_grid_num&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_integrate&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -127,7 +128,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

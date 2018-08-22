@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.3.3 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -156,7 +156,7 @@
 - ‘dec_shift’: shifts the coordinate system with respect to ‘dec_at_xy_0’</p>
 <p>optional keywords for noise properties:
 - ‘background_rms’: rms value of the background noise
-- ‘exp_time: float, exposure time to compute the Poisson noise contribution
+- ‘exp_time’: float, exposure time to compute the Poisson noise contribution
 - ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’
 - ‘noise_map’: Gaussian noise (1-sigma) for each individual pixel.
 If this keyword is set, the other noise properties will be ignored.</p>
@@ -547,9 +547,14 @@ over the size of a pixel</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs</strong> – keyword arguments of the PSF() class</li>
+<li><strong>deltaPix</strong> – pixel size (in the case of subsampled PSF, this is the subsampled pixel size)</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">psf fwhm in units of arcsec</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">psf fwhm in units of the deltaPix argument</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -639,7 +644,7 @@ over the size of a pixel</p>
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

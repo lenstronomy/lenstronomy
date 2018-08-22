@@ -63,6 +63,7 @@ class PSF(object):
                 n_high = len(self._subgrid_kernel_out)
                 subsampling_factor = kwargs_psf['subsampling_factor']
                 numPix = int(n_high / subsampling_factor)
+                print numPix, n_high
                 self._kernel_point_source = util.averaging(self._subgrid_kernel_out, numGrid=n_high, numPix=numPix)
             else:
                 self._kernel_point_source = kwargs_psf['kernel_point_source']

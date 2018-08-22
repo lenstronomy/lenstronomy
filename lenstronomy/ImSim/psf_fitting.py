@@ -124,6 +124,7 @@ class PsfFitting(object):
             print("log likelihood before: %s and log likelihood after: %s" % (logL_before, logL_best))
         if not self._kwargs_numerics.get('psf_keep_error_map', False):
             kwargs_psf_new['psf_error_map'] = error_map
+        kwargs_psf_final['best_iteration']=i_best
         return kwargs_psf_final
 
     def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,

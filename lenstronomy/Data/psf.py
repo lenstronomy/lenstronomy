@@ -138,10 +138,8 @@ class PSF(object):
     @property
     def psf_error_map(self):
         if not hasattr(self, '_psf_error_map'):
-            print("WARNING: kwargs_psf has no 'psf_error_map' attribute!")
-            return None
-        else:
-            return self._psf_error_map
+            self._psf_error_map = np.zeros_like(self.kernel_point_source)
+        return self._psf_error_map
 
     def psf_convolution(self, grid, grid_scale, psf_subgrid=False, subgrid_res=1):
         """

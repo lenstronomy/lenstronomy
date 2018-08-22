@@ -27,7 +27,6 @@ class TestTNFW(object):
 
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
-        f_x_t, f_y_t = self.tnfw.derivatives(1., 0, Rs, theta_Rs, r_trunc=1.)
         
     def test_potential(self):
         Rs = 0.2
@@ -63,10 +62,15 @@ class TestTNFW(object):
 
         xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, theta_Rs, r_trunc)
         xx, yy, xy = self.nfw.hessian(x, y, Rs, theta_Rs)
-        print((xx - xxt)/xxt, 'test')
         np.testing.assert_almost_equal(xy, xyt, 4)
         np.testing.assert_almost_equal(yy, yyt, 4)
         np.testing.assert_almost_equal(xy, xyt, 4)
+
+        Rs = 0.2
+        r_trunc = 5
+        xxt, yyt, xyt = self.tnfw.hessian(Rs, 0, Rs, theta_Rs, r_trunc)
+        xxt_delta, yyt_delta, xyt_delta = self.tnfw.hessian(Rs+0.000001, 0, Rs, theta_Rs, r_trunc)
+        npt.assert_almost_equal(xxt, xxt_delta, decimal=6)
 
     def test_density_2d(self):
         Rs = 0.2

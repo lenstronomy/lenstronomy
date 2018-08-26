@@ -61,6 +61,26 @@ class TestLensCosmo(object):
         D_dt = self.lensCosmo.D_dt
         assert D_dt == 4965.660384441859
 
+    def test_nfw_angle2physical(self):
+        Rs_angle = 6.
+        theta_Rs = 1.
+        rho0, Rs, c, r200, M200 = self.lensCosmo.nfw_angle2physical(Rs_angle, theta_Rs)
+        assert Rs * c == r200
+
+    def test_nfw_physical2angle(self):
+        M = 10.**13.5
+        c = 4
+        Rs_angle, theta_Rs = self.lensCosmo.nfw_physical2angle(M, c)
+        rho0, Rs, c_out, r200, M200 = self.lensCosmo.nfw_angle2physical(Rs_angle, theta_Rs)
+        npt.assert_almost_equal(c_out, c, decimal=3)
+        npt.assert_almost_equal(np.log10(M200), np.log10(M), decimal=4)
+
+    def test_sis_theta_E2sigma_v(self):
+        theta_E = 2.
+        sigma_v = self.lensCosmo.sis_theta_E2sigma_v(theta_E)
+        theta_E_out = self.lensCosmo.sis_sigma_v2theta_E(sigma_v)
+        npt.assert_almost_equal(theta_E_out, theta_E, decimal=5)
+
 
 class TestFlatLCDM(object):
     def setup(self):

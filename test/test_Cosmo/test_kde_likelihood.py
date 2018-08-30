@@ -63,3 +63,6 @@ class TestKDELikelihood(object):
 
 if __name__ == '__main__':
     pytest.main()
+
+
+import corner.corner

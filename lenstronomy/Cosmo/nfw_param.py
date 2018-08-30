@@ -29,7 +29,7 @@ class NFWParam(object):
         :type c: float [4,40]
         :return: M(R_200) density
         """
-        return 4*np.pi*rho0*Rs**3*(np.log(1+c)-c/(1+c))
+        return 4*np.pi*rho0*Rs**3*(np.log(1.+c)-c/(1.+c))
 
     def r200_M(self, M):
         """

@@ -38,6 +38,5 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(Rs_, Rs, decimal=5)
 
 
-
 if __name__ == '__main__':
     pytest.main()

@@ -188,7 +188,7 @@ class SingleBackground(object):
                                     'thetay':y*self._T_main**-1})
 
             d_betax, d_betay = self._compute_deltabeta(x, y)
-            print(d_betax,d_betay)
+       
             delta_beta.append({'x':d_betax,'y':d_betay})
 
         self._theta_refx, self._theta_refy = foreground[i]['thetax'], foreground[i]['thetay']
@@ -273,7 +273,7 @@ class SingleBackground(object):
                background_z_current
 
     def _init_guess_lensmodel(self, guess_lensmodel=None, guess_kwargs = None):
-        
+
         if guess_lensmodel is None:
             self._guess_lensmodel = LensModel(lens_model_list=['SIS'], redshift_list=[self._z_macro],
                                               z_source=self._z_source,

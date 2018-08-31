@@ -188,7 +188,7 @@ class SingleBackground(object):
                                     'thetay':y*self._T_main**-1})
 
             d_betax, d_betay = self._compute_deltabeta(x, y)
-       
+
             delta_beta.append({'x':d_betax,'y':d_betay})
 
         self._theta_refx, self._theta_refy = foreground[i]['thetax'], foreground[i]['thetay']

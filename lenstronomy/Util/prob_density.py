@@ -148,22 +148,22 @@ def compute_lower_upper_errors(sample, num_sigma=1):
     num_threshold2 = int(round((num-1)*0.977249868))
     num_threshold3 = int(round((num-1)*0.998650102))
 
-    mean = np.mean(sample)
+    median = np.median(sample)
     sorted_sample = np.sort(sample)
     if num_sigma > 0:
         upper_sigma1 = sorted_sample[num_threshold1-1]
         lower_sigma1 = sorted_sample[num-num_threshold1-1]
     else:
-        return mean, [[]]
+        return median, [[]]
     if num_sigma > 1:
         upper_sigma2 = sorted_sample[num_threshold2-1]
         lower_sigma2 = sorted_sample[num-num_threshold2-1]
     else:
-        return mean, [[mean-lower_sigma1, upper_sigma1-mean]]
+        return median, [[median-lower_sigma1, upper_sigma1-median]]
     if num_sigma > 2:
         upper_sigma3 = sorted_sample[num_threshold3-1]
         lower_sigma3 = sorted_sample[num-num_threshold3-1]
-        return mean, [[mean-lower_sigma1, upper_sigma1-mean], [mean-lower_sigma2, upper_sigma2-mean],
-                      [mean-lower_sigma3, upper_sigma3-mean]]
+        return median, [[median-lower_sigma1, upper_sigma1-median], [median-lower_sigma2, upper_sigma2-median],
+                      [median-lower_sigma3, upper_sigma3-median]]
     else:
-        return mean, [[mean-lower_sigma1, upper_sigma1-mean], [mean-lower_sigma2, upper_sigma2-mean]]
+        return median, [[median-lower_sigma1, upper_sigma1-median], [median-lower_sigma2, upper_sigma2-median]]

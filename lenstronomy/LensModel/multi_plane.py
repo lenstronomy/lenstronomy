@@ -35,7 +35,10 @@ class MultiPlane(object):
         self._reduced2physical_factor = []
         for idex in self._sorted_redshift_index:
             z_lens = self._redshift_list[idex]
-            delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+            if z_before == z_lens:
+                delta_T = 0
+            else:
+                delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             T_z = self._cosmo_bkg.T_xy(0, z_lens)
             self._T_z_list.append(T_z)
@@ -45,6 +48,9 @@ class MultiPlane(object):
         delta_T = self._cosmo_bkg.T_xy(z_before, z_source)
         self._T_ij_list.append(delta_T)
         self._T_z_source = self._cosmo_bkg.T_xy(0, z_source)
+        sum_partial = np.sum(self._T_ij_list)
+        if np.abs(sum_partial - self._T_z_source) > 0.1:
+            print("Numerics in multi-plane compromised by too narrow spacing of too many redshift bins")
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
         """

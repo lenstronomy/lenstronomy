@@ -26,6 +26,9 @@ class TestMultiPlane(object):
         alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(1, 0, kwargs_lens)
         assert alpha_x_simple == alpha_x_multi
         assert alpha_y_simple == alpha_y_multi
+        sum_partial = np.sum(lensModelMutli._T_ij_list)
+        T_z_true = lensModelMutli._T_z_source
+        npt.assert_almost_equal(sum_partial, T_z_true, decimal=5)
 
     def test_sis_ray_tracing(self):
         z_source = 1.5

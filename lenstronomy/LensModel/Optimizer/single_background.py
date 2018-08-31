@@ -7,7 +7,8 @@ class SingleBackground(object):
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
-                 z_macro, astropy_instance, macro_indicies):
+                 z_macro, astropy_instance, macro_indicies, guess_lensmodel = None,
+                 guess_kwargs = None):
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
         :param full_lensmodel:
@@ -38,7 +39,7 @@ class SingleBackground(object):
         self._T_main = full_lensmodel.lens_model._cosmo_bkg.T_xy(0, self._z_macro)
         self._T_main_source = full_lensmodel.lens_model._cosmo_bkg.T_xy(self._z_macro, self._z_source)
 
-        self._ray_shoot_init()
+        self._ray_shoot_init(guess_lensmodel, guess_kwargs)
 
     def ray_shooting(self, x, y, kwargs_lens):
 
@@ -159,9 +160,9 @@ class SingleBackground(object):
 
         return alphax * self._guess_red2phys, alphay * self._guess_red2phys
 
-    def _ray_shoot_init(self, alphax_guess = None, alphay_guess = None, diff=0.00000001):
+    def _ray_shoot_init(self, guess_lensmodel, guess_kwargs, diff=0.00000001):
 
-        self._init_guess_lensmodel()
+        self._init_guess_lensmodel(guess_lensmodel,guess_kwargs)
 
         # have to do the full ray shooting for three rays
         theta = []
@@ -187,7 +188,7 @@ class SingleBackground(object):
                                     'thetay':y*self._T_main**-1})
 
             d_betax, d_betay = self._compute_deltabeta(x, y)
-
+            print(d_betax,d_betay)
             delta_beta.append({'x':d_betax,'y':d_betay})
 
         self._theta_refx, self._theta_refy = foreground[i]['thetax'], foreground[i]['thetay']
@@ -271,12 +272,17 @@ class SingleBackground(object):
         return macromodel, macro_args, halo_lensmodel, halo_args, \
                background_z_current
 
-    def _init_guess_lensmodel(self):
+    def _init_guess_lensmodel(self, guess_lensmodel=None, guess_kwargs = None):
+        
+        if guess_lensmodel is None:
+            self._guess_lensmodel = LensModel(lens_model_list=['SIS'], redshift_list=[self._z_macro],
+                                              z_source=self._z_source,
+                                              multi_plane=True)
 
-        self._guess_lensmodel = LensModel(lens_model_list=['SIS'], redshift_list=[self._z_macro],
-                                          z_source=self._z_source,
-                                          multi_plane=True)
+            self._guess_kwargs = [{'theta_E': approx_theta_E(self._x_pos, self._y_pos), 'center_x': 0, 'center_y': 0}]
 
-        self._guess_kwargs = [{'theta_E': approx_theta_E(self._x_pos, self._y_pos), 'center_x': 0, 'center_y': 0}]
+        else:
+            self._guess_lensmodel = guess_lensmodel
+            self._guess_kwargs = guess_kwargs
 
         self._guess_red2phys = self._guess_lensmodel.lens_model._reduced2physical_factor[0]

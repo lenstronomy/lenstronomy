@@ -27,8 +27,7 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=250,
-                 single_background=False):
+                 simplex_n_iterations=250, single_background=False, init_lensmodel = None, init_kwargs = None):
 
 
         """
@@ -123,8 +122,10 @@ class Optimizer(object):
 
         else:
             if self._single_background:
+
                 lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies)
+                                                 astropy_instance, self._params.tovary_indicies, guess_lensmodel=
+                                                 init_lensmodel, guess_kwargs=init_kwargs)
             else:
                 lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                                     astropy_instance, self._params.tovary_indicies)

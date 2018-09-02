@@ -120,6 +120,57 @@ class MultiPlane(object):
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 
+    def ray_shooting_relative(self, theta_x, theta_y, zmacro, macro_lensmodel, kwargs_lens_macro,
+                              kwargs_lens):
+
+        """
+        ray-tracing (backwards light cone) relative to a striaght path with a single deflection, specified by
+        macro_lensmodel
+
+        :param theta_x: angle in x-direction on the image
+        :param theta_y: angle in y-direction on the image
+        :param kwargs_lens:
+        :return: angles in the source plane
+        """
+
+        x = np.zeros_like(theta_x)
+        y = np.zeros_like(theta_y)
+        x_straight, y_straight = np.zeros_like(theta_x), np.zeros_like(theta_y)
+        alpha_x = theta_x
+        alpha_y = theta_y
+        alpha_x_straight = theta_x
+        alpha_y_straight = theta_y
+
+        dx, dy = [],[]
+
+        compute_macro = True
+
+        for i, idex in enumerate(self._sorted_redshift_index):
+
+            delta_T = self._T_ij_list[i]
+            x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+            x_straight, y_straight = self._ray_step(x_straight, y_straight, alpha_x_straight,
+                                                    alpha_y_straight, delta_T)
+
+            dx.append((x - x_straight) * self._T_z_list[i] ** -1)
+            dy.append((y - y_straight) * self._T_z_list[i] ** -1)
+
+            if idex == zmacro and compute_macro:
+                compute_macro = False
+                tx, ty = self._co_moving2angle(x_straight, y_straight, idex)
+                # must provide the reduced deflection angles
+                alpha_x_macro, alpha_y_macro = macro_lensmodel.alpha(tx, ty, kwargs_lens_macro)
+                alpha_x_phys = self._reduced2physical_deflection(alpha_x_macro, idex)
+                alpha_y_phys = self._reduced2physical_deflection(alpha_y_macro, idex)
+
+                alpha_x_straight = tx - alpha_x_phys
+                alpha_y_straight = ty - alpha_y_phys
+
+        return np.array(dx), np.array(dy)
+
+
+
     def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)

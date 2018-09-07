@@ -24,6 +24,10 @@ class TestSingleBackground(object):
         sub_2 = {'theta_Rs': 0.005, 'center_y': -0.65, 'center_x': 0.58, 'Rs': 0.08}
         sub_3 = {'theta_Rs': 0.006, 'center_y': 0.45, 'center_x': -0.6, 'Rs': 0.1}
 
+        self.guess_lensmodel = LensModel(lens_model_list=lens_model_list_full[0:2],redshift_list=[0.5,0.5],z_source=1.5,
+                                         cosmo=self.cosmo, multi_plane=True)
+        self.guess_kwargs = kwargs_lens_simple
+
         self.kwargs_lens_full_background = kwargs_lens_simple + [sub_1, sub_2, sub_3]
         self.lensmodel_fixed_background = LensModel(lens_model_list=lens_model_list_full,
                           redshift_list=z_list_full,z_source=1.5,
@@ -55,6 +59,14 @@ class TestSingleBackground(object):
         delta_betax, delta_betay = split._compute_deltabeta(900, 1000)
 
         npt.assert_almost_equal(delta_betax,delta_betay)
+
+
+        split = SingleBackground(self.lensmodel_nobackground, self.xpos,
+                                 self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
+                                 self.cosmo, [0, 1], guess_lensmodel=self.guess_lensmodel,
+                                 guess_kwargs=self.guess_kwargs)
+
+        _, _ = split._compute_deltabeta(900, 1000)
 
 
     def test_rayshooting(self):

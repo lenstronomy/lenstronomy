@@ -278,6 +278,7 @@ class TNFW(object):
         """
         t2 = tau ** 2
         #Fx = self.F(X)
+
         _F = self.F(X)
         a = t2*(t2+1)**-2
         if isinstance(X, np.ndarray):
@@ -298,15 +299,7 @@ class TNFW(object):
         d = -np.pi*(t2+X**2)**-0.5
         e = (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
         result = a * (b + c + d + e)
-        #result = t2*(t2+1)**-2*(
-        #    (t2+1)*(X**2-1)**-1*(1-self.F(X))
-        #    +
-        #    2*self.F(X)
-        #    +
-        #    -np.pi*(t2+X**2)**-0.5
-        #    +
-        #    (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
-        #)
+
         return result
 
     def _g(self, x, tau):

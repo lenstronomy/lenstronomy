@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.tnfw import TNFW
 from lenstronomy.LensModel.Profiles.nfw import NFW
-
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.testing as npt
 import pytest
@@ -27,7 +27,7 @@ class TestTNFW(object):
 
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
-        
+
     def test_potential(self):
         Rs = 0.2
         theta_Rs = 0.1
@@ -62,6 +62,7 @@ class TestTNFW(object):
 
         xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, theta_Rs, r_trunc)
         xx, yy, xy = self.nfw.hessian(x, y, Rs, theta_Rs)
+
         np.testing.assert_almost_equal(xy, xyt, 4)
         np.testing.assert_almost_equal(yy, yyt, 4)
         np.testing.assert_almost_equal(xy, xyt, 4)

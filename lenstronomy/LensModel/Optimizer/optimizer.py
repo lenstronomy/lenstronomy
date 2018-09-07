@@ -26,9 +26,8 @@ class Optimizer(object):
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
-                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=250,
-                 single_background=False):
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.5,constrain_params=None,
+                 simplex_n_iterations=250, single_background=False, init_lensmodel = None, init_kwargs = None):
 
 
         """
@@ -123,8 +122,10 @@ class Optimizer(object):
 
         else:
             if self._single_background:
+
                 lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies)
+                                                 astropy_instance, self._params.tovary_indicies, guess_lensmodel=
+                                                 init_lensmodel, guess_kwargs=init_kwargs)
             else:
                 lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                                     astropy_instance, self._params.tovary_indicies)
@@ -180,8 +181,8 @@ class Optimizer(object):
             x_image, y_image = self.x_pos, self.y_pos
         else:
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
-            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
-
+            print('Warning: possibly a bad fit.')
+            x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))

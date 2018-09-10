@@ -10,7 +10,7 @@ class SinglePlane(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list):
+    def __init__(self, lens_model_list, **kwargs):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -66,7 +66,7 @@ class SinglePlane(object):
                 self.func_list.append(SPEMD_SMOOTH())
             elif lens_type == 'NFW':
                 from lenstronomy.LensModel.Profiles.nfw import NFW
-                self.func_list.append(NFW(interpol=False, num_interp_X=1000, max_interp_X=100))
+                self.func_list.append(NFW(**kwargs))
             elif lens_type == 'NFW_ELLIPSE':
                 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
                 self.func_list.append(NFW_ELLIPSE(interpol=False, num_interp_X=1000, max_interp_X=100))

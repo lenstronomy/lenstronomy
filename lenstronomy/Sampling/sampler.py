@@ -14,32 +14,30 @@ from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
-from lenstronomy.Sampling.likelihood_module import LikelihoodModule
 
-
-class MCMCSampler(object):
+class Sampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed, kwargs_lower,
-                 kwargs_upper, kwargs_lens_init=None, compute_bool=None, fix_solver=False):
+    def __init__(self, likelihoodModule):
         """
-        initialise the classes of the chain and for parameter options
-        """
-        self.chain = LikelihoodModule(multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_fixed,
-                                kwargs_lower, kwargs_upper, kwargs_lens_init=kwargs_lens_init,
-                                      compute_bool=compute_bool, fix_solver=fix_solver)
 
-    def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, print_positions=False, mpi=False, print_key='default'):
+        :param likelihoodModule: instance of LikelihoodModule class
+        """
+        self.chain = likelihoodModule
+        self.lower_limit, self.upper_limit = self.chain.param_limits
+
+    def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, mpi=False,
+            print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
         if lowerLimit is None or upperLimit is None:
-            lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
+            lowerLimit, upperLimit = self.lower_limit, self.upper_limit
             print("PSO initialises its particles with default values")
         else:
-            lowerLimit = np.maximum(lowerLimit, self.chain.lower_limit)
-            upperLimit = np.minimum(upperLimit, self.chain.upper_limit)
+            lowerLimit = np.maximum(lowerLimit, self.lower_limit)
+            upperLimit = np.minimum(upperLimit, self.upper_limit)
         if mpi is True:
             pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
             if pso.isMaster():
@@ -113,7 +111,7 @@ class MCMCSampler(object):
         runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
         returns the chain
         """
-        lowerLimit, upperLimit = self.chain.lower_limit, self.chain.upper_limit
+        lowerLimit, upperLimit = self.lower_limit, self.upper_limit
 
         mean_start = np.maximum(lowerLimit, mean_start)
         mean_start = np.minimum(upperLimit, mean_start)

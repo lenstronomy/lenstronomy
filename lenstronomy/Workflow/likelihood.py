@@ -41,6 +41,10 @@ class LikelihoodModule(object):
         if not len(self._compute_bool) == self._num_bands:
             raise ValueError('compute_bool statement has not the same range as number of bands available!')
 
+    @property
+    def param_limits(self):
+        return self._lower_limit, self._upper_limit
+
     def X2_chain(self, args):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
@@ -76,7 +80,6 @@ class LikelihoodModule(object):
                 logL -= 10**10
         if self._check_positive_flux is True:
             logL -= self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-
         return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):

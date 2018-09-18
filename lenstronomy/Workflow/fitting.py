@@ -1,10 +1,14 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import copy
 
-from lenstronomy.Sampling.mcmc import MCMCSampler
+from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters import Param, ParamUpdate
+from lenstronomy.Workflow.parameters import ParamUpdate
+from lenstronomy.Workflow.parameters_new import Param
+import lenstronomy.Util.class_creator as class_creator
+from lenstronomy.Workflow.likelihood import LikelihoodModule
 
 
 class Fitting(object):
@@ -74,6 +78,10 @@ class Fitting(object):
         # initialise mcmc classes
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                            self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
+                            self._cosmo_lower,
+                            self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
+                            self._cosmo_upper,
                             kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps, kwargs_prior_cosmo)
@@ -82,14 +90,15 @@ class Fitting(object):
         num_param, param_list = param_class.num_param()
         init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source,
                                          kwargs_mean_lens_light, kwargs_mean_ps, kwargs_mean_cosmo)
-        # run PSO
-        kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo]
-        kwargs_lower = self.lower_kwargs()
-        kwargs_upper = self.upper_kwargs()
-        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                 self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
-                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool, fix_solver=fix_solver)
 
+        # initialize ImSim() class
+        kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
+        if compute_bool is not None:
+            kwargs_likelihood['bands_compute'] = compute_bool
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, kwargs_likelihood=kwargs_likelihood)
+        # run PSO
+        mcmc_class = Sampler(likelihoodModule=likelihoodModule)
         lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain = mcmc_class.pso(n_particles,
                                                                                                        n_iterations,
                                                                                                        lowerLimit,
@@ -118,15 +127,21 @@ class Fitting(object):
 
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                            self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
+                            self._cosmo_lower,
+                            self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
+                            self._cosmo_upper,
                             kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
-        kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
-                        kwargs_fixed_cosmo]
-        kwargs_lower = self.lower_kwargs()
-        kwargs_upper = self.upper_kwargs()
 
-        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                 self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
-                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool, fix_solver=fix_solver)
+        # initialize ImSim() class
+        kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
+        if compute_bool is not None:
+            kwargs_likelihood['bands_compute'] = compute_bool
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class,
+                                            kwargs_likelihood=kwargs_likelihood)
+        # run PSO
+        mcmc_class = Sampler(likelihoodModule=likelihoodModule)
         mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
                                                          kwargs_prior_lens_light, kwargs_prior_ps, kwargs_prior_cosmo)
         num_param, param_list = param_class.num_param()

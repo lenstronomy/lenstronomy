@@ -8,7 +8,7 @@ import copy
 
 class FittingSequence(object):
     """
-    class to define a sequence of fitting applied, inherite the Fitting class
+    class to define a sequence of fitting applied, inherit the Fitting class
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, verbose=True):
         self.multi_band_list = multi_band_list

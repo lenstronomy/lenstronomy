@@ -27,6 +27,10 @@ class Multiband(object):
                                                     lens_light_model_class, point_source_class,
                                                     kwargs_numerics=kwargs_numerics))
 
+    @property
+    def num_bands(self):
+        return self._num_bands
+
     def reset_point_source_cache(self):
         """
         deletes all the cache in the point source class and saves it from then on

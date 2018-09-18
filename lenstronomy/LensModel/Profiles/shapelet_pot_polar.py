@@ -14,6 +14,8 @@ class PolarShapelets(object):
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
     param_names = ['coeffs', 'beta', 'center_x', 'center_y']
+    lower_limit_default = {'coeffs': [0], 'beta': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'coeffs': [100], 'beta': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         n = 10

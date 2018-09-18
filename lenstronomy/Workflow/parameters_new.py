@@ -29,21 +29,32 @@ class Param(object):
 
     Options between different model classes:
 
-    'joint_lens_with_light': list [[i_lens, k_light, ['param_name1', 'param_name2', ...]], [...], ...],
+    'joint_lens_with_light': list [[i_light, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameter between lens model and lens light model
 
-    'joint_source_with_point_source': list [[i_source, k_point_source, ['param_name1', 'param_name2', ...]], [...], ...],
+    'joint_source_with_point_source': list [[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameter between lens model and lens light model
 
+    hierarchy is as follows:
+    1. Point source parameters are inferred
+    2. Lens light joint parameters are set
+    3. Lens model joint constraints are set
+    4. Lens model solver is applied
+    5. Joint source and point source is applied
 
     'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
     'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
     'fix_shapelet_beta': bool, if True, fixes the shapelet scale beta
     """
 
-    def __init__(self, kwargs_model, kwargs_constraints, kwargs_fixed_lens=None, kwargs_fixed_source=None,
-                 kwargs_fixed_lens_light=None, kwargs_fixed_ps=None, kwargs_fixed_cosmo=None, kwargs_lens_init=None,
-                 linear_solver=True, fix_lens_solver=False):
+    def __init__(self, kwargs_model, kwargs_constraints,
+                 kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
+                 kwargs_fixed_cosmo=None,
+                 kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,
+                 kwargs_lower_cosmo=None,
+                 kwargs_upper_lens=None, kwargs_upper_source=None, kwargs_upper_lens_light=None, kwargs_upper_ps=None,
+                 kwargs_upper_cosmo=None,
+                 kwargs_lens_init=None, linear_solver=True, fix_lens_solver=False):
         """
 
         :return:
@@ -101,22 +112,32 @@ class Param(object):
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=self.lensModel, num_images=self._num_images)
         else:
             self._solver_type = 'NONE'
+        # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
-        kwargs_fixed_lens_light_updated = self._add_fixed_lens_light(kwargs_fixed_lens_light)
-        kwargs_fixed_source_updated = self._add_fixed_source(kwargs_fixed_source)
+        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_lens)
+        kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light, self._joint_lens_light_with_lens_light)
+        kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source, self._joint_source_with_source)
         kwargs_fixed_ps_updated = copy.deepcopy(kwargs_fixed_ps)
+        # fix parameters joint with other model types
+        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_light)
+        kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
 
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
-                                    solver_type=self._solver_type)
+                                    solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
+                                    kwargs_upper=kwargs_upper_lens)
         self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
-                                          linear_solver=linear_solver)
+                                          linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
+                                          kwargs_upper=kwargs_upper_lens_light)
         self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source_updated, type='source_light',
-                                      linear_solver=linear_solver)
+                                      linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
+                                      kwargs_upper=kwargs_upper_source)
         self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps_updated,
                                                   num_point_source_list=num_point_source_list,
-                                                  linear_solver=linear_solver)
+                                                  linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
+                                                  kwargs_upper=kwargs_upper_ps)
         self.cosmoParams = CosmoParam(kwargs_model.get('cosmo_type', None), mass_scaling=self._mass_scaling,
-                                      kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor)
+                                      kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
+                                      kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo)
 
         self._lens_light_param_name_list = self.lensLightParams.param_name_list
 
@@ -137,20 +158,24 @@ class Param(object):
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_cosmo, i = self.cosmoParams.getParams(args, i)
         # update lens_light joint parameters
+        kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
+        kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
         # update lens model joint parameters (including scaling)
-        # update point source constraint solver
-        # update source joint with point source
-
-        # optional revert lens_scaling for bijective
-        kwargs_lens = self._update_lens_light_joint(kwargs_lens, kwargs_lens_light)
+        kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens)
+        # update point source constraint solver
         if self._solver:
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)
-        kwargs_source = self._update_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
+        # update source joint with point source
+        kwargs_source = self._update_joint_param(kwargs_ps, kwargs_source, self._joint_source_with_point_source)
+        # update source joint with source
+        kwargs_source = self._update_joint_param(kwargs_source, kwargs_source, self._joint_source_with_source)
+        # optional revert lens_scaling for bijective
+
+        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, image_plane=bijective)
         if bijective is True:
             kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
-        kwargs_lens_light = self._update_lens_light(kwargs_lens_light, kwargs_ps)
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
 
@@ -167,6 +192,23 @@ class Param(object):
         args += self.pointSourceParams.setParams(kwargs_ps)
         args += self.cosmoParams.setParams(kwargs_cosmo)
         return args
+
+    def param_limits(self):
+        """
+
+        :return: lower and upper limits of the arguments being sampled
+        """
+        lower_limit = self.setParams(kwargs_lens=self.lensParams.lower_limit,
+                                     kwargs_source=self.souceParams.lower_limit,
+                                     kwargs_lens_light=self.lensLightParams.lower_limit,
+                                     kwargs_ps=self.pointSourceParams.lower_limit,
+                                     kwargs_cosmo=self.cosmoParams.lower_limit)
+        upper_limit = self.setParams(kwargs_lens=self.lensParams.upper_limit,
+                                     kwargs_source=self.souceParams.upper_limit,
+                                     kwargs_lens_light=self.lensLightParams.upper_limit,
+                                     kwargs_ps=self.pointSourceParams.upper_limit,
+                                     kwargs_cosmo=self.cosmoParams.upper_limit)
+        return lower_limit, upper_limit
 
     def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_ps, kwargs_mean_cosmo):
         """
@@ -209,23 +251,37 @@ class Param(object):
         list += _list
         return num, list
 
-    def _update_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, image_plane=False):
+    def num_param_linear(self):
+        """
+
+        :return: number of linear basis set coefficients that are solved for
+        """
+        num = 0
+        num += self.souceParams.num_param_linear()
+        num += self.lensLightParams.num_param_linear()
+        num += self.pointSourceParams.num_param_linear()
+        return num
+
+    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, image_plane=False):
 
         for i, kwargs in enumerate(kwargs_source_list):
-            if self._joint_with_other_source_list[i] is not False:
-                pass
-            else:
-                if self._image_plane_source_list[i] is True and not image_plane:
-                    if 'center_x' in kwargs:
-                        x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
-                        kwargs['center_x'] = x_mapped
-                        kwargs['center_y'] = y_mapped
-                if self._fix_to_point_source_list[i] is True:
-                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image'],
-                                                                     kwargs_lens_list)
-                    if 'center_x' in kwargs:
-                        kwargs['center_x'] = np.mean(x_mapped)
-                        kwargs['center_y'] = np.mean(y_mapped)
+            if self._image_plane_source_list[i] is True and not image_plane:
+                if 'center_x' in kwargs:
+                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
+                    kwargs['center_x'] = x_mapped
+                    kwargs['center_y'] = y_mapped
+
+        for setting in self._joint_source_with_point_source:
+            i_point_source, k_source, param_list = setting
+            x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[i_point_source]['ra_image'],
+                                                             kwargs_ps[i_point_source]['dec_image'], kwargs_lens_list)
+            for param_name in param_list:
+                if param_name == 'center_x':
+                    kwargs_source_list[k_source][param_name] = np.mean(x_mapped)
+                elif param_name == 'center_y':
+                    kwargs_source_list[k_source][param_name] = np.mean(y_mapped)
+                else:
+                    kwargs_source_list[k_source][param_name] = kwargs_ps[i_point_source][param_name]
         return kwargs_source_list
 
     @staticmethod
@@ -244,20 +300,19 @@ class Param(object):
         return kwargs_list_2
 
     @staticmethod
-    def _fix_joint_param(kwargs_fixed, joint_setting_list):
+    def _fix_joint_param(kwargs_list_2, joint_setting_list):
         """
 
-        :param kwargs_list_1: list of keyword arguments
         :param kwargs_list_2: list of keyword arguments
         :param joint_setting_list: [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
         :return: fixes entries in kwargs_list_2 that are joint with other kwargs_list as defined in joint_setting_list
         """
-        kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
+        kwargs_list_2_update = copy.deepcopy(kwargs_list_2)
         for setting in joint_setting_list:
             i_1, k_2, param_list = setting
             for param_name in param_list:
-                kwargs_fixed_update[k_2][param_name] = 0
-        return kwargs_fixed_update
+                kwargs_list_2_update[k_2][param_name] = 0
+        return kwargs_list_2_update
 
     def update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
         """
@@ -288,22 +343,6 @@ class Param(object):
                     kwargs['k_eff'] *= scale_factor
         return kwargs_lens_updated
 
-    def image2source_plane(self, kwargs_lens_list, kwargs_source_list):
-        """
-        will update the parameters that were defined in the image plane and place them in the source plane
-
-        :param kwargs_source_list:
-        :return:
-        """
-        kwargs_source = copy.deepcopy(kwargs_source_list)
-        for i, kwargs in enumerate(kwargs_source):
-            if self._image_plane_source_list[i] is True:
-                if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens_list)
-                    kwargs['center_x'] = x_mapped
-                    kwargs['center_y'] = y_mapped
-        return kwargs_source
-
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
         if self._solver:
@@ -322,3 +361,29 @@ class Param(object):
                 if 'gamma' in kwargs_init[i]:
                     kwargs_fixed_update[i]['gamma'] = kwargs_init[i]['gamma']
         return kwargs_fixed_update
+
+    def check_solver(self, kwargs_lens, kwargs_ps):
+        """
+        test whether the image positions map back to the same source position
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :return: Euclidean distance between the rayshooting of the image positions
+        """
+        if self._solver is True:
+            dist = self._solver_module.check_solver(kwargs_lens, kwargs_ps)
+            return np.max(dist)
+        else:
+            return 0
+
+    def print_setting(self):
+        """
+        prints the setting of the parameter class
+
+        :return:
+        """
+        # print model options
+        # print parameter constraints
+        # print fixed parameters
+        # print free parameters
+        # print lower and upper limits of free parameters
+        pass

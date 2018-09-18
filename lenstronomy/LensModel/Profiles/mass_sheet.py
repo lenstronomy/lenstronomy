@@ -9,6 +9,8 @@ class MassSheet(object):
     a single mass sheet (external convergence)
     """
     param_names = ['kappa_ext']
+    lower_limit_default = {'kappa_ext': -1}
+    upper_limit_default = {'kappa_ext': 1}
 
     def function(self, x, y, kappa_ext):
         """

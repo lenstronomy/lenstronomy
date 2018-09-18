@@ -6,7 +6,8 @@ class LightParam(object):
 
     """
 
-    def __init__(self, light_model_list, kwargs_fixed, type='light', linear_solver=True):
+    def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, type='light',
+                 linear_solver=True):
         lightModel = LightModel(light_model_list=light_model_list)
         self._param_name_list = lightModel.param_name_list()
         self._type = type
@@ -15,6 +16,16 @@ class LightParam(object):
         if linear_solver:
             self.kwargs_fixed = self.add_fixed_linear(self.kwargs_fixed)
         self._linear_solve = linear_solver
+        if kwargs_lower is None:
+            kwargs_lower = []
+            for func in lightModel.func_list:
+                kwargs_lower.append(func.lower_limit_default)
+        if kwargs_upper is None:
+            kwargs_upper = []
+            for func in lightModel.func_list:
+                kwargs_upper.append(func.upper_limit_default)
+        self.lower_limit = kwargs_lower
+        self.upper_limit = kwargs_upper
     
     @property
     def param_name_list(self):

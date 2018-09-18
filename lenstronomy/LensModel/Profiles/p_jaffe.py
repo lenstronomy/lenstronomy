@@ -8,6 +8,8 @@ class PJaffe(object):
     """
     _s = 0.0001
     param_names = ['sigma0', 'Ra', 'Rs', 'center_x', 'center_y']
+    lower_limit_default = {'sigma0': 0, 'Ra': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'sigma0': 10, 'Ra': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
 
     def density(self, r, rho0, Ra, Rs):
         """

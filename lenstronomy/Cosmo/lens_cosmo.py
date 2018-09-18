@@ -203,8 +203,6 @@ class LensCosmo(object):
         return theta_E
 
 
-
-
 class LCDM(object):
     """
     Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration

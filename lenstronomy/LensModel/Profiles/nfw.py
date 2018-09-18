@@ -14,8 +14,10 @@ class NFW(object):
     relation are: R_200 = c * Rs
     """
     param_names = ['Rs', 'theta_Rs', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10, lookup = False):
+    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10, lookup=False):
         """
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()

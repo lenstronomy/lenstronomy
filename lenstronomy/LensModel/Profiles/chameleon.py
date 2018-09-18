@@ -10,6 +10,8 @@ class Chameleon(object):
 
     """
     param_names = ['theta_E', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.nie = NIE()

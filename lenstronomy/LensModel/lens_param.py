@@ -5,7 +5,8 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, num_images=0, solver_type='NONE', num_shapelet_lens=0):
+    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, num_images=0,
+                 solver_type='NONE', num_shapelet_lens=0):
         """
 
         :param kwargs_options:
@@ -21,6 +22,16 @@ class LensParam(object):
         for func in lens_model.func_list:
             name_list.append(func.param_names)
         self._param_name_list = name_list
+        if kwargs_lower is None:
+            kwargs_lower = []
+            for func in lens_model.func_list:
+                kwargs_lower.append(func.lower_limit_default)
+        if kwargs_upper is None:
+            kwargs_upper = []
+            for func in lens_model.func_list:
+                kwargs_upper.append(func.upper_limit_default)
+        self.lower_limit = kwargs_lower
+        self.upper_limit = kwargs_upper
 
     def getParams(self, args, i):
         kwargs_list = []

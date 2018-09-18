@@ -5,7 +5,8 @@ class CosmoParam(object):
     class that handles the cosmology relevant parameters
     """
 
-    def __init__(self, cosmo_type=None, mass_scaling=False, kwargs_fixed={}, num_scale_factor=1):
+    def __init__(self, cosmo_type=None, mass_scaling=False, kwargs_fixed={}, num_scale_factor=1, kwargs_lower=None,
+                 kwargs_upper=None):
         """
 
 
@@ -25,6 +26,22 @@ class CosmoParam(object):
         self._mass_scaling = mass_scaling
         self._num_scale_factor = num_scale_factor
         self._kwargs_fixed = kwargs_fixed
+        if kwargs_lower is None:
+            kwargs_lower = {}
+            if self._Ddt_sampling is True:
+                if self._cosmo_type == 'D_dt':
+                    kwargs_lower['D_dt'] = 0
+            if self._mass_scaling is True:
+                kwargs_lower['scale_factor'] = [0] * self._num_scale_factor
+        if kwargs_upper is None:
+            kwargs_upper = {}
+            if self._Ddt_sampling is True:
+                if self._cosmo_type == 'D_dt':
+                    kwargs_upper['D_dt'] = 100000
+            if self._mass_scaling is True:
+                kwargs_upper['scale_factor'] = [1000] * self._num_scale_factor
+        self.lower_limit = kwargs_lower
+        self.upper_limit = kwargs_upper
 
     def getParams(self, args, i):
         """

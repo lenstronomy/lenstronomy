@@ -9,6 +9,8 @@ class SPEMD(object):
     class for smooth power law ellipse mass density profile
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.s2 = 0.00000001

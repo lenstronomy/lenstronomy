@@ -5,9 +5,9 @@ import copy
 
 from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Sampling.parameters import Param
 import lenstronomy.Util.class_creator as class_creator
-from lenstronomy.Workflow.likelihood import LikelihoodModule
+from lenstronomy.Sampling.likelihood import LikelihoodModule
 
 
 class Fitting(object):

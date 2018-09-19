@@ -4,7 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Sampling.parameters import Param
 
 
 class TestParam(object):
@@ -20,6 +20,7 @@ class TestParam(object):
         kwargs_fixed_cosmo = [{}]
         self.param_class = Param(kwargs_model, kwargs_param, kwargs_fixed_lens, kwargs_fixed_source,
                                  kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo)
+        self.param_class.print_setting()
 
     def test_num_param(self):
         num_param, list = self.param_class.num_param()

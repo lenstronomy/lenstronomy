@@ -1,10 +1,8 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-from lenstronomy.Workflow.parameters import Param
 import lenstronomy.Util.util as util
 import lenstronomy.Util.constants as const
-import lenstronomy.Util.class_creator as class_creator
 
 
 class LikelihoodModule(object):
@@ -45,7 +43,7 @@ class LikelihoodModule(object):
     def param_limits(self):
         return self._lower_limit, self._upper_limit
 
-    def X2_chain(self, args):
+    def logL(self, args):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
@@ -80,7 +78,7 @@ class LikelihoodModule(object):
                 logL -= 10**10
         if self._check_positive_flux is True:
             logL -= self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-        return logL, None
+        return logL
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):
         """
@@ -186,13 +184,13 @@ class LikelihoodModule(object):
         return n - num_param - 1
 
     def __call__(self, a):
-        return self.X2_chain(a)
+        return self.logL(a), None
 
     def likelihood(self, a):
-        return self.X2_chain(a)
+        return self.logL(a), None
 
     def computeLikelihood(self, ctx):
-        logL, _ = self.X2_chain(ctx.getParams())
+        logL = self.logL(ctx.getParams())
         return logL
 
     def setup(self):

@@ -61,9 +61,9 @@ class Param(object):
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
-        source_light_model_list = kwargs_model.get('source_light_model_list', [])
-        lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
-        point_source_model_list = kwargs_model.get('point_source_model_list', [])
+        self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
+        self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
+        self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self.lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
                                    redshift_list=kwargs_model.get('redshift_list', None),
                                    multi_plane=kwargs_model.get('multi_plane', False))
@@ -71,11 +71,11 @@ class Param(object):
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
         if kwargs_fixed_source is None:
-            kwargs_fixed_source = [{} for i in range(len(source_light_model_list))]
+            kwargs_fixed_source = [{} for i in range(len(self._source_light_model_list))]
         if kwargs_fixed_lens_light is None:
-            kwargs_fixed_lens_light = [{} for i in range(len(lens_light_model_list))]
+            kwargs_fixed_lens_light = [{} for i in range(len(self._lens_light_model_list))]
         if kwargs_fixed_ps is None:
-            kwargs_fixed_ps = [{} for i in range(len(point_source_model_list))]
+            kwargs_fixed_ps = [{} for i in range(len(self._point_source_model_list))]
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
 
@@ -94,10 +94,10 @@ class Param(object):
             self._num_scale_factor = np.max(self._mass_scaling_list) + 1
         else:
             self._num_scale_factor = 0
-        num_point_source_list = kwargs_constraints.get('num_point_source_list', [1] * len(point_source_model_list))
+        num_point_source_list = kwargs_constraints.get('num_point_source_list', [1] * len(self._point_source_model_list))
 
         # Attention: if joint coordinates with other source profiles, only indicate one as bool
-        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * len(source_light_model_list))
+        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * len(self._source_light_model_list))
 
         try:
             self._num_images = num_point_source_list[0]
@@ -125,13 +125,13 @@ class Param(object):
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens)
-        self.lensLightParams = LightParam(lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
+        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
                                           linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
                                           kwargs_upper=kwargs_upper_lens_light)
-        self.souceParams = LightParam(source_light_model_list, kwargs_fixed_source_updated, type='source_light',
+        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, type='source_light',
                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
                                       kwargs_upper=kwargs_upper_source)
-        self.pointSourceParams = PointSourceParam(point_source_model_list, kwargs_fixed_ps_updated,
+        self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
@@ -374,9 +374,33 @@ class Param(object):
 
         :return:
         """
+        num, list = self.num_param()
+        num_linear = self.num_param_linear()
+
         # print model options
         # print parameter constraints
         # print fixed parameters
         # print free parameters
         # print lower and upper limits of free parameters
-        pass
+        print("The following model options are chosen:")
+        print("Lens models:", self._lens_model_list)
+        print("Source models:", self._source_light_model_list)
+        print("Lens light models:", self._lens_light_model_list)
+        print("Point source models:", self._point_source_model_list)
+        print("===================")
+        print("The follwoing parameters are being fixed:")
+        print("Lens:", self.lensParams.kwargs_fixed)
+        print("Source:", self.souceParams.kwargs_fixed)
+        print("Lens light:", self.lensLightParams.kwargs_fixed)
+        print("Point source:", self.pointSourceParams.kwargs_fixed)
+        print("===================")
+        print("Joint parameters for different models")
+        print("Joint lens with lens:", self._joint_lens_with_lens)
+        print("Joint lens with lens light:", self._joint_lens_light_with_lens_light)
+        print("Joint source with source:", self._joint_source_with_source)
+        print("Joint lens with light:", self._joint_lens_with_light)
+        print("Joint source with point source:", self._joint_source_with_point_source)
+        print("===================")
+        print("Number of non-linear parameters being sampled: ", num)
+        print("Parameters being sampled: ", list)
+        print("Number of linear parameters being solved for: ", num_linear)

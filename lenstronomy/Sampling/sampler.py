@@ -99,9 +99,9 @@ class Sampler(object):
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
-            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain, pool=pool)
+            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.logL, pool=pool)
         else:
-            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.X2_chain)
+            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.logL)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
         sampler.reset()

@@ -4,8 +4,8 @@ import pytest
 import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Workflow.likelihood import LikelihoodModule
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.parameters import Param
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -100,11 +100,11 @@ class TestFittingSequence(object):
         self.param_class = Param(kwargs_model, kwargs_constraints)
         self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
 
-    def test_X2_chain(self):
+    def test_logL(self):
         args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                    kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
 
-        logL, _ = self.Likelihood.X2_chain(args)
+        logL = self.Likelihood.logL(args)
         num_data_evaluate = self.Likelihood.imSim.numData_evaluate()
         npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
 

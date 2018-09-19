@@ -63,17 +63,6 @@ class TestParam(object):
         assert lens_dict['center_y'] == 0.
         assert lens_light_dic[0]['center_x'] == -0.06
 
-    def test_param_init(self):
-        kwargs_mean_lens = [{'theta_E': 1., 'theta_E_sigma': 0.1, 'gamma':1.9, 'gamma_sigma': 0.2, 'e1':0.01, 'e2':-0.0, 'e1_sigma': 0.2, 'e2_sigma': 0.2, 'center_x':0., 'center_y':0., 'center_x_sigma':0., 'center_y_sigma':0.}] #for SPEP lens
-        kwargs_mean_source = [{'amp': 1*2*np.pi*0.1**2, 'amp_sigma': 1, 'center_x': 0.2, 'center_y': 0.2, 'center_x_sigma': 0.2, 'center_y_sigma': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1, 'sigma_x_sigma': 0.1, 'sigma_y_sigma': 0.1}]
-        kwargs_mean_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'center_x_sigma': -0.06, 'center_y_sigma': 0.4, 'e1':0.01, 'e2':-0.0, 'ellipse_sigma': 0.2, 'n_sersic': 1.7, 'n_sersic_sigma': 1,
-                                  'amp': 11.8, 'amp_sigma': 1, 'R_sersic': 0.697, 'R_sersic_sigma': 0.1, 'phi_G_2': 0}]
-        kwargs_mean_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
-
-        mean, sigma = self.param_class.param_init(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps, kwargs_mean_cosmo=None)
-        assert mean[0] == 1
-        assert sigma[0] == 0.1
-
     def test_get_cosmo(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],

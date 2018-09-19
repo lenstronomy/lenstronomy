@@ -110,45 +110,6 @@ class LensParam(object):
                         args.append(kwargs[name])
         return args
 
-    def param_init(self, kwargs_mean_list):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        for k, model in enumerate(self.model_list):
-            kwargs_mean = kwargs_mean_list[k]
-            kwargs_fixed = self.kwargs_fixed[k]
-            param_names = self._param_name_list[k]
-            for name in param_names:
-                if not name in kwargs_fixed:
-                    if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
-                        coeffs = kwargs_mean['coeffs']
-                        if self._solver_type == 'SHAPELETS':
-                            if self._num_images == 4:
-                                coeffs = coeffs[6:]
-                            elif self._num_images == 2:
-                                coeffs = coeffs[3:]
-                        for i in range(0, len(coeffs)):
-                            mean.append(coeffs[i])
-                            sigma.append(kwargs_mean[name + '_sigma'])
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs_fixed['sigma'])
-                        for i in range(num_param):
-                            mean.append(kwargs_mean[name][i])
-                            sigma.append(kwargs_mean[name + '_sigma'][i])
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
-                        raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
-                    elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
-                        pass
-                    else:
-                        mean.append(kwargs_mean[name])
-                        sigma.append(kwargs_mean[name+'_sigma'])
-
-        return mean, sigma
-
     def num_param(self):
         """
 

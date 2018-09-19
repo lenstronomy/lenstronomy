@@ -34,23 +34,23 @@ class Sampler(object):
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
-    def pso(self, n_particles, n_iterations, lowerLimit=None, upperLimit=None, threadCount=1, init_pos=None, mpi=False,
-            print_key='default'):
+    def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None, threadCount=1, init_pos=None,
+            mpi=False, print_key='PSO'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
-        if lowerLimit is None or upperLimit is None:
-            lowerLimit, upperLimit = self.lower_limit, self.upper_limit
+        if lower_start is None or upper_start is None:
+            lower_start, upper_start = self.lower_limit, self.upper_limit
             print("PSO initialises its particles with default values")
         else:
-            lowerLimit = np.maximum(lowerLimit, self.lower_limit)
-            upperLimit = np.minimum(upperLimit, self.upper_limit)
+            lower_start = np.maximum(lower_start, self.lower_limit)
+            upper_start = np.minimum(upper_start, self.upper_limit)
         if mpi is True:
-            pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
+            pso = MpiParticleSwarmOptimizer(self.chain, lower_start, upper_start, n_particles, threads=1)
             if pso.isMaster():
                 print('MPI option chosen')
         else:
-            pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=threadCount)
+            pso = ParticleSwarmOptimizer(self.chain, lower_start, upper_start, n_particles, threads=threadCount)
         if not init_pos is None:
             pso.gbest.position = init_pos
             pso.gbest.velocity = [0]*len(init_pos)
@@ -74,11 +74,12 @@ class Sampler(object):
             result = pso.gbest.position
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
-        lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.getParams(result, bijective=True)
+
         #if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
         if mpi is True and not pso.isMaster():
             pass
         else:
+            lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.getParams(result)
             print(pso.gbest.fitness * 2 / (self.chain.effectiv_numData_points()), 'reduced X^2 of best position')
             print(pso.gbest.fitness, 'logL')
             print(self.chain.effectiv_numData_points(), 'effective number of data points')
@@ -90,7 +91,7 @@ class Sampler(object):
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
             print('===================')
-        return lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo, [X2_list, pos_list, vel_list, []]
+        return result, [X2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
         if mpi:

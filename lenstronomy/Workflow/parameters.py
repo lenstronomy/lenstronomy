@@ -210,27 +210,6 @@ class Param(object):
                                      kwargs_cosmo=self.cosmoParams.upper_limit)
         return lower_limit, upper_limit
 
-    def param_init(self, kwarg_mean_lens, kwarg_mean_source, kwarg_mean_lens_light, kwarg_mean_ps, kwargs_mean_cosmo):
-        """
-        returns upper and lower bounds on the parameters used in the X2_chain function for MCMC/PSO starting
-        bounds are defined relative to the catalogue level image called in the class Data
-        might be migrated to the param class
-        """
-        mean, sigma = self.lensParams.param_init(kwarg_mean_lens)
-        _mean, _sigma = self.souceParams.param_init(kwarg_mean_source)
-        mean += _mean
-        sigma += _sigma
-        _mean, _sigma = self.lensLightParams.param_init(kwarg_mean_lens_light)
-        mean += _mean
-        sigma += _sigma
-        _mean, _sigma = self.pointSourceParams.param_init(kwarg_mean_ps)
-        mean += _mean
-        sigma += _sigma
-        _mean, _sigma = self.cosmoParams.param_init(kwargs_mean_cosmo)
-        mean += _mean
-        sigma += _sigma
-        return mean, sigma
-
     def num_param(self):
         """
 

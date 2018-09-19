@@ -83,26 +83,6 @@ class CosmoParam(object):
                     args.append(kwargs_cosmo['scale_factor'][i])
         return args
 
-    def param_init(self, kwargs_mean):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        if self._Ddt_sampling is True:
-            if self._cosmo_type == 'D_dt':
-                if 'D_dt' not in self._kwargs_fixed:
-                    mean.append(kwargs_mean['D_dt'])
-                    sigma.append(kwargs_mean['D_dt_sigma'])
-        if self._mass_scaling is True:
-            if 'scale_factor' not in self._kwargs_fixed:
-                for i in range(self._num_scale_factor):
-                    mean.append(kwargs_mean['scale_factor'][i])
-                    sigma.append(kwargs_mean['scale_factor_sigma'][i])
-        return mean, sigma
-
     def num_param(self):
         """
 

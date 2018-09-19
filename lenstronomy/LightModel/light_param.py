@@ -99,38 +99,6 @@ class LightParam(object):
                         args.append(kwargs[name])
         return args
 
-    def param_init(self, kwargs_mean_list):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        for k, model in enumerate(self.model_list):
-            kwargs_mean = kwargs_mean_list[k]
-            kwargs_fixed = self.kwargs_fixed[k]
-            param_names = self._param_name_list[k]
-            for name in param_names:
-                if not name in kwargs_fixed:
-                    if model == 'SHAPELETS' and name == 'amp':
-                        n_max = kwargs_fixed.get('n_max', kwargs_mean['n_max'])
-                        num_param = int((n_max + 1) * (n_max + 2) / 2)
-                        for i in range(num_param):
-                            mean.append(kwargs_mean[name][i])
-                            sigma.append(kwargs_mean[name + '_sigma'][i])
-                    elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs_fixed['sigma'])
-                        for i in range(num_param):
-                            mean.append(kwargs_mean[name][i])
-                            sigma.append(kwargs_mean[name + '_sigma'][i])
-                    elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'sigma':
-                        raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
-                    else:
-                        mean.append(kwargs_mean[name])
-                        sigma.append(kwargs_mean[name+'_sigma'])
-        return mean, sigma
-
     def num_param(self):
         """
 

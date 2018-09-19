@@ -132,45 +132,6 @@ class PointSourceParam(object):
                     args.append(kwargs['point_amp'])
         return args
 
-    def param_init(self, kwargs_mean_list):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        for k, model in enumerate(self.model_list):
-            kwargs = kwargs_mean_list[k]
-            kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION', 'UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    pos = kwargs['ra_image'][0:self._num_point_sources_list[k]]
-                    for x in pos:
-                        mean.append(x)
-                        sigma.append(kwargs['pos_sigma'])
-                if not 'dec_image' in kwargs_fixed:
-                    pos = kwargs['dec_image'][0:self._num_point_sources_list[k]]
-                    for x in pos:
-                        mean.append(x)
-                        sigma.append(kwargs['pos_sigma'])
-                if not 'point_amp' in kwargs_fixed:
-                    amp = kwargs['point_amp'][0:self._num_point_sources_list[k]]
-                    for x in amp:
-                        mean.append(x)
-                        sigma.append(kwargs['point_amp_sigma'])
-            if model in ['SOURCE_POSITION']:
-                if not 'ra_source' in kwargs_fixed:
-                    mean.append(kwargs['ra_source'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'dec_source' in kwargs_fixed:
-                    mean.append(kwargs['dec_source'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'point_amp' in kwargs_fixed:
-                    mean.append(kwargs['point_amp'])
-                    sigma.append(kwargs['point_amp_sigma'])
-        return mean, sigma
-
     def num_param(self):
         """
 

@@ -5,8 +5,7 @@ import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Workflow.likelihood import LikelihoodModule
-from lenstronomy.Workflow.parameters_new import Param
-from lenstronomy.Workflow.parameters import Param as Param_old
+from lenstronomy.Workflow.parameters import Param
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -99,7 +98,6 @@ class TestFittingSequence(object):
                                   'check_positive_flux': True,
                                   }
         self.param_class = Param(kwargs_model, kwargs_constraints)
-        self.param_class_old = Param_old(kwargs_model, kwargs_constraints)
         self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
 
     def test_X2_chain(self):

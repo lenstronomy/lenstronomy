@@ -53,7 +53,7 @@ class FittingSequence(object):
                 self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         if bijective is False:
             lens_temp = self._param.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
-            source_temp = self._param.image2source_plane(lens_temp, source_temp)
+            source_temp = self._param.image2source_plane(source_temp, lens_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
@@ -151,7 +151,7 @@ class FittingSequence(object):
     def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         #lens_temp = copy.deepcopy(lens_input)
         lens_updated = self._param.update_lens_scaling(cosmo_input, lens_input)
-        source_updated = self._param.image2source_plane(lens_updated, source_input)
+        source_updated = self._param.image2source_plane(source_input, lens_updated)
         psf_iter_factor = fitting_kwargs['psf_iter_factor']
         psf_iter_num = fitting_kwargs['psf_iter_num']
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
@@ -177,7 +177,7 @@ class FittingSequence(object):
 
     def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         lens_updated = self._param.update_lens_scaling(cosmo_input, lens_input)
-        source_updated = self._param.image2source_plane(lens_updated, source_input)
+        source_updated = self._param.image2source_plane(source_input, lens_updated)
         mpi = fitting_kwargs.get('mpi', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
         n_particles = fitting_kwargs.get('n_particles', 10)

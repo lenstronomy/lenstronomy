@@ -5,8 +5,7 @@ import copy
 
 from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters import ParamUpdate
-from lenstronomy.Workflow.parameters_new import Param
+from lenstronomy.Workflow.parameters import Param
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Workflow.likelihood import LikelihoodModule
 
@@ -212,3 +211,87 @@ class Fitting(object):
             prior_k.update(sigma_list_kwargs[k])
             prior_list.append(prior_k)
         return prior_list
+
+
+class ParamUpdate(object):
+
+    def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
+                 kwargs_fixed_cosmo):
+        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
+                                           kwargs_fixed_ps, kwargs_fixed_cosmo])
+
+    def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
+                             fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False):
+        if fix_lens:
+            add_fixed_lens = kwargs_lens
+        else:
+            add_fixed_lens = None
+        if fix_source:
+            add_fixed_source = kwargs_source
+        else:
+            add_fixed_source = None
+        if fix_lens_light:
+            add_fixed_lens_light = kwargs_lens_light
+        else:
+            add_fixed_lens_light = None
+        if fix_point_source:
+            add_fixed_ps = kwargs_ps
+        else:
+            add_fixed_ps = None
+        if fixed_cosmo:
+            add_fixed_cosmo = kwargs_cosmo
+        else:
+            add_fixed_cosmo = None
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._update_fixed(
+            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
+            add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
+
+        return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
+
+    def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
+                      add_fixed_lens_light=None, add_fixed_ps=None, add_fixed_cosmo=None):
+
+        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
+        source_fix = copy.deepcopy(self.kwargs_fixed[1])
+        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
+        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
+        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
+        if add_fixed_lens is None:
+            kwargs_fixed_lens_updated = lens_fix
+        else:
+            kwargs_fixed_lens_updated = []
+            for k in range(len(lens_fix)):
+                kwargs_fixed_lens_updated_k = add_fixed_lens[k].copy()
+                kwargs_fixed_lens_updated_k.update(lens_fix[k])
+                kwargs_fixed_lens_updated.append(kwargs_fixed_lens_updated_k)
+        if add_fixed_source is None:
+            kwargs_fixed_source_updated = source_fix
+        else:
+            kwargs_fixed_source_updated = []
+            for k in range(len(source_fix)):
+                kwargs_fixed_source_updated_k = add_fixed_source[k].copy()
+                kwargs_fixed_source_updated_k.update(source_fix[k])
+                kwargs_fixed_source_updated.append(kwargs_fixed_source_updated_k)
+        if add_fixed_lens_light is None:
+            kwargs_fixed_lens_light_updated = lens_light_fix
+        else:
+            kwargs_fixed_lens_light_updated = []
+            for k in range(len(lens_light_fix)):
+                kwargs_fixed_lens_light_updated_k = add_fixed_lens_light[k].copy()
+                kwargs_fixed_lens_light_updated_k.update(lens_light_fix[k])
+                kwargs_fixed_lens_light_updated.append(kwargs_fixed_lens_light_updated_k)
+        kwargs_fixed_ps_updated = []
+        if add_fixed_ps is None:
+            kwargs_fixed_ps_updated = ps_fix
+        else:
+            for k in range(len(ps_fix)):
+                kwargs_fixed_ps_updated_k = add_fixed_ps[k].copy()
+                kwargs_fixed_ps_updated_k.update(ps_fix[k])
+                kwargs_fixed_ps_updated.append(kwargs_fixed_ps_updated_k)
+        if add_fixed_cosmo is None:
+            kwargs_fixed_cosmo_updated = cosmo_fix
+        else:
+            kwargs_fixed_cosmo_updated = add_fixed_cosmo.copy()
+            kwargs_fixed_cosmo_updated.update(cosmo_fix)
+        return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated,\
+               kwargs_fixed_ps_updated, kwargs_fixed_cosmo_updated

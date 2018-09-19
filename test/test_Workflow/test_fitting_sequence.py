@@ -4,8 +4,6 @@ import pytest
 import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel

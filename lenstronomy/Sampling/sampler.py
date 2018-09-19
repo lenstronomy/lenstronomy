@@ -4,6 +4,7 @@ import os
 import shutil
 import tempfile
 import time
+import sys
 
 import numpy as np
 from cosmoHammer import CosmoHammerSampler
@@ -13,11 +14,17 @@ from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
+import emcee
+from emcee.mpi_pool import MPIPool
 
 
 class Sampler(object):
     """
     class which executes the different sampling  methods
+    Available are: MCMC with emcee and comsoHammer and a Particle Swarm Optimizer.
+    This are examples and depending on your problem, you might find other/better solutions.
+    Feel free to sample with your convenient sampler!
+
     """
     def __init__(self, likelihoodModule):
         """
@@ -85,8 +92,6 @@ class Sampler(object):
             print('===================')
         return lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo, [X2_list, pos_list, vel_list, []]
 
-    """
-    
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
         if mpi:
             pool = MPIPool()
@@ -104,7 +109,6 @@ class Sampler(object):
         for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
             store.persistSamplingValues(pos, prob, None)
         return store.samples
-    """
 
     def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
         """

@@ -142,7 +142,7 @@ class TestSolver(object):
     def test_shapelet_cart(self):
         lens_model_list = ['SHAPELETS_CART', 'SIS']
         lens = LensModel(lens_model_list)
-        solver = Solver2Point(lens)
+        solver = Solver2Point(lens, solver_type='SHAPELETS')
         image_position = LensEquationSolver(lens)
         sourcePos_x = 0.1
         sourcePos_y = 0.03
@@ -167,6 +167,36 @@ class TestSolver(object):
 
         npt.assert_almost_equal(kwargs_out[0]['coeffs'][1], kwargs_lens[0]['coeffs'][1], decimal=3)
         npt.assert_almost_equal(kwargs_out[0]['coeffs'][2], kwargs_lens[0]['coeffs'][2], decimal=3)
+
+    def test_theta_E_phi(self):
+        lensModel = LensModel(['SPEP', 'SHEAR'])
+        solver = Solver2Point(lensModel, solver_type='THETA_E_PHI')
+
+        image_position = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = 0.03
+        deltapix = 0.05
+        numPix = 100
+        gamma = 1.9
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
+                       {'e1': 0.03, 'e2': 0.0}]
+        x_pos, y_pos = image_position.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2, min_distance=deltapix, search_window=numPix*deltapix, precision_limit=10**(-15))
+        print(len(x_pos), 'number of images')
+        x_pos = x_pos[:2]
+        y_pos = y_pos[:2]
+
+        kwargs_init = [{'theta_E': 1.9, 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
+                       {'e1': 0., 'e2': 0.03}]
+        kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
+        print(kwargs_out, 'output')
+        source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
+        x_pos_new, y_pos_new = image_position.findBrightImage(source_x, source_y, kwargs_out, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
+        npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
+        npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
+
+        npt.assert_almost_equal(kwargs_out[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
+        npt.assert_almost_equal(kwargs_out[1]['e1'], kwargs_lens[1]['e1'], decimal=2)
+        npt.assert_almost_equal(kwargs_out[1]['e2'], kwargs_lens[1]['e2'], decimal=2)
 
 
 if __name__ == '__main__':

@@ -78,7 +78,7 @@ class LikelihoodModule(object):
                 logL -= 10**10
         if self._check_positive_flux is True:
             logL -= self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-        return logL
+        return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):
         """
@@ -184,13 +184,13 @@ class LikelihoodModule(object):
         return n - num_param - 1
 
     def __call__(self, a):
-        return self.logL(a), None
+        return self.logL(a)
 
     def likelihood(self, a):
-        return self.logL(a), None
+        return self.logL(a)
 
     def computeLikelihood(self, ctx):
-        logL = self.logL(ctx.getParams())
+        logL, _ = self.logL(ctx.getParams())
         return logL
 
     def setup(self):

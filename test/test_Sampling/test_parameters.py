@@ -129,6 +129,18 @@ class TestParam(object):
         assert kwargs_lens_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
         assert kwargs_lens_light_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
 
+        kwargs_model = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['SERSIC']}
+        i_light, k_lens = 0, 0
+        kwargs_constraints = {'joint_lens_with_light': [[i_light, k_lens, ['center_x',
+                                                       'center_y']]]}  # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens_light = [{'amp': 1, 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 1, 'center_y': 1}]
+        param = Param(kwargs_model=kwargs_model, kwargs_constraints=kwargs_constraints)
+        args = param.setParams(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
+        kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.getParams(args)
+        assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
+        assert kwargs_lens_out[0]['center_x'] == kwargs_lens_light[0]['center_x']
+
     def test_joint_source_with_point_source(self):
         kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'], 'point_source_model_list': ['SOURCE_POSITION']}
         i_source, k_ps = 0, 0

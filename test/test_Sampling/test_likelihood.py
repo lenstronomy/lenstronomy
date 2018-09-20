@@ -104,7 +104,7 @@ class TestFittingSequence(object):
         args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                    kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
 
-        logL = self.Likelihood.logL(args)
+        logL, _ = self.Likelihood.logL(args)
         num_data_evaluate = self.Likelihood.imSim.numData_evaluate()
         npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
 

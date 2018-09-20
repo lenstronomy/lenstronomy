@@ -7,7 +7,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
 from lenstronomy.LensModel.Optimizer.single_background import SingleBackground
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 class TestSingleBackground(object):
 
@@ -32,9 +32,9 @@ class TestSingleBackground(object):
         self.lensmodel_fixed_background = LensModel(lens_model_list=lens_model_list_full,
                           redshift_list=z_list_full,z_source=1.5,
                           cosmo=self.cosmo, multi_plane=True)
+        solver = LensEquationSolver(self.lensmodel_fixed_background)
 
-        self.xpos = np.array([0.57214854, -0.58080315, -0.52931625, 0.35625829])
-        self.ypos = np.array([-0.59233359, 0.47546643, -0.37241599, 0.48181594])
+        self.xpos, self.ypos = solver.findBrightImage(0.01, -0.04, self.kwargs_lens_full_background)
 
         self.x_true, self.y_true, self.alphax_true, self.alphay_true = self.lensmodel_fixed_background.lens_model.ray_shooting_partial(
             np.zeros(4),
@@ -74,6 +74,8 @@ class TestSingleBackground(object):
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
+        split.employ_single_background = True
+        split._single_background_init = True
 
         for index in range(0,4):
 
@@ -88,6 +90,8 @@ class TestSingleBackground(object):
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
+        split.employ_single_background = True
+        split._single_background_init = True
 
         ax, ay = split._alpha(self.xpos,self.ypos,self.kwargs_lens_full_background)
         axfast, ayfast = split._alpha_fast(self.kwargs_lens_full_background[0:2],0)
@@ -109,6 +113,8 @@ class TestSingleBackground(object):
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
+        split.employ_single_background = True
+        split._single_background_init = True
 
         out1 = split.hessian(self.xpos, self.ypos, self.kwargs_lens_full_background)
 
@@ -123,6 +129,9 @@ class TestSingleBackground(object):
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
+        split.employ_single_background = True
+        split._single_background_init = True
+
         out1 = split.magnification(self.xpos,self.ypos,self.kwargs_lens_full_background)
         out2 = split._magnification_fast(self.kwargs_lens_full_background[0:2])
         for (val1,val2) in zip(np.absolute(out1),out2):
@@ -133,7 +142,8 @@ class TestSingleBackground(object):
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
-
+        split.employ_single_background = True
+        split._single_background_init = True
 
         mag_point = np.absolute(split.magnification(self.xpos, self.ypos,self.kwargs_lens_full_background))
         mag_point_fast = np.absolute(split.magnification(self.xpos, self.ypos,self.kwargs_lens_full_background))
@@ -144,6 +154,16 @@ class TestSingleBackground(object):
         for (mp, mpf, mfin) in zip(mag_point,mag_point_fast, mag_finite):
             npt.assert_almost_equal(mp,mpf,3)
             npt.assert_almost_equal(mpf,mfin,3)
+
+    def test_hybrid_fullrayshooting(self):
+
+        split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
+                                 self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
+                                 self.cosmo, [0, 1])
+        split.employ_single_background = False
+        approx_ray_shooting = split._ray_shooting_fast(self.kwargs_lens_full_background)
+        npt.assert_almost_equal(approx_ray_shooting[0][0], 0.01)
+        npt.assert_almost_equal(approx_ray_shooting[1][0], -0.04)
 
 if __name__ == '__main__':
     pytest.main()

@@ -40,6 +40,8 @@ class SingleBackground(object):
         self._T_main_source = full_lensmodel.lens_model._cosmo_bkg.T_xy(self._z_macro, self._z_source)
 
         self._ray_shoot_init(guess_lensmodel, guess_kwargs)
+        self.employ_single_background = False
+        self._single_background_init = False
 
     def ray_shooting(self, x, y, kwargs_lens):
 
@@ -91,8 +93,32 @@ class SingleBackground(object):
                                           self._foreground[offset_index]['y'],self._foreground[offset_index]['alphax'],
                                                                self._foreground[offset_index]['alphay'],macromodel_args)
 
-        betax, betay = self._map_to_source(self._foreground[offset_index]['x'], self._foreground[offset_index]['y'],
-                        alphax, alphay, self._delta_beta[offset_index]['x'], self._delta_beta[offset_index]['y'])
+        if self.employ_single_background:
+
+            if self._single_background_init is False:
+
+                delta_beta = []
+                self._init_guess_lensmodel(guess_lensmodel=self.lensmodel_tovary,
+                                           guess_kwargs=macromodel_args)
+
+                for i in range(0,3):
+                    d_betax, d_betay = self._compute_deltabeta(self._foreground[i]['x'], self._foreground[i]['y'])
+                    delta_beta.append({'x': d_betax, 'y': d_betay})
+
+                self._delta_beta = delta_beta
+                self._single_background_init = True
+
+            betax, betay = self._map_to_source(self._foreground[offset_index]['x'], self._foreground[offset_index]['y'],
+                            alphax, alphay, self._delta_beta[offset_index]['x'], self._delta_beta[offset_index]['y'])
+
+        else:
+
+            x, y, _, _ = self._halo_lensmodel.lens_model.ray_shooting_partial(self._foreground[offset_index]['x'],
+                          self._foreground[offset_index]['y'], alphax, alphay, z_start=self._z_macro,
+                              z_stop=self._z_source, kwargs_lens=self._halo_args)
+
+            betax = x * self._T_z_source ** -1
+            betay = y * self._T_z_source ** -1
 
         return betax, betay
 

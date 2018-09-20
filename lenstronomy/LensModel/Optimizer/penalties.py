@@ -5,7 +5,7 @@ class Penalties(object):
 
     def __init__(self,tol_source,tol_mag,tol_centroid,lensing,centroid_0,magnification_target=None,
                  params_to_constrain=None,param_class=None,pso_convergence_mean = None, pso_compute_magnification=None,
-                 compute_mags=False,verbose=False):
+                 compute_mags=False,verbose=False, single_background_switch = 100):
         """
         This class calls the mutli/single plane lensing classes to do all the high level lensing computations in the
         optimization. It also logs things like the source position penalties, magnifiction penalities, centroid penalities,
@@ -44,6 +44,7 @@ class Penalties(object):
         self.params_to_constrain = params_to_constrain
 
         self._reset(compute_mags)
+        self._toggle_single_background = single_background_switch
 
     def __call__(self,lens_args_to_vary_array):
 
@@ -132,6 +133,9 @@ class Penalties(object):
         self.parameters.append(self.lens_args_latest)
         self._test_convergence()
         self._compute_mags_criterion()
+
+        if src_penalty <= self._toggle_single_background:
+            self.lensing.employ_single_background = True
 
     def _init_particles(self,n_particles,n_iterations):
 

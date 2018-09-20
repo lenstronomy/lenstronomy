@@ -27,7 +27,8 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=250, single_background=False, init_lensmodel = None, init_kwargs = None):
+                 simplex_n_iterations=250, single_background=False, init_lensmodel = None,
+                 init_kwargs = None, single_background_switch = 1000):
 
 
         """
@@ -138,7 +139,7 @@ class Optimizer(object):
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
-                                    verbose=verbose)
+                                    verbose=verbose, single_background_switch = single_background_switch)
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 

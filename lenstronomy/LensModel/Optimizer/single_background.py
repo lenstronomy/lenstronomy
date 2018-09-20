@@ -7,8 +7,7 @@ class SingleBackground(object):
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
-                 z_macro, astropy_instance, macro_indicies, guess_lensmodel = None,
-                 guess_kwargs = None):
+                 z_macro, astropy_instance, macro_indicies):
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
         :param full_lensmodel:
@@ -39,7 +38,8 @@ class SingleBackground(object):
         self._T_main = full_lensmodel.lens_model._cosmo_bkg.T_xy(0, self._z_macro)
         self._T_main_source = full_lensmodel.lens_model._cosmo_bkg.T_xy(self._z_macro, self._z_source)
 
-        self._ray_shoot_init(guess_lensmodel, guess_kwargs)
+        self._ray_shoot_init()
+        self._init_guess_lensmodel()
         self.employ_single_background = False
         self._single_background_init = False
 
@@ -186,9 +186,7 @@ class SingleBackground(object):
 
         return alphax * self._guess_red2phys, alphay * self._guess_red2phys
 
-    def _ray_shoot_init(self, guess_lensmodel, guess_kwargs, diff=0.00000001):
-
-        self._init_guess_lensmodel(guess_lensmodel,guess_kwargs)
+    def _ray_shoot_init(self, diff=0.00000001):
 
         # have to do the full ray shooting for three rays
         theta = []
@@ -199,7 +197,7 @@ class SingleBackground(object):
         self.precomputed_theta = theta
 
         foreground = []
-        delta_beta = []
+        #delta_beta = []
 
         x0, y0 = np.zeros_like(self._x_pos), np.zeros_like(self._y_pos)
 
@@ -213,12 +211,13 @@ class SingleBackground(object):
             foreground.append({'x':x,'y':y,'alphax': alphax, 'alphay': alphay, 'thetax':x*self._T_main**-1,
                                     'thetay':y*self._T_main**-1})
 
-            d_betax, d_betay = self._compute_deltabeta(x, y)
+            #d_betax, d_betay = self._compute_deltabeta(x, y)
 
-            delta_beta.append({'x':d_betax,'y':d_betay})
+            #delta_beta.append({'x':d_betax,'y':d_betay})
 
         self._theta_refx, self._theta_refy = foreground[i]['thetax'], foreground[i]['thetay']
-        self._foreground, self._delta_beta = foreground, delta_beta
+        self._foreground = foreground
+        #self._delta_beta = delta_beta
 
     def _compute_deltabeta(self, x, y):
 

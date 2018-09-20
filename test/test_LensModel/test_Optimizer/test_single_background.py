@@ -60,22 +60,17 @@ class TestSingleBackground(object):
 
         npt.assert_almost_equal(delta_betax,delta_betay)
 
-
-        split = SingleBackground(self.lensmodel_nobackground, self.xpos,
-                                 self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
-                                 self.cosmo, [0, 1], guess_lensmodel=self.guess_lensmodel,
-                                 guess_kwargs=self.guess_kwargs)
-
-        _, _ = split._compute_deltabeta(900, 1000)
-
-
     def test_rayshooting(self):
 
         split = SingleBackground(self.lensmodel_fixed_background, self.xpos,
                                  self.ypos, self.kwargs_lens_full_background, 1.5, 0.5,
                                  self.cosmo, [0, 1])
+
         split.employ_single_background = True
         split._single_background_init = True
+        xin, yin = split._foreground[0]['x'], split._foreground[0]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta = [{'x': dbx, 'y': dby}]
 
         for index in range(0,4):
 
@@ -92,6 +87,16 @@ class TestSingleBackground(object):
                                  self.cosmo, [0, 1])
         split.employ_single_background = True
         split._single_background_init = True
+        split._delta_beta = []
+        xin, yin = split._foreground[0]['x'], split._foreground[0]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[1]['x'], split._foreground[1]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[2]['x'], split._foreground[2]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
 
         ax, ay = split._alpha(self.xpos,self.ypos,self.kwargs_lens_full_background)
         axfast, ayfast = split._alpha_fast(self.kwargs_lens_full_background[0:2],0)
@@ -115,6 +120,16 @@ class TestSingleBackground(object):
                                  self.cosmo, [0, 1])
         split.employ_single_background = True
         split._single_background_init = True
+        split._delta_beta = []
+        xin, yin = split._foreground[0]['x'], split._foreground[0]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[1]['x'], split._foreground[1]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[2]['x'], split._foreground[2]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
 
         out1 = split.hessian(self.xpos, self.ypos, self.kwargs_lens_full_background)
 
@@ -132,6 +147,17 @@ class TestSingleBackground(object):
         split.employ_single_background = True
         split._single_background_init = True
 
+        split._delta_beta = []
+        xin, yin = split._foreground[0]['x'], split._foreground[0]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[1]['x'], split._foreground[1]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[2]['x'], split._foreground[2]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+
         out1 = split.magnification(self.xpos,self.ypos,self.kwargs_lens_full_background)
         out2 = split._magnification_fast(self.kwargs_lens_full_background[0:2])
         for (val1,val2) in zip(np.absolute(out1),out2):
@@ -144,6 +170,16 @@ class TestSingleBackground(object):
                                  self.cosmo, [0, 1])
         split.employ_single_background = True
         split._single_background_init = True
+        split._delta_beta = []
+        xin, yin = split._foreground[0]['x'], split._foreground[0]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[1]['x'], split._foreground[1]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
+        xin, yin = split._foreground[2]['x'], split._foreground[2]['y']
+        dbx, dby = split._compute_deltabeta(xin, yin)
+        split._delta_beta += [{'x': dbx, 'y': dby}]
 
         mag_point = np.absolute(split.magnification(self.xpos, self.ypos,self.kwargs_lens_full_background))
         mag_point_fast = np.absolute(split.magnification(self.xpos, self.ypos,self.kwargs_lens_full_background))

@@ -132,7 +132,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2, 1, decimal=1)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate
+        numData = self.imageModel.numData_evaluate()
         assert numData == 10000
 
     def test_fermat_potential(self):

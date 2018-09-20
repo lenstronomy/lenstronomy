@@ -6,6 +6,8 @@ class SIE(object):
     class for singular isothermal ellipsoid (SIS with ellipticity)
     """
     param_names = ['theta_E', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self, NIE=False):
         self._nie = NIE

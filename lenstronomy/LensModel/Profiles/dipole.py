@@ -8,6 +8,8 @@ class Dipole(object):
     class for dipole response of two massive bodies (experimental)
     """
     param_names = ['com_x', 'com_y', 'phi_dipole', 'coupling']
+    lower_limit_default = {'com_x': -100, 'com_y': -100, 'phi_dipole': -10, 'coupling': -10}
+    upper_limit_default = {'com_x': 100, 'com_y': 100, 'phi_dipole': 10, 'coupling': 10}
 
     def function(self, x, y, com_x, com_y, phi_dipole, coupling):
         # coordinate shift

@@ -12,6 +12,8 @@ class Sersic(SersicUtil):
     this class contains functions to evaluate an spherical Sersic function
     """
     param_names = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0):
         """
@@ -50,6 +52,8 @@ class Sersic_elliptic(SersicUtil):
     this class contains functions to evaluate an elliptical Sersic function
     """
     param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'e1': -0.5, 'e2': -0.5,'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'e1': 0.5, 'e2': 0.5,'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
         """
@@ -96,6 +100,10 @@ class CoreSersic(SersicUtil):
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
     """
     param_names = ['amp', 'R_sersic', 'Re', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'Re': 0, 'n_sersic': 0.5, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100,
+                           'center_y': -100}
+    upper_limit_default = {'amp': 100, 'Re': 100, 'n_sersic': 8, 'gamma': 10, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
+                           'center_y': 100}
 
     def function(self, x, y, amp, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.):
         """

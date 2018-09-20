@@ -154,10 +154,10 @@ class LensCosmo(object):
         Rs = Rs_angle * const.arcsec * self.D_d
         theta_scaled = theta_Rs * self.epsilon_crit * self.D_d * const.arcsec
         rho0 = theta_scaled / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        rho0_com = rho0 * self.h**2 * self.a_z(self.z_lens)**3
+        rho0_com = rho0 / self.h**2 * self.a_z(self.z_lens)**3
         c = self.nfw_param.c_rho0(rho0_com)
         r200 = c * Rs
-        M200 = self.nfw_param.M_r200(r200 / self.h / self.a_z(self.z_lens)) / self.h
+        M200 = self.nfw_param.M_r200(r200 * self.h / self.a_z(self.z_lens)) / self.h
         return rho0, Rs, c, r200, M200
 
     def nfw_physical2angle(self, M, c):
@@ -179,8 +179,8 @@ class LensCosmo(object):
         :param c: concentration
         :return:
         """
-        r200 = self.nfw_param.r200_M(M * self.h) * self.h * self.a_z(self.z_lens)  # physical radius r200
-        rho0 = self.nfw_param.rho0_c(c) / self.h**2 / self.a_z(self.z_lens)**3 # physical density in M_sun/Mpc**3
+        r200 = self.nfw_param.r200_M(M * self.h) / self.h * self.a_z(self.z_lens)  # physical radius r200
+        rho0 = self.nfw_param.rho0_c(c) * self.h**2 / self.a_z(self.z_lens)**3 # physical density in M_sun/Mpc**3
         Rs = r200/c
         return rho0, Rs, r200
 
@@ -201,8 +201,6 @@ class LensCosmo(object):
         """
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c)**2 * self.D_ds / self.D_s / const.arcsec
         return theta_E
-
-
 
 
 class LCDM(object):

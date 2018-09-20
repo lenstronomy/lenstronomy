@@ -12,6 +12,8 @@ class Shapelets(object):
 
     """
     param_names = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'beta': 0, 'n1': 0, 'n2': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'beta': 100, 'n1': 150, 'n2': 150, 'center_x': 100, 'center_y': 100}
 
     def __init__(self, interpolation=False, precalc=False):
         """
@@ -115,6 +117,8 @@ class ShapeletSet(object):
     class to operate on entire shapelet set
     """
     param_names = ['amp', 'n_max', 'beta', 'center_x', 'center_y']
+    lower_limit_default = {'beta': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'beta': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.shapelets = Shapelets(precalc=True)

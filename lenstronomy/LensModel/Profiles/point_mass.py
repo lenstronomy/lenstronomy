@@ -9,6 +9,8 @@ class PointMass(object):
     class to compute the physical deflection angle of a point mass, given as an Einstein radius
     """
     param_names = ['theta_E', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.r_min = 10**(-20)

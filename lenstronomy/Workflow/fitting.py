@@ -1,10 +1,13 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+import copy
 
-from lenstronomy.Sampling.mcmc import MCMCSampler
+from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
-from lenstronomy.Workflow.parameters import Param, ParamUpdate
+from lenstronomy.Sampling.parameters import Param
+import lenstronomy.Util.class_creator as class_creator
+from lenstronomy.Sampling.likelihood import LikelihoodModule
 
 
 class Fitting(object):
@@ -63,41 +66,36 @@ class Fitting(object):
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_ps, kwargs_mean_ps, kwargs_sigma_ps,
                  kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
-                 threadCount=1, mpi=False, print_key='Default', sigma_factor=1, compute_bool=None, fix_solver=False):
-        kwargs_prior_lens = self._set_priors(kwargs_mean_lens, kwargs_sigma_lens)
-        kwargs_prior_source = self._set_priors(kwargs_mean_source, kwargs_sigma_source)
-        kwargs_prior_lens_light = self._set_priors(kwargs_mean_lens_light, kwargs_sigma_lens_light)
-        kwargs_prior_ps = self._set_priors(kwargs_mean_ps, kwargs_sigma_ps)
-        kwargs_prior_cosmo = kwargs_mean_cosmo.copy()
-        kwargs_prior_cosmo.update(kwargs_sigma_cosmo)
+                 threadCount=1, mpi=False, print_key='PSO', sigma_factor=1, compute_bool=None, fix_solver=False):
 
         # initialise mcmc classes
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                            self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
+                            self._cosmo_lower,
+                            self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
+                            self._cosmo_upper,
                             kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
-        mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
-                                                         kwargs_prior_lens_light, kwargs_prior_ps, kwargs_prior_cosmo)
-        lowerLimit = np.array(mean_start) - np.array(sigma_start)*sigma_factor
-        upperLimit = np.array(mean_start) + np.array(sigma_start)*sigma_factor
+        init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
+                                           kwargs_mean_cosmo)
+        sigma_start = param_class.setParams(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
+                                            kwargs_sigma_ps, kwargs_sigma_cosmo)
+        lowerLimit = np.array(init_pos) - np.array(sigma_start)*sigma_factor
+        upperLimit = np.array(init_pos) + np.array(sigma_start)*sigma_factor
         num_param, param_list = param_class.num_param()
-        init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source,
-                                         kwargs_mean_lens_light, kwargs_mean_ps, kwargs_mean_cosmo)
-        # run PSO
-        kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo]
-        kwargs_lower = self.lower_kwargs()
-        kwargs_upper = self.upper_kwargs()
-        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                 self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
-                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool, fix_solver=fix_solver)
 
-        lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain = mcmc_class.pso(n_particles,
-                                                                                                       n_iterations,
-                                                                                                       lowerLimit,
-                                                                                                       upperLimit,
-                                                                                                       init_pos=init_pos,
-                                                                                                       threadCount=threadCount,
-                                                                                                       mpi=mpi,
-                                                                                                       print_key=print_key)
+        # initialize ImSim() class
+        kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
+        if compute_bool is not None:
+            kwargs_likelihood['bands_compute'] = compute_bool
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, kwargs_likelihood=kwargs_likelihood)
+        # run PSO
+        mcmc_class = Sampler(likelihoodModule=likelihoodModule)
+        result, chain = mcmc_class.pso(n_particles, n_iterations, lowerLimit, upperLimit,init_pos=init_pos,
+                                       threadCount=threadCount, mpi=mpi, print_key=print_key)
+        lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.getParams(result,
+                                                                                                    bijective=True)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def _mcmc_run(self, n_burn, n_run, walkerRatio,
@@ -108,27 +106,27 @@ class Fitting(object):
                   kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
                   threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None, fix_solver=False):
 
-        kwargs_prior_lens = self._set_priors(kwargs_mean_lens, kwargs_sigma_lens)
-        kwargs_prior_source = self._set_priors(kwargs_mean_source, kwargs_sigma_source)
-        kwargs_prior_lens_light = self._set_priors(kwargs_mean_lens_light, kwargs_sigma_lens_light)
-        kwargs_prior_ps = self._set_priors(kwargs_mean_ps, kwargs_sigma_ps)
-        kwargs_prior_cosmo = kwargs_mean_cosmo.copy()
-        kwargs_prior_cosmo.update(kwargs_sigma_cosmo)
-        # initialise mcmc classes
-
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                            self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
+                            self._cosmo_lower,
+                            self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
+                            self._cosmo_upper,
                             kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
-        kwargs_fixed = [kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
-                        kwargs_fixed_cosmo]
-        kwargs_lower = self.lower_kwargs()
-        kwargs_upper = self.upper_kwargs()
 
-        mcmc_class = MCMCSampler(self.multi_band_list, self.kwargs_model, self.kwargs_constraints,
-                                 self.kwargs_likelihood, kwargs_fixed, kwargs_lower, kwargs_upper,
-                                 kwargs_lens_init=kwargs_mean_lens, compute_bool=compute_bool, fix_solver=fix_solver)
-        mean_start, sigma_start = param_class.param_init(kwargs_prior_lens, kwargs_prior_source,
-                                                         kwargs_prior_lens_light, kwargs_prior_ps, kwargs_prior_cosmo)
+        # initialize ImSim() class
+        kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
+        if compute_bool is not None:
+            kwargs_likelihood['bands_compute'] = compute_bool
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class,
+                                            kwargs_likelihood=kwargs_likelihood)
+        # run PSO
+        mcmc_class = Sampler(likelihoodModule=likelihoodModule)
+        mean_start = param_class.setParams(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
+                                           kwargs_mean_cosmo)
+        sigma_start = param_class.setParams(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
+                                            kwargs_sigma_ps, kwargs_sigma_cosmo)
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None:
@@ -184,16 +182,86 @@ class Fitting(object):
             compute_bool=compute_bool, fix_solver=fix_lens)
         return samples, param_list, dist
 
-    def _set_priors(self, mean_list_kwargs, sigma_list_kwargs):
-        """
 
-        :param mean_list_kwargs:
-        :param sigma_list_kwargs:
-        :return:
-        """
-        prior_list = []
-        for k in range(len(mean_list_kwargs)):
-            prior_k = mean_list_kwargs[k].copy()
-            prior_k.update(sigma_list_kwargs[k])
-            prior_list.append(prior_k)
-        return prior_list
+class ParamUpdate(object):
+
+    def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
+                 kwargs_fixed_cosmo):
+        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
+                                           kwargs_fixed_ps, kwargs_fixed_cosmo])
+
+    def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
+                             fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False):
+        if fix_lens:
+            add_fixed_lens = kwargs_lens
+        else:
+            add_fixed_lens = None
+        if fix_source:
+            add_fixed_source = kwargs_source
+        else:
+            add_fixed_source = None
+        if fix_lens_light:
+            add_fixed_lens_light = kwargs_lens_light
+        else:
+            add_fixed_lens_light = None
+        if fix_point_source:
+            add_fixed_ps = kwargs_ps
+        else:
+            add_fixed_ps = None
+        if fixed_cosmo:
+            add_fixed_cosmo = kwargs_cosmo
+        else:
+            add_fixed_cosmo = None
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self._update_fixed(
+            add_fixed_lens=add_fixed_lens, add_fixed_source=add_fixed_source, add_fixed_lens_light=add_fixed_lens_light,
+            add_fixed_ps=add_fixed_ps, add_fixed_cosmo=add_fixed_cosmo)
+
+        return kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
+
+    def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
+                      add_fixed_lens_light=None, add_fixed_ps=None, add_fixed_cosmo=None):
+
+        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
+        source_fix = copy.deepcopy(self.kwargs_fixed[1])
+        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
+        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
+        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
+        if add_fixed_lens is None:
+            kwargs_fixed_lens_updated = lens_fix
+        else:
+            kwargs_fixed_lens_updated = []
+            for k in range(len(lens_fix)):
+                kwargs_fixed_lens_updated_k = add_fixed_lens[k].copy()
+                kwargs_fixed_lens_updated_k.update(lens_fix[k])
+                kwargs_fixed_lens_updated.append(kwargs_fixed_lens_updated_k)
+        if add_fixed_source is None:
+            kwargs_fixed_source_updated = source_fix
+        else:
+            kwargs_fixed_source_updated = []
+            for k in range(len(source_fix)):
+                kwargs_fixed_source_updated_k = add_fixed_source[k].copy()
+                kwargs_fixed_source_updated_k.update(source_fix[k])
+                kwargs_fixed_source_updated.append(kwargs_fixed_source_updated_k)
+        if add_fixed_lens_light is None:
+            kwargs_fixed_lens_light_updated = lens_light_fix
+        else:
+            kwargs_fixed_lens_light_updated = []
+            for k in range(len(lens_light_fix)):
+                kwargs_fixed_lens_light_updated_k = add_fixed_lens_light[k].copy()
+                kwargs_fixed_lens_light_updated_k.update(lens_light_fix[k])
+                kwargs_fixed_lens_light_updated.append(kwargs_fixed_lens_light_updated_k)
+        kwargs_fixed_ps_updated = []
+        if add_fixed_ps is None:
+            kwargs_fixed_ps_updated = ps_fix
+        else:
+            for k in range(len(ps_fix)):
+                kwargs_fixed_ps_updated_k = add_fixed_ps[k].copy()
+                kwargs_fixed_ps_updated_k.update(ps_fix[k])
+                kwargs_fixed_ps_updated.append(kwargs_fixed_ps_updated_k)
+        if add_fixed_cosmo is None:
+            kwargs_fixed_cosmo_updated = cosmo_fix
+        else:
+            kwargs_fixed_cosmo_updated = add_fixed_cosmo.copy()
+            kwargs_fixed_cosmo_updated.update(cosmo_fix)
+        return kwargs_fixed_lens_updated, kwargs_fixed_source_updated, kwargs_fixed_lens_light_updated,\
+               kwargs_fixed_ps_updated, kwargs_fixed_cosmo_updated

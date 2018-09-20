@@ -20,11 +20,6 @@ class TestParam(object):
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-    def test_param_init(self):
-        kwargs_mean = {'D_dt': 1000, 'D_dt_sigma': 200}
-        mean, sigma = self.param.param_init(kwargs_mean)
-        assert mean[0] == 1000
-
     def test_num_params(self):
         num, list = self.param.num_param()
         assert num == 1
@@ -34,10 +29,6 @@ class TestParam(object):
         param = CosmoParam(kwargs_fixed=kwargs_fixed, mass_scaling=True, num_scale_factor=3)
         kwargs = {'scale_factor': [0, 1, 2]}
         args = param.setParams(kwargs)
-        kwargs_mean = kwargs
-        kwargs_mean['scale_factor_sigma'] = [1, 1, 1]
-        mean, sigma = param.param_init(kwargs_mean=kwargs_mean)
-        assert sigma[0] == 1
         assert len(args) == 3
         num_param, param_list = param.num_param()
         assert num_param == 3

@@ -4,8 +4,6 @@ import pytest
 import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -109,19 +107,18 @@ class TestFittingSequence(object):
 
     def test_fitting_sequence(self):
         #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
-        lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'e1_sigma': 0.1, 'e2_sigma': 0.1}]
+        lens_sigma = [{'theta_E': 0.1, 'gamma': 0.1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0.1, 'center_y': 0.1}, {'e1': 0.1, 'e2': 0.1}]
         lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}, {'e1': -0.3, 'e2': -0.3}]
         lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}, {'e1': 0.3, 'e2': 0.3}]
-        source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1}]
+        source_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1, 'e1': 0.1, 'e2': 0.1}]
         source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
         source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
 
-        lens_light_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
+        lens_light_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1}]
         lens_light_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2}]
         lens_light_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2}]
-        ps_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}]
-        #kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, ps_sigma]
-        #kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
+        ps_sigma = [{'ra_source': 1, 'dec_source': 1, 'point_amp': 1}]
+
         lens_param = self.kwargs_lens, lens_sigma, [{}, {}], lens_lower, lens_upper
         source_param = self.kwargs_source, source_sigma, [{}], source_lower, source_upper
         lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], lens_light_lower, lens_light_upper

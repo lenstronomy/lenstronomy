@@ -9,6 +9,8 @@ class Gaussian(object):
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     """
     param_names = ['amp', 'sigma_x', 'sigma_y', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0,  'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'sigma': 100, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, sigma_x, sigma_y, center_x=0, center_y=0):
         """

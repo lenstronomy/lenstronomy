@@ -11,6 +11,8 @@ class Sersic(SersicUtil):
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
     """
     param_names = ['k_eff', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
+    lower_limit_default = {'k_eff': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'k_eff': 10, 'R_sersic': 100, 'n_sersic': 8, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
         """

@@ -144,7 +144,7 @@ class TestParam(object):
     def test_joint_source_with_point_source(self):
         kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'], 'point_source_model_list': ['SOURCE_POSITION']}
         i_source, k_ps = 0, 0
-        kwargs_constraints = {'joint_source_with_point_source': [[k_ps, i_source, ['center_x', 'center_y']]]} # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
+        kwargs_constraints = {'joint_source_with_point_source': [[k_ps, i_source]]} # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]
@@ -157,7 +157,7 @@ class TestParam(object):
 
         kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
         i_source, k_ps = 0, 0
-        kwargs_constraints = {'joint_source_with_point_source': [[k_ps, i_source, ['center_x', 'center_y']]]} # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
+        kwargs_constraints = {'joint_source_with_point_source': [[k_ps, i_source]]} # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]

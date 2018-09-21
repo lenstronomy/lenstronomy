@@ -32,8 +32,11 @@ class Param(object):
     'joint_lens_with_light': list [[i_light, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameter between lens model and lens light model
 
-    'joint_source_with_point_source': list [[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [...], ...],
-    joint parameter between lens model and lens light model
+    'joint_source_with_point_source': list [[i_point_source, k_source], [...], ...],
+    joint position parameter between lens model and lens light model
+
+    'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
+    joint position parameter between lens model and lens light model
 
     hierarchy is as follows:
     1. Point source parameters are inferred
@@ -84,8 +87,12 @@ class Param(object):
         self._joint_source_with_source = kwargs_constraints.get('joint_source_with_source', [])
 
         self._joint_lens_with_light = kwargs_constraints.get('joint_lens_with_light', [])
-        self._joint_source_with_point_source = kwargs_constraints.get('joint_source_with_point_source', [])
-
+        self._joint_source_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_source_with_point_source', []))
+        for param_list in self._joint_source_with_point_source:
+            param_list.append(['center_x', 'center_y'])
+        self._joint_lens_light_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_lens_light_with_point_source', []))
+        for param_list in self._joint_lens_light_with_point_source:
+            param_list.append(['center_x', 'center_y'])
         self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
         self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
         self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
@@ -121,7 +128,8 @@ class Param(object):
         # fix parameters joint with other model types
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_light)
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
-
+        kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
+                                                            self._joint_lens_light_with_point_source)
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens)
@@ -158,6 +166,7 @@ class Param(object):
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_cosmo, i = self.cosmoParams.getParams(args, i)
         # update lens_light joint parameters
+        kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
@@ -277,6 +286,22 @@ class Param(object):
                     kwargs_source_list[k_source][param_name] = kwargs_ps[i_point_source][param_name]
         return kwargs_source_list
 
+    def _update_lens_light_joint_with_point_source(self, kwargs_lens_light_list, kwargs_ps):
+
+        for setting in self._joint_lens_light_with_point_source:
+            i_point_source, k_lens_light, param_list = setting
+            if 'ra_image' in kwargs_ps[i_point_source]:
+                x_mapped = kwargs_ps[i_point_source]['ra_image']
+                y_mapped = kwargs_ps[i_point_source]['dec_image']
+            else:
+                raise ValueError("Joint lens light with point source not possible as point source is defined in the source plane!")
+            for param_name in param_list:
+                if param_name == 'center_x':
+                    kwargs_lens_light_list[k_lens_light][param_name] = np.mean(x_mapped)
+                elif param_name == 'center_y':
+                    kwargs_lens_light_list[k_lens_light][param_name] = np.mean(y_mapped)
+        return kwargs_lens_light_list
+
     @staticmethod
     def _update_joint_param(kwargs_list_1, kwargs_list_2, joint_setting_list):
         """
@@ -377,11 +402,6 @@ class Param(object):
         num, list = self.num_param()
         num_linear = self.num_param_linear()
 
-        # print model options
-        # print parameter constraints
-        # print fixed parameters
-        # print free parameters
-        # print lower and upper limits of free parameters
         print("The following model options are chosen:")
         print("Lens models:", self._lens_model_list)
         print("Source models:", self._source_light_model_list)

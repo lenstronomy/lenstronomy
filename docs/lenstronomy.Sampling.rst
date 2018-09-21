@@ -1,37 +1,37 @@
-lenstronomy\.Sampling package
-=============================
+lenstronomy.Sampling package
+============================
 
 Submodules
 ----------
 
-lenstronomy\.Sampling\.alignment\_matching module
--------------------------------------------------
+lenstronomy.Sampling.likelihood module
+--------------------------------------
 
-.. automodule:: lenstronomy.Sampling.alignment_matching
+.. automodule:: lenstronomy.Sampling.likelihood
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.Sampling\.likelihood\_module module
-------------------------------------------------
+lenstronomy.Sampling.parameters module
+--------------------------------------
 
-.. automodule:: lenstronomy.Sampling.likelihood_module
+.. automodule:: lenstronomy.Sampling.parameters
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.Sampling\.mcmc module
-----------------------------------
-
-.. automodule:: lenstronomy.Sampling.mcmc
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.Sampling\.reinitialize module
-------------------------------------------
+lenstronomy.Sampling.reinitialize module
+----------------------------------------
 
 .. automodule:: lenstronomy.Sampling.reinitialize
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Sampling.sampler module
+-----------------------------------
+
+.. automodule:: lenstronomy.Sampling.sampler
     :members:
     :undoc-members:
     :show-inheritance:

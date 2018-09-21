@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.3.3 documentation</title>
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 0.4.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.3.3',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.LightModel package" href="lenstronomy.LightModel.html" />
     <link rel="prev" title="lenstronomy.LensModel.Profiles package" href="lenstronomy.LensModel.Profiles.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -43,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -64,7 +57,7 @@
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.lens_equation_solver.</code><code class="descname">LensEquationSolver</code><span class="sig-paren">(</span><em>lensModel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to solve for image positions given lens model and source position</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">
@@ -96,13 +89,13 @@
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">
-<code class="descname">image_position_from_source</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>min_distance=0.1</em>, <em>search_window=10</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>arrival_time_sort=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_position_from_source</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>min_distance=0.1</em>, <em>search_window=10</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>arrival_time_sort=True</em>, <em>initial_guess_cut=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>finds image position source position and lense model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sourcePos_x</strong> – source position in units of angle</li>
 <li><strong>sourcePos_y</strong> – source position in units of angle</li>
 <li><strong>kwargs_lens</strong> – lens model parameters as keyword arguments</li>
@@ -110,19 +103,16 @@
 <li><strong>search_window</strong> – window size to be considered by the solver. Will not find image position outside this window</li>
 <li><strong>precision_limit</strong> – required precision in the lens equation solver (in units of angle in the source plane).</li>
 <li><strong>num_iter_max</strong> – maximum iteration of lens-source mapping conducted by solver to match the required precision</li>
-<li><strong>ray_shooting_function</strong> – a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</li>
-<li><strong>hessian_function</strong> – same as ray_shooting_function, but for computing the hessian matrix</li>
+<li><strong>arrival_time_sort</strong> – bool, if True, sorts image position in arrival time (first arrival photon first listed)</li>
+<li><strong>initial_guess_cut</strong> – bool, if True, cuts initial local minima selected by the grid search based on</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>distance criteria from the source position
+:returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+:raises: AttributeError, KeyError</p>
 </dd></dl>
 
 <dl class="method">
@@ -143,7 +133,7 @@
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.solver.Solver">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>solver_type</em>, <em>lensModel</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>joint solve class to manage with type of solver to be executed and checks whether the requirements are fulfilled.</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens">
@@ -152,6 +142,27 @@
 :param kwargs_options:
 :param kwargs_lens:
 :return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.check_solver">
+<code class="descname">check_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.check_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the precision of the solver to match the image position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – full lens model (including solved parameters)</li>
+<li><strong>kwargs_ps</strong> – point source keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">precision of Euclidean distances between the different rays arriving at the image positions</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -188,8 +199,13 @@
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver2point.</code><code class="descname">Solver2Point</code><span class="sig-paren">(</span><em>lensModel</em>, <em>solver_type='CENTER'</em>, <em>decoupling=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>class to make the constraints for the solver</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to solve a constraint lens model with two point source positions</p>
+<p>options are:
+‘CENTER’: solves for ‘center_x’, ‘center_y’ parameters of the first lens model
+‘ELLIPSE’: solves for ‘e1’, ‘e2’ of the first lens  (can also be shear)
+‘SHAPELETS’: solves for shapelet coefficients c01, c10
+‘THETA_E_PHI: solves for Einstein radius of first lens model and shear angle of second model</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens">
 <code class="descname">add_fixed_lens</code><span class="sig-paren">(</span><em>kwargs_fixed_lens_list</em>, <em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
@@ -245,7 +261,7 @@
 <dl class="class">
 <dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.solver4point.</code><code class="descname">Solver4Point</code><span class="sig-paren">(</span><em>lensModel</em>, <em>solver_type='PROFILE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to make the constraints for the solver</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens">
@@ -308,7 +324,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.LensModel.Solver package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -336,12 +352,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -363,14 +381,14 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

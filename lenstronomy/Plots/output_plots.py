@@ -256,7 +256,7 @@ class LensModelPlot(object):
         coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
+        cb = f.colorbar(im, cax=cax, orientation='vertical')
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 

@@ -1,29 +1,29 @@
-lenstronomy\.Workflow package
-=============================
+lenstronomy.Workflow package
+============================
 
 Submodules
 ----------
 
-lenstronomy\.Workflow\.fitting module
--------------------------------------
+lenstronomy.Workflow.alignment\_matching module
+-----------------------------------------------
+
+.. automodule:: lenstronomy.Workflow.alignment_matching
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Workflow.fitting module
+-----------------------------------
 
 .. automodule:: lenstronomy.Workflow.fitting
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.Workflow\.fitting\_sequence module
------------------------------------------------
+lenstronomy.Workflow.fitting\_sequence module
+---------------------------------------------
 
 .. automodule:: lenstronomy.Workflow.fitting_sequence
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy\.Workflow\.parameters module
-----------------------------------------
-
-.. automodule:: lenstronomy.Workflow.parameters
     :members:
     :undoc-members:
     :show-inheritance:

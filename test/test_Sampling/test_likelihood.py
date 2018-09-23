@@ -89,12 +89,12 @@ class TestFittingSequence(object):
                                    }
 
         kwargs_likelihood = {'force_no_add_image': True,
-                                  'source_marg': True,
-                                  'point_source_likelihood': False,
-                                  'position_uncertainty': 0.004,
-                                  'check_solver': False,
-                                  'solver_tolerance': 0.001,
-                                  'check_positive_flux': True,
+                             'source_marg': True,
+                             'point_source_likelihood': True,
+                             'position_uncertainty': 0.004,
+                             'check_solver': True,
+                             'solver_tolerance': 0.001,
+                             'check_positive_flux': True,
                                   }
         self.param_class = Param(kwargs_model, kwargs_constraints)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
@@ -121,6 +121,25 @@ class TestFittingSequence(object):
 
         logL, _ = likelihood.logL(args)
         npt.assert_almost_equal(logL, -3313.79, decimal=-1)
+
+    def test_solver(self):
+        # make simulation with point source positions in image plane
+        x_pos, y_pos = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
+        kwargs_ps = [{'ra_image': x_pos[0], 'dec_image': y_pos[0]}]
+
+        kwargs_likelihood = {
+                             'source_marg': True,
+                             'point_source_likelihood': True,
+                             'position_uncertainty': 0.004,
+                             'check_solver': True,
+                             'solver_tolerance': 0.001,
+                             'check_positive_flux': True,
+                             'solver': True
+                             }
+
+        #imageModel = ImageModel(self.data_class, self.psf_class, self.lens_model_class, self.source_model_class,
+        #                        self.lens_light_model_class,
+        #                        point_source_class, kwargs_numerics=kwargs_numerics)
 
 
 if __name__ == '__main__':

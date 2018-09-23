@@ -114,6 +114,9 @@ class LikelihoodModule(object):
         :return: log likelihood of model given image positions
         """
         # TODO think of where to put it, it used specific keyword arguments
+        # TODO does this work with source position defined point source and required arguemnts 'ra_image'?
+        if not 'ra_image' in kwargs_ps[0]:
+            return 0
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
         ra_image_list, dec_image_list = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)

@@ -40,7 +40,7 @@ class Sampler(object):
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
         if lower_start is None or upper_start is None:
-            lower_start, upper_start = self.lower_limit, self.upper_limit
+            lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
             print("PSO initialises its particles with default values")
         else:
             lower_start = np.maximum(lower_start, self.lower_limit)
@@ -51,6 +51,8 @@ class Sampler(object):
                 print('MPI option chosen')
         else:
             pso = ParticleSwarmOptimizer(self.chain, lower_start, upper_start, n_particles, threads=threadCount)
+        if init_pos is None:
+            init_pos = (upper_start - lower_start) / 2 + lower_start
         if not init_pos is None:
             pso.gbest.position = init_pos
             pso.gbest.velocity = [0]*len(init_pos)
@@ -94,14 +96,15 @@ class Sampler(object):
         return result, [X2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
+        numParam, _ = self.chain.param.num_param()
         if mpi:
             pool = MPIPool()
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
-            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.logL, pool=pool)
+            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL, pool=pool)
         else:
-            sampler = emcee.EnsembleSampler(n_walkers, self.chain.param.num_param(), self.chain.logL)
+            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
         sampler.reset()

@@ -92,7 +92,7 @@ class Fitting(object):
         likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, kwargs_likelihood=kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
-        result, chain = mcmc_class.pso(n_particles, n_iterations, lowerLimit, upperLimit,init_pos=init_pos,
+        result, chain = mcmc_class.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
                                        threadCount=threadCount, mpi=mpi, print_key=print_key)
         lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.getParams(result,
                                                                                                     bijective=True)

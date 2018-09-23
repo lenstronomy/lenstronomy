@@ -10,7 +10,6 @@ from lenstronomy.Sampling.parameters import Param
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Sampling.sampler import Sampler
 
 
 class TestFittingSequence(object):
@@ -19,6 +18,7 @@ class TestFittingSequence(object):
     """
 
     def setup(self):
+        np.random.seed(42)
         self.SimAPI = Simulation()
 
         # data specifics
@@ -34,11 +34,11 @@ class TestFittingSequence(object):
         psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                               truncate=3,
                                               kernel=None)
-        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-                                              truncate=6,
-                                              kernel=psf_class.kernel_point_source)
+        #psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        #                                      truncate=6,
+        #                                      kernel=psf_class.kernel_point_source)
 
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
+        kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         lens_model_list = ['SPEP']
         self.kwargs_lens = [kwargs_spemd]
@@ -54,8 +54,9 @@ class TestFittingSequence(object):
         source_model_list = ['SERSIC_ELLIPSE']
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
-        self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
+        self.kwargs_ps = [{'ra_source': 0.55, 'dec_source': 0.02,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
+        self.kwargs_cosmo = {'D_dt': 1000}
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
@@ -73,20 +74,16 @@ class TestFittingSequence(object):
                              'source_light_model_list': source_model_list,
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
-                             'fixed_magnification_list': [False],
+                             'cosmo_type': 'D_dt'
                              }
+
         self.kwargs_numerics = {
             'subgrid_res': 1,
             'psf_subgrid': False}
 
-        num_source_model = len(source_model_list)
-
-        kwargs_constraints = {'joint_center_lens_light': False,
-                                   'joint_center_source_light': False,
+        kwargs_constraints = {
                                    'num_point_source_list': [4],
-                                   'additional_images_list': [False],
-                                   'fix_to_point_source_list': [False] * num_source_model,
-                                   'image_plane_source_list': [False] * num_source_model,
+                                   'additional_images_list': [True],
                                    'solver': False,
                                    'solver_type': 'PROFILE_SHEAR',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                                    }
@@ -100,16 +97,30 @@ class TestFittingSequence(object):
                                   'check_positive_flux': True,
                                   }
         self.param_class = Param(kwargs_model, kwargs_constraints)
-        self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
-        self.sampler = Sampler(likelihoodModule=self.Likelihood)
+        self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
+                                lens_light_model_class,
+                                point_source_class, kwargs_numerics=kwargs_numerics)
+        self.Likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
 
     def test_logL(self):
         args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                   kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
+                                   kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
         logL, _ = self.Likelihood.logL(args)
         num_data_evaluate = self.Likelihood.imSim.numData_evaluate()
         npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
+
+    def test_time_delay_likelihood(self):
+        kwargs_likelihood = {'time_delay_likelihood': True,
+                             'time_delays_measured': np.ones(4),
+                             'time_delays_uncertainties': np.ones(4)
+                             }
+        likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
+        args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                   kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+
+        logL, _ = likelihood.logL(args)
+        npt.assert_almost_equal(logL, -3313.79, decimal=-1)
 
 
 if __name__ == '__main__':

@@ -52,18 +52,16 @@ class LikelihoodModule(object):
         #generate image and computes likelihood
         self.imSim.reset_point_source_cache()
         logL = 0
-        if self._check_bounds:
+        if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit)
             logL -= penalty
             if bound_hit:
                 return logL, None
-        if self._image_likelihood:
+        if self._image_likelihood is True:
             logL += self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                            source_marg=self._source_marg, compute_bool=self._compute_bool)
-            #x_mins, y_mins = self.Multiband.image_positions(kwargs_ps, kwargs_lens)
-        if self._point_source_likelihood:
+        if self._point_source_likelihood is True:
             logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
-        # logL -= self.bounds_convergence(kwargs_lens)
         if self._time_delay_likelihood is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self._check_solver is True:
@@ -72,7 +70,7 @@ class LikelihoodModule(object):
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool is True:
                 logL -= 10**10
-        if self._restrict_number_images:
+        if self._restrict_number_images is True:
             ra_image_list, dec_image_list = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
             if len(ra_image_list[0]) > self._max_num_images:
                 logL -= 10**10
@@ -94,13 +92,14 @@ class LikelihoodModule(object):
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
         """
-        checks whether additional images have been found and placed in kwargs_else
+        checks whether additional images have been found and placed in kwargs_ps
         :param kwargs_ps: point source kwargs
         :return: bool, True if more image positions are found than originally been assigned
         """
         ra_image_list, dec_image_list = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        if len(ra_image_list[0]) > self.param.num_point_source_images:
-            return True
+        if len(ra_image_list) > 0:
+            if len(ra_image_list[0]) > self.param.num_point_source_images:
+                return True
         else:
             return False
 

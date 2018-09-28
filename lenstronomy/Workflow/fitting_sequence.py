@@ -155,6 +155,7 @@ class FittingSequence(object):
         psf_iter_factor = fitting_kwargs['psf_iter_factor']
         psf_iter_num = fitting_kwargs['psf_iter_num']
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
+        kwargs_psf_iter = fitting_kwargs.get('kwargs_psf_iter', {})
         for i in range(len(self.multi_band_list)):
             if compute_bool[i] is True:
                 kwargs_data = self.multi_band_list[i][0]
@@ -165,7 +166,7 @@ class FittingSequence(object):
                                                                kwargs_psf=kwargs_psf,
                                                                kwargs_numerics=kwargs_numerics,
                                                                kwargs_model=self.kwargs_model)
-                psf_iter = PsfFitting(image_model_class=image_model)
+                psf_iter = PsfFitting(image_model_class=image_model, kwargs_psf_iter=kwargs_psf_iter)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        lens_light_input, ps_input,
                                                        factor=psf_iter_factor, num_iter=psf_iter_num,

@@ -14,9 +14,10 @@ class PsfFitting(object):
     class to find subsequently a better psf as making use of the point sources in the lens model
     this technique can be dangerous as one might overfit the data
     """
-    def __init__(self, image_model_class):
+    def __init__(self, image_model_class, kwargs_psf_iter={}):
         self._image_model_class = image_model_class
         self._kwargs_numerics = copy.deepcopy(image_model_class.kwargs_numerics)
+        self._stacking_option = kwargs_psf_iter.get('stacking_option', 'median')
 
     def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=1, symmetry=1):
         """
@@ -60,7 +61,8 @@ class PsfFitting(object):
         for i in range(symmetry):
             kernel_old_array[i, :, :] = kernel_old
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old_array,
-                                                 sigma_bkg=self._image_model_class.Data.background_rms, factor=factor)
+                                                 sigma_bkg=self._image_model_class.Data.background_rms, factor=factor,
+                                                 stacking_option=self._stacking_option)
         kernel_new_small = copy.deepcopy(kernel_new)
         kernel_new_small = kernel_util.pixel_kernel(kernel_new_small, subgrid_res=1)
         kernel_new_small = kernel_util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
@@ -209,7 +211,7 @@ class PsfFitting(object):
                 i += 1
         return kernel_list
 
-    def combine_psf(self, kernel_list, kernel_old, sigma_bkg, factor=1):
+    def combine_psf(self, kernel_list, kernel_old, sigma_bkg, factor=1, stacking_option='median'):
         """
         updates psf estimate based on old kernel and several new estimates
         :param kernel_list:
@@ -217,7 +219,12 @@ class PsfFitting(object):
         :return:
         """
         kernel_list_new = np.append(kernel_list, kernel_old, axis=0)
-        kernel_new = np.median(kernel_list_new, axis=0)
+        if stacking_option == 'median':
+            kernel_new = np.median(kernel_list_new, axis=0)
+        elif stacking_option == 'mean':
+            kernel_new = np.mean(kernel_list_new, axis=0)
+        else:
+            raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
         kernel_new[kernel_new < 0] = 0
         kernel_new = kernel_util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1.-factor)*np.mean(kernel_old, axis=0)

@@ -145,7 +145,7 @@ class TestFittingSequence(object):
             {'fitting_routine': 'PSO', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2},
             {'fitting_routine': 'align_images', 'lower_limit_shift': -0.1, 'upper_limit_shift': 0.1, 'n_particles': 2, 'n_iterations': 2},
-            {'fitting_routine': 'psf_iteration', 'psf_iter_num': 2, 'psf_iter_factor': 0.5}
+            {'fitting_routine': 'psf_iteration', 'psf_iter_num': 2, 'psf_iter_factor': 0.5, 'kwargs_psf_iter': {'stacking_option': 'mean'}}
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)

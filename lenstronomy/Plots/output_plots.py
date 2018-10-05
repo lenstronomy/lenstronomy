@@ -99,7 +99,7 @@ def source_position_plot(ax, coords, kwargs_source):
     :return:
     """
     deltaPix = coords.pixel_size
-    if kwargs_source is not None:
+    if len(kwargs_source) > 0:
         if 'center_x' in kwargs_source[0]:
             x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
             ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
@@ -256,7 +256,7 @@ class LensModelPlot(object):
         coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
+        cb = plt.colorbar(im, cax=cax, orientation='vertical')
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
@@ -378,10 +378,11 @@ class LensModelPlot(object):
         d_s = numPix * deltaPix_source
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._Mpix2coord * deltaPix_source / self._deltaPix)
-        x_center = self._kwargs_source[0]['center_x']
-        y_center = self._kwargs_source[0]['center_y']
-        x_grid_source += x_center
-        y_grid_source += y_center
+        if len(self._kwargs_source) > 0:
+            x_center = self._kwargs_source[0]['center_x']
+            y_center = self._kwargs_source[0]['center_y']
+            x_grid_source += x_center
+            y_grid_source += y_center
         coords_source = Coordinates(self._Mpix2coord * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
 

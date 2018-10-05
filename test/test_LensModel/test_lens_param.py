@@ -57,10 +57,6 @@ class TestParam(object):
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-    def test_param_init(self):
-        mean, sigma = self.param.param_init(self.kwargs_mean)
-        assert mean[0] == 1
-
     def test_param_name_list(self):
         lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',

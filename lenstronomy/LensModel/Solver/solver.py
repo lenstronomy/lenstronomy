@@ -1,5 +1,6 @@
 from lenstronomy.LensModel.Solver.solver2point import Solver2Point
 from lenstronomy.LensModel.Solver.solver4point import Solver4Point
+import numpy as np
 
 
 class Solver(object):
@@ -17,7 +18,7 @@ class Solver(object):
         :param num_images: int, number of images to be solved for
         """
         self._num_images = num_images
-
+        self._lensModel = lensModel
         if self._num_images == 4:
             self._solver = Solver4Point(lensModel, solver_type=solver_type)
         elif self. _num_images == 2:
@@ -42,6 +43,20 @@ class Solver(object):
                              (len(x_), self._num_images))
         kwargs_lens, precision = self.constraint_lensmodel(x_, y_, kwargs_lens)
         return kwargs_lens
+
+    def check_solver(self, kwargs_lens, kwargs_ps):
+        """
+        returns the precision of the solver to match the image position
+
+        :param kwargs_lens: full lens model (including solved parameters)
+        :param kwargs_ps: point source keyword arguments
+        :return: precision of Euclidean distances between the different rays arriving at the image positions
+        """
+        ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
+        source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image,
+                                                         kwargs_lens)
+        dist = np.sqrt((source_x - source_x[0]) ** 2 + (source_y - source_y[0]) ** 2)
+        return dist
 
     def add_fixed_lens(self, kwargs_fixed_lens, kwargs_lens_init):
         """

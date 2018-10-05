@@ -29,7 +29,6 @@ class Optimizer(object):
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
                  simplex_n_iterations=300, single_background=False):
 
-
         """
 
         :param x_pos: observed position in arcsec
@@ -180,8 +179,8 @@ class Optimizer(object):
             x_image, y_image = self.x_pos, self.y_pos
         else:
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
-            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
-
+            print('Warning: possibly a bad fit.')
+            x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))

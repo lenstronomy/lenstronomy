@@ -76,11 +76,11 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.1370014246240874, decimal=8)
+        npt.assert_almost_equal(source_model[0][10, 10], 0.1417362294263248, decimal=8)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.13164547458291054, decimal=8)
+        npt.assert_almost_equal(source_model[0][10, 10], 0.13536114618182182, decimal=8)
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)

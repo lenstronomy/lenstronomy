@@ -12,8 +12,8 @@ class NFWParam(object):
     def rhoc_z(self, z):
         """
 
-        :param z:
-        :return:
+        :param z: redshift
+        :return: scaled critical density as a function of redshift (attention, this is not rho_crit(z))
         """
         return self.rhoc*(1+z)**3
 
@@ -45,7 +45,7 @@ class NFWParam(object):
         """
 
         :param r200: r200 in comoving Mpc/h
-        :return: M200
+        :return: M200 in M_sol/h
         """
         return self.rhoc*200 * r200**3 * 4*np.pi/3.
 

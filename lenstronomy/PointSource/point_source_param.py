@@ -7,7 +7,7 @@ class PointSourceParam(object):
     """
 
     def __init__(self, model_list, kwargs_fixed, num_point_source_list=None, linear_solver=True,
-                 fixed_magnification_list=None):
+                 fixed_magnification_list=None, kwargs_lower=None, kwargs_upper=None):
         """
 
         :param model_list: list of point source model names
@@ -29,6 +29,30 @@ class PointSourceParam(object):
         self._linear_solver = linear_solver
         if fixed_magnification_list is None:
             self._fixed_magnification_list = [False] * len(model_list)
+        if kwargs_lower is None:
+            kwargs_lower = []
+            for k, model in enumerate(self.model_list):
+                num = self._num_point_sources_list[k]
+                if model in ['LENSED_POSITION', 'UNLENSED']:
+                    fixed_low = {'ra_image': [-100] * num, 'dec_image': [-100] * num, 'point_amp': [0] * num}
+                elif model in ['SOURCE_POSITION']:
+                    fixed_low = {'ra_source': -100, 'dec_source': -100, 'point_amp': 0}
+                else:
+                    raise ValueError("%s not a valid point source model" % model)
+                kwargs_lower.append(fixed_low)
+        if kwargs_upper is None:
+            kwargs_upper = []
+            for k, model in enumerate(self.model_list):
+                num = self._num_point_sources_list[k]
+                if model in ['LENSED_POSITION', 'UNLENSED']:
+                    fixed_high = {'ra_image': [100] * num, 'dec_image': [100] * num, 'point_amp': [100] * num}
+                elif model in ['SOURCE_POSITION']:
+                    fixed_high = {'ra_source': 100, 'dec_source': 100, 'point_amp': 100}
+                else:
+                    raise ValueError("%s not a valid point source model" % model)
+                kwargs_upper.append(fixed_high)
+        self.lower_limit = kwargs_lower
+        self.upper_limit = kwargs_upper
 
     def getParams(self, args, i):
         """
@@ -73,7 +97,6 @@ class PointSourceParam(object):
                     i += 1
                 else:
                     kwargs['point_amp'] = kwargs_fixed['point_amp']
-
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -108,45 +131,6 @@ class PointSourceParam(object):
                 if not 'point_amp' in kwargs_fixed:
                     args.append(kwargs['point_amp'])
         return args
-
-    def param_init(self, kwargs_mean_list):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        for k, model in enumerate(self.model_list):
-            kwargs = kwargs_mean_list[k]
-            kwargs_fixed = self.kwargs_fixed[k]
-            if model in ['LENSED_POSITION', 'UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
-                    pos = kwargs['ra_image'][0:self._num_point_sources_list[k]]
-                    for x in pos:
-                        mean.append(x)
-                        sigma.append(kwargs['pos_sigma'])
-                if not 'dec_image' in kwargs_fixed:
-                    pos = kwargs['dec_image'][0:self._num_point_sources_list[k]]
-                    for x in pos:
-                        mean.append(x)
-                        sigma.append(kwargs['pos_sigma'])
-                if not 'point_amp' in kwargs_fixed:
-                    amp = kwargs['point_amp'][0:self._num_point_sources_list[k]]
-                    for x in amp:
-                        mean.append(x)
-                        sigma.append(kwargs['point_amp_sigma'])
-            if model in ['SOURCE_POSITION']:
-                if not 'ra_source' in kwargs_fixed:
-                    mean.append(kwargs['ra_source'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'dec_source' in kwargs_fixed:
-                    mean.append(kwargs['dec_source'])
-                    sigma.append(kwargs['pos_sigma'])
-                if not 'point_amp' in kwargs_fixed:
-                    mean.append(kwargs['point_amp'])
-                    sigma.append(kwargs['point_amp_sigma'])
-        return mean, sigma
 
     def num_param(self):
         """

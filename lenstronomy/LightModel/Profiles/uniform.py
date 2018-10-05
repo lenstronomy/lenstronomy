@@ -6,6 +6,8 @@ class Uniform(object):
     class for Gaussian light profile
     """
     param_names = ['amp']
+    lower_limit_default = {'amp': -100}
+    upper_limit_default = {'amp': 100}
 
     def __init__(self):
         pass

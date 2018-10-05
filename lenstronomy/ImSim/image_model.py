@@ -40,6 +40,17 @@ class ImageModel(object):
             self._psf_error_map = False
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
+        self.num_bands = 1
+
+    def reset_point_source_cache(self):
+        """
+        deletes all the cache in the point source class and saves it from then on
+
+        :return:
+        """
+        if self.PointSource is not None:
+            self.PointSource.delete_lens_model_cach()
+            self.PointSource.set_save_cache(True)
 
     def update_data(self, data_class):
         """
@@ -159,7 +170,8 @@ class ImageModel(object):
         error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
-    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
+              source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         make a image with a realisation of linear parameter values "param"
@@ -236,7 +248,8 @@ class ImageModel(object):
         x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                                    source_marg=False, compute_bool=None):
         """
 
         computes the likelihood of the data given a model
@@ -279,10 +292,9 @@ class ImageModel(object):
         :return:
         """
         chi2 = self.reduced_residuals(model, error_map)
-        return np.sum(chi2**2) / self.numData_evaluate
+        return np.sum(chi2**2) / self.numData_evaluate()
 
-    @property
-    def numData_evaluate(self):
+    def numData_evaluate(self, compute_bool=None):
         """
         number of data points to be used in the linear solver
         :return:

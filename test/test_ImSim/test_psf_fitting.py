@@ -81,7 +81,8 @@ class TestImageModel(object):
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        self.psf_fitting = PsfFitting(self.imageModel)
+        kwargs_psf_iter = {'stacking_option': 'median'}
+        self.psf_fitting = PsfFitting(self.imageModel, kwargs_psf_iter=kwargs_psf_iter)
 
     def test_update_psf(self):
         fwhm = 0.5

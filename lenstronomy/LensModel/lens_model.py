@@ -10,7 +10,8 @@ class LensModel(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, redshift_list=None, cosmo=None, multi_plane=False):
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, redshift_list=None, cosmo=None,
+                 multi_plane=False, **lensmodel_kwargs):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -30,9 +31,9 @@ class LensModel(object):
         self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
-            self.lens_model = MultiPlane(z_source, lens_model_list, redshift_list, cosmo=cosmo)
+            self.lens_model = MultiPlane(z_source, lens_model_list, redshift_list, cosmo=cosmo, **lensmodel_kwargs)
         else:
-            self.lens_model = SinglePlane(lens_model_list)
+            self.lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
 

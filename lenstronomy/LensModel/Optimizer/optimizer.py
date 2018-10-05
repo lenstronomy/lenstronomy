@@ -25,10 +25,9 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
-                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.5,constrain_params=None,
-                 simplex_n_iterations=250, single_background=False, init_lensmodel = None, init_kwargs = None):
-
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=400, pso_compute_magnification=100,
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
+                 simplex_n_iterations=300, single_background=False):
 
         """
 
@@ -124,8 +123,7 @@ class Optimizer(object):
             if self._single_background:
 
                 lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies, guess_lensmodel=
-                                                 init_lensmodel, guess_kwargs=init_kwargs)
+                                                 astropy_instance, self._params.tovary_indicies)
             else:
                 lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                                     astropy_instance, self._params.tovary_indicies)
@@ -138,7 +136,7 @@ class Optimizer(object):
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
-                                    verbose=verbose)
+                                    verbose=verbose, single_background_switch = pso_convergence_mean)
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 

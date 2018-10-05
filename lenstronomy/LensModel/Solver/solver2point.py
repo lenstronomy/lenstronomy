@@ -3,17 +3,40 @@ __author__ = 'sibirrer'
 import scipy.optimize
 import numpy as np
 import copy
+import lenstronomy.Util.param_util as param_util
 
 
 class Solver2Point(object):
     """
-    class to make the constraints for the solver
+    class to solve a constraint lens model with two point source positions
+
+    options are:
+    'CENTER': solves for 'center_x', 'center_y' parameters of the first lens model
+    'ELLIPSE': solves for 'e1', 'e2' of the first lens  (can also be shear)
+    'SHAPELETS': solves for shapelet coefficients c01, c10
+    'THETA_E_PHI: solves for Einstein radius of first lens model and shear angle of second model
+
+
     """
     def __init__(self, lensModel, solver_type='CENTER', decoupling=True):
+        """
+
+        :param lensModel: instance of LensModel class
+        :param solver_type: string
+        :param decoupling: bool
+        """
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
+        if not solver_type in ['CENTER', 'ELLIPSE', 'SHAPELETS', 'THETA_E_PHI']:
+            raise ValueError("solver_type %s is not a valid option!")
+        if solver_type == 'SHAPELETS':
+            if not self._lens_mode_list[0] in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
+                raise ValueError("solver_type %s needs the first lens model to be in ['SHAPELETS_CART', ''SHAPELETS_POLAR']" % solver_type)
+        if solver_type == 'THETA_E_PHI':
+            if not self._lens_mode_list[1] == 'SHEAR':
+                raise ValueError("solver_type %s needs the second lens model to be 'SHEAR" % solver_type)
         self._solver_type = solver_type
-        if lensModel.multi_plane or 'FOREGROUND_SHEAR' in self._lens_mode_list:
+        if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list or solver_type == 'THETA_E_PHI':
             self._decoupling = False
         else:
             self._decoupling = decoupling
@@ -80,23 +103,28 @@ class Solver2Point(object):
         :return: updated kwargs_list
         """
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
-            if self._solver_type == 'CENTER':
-                [center_x, center_y] = x
-                kwargs_list[0]['center_x'] = center_x
-                kwargs_list[0]['center_y'] = center_y
-            elif self._solver_type == 'ELLIPSE':
-                [e1, e2] = x
-                kwargs_list[0]['e1'] = e1
-                kwargs_list[0]['e2'] = e2
-
-        elif lens_model in ['SHAPELETS_CART']:
+        if self._solver_type == 'CENTER':
+            [center_x, center_y] = x
+            kwargs_list[0]['center_x'] = center_x
+            kwargs_list[0]['center_y'] = center_y
+        elif self._solver_type == 'ELLIPSE':
+            [e1, e2] = x
+            kwargs_list[0]['e1'] = e1
+            kwargs_list[0]['e2'] = e2
+        elif self._solver_type == 'SHAPELETS':
             [c10, c01] = x
             coeffs = list(kwargs_list[0]['coeffs'])
             coeffs[1: 3] = [c10, c01]
             kwargs_list[0]['coeffs'] = coeffs
+        elif self._solver_type == 'THETA_E_PHI':
+            [theta_E, phi_G] = x
+            kwargs_list[0]['theta_E'] = theta_E
+            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
+            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            kwargs_list[1]['e1'] = e1
+            kwargs_list[1]['e2'] = e2
         else:
-            raise ValueError("Lens model %s not supported for 2-point solver!" % lens_model)
+            raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return kwargs_list
 
     def _extract_array(self, kwargs_list):
@@ -106,23 +134,26 @@ class Solver2Point(object):
         :return:
         """
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
-            if self._solver_type == 'CENTER':
-                center_x = kwargs_list[0]['center_x']
-                center_y = kwargs_list[0]['center_y']
-                x = [center_x, center_y]
-            elif self._solver_type == 'ELLIPSE':
-                e1 = kwargs_list[0]['e1']
-                e2 = kwargs_list[0]['e2']
-                x = [e1, e2]
-            else:
-                raise ValueError("Solver type %s not valid for lens model %s. Supported are 'ELLIPSE' and 'CENTER'." % (self._solver_type, lens_model))
-        elif lens_model in ['SHAPELETS_CART']:
+        if self._solver_type == 'CENTER':
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+            x = [center_x, center_y]
+        elif self._solver_type == 'ELLIPSE':
+            e1 = kwargs_list[0]['e1']
+            e2 = kwargs_list[0]['e2']
+            x = [e1, e2]
+        elif self._solver_type == 'SHAPELETS':
             coeffs = list(kwargs_list[0]['coeffs'])
             [c10, c01] = coeffs[1: 3]
             x = [c10, c01]
+        elif self._solver_type == 'THETA_E_PHI':
+            theta_E = kwargs_list[0]['theta_E']
+            e1 = kwargs_list[1]['e1']
+            e2 = kwargs_list[1]['e2']
+            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            x = [theta_E, phi_ext]
         else:
-            raise ValueError("Lens model %s not supported for 2-point solver!" % lens_model)
+            raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return x
 
     def add_fixed_lens(self, kwargs_fixed_lens_list, kwargs_lens_init):
@@ -132,26 +163,21 @@ class Solver2Point(object):
         :param kwargs_lens_init:
         :return:
         """
-        lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'NFW_ELLIPSE']:
-            if self._solver_type in ['CENTER']:
-                kwargs_fixed['center_x'] = kwargs_lens['center_x']
-                kwargs_fixed['center_y'] = kwargs_lens['center_y']
-            elif self._solver_type in ['ELLIPSE']:
-                kwargs_fixed['e1'] = kwargs_lens['e1']
-                kwargs_fixed['e2'] = kwargs_lens['e2']
-            else:
-                raise ValueError("solver_type %s not valid for lens model %s" % (self._solver_type, lens_model))
-        elif lens_model == "SHAPELETS_CART":
-            pass
-        elif lens_model == 'SHEAR':
+        if self._solver_type in ['CENTER']:
+            kwargs_fixed['center_x'] = kwargs_lens['center_x']
+            kwargs_fixed['center_y'] = kwargs_lens['center_y']
+        elif self._solver_type in ['ELLIPSE']:
             kwargs_fixed['e1'] = kwargs_lens['e1']
             kwargs_fixed['e2'] = kwargs_lens['e2']
+        elif self._solver_type == 'SHAPELETS':
+            pass
+        elif self._solver_type == 'THETA_E_PHI':
+            kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
+            kwargs_fixed_lens_list[1]['e2'] = 0
         else:
-            raise ValueError("%s is not a valid option for solver_type in combination with lens model %s" % (
-            self._solver_type, lens_model))
+            raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return kwargs_fixed_lens_list
 
 

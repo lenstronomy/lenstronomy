@@ -7,6 +7,8 @@ class SIS_truncate(object):
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
     param_names = ['theta_E', 'r_trunc', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'r_trunc': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'r_trunc': 100, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
         x_shift = x - center_x

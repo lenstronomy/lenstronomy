@@ -14,13 +14,23 @@ class NFW(object):
     relation are: R_200 = c * Rs
     """
     param_names = ['Rs', 'theta_Rs', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
+    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10, lookup=False):
         """
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
         self._interpol = interpol
+        self._lookup = lookup
+        if lookup and interpol:
+            from lenstronomy.LensModel.Profiles.nfw_lookup import nfw_f, nfw_g, nfw_h, nfw_x
+            self._f_lookup = nfw_f
+            self._h_lookup = nfw_h
+            self._g_lookup = nfw_g
+            self._x_lookup = nfw_x
+
         self._max_interp_X = max_interp_X
         self._num_interp_X = num_interp_X
 
@@ -228,8 +238,13 @@ class NFW(object):
         """
         if self._interpol:
             if not hasattr(self, '_F_interp'):
-                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                F_x = self._F(x)
+
+                if self._lookup:
+                    x = self._x_lookup
+                    F_x = self._f_lookup
+                else:
+                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                    F_x = self._F(x)
                 self._F_interp = interp.interp1d(x, F_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._F_interp(X)
@@ -278,8 +293,13 @@ class NFW(object):
         """
         if self._interpol:
             if not hasattr(self, '_g_interp'):
-                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                g_x = self._g(x)
+
+                if self._lookup:
+                    x = self._x_lookup
+                    g_x = self._g_lookup
+                else:
+                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                    g_x = self._g(x)
                 self._g_interp = interp.interp1d(x, g_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._g_interp(X)
@@ -324,8 +344,13 @@ class NFW(object):
         """
         if self._interpol:
             if not hasattr(self, '_h_interp'):
-                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                h_x = self._h(x)
+
+                if self._lookup:
+                    x = self._x_lookup
+                    h_x = self._h_lookup
+                else:
+                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                    h_x = self._h(x)
                 self._h_interp = interp.interp1d(x, h_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._h_interp(X)
@@ -374,5 +399,3 @@ class NFW(object):
         """
         theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
         return theta_Rs
-
-

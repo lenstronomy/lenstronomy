@@ -10,6 +10,8 @@ class Chameleon(object):
 
     """
     param_names = ['theta_E', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.nie = NIE()
@@ -122,6 +124,12 @@ class DoubleChameleon(object):
 
     """
     param_names = ['theta_E', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
+                           'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
+                           'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'ratio': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
+                           'w_c2': 100, 'w_t2': 100, 'e12': 0.8, 'e22': 0.8,
+                           'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.chameleon = Chameleon()

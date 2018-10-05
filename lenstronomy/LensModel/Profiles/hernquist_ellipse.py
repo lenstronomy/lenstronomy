@@ -10,6 +10,8 @@ class Hernquist_Ellipse(object):
     relation are: R_200 = c * Rs
     """
     param_names = ['sigma0', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'sigma0': 0, 'Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'sigma0': 100, 'Rs': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.spherical = Hernquist()

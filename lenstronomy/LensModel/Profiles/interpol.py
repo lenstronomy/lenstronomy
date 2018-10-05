@@ -11,6 +11,8 @@ class Interpol_func(object):
     class which uses an interpolation of a lens model and its first and second order derivatives
     """
     param_names = ['grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']
+    lower_limit_default = {}
+    upper_limit_default = {}
 
     def __init__(self, grid=True, min_grid_number=100):
         self._grid = grid
@@ -139,6 +141,8 @@ class Interpol_func_scaled(object):
     Applications are e.g. mass to light ratio.
     """
     param_names = ['scale_factor', 'grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']
+    lower_limit_default = {'scale_factor': 0}
+    upper_limit_default = {'scale_factor': 100}
 
     def __init__(self, grid=True, min_grid_number=100):
         self.interp_func = Interpol_func(grid, min_grid_number=min_grid_number)

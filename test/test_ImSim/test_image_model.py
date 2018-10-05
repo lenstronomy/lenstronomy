@@ -74,11 +74,11 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13504710363889061, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345, decimal=4)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13164547458291054, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13536114618182182, decimal=4)
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
@@ -132,7 +132,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2, 1, decimal=1)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate
+        numData = self.imageModel.numData_evaluate()
         assert numData == 10000
 
     def test_fermat_potential(self):

@@ -184,6 +184,8 @@ class Solver4Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
+        if self._solver_type == 'PROFILE_SHEAR':
+            kwargs_fixed_lens_list[1]['e2'] = 0
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']

@@ -8,6 +8,8 @@ class Gaussian(object):
     """
     def __init__(self):
         self.param_names = ['amp', 'sigma_x', 'sigma_y', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'sigma_x': 0, 'sigma_y': 0, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'sigma_x': 100, 'sigma_y': 100, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, sigma_x, sigma_y, center_x=0, center_y=0):
         """
@@ -46,6 +48,8 @@ class GaussianEllipse(object):
     class for Gaussian light profile
     """
     param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()
@@ -83,6 +87,8 @@ class MultiGaussian(object):
     class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
     """
     param_names = ['amp', 'sigma', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()
@@ -131,6 +137,8 @@ class MultiGaussianEllipse(object):
     class for elliptical multi Gaussian profile
     """
     param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 1000, 'sigma': 100, 'e1': -0.5, 'e2': -0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.gaussian = Gaussian()

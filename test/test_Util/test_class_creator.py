@@ -27,10 +27,10 @@ class TestClassCreator(object):
     def test_create_multiband(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}]]
         multi_band = class_creator.create_multiband(multi_band_list, self.kwargs_model)
-        assert multi_band.lensModel.lens_model_list[0] == 'SIS'
+        assert multi_band.LensModel.lens_model_list[0] == 'SIS'
 
         multi_band = class_creator.create_multiband(multi_band_list, {})
-        assert multi_band.lensModel.lens_model_list == []
+        assert multi_band.LensModel.lens_model_list == []
 
 
 if __name__ == '__main__':

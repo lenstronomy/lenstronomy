@@ -4,6 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Profiles.nfw import NFW
 
 
 class TestLensModel(object):
@@ -21,6 +22,15 @@ class TestLensModel(object):
                             , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON', 'DOUBLE_CHAMELEON']
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
+
+        lens_model_list = ['NFW']
+        lensModel = LensModel(lens_model_list, interpol = True, lookup=True)
+        x,y = 0.2,1
+        kwargs = [{'theta_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
+        value = lensModel.potential(x,y,kwargs)
+        nfw_interp = NFW(interpol=True, lookup=True)
+        value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])
+        npt.assert_almost_equal(value, value_interp_lookup, decimal=4)
 
     def test_kappa(self):
         output = self.lensModel.kappa(x=1., y=1., kwargs=self.kwargs)

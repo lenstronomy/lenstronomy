@@ -8,6 +8,8 @@ class Hernquist(object):
     _diff = 0.00000001
     _s = 0.00001
     param_names = ['sigma0', 'Rs', 'center_x', 'center_y']
+    lower_limit_default = {'sigma0': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'sigma0': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
 
     def density(self, r, rho0, Rs):
         """

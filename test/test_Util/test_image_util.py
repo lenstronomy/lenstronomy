@@ -115,8 +115,8 @@ def test_rebin_coord_transform():
     ra_at_xy_0_resized, dec_at_xy_0_resized, x_at_radec_0_resized, y_at_radec_0_resized, Mpix2coord_resized, Mcoord2pix_resized = image_util.rebin_coord_transform(3, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix)
 
     assert x_at_radec_0_resized == 16
-    npt.assert_almost_equal(ra_at_xy_0_resized, dec_at_xy_0_re, decimal=8)
-    npt.assert_almost_equal(dec_at_xy_0_resized, ra_at_xy_0_re, decimal=8)
+    npt.assert_almost_equal(ra_at_xy_0_resized, ra_at_xy_0_re, decimal=8)
+    npt.assert_almost_equal(dec_at_xy_0_resized, dec_at_xy_0_re, decimal=8)
     npt.assert_almost_equal(x_at_radec_0_resized, x_at_radec_0_re, decimal=8)
     npt.assert_almost_equal(y_at_radec_0_resized, y_at_radec_0_re, decimal=8)
     npt.assert_almost_equal(Mcoord2pix_resized[0][0], Mcoord2pix_re[0][0], decimal=8)

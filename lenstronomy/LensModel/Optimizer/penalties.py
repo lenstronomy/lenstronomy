@@ -36,7 +36,7 @@ class Penalties(object):
         self._pso_convergence_mean = pso_convergence_mean
         self._pso_compute_magnification = pso_compute_magnification
 
-        self._counter = 1
+        self._counter = 0
         self.verbose = verbose
 
         self.param_class = param_class
@@ -48,7 +48,6 @@ class Penalties(object):
 
     def __call__(self,lens_args_to_vary_array):
 
-        self._counter += 1
         mag_penalty, centroid_penalty, param_penalties = None, None, None
 
         params_fixed = self.param_class.argsfixed_todictionary()
@@ -78,6 +77,8 @@ class Penalties(object):
 
         self._book_keeping(source_penalty, centroid_penalty, mag_penalty, param_penalties)
 
+        self._counter += 1
+
         return total_penalty
 
     def _reset(self, compute_mags=False):
@@ -106,7 +107,7 @@ class Penalties(object):
 
     def _book_keeping(self,src_penalty,centroid_penalty,mag_penalty,param_pen):
 
-        if self._counter % 500 == 0 and self.verbose:
+        if self._counter % 500 == 0 or self._counter == 0 and self.verbose:
             index = np.argmin(self._get_total_pen())
             print('source penalty: ', self.src_penalty[index])
             print('centroid penalty: ', self.centroid_penalty[index])

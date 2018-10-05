@@ -27,7 +27,7 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=400, pso_compute_magnification=100,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=300, single_background=False):
+                 simplex_n_iterations=300, single_background=False, optimizer_kwargs = {}):
 
         """
 
@@ -111,7 +111,12 @@ class Optimizer(object):
                               optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
         
         # initialize particle swarm inital param limits
-        self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize)
+        if 're_optimize_scale' in optimizer_kwargs:
+            scale = optimizer_kwargs['re_optimize_scale']
+        else:
+            scale = 1
+
+        self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize, scale = scale)
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
@@ -123,10 +128,10 @@ class Optimizer(object):
             if self._single_background:
 
                 lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies)
+                                                 astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
             else:
                 lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                    astropy_instance, self._params.tovary_indicies)
+                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
 
             self.solver = LensEquationSolver(lensing_class)
 
@@ -137,6 +142,11 @@ class Optimizer(object):
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
                                     verbose=verbose, single_background_switch = pso_convergence_mean)
+
+        if 'save_background_path' in optimizer_kwargs and self._multiplane:
+            self._return_background_path = True
+        else:
+            self._return_background_path = False
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
@@ -185,7 +195,20 @@ class Optimizer(object):
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
 
-        return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
+        return_args_extra = {'lensModel_class': self.lensModel}
+
+        if self._return_background_path:
+            # compute the path through the background field, and return the deflection angles from the foreground
+            thetax_background, thetay_background, background_redshifts, Tzlist = self.solver.lensModel._ray_shooting_background_steps(kwargs_varied)
+            return_args_extra.update({'x_background': thetax_background})
+            return_args_extra.update({'y_background': thetay_background})
+            return_args_extra.update({'Tz_list_background': Tzlist})
+            return_args_extra.update({'background_redshifts': background_redshifts})
+            return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
+
+            return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
+
+        return kwargs_lens_final, [source_x, source_y], [x_image, y_image], return_args_extra
 
     def _single_optimization(self, n_particles, n_iterations):
 
@@ -194,12 +217,13 @@ class Optimizer(object):
 
         if self._particle_swarm:
             params = self._pso(n_particles, n_iterations, self._optimizer)
+            if self._verbose:
+                print('PSO done.')
 
         else:
             params = self._params._kwargs_to_tovary(self._init_kwargs)
 
         if self._verbose:
-            print('PSO done.')
             print('starting amoeba... ')
 
         # downhill simplex optimization

@@ -1,10 +1,9 @@
-from lenstronomy.LensModel.Optimizer.optimizer import Optimizer
+from lenstronomy.LensModel.Optimizer.optimizer import Optimizer, MultiPlaneLensing
 import numpy.testing as npt
 from astropy.cosmology import FlatLambdaCDM
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
-from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
 
 class TestMultiPlaneOptimizer(object):
 
@@ -243,12 +242,12 @@ class TestMultiPlaneOptimizer(object):
 
     def test_multi_plane_simple(self):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image], _ = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         self.optimizer_simple._tol_src_penalty = 1e-30
 
-        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
+        kwargs_lens, source, [x_image, y_image], _ = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
                                                                                  restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
@@ -265,12 +264,12 @@ class TestMultiPlaneOptimizer(object):
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                     optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val)
 
-            kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
+            kwargs_lens, source, [x_image, y_image], _ = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
             _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
     def test_multi_plane_subs(self,tol=0.004):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image], _ = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
         # this should just finish with no errors raised
 
 if __name__ == '__main__':

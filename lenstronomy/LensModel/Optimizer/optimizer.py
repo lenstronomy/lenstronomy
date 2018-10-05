@@ -24,9 +24,9 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=400, pso_compute_magnification=100,
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=300, optimizer_kwargs = {}):
+                 simplex_n_iterations=400, optimizer_kwargs = {}, compute_mags_postpso = False):
 
         """
 
@@ -73,9 +73,9 @@ class Optimizer(object):
 
         :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
         for the downhill simplex routine
-        :param single_background: uses an approximation in which the path through background halos is only computed
-        once; useful for models with a lot of background subhalos that are otherwise very computationally expensive to
-        handle.
+        :param optimizer_kwargs: optional keyword arguments for the optimizer
+        :param compute_mags_postpso: flag to automatically compute magnifications when perfomring downhill simplex
+        optimization.
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -94,6 +94,7 @@ class Optimizer(object):
         self._tol_simplex_func = tol_simplex_func
         self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
+        self._compute_mags_postpso = compute_mags_postpso
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -220,7 +221,7 @@ class Optimizer(object):
             print('starting amoeba... ')
 
         # downhill simplex optimization
-        self._optimizer._reset(compute_mags=True)
+        self._optimizer._reset(compute_mags=self._compute_mags_postpso)
         options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                              'maxiter': self._simplex_iter * len(params)}
 

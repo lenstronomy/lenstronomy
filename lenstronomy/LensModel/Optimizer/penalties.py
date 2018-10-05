@@ -106,7 +106,7 @@ class Penalties(object):
 
     def _book_keeping(self,src_penalty,centroid_penalty,mag_penalty,param_pen):
 
-        if np.logical_or(self._counter % 500 == 0, self._counter == 0) and self.verbose:
+        if self._counter % 500 == 0 and self.verbose:
             index = np.argmin(self._get_total_pen())
             print('source penalty: ', self.src_penalty[index])
             print('centroid penalty: ', self.centroid_penalty[index])

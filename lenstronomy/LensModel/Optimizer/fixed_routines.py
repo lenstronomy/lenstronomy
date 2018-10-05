@@ -60,7 +60,7 @@ class FixedPowerLaw_Shear(object):
             low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['e1'],
                                                                                     self._kwargs_lens[1]['e2'],
                                                                                     delta_shear_phi, delta_shear)
-            theta_E = scale *  0.005
+            theta_E = scale * 0.005
             center = 0.005
 
             low_Rein = self._kwargs_lens[0]['theta_E'] - theta_E

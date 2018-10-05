@@ -3,7 +3,6 @@ __author__ = 'dgilman'
 import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
 from lenstronomy.LensModel.Optimizer.params import Params
-from lenstronomy.LensModel.Optimizer.single_background import SingleBackground
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
@@ -27,7 +26,7 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=400, pso_compute_magnification=100,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=300, single_background=False, optimizer_kwargs = {}):
+                 simplex_n_iterations=300, optimizer_kwargs = {}):
 
         """
 
@@ -95,7 +94,6 @@ class Optimizer(object):
         self._tol_simplex_func = tol_simplex_func
         self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
-        self._single_background = single_background
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -125,12 +123,7 @@ class Optimizer(object):
             self.solver = LensEquationSolver(self._lensModel)
 
         else:
-            if self._single_background:
-
-                lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
-            else:
-                lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
+            lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                                     astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
 
             self.solver = LensEquationSolver(lensing_class)
@@ -141,7 +134,7 @@ class Optimizer(object):
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
-                                    verbose=verbose, single_background_switch = pso_convergence_mean)
+                                    verbose=verbose)
 
         if 'save_background_path' in optimizer_kwargs and self._multiplane:
             self._return_background_path = True

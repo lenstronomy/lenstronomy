@@ -29,7 +29,6 @@ class Optimizer(object):
                  simplex_n_iterations=400, optimizer_kwargs = {}, compute_mags_postpso = False):
 
         """
-
         :param x_pos: observed position in arcsec
         :param y_pos: observed position in arcsec
         :param magnification_target: observed magnifications, uncertainty for the magnifications

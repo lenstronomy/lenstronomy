@@ -120,7 +120,7 @@ class MultiPlane(object):
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 
-    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False,
+    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=False):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
@@ -164,12 +164,7 @@ class MultiPlane(object):
                     new_plane = False
 
                 if first_deflector is True:
-                    if keep_range is True:
-                        if not hasattr(self, '_cosmo_bkg_T_start'):
-                            self._cosmo_bkg_T_start = self._cosmo_bkg.T_xy(z_start, z_lens)
-                        delta_T = self._cosmo_bkg_T_start
-                    else:
-                        delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
+                    delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
 
                     first_deflector = False
                 else:
@@ -185,12 +180,7 @@ class MultiPlane(object):
                     redshifts.append(z_lens)
                     Tz_list.append(self._T_z_list[i])
 
-        if keep_range is True:
-            if not hasattr(self, '_cosmo_bkg_T_stop'):
-                self._cosmo_bkg_T_stop = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
-            delta_T = self._cosmo_bkg_T_stop
-        else:
-            delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+        delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
 
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
 

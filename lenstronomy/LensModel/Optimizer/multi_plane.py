@@ -7,7 +7,7 @@ class MultiPlaneLensing(object):
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
-                 z_macro, astropy_instance, macro_indicies):
+                 z_macro, astropy_instance, macro_indicies, optimizer_kwargs={}):
 
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
@@ -40,7 +40,12 @@ class MultiPlaneLensing(object):
         self._front_lensmodel = front_lensmodel
         self._front_args = front_args
 
-        self._foreground = Foreground(halo_lensmodel, self._z_macro, x_pos, y_pos)
+        if 'precomputed_rays' in optimizer_kwargs:
+            self._foreground = Foreground(halo_lensmodel, self._z_macro, x_pos, y_pos,
+                                          precompupted_rays=optimizer_kwargs['precomputed_rays'])
+        else:
+            self._foreground = Foreground(halo_lensmodel, self._z_macro, x_pos, y_pos)
+
         self._halo_args = halo_args
 
         self._model_to_vary = ToVary(macromodel_lensmodel, self._z_macro)
@@ -113,6 +118,18 @@ class MultiPlaneLensing(object):
             self._beta_x_last, self._beta_y_last = betax, betay
 
         return betax, betay
+
+    def _ray_shooting_background_steps(self, macromodel_args):
+
+        x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, offset_index=0,
+                                                             thetax=None, thetay=None,
+                                                             force_compute=False)
+        x, y, alphax, alphay = self._model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
+
+        theta_x_background, theta_y_background, redshifts, Tzlist = self._background.ray_shooting_steps(alphax, alphay, self._halo_args,
+                                                                                     x, y)
+
+        return theta_x_background, theta_y_background, redshifts, Tzlist
 
     def _magnification_fast(self, macromodel_args):
 
@@ -247,12 +264,16 @@ class ToVary(object):
 
 class Foreground(object):
 
-    def __init__(self, foreground_lensmodel, z_to_vary, x_pos, y_pos):
+    def __init__(self, foreground_lensmodel, z_to_vary, x_pos, y_pos, precompupted_rays = None):
 
         self._halos_lensmodel = foreground_lensmodel
         self._z_to_vary = z_to_vary
         self._x_pos, self._y_pos = x_pos, y_pos
-        self._rays = [None] * 3
+
+        if precompupted_rays is None:
+            self._rays = [None] * 3
+        else:
+            self._rays = precompupted_rays
 
     def ray_shooting(self,args,offset_index=None,thetax=None,thetay=None,force_compute=True):
 
@@ -296,3 +317,10 @@ class Background(object):
                                                       self._z_background, self._z_source, args)
 
         return x,y
+
+    def ray_shooting_steps(self, alphax, alphay, args, x_in, y_in):
+
+        xpos, ypos, redshifts, Tzlist = self._halos_lensmodel.lens_model.ray_shooting_partial_steps(x_in, y_in, alphax, alphay,
+                                                      self._z_background, self._z_source, args)
+
+        return xpos, ypos, redshifts, Tzlist

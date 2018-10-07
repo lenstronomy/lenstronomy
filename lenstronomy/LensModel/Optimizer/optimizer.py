@@ -3,7 +3,6 @@ __author__ = 'dgilman'
 import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
 from lenstronomy.LensModel.Optimizer.params import Params
-from lenstronomy.LensModel.Optimizer.single_background import SingleBackground
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
 from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
@@ -25,13 +24,11 @@ class Optimizer(object):
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
-                 pso_convergence_standardDEV=0.01, pso_convergence_mean=5, pso_compute_magnification=10,
-                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.5,constrain_params=None,
-                 simplex_n_iterations=250, single_background=False, init_lensmodel = None, init_kwargs = None):
-
+                 pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
+                 tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
+                 simplex_n_iterations=400, optimizer_kwargs = {}, compute_mags_postpso = False):
 
         """
-
         :param x_pos: observed position in arcsec
         :param y_pos: observed position in arcsec
         :param magnification_target: observed magnifications, uncertainty for the magnifications
@@ -75,9 +72,9 @@ class Optimizer(object):
 
         :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
         for the downhill simplex routine
-        :param single_background: uses an approximation in which the path through background halos is only computed
-        once; useful for models with a lot of background subhalos that are otherwise very computationally expensive to
-        handle.
+        :param optimizer_kwargs: optional keyword arguments for the optimizer
+        :param compute_mags_postpso: flag to automatically compute magnifications when perfomring downhill simplex
+        optimization.
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -96,7 +93,7 @@ class Optimizer(object):
         self._tol_simplex_func = tol_simplex_func
         self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
-        self._single_background = single_background
+        self._compute_mags_postpso = compute_mags_postpso
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -112,7 +109,12 @@ class Optimizer(object):
                               optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
         
         # initialize particle swarm inital param limits
-        self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize)
+        if 're_optimize_scale' in optimizer_kwargs:
+            scale = optimizer_kwargs['re_optimize_scale']
+        else:
+            scale = 1
+
+        self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize, scale = scale)
 
         # initiate optimizer classes, one for particle swarm and one for the downhill simplex
         if multiplane is False:
@@ -121,14 +123,8 @@ class Optimizer(object):
             self.solver = LensEquationSolver(self._lensModel)
 
         else:
-            if self._single_background:
-
-                lensing_class = SingleBackground(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                 astropy_instance, self._params.tovary_indicies, guess_lensmodel=
-                                                 init_lensmodel, guess_kwargs=init_kwargs)
-            else:
-                lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                    astropy_instance, self._params.tovary_indicies)
+            lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
+                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
 
             self.solver = LensEquationSolver(lensing_class)
 
@@ -139,6 +135,11 @@ class Optimizer(object):
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
                                     verbose=verbose)
+
+        if 'save_background_path' in optimizer_kwargs and self._multiplane:
+            self._return_background_path = True
+        else:
+            self._return_background_path = False
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
@@ -187,7 +188,20 @@ class Optimizer(object):
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
 
-        return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
+        return_args_extra = {'lensModel_class': self.lensModel}
+
+        if self._return_background_path:
+            # compute the path through the background field, and return the deflection angles from the foreground
+            thetax_background, thetay_background, background_redshifts, Tzlist = self.solver.lensModel._ray_shooting_background_steps(kwargs_varied)
+            return_args_extra.update({'x_background': thetax_background})
+            return_args_extra.update({'y_background': thetay_background})
+            return_args_extra.update({'Tz_list_background': Tzlist})
+            return_args_extra.update({'background_redshifts': background_redshifts})
+            return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
+
+            return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
+
+        return kwargs_lens_final, [source_x, source_y], [x_image, y_image], return_args_extra
 
     def _single_optimization(self, n_particles, n_iterations):
 
@@ -196,16 +210,17 @@ class Optimizer(object):
 
         if self._particle_swarm:
             params = self._pso(n_particles, n_iterations, self._optimizer)
+            if self._verbose:
+                print('PSO done.')
 
         else:
             params = self._params._kwargs_to_tovary(self._init_kwargs)
 
         if self._verbose:
-            print('PSO done.')
             print('starting amoeba... ')
 
         # downhill simplex optimization
-        self._optimizer._reset(compute_mags=True)
+        self._optimizer._reset(compute_mags=self._compute_mags_postpso)
         options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                              'maxiter': self._simplex_iter * len(params)}
 

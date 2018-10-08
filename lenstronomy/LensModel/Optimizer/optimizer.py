@@ -136,7 +136,7 @@ class Optimizer(object):
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
                                     verbose=verbose)
 
-        if 'save_background_path' in optimizer_kwargs and self._multiplane:
+        if 'save_background_path' in optimizer_kwargs:
             self._return_background_path = True
         else:
             self._return_background_path = False
@@ -191,15 +191,19 @@ class Optimizer(object):
         return_args_extra = {'lensModel_class': self.lensModel}
 
         if self._return_background_path:
-            # compute the path through the background field, and return the deflection angles from the foreground
-            thetax_background, thetay_background, background_redshifts, Tzlist = self.solver.lensModel._ray_shooting_background_steps(kwargs_varied)
-            return_args_extra.update({'x_background': thetax_background})
-            return_args_extra.update({'y_background': thetay_background})
-            return_args_extra.update({'Tz_list_background': Tzlist})
-            return_args_extra.update({'background_redshifts': background_redshifts})
             return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
 
-            return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
+            # compute the path through the background field, and return the deflection angles from the foreground
+            if not self._multiplane:
+                print('Warning: cannot return the background path since the optimization is for single plane!')
+            if self._multiplane:
+                thetax_background, thetay_background, background_redshifts, Tzlist = \
+                    self.solver.lensModel._ray_shooting_steps(kwargs_lens_final)
+                return_args_extra.update({'x_background': thetax_background})
+                return_args_extra.update({'y_background': thetay_background})
+                return_args_extra.update({'Tz_list_background': Tzlist})
+                return_args_extra.update({'background_redshifts': background_redshifts})
+                return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
 
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image], return_args_extra
 

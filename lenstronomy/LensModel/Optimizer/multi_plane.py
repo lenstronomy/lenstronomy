@@ -119,17 +119,13 @@ class MultiPlaneLensing(object):
 
         return betax, betay
 
-    def _ray_shooting_background_steps(self, macromodel_args):
+    def _ray_shooting_steps(self, kwargs_lens):
 
-        x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, offset_index=0,
-                                                             thetax=None, thetay=None,
-                                                             force_compute=False)
-        x, y, alphax, alphay = self._model_to_vary.ray_shooting(alphax, alphay, macromodel_args, x, y)
+        x, y, redshifts, Tz = self._full_lensmodel.lens_model.\
+            ray_shooting_partial_steps(np.zeros_like(self._x_pos), np.zeros_like(self._y_pos), self._x_pos,
+                                       self._y_pos, 0, self._z_source, kwargs_lens)
 
-        theta_x_background, theta_y_background, redshifts, Tzlist = self._background.ray_shooting_steps(alphax, alphay, self._halo_args,
-                                                                                     x, y)
-
-        return theta_x_background, theta_y_background, redshifts, Tzlist
+        return x, y, redshifts, Tz
 
     def _magnification_fast(self, macromodel_args):
 

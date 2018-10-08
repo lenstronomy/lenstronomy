@@ -72,7 +72,7 @@ class Optimizer(object):
 
         :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations
         for the downhill simplex routine
-        :param optimizer_kwargs: optional keyword arguments for the optimizer
+        :param optimizer_kwargs: optional keyword arguments for the mutliplane optimizer
         :param compute_mags_postpso: flag to automatically compute magnifications when perfomring downhill simplex
         optimization.
 
@@ -136,11 +136,6 @@ class Optimizer(object):
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
                                     verbose=verbose)
 
-        if 'save_background_path' in optimizer_kwargs and self._multiplane:
-            self._return_background_path = True
-        else:
-            self._return_background_path = False
-
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
         """
@@ -188,20 +183,24 @@ class Optimizer(object):
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
 
-        return_args_extra = {'lensModel_class': self.lensModel}
+        #return_args_extra = {'lensModel_class': self.lensModel}
 
-        if self._return_background_path:
+        #if self._return_background_path:
+        #    return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
+
             # compute the path through the background field, and return the deflection angles from the foreground
-            thetax_background, thetay_background, background_redshifts, Tzlist = self.solver.lensModel._ray_shooting_background_steps(kwargs_varied)
-            return_args_extra.update({'x_background': thetax_background})
-            return_args_extra.update({'y_background': thetay_background})
-            return_args_extra.update({'Tz_list_background': Tzlist})
-            return_args_extra.update({'background_redshifts': background_redshifts})
-            return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
+        #    if not self._multiplane:
+        #        print('Warning: cannot return the background path since the optimization is for single plane!')
+        #    if self._multiplane:
+        #        thetax_background, thetay_background, background_redshifts, Tzlist = \
+        #            self.solver.lensModel._ray_shooting_steps(kwargs_lens_final)
+        #        return_args_extra.update({'x_background': thetax_background})
+        #        return_args_extra.update({'y_background': thetay_background})
+        #        return_args_extra.update({'Tz_list_background': Tzlist})
+        #        return_args_extra.update({'background_redshifts': background_redshifts})
+        #        return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
 
-            return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
-
-        return kwargs_lens_final, [source_x, source_y], [x_image, y_image], return_args_extra
+        return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 
     def _single_optimization(self, n_particles, n_iterations):
 

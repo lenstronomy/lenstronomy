@@ -242,12 +242,12 @@ class TestMultiPlaneOptimizer(object):
 
     def test_multi_plane_simple(self):
 
-        kwargs_lens, source, [x_image,y_image], _ = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         self.optimizer_simple._tol_src_penalty = 1e-30
 
-        kwargs_lens, source, [x_image, y_image], _ = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
+        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
                                                                                  restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
@@ -266,10 +266,11 @@ class TestMultiPlaneOptimizer(object):
                                     optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
                                     optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
 
-            kwargs_lens, source, [x_image, y_image], optimized_kwargs = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
+            kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
 
             _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
+        optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays}
         reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                 magnification_target=self.magnification_simple,
                                 redshift_list=redshift_list_reoptimize,
@@ -279,12 +280,12 @@ class TestMultiPlaneOptimizer(object):
                                 optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=False,
                                 optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True)
 
-        kwargs_lens, source, [x_image, y_image], optimized_kwargs = reoptimizer.optimize(n_particles=20,
+        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20,
                                                                                          n_iterations=10, restart=2)
 
     def test_multi_plane_subs(self,tol=0.004):
 
-        kwargs_lens, source, [x_image,y_image], _ = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
         # this should just finish with no errors raised
 
 if __name__ == '__main__':

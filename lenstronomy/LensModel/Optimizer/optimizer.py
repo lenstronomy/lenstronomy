@@ -26,7 +26,7 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=400, optimizer_kwargs = {}, compute_mags_postpso = False):
+                 simplex_n_iterations=400, compute_mags_postpso = False, optimizer_kwargs = {}):
 
         """
         :param x_pos: observed position in arcsec
@@ -94,6 +94,10 @@ class Optimizer(object):
         self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
         self._compute_mags_postpso = compute_mags_postpso
+        if 'optimization_algorithm' in optimizer_kwargs:
+            self._opt_method = optimizer_kwargs['optimization_algorithm']
+        else:
+            self._opt_method = 'Nelder-Mead'
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -183,23 +187,6 @@ class Optimizer(object):
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
 
-        #return_args_extra = {'lensModel_class': self.lensModel}
-
-        #if self._return_background_path:
-        #    return_args_extra.update({'magnification_pointsrc': self._optimizer._mags})
-
-            # compute the path through the background field, and return the deflection angles from the foreground
-        #    if not self._multiplane:
-        #        print('Warning: cannot return the background path since the optimization is for single plane!')
-        #    if self._multiplane:
-        #        thetax_background, thetay_background, background_redshifts, Tzlist = \
-        #            self.solver.lensModel._ray_shooting_steps(kwargs_lens_final)
-        #        return_args_extra.update({'x_background': thetax_background})
-        #        return_args_extra.update({'y_background': thetay_background})
-        #        return_args_extra.update({'Tz_list_background': Tzlist})
-        #        return_args_extra.update({'background_redshifts': background_redshifts})
-        #        return_args_extra.update({'precomputed_rays': self.lensModel._foreground._rays})
-
         return kwargs_lens_final, [source_x, source_y], [x_image, y_image]
 
     def _single_optimization(self, n_particles, n_iterations):
@@ -220,10 +207,16 @@ class Optimizer(object):
 
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=self._compute_mags_postpso)
-        options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
-                             'maxiter': self._simplex_iter * len(params)}
 
-        optimized_downhill_simplex = minimize(self._optimizer, x0=params, method='Nelder-Mead',
+        #method = 'Nelder-Mead'
+        #method = 'BFGS'
+        if self._opt_method == 'Nelder-Mead' or self._opt_method == 'powell':
+            options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
+                       'maxiter': self._simplex_iter * len(params)}
+        else:
+            options = {'maxiter': self._simplex_iter * len(params)}
+
+        optimized_downhill_simplex = minimize(self._optimizer, x0=params, method=self._opt_method,
                              options=options)
 
         penalty = self._optimizer._get_best()

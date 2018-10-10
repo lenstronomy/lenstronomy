@@ -248,7 +248,7 @@ class ImageModel(object):
         x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                     source_marg=False, compute_bool=None):
         """
 
@@ -258,13 +258,13 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: log likelihood (natural logarithm)
         """
         # generate image
         im_sim, model_error, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                   kwargs_lens_light, kwargs_else,
-                                                                                   inv_bool=source_marg)
+                                                                         kwargs_lens_light, kwargs_ps,
+                                                                         inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.ImageNumerics.mask, model_error)
         if cov_matrix is not None and source_marg:

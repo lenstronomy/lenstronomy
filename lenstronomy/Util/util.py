@@ -171,7 +171,7 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=Fa
     a = np.arange(numPix_eff)
     matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
     if inverse is True:
-        delta_x= -deltapix_eff
+        delta_x = -deltapix_eff
     else:
         delta_x = deltapix_eff
     if left_lower is True:
@@ -185,7 +185,7 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=Fa
     y_grid -= shift
     ra_at_xy_0 = x_grid[0]
     dec_at_xy_0 = y_grid[0]
-    x_at_radec_0 = (numPix_eff-1)/2.
+    x_at_radec_0 = (numPix_eff - 1) / 2.
     y_at_radec_0 = (numPix_eff - 1) / 2.
     Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)

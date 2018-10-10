@@ -183,7 +183,11 @@ class LikelihoodModule(object):
         """
         n = self.imSim.numData_evaluate(compute_bool=self._compute_bool)
         num_param, _ = self.param.num_param()
-        return n - num_param - 1
+        num_linear = 0
+        for bool in self._compute_bool:
+            if bool is True:
+                num_linear += self.param.num_param_linear()
+        return n - num_param - num_linear
 
     def __call__(self, a):
         return self.logL(a)

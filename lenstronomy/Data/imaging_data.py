@@ -242,7 +242,7 @@ class Data(object):
         sigma = d_pos / exposure_map + background_rms ** 2
         return sigma
 
-    def log_likelihood(self, model, mask, error_map=0):
+    def log_likelihood(self, model, mask, additional_error_map=0):
         """
 
         computes the likelihood of the data given the model p(data|model)
@@ -251,12 +251,12 @@ class Data(object):
 
         :param model: the model (same dimensions and units as data)
         :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood
-        :param error_map: additional error term (in same units as covariance matrix).
+        :param additional_error_map: additional error term (in same units as covariance matrix).
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
         C_D = self.covariance_matrix(model, self._sigma_b, self.exposure_map, self.noise_map)
-        X2 = (model - self._data)**2 / (C_D + np.abs(error_map)) * mask
+        X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
         X2 = np.array(X2)
         logL = - np.sum(X2) / 2
         return logL

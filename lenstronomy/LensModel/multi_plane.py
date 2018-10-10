@@ -120,6 +120,77 @@ class MultiPlane(object):
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 
+    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                             include_z_start=False):
+        """
+        ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
+        and then backwards to redshfit z_stop.
+
+        This function differs from 'ray_shooting_partial' in that it returns the angular position of the ray
+        at each lens plane.
+
+        :param x: co-moving position [Mpc]
+        :param y: co-moving position [Mpc]
+        :param alpha_x: ray angle at z_start [arcsec]
+        :param alpha_y: ray angle at z_start [arcsec]
+        :param z_start: redshift of start of computation
+        :param z_stop: redshift where output is computed
+        :param kwargs_lens: lens model keyword argument list
+        :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
+        :return: co-moving position and angles at redshift z_stop
+        """
+        z_lens_last = z_start
+        first_deflector = True
+
+        pos_x, pos_y, redshifts, Tz_list = [], [], [], []
+        pos_x.append(x)
+        pos_y.append(y)
+        redshifts.append(z_start)
+        Tz_list.append(self._cosmo_bkg.T_xy(0, z_start))
+
+        current_z = z_lens_last
+
+        for i, idex in enumerate(self._sorted_redshift_index):
+
+            z_lens = self._redshift_list[idex]
+
+            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
+
+                if z_lens != current_z:
+                    new_plane = True
+                    current_z = z_lens
+
+                else:
+                    new_plane = False
+
+                if first_deflector is True:
+                    delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
+
+                    first_deflector = False
+                else:
+                    delta_T = self._T_ij_list[i]
+                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+                alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+                z_lens_last = z_lens
+
+                if new_plane:
+
+                    pos_x.append(x)
+                    pos_y.append(y)
+                    redshifts.append(z_lens)
+                    Tz_list.append(self._T_z_list[i])
+
+        delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+
+        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+
+        pos_x.append(x)
+        pos_y.append(y)
+        redshifts.append(self._z_source)
+        Tz_list.append(self._T_z_source)
+
+        return pos_x, pos_y, redshifts, Tz_list
+
     def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)

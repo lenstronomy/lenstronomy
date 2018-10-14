@@ -97,6 +97,8 @@ class PsfFitting(object):
         :return:
         """
         self._image_model_class.PointSource.set_save_cache(True)
+        if not 'kernel_point_source_init' in kwargs_psf:
+            kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         kwargs_psf_final = copy.deepcopy(kwargs_psf)
         if 'psf_error_map' in kwargs_psf:

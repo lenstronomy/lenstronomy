@@ -27,6 +27,7 @@ class FittingSequence(object):
             kwargs_init, kwargs_fixed = [], []
         self._kwargs_source_init = copy.deepcopy(kwargs_init)
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
+        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
 
     def fit_sequence(self, fitting_kwargs_list, bijective=True):
         """
@@ -37,24 +38,34 @@ class FittingSequence(object):
         chain_list = []
         param_list = []
         samples_mcmc, param_mcmc, dist_mcmc = [], [], []
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self.fitting.init_kwargs()
         for fitting_kwargs in fitting_kwargs_list:
             fitting_routine = fitting_kwargs['fitting_routine']
+            restart = fitting_kwargs.get('restart', False)
+            if restart is True:
+                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
             if fitting_routine in ['MCMC']:
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
+                                                                self._lens_light_temp,self._ps_temp, self._cosmo_temp)
             elif fitting_routine in ['PSO']:
                 lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain, param = self.pso(fitting_kwargs,
-                                                                                            lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                                                                            self._lens_temp, self._source_temp,
+                                                                            self._lens_light_temp, self._ps_temp,
+                                                                                                      self._cosmo_temp)
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_routine in ['psf_iteration']:
-                self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                self.psf_iteration(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
+                                   self._ps_temp, self._cosmo_temp)
             elif fitting_routine in ['align_images']:
-                self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                self.align_images(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
+                                  self._ps_temp, self._cosmo_temp)
         if bijective is False:
-            lens_temp = self._param.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
-            source_temp = self._param.image2source_plane(source_temp, lens_temp)
-        return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
+            lens_temp = self._param.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
+            source_temp = self._param.image2source_plane(self._source_temp, lens_temp)
+        else:
+            lens_temp, source_temp = self._lens_temp, self._source_temp
+        return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain_list, param_list,\
+               samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         """

@@ -573,6 +573,64 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
+    def plot_main(self):
+        """
+        print the main plots together in a joint frame
+
+        :return:
+        """
+
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        self.data_plot(ax=axes[0, 0])
+        self.model_plot(ax=axes[0, 1])
+        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        self.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
+        self.convergence_plot(ax=axes[1, 1], v_max=1)
+        self.magnification_plot(ax=axes[1, 2])
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
+    def plot_separate(self):
+        """
+        plot the different model components separately
+
+        :return:
+        """
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        self.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
+        self.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
+        self.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
+                                    unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
+                                    lens_light_add=True, point_source_add=True)
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
+    def plot_subtract_from_data_all(self):
+        """
+        subtract model components from data
+
+        :return:
+        """
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        self.subtract_from_data_plot(ax=axes[0, 0], text='Data')
+        self.subtract_from_data_plot(ax=axes[0, 1], text='Data - Point Source', point_source_add=True)
+        self.subtract_from_data_plot(ax=axes[0, 2], text='Data - Lens Light', lens_light_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 0], text='Data - Source Light', source_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 1], text='Data - Source Light - Point Source', source_add=True,
+                                         point_source_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 2], text='Data - Lens Light - Point Source', lens_light_add=True,
+                                         point_source_add=True)
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
 
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain

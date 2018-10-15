@@ -1,6 +1,5 @@
 __author__ = 'sibirrer'
 
-import numpy.testing as npt
 import pytest
 import numpy as np
 import lenstronomy.Util.util as util
@@ -11,7 +10,7 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.ImSim.psf_fitting import PsfFitting
+from lenstronomy.Workflow.psf_fitting import PsfFitting
 
 
 class TestImageModel(object):

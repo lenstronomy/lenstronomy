@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.psf_fitting import PsfFitting
+from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Workflow.fitting import Fitting
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 import lenstronomy.Util.class_creator as class_creator

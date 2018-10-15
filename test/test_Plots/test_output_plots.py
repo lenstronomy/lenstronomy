@@ -93,37 +93,43 @@ class TestOutputPlots(object):
                                      self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
                                      arrow_size=0.02, cmap_string="gist_heat")
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        lensPlot.data_plot(ax=axes[0, 0])
-        lensPlot.model_plot(ax=axes[0, 1])
-        lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
-        lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
-        lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
-        lensPlot.magnification_plot(ax=axes[1, 2])
+        lensPlot.plot_main()
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
-        lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
-        lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
-                                        unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
-                                        lens_light_add=True, point_source_add=True)
+        #lensPlot.data_plot(ax=axes[0, 0])
+        #lensPlot.model_plot(ax=axes[0, 1])
+        #lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        #lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
+        #lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
+        #lensPlot.magnification_plot(ax=axes[1, 2])
+        #plt.close()
+
+        lensPlot.plot_separate()
         plt.close()
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
-        lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
+        #                                unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
+        #                                lens_light_add=True, point_source_add=True)
+        #plt.close()
+        lensPlot.plot_subtract_from_data_all()
         plt.close()
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        #lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
+        #lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
+        #plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.deflection_plot(ax=ax)

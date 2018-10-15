@@ -12,6 +12,8 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 
 
 class TestImageModel(object):
@@ -30,9 +32,11 @@ class TestImageModel(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
+        psf_class = PSF(kwargs_psf)
         psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
 
         # 'EXERNAL_SHEAR': external shear
@@ -156,7 +160,8 @@ class TestImageModel(object):
         SimAPI = Simulation()
         numPix = 100
         deltaPix = 0.05
-        data_class = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        data_class = Data(kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}
@@ -164,7 +169,7 @@ class TestImageModel(object):
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
         lens_light_model_class = LightModel([])
-        kwargs_numerics = {'subgrid_res': 2}
+        kwargs_numerics = {'subgrid_res': 2, 'point_source_subgrid': 1}
         point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], fixed_magnification_list=[False])
         makeImage = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         # chose point source positions
@@ -196,5 +201,3 @@ class TestImageModel(object):
 
 if __name__ == '__main__':
     pytest.main()
-
-

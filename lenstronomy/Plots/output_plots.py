@@ -118,7 +118,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     """
     from lenstronomy.SimulationAPI.simulations import Simulation
     simAPI = Simulation()
-    data = simAPI.data_configure(numPix, deltaPix)
+    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    data = Data(kwargs_data)
     _frame_size = numPix * deltaPix
     _coords = data._coords
     x_grid, y_grid = data.coordinates

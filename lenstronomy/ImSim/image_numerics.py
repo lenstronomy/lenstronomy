@@ -270,10 +270,7 @@ class ImageNumerics(object):
 
     @property
     def kernel_point_source_subgrid(self):
-        if not hasattr(self, '_kernel_point_source_subgrid'):
-            self._kernel_point_source_sugrid = kernel_util.subgrid_kernel(kernel=self._PSF.kernel_point_source,
-                                                                          subgrid_res=self._point_source_subgrid)
-        return self._kernel_point_source_sugrid
+        return self._PSF.subgrid_point_source_kernel(self._point_source_subgrid)
 
     def psf_error_map(self, ra_pos, dec_pos, amp):
         x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)

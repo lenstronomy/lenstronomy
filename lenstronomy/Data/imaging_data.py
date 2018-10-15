@@ -56,7 +56,7 @@ class Data(object):
         ra_at_xy_0 = kwargs_data.get('ra_at_xy_0', 0) + kwargs_data.get('ra_shift', 0)
         dec_at_xy_0 = kwargs_data.get('dec_at_xy_0', 0) + kwargs_data.get('dec_shift', 0)
         transform_pix2angle = kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]]))
-        self._coords = Coordinates( transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
+        self._coords = Coordinates(transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
                                     dec_at_xy_0=dec_at_xy_0)
 
         self._x_grid, self._y_grid = self._coords.coordinate_grid(self.nx)
@@ -77,18 +77,17 @@ class Data(object):
         else:
             self._noise_map = None
 
+    """
+    
     def constructor_kwargs(self):
-        """
 
-
-        :return: kwargs that allow to construct the Data() class
-        """
         kwargs_data = {'numPix': self.nx, 'image_data': self.data, 'exposure_map': self._exp_map,
                        'background_rms': self._sigma_b, 'ra_at_xy_0': self._coords._ra_at_xy_0,
                         'dec_at_xy_0': self._coords._dec_at_xy_0, 'transform_pix2angle': self._coords._Mpix2a}
         if hasattr(self, '_noise_map'):
             kwargs_data['noise_map'] = self._noise_map
         return kwargs_data
+        """
 
     def update_data(self, image_data):
         """
@@ -102,6 +101,17 @@ class Data(object):
         if not self.nx == nx and not self.ny == ny:
             raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self.nx, self.ny))
         self._data = image_data
+
+    def shift_coordinate_grid(self, x_shift, y_shift, pixel_unit=False):
+        """
+        shifts the coordinate system
+        :param x_shif: shift in x (or RA)
+        :param y_shift: shift in y (or DEC)
+        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+        :return: updated data class with change in coordinate system
+        """
+        self._coords.shift_coordinate_grid(x_shift, y_shift, pixel_unit=pixel_unit)
+        self._x_grid, self._y_grid = self._coords.coordinate_grid(self.nx)
 
     @property
     def data(self):

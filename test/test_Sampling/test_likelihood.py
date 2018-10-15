@@ -10,6 +10,8 @@ from lenstronomy.Sampling.parameters import Param
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 
 
 class TestFittingSequence(object):
@@ -30,13 +32,12 @@ class TestFittingSequence(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                               truncate=3,
                                               kernel=None)
-        #psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-        #                                      truncate=6,
-        #                                      kernel=psf_class.kernel_point_source)
+        psf_class = PSF(kwargs_psf)
 
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 

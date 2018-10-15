@@ -279,7 +279,7 @@ def fwhm_kernel(kernel):
     max_flux = kernel[int((n-1)/2), int((n-1)/2)]
     I_2 = max_flux/2.
     I_r = kernel[int((n-1)/2), int((n-1)/2):]
-    r = np.linspace(0, (n-1)/2, (n+1)/2)
+    r = np.linspace(0, (n-1)/2, int((n + 1) / 2))
     for i in range(1, len(r)):
         if I_r[i] < I_2:
             fwhm_2 = (I_2 - I_r[i-1])/(I_r[i] - I_r[i-1]) + r[i-1]

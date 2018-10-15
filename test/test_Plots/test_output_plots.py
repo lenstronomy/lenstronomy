@@ -3,13 +3,15 @@ __author__ = 'sibirrer'
 import pytest
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Data.imaging_data import Data
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Plots.output_plots import LensModelPlot
 import lenstronomy.Plots.output_plots as output_plots
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
+
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -32,13 +34,15 @@ class TestOutputPlots(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(self.kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                     truncate=6,
-                                                    kernel=psf_class.kernel_point_source)
+                                                    kernel=kwargs_psf['kernel_point_source'])
+        psf_class = PSF(kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -76,8 +80,7 @@ class TestOutputPlots(object):
                                          self.kwargs_lens_light, self.kwargs_ps)
 
         data_class.update_data(image_sim)
-        self.kwargs_data = data_class.constructor_kwargs()
-        self.kwargs_psf = psf_class.constructor_kwargs()
+        self.kwargs_data['image_data'] = image_sim
         self.kwargs_model = {'lens_model_list': lens_model_list,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,

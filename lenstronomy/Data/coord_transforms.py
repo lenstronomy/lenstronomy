@@ -65,3 +65,20 @@ class Coordinates(object):
         ra_coords = util.array2image(ra_coords)  # new
         dec_coords = util.array2image(dec_coords)  # new
         return ra_coords, dec_coords
+
+    def shift_coordinate_grid(self, x_shift, y_shift, pixel_unit=False):
+        """
+        shifts the coordinate system
+        :param x_shif: shift in x (or RA)
+        :param y_shift: shift in y (or DEC)
+        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+        :return: updated data class with change in coordinate system
+        """
+        if pixel_unit is True:
+            ra_shift, dec_shift = self.map_pix2coord(x_shift, y_shift)
+        else:
+            ra_shift, dec_shift = x_shift, y_shift
+        self._ra_at_xy_0 += ra_shift
+        self._dec_at_xy_0 += dec_shift
+        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
+                                                                    self._Ma2pix)

@@ -95,7 +95,7 @@ class TestData(object):
         # to have the same consistent kernel, we re-size (average over the sub-sampled pixels) the sub-sampled kernel
         kernel_point_source = image_util.re_size(kernel_point_source_subsampled, subsampling_res)
         # here we create the two PSF() classes
-        kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source_subsampled': kernel_point_source_subsampled, 'subsampling_factor': subsampling_res}
+        kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source_subsampled': kernel_point_source_subsampled, 'point_source_subsampling_factor': subsampling_res}
         psf_pixel_subsampled = PSF(kwargs_psf=kwargs_pixel_subsampled)
         kwargs_pixel = {'psf_type': 'PIXEL',
                         'kernel_point_source': kernel_point_source}

@@ -47,7 +47,7 @@ class FittingSequence(object):
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
                                                                 self._lens_light_temp,self._ps_temp, self._cosmo_temp)
             elif fitting_routine in ['PSO']:
-                lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain, param = self.pso(fitting_kwargs,
+                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param = self.pso(fitting_kwargs,
                                                                             self._lens_temp, self._source_temp,
                                                                             self._lens_light_temp, self._ps_temp,
                                                                                                       self._cosmo_temp)
@@ -172,7 +172,6 @@ class FittingSequence(object):
                 kwargs_data = self.multi_band_list[i][0]
                 kwargs_psf = self.multi_band_list[i][1]
                 kwargs_numerics = self.multi_band_list[i][2]
-                psf_symmetry = kwargs_psf.get('psf_symmetry', 1)
                 image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
                                                                kwargs_psf=kwargs_psf,
                                                                kwargs_numerics=kwargs_numerics,
@@ -181,8 +180,7 @@ class FittingSequence(object):
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        lens_light_input, ps_input,
                                                        factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                       symmetry=psf_symmetry, verbose=self._verbose,
-                                                       no_break=True)
+                                                        verbose=self._verbose, no_break=True)
                 self.multi_band_list[i][1] = kwargs_psf
                 self.fitting.multi_band_list[i][1] = kwargs_psf
         return 0

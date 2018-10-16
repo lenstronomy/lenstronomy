@@ -39,8 +39,9 @@ class PsfFitting(object):
         self._stacking_method = kwargs_psf_iter.get('stacking_method', 'median')
         self._block_center_neighbour = kwargs_psf_iter.get('block_center_neighbour', 0)
         self._keep_psf_error_map = kwargs_psf_iter.get('keep_error_map', False)
+        self._psf_symmetry = kwargs_psf_iter.get('psf_symmetry', 1)
 
-    def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=1, symmetry=1):
+    def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=1):
         """
 
         :param kwargs_data:
@@ -70,7 +71,7 @@ class PsfFitting(object):
 
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=self._image_model_class.Data.background_rms, factor=factor,
-                                                 stacking_option=self._stacking_method, symmetry=symmetry)
+                                                 stacking_option=self._stacking_method, symmetry=self._psf_symmetry)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
@@ -82,7 +83,7 @@ class PsfFitting(object):
         return kwargs_psf_new, logL_after, error_map
 
     def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light,
-                   kwargs_ps, factor=1, num_iter=10, symmetry=1, verbose=True, no_break=False):
+                   kwargs_ps, factor=1, num_iter=10, verbose=True, no_break=False):
         """
 
         :param kwargs_data:
@@ -98,13 +99,16 @@ class PsfFitting(object):
         """
         self._image_model_class.PointSource.set_save_cache(True)
         if not 'kernel_point_source_init' in kwargs_psf:
-            kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
+            kernel_point_source_init = copy.deepcopy(kwargs_psf['kernel_point_source'])
+        else:
+            kernel_point_source_init = kwargs_psf['kernel_point_source_init']
         kwargs_psf_new = copy.deepcopy(kwargs_psf)
         kwargs_psf_final = copy.deepcopy(kwargs_psf)
         if 'psf_error_map' in kwargs_psf:
-            error_map = kwargs_psf['psf_error_map']
+            error_map_final = kwargs_psf['psf_error_map']
         else:
-            error_map = 0
+            error_map_final = np.zeros_like(kernel_point_source_init)
+        error_map_init = copy.deepcopy(error_map_final)
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
@@ -112,9 +116,10 @@ class PsfFitting(object):
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=factor, symmetry=symmetry)
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=factor)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
+                error_map_final = copy.deepcopy(error_map)
                 logL_best = logL_after
                 i_best = i + 1
             else:
@@ -125,8 +130,11 @@ class PsfFitting(object):
         if verbose is True:
             print("iteration of step %s gave best reconstruction." % i_best)
             print("log likelihood before: %s and log likelihood after: %s" % (logL_before, logL_best))
-        if not self._keep_psf_error_map:
-            kwargs_psf_new['psf_error_map'] = error_map
+        if self._keep_psf_error_map is True:
+            kwargs_psf_final['psf_error_map'] = error_map_init
+        else:
+            kwargs_psf_final['psf_error_map'] = error_map_final
+        kwargs_psf_final['kernel_point_source_init'] = kernel_point_source_init
         return kwargs_psf_final
 
     def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,

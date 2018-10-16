@@ -194,25 +194,32 @@ class PSF(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
 
-    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=11):
+    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=11, psf_subgrid=True):
         """
 
         :param unconvolved_image: 2d image with subsampled pixels with subgrid_res
         :param subgrid_res: subsampling resolution
         :param subsampling_size: size of the subsampling convolution in units of image pixels
+        :param psf_subgrid: bool, if False, the convolution is performed on the pixel size of the data
         :return: convolved 2d image in units of the pixels
         """
         unconvolved_image_resized = image_util.re_size(unconvolved_image, subgrid_res)
         if self.psf_type == 'NONE':
             image_conv_resized = unconvolved_image_resized
         elif self.psf_type == 'GAUSSIAN':
-            grid_scale = self._pixel_size / float(subgrid_res)
-            sigma = self._sigma_gaussian/grid_scale
-            image_conv = ndimage.filters.gaussian_filter(unconvolved_image, sigma, mode='nearest', truncate=self._truncation)
-            image_conv_resized = image_util.re_size(image_conv, subgrid_res)
+            if psf_subgrid is True:
+                grid_scale = self._pixel_size / float(subgrid_res)
+                sigma = self._sigma_gaussian/grid_scale
+                image_conv = ndimage.filters.gaussian_filter(unconvolved_image, sigma, mode='nearest', truncate=self._truncation)
+                image_conv_resized = image_util.re_size(image_conv, subgrid_res)
+            else:
+                sigma = self._sigma_gaussian / self._pixel_size
+                image_conv_resized = ndimage.filters.gaussian_filter(unconvolved_image_resized, sigma, mode='nearest',
+                                                             truncate=self._truncation)
+
         elif self.psf_type == 'PIXEL':
             kernel = self._kernel_pixel
-            if subgrid_res > 1:
+            if subgrid_res > 1 and psf_subgrid is True:
                 kernel_subgrid = self.subgrid_pixel_kernel(subgrid_res)
                 kernel, kernel_subgrid = kernel_util.split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res)
                 image_conv_subgrid = signal.fftconvolve(unconvolved_image, kernel_subgrid, mode='same')

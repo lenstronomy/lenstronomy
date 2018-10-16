@@ -22,6 +22,10 @@ class ImageNumerics(object):
         'subsampling_size': sub-sampling kernel size (in units of the pixel size), default is the size of the PSF
             for computational speed, smaller subsampling psf sizes are faster but less accurate.
 
+        'subgrid_res': int, subsampling resolution per data pixel in the ray tracing and evaluation of the extended surface brightness
+        'psf_subgrid': bool, if True performs the PSF convolution on the higher resolution subgrid surface brightness,
+            otherwise on the data frame.
+
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics
         """
@@ -187,7 +191,9 @@ class ImageNumerics(object):
         if unconvolved is True:
             image_convolved = image_util.re_size(image, self._subgrid_res)
         else:
-            image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res, subsampling_size=self._subsampling_size)
+            image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res,
+                                                            subsampling_size=self._subsampling_size,
+                                                            psf_subgrid=self._psf_subgrid)
         image_full = self._add_psf(image_convolved)
         return image_full
 

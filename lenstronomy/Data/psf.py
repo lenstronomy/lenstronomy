@@ -45,12 +45,7 @@ class PSF(object):
 
                 'pixel_subsampling_factor': int() factor of higher resolution subsampling psf for the convolution kernel
 
-                'sub_sampling_size': subsampling of the PSF performed at the size (in units of pixels of the original PSF)
-                    This number has to be smaller or equal the original pixel size. A smaller subsampling size leads to
-                     an increase in speed and a decrease in accuracy.
-
     - 'NONE': default option, results in no convolution, point sources will not be displayed
-
     """
 
     def __init__(self, kwargs_psf):
@@ -199,7 +194,7 @@ class PSF(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
 
-    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=1):
+    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=11):
         """
 
         :param unconvolved_image: 2d image with subsampled pixels with subgrid_res

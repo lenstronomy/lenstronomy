@@ -29,12 +29,13 @@ class PsfFitting(object):
     'keep_error_map': bool, if True, does not replace the error term associated with the PSF estimate.
         If false, re-estimates the variance between the PSF estimates.
 
+
+    The procedure only requires and changes the 'point_source_kernel' in the PSF() class and the 'psf_error_map'.
+    Any previously set subgrid kernels or pixel_kernels are removed and constructed from the 'point_source_kernel'.
+
     """
     def __init__(self, image_model_class, kwargs_psf_iter={}):
-        #TODO update subsampled PSF if required
-
         self._image_model_class = image_model_class
-        self._kwargs_numerics = copy.deepcopy(image_model_class.kwargs_numerics)
         self._stacking_method = kwargs_psf_iter.get('stacking_method', 'median')
         self._block_center_neighbour = kwargs_psf_iter.get('block_center_neighbour', 0)
         self._keep_psf_error_map = kwargs_psf_iter.get('keep_error_map', False)
@@ -53,18 +54,14 @@ class PsfFitting(object):
         """
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
-        self._image_model_class.update_numerics(self._kwargs_numerics)
 
         kernel_old = psf_class.kernel_point_source
-        kernel_small = psf_class.kernel_pixel
         kernel_size = len(kernel_old)
-        kernelsize_small = len(kernel_small)
-        kwargs_numerics_psf = copy.deepcopy(self._kwargs_numerics)
         #kwargs_numerics_psf['psf_error_map'] = False
-        kwargs_psf_new = copy.deepcopy(kwargs_psf)
-        if 'psf_error_map' in kwargs_psf_new:
-            kwargs_psf_new['psf_error_map'] /= 10
-        self._image_model_class.update_numerics(kwargs_numerics_psf)
+        kwargs_psf_copy = copy.deepcopy(kwargs_psf)
+        kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
+        if 'psf_error_map' in kwargs_psf_copy:
+            kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
@@ -74,18 +71,12 @@ class PsfFitting(object):
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
                                                  sigma_bkg=self._image_model_class.Data.background_rms, factor=factor,
                                                  stacking_option=self._stacking_method, symmetry=symmetry)
-        kernel_new_small = copy.deepcopy(kernel_new)
-        kernel_new_small = kernel_util.pixel_kernel(kernel_new_small, subgrid_res=1)
-        kernel_new_small = kernel_util.cut_psf(kernel_new_small, psf_size=kernelsize_small)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
-        if not self._kwargs_numerics.get('psf_keep_small', False):
-            kwargs_psf_new['kernel_pixel'] = kernel_new_small
         kwargs_psf_new['kernel_point_source'] = kernel_new
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(kwargs_psf_new))
-        self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                kwargs_lens_light, kwargs_ps)
         return kwargs_psf_new, logL_after, error_map
@@ -116,7 +107,6 @@ class PsfFitting(object):
             error_map = 0
         psf_class = PSF(kwargs_psf)
         self._image_model_class.update_psf(psf_class)
-        self._image_model_class.update_numerics(self._kwargs_numerics)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                           kwargs_lens_light, kwargs_ps)
         logL_best = copy.deepcopy(logL_before)
@@ -132,10 +122,10 @@ class PsfFitting(object):
                     if verbose:
                         print("iterative PSF reconstruction makes reconstruction worse in step %s - aborted" % i)
                     break
-        if verbose:
+        if verbose is True:
             print("iteration of step %s gave best reconstruction." % i_best)
             print("log likelihood before: %s and log likelihood after: %s" % (logL_before, logL_best))
-        if not self._kwargs_numerics.get('psf_keep_error_map', False):
+        if not self._keep_psf_error_map:
             kwargs_psf_new['psf_error_map'] = error_map
         return kwargs_psf_final
 

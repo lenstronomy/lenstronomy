@@ -143,15 +143,15 @@ class TestImageModel(object):
         assert diff_old > diff_new
         assert diff_new < 0.01
 
-    def test_mask_point_sources(self):
+    def test_mask_point_source(self):
         ra_image, dec_image, amp = self.imageModel.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         print(ra_image, dec_image, amp)
         x_grid, y_grid = self.imageModel.Data.coordinates
         x_grid = util.image2array(x_grid)
         y_grid = util.image2array(y_grid)
         radius = 0.5
-        mask_point_source_list = self.psf_fitting.mask_point_sources(ra_image, dec_image, x_grid, y_grid, radius)
-        assert mask_point_source_list[0][10, 10] == 1
+        mask_point_source = self.psf_fitting.mask_point_source(ra_image, dec_image, x_grid, y_grid, radius, i=0)
+        assert mask_point_source[10, 10] == 1
 
 
 if __name__ == '__main__':

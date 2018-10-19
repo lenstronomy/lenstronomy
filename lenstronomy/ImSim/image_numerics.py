@@ -25,6 +25,7 @@ class ImageNumerics(object):
         'subgrid_res': int, subsampling resolution per data pixel in the ray tracing and evaluation of the extended surface brightness
         'psf_subgrid': bool, if True performs the PSF convolution on the higher resolution subgrid surface brightness,
             otherwise on the data frame.
+        'point_source_subgrid': int, subsampling of point source PSF
 
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics

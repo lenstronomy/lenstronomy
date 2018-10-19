@@ -646,14 +646,14 @@ def plot_chain(chain, param_list):
     vel = np.array(vel_list)
     n_iter = len(pos)
     plt.figure()
-    for i in range(0,len(pos[0])):
-        ax.plot((pos[:,i]-pos[n_iter-1,i]),label=param_list[i])
+    for i in range(0, len(pos[0])):
+        ax.plot((pos[:, i]-pos[n_iter-1, i]) / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('particle position')
     ax.legend()
 
     ax = axes[2]
     for i in range(0,len(vel[0])):
-        ax.plot(vel[:,i], label=param_list[i])
+        ax.plot(vel[:, i] / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('param velocity')
     ax.legend()
     return f, axes

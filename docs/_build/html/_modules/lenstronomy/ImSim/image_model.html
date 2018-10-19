@@ -289,7 +289,7 @@
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
 
-<div class="viewcode-block" id="ImageModel.likelihood_data_given_model"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span>
+<div class="viewcode-block" id="ImageModel.likelihood_data_given_model"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span>
                                     <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -299,13 +299,13 @@
 <span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
 <span class="sd">        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles</span>
 <span class="sd">        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles</span>
-<span class="sd">        :param kwargs_else: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
+<span class="sd">        :param kwargs_ps: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
 <span class="sd">        :return: log likelihood (natural logarithm)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># generate image</span>
         <span class="n">im_sim</span><span class="p">,</span> <span class="n">model_error</span><span class="p">,</span> <span class="n">cov_matrix</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_linear_solve</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
-                                                                                   <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_else</span><span class="p">,</span>
-                                                                                   <span class="n">inv_bool</span><span class="o">=</span><span class="n">source_marg</span><span class="p">)</span>
+                                                                         <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span>
+                                                                         <span class="n">inv_bool</span><span class="o">=</span><span class="n">source_marg</span><span class="p">)</span>
         <span class="c1"># compute X^2</span>
         <span class="n">logL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">im_sim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">model_error</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cov_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">source_marg</span><span class="p">:</span>

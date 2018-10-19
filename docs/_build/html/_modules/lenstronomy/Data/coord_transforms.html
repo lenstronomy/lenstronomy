@@ -105,7 +105,24 @@
         <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
         <span class="n">ra_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">ra_coords</span><span class="p">)</span>  <span class="c1"># new</span>
         <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">dec_coords</span><span class="p">)</span>  <span class="c1"># new</span>
-        <span class="k">return</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span></div></div>
+        <span class="k">return</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span></div>
+
+<div class="viewcode-block" id="Coordinates.shift_coordinate_grid"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_grid">[docs]</a>    <span class="k">def</span> <span class="nf">shift_coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">,</span> <span class="n">pixel_unit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shifts the coordinate system</span>
+<span class="sd">        :param x_shif: shift in x (or RA)</span>
+<span class="sd">        :param y_shift: shift in y (or DEC)</span>
+<span class="sd">        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC</span>
+<span class="sd">        :return: updated data class with change in coordinate system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pixel_unit</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ra_shift</span><span class="p">,</span> <span class="n">dec_shift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_pix2coord</span><span class="p">(</span><span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ra_shift</span><span class="p">,</span> <span class="n">dec_shift</span> <span class="o">=</span> <span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span> <span class="o">+=</span> <span class="n">ra_shift</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span> <span class="o">+=</span> <span class="n">dec_shift</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_at_radec_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_at_radec_0</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_Ma2pix</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

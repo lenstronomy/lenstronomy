@@ -97,7 +97,7 @@
         <span class="n">ra_at_xy_0</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ra_at_xy_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ra_shift&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">dec_at_xy_0</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dec_at_xy_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dec_shift&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">transform_pix2angle</span> <span class="o">=</span> <span class="n">kwargs_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transform_pix2angle&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="n">Coordinates</span><span class="p">(</span> <span class="n">transform_pix2angle</span><span class="o">=</span><span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="o">=</span><span class="n">ra_at_xy_0</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="n">Coordinates</span><span class="p">(</span><span class="n">transform_pix2angle</span><span class="o">=</span><span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="o">=</span><span class="n">ra_at_xy_0</span><span class="p">,</span>
                                     <span class="n">dec_at_xy_0</span><span class="o">=</span><span class="n">dec_at_xy_0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">)</span>
@@ -118,18 +118,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_noise_map</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Data.constructor_kwargs"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.constructor_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">constructor_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    def constructor_kwargs(self):</span>
 
-
-<span class="sd">        :return: kwargs that allow to construct the Data() class</span>
+<span class="sd">        kwargs_data = {&#39;numPix&#39;: self.nx, &#39;image_data&#39;: self.data, &#39;exposure_map&#39;: self._exp_map,</span>
+<span class="sd">                       &#39;background_rms&#39;: self._sigma_b, &#39;ra_at_xy_0&#39;: self._coords._ra_at_xy_0,</span>
+<span class="sd">                        &#39;dec_at_xy_0&#39;: self._coords._dec_at_xy_0, &#39;transform_pix2angle&#39;: self._coords._Mpix2a}</span>
+<span class="sd">        if hasattr(self, &#39;_noise_map&#39;):</span>
+<span class="sd">            kwargs_data[&#39;noise_map&#39;] = self._noise_map</span>
+<span class="sd">        return kwargs_data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numPix&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="s1">&#39;image_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;exposure_map&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exp_map</span><span class="p">,</span>
-                       <span class="s1">&#39;background_rms&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">,</span> <span class="s1">&#39;ra_at_xy_0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span>
-                        <span class="s1">&#39;dec_at_xy_0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">,</span> <span class="s1">&#39;transform_pix2angle&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">}</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_noise_map&#39;</span><span class="p">):</span>
-            <span class="n">kwargs_data</span><span class="p">[</span><span class="s1">&#39;noise_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_noise_map</span>
-        <span class="k">return</span> <span class="n">kwargs_data</span></div>
 
 <div class="viewcode-block" id="Data.update_data"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.update_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -143,6 +142,17 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">==</span> <span class="n">nx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">==</span> <span class="n">ny</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;shape of new data </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> must equal old data </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ny</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">image_data</span></div>
+
+<div class="viewcode-block" id="Data.shift_coordinate_grid"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.shift_coordinate_grid">[docs]</a>    <span class="k">def</span> <span class="nf">shift_coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">,</span> <span class="n">pixel_unit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shifts the coordinate system</span>
+<span class="sd">        :param x_shif: shift in x (or RA)</span>
+<span class="sd">        :param y_shift: shift in y (or DEC)</span>
+<span class="sd">        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC</span>
+<span class="sd">        :return: updated data class with change in coordinate system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">shift_coordinate_grid</span><span class="p">(</span><span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">,</span> <span class="n">pixel_unit</span><span class="o">=</span><span class="n">pixel_unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -283,7 +293,7 @@
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">d_pos</span> <span class="o">/</span> <span class="n">exposure_map</span> <span class="o">+</span> <span class="n">background_rms</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">sigma</span></div>
 
-<div class="viewcode-block" id="Data.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">additional_error_map</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        computes the likelihood of the data given the model p(data|model)</span>
@@ -292,12 +302,12 @@
 
 <span class="sd">        :param model: the model (same dimensions and units as data)</span>
 <span class="sd">        :param mask: bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</span>
-<span class="sd">        :param error_map: additional error term (in same units as covariance matrix).</span>
+<span class="sd">        :param additional_error_map: additional error term (in same units as covariance matrix).</span>
 <span class="sd">            This can e.g. come from model errors in the PSF estimation.</span>
 <span class="sd">        :return: the natural logarithm of the likelihood p(data|model)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">C_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_map</span><span class="p">)</span>
-        <span class="n">X2</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_D</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_map</span><span class="p">))</span> <span class="o">*</span> <span class="n">mask</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_D</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">additional_error_map</span><span class="p">))</span> <span class="o">*</span> <span class="n">mask</span>
         <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
         <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">logL</span></div></div>

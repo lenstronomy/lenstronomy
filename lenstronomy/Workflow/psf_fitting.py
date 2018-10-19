@@ -38,7 +38,7 @@ class PsfFitting(object):
         self._image_model_class = image_model_class
         self._stacking_method = kwargs_psf_iter.get('stacking_method', 'median')
         self._block_center_neighbour = kwargs_psf_iter.get('block_center_neighbour', 0)
-        self._keep_psf_error_map = kwargs_psf_iter.get('keep_error_map', False)
+        self._keep_psf_error_map = kwargs_psf_iter.get('keep_error_map', True)
         self._psf_symmetry = kwargs_psf_iter.get('psf_symmetry', 1)
 
     def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, factor=1):
@@ -63,6 +63,7 @@ class PsfFitting(object):
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
         if 'psf_error_map' in kwargs_psf_copy:
             kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
+        self._image_model_class.update_psf(PSF(kwargs_psf_new))
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)

@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+import lenstronomy.Util.param_util as param_util
 
 
 class LensParam(object):
@@ -43,7 +44,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
                                 coeffs = args[i:i + num_coeffs]
@@ -93,7 +94,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         coeffs = kwargs['coeffs']
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 coeffs = coeffs[6:]
                             elif self._num_images == 2:
@@ -106,6 +107,12 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
+                    elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                        if name == 'e1':
+                            _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
+                            args.append(gamma_ext)
+                        else:
+                            pass
                     else:
                         args.append(kwargs[name])
         return args
@@ -125,7 +132,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
                             elif self._num_images == 2:

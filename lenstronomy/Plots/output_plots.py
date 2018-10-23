@@ -389,7 +389,7 @@ class LensModelPlot(object):
 
         source = self._imageModel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source)
         source = util.array2image(source)
-        if convolution:
+        if convolution is True:
             source = ndimage.filters.gaussian_filter(source, sigma=source_sigma / deltaPix_source, mode='nearest',
                                                       truncate=20)
 

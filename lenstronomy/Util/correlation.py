@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 from scipy import fftpack
 import numpy as np
-import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 
 

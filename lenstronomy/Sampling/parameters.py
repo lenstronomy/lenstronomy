@@ -363,7 +363,7 @@ class Param(object):
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
-        if self._solver:
+        if self._solver is True:
             if kwargs_init is None:
                 raise ValueError("kwargs_lens_init must be specified when the solver is enabled!")
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)

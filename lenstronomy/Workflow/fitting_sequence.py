@@ -81,7 +81,7 @@ class FittingSequence(object):
         n_run = fitting_kwargs['n_run']
         walkerRatio = fitting_kwargs['walkerRatio']
         mpi = fitting_kwargs.get('mpi', False)
-        sigma_scale = fitting_kwargs['sigma_scale']
+        sigma_scale = fitting_kwargs.get('sigma_scale', 1)
         compute_bool = fitting_kwargs.get('compute_bands', None)
 
         gamma_fixed = fitting_kwargs.get('gamma_fixed', False)

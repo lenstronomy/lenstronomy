@@ -14,6 +14,7 @@ Contributors
 * Joel Akeret
 * Anowar Shajib
 * Daniel Gilman
+* Lilan Yang
 * Felix A. Kuhn
 * Kevin Fusshoeller
 * Cyril Welschen

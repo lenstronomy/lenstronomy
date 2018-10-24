@@ -8,7 +8,8 @@ class ImageNumerics(object):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
-    def __init__(self, data, psf, kwargs_numerics):
+    def __init__(self, data, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
+                 point_source_subgrid=3, subsampling_size=5):
         """
 
         optional keywords for masking purposes:
@@ -36,12 +37,11 @@ class ImageNumerics(object):
         self._Data = data
         self._PSF = psf
         self._nx, self._ny = np.shape(self._Data.data)
-        self._subgrid_res = kwargs_numerics.get('subgrid_res', 1)
-        self._psf_subgrid = kwargs_numerics.get('psf_subgrid', False)
-        self._fix_psf_error_map = kwargs_numerics.get('fix_psf_error_map', False)
-
-        if 'idex_mask' in kwargs_numerics:
-            self._idex_mask_2d = kwargs_numerics['idex_mask']
+        self._subgrid_res = subgrid_res
+        self._psf_subgrid = psf_subgrid
+        self._fix_psf_error_map = fix_psf_error_map
+        if idex_mask is not None:
+            self._idex_mask_2d = idex_mask
             if not np.shape(self._idex_mask_2d) == np.shape(self._Data.data):
                 raise ValueError("'idex_mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
                                  % (np.shape(self._idex_mask_2d), np.shape(self._Data.data)))
@@ -51,8 +51,8 @@ class ImageNumerics(object):
             self._idex_mask_bool = False
         self._idex_mask = util.image2array(self._idex_mask_2d)
 
-        if 'mask' in kwargs_numerics:
-            self._mask = kwargs_numerics['mask']
+        if mask is not None:
+            self._mask = mask
             if not np.shape(self._mask) == np.shape(self._Data.data):
                 raise ValueError("'mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
                                  % (np.shape(self._mask), np.shape(self._Data.data)))
@@ -61,10 +61,10 @@ class ImageNumerics(object):
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
-        self._point_source_subgrid = kwargs_numerics.get('point_source_subgrid', 3)
+        self._point_source_subgrid = point_source_subgrid
         if self._point_source_subgrid % 2 == 0:
             raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
-        self._subsampling_size = kwargs_numerics.get('subsampling_size', 5)
+        self._subsampling_size = subsampling_size
 
     @property
     def exposure_map_array(self):

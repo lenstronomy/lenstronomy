@@ -24,15 +24,14 @@ class ImageModel(object):
         """
         self.PSF = psf_class
         self.Data = data_class
-        self.kwargs_numerics = kwargs_numerics
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
         self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
             if self.PSF.psf_error_map is not None:
-                self._psf_error_map = kwargs_numerics.get('psf_error_map', True)
+                self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
             else:
                 self._psf_error_map = False
@@ -81,7 +80,7 @@ class ImageModel(object):
         :return: no return. Class is updated.
         """
         self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """

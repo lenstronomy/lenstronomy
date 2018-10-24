@@ -16,7 +16,7 @@ class TestImageNumerics(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
         self.PSF = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
-        self.ImageNumerics = ImageNumerics(self.Data, self.PSF, kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(self.Data, self.PSF, **kwargs_numerics)
 
     def test_psf_cutout(self):
         idex_mask = np.zeros((5, 5))
@@ -27,7 +27,7 @@ class TestImageNumerics(object):
         kwargs_data = {'image_data': image_data}
         data = Data(kwargs_data)
         kwargs_numerics = {'idex_mask': idex_mask}
-        imageNumerics = ImageNumerics(data, self.PSF, kwargs_numerics=kwargs_numerics)
+        imageNumerics = ImageNumerics(data, self.PSF, **kwargs_numerics)
         cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
         print(cut_data)
         assert cut_data[0, 0] == 1
@@ -40,7 +40,7 @@ class TestImageNumerics(object):
         kwargs_data = {'image_data': image_data}
         data = Data(kwargs_data)
         kwargs_numerics = {'idex_mask': idex_mask}
-        imageNumerics = ImageNumerics(data, self.PSF, kwargs_numerics=kwargs_numerics)
+        imageNumerics = ImageNumerics(data, self.PSF, **kwargs_numerics)
         cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
         assert cut_data[1, 1] == 1
 
@@ -67,7 +67,7 @@ class TestImageNumerics(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1., 'point_source_subgrid': 1}
         psf = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
-        imageNumerics = ImageNumerics(data, psf, kwargs_numerics)
+        imageNumerics = ImageNumerics(data, psf, **kwargs_numerics)
         ra_pos = np.array([10, 7])
         dec_pos = np.array([6, 7])
         amp = np.array([10, 10])
@@ -78,7 +78,7 @@ class TestImageNumerics(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 2., 'point_source_subgrid': 3}
         psf = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': True}
-        imageNumerics = ImageNumerics(data, psf, kwargs_numerics)
+        imageNumerics = ImageNumerics(data, psf, **kwargs_numerics)
         ra_pos = np.array([7.1, 14])
         dec_pos = np.array([7, 7.32])
         amp = np.array([10, 10])
@@ -90,7 +90,6 @@ class TestImageNumerics(object):
 
         assert image[7, 14] <= image_subgrid[7, 14]
         npt.assert_almost_equal(image[0, 0], image_subgrid[0, 0], decimal=8)
-
 
 
 if __name__ == '__main__':

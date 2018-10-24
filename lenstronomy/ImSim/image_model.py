@@ -162,12 +162,11 @@ class ImageModel(object):
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
                                              kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
         error_map = self.error_map(kwargs_lens, kwargs_ps)
-        error_map = self.ImageNumerics.image2array(error_map)
+        error_map_1d = self.ImageNumerics.image2array(error_map)
         d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map), d, inv_bool=inv_bool)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map_1d), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         model = self.ImageNumerics.array2image(wls_model)
-        error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,

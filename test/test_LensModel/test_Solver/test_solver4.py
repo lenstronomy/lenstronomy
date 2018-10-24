@@ -224,10 +224,11 @@ class TestSolver4Point(object):
         kwargs_lens = [kwargs_spemd, kwargs_shear, kwargs_sis]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
-        kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
+        kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0.1, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': e2}, {'theta_E': .1, 'center_x': 1, 'center_y': 0}]
         solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
+        print(kwargs_lens_new, 'kwargs_lens_new')
         assert accuracy < 10**(-10)
         x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
         x_source, y_source = np.mean(x_source), np.mean(y_source)

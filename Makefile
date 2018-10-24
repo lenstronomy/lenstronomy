@@ -52,4 +52,6 @@ sdist: clean
 	ls -l dist
 
 pypi-upload:
-    python setup.py sdist upload
+    python setup.py sdist
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+    twine upload dist/*

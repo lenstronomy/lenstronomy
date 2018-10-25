@@ -115,8 +115,10 @@ class Optimizer(object):
         # initialize particle swarm inital param limits
         if 're_optimize_scale' in optimizer_kwargs:
             scale = optimizer_kwargs['re_optimize_scale']
+            self._re_optimize_scale = scale
         else:
             scale = 1
+            self._re_optimize_scale = scale
 
         self._lower_limit, self._upper_limit = self._params.to_vary_limits(self._re_optimize, scale = scale)
 
@@ -182,7 +184,8 @@ class Optimizer(object):
         else:
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
             print('Warning: possibly a bad fit.')
-            x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
+            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort=False)
+            #x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))
@@ -208,9 +211,8 @@ class Optimizer(object):
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=self._compute_mags_postpso)
 
-        #method = 'Nelder-Mead'
-        #method = 'BFGS'
         if self._opt_method == 'Nelder-Mead' or self._opt_method == 'powell':
+
             options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                        'maxiter': self._simplex_iter * len(params)}
         else:

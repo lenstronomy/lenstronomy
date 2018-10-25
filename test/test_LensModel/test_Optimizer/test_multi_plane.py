@@ -270,7 +270,7 @@ class TestMultiPlaneOptimizer(object):
 
             _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
-        optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays}
+        optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays, 'optimization_algorithm': 'powell'}
         reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                 magnification_target=self.magnification_simple,
                                 redshift_list=redshift_list_reoptimize,

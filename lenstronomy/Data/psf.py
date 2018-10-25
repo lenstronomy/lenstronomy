@@ -115,9 +115,8 @@ class PSF(object):
 
         :return:
         """
-        if hasattr(self, '_kernel_pixel_subsampled'):
-            if self._pixel_subsampling_factor == subgrid_res:
-                pass
+        if hasattr(self, '_kernel_pixel_subsampled') and self._pixel_subsampling_factor == subgrid_res:
+            pass
         elif hasattr(self, '_kernel_point_source_subsampled'):
             # if the subsampling scale matches the one from the point source - take it!
             if self._point_source_subsampling_factor == subgrid_res:
@@ -138,9 +137,8 @@ class PSF(object):
 
         :return:
         """
-        if hasattr(self, '_kernel_point_source_subsampled'):
-            if self._point_source_subsampling_factor == subgrid_res:
-                pass
+        if hasattr(self, '_kernel_point_source_subsampled') and self._point_source_subsampling_factor == subgrid_res:
+            pass
         else:
             kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True, num_iter=5)
             n = len(self.kernel_point_source)

@@ -53,8 +53,7 @@ class Solver(object):
         :return: precision of Euclidean distances between the different rays arriving at the image positions
         """
         ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image,
-                                                         kwargs_lens)
+        source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
         dist = np.sqrt((source_x - source_x[0]) ** 2 + (source_y - source_y[0]) ** 2)
         return dist
 

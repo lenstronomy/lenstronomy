@@ -12,10 +12,10 @@ class Multiband(object):
 
     def __init__(self, multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class):
         self._num_bands = len(multi_band_list)
-        self.lensModel = lens_model_class
-        self.pointSource = point_source_class
-        self.sourceModel = source_model_class
-        self.lensLightModel = lens_light_model_class
+        self.LensModel = lens_model_class
+        self.PointSource = point_source_class
+        self.SourceModel = source_model_class
+        self.LensLightModel = lens_light_model_class
         self._imageModel_list = []
         for i in range(self._num_bands):
             kwargs_data = multi_band_list[i][0]
@@ -23,7 +23,13 @@ class Multiband(object):
             kwargs_numerics = multi_band_list[i][2]
             data_i = Data(kwargs_data=kwargs_data)
             psf_i = PSF(kwargs_psf=kwargs_psf)
-            self._imageModel_list.append(ImageModel(data_i, psf_i, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics))
+            self._imageModel_list.append(ImageModel(data_i, psf_i, lens_model_class, source_model_class,
+                                                    lens_light_model_class, point_source_class,
+                                                    kwargs_numerics=kwargs_numerics))
+
+    @property
+    def num_bands(self):
+        return self._num_bands
 
     def reset_point_source_cache(self):
         """
@@ -31,9 +37,9 @@ class Multiband(object):
 
         :return:
         """
-        if self.pointSource is not None:
-            self.pointSource.delete_lens_model_cach()
-            self.pointSource.set_save_cache(True)
+        if self.PointSource is not None:
+            self.PointSource.delete_lens_model_cach()
+            self.PointSource.set_save_cache(True)
             for imageModel in self._imageModel_list:
                 imageModel.PointSource.delete_lens_model_cach()
                 imageModel.PointSource.set_save_cache(True)
@@ -49,7 +55,9 @@ class Multiband(object):
         """
         source_light_final_list = []
         for i in range(self._num_bands):
-            source_light_final = self._imageModel_list[i].source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved, de_lensed=de_lensed)
+            source_light_final = self._imageModel_list[i].source_surface_brightness(kwargs_source, kwargs_lens,
+                                                                                    unconvolved=unconvolved,
+                                                                                    de_lensed=de_lensed)
             source_light_final_list.append(source_light_final)
         return source_light_final_list
 
@@ -79,14 +87,19 @@ class Multiband(object):
         """
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
-            wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=inv_bool)
+            wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
+                                                                                                 kwargs_source,
+                                                                                                 kwargs_lens_light,
+                                                                                                 kwargs_else,
+                                                                                                 inv_bool=inv_bool)
             wls_list.append(wls_model)
             error_map_list.append(error_map)
             cov_param_list.append(cov_param)
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def image(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True,
+              lens_light_add=True, point_source_add=True):
         """
         make a image with a realisation of linear parameter values "param"
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
@@ -101,7 +114,9 @@ class Multiband(object):
         """
         image_list = []
         for i in range(self._num_bands):
-            image = self._imageModel_list[i].image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=unconvolved, source_add=source_add, lens_light_add=lens_light_add, point_source_add=point_source_add)
+            image = self._imageModel_list[i].image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
+                                                   unconvolved=unconvolved, source_add=source_add,
+                                                   lens_light_add=lens_light_add, point_source_add=point_source_add)
             image_list.append(image)
         return image_list
 
@@ -129,7 +144,8 @@ class Multiband(object):
         x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False, compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False,
+                                    compute_bool=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -148,7 +164,9 @@ class Multiband(object):
         logL = 0
         for i in range(self._num_bands):
             if compute_bool[i] is True:
-                logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=source_marg)
+                logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
+                                                                             kwargs_lens_light, kwargs_else,
+                                                                             source_marg=source_marg)
         return logL
 
     def numData_evaluate(self, compute_bool=None):
@@ -160,7 +178,7 @@ class Multiband(object):
         num = 0
         for i in range(self._num_bands):
             if compute_bool[i] is True:
-                num += self._imageModel_list[i].numData_evaluate
+                num += self._imageModel_list[i].numData_evaluate()
         return num
 
     def fermat_potential(self, kwargs_lens, kwargs_else):

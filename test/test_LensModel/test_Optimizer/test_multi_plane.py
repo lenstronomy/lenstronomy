@@ -1,13 +1,9 @@
-from lenstronomy.LensModel.Optimizer.optimizer import Optimizer
+from lenstronomy.LensModel.Optimizer.optimizer import Optimizer, MultiPlaneLensing
 import numpy.testing as npt
 from astropy.cosmology import FlatLambdaCDM
 import pytest
-from time import time
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
-from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
-from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-
 
 class TestMultiPlaneOptimizer(object):
 
@@ -86,13 +82,6 @@ class TestMultiPlaneOptimizer(object):
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear')
 
-        self.optimizer_single_background = Optimizer(self.x_pos_simple, self.y_pos_simple,
-                                        magnification_target=self.magnification_simple,
-                                        redshift_list=redshift_list_full,
-                                        lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
-                                        multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                        astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear',single_background=True)
-
         self.optimizer_params = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                         magnification_target=self.magnification_simple,
                                         redshift_list=redshift_list_full,
@@ -100,76 +89,6 @@ class TestMultiPlaneOptimizer(object):
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',
                                         constrain_params={'shear':[0.06,0.01],'shear_pa':[-30,10],'theta_E':[1,0.1]})
-
-        lens_model_list_simple_background = ['SPEP', 'SHEAR']
-        z_list_simple = [0.5, 0.5]
-        kwargs_lens_simple_background = [{'theta_E': 0.7, 'center_x': -0.01, 'center_y': 0.001, 'e1': 0.018, 'gamma': 2.,
-                               'e2': 0.089}, {'e1': 0.0041, 'e2': -0.029}]
-        sub_1 = {'theta_Rs': 0.01, 'center_y': 0.55, 'center_x': -0.54, 'Rs': 0.13}
-        sub_2 = {'theta_Rs': 0.012, 'center_y': -0.3, 'center_x': -0.1, 'Rs': 0.1}
-        sub_3 = {'theta_Rs': 0.0011, 'center_y': 0.92, 'center_x': -0.81, 'Rs': 0.13}
-        sub_4 = {'theta_Rs': 0.0009, 'center_y': 0.4, 'center_x': -0.41, 'Rs': 0.13}
-        sub_5 = {'theta_Rs': 0.002, 'center_y': 0.5, 'center_x': 0.25, 'Rs': 0.13}
-        kwargs_lens_subs = [sub_1, sub_2, sub_3, sub_4, sub_5]
-        z_list_subs = [0.6, 0.65, 0.7, 0.7, 0.8]
-        lens_model_list_subs = ['NFW'] * 5
-
-        self.kwargs_lens_full_background = kwargs_lens_simple_background + kwargs_lens_subs
-
-        self.lensmodel_fixed_background = LensModel(lens_model_list=lens_model_list_simple_background + lens_model_list_subs,
-                          redshift_list=z_list_simple + z_list_subs,z_source=1.5,
-                          cosmo=self.cosmo, multi_plane=True)
-
-        self.x_pos_single_background = np.array([0.52879627,-0.51609593,-0.55462914, 0.39140589])
-        self.y_pos_single_background = np.array([-0.6484213, 0.54131023, -0.34026707, 0.46996126])
-
-    def test_single_background(self):
-
-        alpha_x_true = np.array([-0.36907648, 0.41860318, 0.42265953, -0.26021003])
-        alpha_y_true = np.array([0.4160718, -0.48592582, 0.17717094, -0.42390834])
-        x_in_true = np.array([998.6980648, -974.71188014, -1047.48667913, 739.21910397])
-        y_in_true = np.array([-1224.62493444, 1022.33224746, -642.6370298, 887.58077074])
-
-        true = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
-                                  self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
-                                  self.cosmo, [0, 1], single_background=False)
-
-        betax_true, betay_true = true.ray_shooting_fast(self.kwargs_lens_full_background[0:2],
-                                         thetax=self.x_pos_single_background,thetay=self.y_pos_single_background)
-
-        split = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
-                                  self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
-                                  self.cosmo,[0, 1], single_background=True)
-
-        split._background._alpha_x_approx = alpha_x_true
-        split._background._alpha_y_approx = alpha_y_true
-
-        x,y = split._background._fixed_background(x_in_true,y_in_true,self.kwargs_lens_full_background[2:],alpha_x_true,alpha_y_true)
-
-        betax,betay = x*split._T_z_source**-1,y*split._T_z_source**-1
-
-        npt.assert_almost_equal(betax,betax_true)
-        npt.assert_almost_equal(betay,betay_true)
-
-        macro_args = self.kwargs_lens_full_background[0:2]
-
-        split = MultiPlaneLensing(self.lensmodel_fixed_background, self.x_pos_single_background,
-                                  self.y_pos_single_background, self.kwargs_lens_full_background, 1.5, 0.5,
-                                  self.cosmo, [0, 1], single_background=True)
-        _ = split.ray_shooting_fast(macro_args)
-        mag_point = split.magnification_fast(macro_args)
-
-        extension = LensModelExtensions(self.optimizer_single_background.solver.lensModel)
-
-        mag_finite = extension.magnification_finite(self.x_pos_single_background, self.y_pos_single_background,
-                                                    self.kwargs_lens_full_background,source_sigma=0.01,
-                                             grid_number=200,window_size=0.4)
-
-        delta = np.sum(((mag_point - mag_finite)*(mag_point)**-1)**2)
-        npt.assert_(delta < 0.25)
-
-        kwargs_lens, source, [x_image, y_image] = self.optimizer_single_background.optimize(n_particles=10,
-                                                          n_iterations=10,restart=2)
 
     def test_param_transform(self):
 
@@ -224,7 +143,7 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full,self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full,
                                   1.5,0.5,self.cosmo,[0,1])
 
-        macromodel_lensmodel, macro_args, halos_lensmodel, halos_args,_ = \
+        macromodel_lensmodel, macro_args, halos_lensmodel, halos_args, _, _, _ = \
             split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, z_break=0.5, macro_indicies=[0, 1])
 
         assert macro_args == self.kwargs_lens_simple
@@ -235,13 +154,13 @@ class TestMultiPlaneOptimizer(object):
         main = split._model_to_vary
         back = split._background
 
-        _ = fore.ray_shooting(split._halo_args, true_foreground=True)
+        _ = fore.ray_shooting(split._halo_args, offset_index=0, force_compute=False)
 
         assert fore._z_to_vary == 0.5
         assert back._z_source == 1.5
         assert main._z_to_vary == 0.5
 
-        output = fore._rays['x'],fore._rays['y'],fore._rays['alphax'],fore._rays['alphay']
+        output = fore._rays[0]['x'],fore._rays[0]['y'],fore._rays[0]['alphax'],fore._rays[0]['alphay']
         output_true = self.lens_model_front.lens_model.ray_shooting_partial(np.zeros_like(self.x_pos_simple),
                                                                             np.zeros_like(self.y_pos_simple),
                                                                             self.x_pos_simple, self.y_pos_simple, 0, 0.5,
@@ -264,8 +183,8 @@ class TestMultiPlaneOptimizer(object):
         betax_true, betay_true = model.ray_shooting(xpos, ypos, kwargs)
 
         args = self.kwargs_lens_full[0:2]
-        betax, betay = split.ray_shooting_fast(macromodel_args=args,thetax=xpos,thetay=ypos,force_compute=True)
-        betax_fast, betay_fast = split.ray_shooting_fast(split._macro_args)
+        betax, betay = split._ray_shooting_fast(macromodel_args=args, thetax=xpos, thetay=ypos, force_compute=True)
+        betax_fast, betay_fast = split._ray_shooting_fast(split._macro_args)
 
         betax_func, betay_func = split.ray_shooting(0, 0.5, self.kwargs_lens_full)
         betax_true_2, betay_true_2 = self.lens_model_full.ray_shooting(0, 0.5, self.kwargs_lens_full)
@@ -284,9 +203,9 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        _  = split.ray_shooting_fast(self.kwargs_lens_full[0:2])
+        _  = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 
-        f1,f2,f3,f4 = split.hessian_fast(split._macro_args)
+        f1,f2,f3,f4 = split._hessian_fast(split._macro_args)
         t1,t2,t3,t4 = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
 
         npt.assert_almost_equal(f1,t1)
@@ -307,11 +226,11 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        _ = split.ray_shooting_fast(self.kwargs_lens_full[0:2])
+        _ = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 
         magnification_true = np.absolute(self.lens_model_full.magnification(self.x_pos_simple,
                                                                             self.y_pos_simple,self.kwargs_lens_full))
-        magnification_split = split.magnification_fast(self.kwargs_lens_simple)
+        magnification_split = split._magnification_fast(self.kwargs_lens_simple)
 
         npt.assert_almost_equal(magnification_true*max(magnification_true)**-1,
                                 magnification_split*max(magnification_split)**-1,2)
@@ -324,31 +243,45 @@ class TestMultiPlaneOptimizer(object):
     def test_multi_plane_simple(self):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
-        _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
+        _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         self.optimizer_simple._tol_src_penalty = 1e-30
 
         kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
                                                                                  restart=2)
-        _ = self.optimizer_simple.lensModel.magnification(x_image, y_image, kwargs_lens)
+        _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
     def test_multi_plane_reoptimize(self, tol=0.004):
 
-
         lens_model_list_reoptimize = self.lens_model_full.lens_model_list
         redshift_list_reoptimize = self.lens_model_full.redshift_list
+        scale = [0.5, 1]
 
-        for val in [True,False]:
+        for i, val in enumerate([False,True]):
             reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                     magnification_target=self.magnification_simple,
                                     redshift_list=redshift_list_reoptimize,
                                     lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                     verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val)
-
+                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
+                                    optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
 
             kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
-            _ = reoptimizer.lensModel.magnification(x_image, y_image, kwargs_lens)
+
+            _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
+
+        optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays, 'optimization_algorithm': 'powell'}
+        reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
+                                magnification_target=self.magnification_simple,
+                                redshift_list=redshift_list_reoptimize,
+                                lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full,
+                                multiplane=True,
+                                verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
+                                optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=False,
+                                optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True)
+
+        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20,
+                                                                                         n_iterations=10, restart=2)
 
     def test_multi_plane_subs(self,tol=0.004):
 

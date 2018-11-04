@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.Data package &#8212; lenstronomy 0.4.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.3.2',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.GalKin package" href="lenstronomy.GalKin.html" />
     <link rel="prev" title="lenstronomy.Cosmo package" href="lenstronomy.Cosmo.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -43,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,7 +56,7 @@
 <dl class="class">
 <dt id="lenstronomy.Data.coord_transforms.Coordinates">
 <em class="property">class </em><code class="descclassname">lenstronomy.Data.coord_transforms.</code><code class="descname">Coordinates</code><span class="sig-paren">(</span><em>transform_pix2angle</em>, <em>ra_at_xy_0</em>, <em>dec_at_xy_0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle linear coordinate transformations of a square pixel image</p>
 <dl class="method">
 <dt id="lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">
@@ -134,6 +127,16 @@
 :return: sqrt(pixel_area)</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_grid">
+<code class="descname">shift_coordinate_grid</code><span class="sig-paren">(</span><em>x_shift</em>, <em>y_shift</em>, <em>pixel_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.shift_coordinate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>shifts the coordinate system
+:param x_shif: shift in x (or RA)
+:param y_shift: shift in y (or DEC)
+:param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+:return: updated data class with change in coordinate system</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -142,7 +145,7 @@
 <dl class="class">
 <dt id="lenstronomy.Data.imaging_data.Data">
 <em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>kwargs_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
 <p>The Data() class is initialized with keyword arguments:</p>
 <ul class="simple">
@@ -156,7 +159,7 @@
 - ‘dec_shift’: shifts the coordinate system with respect to ‘dec_at_xy_0’</p>
 <p>optional keywords for noise properties:
 - ‘background_rms’: rms value of the background noise
-- ‘exp_time: float, exposure time to compute the Poisson noise contribution
+- ‘exp_time’: float, exposure time to compute the Poisson noise contribution
 - ‘exposure_map’: 2d numpy array, effective exposure time for each pixel. If set, will replace ‘exp_time’
 - ‘noise_map’: Gaussian noise (1-sigma) for each individual pixel.
 If this keyword is set, the other noise properties will be ignored.</p>
@@ -192,19 +195,6 @@ WARNING: For low count statistics, the noise in the data may lead to biased esti
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.Data.constructor_kwargs">
-<code class="descname">constructor_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.constructor_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.constructor_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">kwargs that allow to construct the Data() class</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="lenstronomy.Data.imaging_data.Data.coordinates">
 <code class="descname">coordinates</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.coordinates" title="Permalink to this definition">¶</a></dt>
@@ -223,17 +213,15 @@ WARNING: For low count statistics, the noise in the data may lead to biased esti
 <code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>data</em>, <em>background_rms=1</em>, <em>exposure_map=1</em>, <em>noise_map=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a diagonal matrix for the covariance estimation which describes the error</p>
 <p>Notes:</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>the exposure map must be positive definite. Values that deviate too much from the mean exposure time will be</dt>
-<dd><p class="first last">given a lower limit to not under-predict the Poisson component of the noise.</p>
-</dd>
+<dd>given a lower limit to not under-predict the Poisson component of the noise.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>the data must be positive semi-definite for the Poisson noise estimate.</dt>
-<dd><p class="first last">Values &lt; 0 (Possible after mean subtraction) will not have a Poisson component in their noise estimate.</p>
-</dd>
+<dd>Values &lt; 0 (Possible after mean subtraction) will not have a Poisson component in their noise estimate.</dd>
 </dl>
 </li>
 </ul>
@@ -298,7 +286,7 @@ number of flux counts = data * exposure_map</p>
 
 <dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.log_likelihood">
-<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>mask</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>mask</em>, <em>additional_error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.log_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given the model p(data|model)
 The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the
 background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).</p>
@@ -309,7 +297,7 @@ background rms value and the exposure time to compute the Poisson noise level (i
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model</strong> – the model (same dimensions and units as data)</li>
 <li><strong>mask</strong> – bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</li>
-<li><strong>error_map</strong> – additional error term (in same units as covariance matrix).
+<li><strong>additional_error_map</strong> – additional error term (in same units as covariance matrix).
 This can e.g. come from model errors in the PSF estimation.</li>
 </ul>
 </td>
@@ -391,6 +379,16 @@ This can e.g. come from model errors in the PSF estimation.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Data.imaging_data.Data.shift_coordinate_grid">
+<code class="descname">shift_coordinate_grid</code><span class="sig-paren">(</span><em>x_shift</em>, <em>y_shift</em>, <em>pixel_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.shift_coordinate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.shift_coordinate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>shifts the coordinate system
+:param x_shif: shift in x (or RA)
+:param y_shift: shift in y (or DEC)
+:param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+:return: updated data class with change in coordinate system</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Data.imaging_data.Data.update_data">
 <code class="descname">update_data</code><span class="sig-paren">(</span><em>image_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#Data.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.Data.update_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the data</p>
@@ -414,7 +412,7 @@ This can e.g. come from model errors in the PSF estimation.</li>
 <dl class="class">
 <dt id="lenstronomy.Data.psf.PSF">
 <em class="property">class </em><code class="descclassname">lenstronomy.Data.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>kwargs_psf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Point Spread Function convolution</p>
 <p>supported psy_types:</p>
 <ul>
@@ -429,7 +427,7 @@ This can e.g. come from model errors in the PSF estimation.</li>
 </dd>
 <dt>optional:</dt>
 <dd><p class="first last">‘truncation’: truncation of the Gaussian convolution, default: 5*fwhm
-the kernel size will be set to cover everything within the truncation</p>
+the kernel size will be set to cover everything within the truncation. In units of angle.</p>
 </dd>
 </dl>
 </dd>
@@ -444,15 +442,11 @@ the kernel size will be set to cover everything within the truncation</p>
 <dt>optional:</dt>
 <dd><dl class="first docutils">
 <dt>‘kernel_point_source_subsampled’: subsampled point source PSF, this keyword replaces</dt>
-<dd><p class="first last">the ‘kernel_point_source’ with the lower resolution of teh subsampled PSF model.</p>
+<dd><p class="first last">the ‘kernel_point_source’ with the lower resolution of the subsampled PSF model.</p>
 </dd>
 </dl>
-<p>‘subsampling_factor’: int() factor of higher resolution subsampling psf</p>
-<dl class="last docutils">
-<dt>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical</dt>
-<dd><p class="first last">convolution. If not specified, it will take the full point source kernel and numerically convolve it
-over the size of a pixel</p>
-</dd>
+<p>‘point_source_subsampling_factor’: int() factor of higher resolution subsampling psf for point source</p>
+<dl class="docutils">
 <dt>‘psf_error_map’: uncertainty in the PSF model. Same shape as ‘kernel_point_source’.</dt>
 <dd><dl class="first last docutils">
 <dt>This error will be added to the pixel error around the position of point sources as follows:</dt>
@@ -460,14 +454,15 @@ over the size of a pixel</p>
 </dd>
 </dl>
 </dd>
-<dt>‘sub_sampling_size’: subsampling of the PSF performed at the size (in units of pixels of the original PSF)</dt>
-<dd><dl class="first last docutils">
-<dt>This number has to be smaller or equal the original pixel size. A smaller subsampling size leads to</dt>
-<dd><p class="first last">performance improvements.</p>
+<dt>‘kernel_pixel’: PSF of an extended pixel, can be different size (odd axis number) for faster numerical</dt>
+<dd><p class="first last">convolution. If not specified, it will take the full point source kernel and numerically convolve it
+over the size of a pixel</p>
+</dd>
+<dt>‘kernel_pixel_subsampled’: subsampled PSF kernel, this keyword replaces</dt>
+<dd><p class="first last">the ‘kernel_pixel’ with the lower resolution of the subsampled PSF model.</p>
 </dd>
 </dl>
-</dd>
-</dl>
+<p class="last">‘pixel_subsampling_factor’: int() factor of higher resolution subsampling psf for the convolution kernel</p>
 </dd>
 </dl>
 </dd>
@@ -476,19 +471,6 @@ over the size of a pixel</p>
 <li><p class="first">‘NONE’: default option, results in no convolution, point sources will not be displayed</p>
 </li>
 </ul>
-<dl class="method">
-<dt id="lenstronomy.Data.psf.PSF.constructor_kwargs">
-<code class="descname">constructor_kwargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.constructor_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.constructor_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">kwargs that can construct the PSF() class instance</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="lenstronomy.Data.psf.PSF.kernel_pixel">
 <code class="descname">kernel_pixel</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_pixel" title="Permalink to this definition">¶</a></dt>
@@ -516,15 +498,16 @@ over the size of a pixel</p>
 
 <dl class="method">
 <dt id="lenstronomy.Data.psf.PSF.psf_convolution_new">
-<code class="descname">psf_convolution_new</code><span class="sig-paren">(</span><em>unconvolved_image</em>, <em>subgrid_res=1</em>, <em>subsampling_size=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_convolution_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_convolution_new" title="Permalink to this definition">¶</a></dt>
+<code class="descname">psf_convolution_new</code><span class="sig-paren">(</span><em>unconvolved_image</em>, <em>subgrid_res=1</em>, <em>subsampling_size=11</em>, <em>psf_subgrid=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.psf_convolution_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_convolution_new" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>unconvolved_image</strong> – 2d image with subsampled pixels with subgrid_res</li>
-<li><strong>subgrid_res</strong> – subsampling</li>
+<li><strong>subgrid_res</strong> – subsampling resolution</li>
 <li><strong>subsampling_size</strong> – size of the subsampling convolution in units of image pixels</li>
+<li><strong>psf_subgrid</strong> – bool, if False, the convolution is performed on the pixel size of the data</li>
 </ul>
 </td>
 </tr>
@@ -547,9 +530,14 @@ over the size of a pixel</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_psf</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs</strong> – keyword arguments of the PSF() class</li>
+<li><strong>deltaPix</strong> – pixel size (in the case of subsampled PSF, this is the subsampled pixel size)</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">psf fwhm in units of arcsec</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">psf fwhm in units of the deltaPix argument</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -571,6 +559,32 @@ over the size of a pixel</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.subgrid_pixel_kernel">
+<code class="descname">subgrid_pixel_kernel</code><span class="sig-paren">(</span><em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.subgrid_pixel_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.subgrid_pixel_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Data.psf.PSF.subgrid_point_source_kernel">
+<code class="descname">subgrid_point_source_kernel</code><span class="sig-paren">(</span><em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.subgrid_point_source_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.subgrid_point_source_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -585,7 +599,7 @@ over the size of a pixel</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.Data package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -612,12 +626,14 @@ over the size of a pixel</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -639,13 +655,13 @@ over the size of a pixel</p>
         <li class="right" >
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

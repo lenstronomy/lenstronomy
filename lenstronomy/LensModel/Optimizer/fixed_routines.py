@@ -47,12 +47,12 @@ class FixedPowerLaw_Shear(object):
         return e1_min, e2_min, e1_max, e2_max
 
 
-    def get_param_ranges(self,reoptimize=False):
+    def get_param_ranges(self,reoptimize=False, scale = 1):
 
         if reoptimize:
 
-            delta_phi,delta_ellip = 30*np.pi*180**-1, 0.15
-            delta_shear_phi,delta_shear = 30*np.pi*180**-1, 0.02
+            delta_phi,delta_ellip = scale * 30*np.pi*180**-1, scale * 0.15
+            delta_shear_phi,delta_shear = scale * 30*np.pi*180**-1, scale * 0.02
 
             low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self._kwargs_lens[0]['e1'], self._kwargs_lens[0]['e2'],
                                                               delta_phi, delta_ellip)
@@ -60,7 +60,7 @@ class FixedPowerLaw_Shear(object):
             low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['e1'],
                                                                                     self._kwargs_lens[1]['e2'],
                                                                                     delta_shear_phi, delta_shear)
-            theta_E = 0.005
+            theta_E = scale * 0.005
             center = 0.005
 
             low_Rein = self._kwargs_lens[0]['theta_E'] - theta_E

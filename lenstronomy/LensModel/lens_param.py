@@ -1,11 +1,13 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+import lenstronomy.Util.param_util as param_util
 
 
 class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, num_images=0, solver_type='NONE', num_shapelet_lens=0):
+    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, num_images=0,
+                 solver_type='NONE', num_shapelet_lens=0):
         """
 
         :param kwargs_options:
@@ -21,6 +23,22 @@ class LensParam(object):
         for func in lens_model.func_list:
             name_list.append(func.param_names)
         self._param_name_list = name_list
+        if kwargs_lower is None:
+            kwargs_lower = []
+            for func in lens_model.func_list:
+                kwargs_lower.append(func.lower_limit_default)
+        if kwargs_upper is None:
+            kwargs_upper = []
+            for func in lens_model.func_list:
+                kwargs_upper.append(func.upper_limit_default)
+
+        if self._solver_type == "PROFILE_SHEAR":
+            if 'e1' in kwargs_lower[1]:
+                kwargs_lower[1]['e1'] = 0
+            if 'e2' in kwargs_lower[1]:
+                kwargs_lower[1]['e2'] = 0
+        self.lower_limit = kwargs_lower
+        self.upper_limit = kwargs_upper
 
     def getParams(self, args, i):
         kwargs_list = []
@@ -32,7 +50,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
                                 coeffs = args[i:i + num_coeffs]
@@ -82,7 +100,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         coeffs = kwargs['coeffs']
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 coeffs = coeffs[6:]
                             elif self._num_images == 2:
@@ -95,48 +113,15 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
+                    elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                        if name == 'e1':
+                            _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
+                            args.append(gamma_ext)
+                        else:
+                            pass
                     else:
                         args.append(kwargs[name])
         return args
-
-    def param_init(self, kwargs_mean_list):
-        """
-
-        :param kwargs_mean:
-        :return:
-        """
-        mean = []
-        sigma = []
-        for k, model in enumerate(self.model_list):
-            kwargs_mean = kwargs_mean_list[k]
-            kwargs_fixed = self.kwargs_fixed[k]
-            param_names = self._param_name_list[k]
-            for name in param_names:
-                if not name in kwargs_fixed:
-                    if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
-                        coeffs = kwargs_mean['coeffs']
-                        if self._solver_type == 'SHAPELETS':
-                            if self._num_images == 4:
-                                coeffs = coeffs[6:]
-                            elif self._num_images == 2:
-                                coeffs = coeffs[3:]
-                        for i in range(0, len(coeffs)):
-                            mean.append(coeffs[i])
-                            sigma.append(kwargs_mean[name + '_sigma'])
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
-                        num_param = len(kwargs_fixed['sigma'])
-                        for i in range(num_param):
-                            mean.append(kwargs_mean[name][i])
-                            sigma.append(kwargs_mean[name + '_sigma'][i])
-                    elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
-                        raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
-                    elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
-                        pass
-                    else:
-                        mean.append(kwargs_mean[name])
-                        sigma.append(kwargs_mean[name+'_sigma'])
-
-        return mean, sigma
 
     def num_param(self):
         """
@@ -153,7 +138,7 @@ class LensParam(object):
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
-                        if self._solver_type == 'SHAPELETS':
+                        if self._solver_type == 'SHAPELETS' and k == 0:
                             if self._num_images == 4:
                                 num_coeffs -= 6
                             elif self._num_images == 2:

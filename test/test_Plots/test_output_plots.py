@@ -3,13 +3,15 @@ __author__ = 'sibirrer'
 import pytest
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Data.imaging_data import Data
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Plots.output_plots import LensModelPlot
 import lenstronomy.Plots.output_plots as output_plots
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
+
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -32,13 +34,15 @@ class TestOutputPlots(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(self.kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                     truncate=6,
-                                                    kernel=psf_class.kernel_point_source)
+                                                    kernel=kwargs_psf['kernel_point_source'])
+        psf_class = PSF(kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -76,8 +80,7 @@ class TestOutputPlots(object):
                                          self.kwargs_lens_light, self.kwargs_ps)
 
         data_class.update_data(image_sim)
-        self.kwargs_data = data_class.constructor_kwargs()
-        self.kwargs_psf = psf_class.constructor_kwargs()
+        self.kwargs_data['image_data'] = image_sim
         self.kwargs_model = {'lens_model_list': lens_model_list,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
@@ -93,37 +96,43 @@ class TestOutputPlots(object):
                                      self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
                                      arrow_size=0.02, cmap_string="gist_heat")
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        lensPlot.data_plot(ax=axes[0, 0])
-        lensPlot.model_plot(ax=axes[0, 1])
-        lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
-        lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
-        lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
-        lensPlot.magnification_plot(ax=axes[1, 2])
+        lensPlot.plot_main()
         plt.close()
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
-        lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
-        lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
-                                        unconvolved=True)
-        lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
-                                        lens_light_add=True, point_source_add=True)
+        #lensPlot.data_plot(ax=axes[0, 0])
+        #lensPlot.model_plot(ax=axes[0, 1])
+        #lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        #lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
+        #lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
+        #lensPlot.magnification_plot(ax=axes[1, 2])
+        #plt.close()
+
+        lensPlot.plot_separate()
         plt.close()
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-        f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
-        lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
-        lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
+        #lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
+        #                                unconvolved=True)
+        #lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
+        #                                lens_light_add=True, point_source_add=True)
+        #plt.close()
+        lensPlot.plot_subtract_from_data_all()
         plt.close()
+        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        #lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
+        #lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
+        #lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
+        #plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.deflection_plot(ax=ax)

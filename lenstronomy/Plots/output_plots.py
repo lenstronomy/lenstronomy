@@ -99,7 +99,7 @@ def source_position_plot(ax, coords, kwargs_source):
     :return:
     """
     deltaPix = coords.pixel_size
-    if kwargs_source is not None:
+    if len(kwargs_source) > 0:
         if 'center_x' in kwargs_source[0]:
             x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
             ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
@@ -118,7 +118,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     """
     from lenstronomy.SimulationAPI.simulations import Simulation
     simAPI = Simulation()
-    data = simAPI.data_configure(numPix, deltaPix)
+    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    data = Data(kwargs_data)
     _frame_size = numPix * deltaPix
     _coords = data._coords
     x_grid, y_grid = data.coordinates
@@ -256,7 +257,7 @@ class LensModelPlot(object):
         coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax)
+        cb = plt.colorbar(im, cax=cax, orientation='vertical')
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
@@ -378,16 +379,17 @@ class LensModelPlot(object):
         d_s = numPix * deltaPix_source
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._Mpix2coord * deltaPix_source / self._deltaPix)
-        x_center = self._kwargs_source[0]['center_x']
-        y_center = self._kwargs_source[0]['center_y']
-        x_grid_source += x_center
-        y_grid_source += y_center
+        if len(self._kwargs_source) > 0:
+            x_center = self._kwargs_source[0]['center_x']
+            y_center = self._kwargs_source[0]['center_y']
+            x_grid_source += x_center
+            y_grid_source += y_center
         coords_source = Coordinates(self._Mpix2coord * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
 
         source = self._imageModel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source)
         source = util.array2image(source)
-        if convolution:
+        if convolution is True:
             source = ndimage.filters.gaussian_filter(source, sigma=source_sigma / deltaPix_source, mode='nearest',
                                                       truncate=20)
 
@@ -572,6 +574,64 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
+    def plot_main(self):
+        """
+        print the main plots together in a joint frame
+
+        :return:
+        """
+
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        self.data_plot(ax=axes[0, 0])
+        self.model_plot(ax=axes[0, 1])
+        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
+        self.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
+        self.convergence_plot(ax=axes[1, 1], v_max=1)
+        self.magnification_plot(ax=axes[1, 2])
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
+    def plot_separate(self):
+        """
+        plot the different model components separately
+
+        :return:
+        """
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        self.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
+        self.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
+        self.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
+                                    unconvolved=True)
+        self.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
+                                    lens_light_add=True, point_source_add=True)
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
+    def plot_subtract_from_data_all(self):
+        """
+        subtract model components from data
+
+        :return:
+        """
+        f, axes = plt.subplots(2, 3, figsize=(16, 8))
+
+        self.subtract_from_data_plot(ax=axes[0, 0], text='Data')
+        self.subtract_from_data_plot(ax=axes[0, 1], text='Data - Point Source', point_source_add=True)
+        self.subtract_from_data_plot(ax=axes[0, 2], text='Data - Lens Light', lens_light_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 0], text='Data - Source Light', source_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 1], text='Data - Source Light - Point Source', source_add=True,
+                                         point_source_add=True)
+        self.subtract_from_data_plot(ax=axes[1, 2], text='Data - Lens Light - Point Source', lens_light_add=True,
+                                         point_source_add=True)
+        f.tight_layout()
+        f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
+        return f, axes
+
 
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
@@ -586,14 +646,14 @@ def plot_chain(chain, param_list):
     vel = np.array(vel_list)
     n_iter = len(pos)
     plt.figure()
-    for i in range(0,len(pos[0])):
-        ax.plot((pos[:,i]-pos[n_iter-1,i]),label=param_list[i])
+    for i in range(0, len(pos[0])):
+        ax.plot((pos[:, i]-pos[n_iter-1, i]) / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('particle position')
     ax.legend()
 
     ax = axes[2]
     for i in range(0,len(vel[0])):
-        ax.plot(vel[:,i], label=param_list[i])
+        ax.plot(vel[:, i] / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('param velocity')
     ax.legend()
     return f, axes

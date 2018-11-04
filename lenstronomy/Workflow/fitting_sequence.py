@@ -1,14 +1,14 @@
-from lenstronomy.ImSim.psf_fitting import PsfFitting
+from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Workflow.fitting import Fitting
-from lenstronomy.Sampling.alignment_matching import AlignmentFitting
+from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 import lenstronomy.Util.class_creator as class_creator
-from lenstronomy.Workflow.parameters import Param
+from lenstronomy.Sampling.parameters import Param
 import copy
 
 
 class FittingSequence(object):
     """
-    class to define a sequence of fitting applied, inherite the Fitting class
+    class to define a sequence of fitting applied, inherit the Fitting class
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, verbose=True):
         self.multi_band_list = multi_band_list
@@ -27,6 +27,7 @@ class FittingSequence(object):
             kwargs_init, kwargs_fixed = [], []
         self._kwargs_source_init = copy.deepcopy(kwargs_init)
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
+        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
 
     def fit_sequence(self, fitting_kwargs_list, bijective=True, thread_count = 1):
         """
@@ -37,24 +38,36 @@ class FittingSequence(object):
         chain_list = []
         param_list = []
         samples_mcmc, param_mcmc, dist_mcmc = [], [], []
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self.fitting.init_kwargs()
         for fitting_kwargs in fitting_kwargs_list:
             fitting_routine = fitting_kwargs['fitting_routine']
+            restart = fitting_kwargs.get('restart', False)
+            if restart is True:
+                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
             if fitting_routine in ['MCMC']:
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, threadCount = thread_count)
+
+                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
+                                                                self._lens_light_temp,self._ps_temp, self._cosmo_temp, threadCount = thread_count)
             elif fitting_routine in ['PSO']:
-                lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain, param = self.pso(fitting_kwargs,
-                                                                                            lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, threadCount = thread_count)
+                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param = self.pso(fitting_kwargs,
+                                                                            self._lens_temp, self._source_temp,
+                                                                            self._lens_light_temp, self._ps_temp,
+                                                                                                      self._cosmo_temp, threadCount = thread_count)
+
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_routine in ['psf_iteration']:
-                self.psf_iteration(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                self.psf_iteration(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
+                                   self._ps_temp, self._cosmo_temp)
             elif fitting_routine in ['align_images']:
-                self.align_images(fitting_kwargs, lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+                self.align_images(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
+                                  self._ps_temp, self._cosmo_temp)
         if bijective is False:
-            lens_temp = self._param.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
-            source_temp = self._param.image2source_plane(lens_temp, source_temp)
-        return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
+            lens_temp = self._param.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
+            source_temp = self._param.image2source_plane(self._source_temp, lens_temp)
+        else:
+            lens_temp, source_temp = self._lens_temp, self._source_temp
+        return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain_list, param_list,\
+               samples_mcmc, param_mcmc, dist_mcmc
 
     def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input, threadCount = 1):
         """
@@ -70,7 +83,7 @@ class FittingSequence(object):
         n_run = fitting_kwargs['n_run']
         walkerRatio = fitting_kwargs['walkerRatio']
         mpi = fitting_kwargs.get('mpi', False)
-        sigma_scale = fitting_kwargs['sigma_scale']
+        sigma_scale = fitting_kwargs.get('sigma_scale', 1)
         compute_bool = fitting_kwargs.get('compute_bands', None)
 
         gamma_fixed = fitting_kwargs.get('gamma_fixed', False)
@@ -151,33 +164,32 @@ class FittingSequence(object):
     def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         #lens_temp = copy.deepcopy(lens_input)
         lens_updated = self._param.update_lens_scaling(cosmo_input, lens_input)
-        source_updated = self._param.image2source_plane(lens_updated, source_input)
+        source_updated = self._param.image2source_plane(source_input, lens_updated)
         psf_iter_factor = fitting_kwargs['psf_iter_factor']
         psf_iter_num = fitting_kwargs['psf_iter_num']
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
+        kwargs_psf_iter = fitting_kwargs.get('kwargs_psf_iter', {})
         for i in range(len(self.multi_band_list)):
             if compute_bool[i] is True:
                 kwargs_data = self.multi_band_list[i][0]
                 kwargs_psf = self.multi_band_list[i][1]
                 kwargs_numerics = self.multi_band_list[i][2]
-                psf_symmetry = kwargs_psf.get('psf_symmetry', 1)
                 image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
                                                                kwargs_psf=kwargs_psf,
                                                                kwargs_numerics=kwargs_numerics,
                                                                kwargs_model=self.kwargs_model)
-                psf_iter = PsfFitting(image_model_class=image_model)
+                psf_iter = PsfFitting(image_model_class=image_model, kwargs_psf_iter=kwargs_psf_iter)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        lens_light_input, ps_input,
                                                        factor=psf_iter_factor, num_iter=psf_iter_num,
-                                                       symmetry=psf_symmetry, verbose=self._verbose,
-                                                       no_break=True)
+                                                        verbose=self._verbose, no_break=True)
                 self.multi_band_list[i][1] = kwargs_psf
                 self.fitting.multi_band_list[i][1] = kwargs_psf
         return 0
 
     def align_images(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
         lens_updated = self._param.update_lens_scaling(cosmo_input, lens_input)
-        source_updated = self._param.image2source_plane(lens_updated, source_input)
+        source_updated = self._param.image2source_plane(source_input, lens_updated)
         mpi = fitting_kwargs.get('mpi', False)
         compute_bool = fitting_kwargs.get('compute_bands', [True] * len(self.multi_band_list))
         n_particles = fitting_kwargs.get('n_particles', 10)

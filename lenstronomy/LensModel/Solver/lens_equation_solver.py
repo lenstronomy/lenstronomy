@@ -19,7 +19,8 @@ class LensEquationSolver(object):
         self.lensModel = lensModel
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
-                                   precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True):
+                                   precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
+                                   initial_guess_cut=True, verbose=False):
         """
         finds image position source position and lense model
 
@@ -30,8 +31,9 @@ class LensEquationSolver(object):
         :param search_window: window size to be considered by the solver. Will not find image position outside this window
         :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
-        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
-        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
+        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
+        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on
+        distance criteria from the source position
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -45,15 +47,20 @@ class LensEquationSolver(object):
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
         x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
-        #mag = self.lensModel.magnification(x_mins, y_mins, kwargs_lens)
+        if verbose is True:
+            print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
         #mag = np.abs(mag)
         #print(x_mins, y_mins, 'before requirement of min_distance')
-        #x_mins = x_mins[delta_map*mag <= min_distance*5]
-        #y_mins = y_mins[delta_map*mag <= min_distance*5]
+        if initial_guess_cut is True:
+            mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+            x_mins = x_mins[delta_map <= min_distance*mag*5]
+            y_mins = y_mins[delta_map <= min_distance*mag*5]
+            if verbose is True:
+                print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
         #print(x_mins, y_mins, 'after requirement of min_distance')
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
-                                                               precision_limit, num_iter_max)
+                                                               precision_limit, num_iter_max, verbose=verbose)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -67,7 +74,7 @@ class LensEquationSolver(object):
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10),
-                       num_iter_max=100):
+                       num_iter_max=100, verbose=False):
 
         """
         find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
@@ -102,6 +109,8 @@ class LensEquationSolver(object):
             x_mins[i] = posAngel[0]
             y_mins[i] = posAngel[1]
             solver_precision[i] = delta
+            if verbose is True:
+                print("Solution found for region %s with required precision at iteration %s" % (i, l))
         return x_mins, y_mins, solver_precision
 
     def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5,

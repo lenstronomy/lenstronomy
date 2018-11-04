@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Overview: module code &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>Overview: module code &#8212; lenstronomy 0.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.3.2',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -35,7 +28,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -69,7 +62,13 @@
 <li><a href="lenstronomy/ImSim/image_model.html">lenstronomy.ImSim.image_model</a></li>
 <li><a href="lenstronomy/ImSim/image_numerics.html">lenstronomy.ImSim.image_numerics</a></li>
 <li><a href="lenstronomy/ImSim/multiband.html">lenstronomy.ImSim.multiband</a></li>
-<li><a href="lenstronomy/ImSim/psf_fitting.html">lenstronomy.ImSim.psf_fitting</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/fixed_routines.html">lenstronomy.LensModel.Optimizer.fixed_routines</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/multi_plane.html">lenstronomy.LensModel.Optimizer.multi_plane</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/optimizer.html">lenstronomy.LensModel.Optimizer.optimizer</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/params.html">lenstronomy.LensModel.Optimizer.params</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/particle_swarm.html">lenstronomy.LensModel.Optimizer.particle_swarm</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/penalties.html">lenstronomy.LensModel.Optimizer.penalties</a></li>
+<li><a href="lenstronomy/LensModel/Optimizer/single_plane.html">lenstronomy.LensModel.Optimizer.single_plane</a></li>
 <li><a href="lenstronomy/LensModel/Profiles/chameleon.html">lenstronomy.LensModel.Profiles.chameleon</a></li>
 <li><a href="lenstronomy/LensModel/Profiles/dipole.html">lenstronomy.LensModel.Profiles.dipole</a></li>
 <li><a href="lenstronomy/LensModel/Profiles/external_shear.html">lenstronomy.LensModel.Profiles.external_shear</a></li>
@@ -129,10 +128,10 @@
 <li><a href="lenstronomy/PointSource/point_source.html">lenstronomy.PointSource.point_source</a></li>
 <li><a href="lenstronomy/PointSource/point_source_param.html">lenstronomy.PointSource.point_source_param</a></li>
 <li><a href="lenstronomy/PointSource/point_source_types.html">lenstronomy.PointSource.point_source_types</a></li>
-<li><a href="lenstronomy/Sampling/alignment_matching.html">lenstronomy.Sampling.alignment_matching</a></li>
-<li><a href="lenstronomy/Sampling/likelihood_module.html">lenstronomy.Sampling.likelihood_module</a></li>
-<li><a href="lenstronomy/Sampling/mcmc.html">lenstronomy.Sampling.mcmc</a></li>
+<li><a href="lenstronomy/Sampling/likelihood.html">lenstronomy.Sampling.likelihood</a></li>
+<li><a href="lenstronomy/Sampling/parameters.html">lenstronomy.Sampling.parameters</a></li>
 <li><a href="lenstronomy/Sampling/reinitialize.html">lenstronomy.Sampling.reinitialize</a></li>
+<li><a href="lenstronomy/Sampling/sampler.html">lenstronomy.Sampling.sampler</a></li>
 <li><a href="lenstronomy/SimulationAPI/multiband.html">lenstronomy.SimulationAPI.multiband</a></li>
 <li><a href="lenstronomy/SimulationAPI/simulations.html">lenstronomy.SimulationAPI.simulations</a></li>
 <li><a href="lenstronomy/Util/analysis_util.html">lenstronomy.Util.analysis_util</a></li>
@@ -147,9 +146,9 @@
 <li><a href="lenstronomy/Util/param_util.html">lenstronomy.Util.param_util</a></li>
 <li><a href="lenstronomy/Util/prob_density.html">lenstronomy.Util.prob_density</a></li>
 <li><a href="lenstronomy/Util/util.html">lenstronomy.Util.util</a></li>
+<li><a href="lenstronomy/Workflow/alignment_matching.html">lenstronomy.Workflow.alignment_matching</a></li>
 <li><a href="lenstronomy/Workflow/fitting.html">lenstronomy.Workflow.fitting</a></li>
 <li><a href="lenstronomy/Workflow/fitting_sequence.html">lenstronomy.Workflow.fitting_sequence</a></li>
-<li><a href="lenstronomy/Workflow/parameters.html">lenstronomy.Workflow.parameters</a></li>
 </ul>
 
           </div>
@@ -159,12 +158,14 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -180,12 +181,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">lenstronomy 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

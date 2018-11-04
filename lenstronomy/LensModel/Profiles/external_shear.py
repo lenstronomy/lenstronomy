@@ -9,6 +9,8 @@ class ExternalShear(object):
     new class for external shear e1, e2 expression
     """
     param_names = ['e1', 'e2']
+    lower_limit_default = {'e1': -0.5, 'e2': -0.5}
+    upper_limit_default = {'e1': 0.5, 'e2': 0.5}
 
     def function(self, x, y, e1, e2):
         # change to polar coordinates

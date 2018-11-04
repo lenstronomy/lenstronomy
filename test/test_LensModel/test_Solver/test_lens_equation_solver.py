@@ -41,7 +41,11 @@ class TestLensEquationSolver(object):
         Rs = 4.
         kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs, 'e1': 0.2, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window, precision_limit=10**(-10), num_iter_max=10)
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                     min_distance=min_distance,
+                                                                     search_window=search_window,
+                                                                     precision_limit=10**(-10), num_iter_max=10,
+                                                                     verbose=True)
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 

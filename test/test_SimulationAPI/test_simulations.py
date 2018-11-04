@@ -2,6 +2,7 @@
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -25,10 +26,11 @@ class TestSimulation(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        self.kwargs_data = data_class.constructor_kwargs()
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=5)
-        self.kwargs_psf = psf_class.constructor_kwargs()
+        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(kwargs_data)
+
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=5)
+        psf_class = PSF(kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -168,31 +170,6 @@ class TestSimulation(object):
                           }
         source = self.SimAPI.source_plane(kwargs_options, kwargs_source, numPix, deltaPix)
         assert len(source) == numPix
-
-    def test_shift_coordinate_grid(self):
-        x_shift = 0.05
-        y_shift = 0
-        kwargs_data_shifted = self.SimAPI.shift_coordinate_grid(self.kwargs_data, x_shift, y_shift, pixel_units=False)
-        kwargs_data_new = copy.deepcopy(self.kwargs_data)
-        kwargs_data_new['ra_shift'] = x_shift
-        kwargs_data_new['dec_shift'] = y_shift
-        data = Data(kwargs_data=kwargs_data_shifted)
-        data_new = Data(kwargs_data=kwargs_data_new)
-        ra, dec = 0, 0
-        x, y = data.map_coord2pix(ra, dec)
-        x_new, y_new = data_new.map_coord2pix(ra, dec)
-        npt.assert_almost_equal(x, x_new, decimal=10)
-        npt.assert_almost_equal(y, y_new, decimal=10)
-
-        ra, dec = data.map_pix2coord(x, y)
-        ra_new, dec_new = data_new.map_pix2coord(x, y)
-        npt.assert_almost_equal(ra, ra_new, decimal=10)
-        npt.assert_almost_equal(dec, dec_new, decimal=10)
-
-        x_coords, y_coords = data.coordinates
-        x_coords_new, y_coords_new = data_new.coordinates
-        npt.assert_almost_equal(x_coords[0], x_coords_new[0], decimal=10)
-        npt.assert_almost_equal(y_coords[0], y_coords_new[0], decimal=10)
 
 
 if __name__ == '__main__':

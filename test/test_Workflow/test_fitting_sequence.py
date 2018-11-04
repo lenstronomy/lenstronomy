@@ -4,12 +4,12 @@ import pytest
 import numpy.testing as npt
 from lenstronomy.SimulationAPI.simulations import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 
 
 class TestFittingSequence(object):
@@ -28,13 +28,15 @@ class TestFittingSequence(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(self.kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        psf_class = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                     truncate=6,
-                                                    kernel=psf_class.kernel_point_source)
+                                                    kernel=kwargs_psf['kernel_point_source'])
+        psf_class = PSF(self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -68,8 +70,7 @@ class TestFittingSequence(object):
         data_class.update_data(image_sim)
         self.data_class = data_class
         self.psf_class = psf_class
-        self.kwargs_data = data_class.constructor_kwargs()
-        self.kwargs_psf = psf_class.constructor_kwargs()
+        self.kwargs_data['image_data'] = image_sim
         self.kwargs_model = {'lens_model_list': lens_model_list,
                                'source_light_model_list': source_model_list,
                                'lens_light_model_list': lens_light_model_list,
@@ -109,19 +110,18 @@ class TestFittingSequence(object):
 
     def test_fitting_sequence(self):
         #kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
-        lens_sigma = [{'theta_E_sigma': 0.1, 'gamma_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}, {'e1_sigma': 0.1, 'e2_sigma': 0.1}]
+        lens_sigma = [{'theta_E': 0.1, 'gamma': 0.1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0.1, 'center_y': 0.1}, {'e1': 0.1, 'e2': 0.1}]
         lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}, {'e1': -0.3, 'e2': -0.3}]
         lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}, {'e1': 0.3, 'e2': 0.3}]
-        source_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1, 'e1_sigma': 0.1, 'e2_sigma': 0.1}]
+        source_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1, 'e1': 0.1, 'e2': 0.1}]
         source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
         source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
 
-        lens_light_sigma = [{'R_sersic_sigma': 0.05, 'n_sersic_sigma': 0.5, 'center_x_sigma': 0.1, 'center_y_sigma': 0.1}]
+        lens_light_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1}]
         lens_light_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2}]
         lens_light_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2}]
-        ps_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}]
-        #kwargs_sigma = [lens_sigma, source_sigma, lens_light_sigma, ps_sigma]
-        #kwargs_fixed = [[{}, {}], [{}], [{}], [{}]]
+        ps_sigma = [{'ra_source': 1, 'dec_source': 1, 'point_amp': 1}]
+
         lens_param = self.kwargs_lens, lens_sigma, [{}, {}], lens_lower, lens_upper
         source_param = self.kwargs_source, source_sigma, [{}], source_lower, source_upper
         lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], lens_light_lower, lens_light_upper
@@ -148,7 +148,7 @@ class TestFittingSequence(object):
             {'fitting_routine': 'PSO', 'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i},
             {'fitting_routine': 'MCMC', 'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2},
             {'fitting_routine': 'align_images', 'lower_limit_shift': -0.1, 'upper_limit_shift': 0.1, 'n_particles': 2, 'n_iterations': 2},
-            {'fitting_routine': 'psf_iteration', 'psf_iter_num': 2, 'psf_iter_factor': 0.5}
+            {'fitting_routine': 'psf_iteration', 'psf_iter_num': 2, 'psf_iter_factor': 0.5, 'kwargs_psf_iter': {'stacking_option': 'mean'}}
         ]
         lens_temp, source_temp, lens_light_temp, else_temp, cosmo_temp, chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_kwargs_list=fitting_kwargs_list)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)

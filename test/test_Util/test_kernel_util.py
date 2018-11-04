@@ -21,6 +21,36 @@ def test_fwhm_kernel():
     npt.assert_almost_equal(fwhm/fwhm_kernel, 1, 2)
 
 
+def test_center_kernel():
+    x_grid, y_gird = Util.make_grid(31, 1)
+    sigma = 2
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gaussian = Gaussian()
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel = Util.array2image(flux)
+    kernel = kernel_util.kernel_norm(kernel)
+
+    # kernel being centered
+    kernel_new = kernel_util.center_kernel(kernel, iterations=20)
+    kernel_new = kernel_util.kernel_norm(kernel_new)
+    npt.assert_almost_equal(kernel_new/kernel, 1, decimal=8)
+    # kernel shifted in x
+    kernel_shifted = interp.shift(kernel, [-.1, 0], order=1)
+    kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
+    kernel_new = kernel_util.kernel_norm(kernel_new)
+    npt.assert_almost_equal((kernel_new + 0.00001) / (kernel + 0.00001), 1, decimal=4)
+    # kernel shifted in y
+    kernel_shifted = interp.shift(kernel, [0, -0.4], order=1)
+    kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
+    kernel_new = kernel_util.kernel_norm(kernel_new)
+    npt.assert_almost_equal((kernel_new + 0.01) / (kernel + 0.01), 1, decimal=3)
+    # kernel shifted in x and y
+    kernel_shifted = interp.shift(kernel, [0.2, -0.3], order=1)
+    kernel_new = kernel_util.center_kernel(kernel_shifted, iterations=5)
+    kernel_new = kernel_util.kernel_norm(kernel_new)
+    npt.assert_almost_equal((kernel_new + 0.01) / (kernel + 0.01), 1, decimal=3)
+
+
 def test_pixelsize_change():
     kernel = np.zeros((7, 7))
     kernel[3, 3] = 1
@@ -191,6 +221,7 @@ def test_split_kernel():
 
     assert kernel_hole[4, 4] == 0
     assert len(kernel_cutout) == subgrid_res*subsampling_size
+    npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), 1, decimal=4)
 
 
 def test_cutout_source2():

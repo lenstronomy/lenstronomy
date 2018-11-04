@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 
+
 def test_estimate_theta_E():
 
     x = np.array([-0.45328229, 0.57461556, 0.53757501, -0.42312438])
@@ -99,7 +100,16 @@ def test_grid_with_coords():
 
     numPix = 11
     deltaPix = 1.
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = Util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False)
+    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = Util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=True)
+    x_, y_ = 0, 0
+    ra, dec = Util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
+    assert ra == 5
+    assert dec == -5
+
+    numPix = 11
+    deltaPix = 1.
+    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = Util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=False, inverse=False)
     x_, y_ = 0, 0
     ra, dec = Util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
     assert ra == -5
@@ -110,7 +120,7 @@ def test_grid_with_coords():
     x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = Util.make_grid_with_coordtransform(numPix, deltaPix, subgrid_res=1, left_lower=False)
     x_, y_ = 0, 0
     ra, dec = Util.map_coord2pix(x_, y_, ra_at_xy_0, dec_at_xy_0, Mpix2coord)
-    assert ra == -.5
+    assert ra == .5
     assert dec == -.5
     x__, y__ = Util.map_coord2pix(ra, dec, x_at_radec_0, y_at_radec_0, Mcoord2pix)
     assert x__ == x_

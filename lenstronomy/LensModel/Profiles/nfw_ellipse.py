@@ -15,6 +15,8 @@ class NFW_ELLIPSE(object):
     relation are: R_200 = c * Rs
     """
     param_names = ['Rs', 'theta_Rs', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
         self.nfw = NFW(interpol=interpol, num_interp_X=num_interp_X, max_interp_X=max_interp_X)

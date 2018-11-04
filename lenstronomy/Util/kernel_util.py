@@ -32,13 +32,36 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
     kernel_init = copy.deepcopy(kernel_new)
     kernel_init_shifted = copy.deepcopy(interp.shift(kernel_init, [int_shift_y, int_shift_x], order=1))
     kernel_new = interp.shift(kernel_new, [int_shift_y, int_shift_x], order=1)
-    norm = np.sum(kernel_new)
+    norm = np.sum(kernel_init_shifted)
     for i in range(iterations):
         kernel_shifted_inv = interp.shift(kernel_new, [-frac_y_shift, -frac_x_shift], order=1)
         delta = kernel_init_shifted - kernel_norm(kernel_shifted_inv) * norm
-        kernel_new += delta
+        kernel_new += delta * 1.
         kernel_new = kernel_norm(kernel_new) * norm
     return kernel_new[1:-1, 1:-1]
+
+
+def center_kernel(kernel, iterations=20):
+    """
+    given a kernel that might not be perfectly centered, this routine computes its light weighted center and then
+    moves the center in an iterative process such that it is centered
+
+    :param kernel: 2d array (odd numbers)
+    :param iterations: int, number of iterations
+    :return: centered kernel
+    """
+    kernel = kernel_norm(kernel)
+    nx, ny = np.shape(kernel)
+    if nx %2 == 0:
+        raise ValueError("kernel needs odd number of pixels")
+    # make coordinate grid of kernel
+    x_grid, y_grid = util.make_grid(nx, deltapix=1, left_lower=False)
+    # compute 1st moments to get light weighted center
+    x_w = np.sum(kernel * util.array2image(x_grid))
+    y_w = np.sum(kernel * util.array2image(y_grid))
+    # de-shift kernel
+    kernel_centered = de_shift_kernel(kernel, shift_x=-x_w, shift_y=-y_w, iterations=iterations)
+    return kernel_norm(kernel_centered)
 
 
 def kernel_norm(kernel):
@@ -218,6 +241,12 @@ def split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res):
     n_min_sub = int((n_sub - 1) / 2 - (subsampling_size*subgrid_res - 1) / 2)
     n_max_sub = int((n_sub - 1) / 2 + (subsampling_size * subgrid_res - 1) / 2 + 1)
     kernel_subgrid_cut = kernel_subgrid[n_min_sub:n_max_sub, n_min_sub:n_max_sub]
+    flux_subsampled = np.sum(kernel_subgrid_cut)
+    flux_hole = np.sum(kernel_hole)
+    if flux_hole > 0:
+        kernel_hole *= (1. - flux_subsampled) / np.sum(kernel_hole)
+    else:
+        kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
     return kernel_hole, kernel_subgrid_cut
 
 
@@ -244,7 +273,7 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
     if shift is True:
-        kernel_shift = de_shift_kernel(image_cut, shift_x, shift_y)
+        kernel_shift = de_shift_kernel(image_cut, shift_x, shift_y, iterations=50)
     else:
         kernel_shift = image_cut
     kernel_final = np.zeros((kernelsize, kernelsize))
@@ -273,7 +302,7 @@ def fwhm_kernel(kernel):
     max_flux = kernel[int((n-1)/2), int((n-1)/2)]
     I_2 = max_flux/2.
     I_r = kernel[int((n-1)/2), int((n-1)/2):]
-    r = np.linspace(0, (n-1)/2, (n+1)/2)
+    r = np.linspace(0, (n-1)/2, int((n + 1) / 2))
     for i in range(1, len(r)):
         if I_r[i] < I_2:
             fwhm_2 = (I_2 - I_r[i-1])/(I_r[i] - I_r[i-1]) + r[i-1]

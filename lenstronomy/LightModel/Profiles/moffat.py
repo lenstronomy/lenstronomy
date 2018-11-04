@@ -9,6 +9,8 @@ class Moffat(object):
     """
     def __init__(self):
         self.param_names = ['amp', 'alpha', 'beta', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'alpha': 0, 'beta': 0, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 100, 'alpha': 10, 'beta': 10, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, alpha, beta, center_x, center_y):
         """

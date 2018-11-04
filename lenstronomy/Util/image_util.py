@@ -253,7 +253,7 @@ def cut_edges(image, numPix):
     """
     nx, ny = image.shape
     if nx < numPix or ny < numPix:
-        print('WARNING: image can not be resized.')
+        print('WARNING: image can not be resized, in routine cut_edges.')
         return image
     if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
         #pass

@@ -26,6 +26,9 @@ class TestMultiPlane(object):
         alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(1, 0, kwargs_lens)
         assert alpha_x_simple == alpha_x_multi
         assert alpha_y_simple == alpha_y_multi
+        sum_partial = np.sum(lensModelMutli._T_ij_list)
+        T_z_true = lensModelMutli._T_z_source
+        npt.assert_almost_equal(sum_partial, T_z_true, decimal=5)
 
     def test_sis_ray_tracing(self):
         z_source = 1.5
@@ -168,14 +171,34 @@ class TestMultiPlane(object):
         redshift_list = [z1, z2, z3]
         kwargs_lens = [sis1, sis2, sis3]
         lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
-        z_intermediate = .5
+        intermediate_index = 1
         theta_x, theta_y = 1., 1.
+
+        z_intermediate = lensModel._redshift_list[intermediate_index]
+
         x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
                                             alpha_y=theta_y, z_start=0, z_stop=z_intermediate, kwargs_lens=kwargs_lens)
+        x_out_full_0 = x_out
+        y_out_full_0 = y_out
+
         x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=x_out, y=y_out, alpha_x=alpha_x_out,
                                                                             alpha_y=alpha_y_out, z_start=z_intermediate,
                                                                                 z_stop=z_source,
                                                                                 kwargs_lens=kwargs_lens)
+        x_out_full_0 = np.append(x_out_full_0, x_out)
+        y_out_full_0 = np.append(y_out_full_0, y_out)
+
+        x_out_full, y_out_full, redshifts, tzlist = lensModel.ray_shooting_partial_steps(x=0, y=0, alpha_x=theta_x,
+                                            alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens)
+
+
+        npt.assert_almost_equal(x_out_full_0[0], x_out_full[intermediate_index+1])
+        npt.assert_almost_equal(x_out_full_0[-1], x_out_full[-1])
+        npt.assert_almost_equal(y_out_full_0[0], y_out_full[intermediate_index+1])
+        npt.assert_almost_equal(y_out_full_0[-1], y_out_full[-1])
+        npt.assert_almost_equal(redshifts[intermediate_index+1], lensModel._redshift_list[intermediate_index])
+        npt.assert_almost_equal(tzlist[0], lensModel._cosmo_bkg.T_xy(0, redshifts[0]))
+
         beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
         beta_x_true, beta_y_true = lensModel.ray_shooting(theta_x, theta_y, kwargs_lens)
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
@@ -244,7 +267,6 @@ class TestForegroundShear(object):
         dt_simple = t_simple[0] - t_simple[1]
         print(t_simple, t_multi)
         npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

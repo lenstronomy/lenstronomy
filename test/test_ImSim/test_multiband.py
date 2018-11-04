@@ -4,6 +4,8 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.multiband import Multiband
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
@@ -30,10 +32,11 @@ class TestImageModel(object):
 
         # PSF specification
 
-        data_class = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
-        psf_class = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        data_class = Data(kwargs_data)
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=5)
-
+        psf_class = PSF(kwargs_psf)
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         phi, q = 0.2, 0.8
@@ -67,8 +70,7 @@ class TestImageModel(object):
         image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
-        kwargs_data = data_class.constructor_kwargs()
-        kwargs_psf = psf_class.constructor_kwargs()
+        kwargs_data['image_data'] = image_sim
         self.solver = LensEquationSolver(lensModel=lens_model_class)
         multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
         self.imageModel = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
@@ -76,11 +78,11 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.1370014246240874, decimal=8)
+        npt.assert_almost_equal(source_model[0][10, 10], 0.1417362294263248, decimal=8)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.13164547458291054, decimal=8)
+        npt.assert_almost_equal(source_model[0][10, 10], 0.13536114618182182, decimal=8)
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)

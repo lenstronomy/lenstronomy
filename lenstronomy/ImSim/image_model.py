@@ -24,15 +24,14 @@ class ImageModel(object):
         """
         self.PSF = psf_class
         self.Data = data_class
-        self.kwargs_numerics = kwargs_numerics
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
         self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
             if self.PSF.psf_error_map is not None:
-                self._psf_error_map = kwargs_numerics.get('psf_error_map', True)
+                self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
             else:
                 self._psf_error_map = False
@@ -40,6 +39,17 @@ class ImageModel(object):
             self._psf_error_map = False
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
+        self.num_bands = 1
+
+    def reset_point_source_cache(self):
+        """
+        deletes all the cache in the point source class and saves it from then on
+
+        :return:
+        """
+        if self.PointSource is not None:
+            self.PointSource.delete_lens_model_cach()
+            self.PointSource.set_save_cache(True)
 
     def update_data(self, data_class):
         """
@@ -70,7 +80,7 @@ class ImageModel(object):
         :return: no return. Class is updated.
         """
         self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, kwargs_numerics=kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
@@ -151,15 +161,15 @@ class ImageModel(object):
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
                                              kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
         error_map = self.error_map(kwargs_lens, kwargs_ps)
-        error_map = self.ImageNumerics.image2array(error_map)
+        error_map_1d = self.ImageNumerics.image2array(error_map)
         d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map), d, inv_bool=inv_bool)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map_1d), d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         model = self.ImageNumerics.array2image(wls_model)
-        error_map = self.ImageNumerics.array2image(error_map)
         return model, error_map, cov_param, param
 
-    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
+              source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         make a image with a realisation of linear parameter values "param"
@@ -197,7 +207,7 @@ class ImageModel(object):
         :return:
         """
         error_map = np.zeros_like(self.Data.data)
-        if self._psf_error_map:
+        if self._psf_error_map is True:
             for k, bool in enumerate(self._error_map_bool_list):
                 if bool is True:
                     ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
@@ -236,7 +246,8 @@ class ImageModel(object):
         x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                                    source_marg=False, compute_bool=None):
         """
 
         computes the likelihood of the data given a model
@@ -245,13 +256,13 @@ class ImageModel(object):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: log likelihood (natural logarithm)
         """
         # generate image
         im_sim, model_error, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                   kwargs_lens_light, kwargs_else,
-                                                                                   inv_bool=source_marg)
+                                                                         kwargs_lens_light, kwargs_ps,
+                                                                         inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.ImageNumerics.mask, model_error)
         if cov_matrix is not None and source_marg:
@@ -279,10 +290,9 @@ class ImageModel(object):
         :return:
         """
         chi2 = self.reduced_residuals(model, error_map)
-        return np.sum(chi2**2) / self.numData_evaluate
+        return np.sum(chi2**2) / self.numData_evaluate()
 
-    @property
-    def numData_evaluate(self):
+    def numData_evaluate(self, compute_bool=None):
         """
         number of data points to be used in the linear solver
         :return:

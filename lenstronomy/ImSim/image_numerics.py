@@ -8,7 +8,8 @@ class ImageNumerics(object):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
-    def __init__(self, data, psf, kwargs_numerics):
+    def __init__(self, data, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
+                 point_source_subgrid=3, subsampling_size=5):
         """
 
         optional keywords for masking purposes:
@@ -22,6 +23,11 @@ class ImageNumerics(object):
         'subsampling_size': sub-sampling kernel size (in units of the pixel size), default is the size of the PSF
             for computational speed, smaller subsampling psf sizes are faster but less accurate.
 
+        'subgrid_res': int, subsampling resolution per data pixel in the ray tracing and evaluation of the extended surface brightness
+        'psf_subgrid': bool, if True performs the PSF convolution on the higher resolution subgrid surface brightness,
+            otherwise on the data frame.
+        'point_source_subgrid': int, subsampling of point source PSF
+
         :param data: instance of the lenstronomy Data() class
         :param kwargs_numerics: keyword arguments which specify the nummerics
         """
@@ -31,12 +37,11 @@ class ImageNumerics(object):
         self._Data = data
         self._PSF = psf
         self._nx, self._ny = np.shape(self._Data.data)
-        self._subgrid_res = kwargs_numerics.get('subgrid_res', 1)
-        self._psf_subgrid = kwargs_numerics.get('psf_subgrid', False)
-        self._fix_psf_error_map = kwargs_numerics.get('fix_psf_error_map', False)
-
-        if 'idex_mask' in kwargs_numerics:
-            self._idex_mask_2d = kwargs_numerics['idex_mask']
+        self._subgrid_res = subgrid_res
+        self._psf_subgrid = psf_subgrid
+        self._fix_psf_error_map = fix_psf_error_map
+        if idex_mask is not None:
+            self._idex_mask_2d = idex_mask
             if not np.shape(self._idex_mask_2d) == np.shape(self._Data.data):
                 raise ValueError("'idex_mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
                                  % (np.shape(self._idex_mask_2d), np.shape(self._Data.data)))
@@ -46,8 +51,8 @@ class ImageNumerics(object):
             self._idex_mask_bool = False
         self._idex_mask = util.image2array(self._idex_mask_2d)
 
-        if 'mask' in kwargs_numerics:
-            self._mask = kwargs_numerics['mask']
+        if mask is not None:
+            self._mask = mask
             if not np.shape(self._mask) == np.shape(self._Data.data):
                 raise ValueError("'mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
                                  % (np.shape(self._mask), np.shape(self._Data.data)))
@@ -56,10 +61,10 @@ class ImageNumerics(object):
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
-        self._point_source_subgrid = kwargs_numerics.get('point_source_subgrid', 3)
-        if self._point_source_subgrid %2 == 0:
+        self._point_source_subgrid = point_source_subgrid
+        if self._point_source_subgrid % 2 == 0:
             raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
-        self._subsampling_size = kwargs_numerics.get('subsampling_size', 5)
+        self._subsampling_size = subsampling_size
 
     @property
     def exposure_map_array(self):
@@ -187,7 +192,9 @@ class ImageNumerics(object):
         if unconvolved is True:
             image_convolved = image_util.re_size(image, self._subgrid_res)
         else:
-            image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res, subsampling_size=self._subsampling_size)
+            image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res,
+                                                            subsampling_size=self._subsampling_size,
+                                                            psf_subgrid=self._psf_subgrid)
         image_full = self._add_psf(image_convolved)
         return image_full
 
@@ -270,10 +277,7 @@ class ImageNumerics(object):
 
     @property
     def kernel_point_source_subgrid(self):
-        if not hasattr(self, '_kernel_point_source_subgrid'):
-            self._kernel_point_source_sugrid = kernel_util.subgrid_kernel(kernel=self._PSF.kernel_point_source,
-                                                                          subgrid_res=self._point_source_subgrid)
-        return self._kernel_point_source_sugrid
+        return self._PSF.subgrid_point_source_kernel(self._point_source_subgrid)
 
     def psf_error_map(self, ra_pos, dec_pos, amp):
         x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)

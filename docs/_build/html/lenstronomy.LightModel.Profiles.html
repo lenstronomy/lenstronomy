@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.3.2 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.4.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.3.2',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.Plots package" href="lenstronomy.Plots.html" />
     <link rel="prev" title="lenstronomy.LightModel package" href="lenstronomy.LightModel.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -43,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -64,7 +57,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">Chameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.function">
@@ -95,8 +88,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'w_c': 0, 'w_t': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'w_c': 100, 'w_t': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -104,7 +107,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">DoubleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.function">
@@ -137,8 +140,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e11': -0.8, 'e12': -0.8, 'e21': -0.8, 'e22': -0.8, 'ratio': 0, 'w_c1': 0, 'w_c2': 0, 'w_t1': 0, 'w_t2': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e11': 0.8, 'e12': 0.8, 'e21': 0.8, 'e22': 0.8, 'ratio': 100, 'w_c1': 100, 'w_c2': 100, 'w_t1': 100, 'w_t2': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -149,7 +162,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.Gaussian">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">Gaussian</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for Gaussian light profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.Gaussian.function">
@@ -204,7 +217,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">GaussianEllipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for Gaussian light profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.function">
@@ -233,7 +246,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#GaussianEllipse.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -255,8 +268,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 1000, 'center_x': 100, 'center_y': 100, 'e1': -0.5, 'e2': -0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.GaussianEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -264,7 +287,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">MultiGaussian</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.function">
@@ -320,8 +343,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 1000, 'center_x': 100, 'center_y': 100, 'e1': -0.5, 'e2': -0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -329,7 +362,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.gaussian.</code><code class="descname">MultiGaussianEllipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#MultiGaussianEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for elliptical multi Gaussian profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.function">
@@ -385,8 +418,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 1000, 'center_x': 100, 'center_y': 100, 'e1': -0.5, 'e2': -0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -397,7 +440,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.hernquist.</code><code class="descname">Hernquist</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist.function">
@@ -452,7 +495,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.hernquist.</code><code class="descname">Hernquist_Ellipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/hernquist.html#Hernquist_Ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.function">
@@ -503,8 +546,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'Rs': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'Rs': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.Hernquist_Ellipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -515,7 +568,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.moffat.Moffat">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.moffat.</code><code class="descname">Moffat</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/moffat.html#Moffat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.moffat.Moffat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.moffat.Moffat.function">
@@ -531,7 +584,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.nie.</code><code class="descname">NIE</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>non-divergent isothermal ellipse (projected)</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE.function">
@@ -560,8 +613,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 's_scale': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'e1', 'e2', 's_scale', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 's_scale': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -572,7 +635,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.p_jaffe.</code><code class="descname">PJaffe</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for pseudo Jaffe lens light (2d projected light/mass distribution)</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.function">
@@ -623,8 +686,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'Ra': 0, 'Rs': 0, 'amp': 0, 'center_x': -100, 'center_y': -100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'Ra', 'Rs', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'Ra': 100, 'Rs': 100, 'amp': 100, 'center_x': 100, 'center_y': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -632,7 +705,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.p_jaffe.</code><code class="descname">PJaffe_Ellipse</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>calss for elliptical pseudo Jaffe lens light</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">
@@ -683,8 +756,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'Ra': 0, 'Rs': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'Ra': 100, 'Rs': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -695,7 +778,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.power_law.</code><code class="descname">PowerLaw</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/power_law.html#PowerLaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for power-law elliptical mass distribution</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.function">
@@ -746,8 +829,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.power_law.PowerLaw.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 3}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.power_law.PowerLaw.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -758,7 +851,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">CoreSersic</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.function">
@@ -767,8 +860,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'Re': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'Re', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'Re': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -776,7 +879,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains functions to evaluate an spherical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.function">
@@ -785,8 +888,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -794,7 +907,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">Sersic_elliptic</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic_elliptic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains functions to evaluate an elliptical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.function">
@@ -803,8 +916,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic_elliptic.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -815,7 +938,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.shapelets.</code><code class="descname">ShapeletSet</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets.html#ShapeletSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to operate on entire shapelet set</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.decomposition">
@@ -861,6 +984,11 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'beta': 0, 'center_x': -100, 'center_y': -100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'n_max', 'beta', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -886,12 +1014,17 @@
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'beta': 100, 'center_x': 100, 'center_y': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.shapelets.</code><code class="descname">Shapelets</code><span class="sig-paren">(</span><em>interpolation=False</em>, <em>precalc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets.html#Shapelets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.H_n">
 <code class="descname">H_n</code><span class="sig-paren">(</span><em>n</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets.html#Shapelets.H_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.H_n" title="Permalink to this definition">¶</a></dt>
@@ -941,6 +1074,11 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'beta': 0, 'center_x': -100, 'center_y': -100, 'n1': 0, 'n2': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -983,6 +1121,11 @@
 :return: list of H_n(x) and H_n(y)</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets.Shapelets.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'beta': 100, 'center_x': 100, 'center_y': 100, 'n1': 150, 'n2': 150}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets.Shapelets.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1000,7 +1143,7 @@
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.uniform.Uniform">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.uniform.</code><code class="descname">Uniform</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/uniform.html#Uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for Gaussian light profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.function">
@@ -1028,8 +1171,18 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': -100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.param_names">
 <code class="descname">param_names</code><em class="property"> = ['amp']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.uniform.Uniform.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.uniform.Uniform.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1046,7 +1199,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.LightModel.Profiles package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -1081,12 +1234,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1108,14 +1263,14 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

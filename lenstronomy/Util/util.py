@@ -155,34 +155,39 @@ def make_grid_transformed(numPix, Mpix2Angle):
     return ra_grid, dec_grid
 
 
-def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=False):
+def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=False, inverse=True):
     """
     same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel
 
     :param numPix:
     :param deltapix:
     :param subgrid_res:
-    :param left_lower:
+    :param left_lower: sets the zero point at the lower left corner of the pixels
+    :param inverse: bool, if true sets East as left, otherwise East is righrt
     :return:
     """
     numPix_eff = numPix*subgrid_res
     deltapix_eff = deltapix/float(subgrid_res)
     a = np.arange(numPix_eff)
     matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
+    if inverse is True:
+        delta_x = -deltapix_eff
+    else:
+        delta_x = deltapix_eff
     if left_lower is True:
         x_grid = matrix[:, 0]*deltapix
         y_grid = matrix[:, 1]*deltapix
     else:
-        x_grid = (matrix[:, 0] - (numPix_eff-1)/2.)*deltapix_eff
+        x_grid = (matrix[:, 0] - (numPix_eff-1)/2.)*delta_x
         y_grid = (matrix[:, 1] - (numPix_eff-1)/2.)*deltapix_eff
     shift = (subgrid_res-1)/(2.*subgrid_res)*deltapix
     x_grid -= shift
     y_grid -= shift
     ra_at_xy_0 = x_grid[0]
     dec_at_xy_0 = y_grid[0]
-    x_at_radec_0 = (numPix_eff-1)/2.
+    x_at_radec_0 = (numPix_eff - 1) / 2.
     y_at_radec_0 = (numPix_eff - 1) / 2.
-    Mpix2coord = np.array([[deltapix_eff, 0], [0, deltapix_eff]])
+    Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
     return x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
 

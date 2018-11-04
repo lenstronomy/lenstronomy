@@ -231,4 +231,4 @@ class PSF(object):
             fwhm = kernel_util.fwhm_kernel(kernel) * deltaPix
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
-        return fwhm
+        return fwhm, kernel_util.fwhm_kernel(kernel)

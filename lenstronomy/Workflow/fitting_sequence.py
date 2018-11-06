@@ -29,7 +29,7 @@ class FittingSequence(object):
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
 
-    def fit_sequence(self, fitting_kwargs_list, bijective=True, thread_count = 1):
+    def fit_sequence(self, fitting_kwargs_list, bijective=True, threadCount = 1):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
@@ -45,12 +45,12 @@ class FittingSequence(object):
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
             if fitting_routine in ['MCMC']:
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
-                                                                self._lens_light_temp,self._ps_temp, self._cosmo_temp, threadCount = thread_count)
+                                                                self._lens_light_temp,self._ps_temp, self._cosmo_temp, threadCount = threadCount)
             elif fitting_routine in ['PSO']:
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param = self.pso(fitting_kwargs,
                                                                             self._lens_temp, self._source_temp,
                                                                             self._lens_light_temp, self._ps_temp,
-                                                                            self._cosmo_temp, threadCount = thread_count)
+                                                                            self._cosmo_temp, threadCount = threadCount)
 
                 chain_list.append(chain)
                 param_list.append(param)

@@ -44,14 +44,13 @@ class FittingSequence(object):
             if restart is True:
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
             if fitting_routine in ['MCMC']:
-
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
                                                                 self._lens_light_temp,self._ps_temp, self._cosmo_temp, threadCount = thread_count)
             elif fitting_routine in ['PSO']:
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param = self.pso(fitting_kwargs,
                                                                             self._lens_temp, self._source_temp,
                                                                             self._lens_light_temp, self._ps_temp,
-                                                                                                      self._cosmo_temp, threadCount = thread_count)
+                                                                            self._cosmo_temp, threadCount = thread_count)
 
                 chain_list.append(chain)
                 param_list.append(param)

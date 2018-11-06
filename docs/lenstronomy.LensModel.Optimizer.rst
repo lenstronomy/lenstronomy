@@ -52,14 +52,6 @@ lenstronomy.LensModel.Optimizer.penalties module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Optimizer.single\_background module
----------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Optimizer.single_background
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy.LensModel.Optimizer.single\_plane module
 ----------------------------------------------------
 

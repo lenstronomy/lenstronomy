@@ -191,6 +191,7 @@ def cut_psf(psf_data, psf_size):
 def pixel_kernel(point_source_kernel, subgrid_res=7):
     """
     converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel
+
     :param point_source_kernel:
     :param subgrid_res:
     :return: convolution kernel for an extended pixel
@@ -220,12 +221,13 @@ def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
 
 def split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res):
     """
+    pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
+    performed, i.e. smaller subsampling PSF and hole in larger PSF
 
     :param kernel: PSF kernel of the size of the pixel
     :param kernel_subgrid: subsampled kernel
     :param subsampling_size: size of subsampling PSF in units of image pixels
-    :return: pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
-    performed, i.e. smaller subsampling PSF and hole in larger PSF
+    :return: pixel and subsampling kernel
     """
     n = len(kernel)
     n_sub = len(kernel_subgrid)

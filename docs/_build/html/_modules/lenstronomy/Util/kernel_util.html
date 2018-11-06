@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.4.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -73,13 +73,36 @@
     <span class="n">kernel_init</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span>
     <span class="n">kernel_init_shifted</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel_init</span><span class="p">,</span> <span class="p">[</span><span class="n">int_shift_y</span><span class="p">,</span> <span class="n">int_shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="p">[</span><span class="n">int_shift_y</span><span class="p">,</span> <span class="n">int_shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel_init_shifted</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
         <span class="n">kernel_shifted_inv</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">frac_y_shift</span><span class="p">,</span> <span class="o">-</span><span class="n">frac_x_shift</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">kernel_init_shifted</span> <span class="o">-</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_shifted_inv</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span>
-        <span class="n">kernel_new</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">kernel_new</span> <span class="o">+=</span> <span class="n">delta</span> <span class="o">*</span> <span class="mf">1.</span>
         <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span>
     <span class="k">return</span> <span class="n">kernel_new</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="center_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.center_kernel">[docs]</a><span class="k">def</span> <span class="nf">center_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    given a kernel that might not be perfectly centered, this routine computes its light weighted center and then</span>
+<span class="sd">    moves the center in an iterative process such that it is centered</span>
+
+<span class="sd">    :param kernel: 2d array (odd numbers)</span>
+<span class="sd">    :param iterations: int, number of iterations</span>
+<span class="sd">    :return: centered kernel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kernel needs odd number of pixels&quot;</span><span class="p">)</span>
+    <span class="c1"># make coordinate grid of kernel</span>
+    <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># compute 1st moments to get light weighted center</span>
+    <span class="n">x_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span> <span class="o">*</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">x_grid</span><span class="p">))</span>
+    <span class="n">y_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel</span> <span class="o">*</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">y_grid</span><span class="p">))</span>
+    <span class="c1"># de-shift kernel</span>
+    <span class="n">kernel_centered</span> <span class="o">=</span> <span class="n">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="o">=-</span><span class="n">x_w</span><span class="p">,</span> <span class="n">shift_y</span><span class="o">=-</span><span class="n">y_w</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_centered</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="kernel_norm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_norm">[docs]</a><span class="k">def</span> <span class="nf">kernel_norm</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
@@ -291,7 +314,7 @@
     <span class="n">shift_x</span> <span class="o">=</span> <span class="n">x_int</span> <span class="o">-</span> <span class="n">x_pos</span>
     <span class="n">shift_y</span> <span class="o">=</span> <span class="n">y_int</span> <span class="o">-</span> <span class="n">y_pos</span>
     <span class="k">if</span> <span class="n">shift</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">kernel_shift</span> <span class="o">=</span> <span class="n">de_shift_kernel</span><span class="p">(</span><span class="n">image_cut</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">)</span>
+        <span class="n">kernel_shift</span> <span class="o">=</span> <span class="n">de_shift_kernel</span><span class="p">(</span><span class="n">image_cut</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">kernel_shift</span> <span class="o">=</span> <span class="n">image_cut</span>
     <span class="n">kernel_final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">))</span>
@@ -382,7 +405,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

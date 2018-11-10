@@ -19,7 +19,10 @@ class SinglePlane(object):
         self.func_list = []
         self._foreground_shear = False
         for i, lens_type in enumerate(lens_model_list):
-            if lens_type == 'SHEAR':
+            if lens_type == 'SHIFT':
+                from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+                self.func_list.append(Shift())
+            elif lens_type == 'SHEAR':
                 from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
                 self.func_list.append(ExternalShear())
             elif lens_type == 'CONVERGENCE':

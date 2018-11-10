@@ -151,6 +151,25 @@ class ImageModel(object):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
+        A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        error_map = self.error_map(kwargs_lens, kwargs_ps)
+        error_map_1d = self.ImageNumerics.image2array(error_map)
+        d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map_1d), d, inv_bool=inv_bool)
+        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        model = self.ImageNumerics.array2image(wls_model)
+        return model, error_map, cov_param, param
+
+    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
+        """
+        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return:
+        """
         if not self.LensModel is None:
             x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
                                                          self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
@@ -160,13 +179,7 @@ class ImageModel(object):
         A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
                                              kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
-        error_map = self.error_map(kwargs_lens, kwargs_ps)
-        error_map_1d = self.ImageNumerics.image2array(error_map)
-        d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map_1d), d, inv_bool=inv_bool)
-        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        model = self.ImageNumerics.array2image(wls_model)
-        return model, error_map, cov_param, param
+        return A
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
               source_add=True, lens_light_add=True, point_source_add=True):

@@ -144,7 +144,7 @@ class Multiband(object):
         x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
         return x_mins, y_mins
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, source_marg=False,
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
                                     compute_bool=None):
         """
         computes the likelihood of the data given a model
@@ -152,7 +152,7 @@ class Multiband(object):
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
-        :param kwargs_else:
+        :param kwargs_ps:
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         if compute_bool is None:
@@ -165,7 +165,7 @@ class Multiband(object):
         for i in range(self._num_bands):
             if compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
-                                                                             kwargs_lens_light, kwargs_else,
+                                                                             kwargs_lens_light, kwargs_ps,
                                                                              source_marg=source_marg)
         return logL
 
@@ -181,9 +181,9 @@ class Multiband(object):
                 num += self._imageModel_list[i].numData_evaluate()
         return num
 
-    def fermat_potential(self, kwargs_lens, kwargs_else):
+    def fermat_potential(self, kwargs_lens, kwargs_ps):
         """
 
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_else)
+        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)

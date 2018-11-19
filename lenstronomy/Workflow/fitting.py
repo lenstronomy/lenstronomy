@@ -15,15 +15,25 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
+                 multi_band_type='multi-band'):
         """
 
-        :return:
+        :param multi_band_list:
+        :param kwargs_model:
+        :param kwargs_constraints:
+        :param kwargs_likelihood:
+        :param kwargs_params:
+        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
+        Options are:
+            - 'multi-band': linear amplitudes are inferred on single data set
+            - 'multi-exposure': linear amplitudes ae jointly inferred
         """
         self.multi_band_list = multi_band_list
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
         self.kwargs_likelihood = kwargs_likelihood
+        self._multi_band_type = multi_band_type
 
         if kwargs_model.get('lens_model_list', None) is not None:
             self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = kwargs_params['lens_model']
@@ -88,7 +98,7 @@ class Fitting(object):
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
-        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
         likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, kwargs_likelihood=kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
@@ -118,7 +128,7 @@ class Fitting(object):
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
-        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model)
+        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
         likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class,
                                             kwargs_likelihood=kwargs_likelihood)
         # run PSO

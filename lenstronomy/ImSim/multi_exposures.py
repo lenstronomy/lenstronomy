@@ -76,7 +76,7 @@ class MultiExposures(Multiband):
         image_list = []
         k = 0
         for i in range(self._num_bands):
-            num_data = self._num_response_list[i]
+            num_data = self.num_response_list[i]
             array_i = array[k:k + num_data]
             image_i = self._imageModel_list[i].ImageNumerics.array2image(array_i)
             image_list.append(image_i)

@@ -13,10 +13,6 @@ class Multiband(object):
     def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):
         self._num_bands = len(multi_band_list)
-        self.LensModel = lens_model_class
-        self.PointSource = point_source_class
-        self.SourceModel = source_model_class
-        self.LensLightModel = lens_light_model_class
         self._imageModel_list = []
         self._num_response_list = []
         for i in range(self._num_bands):
@@ -50,42 +46,8 @@ class Multiband(object):
 
         :return:
         """
-        if self.PointSource is not None:
-            self.PointSource.delete_lens_model_cach()
-            self.PointSource.set_save_cache(True)
-            for imageModel in self._imageModel_list:
-                imageModel.PointSource.delete_lens_model_cach()
-                imageModel.PointSource.set_save_cache(True)
-
-    def source_surface_brightness(self, kwargs_source, kwargs_lens, unconvolved=False, de_lensed=False):
-        """
-        computes the source surface brightness distribution
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
-        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
-        :return: list of 1d arrays of surface brightness pixels (for each band)
-        """
-        source_light_final_list = []
-        for i in range(self._num_bands):
-            source_light_final = self._imageModel_list[i].source_surface_brightness(kwargs_source, kwargs_lens,
-                                                                                    unconvolved=unconvolved,
-                                                                                    de_lensed=de_lensed)
-            source_light_final_list.append(source_light_final)
-        return source_light_final_list
-
-    def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False):
-        """
-        computes the lens surface brightness distribution
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
-        :return: list of 1d array of surface brightness pixels (for each band)
-        """
-        lens_light_final_list = []
-        for i in range(self._num_bands):
-            lens_light_final = self._imageModel_list[i].lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
-            lens_light_final_list.append(lens_light_final)
-        return lens_light_final_list
+        for imageModel in self._imageModel_list:
+            imageModel.reset_point_source_cache()
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
         """
@@ -110,41 +72,6 @@ class Multiband(object):
             cov_param_list.append(cov_param)
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
-
-    def image(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, unconvolved=False, source_add=True,
-              lens_light_add=True, point_source_add=True):
-        """
-        make a image with a realisation of linear parameter values "param"
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
-        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
-        :param source_add: if True, compute source, otherwise without
-        :param lens_light_add: if True, compute lens light, otherwise without
-        :param point_source_add: if True, add point sources, otherwise without
-        :return: 1d array of surface brightness pixels of the simulation
-        """
-        image_list = []
-        for i in range(self._num_bands):
-            image = self._imageModel_list[i].image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else,
-                                                   unconvolved=unconvolved, source_add=source_add,
-                                                   lens_light_add=lens_light_add, point_source_add=point_source_add)
-            image_list.append(image)
-        return image_list
-
-    def error_map(self, kwargs_lens, kwargs_ps):
-        """
-
-        :param kwargs_lens:
-        :param kwargs_ps:
-        :return:
-        """
-        error_map_list = []
-        for i in range(self._num_bands):
-            error_map_i = self._imageModel_list[i].error_map(kwargs_lens, kwargs_ps)
-            error_map_list.append(error_map_i)
-        return error_map_list
 
     def image_positions(self, kwargs_ps, kwargs_lens):
         """

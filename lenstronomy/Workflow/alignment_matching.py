@@ -98,7 +98,7 @@ class AlignmentLikelihood(object):
         return self._likelihood(a)
 
     def computeLikelihood(self, ctx):
-        logL, _ = self._likelihood(ctx.getParams())
+        logL, _ = self._likelihood(ctx.args2kwargs())
         return logL
 
     def setup(self):

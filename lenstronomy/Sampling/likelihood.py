@@ -7,35 +7,80 @@ import lenstronomy.Util.constants as const
 
 class LikelihoodModule(object):
     """
-    this class contains the routines to run a MCMC process with one single image
+    this class contains the routines to run a MCMC process
+    the key components are:
+    - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as
+        ImageModel(), Multiband(), MulitExposure()
+    - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
+        conventions of the imSim_class
+
+    Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
-    def __init__(self, imSim_class, param_class, kwargs_likelihood):
+    def __init__(self, imSim_class, param_class, image_likelihood=True, check_bounds=True, check_solver=False,
+                 point_source_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
+                 solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
+                 max_num_images=None, bands_compute=None, time_delay_likelihood=False, time_delays_measured=None,
+                 time_delays_uncertainties=None):
         """
-        initializes all the classes needed for the chain
+        initializing class
+
+        :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
+        ImageModel(), Multiband(), MulitExposure()
+        :param param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
+        conventions of the imSim_class
+        :param image_likelihood: bool, option to compute the imaging likelihood
+        :param check_bounds:  bool, option to punish the hard bounds in parameter space
+        :param check_solver: bool, option to check whether point source position solver finds a solution to match all
+         the image positions in the same source plane coordinate
+        :param point_source_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
+        :param flaot, position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
+        (only used if point_source_likelihood=True)
+        :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
+        :param solver_tolerance: float, punishment of check_solver occures when image positions are predicted further
+        away than this number
+        :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
+        images predicted than modelled, a punishment occures
+        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
+        linear coefficients
+        :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
+        images predicted than indicated in max_num_images, a punishment occures
+        :param max_num_images: int, see restrict_image_number
+        :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
+        :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
+        :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
+        :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured
         """
+
         self.imSim = imSim_class
-        self.lensModel = self.imSim.LensModel
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
         # this part is not yet fully implemented
-        self._time_delay_likelihood = kwargs_likelihood.get('time_delay_likelihood', False)
+        self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
-            self._delays_measured = np.array(kwargs_likelihood['time_delays_measured'])
-            self._delays_errors = np.array(kwargs_likelihood['time_delays_uncertainties'])
+            if time_delays_measured is None:
+                raise ValueError("time_delay_measured need to be specified to evaluate the time-delay likelihood.")
+            if time_delays_uncertainties is None:
+                raise ValueError("time_delay_uncertainties need to be specified to evaluate the time-delay likelihood.")
+            self._delays_measured = np.array(time_delays_measured)
+            self._delays_errors = np.array(time_delays_uncertainties)
 
-        self._check_bounds = kwargs_likelihood.get('check_bounds', True)
-        self._point_source_likelihood = kwargs_likelihood.get('point_source_likelihood', False)
-        self._position_sigma = kwargs_likelihood.get('position_uncertainty', 0.004)
-        self._image_likelihood = kwargs_likelihood.get('image_likelihood', True)
-        self._check_solver = kwargs_likelihood.get('check_solver', False)
-        self._check_positive_flux = kwargs_likelihood.get('check_positive_flux', False)
-        self._solver_tolerance = kwargs_likelihood.get('solver_tolerance', 0.001)
-        self._force_no_add_image = kwargs_likelihood.get('force_no_add_image', False)
-        self._source_marg = kwargs_likelihood.get('source_marg', False)  # whether to fully invert the covariance matrix for marginalization
-        self._restrict_number_images = kwargs_likelihood.get('restrict_image_number', False)
-        self._max_num_images = kwargs_likelihood.get('max_num_images', self.param.num_point_source_images)
+        self._image_likelihood = image_likelihood
+        self._check_bounds = check_bounds
+        self._point_source_likelihood = point_source_likelihood
+        self._position_sigma = position_uncertainty
+        self._check_solver = check_solver
+        self._check_positive_flux = check_positive_flux
+        self._solver_tolerance = solver_tolerance
+        self._force_no_add_image = force_no_add_image
+        self._source_marg = source_marg  # whether to fully invert the covariance matrix for marginalization
+        self._restrict_number_images = restrict_image_number
+        if max_num_images is None:
+            max_num_images = self.param.num_point_source_images
+        self._max_num_images = max_num_images
         self._num_bands = self.imSim.num_bands
-        self._compute_bool = kwargs_likelihood.get('bands_compute', [True] * self._num_bands)
+        if bands_compute is None:
+            bands_compute = [True] * self._num_bands
+        self._compute_bool = bands_compute
         if not len(self._compute_bool) == self._num_bands:
             raise ValueError('compute_bool statement has not the same range as number of bands available!')
 
@@ -48,7 +93,7 @@ class LikelihoodModule(object):
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
         #extract parameters
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.param.getParams(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.param.args2kwargs(args)
         #generate image and computes likelihood
         self.imSim.reset_point_source_cache()
         logL = 0
@@ -75,7 +120,9 @@ class LikelihoodModule(object):
             if len(ra_image_list[0]) > self._max_num_images:
                 logL -= 10**10
         if self._check_positive_flux is True:
-            logL -= self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool is False:
+                logL -= 10**10
         return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):
@@ -138,19 +185,6 @@ class LikelihoodModule(object):
                 penalty = 10**15
                 bound_hit = True
         return penalty, bound_hit
-
-    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        penalty = 0
-        pos_bool = self.imSim.PointSource.check_positive_flux(kwargs_ps)
-        if pos_bool is False:
-            penalty += 10**15
-        pos_bool = self.imSim.SourceModel.check_positive_flux_profile(kwargs_source)
-        if pos_bool is False:
-            penalty += 10**15
-        pos_bool = self.imSim.LensLightModel.check_positive_flux_profile(kwargs_lens_light)
-        if pos_bool is False:
-            penalty += 10 ** 15
-        return penalty
 
     def logL_delay(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """

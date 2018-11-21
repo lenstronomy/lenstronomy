@@ -101,11 +101,11 @@ class TestFittingSequence(object):
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        self.Likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
+        self.Likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, **kwargs_likelihood)
 
     def test_logL(self):
-        args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                   kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+        args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
         logL, _ = self.Likelihood.logL(args)
         num_data_evaluate = self.Likelihood.imSim.numData_evaluate()
@@ -116,9 +116,9 @@ class TestFittingSequence(object):
                              'time_delays_measured': np.ones(4),
                              'time_delays_uncertainties': np.ones(4)
                              }
-        likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
-        args = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                   kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+        likelihood = LikelihoodModule(imSim_class=self.imageModel, param_class=self.param_class, **kwargs_likelihood)
+        args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
         logL, _ = likelihood.logL(args)
         npt.assert_almost_equal(logL, -3313.79, decimal=-1)

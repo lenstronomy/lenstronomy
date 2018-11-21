@@ -257,20 +257,3 @@ class PointSource(object):
                 else:
                     kwargs_ps[i]['point_amp'] *= norm_factor
         return kwargs_ps
-
-    @classmethod
-    def check_positive_flux(cls, kwargs_ps):
-        """
-        check whether inferred linear parameters are positive
-
-        :param kwargs_ps:
-        :return: bool
-        """
-        pos_bool = True
-        for kwargs in kwargs_ps:
-            point_amp = kwargs['point_amp']
-            for amp in point_amp:
-                if amp < 0:
-                    pos_bool = False
-                    break
-        return pos_bool

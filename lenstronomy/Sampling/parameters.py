@@ -154,11 +154,11 @@ class Param(object):
     def num_point_source_images(self):
         return self._num_images
 
-    def getParams(self, args, bijective=False):
+    def args2kwargs(self, args, bijective=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
-        :return: keyword arguments sorted
+        :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
         kwargs_lens, i = self.lensParams.getParams(args, i)
@@ -189,7 +189,7 @@ class Param(object):
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
 
-    def setParams(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_cosmo=None):
+    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_cosmo=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
@@ -208,16 +208,16 @@ class Param(object):
 
         :return: lower and upper limits of the arguments being sampled
         """
-        lower_limit = self.setParams(kwargs_lens=self.lensParams.lower_limit,
-                                     kwargs_source=self.souceParams.lower_limit,
-                                     kwargs_lens_light=self.lensLightParams.lower_limit,
-                                     kwargs_ps=self.pointSourceParams.lower_limit,
-                                     kwargs_cosmo=self.cosmoParams.lower_limit)
-        upper_limit = self.setParams(kwargs_lens=self.lensParams.upper_limit,
-                                     kwargs_source=self.souceParams.upper_limit,
-                                     kwargs_lens_light=self.lensLightParams.upper_limit,
-                                     kwargs_ps=self.pointSourceParams.upper_limit,
-                                     kwargs_cosmo=self.cosmoParams.upper_limit)
+        lower_limit = self.kwargs2args(kwargs_lens=self.lensParams.lower_limit,
+                                       kwargs_source=self.souceParams.lower_limit,
+                                       kwargs_lens_light=self.lensLightParams.lower_limit,
+                                       kwargs_ps=self.pointSourceParams.lower_limit,
+                                       kwargs_cosmo=self.cosmoParams.lower_limit)
+        upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
+                                       kwargs_source=self.souceParams.upper_limit,
+                                       kwargs_lens_light=self.lensLightParams.upper_limit,
+                                       kwargs_ps=self.pointSourceParams.upper_limit,
+                                       kwargs_cosmo=self.cosmoParams.upper_limit)
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -393,6 +393,15 @@ class Param(object):
             return np.max(dist)
         else:
             return 0
+
+    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        pos_bool_ps = self.pointSourceParams.check_positive_flux(kwargs_ps)
+        pos_bool_source = self.souceParams.check_positive_flux_profile(kwargs_source)
+        pos_bool_lens_light = self.lensLightParams.check_positive_flux_profile(kwargs_lens_light)
+        if pos_bool_ps is True and pos_bool_source is True and pos_bool_lens_light is True:
+            return True
+        else:
+            return False
 
     def print_setting(self):
         """

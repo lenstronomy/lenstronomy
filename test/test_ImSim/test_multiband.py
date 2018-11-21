@@ -75,30 +75,8 @@ class TestImageModel(object):
         multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
         self.imageModel = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
 
-    def test_source_surface_brightness(self):
-        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
-        assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.1417362294263248, decimal=8)
-
-        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
-        assert len(source_model[0]) == 100
-        npt.assert_almost_equal(source_model[0][10, 10], 0.13536114618182182, decimal=8)
-
-    def test_lens_surface_brightness(self):
-        lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
-        npt.assert_almost_equal(lens_flux[0][50, 50], 0.4415194068014886, decimal=8)
-
-        lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
-        npt.assert_almost_equal(lens_flux[0][50, 50], 4.7310552067454452, decimal=8)
-
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
-        chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
-        npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
-
-    def test_image(self):
-        model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
-        error_map = self.imageModel.error_map(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 

@@ -86,10 +86,10 @@ class Fitting(object):
                             self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
                             self._cosmo_upper,
                             kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
-        init_pos = param_class.setParams(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
+        init_pos = param_class.kwargs2args(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
                                            kwargs_mean_cosmo)
-        sigma_start = param_class.setParams(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
-                                            kwargs_sigma_ps, kwargs_sigma_cosmo)
+        sigma_start = param_class.kwargs2args(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
+                                              kwargs_sigma_ps, kwargs_sigma_cosmo)
         lowerLimit = np.array(init_pos) - np.array(sigma_start)*sigma_factor
         upperLimit = np.array(init_pos) + np.array(sigma_start)*sigma_factor
         num_param, param_list = param_class.num_param()
@@ -99,13 +99,13 @@ class Fitting(object):
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
         imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
-        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, kwargs_likelihood=kwargs_likelihood)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
         result, chain = mcmc_class.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
                                        threadCount=threadCount, mpi=mpi, print_key=print_key)
-        lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.getParams(result,
-                                                                                                    bijective=True)
+        lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.args2kwargs(result,
+                                                                                                         bijective=True)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def _mcmc_run(self, n_burn, n_run, walkerRatio,
@@ -129,14 +129,13 @@ class Fitting(object):
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
         imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
-        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class,
-                                            kwargs_likelihood=kwargs_likelihood)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
-        mean_start = param_class.setParams(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
-                                           kwargs_mean_cosmo)
-        sigma_start = param_class.setParams(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
-                                            kwargs_sigma_ps, kwargs_sigma_cosmo)
+        mean_start = param_class.kwargs2args(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
+                                             kwargs_mean_cosmo)
+        sigma_start = param_class.kwargs2args(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
+                                              kwargs_sigma_ps, kwargs_sigma_cosmo)
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None:

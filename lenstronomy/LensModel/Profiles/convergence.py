@@ -4,15 +4,15 @@ import lenstronomy.Util.param_util as param_util
 import numpy as np
 
 
-class MassSheet(object):
+class Convergence(object):
     """
     a single mass sheet (external convergence)
     """
-    param_names = ['kappa_ext']
-    lower_limit_default = {'kappa_ext': -1}
-    upper_limit_default = {'kappa_ext': 1}
+    param_names = ['kappa_ext', 'ra_0', 'dec_0']
+    lower_limit_default = {'kappa_ext': -1, 'ra_0': -100, 'dec_0': -100}
+    upper_limit_default = {'kappa_ext': 1, 'ra_0': 100, 'dec_0': 100}
 
-    def function(self, x, y, kappa_ext):
+    def function(self, x, y, kappa_ext, ra_0=0, dec_0=0):
         """
         lensing potential
 
@@ -21,11 +21,11 @@ class MassSheet(object):
         :param kappa_ext: external convergence
         :return: lensing potential
         """
-        theta, phi = param_util.cart2polar(x, y)
+        theta, phi = param_util.cart2polar(x - ra_0, y - dec_0)
         f_ = 1./2 * kappa_ext * theta**2
         return f_
 
-    def derivatives(self, x, y, kappa_ext):
+    def derivatives(self, x, y, kappa_ext, ra_0=0, dec_0=0):
         """
         deflection angle
 
@@ -34,12 +34,13 @@ class MassSheet(object):
         :param kappa_ext: external convergence
         :return: deflection angles (first order derivatives)
         """
-
-        f_x = kappa_ext * x
-        f_y = kappa_ext * y
+        x_ = x - ra_0
+        y_ = y - dec_0
+        f_x = kappa_ext * x_
+        f_y = kappa_ext * y_
         return f_x, f_y
 
-    def hessian(self, x, y, kappa_ext):
+    def hessian(self, x, y, kappa_ext, ra_0=0, dec_0=0):
         """
         Hessian matrix
 

@@ -122,7 +122,7 @@ class TestFittingSequence(object):
         lens_light_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2}]
         ps_sigma = [{'ra_source': 1, 'dec_source': 1, 'point_amp': 1}]
 
-        lens_param = self.kwargs_lens, lens_sigma, [{}, {}], lens_lower, lens_upper
+        lens_param = self.kwargs_lens, lens_sigma, [{}, {'ra_0': 0, 'dec_0': 0}], lens_lower, lens_upper
         source_param = self.kwargs_source, source_sigma, [{}], source_lower, source_upper
         lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], lens_light_lower, lens_light_upper
         ps_param = self.kwargs_ps, ps_sigma, [{}], self.kwargs_ps, self.kwargs_ps

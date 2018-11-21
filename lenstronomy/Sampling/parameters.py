@@ -89,7 +89,8 @@ class Param(object):
         self._joint_lens_with_light = kwargs_constraints.get('joint_lens_with_light', [])
         self._joint_source_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_source_with_point_source', []))
         for param_list in self._joint_source_with_point_source:
-            param_list.append(['center_x', 'center_y'])
+            if len(param_list) == 2:
+                param_list.append(['center_x', 'center_y'])
         self._joint_lens_light_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_lens_light_with_point_source', []))
         for param_list in self._joint_lens_light_with_point_source:
             param_list.append(['center_x', 'center_y'])

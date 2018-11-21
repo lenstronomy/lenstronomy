@@ -5,7 +5,7 @@ import lenstronomy.Util.mask as util_maskl
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage as ndimage
-from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
+from lenstronomy.LensModel.Profiles.shear import Shear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
@@ -700,7 +700,7 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     x_grid, y_grid = data_class.coordinates
     x_grid = util.image2array(x_grid)
     y_grid = util.image2array(y_grid)
-    shear = ExternalShear()
+    shear = Shear()
 
     f_x_shear, f_y_shear = 0, 0
     for i, lens_model in enumerate(lens_model_class.lens_model_list):

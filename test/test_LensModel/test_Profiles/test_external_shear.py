@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
+from lenstronomy.LensModel.Profiles.shear import Shear
 
 import numpy as np
 import numpy.testing as npt
@@ -12,7 +12,7 @@ class TestExternalShear(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.extShear = ExternalShear()
+        self.extShear = Shear()
 
         e1, e2 = 0.1, 0.1
         self.kwargs_lens = {'e1': e1, 'e2': e2}

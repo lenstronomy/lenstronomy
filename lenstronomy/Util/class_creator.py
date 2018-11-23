@@ -4,8 +4,8 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.ImSim.multiband import Multiband
-from lenstronomy.ImSim.multi_exposures import MultiExposures
+from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 
 
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
@@ -60,7 +60,7 @@ def create_multiband(multi_band_list, kwargs_model, type='multi-band'):
                                          precision_limit=kwargs_model.get('precision_limit', 10 ** (-10)),
                                          num_iter_max=kwargs_model.get('num_iter_max', 100))
     if type == 'multi-band':
-        multiband = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     elif type == 'multi-exposure':
         multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     else:

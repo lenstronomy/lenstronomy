@@ -6,7 +6,7 @@ import pytest
 
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
-from lenstronomy.ImSim.multi_exposures import MultiExposures
+from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel

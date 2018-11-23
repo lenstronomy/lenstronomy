@@ -1,9 +1,10 @@
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
+from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
 
 
-class Multiband(object):
+class MultiBand(MultiDataBase):
     """
     class to simulate/reconstruct images in multi-band option.
     This class calls functions of image_model.py with different bands with
@@ -12,10 +13,8 @@ class Multiband(object):
 
     def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):
-        self._num_bands = len(multi_band_list)
-        self._imageModel_list = []
-        self._num_response_list = []
-        for i in range(self._num_bands):
+        imageModel_list = []
+        for i in range(len(multi_band_list)):
             kwargs_data = multi_band_list[i][0]
             kwargs_psf = multi_band_list[i][1]
             kwargs_numerics = multi_band_list[i][2]
@@ -24,30 +23,8 @@ class Multiband(object):
             imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,
                                                     lens_light_model_class, point_source_class,
                                                     kwargs_numerics=kwargs_numerics)
-            self._imageModel_list.append(imageModel)
-            self._num_response_list.append(imageModel.ImageNumerics.num_response)
-
-    @property
-    def num_bands(self):
-        return self._num_bands
-
-    @property
-    def num_response_list(self):
-        """
-        list of number of data elements that are used in the minimization
-
-        :return: list of integers
-        """
-        return self._num_response_list
-
-    def reset_point_source_cache(self):
-        """
-        deletes all the cache in the point source class and saves it from then on
-
-        :return:
-        """
-        for imageModel in self._imageModel_list:
-            imageModel.reset_point_source_cache()
+            imageModel_list.append(imageModel)
+        super(MultiBand, self).__init__(imageModel_list)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
         """
@@ -109,21 +86,4 @@ class Multiband(object):
                                                                              source_marg=source_marg)
         return logL
 
-    def numData_evaluate(self, compute_bool=None):
-        if compute_bool is None:
-            compute_bool = [True] * self._num_bands
-        else:
-            if not len(compute_bool) == self._num_bands:
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
-        num = 0
-        for i in range(self._num_bands):
-            if compute_bool[i] is True:
-                num += self._imageModel_list[i].numData_evaluate()
-        return num
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
-        """
-
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
-        """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)

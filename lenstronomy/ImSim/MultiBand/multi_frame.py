@@ -1,15 +1,36 @@
-from lenstronomy.ImSim.multiband import Multiband
+from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
+from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.psf import PSF
 import lenstronomy.ImSim.de_lens as de_lens
+
 
 import numpy as np
 
 
-class MultiExposures(Multiband):
+class MultiFrame(MultiDataBase):
     """
-    class to model multiple exposures in the same band and makes a constraint fit to all bands simultaneously
-    with joint constraints on the surface brightness of the model
+    class to model multiple patches of the sky simultaneous (e.g. multiple images in a cluster) with different lens models
+    for each frame but with shared light components (source and lens)
 
+    This class is not compatible with PointSources (yet)
+    #TODO make this class compatible with point sources
     """
+    def __init__(self, multi_band_list, lens_model_class_list=None, source_model_class=None, lens_light_model_class=None,
+                 point_source_class=None):
+        imageModel_list = []
+        for i in range(len(multi_band_list)):
+            lens_model_class = lens_model_class_list[i]
+            kwargs_data = multi_band_list[i][0]
+            kwargs_psf = multi_band_list[i][1]
+            kwargs_numerics = multi_band_list[i][2]
+            data_i = Data(kwargs_data=kwargs_data)
+            psf_i = PSF(kwargs_psf=kwargs_psf)
+            imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,
+                                    lens_light_model_class, point_source_class,
+                                    kwargs_numerics=kwargs_numerics)
+            imageModel_list.append(imageModel)
+        super(MultiFrame, self).__init__(imageModel_list)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """
@@ -26,8 +47,7 @@ class MultiExposures(Multiband):
         C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        _, _, _, _ = self._imageModel_list[0]._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        #model = self.ImageNumerics.array2image(wls_model)
+        _, _, _, _ = self._imageModel_list[0]._update_linear_kwargs(param, kwargs_lens[0], kwargs_source, kwargs_lens_light, kwargs_ps)
         wls_list = self._array2image_list(wls_model)
         return wls_list, model_error_list, cov_param, param
 
@@ -43,7 +63,7 @@ class MultiExposures(Multiband):
         """
         A = []
         for i in range(self._num_bands):
-            A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens[i], kwargs_source, kwargs_lens_light, kwargs_ps)
             if i == 0:
                 A = A_i
             else:
@@ -91,7 +111,7 @@ class MultiExposures(Multiband):
         """
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
-            C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
+            C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens[i], kwargs_ps)
             model_error.append(model_error_i)
             if i == 0:
                 C_D_response = C_D_response_i

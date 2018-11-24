@@ -8,15 +8,15 @@ class LightProfile(object):
     """
     class to deal with the light distribution
     """
-    def __init__(self, profile_list=['HERNQUIST'], kwargs_numerics={}):
+    def __init__(self, profile_list, interpol_grid_num=1000, max_interpolate=100, min_interpolate=0.001):
         """
 
         :param profile_list:
         """
         self.light_model = LightModel(light_model_list=profile_list, smoothing=0.000001)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
-        self._max_interpolate = kwargs_numerics.get('max_integrate', 100)
-        self._min_interpolate = kwargs_numerics.get('min_integrate', 0.001)
+        self._interp_grid_num = interpol_grid_num
+        self._max_interpolate = max_interpolate
+        self._min_interpolate = min_interpolate
 
     def light_3d(self, r, kwargs_list):
         """
@@ -36,7 +36,7 @@ class LightProfile(object):
         if not hasattr(self, '_f_light_3d') or new_compute is True:
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate), self._interp_grid_num)
             light_3d_array = self.light_model.light_3d(r_array, kwargs_list)
-            light_3d_array[light_3d_array < 10 **(-100)] = 10**(-100)
+            light_3d_array[light_3d_array < 10 ** (-100)] = 10 ** (-100)
             f = interp1d(np.log(r_array), np.log(light_3d_array), fill_value="extrapolate")
             self._f_light_3d = f
         return np.exp(self._f_light_3d(np.log(r)))
@@ -105,7 +105,7 @@ class LightProfile(object):
         return np.exp(r_log_draw)
 
 
-class LightProfile_old(object):
+class LightProfileOld(object):
     """
     class to deal with the light distribution
     """

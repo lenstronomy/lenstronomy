@@ -34,7 +34,7 @@ class LensProp(object):
         self._lensModelExt = LensModelExtensions(self.lens_analysis.LensModel)
         self.kwargs_options = kwargs_model
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
-        self.analytic_kinematics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
+        self.analytic_kinematics = AnalyticKinematics(**kwargs_cosmo)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """
@@ -167,7 +167,7 @@ class LensProp(object):
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
+                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
         return sigma2
 

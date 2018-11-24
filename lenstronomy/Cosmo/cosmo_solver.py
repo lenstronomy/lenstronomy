@@ -52,7 +52,7 @@ class SolverFlatCosmo(SolverUtil):
 
     def solve(self, init, Dd, Ds_Dds):
         x = scipy.optimize.fsolve(self.F, init, args=(Dd, Ds_Dds), xtol=1.49012e-08, factor=0.1)
-        x[1] = abs(x[1])%1
+        x[1] = abs(x[1]) % 1
         y = self.F(x, Dd, Ds_Dds)
         if abs(y[0]) >= 0.1 or abs(y[1]) > 0.1:
             x = np.array([-1, -1])

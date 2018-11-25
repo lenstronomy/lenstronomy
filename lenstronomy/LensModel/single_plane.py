@@ -129,6 +129,9 @@ class SinglePlane(object):
                 self.func_list.append(Shear())
                 self._foreground_shear = True
                 self._foreground_shear_idex = i
+            elif lens_type == 'coreBURKERT':
+                from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
+                self.func_list.append(coreBurkert())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
 

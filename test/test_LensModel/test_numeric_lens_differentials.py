@@ -208,6 +208,10 @@ class TestNumericsProfile(object):
         lens_model = ['NIE_SIMPLE']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_coreBurk(self):
+        kwargs={'Rs':10, 'rho0': 1, 'r_core':13}
+        lens_model = ['coreBURKERT']
+        self.assert_differentials(lens_model, kwargs)
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

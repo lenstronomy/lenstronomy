@@ -382,20 +382,23 @@ class NFW(object):
         return a
 
     def _alpha2rho0(self, theta_Rs, Rs):
+
         """
         convert angle at Rs into rho0
         """
+
         rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
         return rho0
 
     def _rho02alpha(self, rho0, Rs):
-        """
 
+        """
         convert rho0 to angle at Rs
 
         :param rho0:
         :param Rs:
         :return:
         """
+
         theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
         return theta_Rs

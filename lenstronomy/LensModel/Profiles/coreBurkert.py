@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = 'dgilman'
 
 # this file contains a class to compute the truncated Navaro-Frank-White function (Baltz et al 2009)in mass/kappa space
 # the potential therefore is its integral
@@ -9,177 +9,123 @@ import warnings
 
 
 class coreBurkert(object):
-    """
-    this class contains functions concerning the truncated NFW profile with a truncation function (r_core^2)*(r^2+r_core^2)
-
-    relation are: R_200 = c * Rs
 
     """
-    param_names = ['Rs', 'theta_Rs', 'r_core', 'center_x', 'center_y']
-    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'r_core': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
+    lensing properties of a modified Burkert profile with variable core size
+    normalized by rho0, the central core density
 
-    def __init__(self, Rmax_norm = 10):
-        """
+    """
 
-        :param interpol: bool, if True, interpolates the functions F(), g() and h()
-        """
-        self._Rmax_norm = Rmax_norm
+    param_names = ['Rs', 'rho0', 'r_core', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 1, 'rho0': 1e+5, 'r_core': 0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'rho0': 1e+10, 'r_core': 50, 'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def function(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
         """
 
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param theta_Rs: deflection at Rs
+        :param rho0: core density
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+
+        if Rs < 0.0000001:
+            Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
+        f_ = self.cBurkPot(R, Rs, rho0, r_core)
+        return f_
 
-    def F(self, x, p):
+    def derivatives(self, x, y, Rs=None, rho0=None, r_core=None, center_x=0, center_y=0):
         """
-        solution of the projection integal (kappa)
-        arctanh / arctan function
-        :param x: r/Rs
-        :param p: r_core / Rs
+        deflection angles
+        :param x: x coordinate
+        :param y: y coordinate
+        :param Rs: scale radius
+        :param rho0: central core density
+        :param r_core: core radius
+        :param center_x:
+        :param center_y:
         :return:
         """
-
-        if isinstance(x, np.ndarray):
-
-            x2 = x**2
-            xp2 = x2*p**2
-
-            inds1 = np.where(x * p < 1)
-            inds2 = np.where(x * p > 1)
-
-            func = np.ones_like(x)
-            inds0 = np.where(x*p == 1)
-            func[inds0] = (1+p**2)**-1*(np.pi * np.sqrt(1+x2[inds0]) ** -1 + 2*p*np.arctanh(np.sqrt(1+x2[inds0]) ** -1)*np.sqrt(1+x2[inds0]) ** -1)
-
-            arg = np.sqrt(1 - xp2[inds1])
-            arg1 = np.sqrt(1+x2[inds1]) ** -1
-            func[inds1] = (1+p**2)**-1*(np.pi * arg1 + 2*p*np.arctanh(arg1)*arg1 -2*p*np.arctanh(arg) * arg ** -1)
-
-            arg = np.sqrt(xp2[inds2] - 1)
-            arg2 = np.sqrt(1+x2[inds2]) ** -1
-            func[inds2] = (1+p**2)**-1*(np.pi * arg2 + 2*p*np.arctanh(arg2)*arg2 + p * np.real(1j* np.log((1j - arg) * (1j + arg)**-1)) * arg ** -1)
-
-            return func
-
-        else:
-
-            if x*p == 1:
-                return (1+p**2)**-1*(np.pi * np.sqrt(1 + x) ** -1 +
-                                     2*p*np.arctanh(np.sqrt(1 + x) ** -1)*np.sqrt(1 + x) ** -1)
-            elif x*p<1:
-                arg = np.sqrt(1 - x**2*p**2)
-                arg1 = np.sqrt(1 + x) ** -1
-                return (1+p**2)**-1*(np.pi * arg1 + 2*p*np.arctanh(arg1)*arg1 -2*p*np.arctanh(arg) * arg ** -1)
-            else:
-                arg = np.sqrt(-1 + x ** 2 * p ** 2)
-                arg1 = np.sqrt(1 + x) ** -1
-                return (1+p**2)**-1*(np.pi * arg1 + 2*p*np.arctanh(arg1)*arg1 + p * np.real(1j* np.log((1j - arg) * (1j + arg)**-1)) * arg ** -1)
-
-    def G(self, x, p):
-
-        """
-        analytic solution of the 2d projected mass integral
-        integral: 2 * pi * x * kappa * dx
-        :param x:
-        :param p:
-        :return:
-        """
-        
-        if isinstance(x, np.ndarray):
-            func = np.ones_like(x)
-            inds1 = np.where(x*p < 1)
-    
-            func[inds1] = (2*np.pi*(p+p**3)**-1)*(np.pi * (-1 + np.sqrt(1 + x[inds1] ** 2)) *p + p ** 2 * (2 * np.log(x[inds1] / 2.) + np.sqrt(1 + x[inds1] ** 2) * np.log((2 + x[inds1] ** 2 + 2 *
-             np.sqrt(1 + x[inds1] ** 2)) / x[inds1] ** 2))+ np.log((x[inds1] ** 2 *p ** 2) / 4.) - np.sqrt(1 - x[inds1] ** 2 *p ** 2) * \
-            np.log((2 - x[inds1] ** 2 *p ** 2 - 2 * np.sqrt(1 - x[inds1] ** 2 * p ** 2)) / (x[inds1] ** 2 *p ** 2)))
-    
-            inds2 = np.where(x*p > 1)
-            func[inds2] = (2*np.pi*(p+p**3)**-1)*(np.pi*(-1 + np.sqrt(1 + x[inds2]**2))*p -2*np.sqrt(-1 + x[inds2]**2*p**2)*\
-                          np.arctan(np.sqrt(-1 + x[inds2]**2*p**2)) - np.log(4) + p**2*(2*np.log(x[inds2]/2.) + 
-                         np.sqrt(1 + x[inds2]**2)*np.log((2 + x[inds2]**2 + 2*np.sqrt(1 + x[inds2]**2))/x[inds2]**2)) + \
-                          2*np.log(x[inds2]*p))
-
-            inds0 = np.where(x*p == 1)
-            func[inds0] = (2 * np.pi * (p + p ** 3) ** -1) * (
-                        np.pi * (-1 + np.sqrt(1 + x[inds0] ** 2)) * p -  np.log(4) + p ** 2 * (
-                                    2 * np.log(x[inds0] / 2.) +
-                                    np.sqrt(1 + x[inds0] ** 2) * np.log(
-                                (2 + x[inds0] ** 2 + 2 * np.sqrt(1 + x[inds0] ** 2)) / x[inds0] ** 2)) + \
-                        2 * np.log(x[inds0] * p))
-
-            return func
-
-        
-        else:
-            if x*p == 1:
-                return (2*np.pi*(p+p**3)**-1)*(np.pi*(-1 + np.sqrt(1 + x**2))*p - np.log(4) + p**2*(2*np.log(x/2.) +
-                         np.sqrt(1 + x**2)*np.log((2 + x**2 + 2*np.sqrt(1 + x**2))/x**2)) + \
-                          2*np.log(x*p))
-            elif x*p < 1:
-                return (2*np.pi*(p+p**3)**-1)*(np.pi * (-1 + np.sqrt(1 + x ** 2)) *p + p ** 2 * (2 * np.log(x / 2.) + np.sqrt(1 + x ** 2) * np.log((2 + x ** 2 + 2 *
-             np.sqrt(1 + x ** 2)) / x ** 2))+ np.log((x ** 2 *p ** 2) / 4.) - np.sqrt(1 - x ** 2 *p ** 2) * \
-            np.log((2 - x ** 2 *p ** 2 - 2 * np.sqrt(1 - x ** 2 * p ** 2)) / (x ** 2 *p ** 2)))
-            else:
-                return (2*np.pi*(p+p**3)**-1)*(np.pi*(-1 + np.sqrt(1 + x**2))*p -2*np.sqrt(-1 + x**2*p**2)*\
-                          np.arctan(np.sqrt(-1 + x**2*p**2)) - np.log(4) + p**2*(2*np.log(x/2.) + 
-                         np.sqrt(1 + x**2)*np.log((2 + x**2 + 2*np.sqrt(1 + x**2))/x**2)) + \
-                          2*np.log(x*p))
-
-    def derivatives(self, x, y, Rs=None, theta_Rs=None, r_core=None, center_x=0, center_y=0):
-
-        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
 
-        rho0 *= self._rescale_density(Rs, r_core)
-
         dx, dy = self.coreBurkAlpha(R, Rs, rho0, r_core, x_, y_)
 
         return dx, dy
 
-    def coreBurkAlpha(self, R, Rs, rho0, r_core, ax_x, ax_y):
+    def mass_2d(self, R, Rs, rho0, r_core):
+
+        """
+        analytic solution of the projection integral
+        (convergence)
+
+        :param R: projected distance
+        :param Rs: scale radius
+        :param rho0: central core density
+        :param r_core: core radius
+        """
 
         x = R / Rs
         p = Rs / r_core
+        gx = self._G(x, p)
 
-        gx = self.G(x, p)
-        a = rho0 * Rs * R * gx / x ** 2 / R
-        return a * ax_x, a * ax_y
+        m_2d = 2 * np.pi * rho0 * Rs ** 3 * gx
 
-    def hessian(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+        return m_2d
 
-        #raise Exception('Hessian for truncated nfw profile not yet implemented.')
+    def coreBurkAlpha(self, R, Rs, rho0, r_core, ax_x, ax_y):
+        """
+        deflection angle
+
+        :param R:
+        :param Rs:
+        :param rho0:
+        :param r_core:
+        :param ax_x:
+        :param ax_y:
+        :return:
+        """
+        x = R / Rs
+        p = Rs / r_core
+
+        gx = self._G(x, p)
+
+        a = 2 * rho0 * Rs**2 * gx / x
+
+        return a * ax_x / R, a * ax_y / R
+
+    def hessian(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
 
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+
+        :param x: x coordinate
+        :param y: y coordinate
+        :param Rs: scale radius
+        :param rho0: central core density
+        :param r_core: core radius
+        :param center_x:
+        :param center_y:
+        :return:
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
 
-        kappa = self.density_2d(x_, y_, Rs, rho0_input, r_core)
+        kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
 
-        gamma1, gamma2 = self.cBurkGamma(R, Rs, self._rescale_density(Rs, r_core)*rho0_input, r_core, x_, y_)
+        gamma1, gamma2 = self.cBurkGamma(R, Rs, rho0, r_core, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -187,222 +133,272 @@ class coreBurkert(object):
 
     def density(self, R, Rs, rho0, r_core):
         """
-        three dimenstional truncated NFW profile
+        three dimenstional cored Burkert profile
 
         :param R: radius of interest
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param rho0: density normalization (characteristic density)
+        :param rho0: central core density
         :type rho0: float
         :return: rho(R) density
         """
 
-        return self._rescale_density(Rs, r_core)*rho0 * ((1 + R * r_core ** -1) * (1 + (R*Rs**-1)**2) )**-1
+        return rho0 * ((1 + R * r_core ** -1) * (1 + (R*Rs**-1)**2) )**-1
 
     def density_2d(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
         """
-        projected two dimenstional NFW profile (kappa*Sigma_crit)
+        projected two dimenstional core Burkert profile (kappa*Sigma_crit)
 
-        :param R: radius of interest
-        :type R: float/numpy array
+        :param x: x coordinate
+        :param y: y coordinate
         :param Rs: scale radius
-        :type Rs: float
-        :param rho0: density normalization (characteristic density)
-        :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
-        :return: Epsilon(R) projected density at radius R
+        :param rho0: central core density
+        :param r_core: core radius
         """
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         x = R * Rs ** -1
         p = Rs * r_core ** -1
-        Fx = self.F(x, p)
+        Fx = self._F(x, p)
 
-        return rho0 * Rs * Fx * self._rescale_density(Rs, r_core)
+        return 2 * rho0 * Rs * Fx
 
     def mass_3d(self, R, Rs, rho0, r_core):
         """
-        mass enclosed a 3d sphere or radius r
-        :param r:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param R: projected distance
+        :param Rs: scale radius
+        :param rho0: central core density
+        :param r_core: core radius
         """
+
         Rs = float(Rs)
-        m_0 = 4*np.pi*Rs**3 * rho0
         p = Rs * r_core**-1
         c = R / Rs
 
         factor = 0.5*(1+p**2)**-1 * (p*(2*np.arctan(c**-1) - np.pi) + p**2*np.log(1+c**2)+2*np.log(p*c+1))
 
-        return m_0*factor
+        return rho0 * factor * (4*np.pi*Rs**3*p)
 
-    def _rescale_density(self, Rs, r_core):
+    def cBurkPot(self, R, Rs, rho0, r_core):
+
         """
-        Rescales cored Burkert quantities such that the mass enclosed (in three-D) within Rmax
-        is the same as an NFW profile with scale radius Rs
-        :param Rmax:
-        :param Rs:
-        :param r_core:
-        :return:
-        """
-        Rmax = self._Rmax_norm * Rs
-        m3d_coreburk = self.mass_3d(Rmax, Rs, 1, r_core)
-        m3d_nfw = 4*np.pi*Rs**3*(np.log((Rs + Rmax)/Rs) - Rmax/(Rs + Rmax))
-
-        return (m3d_nfw * m3d_coreburk**-1)
-
-    def nfwPot(self, R, Rs, rho0, r_core):
-        """
-        lensing potential of NFW profile (*Sigma_crit*D_OL**2)
-
-        :param R: radius of interest
-        :type R: float/numpy array
+        :param R: projected distance
         :param Rs: scale radius
-        :type Rs: float
-        :param rho0: density normalization (characteristic density)
-        :type rho0: float
-        :return: Epsilon(R) projected density at radius R
+        :param rho0: central core density
+        :param r_core: core radius
         """
         x = R / Rs
-        p = float(r_core) / Rs
-        hx = self._h(x, p)
-        return 2 * self._rescale_density(Rs, r_core)* rho0 * Rs ** 3 * hx
+        p = Rs / r_core
+        hx = self._H(x, p)
+
+        return 2 * rho0 * Rs ** 3 * hx
 
     def cBurkGamma(self, R, Rs, rho0, r_core, ax_x, ax_y):
         """
 
-        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate 'axis'
-
-        :param R: radius of interest
-        :type R: float/numpy array
+        :param R: projected distance
         :param Rs: scale radius
-        :type Rs: float
-        :param rho0: density normalization (characteristic density)
-        :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
-        :param axis: projection to either x- or y-axis
-        :type axis: same as R
-        :return: Epsilon(R) projected density at radius R
+        :param rho0: central core density
+        :param r_core: core radius
+        :param ax_x: x coordinate
+        :param ax_y: y coordinate
+        :return:
         """
         c = 0.000001
+        
         if isinstance(R, int) or isinstance(R, float):
             R = max(R, c)
         else:
             R[R <= c] = c
 
-        x = R / Rs
+        x = R * Rs**-1
+        p = Rs * r_core**-1
+        
+        gx = self._G(x, p)
+        fx = self._F(x, p)
 
-        p = float(r_core) * Rs ** -1
+        m_x = 2*rho0*Rs**3 * gx
+        kappa = 2*rho0*Rs*fx
 
-        gx = self.G(x, p)
-        Fx = self.F(x, p)
+        a = 2*(m_x * R**-2 - kappa)
 
-        #a = rho0*Rs*(gx * x ** -4 + 4*np.pi * Rs ** 2 * Fx * x**-2)
-        #print(a)
-        a = rho0*Rs*(gx/x**2 - Fx)  # /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
+        return 0.5 * a * (ax_y ** 2 - ax_x ** 2) / R**2, -a * (ax_x * ax_y) / R**2
 
-        return a * (ax_y ** 2 - ax_x ** 2) / R ** 2, -a * 2 * (ax_x * ax_y) / R ** 2
+    def _u(self, x):
 
-    def mass_2d(self,R,Rs,rho0,r_core):
+        return np.sqrt(1 + x**2)
+
+    def _g(self, x, p):
+
+        return np.sqrt(1 - x**2 * p**2)
+
+    def _f(self, x, p):
+
+        return np.sqrt(x ** 2 * p ** 2 - 1)
+
+    def _H(self, x, p):
+
+        prefactor = (p + p**3)**-1
+
+        if isinstance(x, np.ndarray):
+
+            inds0 = np.where(x * p == 1)
+            inds1 = np.where(x * p < 1)
+            inds2 = np.where(x * p > 1)
+            func = np.ones_like(x)
+
+            func[inds1] = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x[inds1]) -
+                                                0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                                  self._u(x[inds1]) - 0.5 * np.arctanh(self._u(x[inds1])**-1)) * np.arctanh(
+                self._u(x[inds1])**-1) + \
+                          2 * (self._g(x[inds1], p) - 0.5 * np.arctanh(self._g(x[inds1], p))) * \
+                          np.arctanh(self._g(x[inds1], p)) + (1 + p ** 2) * np.log(x[inds1]) ** 2 - np.pi * p * \
+                          np.log(1 + self._u(x[inds1])) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                          np.log(p ** 2) + np.log(x[inds1]) * (
+                                      0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+
+            func[inds2] = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x[inds2]) -
+                                                0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                                      self._u(x[inds2]) - 0.5 * np.arctanh(self._u(x[inds2])**-1)) * np.arctanh(
+                self._u(x[inds2])**-1) + \
+                          -2 * (self._f(x[inds2], p) - 0.5 * np.arctan(self._f(x[inds2], p))) * \
+                          np.arctan(self._f(x[inds2], p)) + (1 + p ** 2) * np.log(x[inds2]) ** 2 - np.pi * p * \
+                          np.log(1 + self._u(x[inds2])) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                          np.log(p ** 2) + np.log(x[inds2]) * (
+                                      0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+
+            func[inds0] = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x[inds0]) -
+                                                0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                                  self._u(x[inds0]) - 0.5 * np.arctanh(self._u(x[inds0])**-1)) * np.arctanh(
+                self._u(x[inds0])**-1) \
+                          + (1 + p ** 2) * np.log(x[inds0]) ** 2 - np.pi * p * \
+                          np.log(1 + self._u(x[inds0])) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                          np.log(p ** 2) + np.log(x[inds0]) * (
+                                      0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+
+        else:
+            if x * p < 1:
+                func = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x) -
+                                             0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                               self._u(x) - 0.5 * np.arctanh(self._u(x)**-1)) * np.arctanh(self._u(x)**-1) + \
+                       2 * (self._g(x, p) - 0.5 * np.arctanh(self._g(x, p))) * \
+                       np.arctanh(self._g(x, p)) + (1 + p ** 2) * np.log(x) ** 2 - np.pi * p * \
+                       np.log(1 + self._u(x)) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                       np.log(p ** 2) + np.log(x) * (0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+            elif x * p > 1:
+                func = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x) -
+                                                0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                                      self._u(x) - 0.5 * np.arctanh(self._u(x)**-1)) * np.arctanh(
+                self._u(x)**-1) + \
+                          -2 * (self._f(x, p) - 0.5 * np.arctan(self._f(x, p))) * \
+                          np.arctan(self._f(x, p)) + (1 + p ** 2) * np.log(x) ** 2 - np.pi * p * \
+                          np.log(1 + self._u(x)) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                          np.log(p ** 2) + np.log(x) * (
+                                      0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+            else:
+                func = 0.9058413472016891 + (-0.9640065632861909 + np.pi * self._u(x) -
+                                             0.9058413472016892 * p) * p + 2 * p ** 2 * (
+                               self._u(x) - 0.5 * np.arctanh(self._u(x)**-1)) * np.arctanh(self._u(x)**-1) \
+                       + (1 + p ** 2) * np.log(x) ** 2 - np.pi * p * \
+                       np.log(1 + self._u(x)) + (0.3068528194400547 + 0.25 * np.log(p ** 2)) * \
+                       np.log(p ** 2) + np.log(x) * (0.6137056388801094 + 0.6137056388801094 * p ** 2 + np.log(p ** 2))
+
+        return prefactor * func
+
+    def _F(self, x, p):
 
         """
-        analytic solution of the projection integral
-        (convergence)
-
-        :param x: R/Rs
-        :type x: float >0
-        """
-
-        x = R / Rs
-        p = r_core / Rs
-        gx = self._g(x,p)
-        m_2d = 4 * rho0 * Rs * R ** 2 * gx / x ** 2 * np.pi
-        return m_2d * self._rescale_density(Rs, r_core)
-
-    def _h(self, X, p):
-
-        """
-        a horrible expression for the integral to compute potential
-
-        :param x: R/Rs
-        :param p: t/Rs
-        :type x: float >0
-        """
-        pass
-
-    def _alpha2rho0(self, theta_Rs, Rs):
-        """
-        convert angle at Rs into rho0; neglects the truncation
-        """
-        rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
-        return rho0
-
-    def _rho02alpha(self, rho0, Rs):
-        """
-        neglects the truncation
-
-        convert rho0 to angle at Rs
-        :param rho0:
-        :param Rs:
+        solution of the projection integal (kappa)
+        arctanh / arctan function
+        :param x: r/Rs
+        :param p: r_core / Rs
         :return:
         """
-        theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return theta_Rs
+        prefactor = 0.5*(1 + p**2)**-1
 
-import matplotlib.pyplot as plt
-from scipy.integrate import quad
-from lenstronomy.LensModel.Profiles.nfw import NFW
-if False:
+        if isinstance(x, np.ndarray):
 
-    b = coreBurkert()
-    n = NFW()
-    Rs = 10
-    r_core = 4
-    x = np.linspace(0.01*Rs,30*Rs,1000)
+            inds0 = np.where(x*p == 1)
+            inds1 = np.where(x * p < 1)
+            inds2 = np.where(x * p > 1)
 
-    kapb = b.density_2d(x,0,Rs,1,r_core)
-    kapn = n.density_2d(x,0,Rs,1)
-    plt.loglog(x / Rs, kapb, color='k')
-    plt.loglog(x / Rs, kapn, color='r')
-    plt.show()
+            func = np.ones_like(x)
 
-if False:
-    b = coreBurkert(Rmax_norm=10)
-    n = NFW()
-    Rs = 20
-    r_core =7
-    x = np.linspace(0.01 * Rs, 100 * Rs, 1000)
+            func[inds0] = self._u(x[inds0])**-1 * (np.pi + 2*p*np.arctanh(self._u(x[inds0])**-1))
 
-    dx, _ = b.derivatives(x, 0, Rs, 1, r_core)
-    dxn, _ = n.derivatives(x, 0, Rs, 1)
-    plt.loglog(x / Rs, dx, color='k')
-    plt.loglog(x / Rs, dxn, color='r')
-    plt.show()
+            func[inds1] = self._u(x[inds1])**-1 * (np.pi + 2*p*np.arctanh(self._u(x[inds1])**-1)) - \
+                          (2 * p * self._g(x[inds1], p)**-1 * np.arctanh(self._g(x[inds1], p)))
 
-if False:
-    b = coreBurkert()
-    n = NFW()
-    Rs = 10
-    r_core = 5
-    print(b.mass_3d(5*Rs, Rs, 1, 0.4*Rs))
-    print(n.mass_3d(5*Rs, Rs, 1))
+            func[inds2] = self._u(x[inds2]) ** -1 * (np.pi + 2 * p * np.arctanh(self._u(x[inds2]) ** -1)) - \
+                          (2 * p * self._f(x[inds2], p) ** -1 * np.arctan(self._f(x[inds2], p)))
 
-if False:
-    b = coreBurkert(Rmax_norm=10)
-    n = NFW()
-    Rs = 20
-    r_core = 3
-    x = np.linspace(0.01 * Rs, 100 * Rs, 1000)
+            return prefactor * func
 
-    xx, yy, xy = b.hessian(x, 0, Rs, 1, r_core)
-    xxn, yyn, xyn = n.hessian(x, 0, Rs, 1)
+        else:
 
-    plt.loglog(x / Rs, yy, color='k')
-    #plt.loglog(x / Rs, b.density_2d(x, 0 , Rs, 1, r_core), color='r')
-    plt.loglog(x / Rs, yyn, color='r')
-    plt.show()
+            if x*p == 1:
+                func = self._u(x)**-1 * (np.pi + 2*p*np.arctanh(self._u(x)**-1))
+            elif x*p<1:
+                func = self._u(x)**-1 * (np.pi + 2*p*np.arctanh(self._u(x)**-1)) - \
+                          (2 * p * self._g(x, p)**-1 * np.arctanh(self._g(x, p)))
+            else:
+                func = self._u(x) ** -1 * (np.pi + 2 * p * np.arctanh(self._u(x) ** -1)) - \
+                          (2 * p * self._f(x, p) ** -1 * np.arctan(self._f(x, p)))
+
+            return prefactor * func
+
+    def _G(self, x, p):
+        """
+        analytic solution of the 2d projected mass integral
+        integral: 2 * pi * x * kappa * dx
+        :param x:
+        :param p:
+        :return:
+        """
+
+        prefactor = (p + p**3)**-1
+
+        if isinstance(x, np.ndarray):
+
+            inds0 = np.where(x*p == 1)
+            inds1 = np.where(x*p < 1)
+            inds2 = np.where(x*p > 1)
+
+            func = np.ones_like(x)
+
+            func[inds0] = np.log(0.25*x[inds0]**2*p**2) + np.pi * p * (self._u(x[inds0]) - 1) + \
+                          2 * p ** 2 * (self._u(x[inds0])*np.arctanh(self._u(x[inds0])**-1) +
+                                        np.log(0.5*x[inds0]))
+
+            func[inds1] = np.log(0.25*x[inds1]**2*p**2) + np.pi * p * (self._u(x[inds1]) - 1) + \
+                          2 * p ** 2 * (self._u(x[inds1])*np.arctanh(self._u(x[inds1])**-1) +
+                                        np.log(0.5*x[inds1])) + 2 * self._g(x[inds1], p) * np.arctanh(self._g(x[inds1], p))
+
+            func[inds2] = np.log(0.25 * x[inds2] ** 2 * p ** 2) + np.pi * p * (self._u(x[inds2]) - 1) + \
+                          2 * p ** 2 * (self._u(x[inds2]) * np.arctanh(self._u(x[inds2]) ** -1) +
+                                        np.log(0.5 * x[inds2])) - 2 * self._f(x[inds2], p) * np.arctan(self._f(x[inds2], p))
+
+
+        else:
+
+            if x*p == 1:
+
+                func = np.log(0.25 * x ** 2 * p ** 2) + np.pi * p * (self._u(x) - 1) + \
+                          2 * p ** 2 * (self._u(x) * np.arctanh(self._u(x) ** -1) +
+                                        np.log(0.5 * x))
+
+            elif x*p < 1:
+
+                func = np.log(0.25 * x ** 2 * p ** 2) + np.pi * p * (self._u(x) - 1) + \
+                          2 * p ** 2 * (self._u(x) * np.arctanh(self._u(x) ** -1) +
+                                        np.log(0.5 * x)) + 2 * self._g(x, p) * np.arctanh(self._g(x, p))
+
+            else:
+
+                func = np.log(0.25 * x ** 2 * p ** 2) + np.pi * p * (self._u(x) - 1) + \
+                       2 * p ** 2 * (self._u(x) * np.arctanh(self._u(x) ** -1) +
+                                     np.log(0.5 * x)) + 2 * self._f(x, p) * np.arctan(self._f(x, p))
+
+        return func * prefactor

@@ -155,6 +155,13 @@ class TestNumerics(object):
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
         npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
 
+    def test_coreBurk(self):
+
+        from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert as Model
+        kwargs = {'rho0': 1., 'Rs': 9, 'r_core': 4}
+        self.assert_integrals(Model, kwargs)
+
+
     """
     def test_sis(self):
         kwargs = {'theta_E': 0.5}
@@ -167,7 +174,6 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     """
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

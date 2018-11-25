@@ -4,9 +4,6 @@ __author__ = 'dgilman'
 # the potential therefore is its integral
 
 import numpy as np
-import scipy.interpolate as interp
-import warnings
-
 
 class coreBurkert(object):
 

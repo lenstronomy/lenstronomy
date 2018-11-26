@@ -36,7 +36,7 @@ class coreBurkert(object):
         f_ = self.cBurkPot(R, Rs, rho0, r_core)
         return f_
 
-    def derivatives(self, x, y, Rs=None, theta_Rs=None, r_core=None, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
         """
         deflection angles
         :param x: x coordinate
@@ -103,8 +103,8 @@ class coreBurkert(object):
         :param r_core: core radius
         """
 
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
         gx = self._G(x, p)
 
         m_2d = 2 * np.pi * rho0 * Rs ** 3 * gx
@@ -123,8 +123,8 @@ class coreBurkert(object):
         :param ax_y:
         :return:
         """
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
 
         gx = self._G(x, p)
 
@@ -176,7 +176,7 @@ class coreBurkert(object):
 
         Rs = float(Rs)
         p = Rs * r_core**-1
-        c = R / Rs
+        c = R * Rs ** -1
 
         factor = 2*np.pi*Rs**3*(p**2 * np.log(1+c**2) + 2*np.log(1+c*p) - 2*p*np.arctan(c))
 
@@ -190,8 +190,8 @@ class coreBurkert(object):
         :param rho0: central core density
         :param r_core: core radius
         """
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
         hx = self._H(x, p)
 
         return 2 * rho0 * Rs ** 3 * hx
@@ -406,7 +406,7 @@ class coreBurkert(object):
 
     def _alpha2rho0(self, theta_Rs=None, Rs=None, r_core=None):
 
-        p = Rs / r_core
+        p = Rs * r_core ** -1
 
         gx = self._G(1, p)
 

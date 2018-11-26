@@ -86,4 +86,9 @@ class MultiBand(MultiDataBase):
                                                                              source_marg=source_marg)
         return logL
 
+    def fermat_potential(self, kwargs_lens, kwargs_ps):
+        """
 
+        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        """
+        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)

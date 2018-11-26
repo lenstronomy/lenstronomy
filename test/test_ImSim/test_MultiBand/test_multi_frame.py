@@ -45,7 +45,7 @@ class TestImageModel(object):
 
         lens_model_list = ['SPEP', 'SHEAR']
         self.kwargs_lens = [kwargs_spemd, kwargs_shear]
-        self.kwargs_lens_list = [self.kwargs_lens, self.kwargs_lens]
+
         lens_model_class = LensModel(lens_model_list=lens_model_list)
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
@@ -73,25 +73,28 @@ class TestImageModel(object):
         data_class.update_data(image_sim)
         kwargs_data['image_data'] = image_sim
         self.solver = LensEquationSolver(lensModel=lens_model_class)
-        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics], [kwargs_data, kwargs_psf, kwargs_numerics]]
-        lens_model_class_list = [lens_model_class, lens_model_class]
-        self.imageModel = MultiFrame(multi_band_list, lens_model_class_list, source_model_class, lens_light_model_class, point_source_class)
+        idex_lens_1 = [0, 1]
+        idex_lens_2 = [2, 3]
+        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_1], [kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_2]]
+        lens_model_list_joint = lens_model_list + lens_model_list
+        self.kwargs_lens_joint = self.kwargs_lens + self.kwargs_lens
+        self.imageModel = MultiFrame(multi_band_list, lens_model_list_joint, source_model_class, lens_light_model_class, point_source_class)
 
     def test_linear_response(self):
-        A = self.imageModel.linear_response_matrix(kwargs_lens=self.kwargs_lens_list, kwargs_source=self.kwargs_source,
+        A = self.imageModel.linear_response_matrix(kwargs_lens=self.kwargs_lens_joint, kwargs_source=self.kwargs_source,
                                                    kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps)
         nx, ny = np.shape(A)
         assert nx == 3
         assert ny == 100**2 * 2
 
     def test_image_linear_solve(self):
-        wls_list, model_error_list, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens_list,
-                                        self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
+        wls_list, model_error_list, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens_joint,
+                                                                                          self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
         assert len(wls_list) == 2
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens_list, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False,
-                                    compute_bool=None)
+        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens_joint, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False,
+                                                           compute_bool=None)
         chi2_reduced = logL * 2 / self.imageModel.numData_evaluate()
         npt.assert_almost_equal(chi2_reduced, -1, 1)
 

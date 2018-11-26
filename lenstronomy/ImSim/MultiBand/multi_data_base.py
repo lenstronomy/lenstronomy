@@ -51,4 +51,4 @@ class MultiDataBase(object):
 
         :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)
+        raise ValueError("Method not implemented!")

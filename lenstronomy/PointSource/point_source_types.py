@@ -11,7 +11,8 @@ class Unlensed(object):
     def __init__(self):
         pass
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
+                       num_iter_max=100, x_center=0, y_center=0):
         """
 
         :param ra_image:
@@ -52,7 +53,8 @@ class LensedPositions(object):
         self._fixed_magnification = fixed_magnification
         self._additional_image = additional_image
 
-    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
+                       num_iter_max=100, x_center=0, y_center=0):
         """
 
         :param ra_image:
@@ -66,7 +68,8 @@ class LensedPositions(object):
                                                                           min_distance=min_distance,
                                                                           search_window=search_window,
                                                                           precision_limit=precision_limit,
-                                                                          num_iter_max=num_iter_max)
+                                                                          num_iter_max=num_iter_max, x_center=x_center,
+                                                                          y_center=y_center)
         else:
             ra_image = kwargs_ps['ra_image']
             dec_image = kwargs_ps['dec_image']
@@ -115,7 +118,8 @@ class SourcePositions(object):
         self._solver = LensEquationSolver(lensModel)
         self._fixed_magnification = fixed_magnification
 
-    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
+                       num_iter_max=100, x_center=0, y_center=0):
         """
 
         :param ra_image:
@@ -128,7 +132,8 @@ class SourcePositions(object):
                                                                       min_distance=min_distance,
                                                                       search_window=search_window,
                                                                       precision_limit=precision_limit,
-                                                                      num_iter_max=num_iter_max)
+                                                                      num_iter_max=num_iter_max, x_center=x_center,
+                                                                      y_center=y_center)
         return ra_image, dec_image
 
     def source_position(self, kwargs_ps, kwargs_lens):
@@ -184,7 +189,8 @@ class PointSourceCached(object):
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.05, search_window=10, precision_limit=10**(-10), num_iter_max=100):
+    def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.05, search_window=10,
+                       precision_limit=10**(-10), num_iter_max=100, x_center=0, y_center=0):
         """
 
         :param ra_image:
@@ -196,7 +202,8 @@ class PointSourceCached(object):
             self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
                                                                       search_window=search_window,
                                                                       precision_limit=precision_limit,
-                                                                      num_iter_max=num_iter_max)
+                                                                      num_iter_max=num_iter_max, x_center=x_center,
+                                                                      y_center=y_center)
         return self._x_image, self._y_image
 
     def source_position(self, kwargs_ps, kwargs_lens=None):

@@ -93,7 +93,8 @@ class Param(object):
                 param_list.append(['center_x', 'center_y'])
         self._joint_lens_light_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_lens_light_with_point_source', []))
         for param_list in self._joint_lens_light_with_point_source:
-            param_list.append(['center_x', 'center_y'])
+            if len(param_list) == 2:
+                param_list.append(['center_x', 'center_y'])
         self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
         self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
         self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
@@ -147,8 +148,6 @@ class Param(object):
         self.cosmoParams = CosmoParam(kwargs_model.get('cosmo_type', None), mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo)
-
-        self._lens_light_param_name_list = self.lensLightParams.param_name_list
 
     @property
     def num_point_source_images(self):

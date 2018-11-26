@@ -4,7 +4,7 @@ from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
 import lenstronomy.ImSim.de_lens as de_lens
 
-
+import copy
 import numpy as np
 
 
@@ -13,8 +13,6 @@ class MultiFrame(MultiDataBase):
     class to model multiple patches of the sky simultaneous (e.g. multiple images in a cluster) with different lens models
     for each frame but with shared light components (source and lens)
 
-    This class is not compatible with PointSources (yet)
-    #TODO make this class compatible with point sources
     """
     def __init__(self, multi_band_list, lens_model_class_list=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):
@@ -26,8 +24,9 @@ class MultiFrame(MultiDataBase):
             kwargs_numerics = multi_band_list[i][2]
             data_i = Data(kwargs_data=kwargs_data)
             psf_i = PSF(kwargs_psf=kwargs_psf)
+            point_source_class_i = copy.deepcopy(point_source_class)
             imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,
-                                    lens_light_model_class, point_source_class,
+                                    lens_light_model_class, point_source_class_i,
                                     kwargs_numerics=kwargs_numerics)
             imageModel_list.append(imageModel)
         super(MultiFrame, self).__init__(imageModel_list)

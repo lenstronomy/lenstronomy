@@ -5,7 +5,7 @@ import pytest
 import numpy.testing as npt
 import numpy as np
 import scipy.integrate as integrate
-from lenstronomy.GalKin.galkin_old import GalKin_analytic
+from lenstronomy.GalKin.galkin_old import GalKinAnalytic
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
@@ -53,8 +53,8 @@ class TestGalkin(object):
         psf_fwhm = 0.1  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
 
-        galkin = GalKin_analytic(aperture=aperture_type, mass_profile=mass_profile, light_profile=light_profile,
-                                 anisotropy_type=anisotropy_type, psf_fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
+        galkin = GalKinAnalytic(aperture=aperture_type, mass_profile=mass_profile, light_profile=light_profile,
+                                anisotropy_type=anisotropy_type, psf_fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=2000)
 
         los_disp = AnalyticKinematics(**kwargs_cosmo)

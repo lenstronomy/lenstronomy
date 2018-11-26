@@ -77,18 +77,6 @@ class Data(object):
         else:
             self._noise_map = None
 
-    """
-    
-    def constructor_kwargs(self):
-
-        kwargs_data = {'numPix': self.nx, 'image_data': self.data, 'exposure_map': self._exp_map,
-                       'background_rms': self._sigma_b, 'ra_at_xy_0': self._coords._ra_at_xy_0,
-                        'dec_at_xy_0': self._coords._dec_at_xy_0, 'transform_pix2angle': self._coords._Mpix2a}
-        if hasattr(self, '_noise_map'):
-            kwargs_data['noise_map'] = self._noise_map
-        return kwargs_data
-        """
-
     def update_data(self, image_data):
         """
 
@@ -128,6 +116,22 @@ class Data(object):
         :return: pixel size (in units of arcsec)
         """
         return self._coords.pixel_size
+
+    @property
+    def width(self):
+        """
+
+        :return: width of data frame
+        """
+        return len(self.data) * self.deltaPix
+
+    @property
+    def center(self):
+        """
+
+        :return: center_x, center_y of coordinate system
+        """
+        return np.mean(self._x_grid), np.mean(self._y_grid)
 
     @property
     def background_rms(self):

@@ -30,6 +30,8 @@ class ImageModel(object):
         self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+            x_center, y_center = self.Data.center
+            self.PointSource.update_search_window(search_window=self.Data.width, x_center=x_center, y_center=y_center)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
@@ -421,10 +423,10 @@ class ImageModel(object):
         :return: updated list of kwargs with linear parameter values
         """
         i = 0
-        if not self.SourceModel is None:
+        if self.SourceModel is not None:
             kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
-        if not self.LensLightModel is None:
+        if self.LensLightModel is not None:
             kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
-        if not self.PointSource is None:
+        if self.PointSource is not None:
             kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps

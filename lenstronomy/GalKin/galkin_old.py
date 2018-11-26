@@ -7,11 +7,12 @@ from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.GalKin.jeans_equation import JeansSolver
 
 
-class GalKin_analytic(object):
+class GalKinAnalytic(object):
     """
     master class for all computations
     """
-    def __init__(self, aperture='slit', mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani', psf_fwhm=0.7, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
+    def __init__(self, aperture='slit', mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani',
+                 psf_fwhm=0.7, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
         """
         initializes the observation condition and masks
         :param aperture_type: string

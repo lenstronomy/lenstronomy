@@ -64,7 +64,6 @@ class coreBurkert(object):
     def hessian(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
 
         """
-
         :param x: x coordinate
         :param y: y coordinate
         :param Rs: scale radius

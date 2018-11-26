@@ -66,7 +66,7 @@ class TestcBurk(object):
         theta_Rs = self.cb._rho2alpha(rho0, Rs, r_core)
         theta_rs_2 = self.cb.coreBurkAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
 
-        npt.assert_almost_equal(theta_Rs/theta_rs_2,1)
+        npt.assert_almost_equal(theta_Rs*theta_rs_2**-1,1)
 
         rho0_2 = self.cb._alpha2rho0(theta_Rs, Rs, r_core)
         npt.assert_almost_equal(rho0, rho0_2)

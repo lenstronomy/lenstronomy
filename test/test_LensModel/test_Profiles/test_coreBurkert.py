@@ -59,9 +59,9 @@ class TestcBurk(object):
 
     def test_rho_angle_transform(self):
 
-        Rs = 10
-        rho0 = 1
-        r_core = 7
+        Rs = float(10)
+        rho0 = float(1)
+        r_core = float(7)
 
         theta_Rs = self.cb._rho2alpha(rho0, Rs, r_core)
         theta_rs_2 = self.cb.coreBurkAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]

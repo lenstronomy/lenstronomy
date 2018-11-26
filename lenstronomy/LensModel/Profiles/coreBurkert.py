@@ -1,8 +1,5 @@
 __author__ = 'dgilman'
 
-# this file contains a class to compute the truncated Navaro-Frank-White function (Baltz et al 2009)in mass/kappa space
-# the potential therefore is its integral
-
 import numpy as np
 
 class coreBurkert(object):
@@ -17,17 +14,19 @@ class coreBurkert(object):
     lower_limit_default = {'Rs': 1, 'rho0': 1e+5, 'r_core': 0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'Rs': 100, 'rho0': 1e+10, 'r_core': 50, 'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
+    def function(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
         """
 
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param rho0: core density
+        :param theta_Rs: deflection angle at Rs
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
         """
+
+        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
 
         if Rs < 0.0000001:
             Rs = 0.0000001
@@ -37,7 +36,7 @@ class coreBurkert(object):
         f_ = self.cBurkPot(R, Rs, rho0, r_core)
         return f_
 
-    def derivatives(self, x, y, Rs=None, rho0=None, r_core=None, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
         """
         deflection angles
         :param x: x coordinate
@@ -49,6 +48,9 @@ class coreBurkert(object):
         :param center_y:
         :return:
         """
+
+        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core = r_core)
+
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -58,6 +60,35 @@ class coreBurkert(object):
         dx, dy = self.coreBurkAlpha(R, Rs, rho0, r_core, x_, y_)
 
         return dx, dy
+
+    def hessian(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+
+        """
+        :param x: x coordinate
+        :param y: y coordinate
+        :param Rs: scale radius
+        :param rho0: central core density
+        :param r_core: core radius
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+
+        if Rs < 0.0001:
+            Rs = 0.0001
+        x_ = x - center_x
+        y_ = y - center_y
+        R = np.sqrt(x_ ** 2 + y_ ** 2)
+
+        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+
+        kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
+
+        gamma1, gamma2 = self.cBurkGamma(R, Rs, rho0, r_core, x_, y_)
+        f_xx = kappa + gamma1
+        f_yy = kappa - gamma1
+        f_xy = gamma2
+        return f_xx, f_yy, f_xy
 
     def mass_2d(self, R, Rs, rho0, r_core):
 
@@ -71,8 +102,8 @@ class coreBurkert(object):
         :param r_core: core radius
         """
 
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
         gx = self._G(x, p)
 
         m_2d = 2 * np.pi * rho0 * Rs ** 3 * gx
@@ -91,42 +122,14 @@ class coreBurkert(object):
         :param ax_y:
         :return:
         """
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
 
         gx = self._G(x, p)
 
         a = 2 * rho0 * Rs**2 * gx / x
 
         return a * ax_x / R, a * ax_y / R
-
-    def hessian(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
-
-        """
-
-        :param x: x coordinate
-        :param y: y coordinate
-        :param Rs: scale radius
-        :param rho0: central core density
-        :param r_core: core radius
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-
-        if Rs < 0.0001:
-            Rs = 0.0001
-        x_ = x - center_x
-        y_ = y - center_y
-        R = np.sqrt(x_ ** 2 + y_ ** 2)
-
-        kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
-
-        gamma1, gamma2 = self.cBurkGamma(R, Rs, rho0, r_core, x_, y_)
-        f_xx = kappa + gamma1
-        f_yy = kappa - gamma1
-        f_xy = gamma2
-        return f_xx, f_yy, f_xy
 
     def density(self, R, Rs, rho0, r_core):
         """
@@ -172,11 +175,11 @@ class coreBurkert(object):
 
         Rs = float(Rs)
         p = Rs * r_core**-1
-        c = R / Rs
+        c = R * Rs ** -1
 
-        factor = 0.5*(1+p**2)**-1 * (p*(2*np.arctan(c**-1) - np.pi) + p**2*np.log(1+c**2)+2*np.log(p*c+1))
+        factor = 2*np.pi*Rs**3*(p**2 * np.log(1+c**2) + 2*np.log(1+c*p) - 2*p*np.arctan(c))
 
-        return rho0 * factor * (4*np.pi*Rs**3*p)
+        return rho0 * factor * (p + p**3)**-1
 
     def cBurkPot(self, R, Rs, rho0, r_core):
 
@@ -186,8 +189,8 @@ class coreBurkert(object):
         :param rho0: central core density
         :param r_core: core radius
         """
-        x = R / Rs
-        p = Rs / r_core
+        x = R * Rs ** -1
+        p = Rs * r_core ** -1
         hx = self._H(x, p)
 
         return 2 * rho0 * Rs ** 3 * hx
@@ -396,6 +399,27 @@ class coreBurkert(object):
 
                 func = np.log(0.25 * x ** 2 * p ** 2) + np.pi * p * (self._u(x) - 1) + \
                        2 * p ** 2 * (self._u(x) * np.arctanh(self._u(x) ** -1) +
-                                     np.log(0.5 * x)) + 2 * self._f(x, p) * np.arctan(self._f(x, p))
+                                     np.log(0.5 * x)) - 2 * self._f(x, p) * np.arctan(self._f(x, p))
 
         return func * prefactor
+
+    def _alpha2rho0(self, theta_Rs=None, Rs=None, r_core=None):
+
+        p = Rs * r_core ** -1
+
+        gx = self._G(1, p)
+
+        rho0 = theta_Rs / (2 * Rs**2 *gx)
+
+        return rho0
+
+    def _rho2alpha(self, rho0=None, Rs=None, r_core=None):
+
+        p = Rs / r_core
+        gx = self._G(1, p)
+        alpha = 2*Rs**2*gx*rho0
+
+        return alpha
+
+
+

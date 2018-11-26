@@ -1,8 +1,5 @@
 __author__ = 'dgilman'
 
-# this file contains a class to compute the truncated Navaro-Frank-White function (Baltz et al 2009)in mass/kappa space
-# the potential therefore is its integral
-
 import numpy as np
 
 class coreBurkert(object):

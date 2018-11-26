@@ -202,7 +202,6 @@ class LensCosmo(object):
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c)**2 * self.D_ds / self.D_s / const.arcsec
         return theta_E
 
-
 class LCDM(object):
     """
     Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration

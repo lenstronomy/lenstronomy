@@ -209,8 +209,10 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_coreBurk(self):
-        kwargs={'Rs':10, 'rho0': 1, 'r_core':13}
+        kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.4}
         lens_model = ['coreBURKERT']
+        self.assert_differentials(lens_model, kwargs)
+        kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core':5}
         self.assert_differentials(lens_model, kwargs)
 
 if __name__ == '__main__':

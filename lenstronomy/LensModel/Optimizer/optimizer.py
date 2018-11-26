@@ -94,10 +94,6 @@ class Optimizer(object):
         self._tol_src_penalty = tol_src_penalty
         self._simplex_iter = simplex_n_iterations
         self._compute_mags_postpso = compute_mags_postpso
-        if 'optimization_algorithm' in optimizer_kwargs:
-            self._opt_method = optimizer_kwargs['optimization_algorithm']
-        else:
-            self._opt_method = 'Nelder-Mead'
 
         # make sure the length of observed positions matches, length of observed magnifications, etc.
         self._init_test(x_pos, y_pos, magnification_target, tol_source, redshift_list, lens_model_list, kwargs_lens,
@@ -211,14 +207,10 @@ class Optimizer(object):
         # downhill simplex optimization
         self._optimizer._reset(compute_mags=self._compute_mags_postpso)
 
-        if self._opt_method == 'Nelder-Mead' or self._opt_method == 'powell':
-
-            options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
+        options = {'adaptive': True, 'fatol': self._tol_simplex_func, 'xatol': self._tol_simplex_params,
                        'maxiter': self._simplex_iter * len(params)}
-        else:
-            options = {'maxiter': self._simplex_iter * len(params)}
 
-        optimized_downhill_simplex = minimize(self._optimizer, x0=params, method=self._opt_method,
+        optimized_downhill_simplex = minimize(self._optimizer, x0=params, method='Nelder-Mead',
                              options=options)
 
         penalty = self._optimizer._get_best()

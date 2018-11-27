@@ -164,7 +164,6 @@ class TestNumerics(object):
         kwargs = {'rho0': 1., 'Rs': 9, 'r_core': 11}
         self.assert_integrals(Model, kwargs)
 
-
     """
     def test_sis(self):
         kwargs = {'theta_E': 0.5}

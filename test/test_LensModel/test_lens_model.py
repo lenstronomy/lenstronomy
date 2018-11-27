@@ -24,7 +24,7 @@ class TestLensModel(object):
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 
         lens_model_list = ['NFW']
-        lensModel = LensModel(lens_model_list, interpol = True, lookup=True)
+        lensModel = LensModel(lens_model_list, kwargs_lensmodel = {'interpol': True, 'lookup': True})
         x,y = 0.2,1
         kwargs = [{'theta_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
         value = lensModel.potential(x,y,kwargs)

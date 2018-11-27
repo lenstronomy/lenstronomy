@@ -9,7 +9,7 @@ class MultiPlane(object):
     Multi-plane lensing class
     """
 
-    def __init__(self, z_source, lens_model_list, redshift_list, cosmo=None, **lensmodel_kwargs):
+    def __init__(self, z_source, lens_model_list, redshift_list, cosmo=None, kwargs_lensmodel = {}):
         """
 
         :param cosmo: instance of astropy.cosmology
@@ -28,7 +28,7 @@ class MultiPlane(object):
             self._sorted_redshift_index = []
         else:
             self._sorted_redshift_index = self._index_ordering(redshift_list)
-        self._lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
+        self._lens_model = SinglePlane(lens_model_list, kwargs_lensmodel = kwargs_lensmodel)
         z_before = 0
         self._T_ij_list = []
         self._T_z_list = []

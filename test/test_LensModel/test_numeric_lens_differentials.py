@@ -54,13 +54,13 @@ class TestNumericsProfile(object):
     def setup(self):
         pass
 
-    def assert_differentials(self, lens_model, kwargs):
+    def assert_differentials(self, lens_model, kwargs, kwargs_lensmodel={}):
         lensModelNum = NumericLens(lens_model)
         lensModelNum.diff = 0.000001
         #x, y = 1., 2.
         x = np.linspace(start=0.1, stop=8, num=10)
         y = 0
-        lensModel = LensModel(lens_model)
+        lensModel = LensModel(lens_model, kwargs_lensmodel = kwargs_lensmodel)
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
         f_x_num, f_y_num = lensModelNum.lens_model.alpha(x, y, [kwargs])
@@ -214,6 +214,19 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
         kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core':5}
         self.assert_differentials(lens_model, kwargs)
+
+    def _interpolating_function(self, kwargs1, kwargs2):
+
+        rs = kwargs1['Rs']
+        r_core = kwargs2['r_core']
+        power = 4
+        coeff = 1
+        q_crit = 0.3
+        ratio = (r_core * rs**-1) * q_crit**-1
+        arg = coeff*(ratio)**power
+        f = np.exp(-arg)
+
+        return f
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

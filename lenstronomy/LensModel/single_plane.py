@@ -10,7 +10,7 @@ class SinglePlane(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, **kwargs):
+    def __init__(self, lens_model_list, kwargs_lensmodel = {}):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -69,7 +69,7 @@ class SinglePlane(object):
                 self.func_list.append(SPEMD_SMOOTH())
             elif lens_type == 'NFW':
                 from lenstronomy.LensModel.Profiles.nfw import NFW
-                self.func_list.append(NFW(**kwargs))
+                self.func_list.append(NFW(**kwargs_lensmodel))
             elif lens_type == 'NFW_ELLIPSE':
                 from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
                 self.func_list.append(NFW_ELLIPSE(interpol=False, num_interp_X=1000, max_interp_X=100))
@@ -132,6 +132,9 @@ class SinglePlane(object):
             elif lens_type == 'coreBURKERT':
                 from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
                 self.func_list.append(coreBurkert())
+            elif lens_type == 'HYBRID':
+                from lenstronomy.LensModel.Profiles.hybrid import HYBRID
+                self.func_list.append(HYBRID(**kwargs_lensmodel))
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
 
@@ -212,7 +215,11 @@ class SinglePlane(object):
                 if self._model_list[i] == 'SHEAR':
                     f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 else:
-                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
+                    if self._model_list[i] == 'HYBRID':
+                        print(kwargs_copy[i])
+                        f_x_i, f_y_i = func.derivatives(x_, y_, *kwargs_copy[i])
+                    else:
+                        f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
                 f_x += f_x_i
                 f_y += f_y_i
         return f_x, f_y

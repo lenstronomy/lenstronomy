@@ -73,6 +73,5 @@ class TestMassAngleConversion(object):
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)
 
-
 if __name__ == '__main__':
     pytest.main()

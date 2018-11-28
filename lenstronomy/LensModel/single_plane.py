@@ -215,11 +215,7 @@ class SinglePlane(object):
                 if self._model_list[i] == 'SHEAR':
                     f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 else:
-                    if self._model_list[i] == 'HYBRID':
-                        print(kwargs_copy[i])
-                        f_x_i, f_y_i = func.derivatives(x_, y_, *kwargs_copy[i])
-                    else:
-                        f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
+                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
                 f_x += f_x_i
                 f_y += f_y_i
         return f_x, f_y

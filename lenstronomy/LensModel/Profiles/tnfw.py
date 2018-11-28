@@ -113,7 +113,7 @@ class TNFW(object):
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def density(self, R, Rs, rho0, t):
+    def density(self, R, Rs, rho0, r_trunc):
         """
         three dimenstional truncated NFW profile
 
@@ -125,6 +125,7 @@ class TNFW(object):
         :type rho0: float
         :return: rho(R) density
         """
+        t = r_trunc * Rs ** -1
         return (t ** 2 * (t ** 2 + R ** 2) ** -1) * rho0 / (R / Rs * (1 + R / Rs) ** 2)
 
     def density_2d(self, x, y, Rs, rho0, r_trunc, center_x=0, center_y=0):

@@ -138,5 +138,14 @@ def test_phi_gamma_ellipticity():
     assert gamma == gamma_out
 
 
+def test_phi_gamma_ellipticity_2():
+    e1, e2 = -0.04, -0.01
+    phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)
+
+    e1_out, e2_out = param_util.phi_gamma_ellipticity(phi, gamma)
+    npt.assert_almost_equal(e1, e1_out, decimal=10)
+    npt.assert_almost_equal(e2, e2_out, decimal=10)
+
+
 if __name__ == '__main__':
     pytest.main()

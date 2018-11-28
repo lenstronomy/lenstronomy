@@ -10,9 +10,10 @@ class LikelihoodModule(object):
     this class contains the routines to run a MCMC process
     the key components are:
     - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as
-        ImageModel(), Multiband(), MulitExposure()
+    ImageModel(), Multiband(), MulitExposure()
+
     - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
-        conventions of the imSim_class
+    conventions of the imSim_class
 
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """

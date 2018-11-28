@@ -141,11 +141,13 @@ class Optimizer(object):
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
         """
+        the best result of all optimizations will be returned.
+        total number of lens models sovled: n_particles*n_iterations
+
         :param n_particles: number of particle swarm particles
         :param n_iterations: number of particle swarm iternations
         :param restart: number of times to execute the optimization;
-        the best result of all optimizations will be returned.
-        total number of lens models sovled: n_particles*n_iterations
+
         :return: lens model keywords, [optimized source position], best fit image positions
         """
 

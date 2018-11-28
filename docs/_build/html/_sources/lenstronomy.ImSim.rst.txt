@@ -1,6 +1,13 @@
 lenstronomy.ImSim package
 =========================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.ImSim.MultiBand
+
 Submodules
 ----------
 
@@ -24,14 +31,6 @@ lenstronomy.ImSim.image\_numerics module
 ----------------------------------------
 
 .. automodule:: lenstronomy.ImSim.image_numerics
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy.ImSim.multiband module
-----------------------------------
-
-.. automodule:: lenstronomy.ImSim.multiband
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 0.4.2 documentation</title>
+    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,15 +49,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to deal with the light distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;HERNQUIST&#39;</span><span class="p">],</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_list</span><span class="p">,</span> <span class="n">interpol_grid_num</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">max_interpolate</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">min_interpolate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param profile_list:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">light_model_list</span><span class="o">=</span><span class="n">profile_list</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interpol_grid_num&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_integrate&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_integrate&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">interpol_grid_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span> <span class="o">=</span> <span class="n">max_interpolate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span> <span class="o">=</span> <span class="n">min_interpolate</span>
 
 <div class="viewcode-block" id="LightProfile.light_3d"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -77,7 +77,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_f_light_3d&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">light_3d_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span>
-            <span class="n">light_3d_array</span><span class="p">[</span><span class="n">light_3d_array</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span>
+            <span class="n">light_3d_array</span><span class="p">[</span><span class="n">light_3d_array</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">light_3d_array</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span> <span class="o">=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span></div>
@@ -146,14 +146,14 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">r_log_draw</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="LightProfile_old"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile_old">[docs]</a><span class="k">class</span> <span class="nc">LightProfile_old</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LightProfileOld"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfileOld">[docs]</a><span class="k">class</span> <span class="nc">LightProfileOld</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to deal with the light distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;Hernquist&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="n">profile_type</span>
 
-<div class="viewcode-block" id="LightProfile_old.draw_light"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile_old.draw_light">[docs]</a>    <span class="k">def</span> <span class="nf">draw_light</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+<div class="viewcode-block" id="LightProfileOld.draw_light"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfileOld.draw_light">[docs]</a>    <span class="k">def</span> <span class="nf">draw_light</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_light:</span>
@@ -165,7 +165,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;light profile </span><span class="si">%s</span><span class="s1"> not supported!&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
-<div class="viewcode-block" id="LightProfile_old.P_r_hernquist"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile_old.P_r_hernquist">[docs]</a>    <span class="k">def</span> <span class="nf">P_r_hernquist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
+<div class="viewcode-block" id="LightProfileOld.P_r_hernquist"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfileOld.P_r_hernquist">[docs]</a>    <span class="k">def</span> <span class="nf">P_r_hernquist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param a: 0.551*r_eff</span>
@@ -208,7 +208,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -152,6 +152,7 @@ class TNFW(object):
     def mass_3d_infinity(self, R, Rs, rho0, t):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r:
         :param Ra:
         :param Rs:
@@ -167,6 +168,7 @@ class TNFW(object):
     def mass_3d_lens(self, R, Rs, theta_Rs, t):
         """
         mass enclosed a 3d sphere or radius r
+
         :param r:
         :param Ra:
         :param Rs:

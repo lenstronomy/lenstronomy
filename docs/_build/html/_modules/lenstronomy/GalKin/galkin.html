@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.galkin &#8212; lenstronomy 0.4.2 documentation</title>
+    <title>lenstronomy.GalKin.galkin &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -92,7 +92,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mass_profile_list</span><span class="p">,</span> <span class="n">light_profile_list</span><span class="p">,</span> <span class="n">aperture_type</span><span class="o">=</span><span class="s1">&#39;slit&#39;</span><span class="p">,</span> <span class="n">anisotropy_model</span><span class="o">=</span><span class="s1">&#39;isotropic&#39;</span><span class="p">,</span>
-                 <span class="n">fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}):</span>
+                 <span class="n">fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span> <span class="n">sampling_number</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                 <span class="n">interpol_grid_num</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">log_integration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_integrate</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_integrate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param mass_profile_list: list of lens (mass) model profiles</span>
@@ -103,17 +104,19 @@
 <span class="sd">        :param kwargs_numerics: keyword arguments that control the numerical computation</span>
 <span class="sd">        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">massProfile</span> <span class="o">=</span> <span class="n">MassProfile</span><span class="p">(</span><span class="n">mass_profile_list</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="n">kwargs_numerics</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span> <span class="o">=</span> <span class="n">LightProfile</span><span class="p">(</span><span class="n">light_profile_list</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="n">kwargs_numerics</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">massProfile</span> <span class="o">=</span> <span class="n">MassProfile</span><span class="p">(</span><span class="n">mass_profile_list</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">interpol_grid_num</span><span class="o">=</span><span class="n">interpol_grid_num</span><span class="p">,</span>
+                                         <span class="n">max_interpolate</span><span class="o">=</span><span class="n">max_integrate</span><span class="p">,</span> <span class="n">min_interpolate</span><span class="o">=</span><span class="n">min_integrate</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span> <span class="o">=</span> <span class="n">LightProfile</span><span class="p">(</span><span class="n">light_profile_list</span><span class="p">,</span> <span class="n">interpol_grid_num</span><span class="o">=</span><span class="n">interpol_grid_num</span><span class="p">,</span>
+                                         <span class="n">max_interpolate</span><span class="o">=</span><span class="n">max_integrate</span><span class="p">,</span> <span class="n">min_interpolate</span><span class="o">=</span><span class="n">min_integrate</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="n">aperture_type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span> <span class="o">=</span> <span class="n">MamonLokasAnisotropy</span><span class="p">(</span><span class="n">anisotropy_model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">=</span> <span class="n">fwhm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_sampling</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sampling_number&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;interpol_grid_num&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_int</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_integration&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_integrate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_integrate&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># maximal integration (and interpolation) in units of arcsecs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_integrate</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_integrate&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>  <span class="c1"># min integration (and interpolation) in units of arcsecs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_sampling</span> <span class="o">=</span> <span class="n">sampling_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span> <span class="o">=</span> <span class="n">interpol_grid_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_int</span> <span class="o">=</span> <span class="n">log_integration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_integrate</span> <span class="o">=</span> <span class="n">max_integrate</span>  <span class="c1"># maximal integration (and interpolation) in units of arcsecs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_integrate</span> <span class="o">=</span> <span class="n">min_integrate</span>  <span class="c1"># min integration (and interpolation) in units of arcsecs</span>
 
 <div class="viewcode-block" id="Galkin.vel_disp"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin.Galkin.vel_disp">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">kwargs_apertur</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -248,7 +251,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

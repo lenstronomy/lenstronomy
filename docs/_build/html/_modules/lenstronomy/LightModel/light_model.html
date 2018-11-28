@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.4.2 documentation</title>
+    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -231,19 +231,7 @@
             <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list_k</span><span class="p">:</span>
                 <span class="n">kwargs_list_k</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
             <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_list_k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_list_new</span></div>
-
-<div class="viewcode-block" id="LightModel.check_positive_flux_profile"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.check_positive_flux_profile">[docs]</a>    <span class="k">def</span> <span class="nf">check_positive_flux_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
-        <span class="n">pos_bool</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">pos_bool</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">break</span>
-        <span class="k">return</span> <span class="n">pos_bool</span></div></div>
+        <span class="k">return</span> <span class="n">kwargs_list_new</span></div></div>
 </pre></div>
 
           </div>
@@ -276,7 +264,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

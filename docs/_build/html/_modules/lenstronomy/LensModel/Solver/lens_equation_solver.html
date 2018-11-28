@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 0.4.2 documentation</title>
+    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -61,7 +61,7 @@
 
 <div class="viewcode-block" id="LensEquationSolver.image_position_from_source"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">[docs]</a>    <span class="k">def</span> <span class="nf">image_position_from_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                                    <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                   <span class="n">initial_guess_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                                   <span class="n">initial_guess_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        finds image position source position and lense model</span>
 
@@ -73,8 +73,10 @@
 <span class="sd">        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).</span>
 <span class="sd">        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision</span>
 <span class="sd">        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)</span>
-<span class="sd">        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on</span>
-<span class="sd">        distance criteria from the source position</span>
+<span class="sd">        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position</span>
+<span class="sd">        :param verbose: bool, if True, prints some useful information for the user</span>
+<span class="sd">        :param x_center: float, center of the window to search for point sources</span>
+<span class="sd">        :param y_center: float, center of the window to search for point sources</span>
 <span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
 <span class="sd">        :raises: AttributeError, KeyError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -82,6 +84,8 @@
         <span class="c1"># compute number of pixels to cover the search window with the required min_distance</span>
         <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">search_window</span> <span class="o">/</span> <span class="n">min_distance</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
         <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">)</span>
+        <span class="n">x_grid</span> <span class="o">+=</span> <span class="n">x_center</span>
+        <span class="n">y_grid</span> <span class="o">+=</span> <span class="n">y_center</span>
         <span class="c1"># ray-shoot to find the relative distance to the required source position for each grid point</span>
         <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="n">absmapped</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">displaceAbs</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">)</span>
@@ -242,7 +246,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

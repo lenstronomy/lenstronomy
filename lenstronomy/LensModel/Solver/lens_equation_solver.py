@@ -32,8 +32,7 @@ class LensEquationSolver(object):
         :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
         :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
-        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on
-        distance criteria from the source position
+        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources

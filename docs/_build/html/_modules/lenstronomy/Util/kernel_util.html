@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.4.2 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -232,6 +232,7 @@
 <div class="viewcode-block" id="pixel_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.pixel_kernel">[docs]</a><span class="k">def</span> <span class="nf">pixel_kernel</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel</span>
+
 <span class="sd">    :param point_source_kernel:</span>
 <span class="sd">    :param subgrid_res:</span>
 <span class="sd">    :return: convolution kernel for an extended pixel</span>
@@ -261,12 +262,13 @@
 
 <div class="viewcode-block" id="split_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.split_kernel">[docs]</a><span class="k">def</span> <span class="nf">split_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">subsampling_size</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    pixel kernel and subsampling kernel such that the convolution of both applied on an image can be</span>
+<span class="sd">    performed, i.e. smaller subsampling PSF and hole in larger PSF</span>
 
 <span class="sd">    :param kernel: PSF kernel of the size of the pixel</span>
 <span class="sd">    :param kernel_subgrid: subsampled kernel</span>
 <span class="sd">    :param subsampling_size: size of subsampling PSF in units of image pixels</span>
-<span class="sd">    :return: pixel kernel and subsampling kernel such that the convolution of both applied on an image can be</span>
-<span class="sd">    performed, i.e. smaller subsampling PSF and hole in larger PSF</span>
+<span class="sd">    :return: pixel and subsampling kernel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">n_sub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
@@ -405,7 +407,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

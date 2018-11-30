@@ -67,7 +67,7 @@ class Fitting(object):
                  kwargs_fixed_ps, kwargs_mean_ps, kwargs_sigma_ps,
                  kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
                  threadCount=1, mpi=False, print_key='PSO', sigma_factor=1, compute_bool=None, fix_solver=False):
-
+    
         # initialise mcmc classes
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,

@@ -60,6 +60,9 @@ class FittingSequence(object):
             elif fitting_routine in ['align_images']:
                 self.align_images(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
                                   self._ps_temp, self._cosmo_temp)
+            else:
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration' or "
+                                 "'align_images'" % fitting_routine)
         if bijective is False:
             lens_temp = self._param.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
             source_temp = self._param.image2source_plane(self._source_temp, lens_temp)

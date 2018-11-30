@@ -185,7 +185,8 @@ class Solver4Point(object):
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
         if self._solver_type == 'PROFILE_SHEAR':
-            kwargs_fixed_lens_list[1]['e2'] = 0
+            pass
+            #kwargs_fixed_lens_list[1]['e2'] = 0
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']
@@ -202,7 +203,7 @@ class Solver4Point(object):
             pass
         else:
             raise ValueError(
-                "%s is not a valid option. Choose from 'PROFILE', 'COMPOSITE', 'NFW_PROFILE', 'SHAPELETS'" % self._solver_type)
+                "%s is not a valid option. Choose from 'PROFILE', 'PROFILE_SHEAR', 'SHAPELETS'" % self._solver_type)
         return kwargs_fixed_lens_list
 
 

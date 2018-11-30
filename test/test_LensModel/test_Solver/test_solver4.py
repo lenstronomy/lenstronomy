@@ -182,9 +182,9 @@ class TestSolver4Point(object):
         deltapix = 0.05
         numPix = 150
         gamma = 1.96
-        e1, e2 = 0.01, 0.01
+        e1, e2 = -0.01, -0.01
         kwargs_shear = {'e1': e1, 'e2': e2}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
-        kwargs_spemd = {'theta_E': 1., 'gamma': gamma, 'center_x': 0, 'center_y': 0, 'e1': 0.2, 'e2': 0.03}
+        kwargs_spemd = {'theta_E': 1., 'gamma': gamma, 'center_x': 0, 'center_y': 0, 'e1': -0.2, 'e2': -0.03}
         kwargs_lens = [kwargs_spemd, kwargs_shear]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
@@ -206,6 +206,48 @@ class TestSolver4Point(object):
             npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
             npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
         npt.assert_almost_equal(kwargs_lens_new[1]['e1'], kwargs_lens[1]['e1'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['e2'], kwargs_lens[1]['e2'], decimal=8)
+
+    def test_solver_profile_shear(self):
+        lens_model_list = ['SPEP', 'SHEAR']
+        lensModel = LensModel(lens_model_list)
+
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.
+        sourcePos_y = 0.1
+        deltapix = 0.05
+        numPix = 150
+        gamma = 1.98
+        e1, e2 = -0.04, -0.01
+        gamma_ext = np.sqrt(e1**2 + e2**2)
+        kwargs_shear = {'e1': e1, 'e2': e2}  # shear values to the source plane
+        kwargs_spemd = {'theta_E': 1.66, 'gamma': gamma, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.1,
+                        'e2': 0.05}  # parameters of the deflector lens model
+
+        kwargs_lens = [kwargs_spemd, kwargs_shear]
+        x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
+                                                          min_distance=deltapix, search_window=numPix * deltapix)
+        kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
+                            {'e1': e1, 'e2': -e2}]
+        solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
+        kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
+        assert accuracy < 10**(-10)
+        x_source, y_source = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_new)
+        x_source, y_source = np.mean(x_source), np.mean(y_source)
+        x_pos_new, y_pos_new = lensEquationSolver.findBrightImage(x_source, y_source, kwargs_lens_new, numImages=4,
+                                                          min_distance=deltapix, search_window=numPix * deltapix)
+        print(x_pos, x_pos_new)
+        x_pos = np.sort(x_pos)
+        x_pos_new = np.sort(x_pos_new)
+        y_pos = np.sort(y_pos)
+        y_pos_new = np.sort(y_pos_new)
+        for i in range(len(x_pos)):
+            npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
+            npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
+        npt.assert_almost_equal(kwargs_lens_new[1]['e1'], kwargs_lens[1]['e1'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['e2'], kwargs_lens[1]['e2'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[0]['e1'], kwargs_lens[0]['e1'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[0]['e2'], kwargs_lens[0]['e2'], decimal=8)
 
     def test_solver_multiplane(self):
         lens_model_list = ['SPEP', 'SHEAR', 'SIS']
@@ -226,7 +268,7 @@ class TestSolver4Point(object):
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0.1, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': e2}, {'theta_E': .1, 'center_x': 1, 'center_y': 0}]
-        solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
+        solver = Solver4Point(lensModel, solver_type='PROFILE')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         print(kwargs_lens_new, 'kwargs_lens_new')
         assert accuracy < 10**(-10)

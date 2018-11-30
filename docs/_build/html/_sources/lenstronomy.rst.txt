@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     lenstronomy.Analysis
+    lenstronomy.Cluster
     lenstronomy.Cosmo
     lenstronomy.Data
     lenstronomy.GalKin

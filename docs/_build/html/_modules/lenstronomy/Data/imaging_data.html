@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data.imaging_data &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.Data.imaging_data &#8212; lenstronomy 0.4.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -118,18 +118,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_noise_map</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    </span>
-<span class="sd">    def constructor_kwargs(self):</span>
-
-<span class="sd">        kwargs_data = {&#39;numPix&#39;: self.nx, &#39;image_data&#39;: self.data, &#39;exposure_map&#39;: self._exp_map,</span>
-<span class="sd">                       &#39;background_rms&#39;: self._sigma_b, &#39;ra_at_xy_0&#39;: self._coords._ra_at_xy_0,</span>
-<span class="sd">                        &#39;dec_at_xy_0&#39;: self._coords._dec_at_xy_0, &#39;transform_pix2angle&#39;: self._coords._Mpix2a}</span>
-<span class="sd">        if hasattr(self, &#39;_noise_map&#39;):</span>
-<span class="sd">            kwargs_data[&#39;noise_map&#39;] = self._noise_map</span>
-<span class="sd">        return kwargs_data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="Data.update_data"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.imaging_data.Data.update_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -169,6 +157,22 @@
 <span class="sd">        :return: pixel size (in units of arcsec)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="o">.</span><span class="n">pixel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: width of data frame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaPix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: center_x, center_y of coordinate system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">background_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -343,7 +347,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

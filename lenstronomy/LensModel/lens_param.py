@@ -32,11 +32,11 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
-        if self._solver_type == "PROFILE_SHEAR":
-            if 'e1' in kwargs_lower[1]:
-                kwargs_lower[1]['e1'] = 0
-            if 'e2' in kwargs_lower[1]:
-                kwargs_lower[1]['e2'] = 0
+        #if self._solver_type == "PROFILE_SHEAR":
+        #    if 'e1' in kwargs_lower[1]:
+        #        kwargs_lower[1]['e1'] = 0
+        #    if 'e2' in kwargs_lower[1]:
+        #        kwargs_lower[1]['e2'] = 0
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -113,12 +113,12 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
-                    elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
-                        if name == 'e1':
-                            _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
-                            args.append(gamma_ext)
-                        else:
-                            pass
+                    #elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    #    if name == 'e1':
+                    #        _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
+                    #        args.append(gamma_ext)
+                    #    else:
+                    #        pass
                     else:
                         args.append(kwargs[name])
         return args

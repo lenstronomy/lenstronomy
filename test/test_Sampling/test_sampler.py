@@ -93,7 +93,7 @@ class TestFittingSequence(object):
                                   'solver_tolerance': 0.001,
                                   }
         self.param_class = Param(kwargs_model, kwargs_constraints)
-        self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, kwargs_likelihood=kwargs_likelihood)
+        self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, **kwargs_likelihood)
         self.sampler = Sampler(likelihoodModule=self.Likelihood)
 
     def test_pso(self):
@@ -108,8 +108,8 @@ class TestFittingSequence(object):
         n_walkers = 36
         n_run = 2
         n_burn = 2
-        mean_start = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                   kwargs_lens_light=self.kwargs_lens_light)
+        mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                  kwargs_lens_light=self.kwargs_lens_light)
         sigma_start = np.ones_like(mean_start) * 0.1
         samples = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
 
@@ -119,8 +119,8 @@ class TestFittingSequence(object):
         walkerRatio = 2
         n_run = 2
         n_burn = 2
-        mean_start = self.param_class.setParams(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                                kwargs_lens_light=self.kwargs_lens_light)
+        mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                  kwargs_lens_light=self.kwargs_lens_light)
         sigma_start = np.ones_like(mean_start) * 0.1
         self.sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False)
 

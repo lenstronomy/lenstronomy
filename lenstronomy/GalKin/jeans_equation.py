@@ -5,12 +5,12 @@ from lenstronomy.GalKin.cosmo import Cosmo
 import lenstronomy.Util.constants as const
 
 
-class Jeans_solver(object):
+class JeansSolver(object):
     """
     class to solve radial Jeans equation for different configuration
     """
     def __init__(self, kwargs_cosmo, mass_profile, light_profile, anisotropy_type):
-        self.cosmo = Cosmo(kwargs_cosmo)
+        self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = mass_profile
         self._light_profile = light_profile
         self._anisotropy_type = anisotropy_type
@@ -48,7 +48,7 @@ class Jeans_solver(object):
                 if self._light_profile == 'Hernquist':
                     sigma_r = self.power_law_anisotropy(r, kwargs_profile, kwargs_anisotropy, kwargs_light)
                 else:
-                    raise ValueError(' light profile %s not supported for Jeans solver' % self._light_profile)
+                    raise ValueError('light profile %s not supported for Jeans solver' % self._light_profile)
             else:
                 raise ValueError('anisotropy type %s not implemented in Jeans equation modelling' % self._anisotropy_type)
         else:

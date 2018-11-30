@@ -30,6 +30,8 @@ class ImageModel(object):
         self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+            x_center, y_center = self.Data.center
+            self.PointSource.update_search_window(search_window=self.Data.width, x_center=x_center, y_center=y_center)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
@@ -151,6 +153,24 @@ class ImageModel(object):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
+        A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        C_D_response, model_error = self.error_response(kwargs_lens, kwargs_ps)
+        d = self.data_response
+        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
+        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        model = self.ImageNumerics.array2image(wls_model)
+        return model, model_error, cov_param, param
+
+    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
+        """
+        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return:
+        """
         if not self.LensModel is None:
             x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
                                                          self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
@@ -160,13 +180,28 @@ class ImageModel(object):
         A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
                                              self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
                                              kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
-        error_map = self.error_map(kwargs_lens, kwargs_ps)
-        error_map_1d = self.ImageNumerics.image2array(error_map)
-        d = self.ImageNumerics.image2array(self.Data.data*self.ImageNumerics.mask)
-        param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / (self.ImageNumerics.C_D_response + error_map_1d), d, inv_bool=inv_bool)
-        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        model = self.ImageNumerics.array2image(wls_model)
-        return model, error_map, cov_param, param
+        return A
+
+    @property
+    def data_response(self):
+        """
+        returns the 1d array of the data element that is fitted for (including masking)
+
+        :return: 1d numpy array
+        """
+        d = self.ImageNumerics.image2array(self.Data.data * self.ImageNumerics.mask)
+        return d
+
+    def error_response(self, kwargs_lens, kwargs_ps):
+        """
+        returns the 1d array of the error estimate corresponding to the data response
+
+        :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
+        """
+        model_error = self.error_map(kwargs_lens, kwargs_ps)
+        error_map_1d = self.ImageNumerics.image2array(model_error)
+        C_D_response = self.ImageNumerics.C_D_response + error_map_1d
+        return C_D_response, model_error
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
               source_add=True, lens_light_add=True, point_source_add=True):
@@ -388,10 +423,10 @@ class ImageModel(object):
         :return: updated list of kwargs with linear parameter values
         """
         i = 0
-        if not self.SourceModel is None:
+        if self.SourceModel is not None:
             kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
-        if not self.LensLightModel is None:
+        if self.LensLightModel is not None:
             kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
-        if not self.PointSource is None:
+        if self.PointSource is not None:
             kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps

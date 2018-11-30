@@ -66,3 +66,9 @@ History
 0.3.3 (2018-08-21)
 ++++++++++++++++++
 * minor updates, better documentation and handling of parameters
+
+0.4.1-3 (2018-11-27)
+++++++++++++++++++++
+* various multi-band modelling frameworks added
+* lens models added
+* Improved fitting sequence, solver and psf iteration

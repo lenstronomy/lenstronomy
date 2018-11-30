@@ -4,7 +4,8 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.ImSim.multiband import Multiband
+from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 
 
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
@@ -36,12 +37,13 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
     return imageModel
 
 
-def create_multiband(multi_band_list, kwargs_model):
+def create_multiband(multi_band_list, kwargs_model, type='multi-band'):
     """
 
     :param kwargs_data:
     :param kwargs_psf:
     :param kwargs_options:
+    :param type: string, 'multi-band' or 'multi-exposure'
     :return:
     """
     lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
@@ -57,5 +59,10 @@ def create_multiband(multi_band_list, kwargs_model):
                                          search_window=kwargs_model.get('search_window', 5),
                                          precision_limit=kwargs_model.get('precision_limit', 10 ** (-10)),
                                          num_iter_max=kwargs_model.get('num_iter_max', 100))
-    multiband = Multiband(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+    if type == 'multi-band':
+        multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+    elif type == 'multi-exposure':
+        multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+    else:
+        raise ValueError("type %s is not supported!")
     return multiband

@@ -69,7 +69,7 @@ class TestCosmography(object):
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true]
-        sigma_start = [5]
+        sigma_start = [2]
         mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
         H0_mean = np.mean(mcmc_samples)
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)

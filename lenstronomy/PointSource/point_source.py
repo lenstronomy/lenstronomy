@@ -5,11 +5,27 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
-                 save_cache=False, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+                 save_cache=False, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
+                 x_center=0, y_center=0):
         """
 
-        :param point_source_model_list:
+        :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
+        :param fixed_magnification_list: list of bools (same length as point_source_type_list). If True, magnification
+        ratio of point sources is fixed to the one given by the lens model
+        :param additional_images_list: list of bools (same length as point_source_type_list). If True, search for
+        additional images of the same source is conducted.
+        :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
+        equation is conducted with the lens model parameters provided. This can increase the speed as multiple times the
+        image positions are requested for the same lens model. Attention in usage!
+        :param min_distance: float, minimum initial search grid for image positions when solving the lens equation.
+        Image separations below this scale will not be found.
+        :param search_window: window size of the image position search with the lens equation solver.
+        Please adopt when dealing with wider separation image positions!
+        :param precision_limit: see LensEquationSolver() instance
+        :param num_iter_max: see LensEquationSolver() instance
+        :param x_center: center of search window
+        :param y_center: center of search window
 
         for the parameters: min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
         have a look at the lensEquationSolver class
@@ -38,7 +54,18 @@ class PointSource(object):
                                                                  save_cache=save_cache))
             else:
                 raise ValueError("Point-source model %s not available" % model)
-        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max = min_distance, search_window, precision_limit, num_iter_max
+        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center
+
+    def update_search_window(self, search_window, x_center, y_center):
+        """
+        update the search area for the lens equation solver
+
+        :param search_window: search_window: window size of the image position search with the lens equation solver.
+        :param x_center: center of search window
+        :param y_center: center of search window
+        :return: updated self instances
+        """
+        self._search_window, self._x_center, self._y_center = search_window, x_center, y_center
 
     def update_lens_model(self, lens_model_class):
         """
@@ -101,8 +128,10 @@ class PointSource(object):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
                 x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
-                                                        search_window=self._search_window, precision_limit=self._precision_limit,
-                                                        num_iter_max=self._num_iter_max)
+                                                        search_window=self._search_window,
+                                                        precision_limit=self._precision_limit,
+                                                        num_iter_max=self._num_iter_max, x_center=self._x_center,
+                                                        y_center=self._y_center)
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
@@ -257,20 +286,3 @@ class PointSource(object):
                 else:
                     kwargs_ps[i]['point_amp'] *= norm_factor
         return kwargs_ps
-
-    @classmethod
-    def check_positive_flux(cls, kwargs_ps):
-        """
-        check whether inferred linear parameters are positive
-
-        :param kwargs_ps:
-        :return: bool
-        """
-        pos_bool = True
-        for kwargs in kwargs_ps:
-            point_amp = kwargs['point_amp']
-            for amp in point_amp:
-                if amp < 0:
-                    pos_bool = False
-                    break
-        return pos_bool

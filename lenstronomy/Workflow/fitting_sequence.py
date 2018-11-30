@@ -68,7 +68,7 @@ class FittingSequence(object):
         return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain_list, param_list,\
                samples_mcmc, param_mcmc, dist_mcmc
 
-    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input, threadCount = 1):
+    def mcmc(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input, threadCount=1):
         """
 
         :param fitting_kwargs:
@@ -89,6 +89,7 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
+        multi_band_type = fitting_kwargs.get('mulit_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -104,7 +105,7 @@ class FittingSequence(object):
 
         fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                           kwargs_constraints=kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
-                          kwargs_params=self.kwargs_params)
+                          kwargs_params=self.kwargs_params, multi_band_type=multi_band_type)
 
         samples, param, dist = fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, ps_input, cosmo_input,
@@ -134,6 +135,7 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
+        multi_band_type = fitting_kwargs.get('mulit_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -151,7 +153,7 @@ class FittingSequence(object):
 
         fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                           kwargs_constraints=kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
-                          kwargs_params=self.kwargs_params)
+                          kwargs_params=self.kwargs_params, multi_band_type=multi_band_type)
 
         lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list = fitting.pso_run(
                 lens_input, source_input, lens_light_input, ps_input, cosmo_input,

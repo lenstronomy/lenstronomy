@@ -67,9 +67,9 @@ class Param(object):
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
-        self.lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
-                                   redshift_list=kwargs_model.get('redshift_list', None),
-                                   multi_plane=kwargs_model.get('multi_plane', False))
+        self._lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
+                                    redshift_list=kwargs_model.get('redshift_list', None),
+                                    multi_plane=kwargs_model.get('multi_plane', False))
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
@@ -89,10 +89,12 @@ class Param(object):
         self._joint_lens_with_light = kwargs_constraints.get('joint_lens_with_light', [])
         self._joint_source_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_source_with_point_source', []))
         for param_list in self._joint_source_with_point_source:
-            param_list.append(['center_x', 'center_y'])
+            if len(param_list) == 2:
+                param_list.append(['center_x', 'center_y'])
         self._joint_lens_light_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_lens_light_with_point_source', []))
         for param_list in self._joint_lens_light_with_point_source:
-            param_list.append(['center_x', 'center_y'])
+            if len(param_list) == 2:
+                param_list.append(['center_x', 'center_y'])
         self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
         self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
         self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
@@ -116,7 +118,7 @@ class Param(object):
             self._solver = kwargs_constraints.get('solver', False)
         if self._solver is True:
             self._solver_type = kwargs_constraints.get('solver_type', 'PROFILE')
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self.lensModel, num_images=self._num_images)
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lensModel, num_images=self._num_images)
         else:
             self._solver_type = 'NONE'
         # fix parameters joint within the same model types
@@ -147,17 +149,15 @@ class Param(object):
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo)
 
-        self._lens_light_param_name_list = self.lensLightParams.param_name_list
-
     @property
     def num_point_source_images(self):
         return self._num_images
 
-    def getParams(self, args, bijective=False):
+    def args2kwargs(self, args, bijective=False):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
-        :return: keyword arguments sorted
+        :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
         kwargs_lens, i = self.lensParams.getParams(args, i)
@@ -188,7 +188,7 @@ class Param(object):
 
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
 
-    def setParams(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_cosmo=None):
+    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_cosmo=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
@@ -207,16 +207,16 @@ class Param(object):
 
         :return: lower and upper limits of the arguments being sampled
         """
-        lower_limit = self.setParams(kwargs_lens=self.lensParams.lower_limit,
-                                     kwargs_source=self.souceParams.lower_limit,
-                                     kwargs_lens_light=self.lensLightParams.lower_limit,
-                                     kwargs_ps=self.pointSourceParams.lower_limit,
-                                     kwargs_cosmo=self.cosmoParams.lower_limit)
-        upper_limit = self.setParams(kwargs_lens=self.lensParams.upper_limit,
-                                     kwargs_source=self.souceParams.upper_limit,
-                                     kwargs_lens_light=self.lensLightParams.upper_limit,
-                                     kwargs_ps=self.pointSourceParams.upper_limit,
-                                     kwargs_cosmo=self.cosmoParams.upper_limit)
+        lower_limit = self.kwargs2args(kwargs_lens=self.lensParams.lower_limit,
+                                       kwargs_source=self.souceParams.lower_limit,
+                                       kwargs_lens_light=self.lensLightParams.lower_limit,
+                                       kwargs_ps=self.pointSourceParams.lower_limit,
+                                       kwargs_cosmo=self.cosmoParams.lower_limit)
+        upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
+                                       kwargs_source=self.souceParams.upper_limit,
+                                       kwargs_lens_light=self.lensLightParams.upper_limit,
+                                       kwargs_ps=self.pointSourceParams.upper_limit,
+                                       kwargs_cosmo=self.cosmoParams.upper_limit)
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -261,7 +261,7 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_source):
             if self._image_plane_source_list[i] is True and not image_plane:
                 if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens)
+                    x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
         return kwargs_source
@@ -275,8 +275,8 @@ class Param(object):
                 x_mapped = kwargs_ps[i_point_source]['ra_source']
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
-                x_mapped, y_mapped = self.lensModel.ray_shooting(kwargs_ps[i_point_source]['ra_image'],
-                                                             kwargs_ps[i_point_source]['dec_image'], kwargs_lens_list)
+                x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs_ps[i_point_source]['ra_image'],
+                                                                  kwargs_ps[i_point_source]['dec_image'], kwargs_lens_list)
             for param_name in param_list:
                 if param_name == 'center_x':
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)
@@ -368,14 +368,14 @@ class Param(object):
                 raise ValueError("kwargs_lens_init must be specified when the solver is enabled!")
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         if self._fix_foreground_shear is True:
-            for i, model in enumerate(self.lensModel.lens_model_list):
+            for i, model in enumerate(self._lensModel.lens_model_list):
                 if model == 'FOREGROUND_SHEAR':
                     if 'e1' not in kwargs_fixed_update[i]:
                         kwargs_fixed_update[i]['e1'] = kwargs_init[i]['e1']
                     if 'e2' not in kwargs_fixed_update[i]:
                         kwargs_fixed_update[i]['e2'] = kwargs_init[i]['e2']
         if self._fix_gamma is True:
-            for i, model in enumerate(self.lensModel.lens_model_list):
+            for i, model in enumerate(self._lensModel.lens_model_list):
                 if 'gamma' in kwargs_init[i]:
                     kwargs_fixed_update[i]['gamma'] = kwargs_init[i]['gamma']
         return kwargs_fixed_update
@@ -393,6 +393,15 @@ class Param(object):
         else:
             return 0
 
+    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        pos_bool_ps = self.pointSourceParams.check_positive_flux(kwargs_ps)
+        pos_bool_source = self.souceParams.check_positive_flux_profile(kwargs_source)
+        pos_bool_lens_light = self.lensLightParams.check_positive_flux_profile(kwargs_lens_light)
+        if pos_bool_ps is True and pos_bool_source is True and pos_bool_lens_light is True:
+            return True
+        else:
+            return False
+
     def print_setting(self):
         """
         prints the setting of the parameter class
@@ -408,7 +417,7 @@ class Param(object):
         print("Lens light models:", self._lens_light_model_list)
         print("Point source models:", self._point_source_model_list)
         print("===================")
-        print("The follwoing parameters are being fixed:")
+        print("The following parameters are being fixed:")
         print("Lens:", self.lensParams.kwargs_fixed)
         print("Source:", self.souceParams.kwargs_fixed)
         print("Lens light:", self.lensLightParams.kwargs_fixed)

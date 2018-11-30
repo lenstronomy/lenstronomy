@@ -20,7 +20,7 @@ class LensEquationSolver(object):
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                   initial_guess_cut=True, verbose=False):
+                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0):
         """
         finds image position source position and lense model
 
@@ -32,8 +32,10 @@ class LensEquationSolver(object):
         :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
         :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
         :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
-        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on
-        distance criteria from the source position
+        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position
+        :param verbose: bool, if True, prints some useful information for the user
+        :param x_center: float, center of the window to search for point sources
+        :param y_center: float, center of the window to search for point sources
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -41,6 +43,8 @@ class LensEquationSolver(object):
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)
+        x_grid += x_center
+        y_grid += y_center
         # ray-shoot to find the relative distance to the required source position for each grid point
         x_mapped, y_mapped = self.lensModel.ray_shooting(x_grid, y_grid, kwargs_lens)
         absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)

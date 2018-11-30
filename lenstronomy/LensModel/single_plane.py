@@ -19,12 +19,15 @@ class SinglePlane(object):
         self.func_list = []
         self._foreground_shear = False
         for i, lens_type in enumerate(lens_model_list):
-            if lens_type == 'SHEAR':
-                from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
-                self.func_list.append(ExternalShear())
+            if lens_type == 'SHIFT':
+                from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+                self.func_list.append(Shift())
+            elif lens_type == 'SHEAR':
+                from lenstronomy.LensModel.Profiles.shear import Shear
+                self.func_list.append(Shear())
             elif lens_type == 'CONVERGENCE':
-                from lenstronomy.LensModel.Profiles.mass_sheet import MassSheet
-                self.func_list.append(MassSheet())
+                from lenstronomy.LensModel.Profiles.convergence import Convergence
+                self.func_list.append(Convergence())
             elif lens_type == 'FLEXION':
                 from lenstronomy.LensModel.Profiles.flexion import Flexion
                 self.func_list.append(Flexion())
@@ -122,10 +125,13 @@ class SinglePlane(object):
                 from lenstronomy.LensModel.Profiles.dipole import Dipole
                 self.func_list.append(Dipole())
             elif lens_type == 'FOREGROUND_SHEAR':
-                from lenstronomy.LensModel.Profiles.external_shear import ExternalShear
-                self.func_list.append(ExternalShear())
+                from lenstronomy.LensModel.Profiles.shear import Shear
+                self.func_list.append(Shear())
                 self._foreground_shear = True
                 self._foreground_shear_idex = i
+            elif lens_type == 'coreBURKERT':
+                from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
+                self.func_list.append(coreBurkert())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
 

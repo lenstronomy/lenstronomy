@@ -81,7 +81,7 @@ class Sampler(object):
         if mpi is True and not pso.isMaster():
             pass
         else:
-            lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.getParams(result)
+            lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.args2kwargs(result)
             print(pso.gbest.fitness * 2 / (self.chain.effectiv_numData_points()), 'reduced X^2 of best position')
             print(pso.gbest.fitness, 'logL')
             print(self.chain.effectiv_numData_points(), 'effective number of data points')

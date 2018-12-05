@@ -29,7 +29,7 @@ class FittingSequence(object):
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
 
-    def fit_sequence(self, fitting_kwargs_list, bijective=True, threadCount = 1):
+    def fit_sequence(self, fitting_kwargs_list, bijective=True, threadCount=1):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
@@ -213,6 +213,7 @@ class FittingSequence(object):
                                                               threadCount=1, mpi=mpi,
                                                               print_key='Alignment fitting for band %s ...' % i)
                 print('Align completed for band %s.' % i)
+                print('x_shift: %s,  y_shift: %s' %(kwargs_data['x_shift'], kwargs_data['y_shift']))
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 

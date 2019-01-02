@@ -203,15 +203,15 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
                                   1.5, 0.5, self.cosmo, [0, 1])
 
-        _  = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
+        _ = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 
         f1,f2,f3,f4 = split._hessian_fast(split._macro_args)
         t1,t2,t3,t4 = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
 
-        npt.assert_almost_equal(f1,t1)
-        npt.assert_almost_equal(f2,t2)
-        npt.assert_almost_equal(f3, t3)
-        npt.assert_almost_equal(f4, t4)
+        npt.assert_almost_equal(f1,t1, decimal=6)
+        npt.assert_almost_equal(f2,t2, decimal=6)
+        npt.assert_almost_equal(f3, t3, decimal=6)
+        npt.assert_almost_equal(f4, t4, decimal=6)
 
         f1, f2, f3, f4 = split.hessian(0.5,0.5,self.kwargs_lens_full)
         t1, t2, t3, t4 = self.lens_model_full.hessian(0.5,0.5, self.kwargs_lens_full)

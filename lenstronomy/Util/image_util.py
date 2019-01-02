@@ -189,7 +189,7 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :return:
     """
     numPix = int(len(image)/bin_size)
-    factor = len(image)/numPix
+    factor = int(len(image)/numPix)
     if not numPix == len(image)/bin_size:
         raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
     image_resized = re_size(image, factor)

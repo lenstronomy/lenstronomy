@@ -92,7 +92,7 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
-        multi_band_type = fitting_kwargs.get('mulit_band_type', 'multi-band')
+        multi_band_type = fitting_kwargs.get('multi_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed

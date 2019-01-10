@@ -54,6 +54,15 @@ class TestLensModel(object):
         output = self.lensModel.magnification(x=1., y=1., kwargs=self.kwargs)
         assert output == 0.98848384784633392
 
+    def test_flexion(self):
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(x=10., y=1., kwargs=kwargs)
+        npt.assert_almost_equal(f_xxx, -0.00029262925004165663, decimal=8)
+        npt.assert_almost_equal(f_xxy, 0.001941108655322682, decimal=8)
+        npt.assert_almost_equal(f_xyy, -0.009559223626207092, decimal=8)
+        npt.assert_almost_equal(f_yyy, -0.0029262944983843298, decimal=8)
+
     def test_ray_shooting(self):
         delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=self.kwargs)
         assert delta_x == 1 + 0.19470019576785122/(8*np.pi)

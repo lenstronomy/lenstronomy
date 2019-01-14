@@ -47,7 +47,8 @@ def create_multiband(multi_band_list, kwargs_model, type='multi-band'):
     :param type: string, 'multi-band', 'multi-exposure',  'multi-frame'
     :return:
     """
-    lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
+    lens_model_list = kwargs_model.get('lens_model_list', [])
+    lens_model_class = LensModel(lens_model_list=lens_model_list,
                                  z_source=kwargs_model.get('z_source', None),
                                  redshift_list=kwargs_model.get('redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False))
@@ -65,7 +66,7 @@ def create_multiband(multi_band_list, kwargs_model, type='multi-band'):
     elif type == 'multi-exposure':
         multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     elif type == 'multi-frame':
-        multiband = MultiFrame(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        multiband = MultiFrame(multi_band_list, lens_model_list, source_model_class, lens_light_model_class, point_source_class)
     else:
         raise ValueError("type %s is not supported!")
     return multiband

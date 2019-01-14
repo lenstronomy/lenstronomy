@@ -84,8 +84,9 @@ class PSF(object):
             raise ValueError("psf_type %s not supported!" % self.psf_type)
         if 'psf_error_map' in kwargs_psf:
             self._psf_error_map = kwargs_psf['psf_error_map']
-            if len(self._psf_error_map) != len(self._kernel_point_source):
-                raise ValueError('psf_error_map must have same size as kernel_point_source!')
+            if self.psf_type == 'PIXEL':
+                if len(self._psf_error_map) != len(self._kernel_point_source):
+                    raise ValueError('psf_error_map must have same size as kernel_point_source!')
 
     @property
     def kernel_point_source(self):

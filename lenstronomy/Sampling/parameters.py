@@ -132,6 +132,7 @@ class Param(object):
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
                                                             self._joint_lens_light_with_point_source)
+        print(self._lens_model_list, 'test')
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens)
@@ -195,6 +196,7 @@ class Param(object):
         :param kwargs_source: keyword arguments depending on model options
         :return: tuple of parameters
         """
+
         args = self.lensParams.setParams(kwargs_lens)
         args += self.souceParams.setParams(kwargs_source)
         args += self.lensLightParams.setParams(kwargs_lens_light)

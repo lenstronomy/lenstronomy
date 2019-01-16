@@ -21,7 +21,8 @@ class LikelihoodModule(object):
                  point_source_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False, time_delays_measured=None,
-                 time_delays_uncertainties=None):
+                 time_delays_uncertainties=None, force_positive_source_surface_brightness=False, numPix_source=10,
+                 deltaPix_source=0.1):
         """
         initializing class
 
@@ -50,6 +51,12 @@ class LikelihoodModule(object):
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
         :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured
+        :param force_positive_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
+        and evaluates if all positions have positive flux
+        :param numPix_source: integer, number of source pixel squares when evaluating surface brightness when
+         force_positive_source_surface_brightness=True is set
+        :param deltaPix_source: integer, pixel spacing when evaluating surface brightness when
+         force_positive_source_surface_brightness=True is set
         """
 
         self.imSim = imSim_class
@@ -84,6 +91,9 @@ class LikelihoodModule(object):
         self._compute_bool = bands_compute
         if not len(self._compute_bool) == self._num_bands:
             raise ValueError('compute_bool statement has not the same range as number of bands available!')
+        self._force_positive_source_surface_brightness = force_positive_source_surface_brightness
+        self._numPix_source = numPix_source
+        self._deltaPix_source = deltaPix_source
 
     @property
     def param_limits(self):
@@ -124,6 +134,14 @@ class LikelihoodModule(object):
             bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
                 logL -= 10**10
+        if self._force_positive_source_surface_brightness is True and len(kwargs_source) > 0:
+            x, y = util.make_grid(numPix=self._numPix_source, deltapix=self._deltaPix_source)
+            x += kwargs_source[0].get('center_x', 0)
+            y += kwargs_source[0].get('center_y', 0)
+            flux = self.imSim.SourceModel.surface_brightness(x, y, kwargs_source)
+            if np.min(flux) < 0:
+                logL -= 10**10
+        self.imSim.reset_point_source_cache(bool=False)
         return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):

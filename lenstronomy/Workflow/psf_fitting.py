@@ -29,6 +29,11 @@ class PsfFitting(object):
     'keep_error_map': bool, if True, does not replace the error term associated with the PSF estimate.
         If false, re-estimates the variance between the PSF estimates.
 
+    'psf_symmetry': number of rotational invariant symmetries in the estimated PSF.
+        =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
+        the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
+        limited constraints/number of point sources in the image.
+
 
     The procedure only requires and changes the 'point_source_kernel' in the PSF() class and the 'psf_error_map'.
     Any previously set subgrid kernels or pixel_kernels are removed and constructed from the 'point_source_kernel'.
@@ -89,7 +94,6 @@ class PsfFitting(object):
 
         :param kwargs_data:
         :param kwargs_psf:
-        :param kwargs_options:
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:

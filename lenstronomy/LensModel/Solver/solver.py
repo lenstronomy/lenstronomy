@@ -9,7 +9,7 @@ class Solver(object):
 
     """
 
-    def __init__(self, solver_type, lensModel, num_images=0):
+    def __init__(self, solver_type, lensModel, num_images):
         """
 
         :param solver_type: string, option for specific solver type

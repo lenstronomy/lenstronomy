@@ -189,16 +189,19 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :return:
     """
     numPix = int(len(image)/bin_size)
-    factor = len(image)/numPix
-    if not numPix == len(image)/bin_size:
-        raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
-    image_resized = re_size(image, factor)
+    numPix_precut = numPix * bin_size
+    factor = int(len(image)/numPix)
+    if not numPix * bin_size == len(image):
+        image_precut = image[0:numPix_precut, 0:numPix_precut]
+    else:
+        image_precut = image
+    image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
-    wht_map_resized = re_size(wht_map, factor)
+    wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
     sigma_bkg_resized = bin_size*sigma_bkg
-    ra_coords_resized = re_size(ra_coords, factor)
-    dec_coords_resized = re_size(dec_coords, factor)
-    idex_mask_resized = re_size(idex_mask, factor)
+    ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
+    dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
+    idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
 

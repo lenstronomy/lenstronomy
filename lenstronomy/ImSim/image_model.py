@@ -43,7 +43,7 @@ class ImageModel(object):
         self.LensLightModel = lens_light_model_class
         self.num_bands = 1
 
-    def reset_point_source_cache(self):
+    def reset_point_source_cache(self, bool=True):
         """
         deletes all the cache in the point source class and saves it from then on
 
@@ -51,7 +51,7 @@ class ImageModel(object):
         """
         if self.PointSource is not None:
             self.PointSource.delete_lens_model_cach()
-            self.PointSource.set_save_cache(True)
+            self.PointSource.set_save_cache(bool)
 
     def update_data(self, data_class):
         """
@@ -346,8 +346,8 @@ class ImageModel(object):
         ra_source_list, dec_source_list = self.PointSource.source_position(kwargs_ps, kwargs_lens)
         phi_fermat = []
         for i in range(len(ra_pos_list)):
-            phi_fermat_i = self.LensModel.fermat_potential(ra_pos_list[i], dec_pos_list[i], ra_source_list[i],
-                                                           dec_source_list[i], kwargs_lens)
+            phi_fermat_i = self.LensModel.fermat_potential(ra_pos_list[i], dec_pos_list[i], np.mean(ra_source_list[i]),
+                                                           np.mean(dec_source_list[i]), kwargs_lens)
             phi_fermat.append(phi_fermat_i)
         return phi_fermat
 

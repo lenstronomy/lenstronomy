@@ -29,7 +29,7 @@ class FittingSequence(object):
         self._kwargs_source_fixed = copy.deepcopy(kwargs_fixed)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.fitting.init_kwargs()
 
-    def fit_sequence(self, fitting_kwargs_list, bijective=True, threadCount = 1):
+    def fit_sequence(self, fitting_kwargs_list, bijective=True, threadCount=1):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
@@ -60,6 +60,9 @@ class FittingSequence(object):
             elif fitting_routine in ['align_images']:
                 self.align_images(fitting_kwargs, self._lens_temp, self._source_temp, self._lens_light_temp,
                                   self._ps_temp, self._cosmo_temp)
+            else:
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration' or "
+                                 "'align_images'" % fitting_routine)
         if bijective is False:
             lens_temp = self._param.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
             source_temp = self._param.image2source_plane(self._source_temp, lens_temp)
@@ -89,7 +92,7 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
-        multi_band_type = fitting_kwargs.get('mulit_band_type', 'multi-band')
+        multi_band_type = fitting_kwargs.get('multi_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -135,7 +138,7 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
-        multi_band_type = fitting_kwargs.get('mulit_band_type', 'multi-band')
+        multi_band_type = fitting_kwargs.get('multi_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
         kwargs_constraints['fix_gamma'] = gamma_fixed
         kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
@@ -210,6 +213,7 @@ class FittingSequence(object):
                                                               threadCount=1, mpi=mpi,
                                                               print_key='Alignment fitting for band %s ...' % i)
                 print('Align completed for band %s.' % i)
+                print('ra_shift: %s,  dec_shift: %s' %(kwargs_data['ra_shift'], kwargs_data['dec_shift']))
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 

@@ -32,6 +32,7 @@ def test_sort_img_index():
 
     npt.assert_allclose(np.array(indexes),[0,1,2,3])
 
+
 def test_map_coord2pix():
     ra = 0
     dec = 0

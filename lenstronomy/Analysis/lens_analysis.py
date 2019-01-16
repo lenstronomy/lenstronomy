@@ -284,8 +284,8 @@ class LensAnalysis(object):
                                                           deltaPix=deltaPix/float(subgrid_res))
         # interpolation function on lensing quantities
         x_axes_sub, y_axes_sub = util.get_axes(x_grid_sub, y_grid_sub)
-        from lenstronomy.LensModel.Profiles.interpol import Interpol_func
-        interp_func = Interpol_func()
+        from lenstronomy.LensModel.Profiles.interpol import Interpol
+        interp_func = Interpol()
         interp_func.do_interp(x_axes_sub, y_axes_sub, f_sub, f_x_sub, f_y_sub)
         # compute lensing quantities on sparser grid
         x_axes, y_axes = util.get_axes(x_grid, y_grid)

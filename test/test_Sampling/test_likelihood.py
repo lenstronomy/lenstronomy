@@ -71,7 +71,7 @@ class TestFittingSequence(object):
         self.data_class = data_class
         self.psf_class = psf_class
 
-        kwargs_model = {'lens_model_list': lens_model_list,
+        self.kwargs_model = {'lens_model_list': lens_model_list,
                              'source_light_model_list': source_model_list,
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
@@ -97,7 +97,7 @@ class TestFittingSequence(object):
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
                                   }
-        self.param_class = Param(kwargs_model, kwargs_constraints)
+        self.param_class = Param(self.kwargs_model, kwargs_constraints)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -141,6 +141,33 @@ class TestFittingSequence(object):
         #imageModel = ImageModel(self.data_class, self.psf_class, self.lens_model_class, self.source_model_class,
         #                        self.lens_light_model_class,
         #                        point_source_class, kwargs_numerics=kwargs_numerics)
+
+    def test_force_positive_source_surface_brightness(self):
+        kwargs_likelihood = {'force_positive_source_surface_brightness': True, 'numPix_source':10,
+                 'deltaPix_source':0.1}
+        kwargs_model = {'source_light_model_list': ['SERSIC']}
+
+        kwargs_constraints = {}
+        param_class = Param(kwargs_model, kwargs_constraints)
+
+        kwargs_data = self.SimAPI.data_configure(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
+        data_class = Data(kwargs_data)
+        kwargs_psf = {'psf_type': 'NONE'}
+        psf_class = PSF(kwargs_psf)
+        kwargs_sersic = {'amp': -1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        source_model_list = ['SERSIC']
+        kwargs_source = [kwargs_sersic]
+        source_model_class = LightModel(light_model_list=source_model_list)
+
+        imageModel = ImageModel(data_class, psf_class, lens_model_class=None, source_model_class=source_model_class)
+
+        image_sim = self.SimAPI.simulate(imageModel, [], kwargs_source)
+
+        data_class.update_data(image_sim)
+        likelihood = LikelihoodModule(imSim_class=imageModel, param_class=param_class,
+                                           **kwargs_likelihood)
+        logL, _ = likelihood.logL(args=param_class.kwargs2args(kwargs_source=kwargs_source))
+        assert logL <= -10**10
 
 
 if __name__ == '__main__':

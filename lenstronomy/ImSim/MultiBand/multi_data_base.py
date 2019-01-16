@@ -25,14 +25,14 @@ class MultiDataBase(object):
         """
         return self._num_response_list
 
-    def reset_point_source_cache(self):
+    def reset_point_source_cache(self, bool=True):
         """
         deletes all the cache in the point source class and saves it from then on
 
         :return:
         """
         for imageModel in self._imageModel_list:
-            imageModel.reset_point_source_cache()
+            imageModel.reset_point_source_cache(bool=bool)
 
     def numData_evaluate(self, compute_bool=None):
         if compute_bool is None:

@@ -110,11 +110,11 @@ class SinglePlane(object):
                 from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappaEllipse
                 self.func_list.append(MultiGaussianKappaEllipse())
             elif lens_type == 'INTERPOL':
-                from lenstronomy.LensModel.Profiles.interpol import Interpol_func
-                self.func_list.append(Interpol_func(grid=False, min_grid_number=100))
+                from lenstronomy.LensModel.Profiles.interpol import Interpol
+                self.func_list.append(Interpol(grid=False, min_grid_number=100))
             elif lens_type == 'INTERPOL_SCALED':
-                from lenstronomy.LensModel.Profiles.interpol import Interpol_func_scaled
-                self.func_list.append(Interpol_func_scaled(grid=False, min_grid_number=100))
+                from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
+                self.func_list.append(InterpolScaled(grid=False, min_grid_number=100))
             elif lens_type == 'SHAPELETS_POLAR':
                 from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
                 self.func_list.append(PolarShapelets())

@@ -195,6 +195,7 @@ class Param(object):
         :param kwargs_source: keyword arguments depending on model options
         :return: tuple of parameters
         """
+
         args = self.lensParams.setParams(kwargs_lens)
         args += self.souceParams.setParams(kwargs_source)
         args += self.lensLightParams.setParams(kwargs_lens_light)

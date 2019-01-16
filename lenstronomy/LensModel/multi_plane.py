@@ -396,6 +396,7 @@ class MultiPlane(object):
         alpha_y_new = alpha_y - alpha_y_phys
         return alpha_x_new, alpha_y_new
 
+    #@staticmethod
     def _start_condition(self, inclusive, z_lens, z_start):
 
         if inclusive:

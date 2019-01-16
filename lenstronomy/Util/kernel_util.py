@@ -15,7 +15,7 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
 
     The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the
      pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
-     their shifted version with the input kernel.
+     its shifted version with the input kernel.
 
     :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid
     :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)

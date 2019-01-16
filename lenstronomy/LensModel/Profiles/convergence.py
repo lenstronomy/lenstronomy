@@ -9,8 +9,8 @@ class Convergence(object):
     a single mass sheet (external convergence)
     """
     param_names = ['kappa_ext', 'ra_0', 'dec_0']
-    lower_limit_default = {'kappa_ext': -1, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'kappa_ext': 1, 'ra_0': 100, 'dec_0': 100}
+    lower_limit_default = {'kappa_ext': -10, 'ra_0': -100, 'dec_0': -100}
+    upper_limit_default = {'kappa_ext': 10, 'ra_0': 100, 'dec_0': 100}
 
     def function(self, x, y, kappa_ext, ra_0=0, dec_0=0):
         """

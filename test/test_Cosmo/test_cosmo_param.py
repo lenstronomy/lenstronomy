@@ -42,6 +42,16 @@ class TestParam(object):
         print(kwargs_new)
         assert kwargs_new['scale_factor'][1] == 1
 
+    def test_delta_images(self):
+        param = CosmoParam(num_images=2, point_source_offset=True, kwargs_fixed={},
+                   kwargs_lower={'delta_x_image': [-1, -1], 'delta_y_image': [-1, -1]},
+                   kwargs_upper={'delta_x_image': [1, 1], 'delta_y_image': [1, 1]})
+        kwargs = {'delta_x_image': [0.5, 0.5], 'delta_y_image': [0.5, 0.5]}
+        args = param.setParams(kwargs_cosmo=kwargs)
+        kwargs_new, _ = param.getParams(args, i=0)
+        print(kwargs_new)
+        assert kwargs_new['delta_x_image'][0] == kwargs['delta_x_image'][0]
+
 
 if __name__ == '__main__':
     pytest.main()

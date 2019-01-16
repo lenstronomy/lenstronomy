@@ -11,6 +11,9 @@ class MultiDataBase(object):
         self._num_response_list = []
         for imageModel in imageModel_list:
             self._num_response_list.append(imageModel.ImageNumerics.num_response)
+        self.LensModel = self._imageModel_list[0].LensModel
+        self.SourceModel = self._imageModel_list[0].SourceModel
+        self.PointSource = self._imageModel_list[0].PointSource
 
     @property
     def num_bands(self):

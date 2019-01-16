@@ -36,12 +36,12 @@ class Solver(object):
         """
         return self._solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)
 
-    def update_solver(self, kwargs_lens, kwargs_ps):
-        x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        if not len(x_) == self._num_images:
+    def update_solver(self, kwargs_lens, x_pos, y_pos):
+
+        if not len(x_pos) == self._num_images:
             raise ValueError("Point source number %s must be as specified by the solver with number of images %s" %
-                             (len(x_), self._num_images))
-        kwargs_lens, precision = self.constraint_lensmodel(x_, y_, kwargs_lens)
+                             (len(x_pos), self._num_images))
+        kwargs_lens, precision = self.constraint_lensmodel(x_pos, y_pos, kwargs_lens)
         return kwargs_lens
 
     def check_solver(self, kwargs_lens, kwargs_ps):

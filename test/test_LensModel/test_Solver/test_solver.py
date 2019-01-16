@@ -49,7 +49,7 @@ class TestSolver4Point(object):
         dist = np.sqrt((x_source_new - x_source_new[0]) ** 2 + (y_source_new - y_source_new[0]) ** 2)
         assert np.max(dist) < 0.000001
         kwargs_ps4 = [{'ra_image': x_pos, 'dec_image': y_pos}]
-        kwargs_lens_new = solver.update_solver(kwargs_lens_init, kwargs_ps4)
+        kwargs_lens_new = solver.update_solver(kwargs_lens_init, x_pos, y_pos)
         npt.assert_almost_equal(kwargs_lens_new[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e1'], kwargs_lens[0]['e1'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e2'], kwargs_lens[0]['e2'], decimal=3)

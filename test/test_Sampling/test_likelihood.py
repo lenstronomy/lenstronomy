@@ -143,9 +143,9 @@ class TestFittingSequence(object):
         #                        point_source_class, kwargs_numerics=kwargs_numerics)
 
     def test_force_positive_source_surface_brightness(self):
-        kwargs_likelihood = {'force_positive_source_surface_brightness':True, 'numPix_source':10,
+        kwargs_likelihood = {'force_positive_source_surface_brightness': True, 'numPix_source':10,
                  'deltaPix_source':0.1}
-        kwargs_model = {'source_light_model_list': ['SERSIC'], 'lens_model_list': []}
+        kwargs_model = {'source_light_model_list': ['SERSIC']}
 
         kwargs_constraints = {}
         param_class = Param(kwargs_model, kwargs_constraints)

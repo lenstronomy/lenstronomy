@@ -141,6 +141,7 @@ class LikelihoodModule(object):
             flux = self.imSim.SourceModel.surface_brightness(x, y, kwargs_source)
             if np.min(flux) < 0:
                 logL -= 10**10
+        self.imSim.reset_point_source_cache(bool=False)
         return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):

@@ -86,12 +86,14 @@ class Sersic_elliptic(SersicUtil):
                 result = 0
             else:
                 exponent = -bn*(R_frac**(1./n_sersic)-1.)
+                exp = np.exp(exponent)
                 result = amp * np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= 100]
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R_)
             result[R_frac <= 100] = amp * np.exp(exponent)
+        np.nan_to_num(result)
         return result
 
 

@@ -18,7 +18,6 @@ class PointSourceParam(object):
         :param fixed_magnification_list: list of booleans, if entry is True, keeps one overall scaling among the
         point sources in this class
         """
-
         self.model_list = model_list
         if num_point_source_list is None:
             num_point_source_list = [0] * len(model_list)

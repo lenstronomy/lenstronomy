@@ -117,10 +117,10 @@ class CosmoParam(object):
         if self._point_source_offset is True:
             if 'delta_x_image' not in self._kwargs_fixed:
                 num += self._num_images
-                for i in range(self._num_scale_factor):
+                for i in range(self._num_images):
                     list.append('delta_x_image')
             if 'delta_y_image' not in self._kwargs_fixed:
                 num += self._num_images
-                for i in range(self._num_scale_factor):
+                for i in range(self._num_images):
                     list.append('delta_y_image')
         return num, list

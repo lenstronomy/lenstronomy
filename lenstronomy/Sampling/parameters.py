@@ -81,6 +81,7 @@ class Param(object):
             kwargs_fixed_ps = [{} for i in range(len(self._point_source_model_list))]
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
+        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
 
         self._joint_lens_with_lens = kwargs_constraints.get('joint_lens_with_lens', [])
         self._joint_lens_light_with_lens_light = kwargs_constraints.get('joint_lens_light_with_lens_light', [])
@@ -147,7 +148,8 @@ class Param(object):
                                                   kwargs_upper=kwargs_upper_ps)
         self.cosmoParams = CosmoParam(kwargs_model.get('cosmo_type', None), mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
-                                      kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo)
+                                      kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
+                                      point_source_offset=self._point_source_offset, num_images=self._num_images)
 
     @property
     def num_point_source_images(self):
@@ -174,8 +176,10 @@ class Param(object):
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens)
         # update point source constraint solver
-        if self._solver:
-            kwargs_lens = self._solver_module.update_solver(kwargs_lens, kwargs_ps)
+        if self._solver is True:
+            x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
+            x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
+            kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps,
                                                                         image_plane=bijective)
@@ -402,6 +406,19 @@ class Param(object):
             return True
         else:
             return False
+
+    def real_image_positions(self, x, y, kwargs_cosmo):
+        """
+
+        :param kwargs_ps: point source kwargs
+        :param kwargs_cosmo: cosmo kwargs (or other kwargs)
+        :return: position where time delays are evaluated and solver is solved for
+        """
+        if self._point_source_offset is True:
+            delta_x, delta_y = kwargs_cosmo['delta_x_image'], kwargs_cosmo['delta_y_image']
+            return x + delta_x, y + delta_y
+        else:
+            return x, y
 
     def print_setting(self):
         """

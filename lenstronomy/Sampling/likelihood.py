@@ -117,7 +117,7 @@ class LikelihoodModule(object):
             logL += self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                            source_marg=self._source_marg, compute_bool=self._compute_bool)
         if self._point_source_likelihood is True:
-            logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
+            logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, kwargs_cosmo, self._position_sigma)
         if self._time_delay_likelihood is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self._check_solver is True:
@@ -169,7 +169,7 @@ class LikelihoodModule(object):
         else:
             return False
 
-    def likelihood_image_pos(self, kwargs_lens, kwargs_ps, sigma):
+    def likelihood_image_pos(self, kwargs_lens, kwargs_ps, kwargs_cosmo, sigma):
         """
 
         :param x_lens_model: image position of lens model
@@ -186,10 +186,12 @@ class LikelihoodModule(object):
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
         ra_image_list, dec_image_list = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
         num_image = len(ra_image_list[0])
         if num_image != len(x_image):
             return -10**15
-        dist = util.min_square_dist(ra_image_list[0], dec_image_list[0], x_image, y_image)
+        #dist = util.min_square_dist(x_pos, y_pos, x_image, y_image)
+        dist = (x_pos - x_image)**2 + (y_pos - y_image)**2
         logL = -np.sum(dist/sigma**2)/2
         return logL
 
@@ -211,9 +213,12 @@ class LikelihoodModule(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.imSim.fermat_potential(kwargs_lens, kwargs_ps)
+        x_pos, y_pos = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        x_pos, y_pos = self.param.real_image_positions(x_pos[0], y_pos[0], kwargs_cosmo)
+        x_source, y_source = self.imSim.LensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        delay_arcsec = self.imSim.LensModel.fermat_potential(x_pos, y_pos, x_source, y_source, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']
-        delay_days = const.delay_arcsec2days(delay_arcsec[0], D_dt_model)
+        delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
 

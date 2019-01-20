@@ -181,7 +181,7 @@ class Param(object):
             x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
-        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps,
+        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_cosmo,
                                                                         image_plane=bijective)
         # update source joint with source
         kwargs_source = self._update_joint_param(kwargs_source, kwargs_source, self._joint_source_with_source)
@@ -271,7 +271,7 @@ class Param(object):
                     kwargs['center_y'] = y_mapped
         return kwargs_source
 
-    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, image_plane=False):
+    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_cosmo, image_plane=False):
         kwargs_source_list = self.image2source_plane(kwargs_source_list, kwargs_lens_list, image_plane=image_plane)
 
         for setting in self._joint_source_with_point_source:
@@ -280,8 +280,9 @@ class Param(object):
                 x_mapped = kwargs_ps[i_point_source]['ra_source']
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
-                x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs_ps[i_point_source]['ra_image'],
-                                                                  kwargs_ps[i_point_source]['dec_image'], kwargs_lens_list)
+                x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
+                x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
+                x_mapped, y_mapped = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_list)
             for param_name in param_list:
                 if param_name == 'center_x':
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)
@@ -381,7 +382,7 @@ class Param(object):
                         kwargs_fixed_update[i]['e2'] = kwargs_init[i]['e2']
         if self._fix_gamma is True:
             for i, model in enumerate(self._lensModel.lens_model_list):
-                if 'gamma' in kwargs_init[i]:
+                if 'gamma' in kwargs_init[i] and 'gamma' not in kwargs_fixed[i]:
                     kwargs_fixed_update[i]['gamma'] = kwargs_init[i]['gamma']
         return kwargs_fixed_update
 

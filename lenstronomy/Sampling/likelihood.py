@@ -142,6 +142,9 @@ class LikelihoodModule(object):
             if np.min(flux) < 0:
                 logL -= 10**10
         self.imSim.reset_point_source_cache(bool=False)
+        if np.isnan(logL):
+            print("WARNING : logL returns NaN, changed to penalty")
+            logL = -10**15
         return logL, None
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):

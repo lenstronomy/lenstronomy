@@ -121,7 +121,7 @@ class LikelihoodModule(object):
         if self._time_delay_likelihood is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self._check_solver is True:
-            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, self._solver_tolerance)
+            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, kwargs_cosmo, self._solver_tolerance)
         if self._force_no_add_image:
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool is True:
@@ -144,14 +144,14 @@ class LikelihoodModule(object):
         self.imSim.reset_point_source_cache(bool=False)
         return logL, None
 
-    def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):
+    def solver_penalty(self, kwargs_lens, kwargs_ps, kwargs_cosmo, tolerance):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
         :param kwargs_ps:
         :return: add penalty when solver does not find a solution
         """
-        dist = self.param.check_solver(kwargs_lens, kwargs_ps)
+        dist = self.param.check_solver(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if dist > tolerance:
             return dist * 10**10
         return 0

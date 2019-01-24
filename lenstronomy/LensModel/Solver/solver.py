@@ -44,16 +44,16 @@ class Solver(object):
         kwargs_lens, precision = self.constraint_lensmodel(x_pos, y_pos, kwargs_lens)
         return kwargs_lens
 
-    def check_solver(self, kwargs_lens, kwargs_ps):
+    def check_solver(self, image_x, image_y, kwargs_lens):
         """
         returns the precision of the solver to match the image position
 
         :param kwargs_lens: full lens model (including solved parameters)
-        :param kwargs_ps: point source keyword arguments
+        :param image_x: point source in image
+        :param image_y: point source in image
         :return: precision of Euclidean distances between the different rays arriving at the image positions
         """
-        ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
+        source_x, source_y = self._lensModel.ray_shooting(image_x, image_y, kwargs_lens)
         dist = np.sqrt((source_x - source_x[0]) ** 2 + (source_y - source_y[0]) ** 2)
         return dist
 

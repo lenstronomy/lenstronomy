@@ -33,6 +33,9 @@ class CosmoParam(object):
                     kwargs_lower['D_dt'] = 0
             if self._mass_scaling is True:
                 kwargs_lower['scale_factor'] = [0] * self._num_scale_factor
+            if self._point_source_offset is True:
+                kwargs_lower['delta_x_image'] = [-1] * self._num_images
+                kwargs_lower['delta_y_image'] = [-1] * self._num_images
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._Ddt_sampling is True:
@@ -40,6 +43,9 @@ class CosmoParam(object):
                     kwargs_upper['D_dt'] = 100000
             if self._mass_scaling is True:
                 kwargs_upper['scale_factor'] = [1000] * self._num_scale_factor
+            if self._point_source_offset is True:
+                kwargs_lower['delta_x_image'] = [1] * self._num_images
+                kwargs_lower['delta_y_image'] = [1] * self._num_images
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -68,9 +74,13 @@ class CosmoParam(object):
             if 'delta_x_image' not in self._kwargs_fixed:
                 kwargs_cosmo['delta_x_image'] = args[i: i + self._num_images]
                 i += self._num_images
+            else:
+                kwargs_cosmo['delta_x_image'] = self._kwargs_fixed['delta_x_image']
             if 'delta_y_image' not in self._kwargs_fixed:
                 kwargs_cosmo['delta_y_image'] = args[i: i + self._num_images]
                 i += self._num_images
+            else:
+                kwargs_cosmo['delta_y_image'] = self._kwargs_fixed['delta_y_image']
         return kwargs_cosmo, i
 
     def setParams(self, kwargs_cosmo):

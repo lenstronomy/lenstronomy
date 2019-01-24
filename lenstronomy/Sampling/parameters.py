@@ -263,13 +263,14 @@ class Param(object):
         :param kwargs_lens:
         :return:
         """
-        for i, kwargs in enumerate(kwargs_source):
+        kwargs_source_copy = copy.deepcopy(kwargs_source)
+        for i, kwargs in enumerate(kwargs_source_copy):
             if self._image_plane_source_list[i] is True and not image_plane:
                 if 'center_x' in kwargs:
                     x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
-        return kwargs_source
+        return kwargs_source_copy
 
     def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_cosmo, image_plane=False):
         kwargs_source_list = self.image2source_plane(kwargs_source_list, kwargs_lens_list, image_plane=image_plane)

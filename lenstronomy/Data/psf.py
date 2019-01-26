@@ -63,7 +63,11 @@ class PSF(object):
                 n_high = len(self._kernel_point_source_subsampled)
                 self._point_source_subsampling_factor = kwargs_psf['point_source_subsampling_factor']
                 numPix = int(n_high / self._point_source_subsampling_factor)
-                self._kernel_point_source = util.averaging(self._kernel_point_source_subsampled, numGrid=n_high, numPix=numPix)
+                if self._point_source_subsampling_factor %2 == 0:
+                    #self._kernel_point_source = kwargs_psf['kernel_point_source']
+                    kernel_util.averaging_even_kernel(self._kernel_point_source_subsampled, self._point_source_subsampling_factor)
+                else:
+                    self._kernel_point_source = util.averaging(self._kernel_point_source_subsampled, numGrid=n_high, numPix=numPix)
             else:
                 self._kernel_point_source = kwargs_psf['kernel_point_source']
             if 'kernel_pixel_subsampled' in kwargs_psf:

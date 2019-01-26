@@ -57,7 +57,7 @@ class Param(object):
                  kwargs_lower_cosmo=None,
                  kwargs_upper_lens=None, kwargs_upper_source=None, kwargs_upper_lens_light=None, kwargs_upper_ps=None,
                  kwargs_upper_cosmo=None,
-                 kwargs_lens_init=None, linear_solver=True, fix_lens_solver=False):
+                 kwargs_lens_init=None, linear_solver=True):
         """
 
         :return:
@@ -81,8 +81,10 @@ class Param(object):
             kwargs_fixed_ps = [{} for i in range(len(self._point_source_model_list))]
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
-        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
 
+
+
+        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
         self._joint_lens_with_lens = kwargs_constraints.get('joint_lens_with_lens', [])
         self._joint_lens_light_with_lens_light = kwargs_constraints.get('joint_lens_light_with_lens_light', [])
         self._joint_source_with_source = kwargs_constraints.get('joint_source_with_source', [])
@@ -113,15 +115,14 @@ class Param(object):
             self._num_images = num_point_source_list[0]
         except:
             self._num_images = 0
-        if fix_lens_solver is True:
+        self._solver_type = kwargs_constraints.get('solver_type', 'NONE')
+        if self._solver_type == 'NONE':
             self._solver = False
         else:
-            self._solver = kwargs_constraints.get('solver', False)
-        if self._solver is True:
-            self._solver_type = kwargs_constraints.get('solver_type', 'PROFILE')
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lensModel, num_images=self._num_images)
-        else:
-            self._solver_type = 'NONE'
+            self._solver = True
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lensModel,
+                                         num_images=self._num_images)
+
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_lens)
@@ -358,6 +359,7 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
                 scale_factor = scale_factor_list[self._mass_scaling_list[i]]
+                print(scale_factor, 'test')
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor
                 elif 'theta_Rs' in kwargs:
@@ -372,7 +374,7 @@ class Param(object):
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)
         if self._solver is True:
             if kwargs_init is None:
-                raise ValueError("kwargs_lens_init must be specified when the solver is enabled!")
+                raise ValueError("kwargs_lens_init must be specified when the point source solver is enabled!")
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         if self._fix_foreground_shear is True:
             for i, model in enumerate(self._lensModel.lens_model_list):

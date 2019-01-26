@@ -20,7 +20,10 @@ class FittingSequence(object):
         self.fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                                kwargs_constraints=self.kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
                                kwargs_params=self.kwargs_params)
-        self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
+        kwargs_lens_init = None
+        if 'lens_model' in kwargs_params:
+            kwargs_lens_init = kwargs_params['lens_model'][0]
+        self._param = Param(kwargs_model, kwargs_constraints, kwargs_lens_init=kwargs_lens_init)
         if 'source_model' in self.kwargs_params:
             kwargs_init, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
         else:
@@ -223,12 +226,13 @@ class FittingSequence(object):
         :param n_max: new number of shapelet coefficients
         :return: params with the new number of shapelet coefficients fixed
         """
-        kwargs_init, _, kwargs_fixed, _ , _ = self.kwargs_params['source_model']
-        source_model_list = self.kwargs_model.get('source_light_model_list', [])
-        for i, model in enumerate(source_model_list):
-            if model == 'SHAPELETS':
-                kwargs_init[i]['n_max'] = n_max
-                kwargs_fixed[i]['n_max'] = n_max
+        if 'source_model' in self.kwargs_params:
+            kwargs_init, _, kwargs_fixed, _ , _ = self.kwargs_params['source_model']
+            source_model_list = self.kwargs_model.get('source_light_model_list', [])
+            for i, model in enumerate(source_model_list):
+                if model == 'SHAPELETS':
+                    kwargs_init[i]['n_max'] = n_max
+                    kwargs_fixed[i]['n_max'] = n_max
 
     def _fix_shapelets(self, bool=False, kwargs_input=None):
         """

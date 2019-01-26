@@ -85,8 +85,7 @@ class TestFittingSequence(object):
         kwargs_constraints = {
                                    'num_point_source_list': [4],
                                    'additional_images_list': [True],
-                                   'solver': False,
-                                   'solver_type': 'PROFILE_SHEAR',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                                   'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                                    }
 
         kwargs_likelihood = {'force_no_add_image': True,

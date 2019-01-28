@@ -110,7 +110,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     for i in range(max(num_iter, 1)):
         # given a proposition, re-size it to original pixel size
         if subgrid_res % 2 == 0:
-            kernel_pixel = averaging_odd_kernel(kernel_subgrid, subgrid_res)
+            kernel_pixel = averaging_even_kernel(kernel_subgrid, subgrid_res)
         else:
             kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
         delta = kernel - kernel_pixel
@@ -138,14 +138,14 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     return kernel_norm(kernel_subgrid - delta_kernel_sub)
 
 
-def averaging_odd_kernel(kernel_high_res, subgrid_res):
+def averaging_even_kernel(kernel_high_res, subgrid_res):
     """
     makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
     meant to be centered.
 
-    :param kernel_high_res:
-    :param subgrid_res:
-    :return:
+    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered
+    :param subgrid_res: subsampling resolution (even number)
+    :return: averaged undersampling kernel
     """
     n_high = len(kernel_high_res)
     n_low = int((n_high + 1) / subgrid_res)
@@ -163,7 +163,7 @@ def averaging_odd_kernel(kernel_high_res, subgrid_res):
     for i in range(subgrid_res - 1):
         kernel_low_res[:, 1:] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
         kernel_low_res[:, :-1] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
-    # adding a quater of a pixel value that is at the boarder of four pixels
+    # adding a quarter of a pixel value that is at the boarder of four pixels
     i = subgrid_res - 1
     j = subgrid_res - 1
     kernel_edge = kernel_high_res[i::subgrid_res, j::subgrid_res]

@@ -108,6 +108,7 @@ class TestParam(object):
         assert args[-1] == mass_scale
 
         kwargs_lens, _, _, _, _ = param_class.args2kwargs(args)
+        print(kwargs_lens, 'test')
         assert kwargs_lens[0]['theta_E'] == 1
         assert kwargs_lens[1]['theta_Rs'] == 0.1 * mass_scale
         assert kwargs_lens[2]['theta_Rs'] == 0.3 * mass_scale

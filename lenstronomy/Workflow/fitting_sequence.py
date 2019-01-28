@@ -20,7 +20,10 @@ class FittingSequence(object):
         self.fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                                kwargs_constraints=self.kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
                                kwargs_params=self.kwargs_params)
-        self._param = Param(kwargs_model, kwargs_constraints, fix_lens_solver=True)
+        kwargs_lens_init = None
+        if 'lens_model' in kwargs_params:
+            kwargs_lens_init = kwargs_params['lens_model'][0]
+        self._param = Param(kwargs_model, kwargs_constraints, kwargs_lens_init=kwargs_lens_init)
         if 'source_model' in self.kwargs_params:
             kwargs_init, _, kwargs_fixed, _, _ = self.kwargs_params['source_model']
         else:
@@ -47,10 +50,10 @@ class FittingSequence(object):
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(fitting_kwargs, self._lens_temp, self._source_temp,
                                                                 self._lens_light_temp,self._ps_temp, self._cosmo_temp, threadCount = threadCount)
             elif fitting_routine in ['PSO']:
-                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param = self.pso(fitting_kwargs,
+                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp, chain, param=self.pso(fitting_kwargs,
                                                                             self._lens_temp, self._source_temp,
                                                                             self._lens_light_temp, self._ps_temp,
-                                                                            self._cosmo_temp, threadCount = threadCount)
+                                                                            self._cosmo_temp, threadCount=threadCount)
 
                 chain_list.append(chain)
                 param_list.append(param)
@@ -162,7 +165,7 @@ class FittingSequence(object):
                 lens_input, source_input, lens_light_input, ps_input, cosmo_input,
                 n_particles, n_iterations, mpi=mpi, sigma_factor=sigma_scale, compute_bool=compute_bool,
                 fix_lens=fix_lens, fix_source=fix_source, fix_lens_light=fix_lens_light,
-                fix_point_source=fix_point_source, print_key=print_key, threadCount = threadCount)
+                fix_point_source=fix_point_source, print_key=print_key, threadCount=threadCount)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def psf_iteration(self, fitting_kwargs, lens_input, source_input, lens_light_input, ps_input, cosmo_input):
@@ -223,12 +226,13 @@ class FittingSequence(object):
         :param n_max: new number of shapelet coefficients
         :return: params with the new number of shapelet coefficients fixed
         """
-        kwargs_init, _, kwargs_fixed, _ , _ = self.kwargs_params['source_model']
-        source_model_list = self.kwargs_model.get('source_light_model_list', [])
-        for i, model in enumerate(source_model_list):
-            if model == 'SHAPELETS':
-                kwargs_init[i]['n_max'] = n_max
-                kwargs_fixed[i]['n_max'] = n_max
+        if 'source_model' in self.kwargs_params:
+            kwargs_init, _, kwargs_fixed, _ , _ = self.kwargs_params['source_model']
+            source_model_list = self.kwargs_model.get('source_light_model_list', [])
+            for i, model in enumerate(source_model_list):
+                if model == 'SHAPELETS':
+                    kwargs_init[i]['n_max'] = n_max
+                    kwargs_fixed[i]['n_max'] = n_max
 
     def _fix_shapelets(self, bool=False, kwargs_input=None):
         """

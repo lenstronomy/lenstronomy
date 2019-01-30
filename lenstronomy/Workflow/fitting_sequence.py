@@ -97,8 +97,8 @@ class FittingSequence(object):
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
-        kwargs_constraints['fix_gamma'] = gamma_fixed
-        kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
+        #kwargs_constraints['fix_gamma'] = gamma_fixed
+        #kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
         n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
         if n_max_new is False:
             pass
@@ -142,9 +142,9 @@ class FittingSequence(object):
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
-        kwargs_constraints['fix_gamma'] = gamma_fixed
-        kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
-        kwargs_constraints['fix_shapelet_beta'] = shapelet_beta_fixed
+        #kwargs_constraints['fix_gamma'] = gamma_fixed
+        #kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
+        #kwargs_constraints['fix_shapelet_beta'] = shapelet_beta_fixed
         n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
         if n_max_new is False:
             pass

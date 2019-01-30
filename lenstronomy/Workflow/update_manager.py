@@ -81,13 +81,13 @@ class UpdateManager(object):
         kwargs_model = self.kwargs_model
         kwargs_constraints = self.kwargs_constraints
 
-        param_class = Param(kwargs_model, kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(kwargs_model, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
                             kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps,
                             kwargs_lower_cosmo,
                             kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps,
                             kwargs_upper_cosmo,
-                            kwargs_lens_init=kwargs_lens)
+                            kwargs_lens_init=kwargs_lens, **kwargs_constraints)
         return param_class
 
     def update_options(self, kwargs_model, kwargs_constraints, kwargs_likelihood):

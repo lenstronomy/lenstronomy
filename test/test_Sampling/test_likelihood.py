@@ -84,7 +84,6 @@ class TestFittingSequence(object):
 
         kwargs_constraints = {
                                    'num_point_source_list': [4],
-                                   'additional_images_list': [True],
                                    'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                                    }
 
@@ -96,7 +95,7 @@ class TestFittingSequence(object):
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
                                   }
-        self.param_class = Param(self.kwargs_model, kwargs_constraints)
+        self.param_class = Param(self.kwargs_model, **kwargs_constraints)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -147,7 +146,7 @@ class TestFittingSequence(object):
         kwargs_model = {'source_light_model_list': ['SERSIC']}
 
         kwargs_constraints = {}
-        param_class = Param(kwargs_model, kwargs_constraints)
+        param_class = Param(kwargs_model, **kwargs_constraints)
 
         kwargs_data = self.SimAPI.data_configure(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
         data_class = Data(kwargs_data)

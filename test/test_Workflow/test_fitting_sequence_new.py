@@ -84,11 +84,8 @@ class TestFittingSequence(object):
 
         num_source_model = len(source_model_list)
 
-        self.kwargs_constraints = {'joint_center_lens_light': False,
-                                   'joint_center_source_light': False,
+        self.kwargs_constraints = {
                                    'num_point_source_list': [4],
-                                   'additional_images_list': [False],
-                                   'fix_to_point_source_list': [False] * num_source_model,
                                    'image_plane_source_list': [False] * num_source_model,
                                    'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                                    }
@@ -127,7 +124,7 @@ class TestFittingSequence(object):
 
         lens_param = self.kwargs_lens, lens_sigma, [{}, {'ra_0': 0, 'dec_0': 0}], lens_lower, lens_upper
         source_param = self.kwargs_source, source_sigma, [{}], source_lower, source_upper
-        lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{}], lens_light_lower, lens_light_upper
+        lens_light_param = self.kwargs_lens_light, lens_light_sigma, [{'center_x': 0}], lens_light_lower, lens_light_upper
         ps_param = self.kwargs_ps, ps_sigma, [{}], self.kwargs_ps, self.kwargs_ps
 
         kwargs_params = {'lens_model': lens_param,
@@ -157,7 +154,7 @@ class TestFittingSequence(object):
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
         fitting_kwargs_list.append(kwargs_mcmc)
         fitting_list.append('align_images')
-        kwargs_align = { 'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
+        kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_kwargs_list.append(kwargs_align)
         fitting_list.append('psf_iteration')
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
@@ -166,7 +163,7 @@ class TestFittingSequence(object):
         fitting_kwargs_list.append({})
         fitting_list.append('update_settings')
         n_sersic_overwrite = 4
-        kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]]}
+        kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]], 'lens_light_remove_fixed': [[0, ['center_x']]]}
         fitting_kwargs_list.append(kwargs_update)
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],

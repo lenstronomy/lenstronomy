@@ -83,11 +83,8 @@ class TestFittingSequence(object):
 
         num_source_model = len(source_model_list)
 
-        self.kwargs_constraints = {'joint_center_lens_light': False,
-                              'joint_center_source_light': False,
+        self.kwargs_constraints = {
                               'num_point_source_list': [4],
-                              'additional_images_list': [False],
-                              'fix_to_point_source_list': [False] * num_source_model,
                               'image_plane_source_list': [False] * num_source_model,
                               'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                               }

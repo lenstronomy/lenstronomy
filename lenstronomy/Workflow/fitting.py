@@ -76,13 +76,13 @@ class Fitting(object):
                  threadCount=1, mpi=False, print_key='PSO', sigma_factor=1, compute_bool=None):
 
         # initialise mcmc classes
-        param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(self.kwargs_model, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
                             self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
                             self._cosmo_lower,
                             self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
                             self._cosmo_upper,
-                            kwargs_lens_init=kwargs_mean_lens)
+                            kwargs_lens_init=kwargs_mean_lens, **self.kwargs_constraints)
         init_pos = param_class.kwargs2args(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
                                            kwargs_mean_cosmo)
         sigma_start = param_class.kwargs2args(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
@@ -113,13 +113,13 @@ class Fitting(object):
                   kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
                   threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
 
-        param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
+        param_class = Param(self.kwargs_model, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
                             self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower,
                             self._cosmo_lower,
                             self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
                             self._cosmo_upper,
-                            kwargs_lens_init=kwargs_mean_lens)
+                            kwargs_lens_init=kwargs_mean_lens, **self.kwargs_constraints)
 
         # initialize ImSim() class
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)

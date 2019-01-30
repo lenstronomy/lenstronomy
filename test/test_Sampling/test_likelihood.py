@@ -75,7 +75,6 @@ class TestFittingSequence(object):
                              'source_light_model_list': source_model_list,
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
-                             'cosmo_type': 'D_dt'
                              }
 
         self.kwargs_numerics = {
@@ -85,6 +84,7 @@ class TestFittingSequence(object):
         kwargs_constraints = {
                                    'num_point_source_list': [4],
                                    'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                                   'cosmo_type': 'D_dt'
                                    }
 
         kwargs_likelihood = {'force_no_add_image': True,

@@ -72,8 +72,8 @@ class TestParam(object):
     def test_get_cosmo(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
-                        'cosmo_type': 'D_dt'}
-        kwargs_param = {}
+                        }
+        kwargs_param = {'cosmo_type': 'D_dt'}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]

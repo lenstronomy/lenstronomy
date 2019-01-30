@@ -12,13 +12,13 @@ class AlignmentFitting(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = AlignmentLikelihood(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=compute_bool)
+        self.chain = AlignmentLikelihood(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
 
-    def pso(self, n_particles, n_iterations, lowerLimit, upperLimit, threadCount=1, mpi=False, print_key='default'):
+    def pso(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1, mpi=False, print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
@@ -65,7 +65,7 @@ class AlignmentFitting(object):
 
 class AlignmentLikelihood(object):
 
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, compute_bool=None):
+    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else):
         """
         initializes all the classes needed for the chain
         """
@@ -74,7 +74,6 @@ class AlignmentLikelihood(object):
         self._kwargs_data_shifted = copy.deepcopy(self.kwargs_data_init)
         self._kwargs_psf = kwargs_psf
         self._kwargs_model = kwargs_model
-        self._compute_bool = compute_bool
         self._source_marg = False
         kwargs_numerics_copy = copy.deepcopy(kwargs_numerics)
         #kwargs_numerics_copy['error_map'] = False
@@ -87,7 +86,7 @@ class AlignmentLikelihood(object):
         """
         #generate image and computes likelihood
         kwargs_data = self.update_data(args)
-        imageModel = class_creator.create_image_model(kwargs_data, self._kwargs_psf, self._kwargs_numerics, self._kwargs_model)
+        imageModel = class_creator.create_image_model(kwargs_data, self._kwargs_psf, self._kwargs_numerics, **self._kwargs_model)
         logL = imageModel.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
         return logL, None
 

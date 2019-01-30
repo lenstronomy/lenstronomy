@@ -47,7 +47,6 @@ class Param(object):
 
     'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
     'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
-    'fix_shapelet_beta': bool, if True, fixes the shapelet scale beta
     """
 
     def __init__(self, kwargs_model, kwargs_constraints,
@@ -82,9 +81,6 @@ class Param(object):
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
 
-
-
-        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
         self._joint_lens_with_lens = kwargs_constraints.get('joint_lens_with_lens', [])
         self._joint_lens_light_with_lens_light = kwargs_constraints.get('joint_lens_light_with_lens_light', [])
         self._joint_source_with_source = kwargs_constraints.get('joint_source_with_source', [])
@@ -100,12 +96,14 @@ class Param(object):
                 param_list.append(['center_x', 'center_y'])
         self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
         self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
-        self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
         self._mass_scaling_list = kwargs_constraints.get('mass_scaling_list', [False] * len(self._lens_model_list))
-        if self._mass_scaling is True:
-            self._num_scale_factor = np.max(self._mass_scaling_list) + 1
+        if 1 in self._mass_scaling_list:
+            self._num_scale_factor = np.max(self._mass_scaling_list)
+            self._mass_scaling = True
         else:
             self._num_scale_factor = 0
+            self._mass_scaling = False
+        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
         num_point_source_list = kwargs_constraints.get('num_point_source_list', [1] * len(self._point_source_model_list))
 
         # Attention: if joint coordinates with other source profiles, only indicate one as bool
@@ -358,7 +356,7 @@ class Param(object):
             scale_factor_list = 1. / np.array(kwargs_cosmo['scale_factor'])
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
-                scale_factor = scale_factor_list[self._mass_scaling_list[i]]
+                scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
                 print(scale_factor, 'test')
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor

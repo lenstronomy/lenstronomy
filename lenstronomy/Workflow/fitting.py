@@ -15,8 +15,7 @@ class Fitting(object):
     class to find a good estimate of the parameter positions and uncertainties to run a (full) MCMC on
     """
 
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
-                 multi_band_type='multi-band'):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params):
         """
 
         :param multi_band_list:
@@ -24,16 +23,12 @@ class Fitting(object):
         :param kwargs_constraints:
         :param kwargs_likelihood:
         :param kwargs_params:
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
-        Options are:
-            - 'multi-band': linear amplitudes are inferred on single data set
-            - 'multi-exposure': linear amplitudes ae jointly inferred
+
         """
         self.multi_band_list = multi_band_list
         self.kwargs_model = kwargs_model
         self.kwargs_constraints = kwargs_constraints
         self.kwargs_likelihood = kwargs_likelihood
-        self._multi_band_type = multi_band_type
 
         if kwargs_model.get('lens_model_list', None) is not None:
             self._lens_init, self._lens_sigma, self._lens_fixed, self._lens_lower, self._lens_upper = kwargs_params['lens_model']
@@ -58,7 +53,7 @@ class Fitting(object):
         else:
             self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = {}, {}, {}, {}, {}
 
-        self._paramUpdate = ParamUpdate(self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._cosmo_fixed)
+        self._paramUpdate = UpdateManager(self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._cosmo_fixed)
 
     def init_kwargs(self):
         return self._lens_init, self._source_init, self._lens_light_init, self._ps_init, self._cosmo_init
@@ -100,7 +95,7 @@ class Fitting(object):
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
-        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
+        imSim_class = class_creator.create_multiband(self.multi_band_list, **self.kwargs_model)
         likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
@@ -130,7 +125,7 @@ class Fitting(object):
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
         if compute_bool is not None:
             kwargs_likelihood['bands_compute'] = compute_bool
-        imSim_class = class_creator.create_multiband(self.multi_band_list, self.kwargs_model, type=self._multi_band_type)
+        imSim_class = class_creator.create_multiband(self.multi_band_list, **self.kwargs_model)
         likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
         # run PSO
         mcmc_class = Sampler(likelihoodModule=likelihoodModule)
@@ -193,12 +188,18 @@ class Fitting(object):
         return samples, param_list, dist
 
 
-class ParamUpdate(object):
+class UpdateManager(object):
+    """
+    this class manages the parameter constraints as they may evolve through the steps of the modeling.
+    This includes: keeping certain parameters fixed during one modelling step
+
+    """
+    #TODO change in adding fixed parameter names to be overwritten by the current result
+    #TODO document this class
 
     def __init__(self, kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps,
                  kwargs_fixed_cosmo):
-        self.kwargs_fixed = copy.deepcopy([kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light,
-                                           kwargs_fixed_ps, kwargs_fixed_cosmo])
+        self._kwargs_fixed_lens, self._kwargs_fixed_source, self._kwargs_fixed_lens_light, self._kwargs_fixed_ps, self._kwargs_fixed_cosmo = kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo
 
     def update_fixed_simple(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, fix_lens=False,
                              fix_source=False, fix_lens_light=False, fix_point_source=False, fixed_cosmo=False):
@@ -231,11 +232,11 @@ class ParamUpdate(object):
     def _update_fixed(self, add_fixed_lens=None, add_fixed_source=None,
                       add_fixed_lens_light=None, add_fixed_ps=None, add_fixed_cosmo=None):
 
-        lens_fix = copy.deepcopy(self.kwargs_fixed[0])
-        source_fix = copy.deepcopy(self.kwargs_fixed[1])
-        lens_light_fix = copy.deepcopy(self.kwargs_fixed[2])
-        ps_fix = copy.deepcopy(self.kwargs_fixed[3])
-        cosmo_fix = copy.deepcopy(self.kwargs_fixed[4])
+        lens_fix = copy.deepcopy(self._kwargs_fixed_lens)
+        source_fix = copy.deepcopy(self._kwargs_fixed_source)
+        lens_light_fix = copy.deepcopy(self._kwargs_fixed_lens_light)
+        ps_fix = copy.deepcopy(self._kwargs_fixed_ps)
+        cosmo_fix = copy.deepcopy(self._kwargs_fixed_cosmo)
         if add_fixed_lens is None:
             kwargs_fixed_lens_updated = lens_fix
         else:

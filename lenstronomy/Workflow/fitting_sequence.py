@@ -21,38 +21,46 @@ class FittingSequence(object):
         self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
 
-    def fit_sequence(self, fitting_list, fitting_kwargs_list):
+    def fit_sequence(self, fitting_list):
         """
 
-        :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
-        :param bijective: bool, if True, does not map parameters sampled in the image plane to the source plane.
-        :return:
+        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and
+        kwargs being the arguments passed to this option
+        :return: fitting results
         """
         chain_list = []
         param_list = []
         samples_mcmc, param_mcmc, dist_mcmc = [], [], []
-        for i, fitting_type in enumerate(fitting_list):
+        for i, fitting in enumerate(fitting_list):
+            fitting_type = fitting[0]
+            kwargs = fitting[1]
             if fitting_type == 'restart':
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
             elif fitting_type == 'update_settings':
-                self.update_settings(**fitting_kwargs_list[i])
+                self.update_settings(**kwargs)
             elif fitting_type == 'psf_iteration':
-                self.psf_iteration(**fitting_kwargs_list[i])
+                self.psf_iteration(**kwargs)
             elif fitting_type == 'align_images':
-                self.align_images(**fitting_kwargs_list[i])
+                self.align_images(**kwargs)
             elif fitting_type == 'PSO':
-                lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**fitting_kwargs_list[i])
+                lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_type == 'MCMC':
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**fitting_kwargs_list[i])
+                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
 
     def best_fit(self, bijective=False):
+        """
+
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted.
+        If you do not use those options, there is no effect.
+        :return: best fit model of the current state of the FittingSequence class
+        """
         param_class = self._updateManager.param_class(self._lens_temp)
         if bijective is False:
             lens_temp = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
@@ -63,14 +71,17 @@ class FittingSequence(object):
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None):
         """
+        MCMC routine
 
-        :param fitting_kwargs:
-        :param lens_input:
-        :param source_input:
-        :param lens_light_input:
-        :param ps_input:
-        :return:
+        :param n_burn: number of burn in iterations (will not be saved)
+        :param n_run: number of MCMC iterations that are saved
+        :param walkerRatio: ratio of walkers/number of free parameters
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
+        :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
+        :param init_samples: initial sample from where to start the MCMC process
+        :return: MCMC samples, parameter names, logL distances of all samples
         """
+
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         param_class = self._updateManager.param_class(self._lens_temp)
@@ -96,14 +107,16 @@ class FittingSequence(object):
 
     def pso(self, n_particles, n_iterations, sigma_scale=1, print_key='PSO', threadCount=1):
         """
+        Particle Swarm Optimization
 
-        :param fitting_kwargs:
-        :param lens_input:
-        :param source_input:
-        :param lens_light_input:
-        :param ps_input:
-        :return:
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
+        :param print_key: string, printed text when executing this routine
+        :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
+        :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
         """
+
 
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
@@ -129,6 +142,20 @@ class FittingSequence(object):
 
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
                  psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
+        """
+        iterative PSF reconstruction
+
+        :param num_iter: number of iterations in the process
+        :param no_break: bool, if False will break the process as soon as one step lead to a wors reconstruction then the previous step
+        :param stacking_method: string, 'median' and 'mean' supported
+        :param block_center_neighbour: radius of neighbouring point source to be blocked in the reconstruction
+        :param keep_psf_error_map: bool, whether or not to keep the previous psf_error_map
+        :param psf_symmetry: int, number of invariant rotations in the reconstructed PSF
+        :param psf_iter_factor: factor of new estimated PSF relative to the old one PSF_updated = (1-psf_iter_factor) * PSF_old + psf_iter_factor*PSF_new
+        :param verbose: bool, print statements
+        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
+        :return: 0, updated PSF is stored in self.mult_iband_list
+        """
         #lens_temp = copy.deepcopy(lens_input)
         kwargs_model = self._updateManager.kwargs_model
         param_class = self._updateManager.param_class(self._lens_temp)
@@ -158,6 +185,18 @@ class FittingSequence(object):
 
     def align_images(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1,
                      compute_bands=None):
+        """
+        aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
+        with relative coordinate shifts as free parameters
+
+        :param n_particles: number of particles in the Particle Swarm Optimization
+        :param n_iterations: number of iterations in the optimization process
+        :param lowerLimit: lower limit of relative shift
+        :param upperLimit: upper limit of relative shift
+        :param verbose: bool, print statements
+        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
+        :return:
+        """
         kwargs_model = self._updateManager.kwargs_model
         param_class = self._updateManager.param_class(self._lens_temp)
         lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
@@ -185,6 +224,24 @@ class FittingSequence(object):
     def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
                      source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[], lens_remove_fixed=[],
                      source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[]):
+        """
+        updates lenstronomy settings "on the fly"
+
+        :param kwargs_model: kwargs, specified keyword arguments overwrite the existing ones
+        :param kwargs_constraints: kwargs, specified keyword arguments overwrite the existing ones
+        :param kwargs_likelihood: kwargs, specified keyword arguments overwrite the existing ones
+        :param lens_add_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param source_add_fixed:[i_model, ['param1', 'param2',...], [...]]
+        :param lens_light_add_fixed:[i_model, ['param1', 'param2',...], [...]]
+        :param ps_add_fixed:[i_model, ['param1', 'param2',...], [...]]
+        :param cosmo_add_fixed: ['param1', 'param2',...]
+        :param lens_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param source_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param lens_light_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param ps_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param cosmo_remove_fixed: ['param1', 'param2',...]
+        :return: 0, the settings are overwritten for the next fitting step to come
+        """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
         self._updateManager.update_fixed(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
                                          self._cosmo_temp, lens_add_fixed, source_add_fixed, lens_light_add_fixed,

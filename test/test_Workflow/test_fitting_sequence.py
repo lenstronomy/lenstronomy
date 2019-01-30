@@ -145,33 +145,27 @@ class TestFittingSequence(object):
         n_p = 2
         n_i = 2
         fitting_list = []
-        fitting_kwargs_list = []
+
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
-        fitting_list.append('PSO')
-        fitting_kwargs_list.append(kwargs_pso)
-        fitting_list.append('MCMC')
+        fitting_list.append(['PSO', kwargs_pso])
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
-        fitting_kwargs_list.append(kwargs_mcmc)
-        fitting_list.append('align_images')
+        fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
-        fitting_kwargs_list.append(kwargs_align)
-        fitting_list.append('psf_iteration')
+        fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
-        fitting_kwargs_list.append(kwargs_psf_iter)
-        fitting_list.append('restart')
-        fitting_kwargs_list.append({})
-        fitting_list.append('update_settings')
+        fitting_list.append(['psf_iteration', kwargs_psf_iter])
+        fitting_list.append(['restart', None])
         n_sersic_overwrite = 4
-        kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]], 'lens_light_remove_fixed': [[0, ['center_x']]]}
-        fitting_kwargs_list.append(kwargs_update)
+        kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
+                         'lens_light_remove_fixed': [[0, ['center_x']]]}
+        fitting_list.append(['update_settings', kwargs_update])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
         #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
-        chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_list,
-            fitting_kwargs_list=fitting_kwargs_list)
+        chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_list)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)

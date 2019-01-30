@@ -42,6 +42,8 @@ class TestParam(object):
                                    linear_solver=True, **kwargs_param)
         num_param, list = param_class_linear.num_param()
         assert list[0] == 'theta_E_lens'
+        print(list)
+        assert len(list) == num_param
         assert num_param == 9
 
     def test_num_param_linear(self):

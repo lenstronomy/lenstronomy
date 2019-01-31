@@ -46,7 +46,6 @@ class TestNumerics(object):
         npt.assert_almost_equal(f_yx_num, f_yx, decimal=5)
         npt.assert_almost_equal(f_yy_num, f_yy, decimal=5)
 
-
 class TestNumericsProfile(object):
     """
     tests the second derivatives of various lens models
@@ -213,6 +212,11 @@ class TestNumericsProfile(object):
         lens_model = ['coreBURKERT']
         self.assert_differentials(lens_model, kwargs)
         kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core':5}
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_cnfw(self):
+        kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.3}
+        lens_model = ['cnfw']
         self.assert_differentials(lens_model, kwargs)
 
 if __name__ == '__main__':

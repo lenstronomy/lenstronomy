@@ -170,6 +170,9 @@ class TestNumerics(object):
         kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 0.4}
         self.assert_integrals(Model, kwargs)
 
+        kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 1.8}
+        self.assert_integrals(Model, kwargs)
+
 
     """
     def test_sis(self):

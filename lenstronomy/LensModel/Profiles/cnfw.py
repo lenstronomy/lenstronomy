@@ -77,9 +77,10 @@ class CNFW(object):
         :type x: float >0
         """
 
-        prefac = (b-1) ** -2
         if b == 1:
             b = 1 + c
+
+        prefac = (b - 1) ** -2
 
         if isinstance(X, np.ndarray):
 
@@ -119,8 +120,8 @@ class CNFW(object):
         :param x: R/Rs
         :type x: float >0
         """
-        #if b == 1:
-        #    b = 1.001
+        if b == 1:
+            b = 1+c
 
         b2 = b ** 2
         x2 = X**2
@@ -135,30 +136,25 @@ class CNFW(object):
             inds1 = np.where(np.absolute(X - b) <= c)
             inds2 = np.where(np.absolute(X - b) > c)
 
-            if b == 1:
-                output[inds1] = 0.280372
-            else:
-                output[inds1] = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + \
+            output[inds1] = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + \
                             fac * (-1.38692 + np.log(b2)) - b2*np.log(b2))
 
             output[inds2] = prefac * (fac * np.log(0.25 * x2[inds2]) - b2 * np.log(b2) + \
                 2 * (b2 - x2[inds2]) * self._nfw_func(X[inds2] * b**-1) + 2 * (1+b*(x2[inds2] - 2))*
                              self._nfw_func(X[inds2]))
+            return 0.5*output
 
         else:
 
-            if (X - b) < c:
-                if b == 1:
-                    output = 0.280372
-                else:
-                    output = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + \
-                            fac * (-1.38692 + np.log(b2)) - b2*np.log(b2))*b**-1
+            if np.absolute(X - b) <= c:
+                output = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + \
+                            fac * (-1.38692 + np.log(b2)) - b2*np.log(b2))
             else:
                 output = prefac * (fac * np.log(0.25 * x2) - b2 * np.log(b2) + \
-                 2 * (b2 - x2) * self._nfw_func(X * b ** -1) + 2 * (1 + b * (x2 - 2)) *
-                 self._nfw_func(X))
+                2 * (b2 - x2) * self._nfw_func(X * b**-1) + 2 * (1+b*(x2 - 2))*
+                             self._nfw_func(X))
 
-        return 0.5 * output
+            return 0.5 * output
 
     def derivatives(self, x, y, Rs=None, theta_Rs=None, r_core=None, center_x=0, center_y=0):
 

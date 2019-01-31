@@ -216,7 +216,7 @@ class TestNumericsProfile(object):
 
     def test_cnfw(self):
         kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.3}
-        lens_model = ['cNFW']
+        lens_model = ['CNFW']
         self.assert_differentials(lens_model, kwargs)
 
         kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core': 1.3}

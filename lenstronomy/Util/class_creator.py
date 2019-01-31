@@ -12,7 +12,8 @@ from lenstronomy.ImSim.MultiBand.multi_frame import MultiFrame
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list=[], z_source=None, redshift_list=None,
                        multi_plane=False, source_light_model_list=[], lens_light_model_list=[],
                        point_source_model_list=[], fixed_magnification_list=None, additional_images_list=None,
-                       min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100):
+                       min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
+                       multi_band_type=None):
     """
 
     :param kwargs_data:

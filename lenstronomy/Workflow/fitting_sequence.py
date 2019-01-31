@@ -36,6 +36,7 @@ class FittingSequence(object):
         """
 
         :param fitting_kwargs_list: list of kwargs specify the fitting routine to be executed
+        :param bijective: bool, if True, does not map parameters sampled in the image plane to the source plane.
         :return:
         """
         chain_list = []
@@ -95,10 +96,9 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
-        multi_band_type = fitting_kwargs.get('multi_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
-        kwargs_constraints['fix_gamma'] = gamma_fixed
-        kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
+        #kwargs_constraints['fix_gamma'] = gamma_fixed
+        #kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
         n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
         if n_max_new is False:
             pass
@@ -111,7 +111,7 @@ class FittingSequence(object):
 
         fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                           kwargs_constraints=kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
-                          kwargs_params=self.kwargs_params, multi_band_type=multi_band_type)
+                          kwargs_params=self.kwargs_params)
 
         samples, param, dist = fitting.mcmc_run(
                                   lens_input, source_input, lens_light_input, ps_input, cosmo_input,
@@ -141,11 +141,10 @@ class FittingSequence(object):
         foreground_shear_fixed = fitting_kwargs.get('foreground_shear_fixed', False)
         shapelet_beta_fixed = fitting_kwargs.get('shapelet_beta_fixed', False)
         self._fix_shapelets(shapelet_beta_fixed, source_input)
-        multi_band_type = fitting_kwargs.get('multi_band_type', 'multi-band')
         kwargs_constraints = copy.deepcopy(self.kwargs_constraints)
-        kwargs_constraints['fix_gamma'] = gamma_fixed
-        kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
-        kwargs_constraints['fix_shapelet_beta'] = shapelet_beta_fixed
+        #kwargs_constraints['fix_gamma'] = gamma_fixed
+        #kwargs_constraints['fix_foreground_shear'] = foreground_shear_fixed
+        #kwargs_constraints['fix_shapelet_beta'] = shapelet_beta_fixed
         n_max_new = fitting_kwargs.get('change_shapelet_coeffs', False)
         if n_max_new is False:
             pass
@@ -159,7 +158,7 @@ class FittingSequence(object):
 
         fitting = Fitting(multi_band_list=self.multi_band_list, kwargs_model=self.kwargs_model,
                           kwargs_constraints=kwargs_constraints, kwargs_likelihood=self.kwargs_likelihood,
-                          kwargs_params=self.kwargs_params, multi_band_type=multi_band_type)
+                          kwargs_params=self.kwargs_params)
 
         lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list = fitting.pso_run(
                 lens_input, source_input, lens_light_input, ps_input, cosmo_input,
@@ -184,11 +183,11 @@ class FittingSequence(object):
                 image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
                                                                kwargs_psf=kwargs_psf,
                                                                kwargs_numerics=kwargs_numerics,
-                                                               kwargs_model=self.kwargs_model)
-                psf_iter = PsfFitting(image_model_class=image_model, kwargs_psf_iter=kwargs_psf_iter)
+                                                               **self.kwargs_model)
+                psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        lens_light_input, ps_input,
-                                                       factor=psf_iter_factor, num_iter=psf_iter_num,
+                                                       psf_iter_factor=psf_iter_factor, num_iter=psf_iter_num,
                                                         verbose=self._verbose, no_break=True)
                 self.multi_band_list[i][1] = kwargs_psf
                 self.fitting.multi_band_list[i][1] = kwargs_psf
@@ -210,7 +209,7 @@ class FittingSequence(object):
                 kwargs_psf = self.multi_band_list[i][1]
                 kwargs_numerics = self.multi_band_list[i][2]
                 alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, self.kwargs_model, lens_updated, source_updated,
-                                                        lens_light_input, ps_input, compute_bool=compute_bool)
+                                                        lens_light_input, ps_input)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles, n_iterations, lowerLimit, upperLimit,
                                                               threadCount=1, mpi=mpi,

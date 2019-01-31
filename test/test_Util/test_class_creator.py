@@ -17,19 +17,18 @@ class TestClassCreator(object):
         self.kwargs_data = {'numPix': 10}
 
     def test_create_image_model(self):
-        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, kwargs_model=self.kwargs_model)
+        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, **self.kwargs_model)
         assert imageModel.LensModel.lens_model_list[0] == 'SIS'
 
-        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={},
-                                                      kwargs_model={})
+        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={})
         assert imageModel.LensModel.lens_model_list == []
 
     def test_create_multiband(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}]]
-        multi_band = class_creator.create_multiband(multi_band_list, self.kwargs_model)
+        multi_band = class_creator.create_multiband(multi_band_list, **self.kwargs_model)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
 
-        multi_band = class_creator.create_multiband(multi_band_list, {})
+        multi_band = class_creator.create_multiband(multi_band_list)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
 
 

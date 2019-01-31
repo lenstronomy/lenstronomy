@@ -77,12 +77,8 @@ class TestFittingSequence(object):
 
         num_source_model = len(source_model_list)
 
-        kwargs_constraints = {'joint_center_lens_light': False,
-                                   'joint_center_source_light': False,
-                                   'additional_images_list': [False],
-                                   'fix_to_point_source_list': [False] * num_source_model,
+        kwargs_constraints = {
                                    'image_plane_source_list': [False] * num_source_model,
-                                   'solver': False,
                                    }
 
         kwargs_likelihood = {
@@ -92,7 +88,7 @@ class TestFittingSequence(object):
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
                                   }
-        self.param_class = Param(kwargs_model, kwargs_constraints)
+        self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, **kwargs_likelihood)
         self.sampler = Sampler(likelihoodModule=self.Likelihood)
 

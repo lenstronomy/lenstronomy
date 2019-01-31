@@ -9,7 +9,8 @@ class LightModel(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, light_model_list, smoothing=0.0000001, 
+                 file_path=None, data_class=None):
         self.profile_type_list = light_model_list
         self.func_list = []
         for profile_type in light_model_list:
@@ -65,6 +66,11 @@ class LightModel(object):
             elif profile_type == 'DOUBLE_CHAMELEON':
                 from lenstronomy.LightModel.Profiles.chameleon import DoubleChameleon
                 self.func_list.append(DoubleChameleon())
+            elif profile_type == 'FROM_FILE':
+                if file_path is None or data_class is None:
+                    raise ValueError('Warning! You must provide the path to the FITS file and pixel size for profile of type', profile_type)
+                from lenstronomy.LightModel.Profiles.fromfile import FromFile
+                self.func_list.append(FromFile(file_path, data_class))
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
 

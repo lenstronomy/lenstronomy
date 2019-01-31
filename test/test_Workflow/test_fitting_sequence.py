@@ -89,8 +89,7 @@ class TestFittingSequence(object):
                               'additional_images_list': [False],
                               'fix_to_point_source_list': [False] * num_source_model,
                               'image_plane_source_list': [False] * num_source_model,
-                              'solver': False,
-                              'solver_type': 'PROFILE_SHEAR',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                              'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
                               }
 
         self.kwargs_likelihood = {'force_no_add_image': True,

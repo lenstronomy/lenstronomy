@@ -78,8 +78,7 @@ class Fitting(object):
                  kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                  kwargs_fixed_ps, kwargs_mean_ps, kwargs_sigma_ps,
                  kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
-                 threadCount=1, mpi=False, print_key='PSO', sigma_factor=1, compute_bool=None, fix_solver=False):
-    
+                 threadCount=1, mpi=False, print_key='PSO', sigma_factor=1, compute_bool=None):
         # initialise mcmc classes
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
@@ -87,7 +86,7 @@ class Fitting(object):
                             self._cosmo_lower,
                             self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
                             self._cosmo_upper,
-                            kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
+                            kwargs_lens_init=kwargs_mean_lens)
         init_pos = param_class.kwargs2args(kwargs_mean_lens, kwargs_mean_source, kwargs_mean_lens_light, kwargs_mean_ps,
                                            kwargs_mean_cosmo)
         sigma_start = param_class.kwargs2args(kwargs_sigma_lens, kwargs_sigma_source, kwargs_sigma_lens_light,
@@ -116,7 +115,7 @@ class Fitting(object):
                   kwargs_fixed_lens_light, kwargs_mean_lens_light, kwargs_sigma_lens_light,
                   kwargs_fixed_ps, kwargs_mean_ps, kwargs_sigma_ps,
                   kwargs_fixed_cosmo, kwargs_mean_cosmo, kwargs_sigma_cosmo,
-                  threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None, fix_solver=False):
+                  threadCount=1, mpi=False, init_samples=None, sigma_factor=1, compute_bool=None):
 
         param_class = Param(self.kwargs_model, self.kwargs_constraints, kwargs_fixed_lens, kwargs_fixed_source,
                             kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
@@ -124,7 +123,7 @@ class Fitting(object):
                             self._cosmo_lower,
                             self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper,
                             self._cosmo_upper,
-                            kwargs_lens_init=kwargs_mean_lens, fix_lens_solver=fix_solver)
+                            kwargs_lens_init=kwargs_mean_lens)
 
         # initialize ImSim() class
         kwargs_likelihood = copy.deepcopy(self.kwargs_likelihood)
@@ -167,8 +166,7 @@ class Fitting(object):
             kwargs_fixed_lens_light, kwargs_lens_light, kwargs_lens_light_sigma,
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             kwargs_fixed_cosmo, kwargs_cosmo, kwargs_cosmo_sigma,
-            threadCount=threadCount, mpi=mpi, print_key=print_key, sigma_factor=sigma_factor, compute_bool=compute_bool,
-            fix_solver=fix_lens)
+            threadCount=threadCount, mpi=mpi, print_key=print_key, sigma_factor=sigma_factor, compute_bool=compute_bool)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def mcmc_run(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo,
@@ -190,7 +188,7 @@ class Fitting(object):
             kwargs_fixed_ps, kwargs_ps, kwargs_ps_sigma,
             kwargs_fixed_cosmo, kwargs_cosmo, kwargs_cosmo_sigma,
             threadCount=threadCount, mpi=mpi, init_samples=init_samples, sigma_factor=sigma_factor,
-            compute_bool=compute_bool, fix_solver=fix_lens)
+            compute_bool=compute_bool)
         return samples, param_list, dist
 
 

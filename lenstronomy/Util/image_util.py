@@ -18,12 +18,28 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     :return: image with added layer, cut to original size
     """
 
-    num_x, num_y = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
     kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=order)
+    return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
+
+
+def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
+    """
+    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+    :param grid2d: 2d pixel grid (i.e. image)
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
+    :param kernel: the layer to be added to the image
+    :return: image with added layer
+    """
+
+    num_x, num_y = np.shape(grid2d)
+    x_int = int(round(x_pos))
+    y_int = int(round(y_pos))
+
     k_x, k_y = np.shape(kernel)
     k_l2_x = int((k_x - 1) / 2)
     k_l2_y = int((k_y - 1) / 2)
@@ -39,9 +55,8 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     max_yk = np.minimum(k_y, -y_int + k_l2_y + num_y)
     if min_x >= max_x or min_y >= max_y or min_xk >= max_xk or min_yk >= max_yk or (max_x-min_x != max_xk-min_xk) or (max_y-min_y != max_yk-min_yk):
         return grid2d
-    kernel_re_sized = kernel_shifted[min_yk:max_yk, min_xk:max_xk]
+    kernel_re_sized = kernel[min_yk:max_yk, min_xk:max_xk]
     new = grid2d.copy()
-
     new[min_y:max_y, min_x:max_x] += kernel_re_sized
     return new
 

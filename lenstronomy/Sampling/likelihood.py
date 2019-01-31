@@ -21,7 +21,8 @@ class LikelihoodModule(object):
                  point_source_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False, time_delays_measured=None,
-                 time_delays_uncertainties=None):
+                 time_delays_uncertainties=None, force_positive_source_surface_brightness=False, numPix_source=10,
+                 deltaPix_source=0.1):
         """
         initializing class
 
@@ -50,6 +51,12 @@ class LikelihoodModule(object):
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
         :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured
+        :param force_positive_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
+        and evaluates if all positions have positive flux
+        :param numPix_source: integer, number of source pixel squares when evaluating surface brightness when
+         force_positive_source_surface_brightness=True is set
+        :param deltaPix_source: integer, pixel spacing when evaluating surface brightness when
+         force_positive_source_surface_brightness=True is set
         """
 
         self.imSim = imSim_class
@@ -84,6 +91,9 @@ class LikelihoodModule(object):
         self._compute_bool = bands_compute
         if not len(self._compute_bool) == self._num_bands:
             raise ValueError('compute_bool statement has not the same range as number of bands available!')
+        self._force_positive_source_surface_brightness = force_positive_source_surface_brightness
+        self._numPix_source = numPix_source
+        self._deltaPix_source = deltaPix_source
 
     @property
     def param_limits(self):
@@ -107,11 +117,11 @@ class LikelihoodModule(object):
             logL += self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                            source_marg=self._source_marg, compute_bool=self._compute_bool)
         if self._point_source_likelihood is True:
-            logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, self._position_sigma)
+            logL += self.likelihood_image_pos(kwargs_lens, kwargs_ps, kwargs_cosmo, self._position_sigma)
         if self._time_delay_likelihood is True:
             logL += self.logL_delay(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if self._check_solver is True:
-            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, self._solver_tolerance)
+            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, kwargs_cosmo, self._solver_tolerance)
         if self._force_no_add_image:
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool is True:
@@ -124,16 +134,24 @@ class LikelihoodModule(object):
             bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
                 logL -= 10**10
+        if self._force_positive_source_surface_brightness is True and len(kwargs_source) > 0:
+            x, y = util.make_grid(numPix=self._numPix_source, deltapix=self._deltaPix_source)
+            x += kwargs_source[0].get('center_x', 0)
+            y += kwargs_source[0].get('center_y', 0)
+            flux = self.imSim.SourceModel.surface_brightness(x, y, kwargs_source)
+            if np.min(flux) < 0:
+                logL -= 10**10
+        self.imSim.reset_point_source_cache(bool=False)
         return logL, None
 
-    def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance):
+    def solver_penalty(self, kwargs_lens, kwargs_ps, kwargs_cosmo, tolerance):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
         :param kwargs_ps:
         :return: add penalty when solver does not find a solution
         """
-        dist = self.param.check_solver(kwargs_lens, kwargs_ps)
+        dist = self.param.check_solver(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if dist > tolerance:
             return dist * 10**10
         return 0
@@ -151,7 +169,7 @@ class LikelihoodModule(object):
         else:
             return False
 
-    def likelihood_image_pos(self, kwargs_lens, kwargs_ps, sigma):
+    def likelihood_image_pos(self, kwargs_lens, kwargs_ps, kwargs_cosmo, sigma):
         """
 
         :param x_lens_model: image position of lens model
@@ -168,11 +186,13 @@ class LikelihoodModule(object):
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
         ra_image_list, dec_image_list = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
         num_image = len(ra_image_list[0])
         if num_image != len(x_image):
             return -10**15
-        dist = util.min_square_dist(ra_image_list[0], dec_image_list[0], x_image, y_image)
-        logL = -np.sum(dist/sigma**2)/2
+        #dist = util.min_square_dist(x_pos, y_pos, x_image, y_image)
+        dist = ((x_pos - x_image)**2 + (y_pos - y_image)**2)/sigma**2/2
+        logL = -np.sum(dist)
         return logL
 
     def check_bounds(self, args, lowerLimit, upperLimit):
@@ -193,9 +213,12 @@ class LikelihoodModule(object):
         :param args:
         :return:
         """
-        delay_arcsec = self.imSim.fermat_potential(kwargs_lens, kwargs_ps)
+        x_pos, y_pos = self.imSim.image_positions(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        x_pos, y_pos = self.param.real_image_positions(x_pos[0], y_pos[0], kwargs_cosmo)
+        x_source, y_source = self.imSim.LensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        delay_arcsec = self.imSim.LensModel.fermat_potential(x_pos, y_pos, x_source, y_source, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']
-        delay_days = const.delay_arcsec2days(delay_arcsec[0], D_dt_model)
+        delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)
         return logL
 

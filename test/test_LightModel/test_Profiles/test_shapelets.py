@@ -80,6 +80,30 @@ class TestShapeletSet(object):
         flux_interp = shapeletsInterp.function(x, y, amp=1., n1=0, n2=0, beta=beta, center_x=0, center_y=0)
         npt.assert_almost_equal(flux_interp, flux_full, decimal=10)
 
+    def test_hermval(self):
+        x = np.linspace(0, 2000, 2001)
+        n_array = [1, 2, 3, 0, 1]
+        import numpy.polynomial.hermite as hermite
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        shape_true = out_true * np.exp(-x ** 2 / 2.)
+        shape_approx = out_approx * np.exp(-x ** 2 / 2.)
+        npt.assert_almost_equal(shape_approx, shape_true, decimal=6)
+
+        x = 2
+        n_array = [1, 2, 3, 0, 1]
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        npt.assert_almost_equal(out_approx, out_true, decimal=6)
+
+        x = 2001
+        n_array = [1, 2, 3, 0, 1]
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        shape_true = out_true * np.exp(-x**2/2.)
+        shape_approx = out_approx * np.exp(-x ** 2 / 2.)
+        npt.assert_almost_equal(shape_approx, shape_true, decimal=6)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -235,6 +235,22 @@ def test_rebin_image():
     assert sigma_bkg_resized == 0.2
     assert ra_coords_resized[0, 0] == -0.2
 
+    numPix = 11
+    bin_size = 2
+    image = np.ones((numPix, numPix))
+    wht_map = np.ones((numPix, numPix)) * 10
+    idex_mask = np.ones((numPix, numPix))
+    sigma_bkg = 0.1
+    ra_coords, dec_coords = util.make_grid(numPix, deltapix=0.05)
+    ra_coords = util.array2image(ra_coords)
+    dec_coords = util.array2image(dec_coords)
+    image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized = image_util.rebin_image(
+        bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask)
+    assert image_resized[0, 0] == 4
+    assert wht_map_resized[0, 0] == wht_map[0, 0]
+    assert sigma_bkg_resized == 0.2
+    npt.assert_almost_equal(ra_coords_resized[0, 0], -0.225, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main()

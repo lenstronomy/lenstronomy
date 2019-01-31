@@ -62,12 +62,13 @@ class TestLensProp(object):
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
         kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2}]
         kwargs_else = [{'ra_image': [-1, 0, 1], 'dec_image': [0, 0, 0]}]
-
-        lensProp = LensProp(z_lens, z_source, kwargs_options)
+        from astropy.cosmology import FlatLambdaCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensProp = LensProp(z_lens, z_source, kwargs_options, cosmo=cosmo)
         delays = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=0)
-        npt.assert_almost_equal(delays[0], -31.710641699405745, decimal=8)
+        npt.assert_almost_equal(delays[0], -31.387590264501007, decimal=8)
         npt.assert_almost_equal(delays[1], 0, decimal=8)
-        npt.assert_almost_equal(delays[2], -31.710641699405745, decimal=8)
+        npt.assert_almost_equal(delays[2], -31.387590264501007, decimal=8)
 
     def test_angular_diameter_relations(self):
         z_lens = 0.5

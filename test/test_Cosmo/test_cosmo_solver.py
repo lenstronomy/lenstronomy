@@ -16,8 +16,8 @@ class TestCompare(object):
         H0 = 70
         omega_m = 0.3
         Dd, Ds_Dds = self.solver.cosmo2Dd_Ds_Dds(H0, omega_m)
-        assert Dd == 908.1103885379476
-        assert Ds_Dds == 1.974997411415468
+        npt.assert_almost_equal(Dd, 908.1103885379476, decimal=5)
+        npt.assert_almost_equal(Ds_Dds, 1.974997411415468, decimal=5)
 
     def test_F(self):
         H0 = 70

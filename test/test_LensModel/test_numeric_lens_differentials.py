@@ -24,7 +24,7 @@ class TestNumerics(object):
         npt.assert_almost_equal(output_num, output, decimal=5)
 
     def test_gamma(self):
-        x, y = 1., 1.
+        x, y = 1., 2.
         output1, output2 = self.lensModel.gamma(x, y, self.kwargs)
         output1_num, output2_num = self.lensModelNum.gamma(x, y, self.kwargs)
         npt.assert_almost_equal(output1_num, output1, decimal=5)
@@ -217,9 +217,6 @@ class TestNumericsProfile(object):
     def test_cnfw(self):
         kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.3}
         lens_model = ['CNFW']
-        self.assert_differentials(lens_model, kwargs)
-
-        kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core': 1.3}
         self.assert_differentials(lens_model, kwargs)
 
 

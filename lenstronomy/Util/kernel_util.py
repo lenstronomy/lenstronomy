@@ -15,7 +15,7 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
 
     The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the
      pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
-     their shifted version with the input kernel.
+     its shifted version with the input kernel.
 
     :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid
     :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)
@@ -75,7 +75,7 @@ def kernel_norm(kernel):
     return kernel
 
 
-def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
+def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     """
     creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an
     iterative approach
@@ -106,29 +106,46 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=10):
     y_out = np.linspace(d_y_new/2., 1-d_y_new/2., ny_new)
     kernel_input = copy.deepcopy(kernel)
     kernel_subgrid = image_util.re_size_array(x_in, y_in, kernel_input, x_out, y_out)
-    norm_subgrid = np.sum(kernel_subgrid)
     kernel_subgrid = kernel_norm(kernel_subgrid)
     for i in range(max(num_iter, 1)):
+        # given a proposition, re-size it to original pixel size
         if subgrid_res % 2 == 0:
-            kernel_pixel = averaging_odd_kernel(kernel_subgrid, subgrid_res)
+            kernel_pixel = averaging_even_kernel(kernel_subgrid, subgrid_res)
         else:
             kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
-        kernel_pixel = kernel_norm(kernel_pixel)
         delta = kernel - kernel_pixel
-        delta_subgrid = image_util.re_size_array(x_in, y_in, delta, x_out, y_out)/norm_subgrid
-        kernel_subgrid += delta_subgrid
+        #plt.matshow(delta)
+        #plt.colorbar()
+        #plt.show()
+        temp_kernel = kernel_input + delta
+        kernel_subgrid = image_util.re_size_array(x_in, y_in, temp_kernel, x_out, y_out)#/norm_subgrid
         kernel_subgrid = kernel_norm(kernel_subgrid)
-    return kernel_subgrid
+        kernel_input = temp_kernel
+
+    #from scipy.ndimage import zoom
+
+    #ratio = subgrid_res
+    #kernel_subgrid = zoom(kernel, ratio, order=4) / ratio ** 2
+    #print(np.shape(kernel_subgrid))
+    # whatever has not been matched is added to zeroth order (in squares of the undersampled PSF)
+    if subgrid_res % 2 == 0:
+        return kernel_subgrid
+    kernel_pixel = util.averaging(kernel_subgrid, numGrid=nx_new, numPix=nx)
+    kernel_pixel = kernel_norm(kernel_pixel)
+    delta_kernel = kernel_pixel - kernel_norm(kernel)
+    id = np.ones((subgrid_res, subgrid_res))
+    delta_kernel_sub = np.kron(delta_kernel, id)/subgrid_res**2
+    return kernel_norm(kernel_subgrid - delta_kernel_sub)
 
 
-def averaging_odd_kernel(kernel_high_res, subgrid_res):
+def averaging_even_kernel(kernel_high_res, subgrid_res):
     """
     makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
     meant to be centered.
 
-    :param kernel_high_res:
-    :param subgrid_res:
-    :return:
+    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered
+    :param subgrid_res: subsampling resolution (even number)
+    :return: averaged undersampling kernel
     """
     n_high = len(kernel_high_res)
     n_low = int((n_high + 1) / subgrid_res)
@@ -146,7 +163,7 @@ def averaging_odd_kernel(kernel_high_res, subgrid_res):
     for i in range(subgrid_res - 1):
         kernel_low_res[:, 1:] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
         kernel_low_res[:, :-1] += kernel_high_res[i::subgrid_res, j::subgrid_res] / 2
-    # adding a quater of a pixel value that is at the boarder of four pixels
+    # adding a quarter of a pixel value that is at the boarder of four pixels
     i = subgrid_res - 1
     j = subgrid_res - 1
     kernel_edge = kernel_high_res[i::subgrid_res, j::subgrid_res]
@@ -196,7 +213,7 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
     :param subgrid_res:
     :return: convolution kernel for an extended pixel
     """
-    kernel_subgrid = subgrid_kernel(point_source_kernel, subgrid_res)
+    kernel_subgrid = subgrid_kernel(point_source_kernel, subgrid_res, num_iter=10)
     kernel_size = len(point_source_kernel)
     kernel_pixel = np.zeros((kernel_size*subgrid_res, kernel_size*subgrid_res))
     for i in range(subgrid_res):

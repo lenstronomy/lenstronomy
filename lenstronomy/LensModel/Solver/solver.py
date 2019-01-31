@@ -9,7 +9,7 @@ class Solver(object):
 
     """
 
-    def __init__(self, solver_type, lensModel, num_images=0):
+    def __init__(self, solver_type, lensModel, num_images):
         """
 
         :param solver_type: string, option for specific solver type
@@ -36,24 +36,24 @@ class Solver(object):
         """
         return self._solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)
 
-    def update_solver(self, kwargs_lens, kwargs_ps):
-        x_, y_ = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        if not len(x_) == self._num_images:
+    def update_solver(self, kwargs_lens, x_pos, y_pos):
+
+        if not len(x_pos) == self._num_images:
             raise ValueError("Point source number %s must be as specified by the solver with number of images %s" %
-                             (len(x_), self._num_images))
-        kwargs_lens, precision = self.constraint_lensmodel(x_, y_, kwargs_lens)
+                             (len(x_pos), self._num_images))
+        kwargs_lens, precision = self.constraint_lensmodel(x_pos, y_pos, kwargs_lens)
         return kwargs_lens
 
-    def check_solver(self, kwargs_lens, kwargs_ps):
+    def check_solver(self, image_x, image_y, kwargs_lens):
         """
         returns the precision of the solver to match the image position
 
         :param kwargs_lens: full lens model (including solved parameters)
-        :param kwargs_ps: point source keyword arguments
+        :param image_x: point source in image
+        :param image_y: point source in image
         :return: precision of Euclidean distances between the different rays arriving at the image positions
         """
-        ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-        source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
+        source_x, source_y = self._lensModel.ray_shooting(image_x, image_y, kwargs_lens)
         dist = np.sqrt((source_x - source_x[0]) ** 2 + (source_y - source_y[0]) ** 2)
         return dist
 

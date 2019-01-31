@@ -102,6 +102,18 @@ You can find simple examle notebooks for various cases.
 * `Mock generation of realistic images with substructure in the lens <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/substructure_challenge_mock_production.ipynb>`_
 
 
+Mailing list
+------------
+
+You can join the **lenstronomy** mailing list by signing up on the
+`google groups page <https://groups.google.com/forum/#!forum/lenstronomy>`_.
+
+The email list is meant to provide a communication platform between users and developers. You can ask questions,
+and suggest new features. New releases will be announced via this mailing list.
+
+If you encounter errors or problems with **lenstronomy**, please let us know!
+
+
 Shapelet reconstruction demonstration movies
 --------------------------------------------
 

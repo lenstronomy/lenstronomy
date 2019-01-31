@@ -18,12 +18,28 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     :return: image with added layer, cut to original size
     """
 
-    num_x, num_y = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
     kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=order)
+    return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
+
+
+def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
+    """
+    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+    :param grid2d: 2d pixel grid (i.e. image)
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
+    :param kernel: the layer to be added to the image
+    :return: image with added layer
+    """
+
+    num_x, num_y = np.shape(grid2d)
+    x_int = int(round(x_pos))
+    y_int = int(round(y_pos))
+
     k_x, k_y = np.shape(kernel)
     k_l2_x = int((k_x - 1) / 2)
     k_l2_y = int((k_y - 1) / 2)
@@ -39,9 +55,8 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     max_yk = np.minimum(k_y, -y_int + k_l2_y + num_y)
     if min_x >= max_x or min_y >= max_y or min_xk >= max_xk or min_yk >= max_yk or (max_x-min_x != max_xk-min_xk) or (max_y-min_y != max_yk-min_yk):
         return grid2d
-    kernel_re_sized = kernel_shifted[min_yk:max_yk, min_xk:max_xk]
+    kernel_re_sized = kernel[min_yk:max_yk, min_xk:max_xk]
     new = grid2d.copy()
-
     new[min_y:max_y, min_x:max_x] += kernel_re_sized
     return new
 
@@ -189,16 +204,19 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :return:
     """
     numPix = int(len(image)/bin_size)
-    factor = len(image)/numPix
-    if not numPix == len(image)/bin_size:
-        raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
-    image_resized = re_size(image, factor)
+    numPix_precut = numPix * bin_size
+    factor = int(len(image)/numPix)
+    if not numPix * bin_size == len(image):
+        image_precut = image[0:numPix_precut, 0:numPix_precut]
+    else:
+        image_precut = image
+    image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
-    wht_map_resized = re_size(wht_map, factor)
+    wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
     sigma_bkg_resized = bin_size*sigma_bkg
-    ra_coords_resized = re_size(ra_coords, factor)
-    dec_coords_resized = re_size(dec_coords, factor)
-    idex_mask_resized = re_size(idex_mask, factor)
+    ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
+    dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
+    idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
 

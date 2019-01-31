@@ -1,4 +1,5 @@
 import numpy as np
+import lenstronomy.Util.util as util
 
 
 def mask_center_2d(center_x, center_y, r, x, y):
@@ -36,6 +37,27 @@ def mask_sphere(x, y, center_x, center_y, r):
     mask[R <= r] = 1
     return mask
 
+
+def mask_ellipse(x, y, center_x, center_y, a, b, angle):
+    """
+
+    :param x: x-coordinates of pixels
+    :param y: y-coordinates of pixels
+    :param center_x: center of mask
+    :param center_y: center of mask
+    :param a: major axis
+    :param b: minor axis
+    :param angle: angle of major axis
+    :return: mask (list of zeros and ones)
+    """
+    x_shift = x - center_x
+    y_shift = y - center_y
+    x_rot, y_rot = util.rotate(x_shift, y_shift, angle)
+    r_ab = x_rot**2 / a**2 + y_rot**2 / b**2
+    mask = np.empty_like(r_ab)
+    mask[r_ab > 1] = 0
+    mask[r_ab <= 1] = 1
+    return mask
 
 def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np.pi):
     """

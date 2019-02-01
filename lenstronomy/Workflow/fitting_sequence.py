@@ -20,6 +20,7 @@ class FittingSequence(object):
         self._mpi = mpi
         self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+        self._mcmc_init_samples = None
 
     def fit_sequence(self, fitting_list):
         """
@@ -48,7 +49,12 @@ class FittingSequence(object):
                 chain_list.append(chain)
                 param_list.append(param)
             elif fitting_type == 'MCMC':
+                if not 'init_samples' in kwargs:
+                    kwargs['init_samples'] = self._mcmc_init_samples
+                elif kwargs['init_samples'] is None:
+                    kwargs['init_samples'] = self._mcmc_init_samples
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
+                self._mcmc_init_samples = samples_mcmc
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
@@ -69,7 +75,7 @@ class FittingSequence(object):
             lens_temp, source_temp = self._lens_temp, self._source_temp
         return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp
 
-    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None):
+    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True):
         """
         MCMC routine
 
@@ -79,6 +85,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
+        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.
+        Otherwise starts from scratch.
         :return: MCMC samples, parameter names, logL distances of all samples
         """
 
@@ -96,8 +104,16 @@ class FittingSequence(object):
         sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
         num_param, param_list = param_class.num_param()
         # run MCMC
-        if not init_samples is None:
-            initpos = ReusePositionGenerator(init_samples)
+        if not init_samples is None and re_use_samples is True:
+            print("test that you are here!")
+            num_samples, num_param_prev = np.shape(init_samples)
+            print(num_samples, num_param_prev, num_param, 'shape of init_sample')
+            if num_param_prev == num_param:
+                print("re-using previous samples to initialize the next MCMC run.")
+                initpos = ReusePositionGenerator(init_samples)
+            else:
+                print("Can not re-use previous MCMC samples due to change in option")
+                initpos = None
         else:
             initpos = None
         samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,

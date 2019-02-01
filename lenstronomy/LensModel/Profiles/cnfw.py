@@ -196,12 +196,13 @@ class CNFW(object):
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
-        :param rho0: density normalization (characteristic density)
+        :param rho0: density normalization (central core density)
         :type rho0: float
         :return: rho(R) density
         """
 
-        return rho0 * ((r_core + R)*(R + Rs)**2) ** -1
+        M0 = 4*np.pi*rho0 * Rs ** 3
+        return (M0/4/np.pi) * ((r_core + R)*(R + Rs)**2) ** -1
 
     def density_2d(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
         """

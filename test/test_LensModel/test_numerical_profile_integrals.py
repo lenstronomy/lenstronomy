@@ -158,7 +158,7 @@ class TestNumerics(object):
     def test_coreBurk(self):
 
         from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert as Model
-        kwargs = {'rho0': 1., 'Rs': 9, 'r_core': 3}
+        kwargs = {'rho0': 1., 'Rs': 10, 'r_core': 5}
         self.assert_integrals(Model, kwargs)
 
         kwargs = {'rho0': 1., 'Rs': 9, 'r_core': 11}
@@ -167,10 +167,7 @@ class TestNumerics(object):
     def test_cnfw(self):
 
         from lenstronomy.LensModel.Profiles.cnfw import CNFW as Model
-        kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 0.4}
-        self.assert_integrals(Model, kwargs)
-
-        kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 1.8}
+        kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 0.5}
         self.assert_integrals(Model, kwargs)
 
 

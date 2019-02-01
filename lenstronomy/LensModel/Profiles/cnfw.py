@@ -329,7 +329,7 @@ class CNFW(object):
 
         b = r_core * Rs ** -1
 
-        gx = self._G(1, b)
+        gx = self._G(1., b)
 
         rho0 = theta_Rs * (4 * Rs ** 2 * gx) ** -1
 
@@ -338,7 +338,7 @@ class CNFW(object):
     def _rho2alpha(self, rho0=None, Rs=None, r_core=None):
 
         b = r_core * Rs ** -1
-        gx = self._G(1, b)
+        gx = self._G(1., b)
         alpha = 4*Rs ** 2*gx*rho0
 
         return alpha

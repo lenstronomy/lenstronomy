@@ -147,6 +147,7 @@ class LensCosmo(object):
     def nfw_angle2physical(self, Rs_angle, theta_Rs):
         """
         converts the angular parameters into the physical ones for an NFW profile
+
         :param theta_Rs: observed bending angle at the scale radius in units of arcsec
         :param Rs: scale radius in units of arcsec
         :return: M200, r200, Rs_physical, c
@@ -164,7 +165,7 @@ class LensCosmo(object):
         """
         converts the physical mass and concentration parameter of an NFW profile into the lensing quantities
 
-        :param M: mass enclosed 200 \rho_crit
+        :param M: mass enclosed 200 rho_crit
         :param c: NFW concentration parameter (r200/r_s)
         :return: theta_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
         """

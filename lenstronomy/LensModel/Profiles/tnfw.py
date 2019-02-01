@@ -180,7 +180,7 @@ class TNFW(object):
 
     def nfwPot(self, R, Rs, rho0, r_trunc):
         """
-        lensing potential of NFW profile (*Sigma_crit*D_OL**2)
+        lensing potential of NFW profile
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -197,7 +197,7 @@ class TNFW(object):
 
     def nfwAlpha(self, R, Rs, rho0, r_trunc, ax_x, ax_y):
         """
-        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate 'axis'
+        deflection angel of NFW profile along the projection to coordinate axis
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -316,7 +316,6 @@ class TNFW(object):
         return tau ** 2 * (tau ** 2 + 1) ** -2 * (
                 (tau ** 2 + 1 + 2 * (x ** 2 - 1)) * self.F(x) + tau * np.pi + (tau ** 2 - 1) * np.log(tau) +
                 np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self.L(x, tau) * (tau ** 2 - 1) * tau ** -1))
-
 
     def _h(self, X, tau):
 

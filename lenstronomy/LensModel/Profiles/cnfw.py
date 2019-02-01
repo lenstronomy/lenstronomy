@@ -246,7 +246,7 @@ class CNFW(object):
 
     def cnfwAlpha(self, R, Rs, rho0, r_core, ax_x, ax_y):
         """
-        deflection angel of NFW profile (*Sigma_crit*D_OL) along the projection to coordinate 'axis'
+        deflection angel of NFW profile along the projection to coordinate axis
 
         :param R: radius of interest
         :type R: float/numpy array

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,7 +56,7 @@
 
 <span class="sd">    The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the</span>
 <span class="sd">     pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare</span>
-<span class="sd">     their shifted version with the input kernel.</span>
+<span class="sd">     its shifted version with the input kernel.</span>
 
 <span class="sd">    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid</span>
 <span class="sd">    :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)</span>
@@ -116,7 +116,7 @@
     <span class="k">return</span> <span class="n">kernel</span></div>
 
 
-<div class="viewcode-block" id="subgrid_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.subgrid_kernel">[docs]</a><span class="k">def</span> <span class="nf">subgrid_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="subgrid_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.subgrid_kernel">[docs]</a><span class="k">def</span> <span class="nf">subgrid_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an</span>
 <span class="sd">    iterative approach</span>
@@ -147,29 +147,46 @@
     <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">d_y_new</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">d_y_new</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">ny_new</span><span class="p">)</span>
     <span class="n">kernel_input</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">kernel_input</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span>
-    <span class="n">norm_subgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
     <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="c1"># given a proposition, re-size it to original pixel size</span>
         <span class="k">if</span> <span class="n">subgrid_res</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">averaging_odd_kernel</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
+            <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">averaging_even_kernel</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">nx_new</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">nx</span><span class="p">)</span>
-        <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">kernel</span> <span class="o">-</span> <span class="n">kernel_pixel</span>
-        <span class="n">delta_subgrid</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span><span class="o">/</span><span class="n">norm_subgrid</span>
-        <span class="n">kernel_subgrid</span> <span class="o">+=</span> <span class="n">delta_subgrid</span>
+        <span class="c1">#plt.matshow(delta)</span>
+        <span class="c1">#plt.colorbar()</span>
+        <span class="c1">#plt.show()</span>
+        <span class="n">temp_kernel</span> <span class="o">=</span> <span class="n">kernel_input</span> <span class="o">+</span> <span class="n">delta</span>
+        <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">temp_kernel</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span><span class="c1">#/norm_subgrid</span>
         <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">kernel_subgrid</span></div>
+        <span class="n">kernel_input</span> <span class="o">=</span> <span class="n">temp_kernel</span>
+
+    <span class="c1">#from scipy.ndimage import zoom</span>
+
+    <span class="c1">#ratio = subgrid_res</span>
+    <span class="c1">#kernel_subgrid = zoom(kernel, ratio, order=4) / ratio ** 2</span>
+    <span class="c1">#print(np.shape(kernel_subgrid))</span>
+    <span class="c1"># whatever has not been matched is added to zeroth order (in squares of the undersampled PSF)</span>
+    <span class="k">if</span> <span class="n">subgrid_res</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">kernel_subgrid</span>
+    <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">nx_new</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">nx</span><span class="p">)</span>
+    <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">)</span>
+    <span class="n">delta_kernel</span> <span class="o">=</span> <span class="n">kernel_pixel</span> <span class="o">-</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">))</span>
+    <span class="n">delta_kernel_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">delta_kernel</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span><span class="o">/</span><span class="n">subgrid_res</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span> <span class="o">-</span> <span class="n">delta_kernel_sub</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="averaging_odd_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.averaging_odd_kernel">[docs]</a><span class="k">def</span> <span class="nf">averaging_odd_kernel</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+<div class="viewcode-block" id="averaging_even_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.averaging_even_kernel">[docs]</a><span class="k">def</span> <span class="nf">averaging_even_kernel</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both</span>
 <span class="sd">    meant to be centered.</span>
 
-<span class="sd">    :param kernel_high_res:</span>
-<span class="sd">    :param subgrid_res:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param kernel_high_res: high resolution kernel with even subsampling resolution, centered</span>
+<span class="sd">    :param subgrid_res: subsampling resolution (even number)</span>
+<span class="sd">    :return: averaged undersampling kernel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">)</span>
     <span class="n">n_low</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_high</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">subgrid_res</span><span class="p">)</span>
@@ -187,7 +204,7 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">kernel_low_res</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">kernel_high_res</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">kernel_low_res</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">kernel_high_res</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="c1"># adding a quater of a pixel value that is at the boarder of four pixels</span>
+    <span class="c1"># adding a quarter of a pixel value that is at the boarder of four pixels</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="n">j</span> <span class="o">=</span> <span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="n">kernel_edge</span> <span class="o">=</span> <span class="n">kernel_high_res</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="n">subgrid_res</span><span class="p">]</span>
@@ -237,7 +254,7 @@
 <span class="sd">    :param subgrid_res:</span>
 <span class="sd">    :return: convolution kernel for an extended pixel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">subgrid_kernel</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
+    <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">subgrid_kernel</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
     <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">)</span>
     <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernel_size</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">):</span>
@@ -407,7 +424,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

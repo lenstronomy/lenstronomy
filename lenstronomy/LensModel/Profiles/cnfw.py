@@ -4,6 +4,7 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
 import warnings
 
+
 class CNFW(object):
     """
     this class computes the lensing quantities of a cored NFW profile:
@@ -267,6 +268,7 @@ class CNFW(object):
 
         x = R / Rs
         b = r_core * Rs ** -1
+        b = max(b, 0.000001)
         gx = self._G(x, b)
 
         a = 4*rho0*Rs*gx/x**2
@@ -296,6 +298,7 @@ class CNFW(object):
             R[R <= c] = c
         x = R * Rs ** -1
         b = r_core * Rs ** -1
+        b = max(b, c)
         gx = self._G(x, b)
         Fx = self._F(x, b)
         a = 2 * rho0 * Rs * (2 * gx / x ** 2 - Fx)  # /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
@@ -313,7 +316,8 @@ class CNFW(object):
 
         x = R / Rs
         b = r_core / Rs
-        gx = self._G(x,b)
+        b = max(b, 0.000001)
+        gx = self._G(x, b)
 
         #m_2d = 4 * np.pi* rho0 * Rs**3 * gx
 

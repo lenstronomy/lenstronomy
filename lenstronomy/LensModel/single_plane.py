@@ -79,6 +79,7 @@ class SinglePlane(object):
                 self.func_list.append(TNFW())
             elif lens_type == 'CNFW':
                 from lenstronomy.LensModel.Profiles.cnfw import CNFW
+                self.func_list.append(CNFW())
             elif lens_type == 'SERSIC':
                 from lenstronomy.LensModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic())
@@ -135,9 +136,6 @@ class SinglePlane(object):
             elif lens_type == 'coreBURKERT':
                 from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
                 self.func_list.append(coreBurkert())
-            elif lens_type == 'CNFW':
-                from lenstronomy.LensModel.Profiles.cnfw import CNFW
-                self.func_list.append(CNFW())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
 

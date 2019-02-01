@@ -43,7 +43,7 @@ class ImageModel(object):
         self.LensLightModel = lens_light_model_class
         self.num_bands = 1
 
-    def reset_point_source_cache(self):
+    def reset_point_source_cache(self, bool=True):
         """
         deletes all the cache in the point source class and saves it from then on
 
@@ -51,7 +51,7 @@ class ImageModel(object):
         """
         if self.PointSource is not None:
             self.PointSource.delete_lens_model_cach()
-            self.PointSource.set_save_cache(True)
+            self.PointSource.set_save_cache(bool)
 
     def update_data(self, data_class):
         """

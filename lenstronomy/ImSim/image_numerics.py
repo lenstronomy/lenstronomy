@@ -2,6 +2,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.kernel_util as kernel_util
+import scipy.ndimage.interpolation as interp
 
 
 class ImageNumerics(object):
@@ -63,7 +64,8 @@ class ImageNumerics(object):
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
         self._point_source_subgrid = point_source_subgrid
         if self._point_source_subgrid % 2 == 0:
-            raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
+            if self._point_source_subgrid % 2 == 0 and psf._point_source_subsampling_factor != self._point_source_subgrid:
+                raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
         self._subsampling_size = subsampling_size
 
     @property

@@ -56,13 +56,17 @@ class PSF(object):
             self._truncation = kwargs_psf.get('truncation', 5 * self._fwhm)
             if 'pixel_size' in kwargs_psf:
                 self._pixel_size = kwargs_psf['pixel_size']
+            self._point_source_subsampling_factor = kwargs_psf.get('point_source_subsampling_factor', 1)
         elif self.psf_type == 'PIXEL':
             if 'kernel_point_source_subsampled' in kwargs_psf:
                 self._kernel_point_source_subsampled = kwargs_psf['kernel_point_source_subsampled']
                 n_high = len(self._kernel_point_source_subsampled)
                 self._point_source_subsampling_factor = kwargs_psf['point_source_subsampling_factor']
                 numPix = int(n_high / self._point_source_subsampling_factor)
-                self._kernel_point_source = util.averaging(self._kernel_point_source_subsampled, numGrid=n_high, numPix=numPix)
+                if self._point_source_subsampling_factor % 2 == 0:
+                    self._kernel_point_source = kernel_util.averaging_even_kernel(self._kernel_point_source_subsampled, self._point_source_subsampling_factor)
+                else:
+                    self._kernel_point_source = util.averaging(self._kernel_point_source_subsampled, numGrid=n_high, numPix=numPix)
             else:
                 self._kernel_point_source = kwargs_psf['kernel_point_source']
             if 'kernel_pixel_subsampled' in kwargs_psf:
@@ -84,8 +88,9 @@ class PSF(object):
             raise ValueError("psf_type %s not supported!" % self.psf_type)
         if 'psf_error_map' in kwargs_psf:
             self._psf_error_map = kwargs_psf['psf_error_map']
-            if len(self._psf_error_map) != len(self._kernel_point_source):
-                raise ValueError('psf_error_map must have same size as kernel_point_source!')
+            if self.psf_type == 'PIXEL':
+                if len(self._psf_error_map) != len(self._kernel_point_source):
+                    raise ValueError('psf_error_map must have same size as kernel_point_source!')
 
     @property
     def kernel_point_source(self):
@@ -140,15 +145,21 @@ class PSF(object):
         if hasattr(self, '_kernel_point_source_subsampled') and self._point_source_subsampling_factor == subgrid_res:
             pass
         else:
-            kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True, num_iter=5)
-            n = len(self.kernel_point_source)
-            n_new = n * subgrid_res
-            if n_new % 2 == 0:
-                n_new -= 1
-            if hasattr(self, '_kernel_point_source_subsampled'):
-                print("Warning: subsampled point source kernel overwritten due to different subsampling size requested.")
-            self._kernel_point_source_subsampled = kernel_util.cut_psf(kernel, psf_size=n_new)
-            self._point_source_subsampling_factor = subgrid_res
+            if self.psf_type == 'GAUSSIAN':
+                kernel_numPix = self._truncation / self._pixel_size * subgrid_res
+                if kernel_numPix % 2 == 0:
+                    kernel_numPix += 1
+                self._kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size/subgrid_res, self._fwhm)
+            elif self.psf_type == 'PIXEL':
+                kernel = kernel_util.subgrid_kernel(self.kernel_point_source, subgrid_res, odd=True, num_iter=5)
+                n = len(self.kernel_point_source)
+                n_new = n * subgrid_res
+                if n_new % 2 == 0:
+                    n_new -= 1
+                if hasattr(self, '_kernel_point_source_subsampled'):
+                    print("Warning: subsampled point source kernel overwritten due to different subsampling size requested.")
+                self._kernel_point_source_subsampled = kernel_util.cut_psf(kernel, psf_size=n_new)
+                self._point_source_subsampling_factor = subgrid_res
         return self._kernel_point_source_subsampled
 
     def set_pixel_size(self, deltaPix):

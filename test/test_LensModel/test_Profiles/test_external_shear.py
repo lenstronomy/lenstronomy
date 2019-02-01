@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 
 from lenstronomy.LensModel.Profiles.shear import Shear
+from lenstronomy.LensModel.lens_model import LensModel
 
 import numpy as np
 import numpy.testing as npt
@@ -49,6 +50,7 @@ class TestExternalShear(object):
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
+
         f_xx, f_yy, f_xy = self.extShear.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0.1, decimal=5)
         npt.assert_almost_equal(f_yy, -0.1, decimal=5)
@@ -60,6 +62,13 @@ class TestExternalShear(object):
         npt.assert_almost_equal(values[0], 0.1, decimal=5)
         npt.assert_almost_equal(values[1], -0.1, decimal=5)
         npt.assert_almost_equal(values[2], 0.1, decimal=5)
+
+        e1, e2 = 0.1, -0.1
+        kwargs = {'e1': e1, 'e2': e2}
+        lensModel = LensModel(['SHEAR'])
+        gamma1, gamma2 = lensModel.gamma(x, y, [kwargs])
+        npt.assert_almost_equal(gamma1, e1, decimal=9)
+        npt.assert_almost_equal(gamma2, e2, decimal=9)
 
 
 if __name__ == '__main__':

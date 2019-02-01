@@ -14,6 +14,9 @@ class MultiFrame(MultiDataBase):
     class to model multiple patches of the sky simultaneous (e.g. multiple images in a cluster) with different lens models
     for each frame but with shared light components (source and lens)
 
+    multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_model_list], [...], ...]
+    idex_lens_model_list: list of index in order of lerns_model_list to be evaluated by the data frame. idex_lens_model_list = [0, 1, 2]
+
     """
     def __init__(self, multi_band_list, lens_model_list=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):

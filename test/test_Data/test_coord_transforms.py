@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
+import numpy.linalg as linalg
 
 from lenstronomy.Data.coord_transforms import Coordinates
-import lenstronomy.Util.util as util
 
 
 class TestCoordinates(object):
@@ -108,6 +108,19 @@ class TestCoordinates(object):
         ra, dec = coords.map_pix2coord(x_pos, y_pos)
         npt.assert_almost_equal(ra_grid[int(y_pos), int(x_pos)], ra, decimal=8)
         npt.assert_almost_equal(dec_grid[int(y_pos), int(x_pos)], dec, decimal=8)
+
+    def test_xy_at_radec_0(self):
+        deltaPix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        ra_0 = 1.
+        dec_0 = 1.
+        coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
+        x_at_radec_0, y_at_radec_0 = coords.xy_at_radec_0
+        npt.assert_almost_equal(x_at_radec_0, -20, decimal=8)
+        npt.assert_almost_equal(x_at_radec_0, -20, decimal=8)
+        Ma2pix_ = coords.transform_angle2pix
+        Ma2pix = linalg.inv(coords._Mpix2a)
+        npt.assert_almost_equal(Ma2pix, Ma2pix_, decimal=8)
 
 
 if __name__ == '__main__':

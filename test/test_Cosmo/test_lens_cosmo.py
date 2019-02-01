@@ -29,23 +29,23 @@ class TestLensCosmo(object):
     def test_arcsec2phys(self):
         arcsec = np.array([1, 2]) # pixel coordinate from center
         physcoord = self.lensCosmo.arcsec2phys_lens(arcsec)
-        assert physcoord[0] == 0.0075083362428338641
-        assert physcoord[1] == 0.015016672485667728
+        npt.assert_almost_equal(physcoord[0], 0.0075083362428338641, decimal=8)
+        npt.assert_almost_equal(physcoord[1], 0.015016672485667728, decimal=8)
 
         physcoord = self.lensCosmo.arcsec2phys_source(arcsec)
-        assert physcoord[0] == 0.007703308130864105
-        assert physcoord[1] == 0.01540661626172821
+        npt.assert_almost_equal(physcoord[0], 0.007703308130864105, decimal=8)
+        npt.assert_almost_equal(physcoord[1], 0.01540661626172821, decimal=8)
 
     def test_phys2arcsec_lens(self):
         phys = 1.
         arc_sec = self.lensCosmo.phys2arcsec_lens(phys)
         phys_new = self.lensCosmo.arcsec2phys_lens(arc_sec)
-        assert phys_new == phys
+        npt.assert_almost_equal(phys_new, phys, decimal=8)
 
     def test_mass_in_phi_E(self):
         phi_E = 1.5
         mass = self.lensCosmo.mass_in_theta_E(phi_E)
-        assert mass == 761967261292.6725
+        npt.assert_almost_equal(mass, 761967261292.6725, decimal=2)
 
     def test_kappa2proj_mass(self):
         kappa = 0.5
@@ -59,7 +59,7 @@ class TestLensCosmo(object):
 
     def test_D_dt_model(self):
         D_dt = self.lensCosmo.D_dt
-        assert D_dt == 4965.660384441859
+        npt.assert_almost_equal(D_dt, 4965.660384441859, decimal=8)
 
     def test_nfw_angle2physical(self):
         Rs_angle = 6.
@@ -88,19 +88,19 @@ class TestFlatLCDM(object):
 
     def test_D_d(self):
         D_d = self.cosmo.D_d(H_0=70, Om0=0.3)
-        assert D_d == 1259.0835972889377
+        npt.assert_almost_equal(D_d, 1259.0835972889377, decimal=8)
 
     def test_D_s(self):
         D_s = self.cosmo.D_s(H_0=70, Om0=0.3)
-        assert D_s == 1745.5423064934419
+        npt.assert_almost_equal(D_s, 1745.5423064934419, decimal=8)
 
     def test_D_ds(self):
         D_ds = self.cosmo.D_ds(H_0=70, Om0=0.3)
-        assert D_ds == 990.0921481200791
+        npt.assert_almost_equal(D_ds, 990.0921481200791, decimal=8)
 
     def test_D_dt(self):
         D_dt = self.cosmo.D_dt(H_0=70, Om0=0.3)
-        assert D_dt == 3329.665360925441
+        npt.assert_almost_equal(D_dt, 3329.665360925441, decimal=8)
 
 
 if __name__ == '__main__':

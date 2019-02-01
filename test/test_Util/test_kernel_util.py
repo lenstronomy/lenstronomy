@@ -207,7 +207,7 @@ def test_pixel_kernel():
     assert pixel_kernel[4, 4] == kernel[4, 4]
 
     pixel_kernel = kernel_util.pixel_kernel(point_source_kernel=kernel, subgrid_res=11)
-    npt.assert_almost_equal(pixel_kernel[4, 4], 0.7438187859168478, decimal=3)
+    npt.assert_almost_equal(pixel_kernel[4, 4], 0.65841, decimal=3)
 
 
 def test_split_kernel():

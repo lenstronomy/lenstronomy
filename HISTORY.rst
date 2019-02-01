@@ -72,3 +72,10 @@ History
 * various multi-band modelling frameworks added
 * lens models added
 * Improved fitting sequence, solver and psf iteration
+
+0.5.0 (2019-1-30)
++++++++++++++++++
+* Workflow module redesign
+* improved parameter handling
+* improved PSF subsampling module
+* relative astrometric precision of point sources implemented

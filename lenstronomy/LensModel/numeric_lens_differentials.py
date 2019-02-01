@@ -25,7 +25,7 @@ class NumericLens(LensModel):
         :return: gamma1, gamma2
         """
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, diff=diff)
-        gamma1 = 1./2 * (f_yy - f_xx)
+        gamma1 = 1./2 * (f_xx - f_yy)
         gamma2 = f_xy
         return gamma1, gamma2
 

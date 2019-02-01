@@ -193,6 +193,8 @@ class LikelihoodModule(object):
         #dist = util.min_square_dist(x_pos, y_pos, x_image, y_image)
         dist = ((x_pos - x_image)**2 + (y_pos - y_image)**2)/sigma**2/2
         logL = -np.sum(dist)
+        if np.isnan(logL) is True:
+            return -10 ** 15
         return logL
 
     def check_bounds(self, args, lowerLimit, upperLimit):

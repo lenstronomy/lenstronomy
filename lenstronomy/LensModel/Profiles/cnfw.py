@@ -113,7 +113,7 @@ class CNFW(object):
 
         return output
 
-    def _G(self, X, b, c=0.0001):
+    def _G(self, X, b, c=0.00000001):
         """
 
         analytic solution of integral for NFW profile to compute deflection angel and gamma
@@ -157,7 +157,7 @@ class CNFW(object):
 
             return 0.5 * output
 
-    def derivatives(self, x, y, Rs=None, theta_Rs=None, r_core=None, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
 
         rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0000001:

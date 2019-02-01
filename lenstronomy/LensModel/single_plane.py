@@ -16,6 +16,7 @@ class SinglePlane(object):
         :param lens_model_list: list of strings with lens model names
         :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
         """
+
         self.func_list = []
         self._foreground_shear = False
         for i, lens_type in enumerate(lens_model_list):
@@ -134,6 +135,9 @@ class SinglePlane(object):
             elif lens_type == 'coreBURKERT':
                 from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
                 self.func_list.append(coreBurkert())
+            elif lens_type == 'CNFW':
+                from lenstronomy.LensModel.Profiles.cnfw import CNFW
+                self.func_list.append(CNFW())
             else:
                 raise ValueError('%s is not a valid lens model' % lens_type)
 
@@ -194,6 +198,7 @@ class SinglePlane(object):
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
+
         """
         deflection angles
         :param x: x-position (preferentially arcsec)

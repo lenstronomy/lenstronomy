@@ -30,9 +30,9 @@ class Testcnfw(object):
 
     def test_derivatives(self):
 
-        Rs = 10
-        rho0 = 1
-        r_core = 7
+        Rs = 10.
+        rho0 = 1.
+        r_core = 7.
 
         R = np.linspace(0.1*Rs, 4*Rs, 1000)
 
@@ -48,7 +48,7 @@ class Testcnfw(object):
 
     def test_mproj(self):
 
-        Rs = 10
+        Rs = 10.
         r_core = 0.7*Rs
         Rmax = np.linspace(0.6*Rs, 1.1*Rs, 1000)
         dr = Rmax[1] - Rmax[0]
@@ -74,8 +74,8 @@ class Testcnfw(object):
 
     def test_gamma(self):
 
-        Rs = 10
-        rho0 = 1
+        Rs = 10.
+        rho0 = 1.
         r_core = 0.7*Rs
 
         R = np.array([0.5*Rs, 0.8*Rs, 1.1*Rs])
@@ -99,6 +99,7 @@ class Testcnfw(object):
 
         rho0_2 = self.cn._alpha2rho0(theta_Rs, Rs, r_core)
         npt.assert_almost_equal(rho0, rho0_2)
+
 
 if __name__ == '__main__':
     pytest.main()

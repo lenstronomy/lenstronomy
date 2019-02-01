@@ -137,8 +137,7 @@ class CNFW(object):
             inds1 = np.where(np.absolute(X - b) <= c)
             inds2 = np.where(np.absolute(X - b) > c)
 
-            output[inds1] = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + \
-                            fac * (-1.38692 + np.log(b2)) - b2*np.log(b2))
+            output[inds1] = prefac * (2*(1-2*b+b**3)*self._nfw_func(b) + fac * (-1.38692 + np.log(b2)) - b2*np.log(b2))
 
             output[inds2] = prefac * (fac * np.log(0.25 * x2[inds2]) - b2 * np.log(b2) + \
                 2 * (b2 - x2[inds2]) * self._nfw_func(X[inds2] * b**-1) + 2 * (1+b*(x2[inds2] - 2))*
@@ -304,7 +303,7 @@ class CNFW(object):
         a = 2 * rho0 * Rs * (2 * gx / x ** 2 - Fx)  # /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
         return a * (ax_y ** 2 - ax_x ** 2) / R ** 2, -a * 2 * (ax_x * ax_y) / R ** 2
 
-    def mass_2d(self,R,Rs,rho0,r_core):
+    def mass_2d(self, R, Rs, rho0, r_core):
 
         """
         analytic solution of the projection integral
@@ -325,7 +324,7 @@ class CNFW(object):
 
         return m_2d
 
-    def _alpha2rho0(self, theta_Rs=None, Rs=None, r_core=None):
+    def _alpha2rho0(self, theta_Rs, Rs, r_core):
 
         b = r_core * Rs ** -1
 
@@ -335,7 +334,7 @@ class CNFW(object):
 
         return rho0
 
-    def _rho2alpha(self, rho0=None, Rs=None, r_core=None):
+    def _rho2alpha(self, rho0, Rs, r_core):
 
         b = r_core * Rs ** -1
         gx = self._G(1., b)

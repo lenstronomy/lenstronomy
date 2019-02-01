@@ -86,6 +86,29 @@ class Testcnfw(object):
             npt.assert_almost_equal(g1_array[i], g1)
             npt.assert_almost_equal(g2_array[i], g2)
 
+    def test_hessian(self):
+
+        Rs = 10
+        theta_Rs = 1
+        r_core = 0.7 * Rs
+
+        R = np.linspace(0.2*Rs, 1.5*Rs, 100000)
+
+        fxx, _, _ = self.cn.hessian(R, 0, Rs, theta_Rs, r_core)
+        fx, _ = self.cn.derivatives(R, 0, Rs, theta_Rs, r_core)
+        mean_diff = np.sum(np.absolute(fxx - np.gradient(fx, R[1]-R[0]))) * len(R) ** -1
+        npt.assert_almost_equal(mean_diff, 0, decimal=3)
+
+        _, fyy, _ = self.cn.hessian(0, R, Rs, theta_Rs, r_core)
+        _, fy = self.cn.derivatives(0, R, Rs, theta_Rs, r_core)
+        mean_diff = np.sum(np.absolute(fyy - np.gradient(fy, R[1]-R[0]))) * len(R) ** -1
+        npt.assert_almost_equal(mean_diff, 0, decimal=3)
+
+        _, _, fxy = self.cn.hessian(0.5*R, R, Rs, theta_Rs, 0.00001*Rs)
+        _, _, fxy_nfw = self.n.hessian(0.5*R, R, Rs, theta_Rs)
+
+        npt.assert_almost_equal(np.sum(fxy * fxy_nfw**-1) / len(R), 1, decimal=3)
+
     def test_rho_angle_transform(self):
 
         Rs = float(10)

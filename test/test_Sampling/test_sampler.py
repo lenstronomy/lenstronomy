@@ -108,7 +108,6 @@ class TestFittingSequence(object):
                                                   kwargs_lens_light=self.kwargs_lens_light)
         sigma_start = np.ones_like(mean_start) * 0.1
         samples = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
-
         assert len(samples) == n_walkers * n_run
 
     def test_mcmc_CH(self):

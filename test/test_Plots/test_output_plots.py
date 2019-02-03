@@ -135,7 +135,7 @@ class TestOutputPlots(object):
         #plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax)
+        lensPlot.deflection_plot(ax=ax, with_caustics=True)
         plt.close()
 
         numPix = 100
@@ -148,16 +148,11 @@ class TestOutputPlots(object):
         lensPlot.absolute_residual_plot(ax=ax)
         plt.close()
 
-    def test_lens_model_plot(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        numPix = 100
-        deltaPix = 0.05
-        ax = output_plots.lens_model_plot(ax, self.LensModel, self.kwargs_lens, numPix, deltaPix, sourcePos_x=0, sourcePos_y=0, point_source=True)
-        plt.close()
-
     def test_psf_iteration_compare(self):
         kwargs_psf = self.kwargs_psf
         kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
+        f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf, vmin=-1, vmax=1)
+        plt.close()
         f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf)
         plt.close()
 
@@ -181,6 +176,14 @@ class TestOutputPlots(object):
         samples_mcmc = np.random.random((10, 1000))
         dist_mcmc = np.random.random(1000)
         output_plots.plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=10)
+        plt.close()
+
+    def test_scale_bar(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        output_plots.scale_bar(ax, 3, dist=1, text='1"', flipped=True)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        output_plots.text_description(ax, d=3, text='test', color='w', backgroundcolor='k', flipped=True)
         plt.close()
 
 

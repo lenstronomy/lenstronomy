@@ -24,11 +24,15 @@ class TestClassCreator(object):
         assert imageModel.LensModel.lens_model_list == []
 
     def test_create_multiband(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}]]
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}, []]]
         multi_band = class_creator.create_multiband(multi_band_list, **self.kwargs_model)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
 
         multi_band = class_creator.create_multiband(multi_band_list)
+        assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
+        multi_band = class_creator.create_multiband(multi_band_list, multi_band_type='multi-exposure')
+        assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
+        multi_band = class_creator.create_multiband(multi_band_list, multi_band_type='multi-frame')
         assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
 
 

@@ -79,6 +79,8 @@ class TestParam(object):
         kwargs_out, i = lensParam.getParams(args, i=0)
         assert kwargs_out[0]['coeffs'][1] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
+        num, param_list = lensParam.num_param()
+        assert num == 8
 
         lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=4, solver_type='SHAPELETS',
                               num_shapelet_lens=8)
@@ -87,6 +89,8 @@ class TestParam(object):
         kwargs_out, i = lensParam.getParams(args, i=0)
         assert kwargs_out[0]['coeffs'][5] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
+        num, param_list = lensParam.num_param()
+        assert num == 5
 
 
 if __name__ == '__main__':

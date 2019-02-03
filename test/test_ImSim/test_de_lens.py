@@ -4,6 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import lenstronomy.ImSim.de_lens as DeLens
 import pytest
+import sys
 
 
 class TestDeLens(object):
@@ -36,7 +37,15 @@ class TestDeLens(object):
 
         A = np.array([[1, 2, 1], [1, 2, 1]]).T
         d = np.array([1, 2, 3])
-        result, cov_error, image = self.deLens.get_param_WLS(A, C_D_inv, d)
+        result, cov_error, image = self.deLens.get_param_WLS(A, C_D_inv, d, inv_bool=False)
+        assert result[0] == 0.
+        assert result[1] == 0.
+        assert image[0] == 0.
+        C_D_inv = np.array([1, 1, 1])
+        A = np.array([[1., 2., 1. + 10**(-8.9)], [1., 2., 1.]]).T
+        d = np.array([1, 2, 3])
+        result, cov_error, image = self.deLens.get_param_WLS(A, C_D_inv, d, inv_bool=False)
+        result, cov_error, image = self.deLens.get_param_WLS(A, C_D_inv, d, inv_bool=True)
         assert result[0] == 0.
         assert result[1] == 0.
         assert image[0] == 0.

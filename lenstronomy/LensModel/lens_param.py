@@ -32,11 +32,6 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
-        #if self._solver_type == "PROFILE_SHEAR":
-        #    if 'e1' in kwargs_lower[1]:
-        #        kwargs_lower[1]['e1'] = 0
-        #    if 'e2' in kwargs_lower[1]:
-        #        kwargs_lower[1]['e2'] = 0
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -44,7 +39,9 @@ class LensParam(object):
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
+
             kwargs_fixed = self.kwargs_fixed[k]
+            print(kwargs_fixed, 'test_fixed')
             param_names = self._param_name_list[k]
             for name in param_names:
                 if not name in kwargs_fixed:
@@ -77,6 +74,7 @@ class LensParam(object):
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
                     else:
+                        print(name, 'test name')
                         kwargs[name] = args[i]
                         i += 1
                 else:
@@ -93,6 +91,7 @@ class LensParam(object):
         args = []
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
+            print(kwargs, 'test_kwargs')
             kwargs_fixed = self.kwargs_fixed[k]
 
             param_names = self._param_name_list[k]

@@ -70,6 +70,24 @@ class TestParam(object):
         num, list = self.param.num_param()
         assert num == 20
 
+    def test_shapelet_solver(self):
+        lens_model_list = ['SHAPELETS_CART']
+        lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=2, solver_type='SHAPELETS',
+                              num_shapelet_lens=8)
+        kwargs_lens = [{'beta': 1, 'coeffs': [0, 1, 2, 3, 4, 5, 5, 7], 'center_x':0, 'center_y': 0}]
+        args = lensParam.setParams(kwargs_lens)
+        kwargs_out, i = lensParam.getParams(args, i=0)
+        assert kwargs_out[0]['coeffs'][1] == 0
+        assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
+
+        lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=4, solver_type='SHAPELETS',
+                              num_shapelet_lens=8)
+        kwargs_lens = [{'beta': 1, 'coeffs': [0, 1, 2, 3, 4, 5, 5, 7], 'center_x': 0, 'center_y': 0}]
+        args = lensParam.setParams(kwargs_lens)
+        kwargs_out, i = lensParam.getParams(args, i=0)
+        assert kwargs_out[0]['coeffs'][5] == 0
+        assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
+
 
 if __name__ == '__main__':
     pytest.main()

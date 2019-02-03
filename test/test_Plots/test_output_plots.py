@@ -28,18 +28,18 @@ class TestOutputPlots(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 100  # cutout pixel size
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
+        numPix = 10  # cutout pixel size
+        deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(self.kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                     truncate=6,
                                                     kernel=kwargs_psf['kernel_point_source'])
         psf_class = PSF(kwargs_psf)
@@ -96,7 +96,7 @@ class TestOutputPlots(object):
                                      self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
                                      arrow_size=0.02, cmap_string="gist_heat")
 
-        lensPlot.plot_main()
+        lensPlot.plot_main(image_names=True, with_caustics=True)
         plt.close()
 
         #f, axes = plt.subplots(2, 3, figsize=(16, 8))
@@ -141,7 +141,7 @@ class TestOutputPlots(object):
         numPix = 100
         deltaPix_source = 0.01
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.error_map_source_plot(ax, numPix, deltaPix_source)
+        lensPlot.error_map_source_plot(ax, numPix, deltaPix_source, with_caustics=True)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))

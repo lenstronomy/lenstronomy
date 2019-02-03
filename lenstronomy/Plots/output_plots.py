@@ -511,7 +511,7 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def plot_main(self, with_caustics=False):
+    def plot_main(self, with_caustics=False, image_names=False):
         """
         print the main plots together in a joint frame
 
@@ -520,7 +520,7 @@ class LensModelPlot(object):
 
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
         self.data_plot(ax=axes[0, 0])
-        self.model_plot(ax=axes[0, 1])
+        self.model_plot(ax=axes[0, 1], image_names=True)
         self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
         self.source_plot(ax=axes[1, 0], deltaPix_source=0.01, numPix=100, with_caustics=with_caustics)
         self.convergence_plot(ax=axes[1, 1], v_max=1)

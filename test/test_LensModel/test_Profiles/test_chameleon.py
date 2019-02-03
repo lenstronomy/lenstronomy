@@ -201,7 +201,7 @@ class TestDoubleChameleonPointMass(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_light = {'theta_E': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         flux = doublechameleon.function(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(flux, 1.2324939073557235, decimal=8)
+        npt.assert_almost_equal(flux, 1.2324939073557235, decimal=4)
 
     def test_derivatives(self):
         """
@@ -215,8 +215,8 @@ class TestDoubleChameleonPointMass(object):
         kwargs_light = {'theta_E': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_x, f_y = doublechameleon.derivatives(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(f_x, 0.445004064611891, decimal=8)
-        npt.assert_almost_equal(f_y, 0.46313862781025106, decimal=8)
+        npt.assert_almost_equal(f_x, 0.445004064611891, decimal=4)
+        npt.assert_almost_equal(f_y, 0.46313862781025106, decimal=4)
 
     def test_hessian(self):
         """
@@ -230,9 +230,9 @@ class TestDoubleChameleonPointMass(object):
         kwargs_light = {'theta_E': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_xx, f_yy, f_xy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(f_xx, 0.06174422835961879, decimal=8)
-        npt.assert_almost_equal(f_xy, -0.5050946519853545, decimal=8)
-        npt.assert_almost_equal(f_yy, 0.04438379467671494, decimal=8)
+        npt.assert_almost_equal(f_xx, 0.06174422835961879, decimal=4)
+        npt.assert_almost_equal(f_xy, -0.5050946519853545, decimal=4)
+        npt.assert_almost_equal(f_yy, 0.04438379467671494, decimal=4)
 
 
 if __name__ == '__main__':

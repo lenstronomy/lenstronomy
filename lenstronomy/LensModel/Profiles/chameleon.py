@@ -85,8 +85,8 @@ class Chameleon(object):
         :return: flux of chameleon profile
         """
         theta_E_conv, w_c, w_t = self._theta_E_convert(theta_E, w_c, w_t)
-        if not w_t > w_c:
-            w_t, w_c = w_c, w_t
+        #if not w_t > w_c:
+        #    w_t, w_c = w_c, w_t
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)

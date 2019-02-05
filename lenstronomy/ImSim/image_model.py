@@ -73,17 +73,6 @@ class ImageModel(object):
         self.PSF = psf_class
         self.ImageNumerics._PSF = psf_class
 
-    def update_numerics(self, kwargs_numerics):
-        """
-
-        update numerical options
-
-        :param kwargs_numerics:
-        :return: no return. Class is updated.
-        """
-        self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
-
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
 

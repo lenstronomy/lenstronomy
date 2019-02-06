@@ -1,9 +1,8 @@
 import numpy as np
-from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Cosmo.background import Background
 
 
-class MultiSourcePlane(object):
+class Image2SourceMapping(object):
     """
     this class handles multiple source planes and performs the computation of predicted surface brightness at given
     image positions.
@@ -20,42 +19,73 @@ class MultiSourcePlane(object):
     the mapping between source to image plane.
     """
 
-    def __init__(self, lensModel, light_model_list, source_scale_factor_list=None, source_redshift_list=None):
+    def __init__(self, lensModel, sourceModel):
         """
 
         :param lensModel: lenstronomy LensModel() class instance
-        :param light_model_list: list of light models
-        :param source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source
+        :param sourceModel: LightModel () class instance
+        The lightModel includes:
+        - source_scale_factor_list: list of floats corresponding to the rescaled deflection angles to the specific source
          components. None indicates that the list will be set to 1, meaning a single source plane model (in single lens plane mode).
-        :param source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
+        - source_redshift_list: list of redshifts of the light components (in multi lens plane mode)
         """
-        self._lightModel = LightModel(light_model_list=light_model_list)
+        self._lightModel = sourceModel
         self._lensModel = lensModel
-        self._bkg_cosmo = Background(lensModel.cosmo)
-
-        self._light_model_list = light_model_list
+        light_model_list = sourceModel.profile_type_list
         self._multi_lens_plane = lensModel.multi_plane
-        self._source_redshift_list = source_redshift_list
-        self._scale_factor_list = source_scale_factor_list
+        self._source_redshift_list = sourceModel.redshift_list
+        self._deflection_scaling_list = sourceModel.deflection_scaling_list
         self._multi_source_plane = True
         if self._multi_lens_plane is True:
-            if source_redshift_list is None:
+            self._bkg_cosmo = Background(lensModel.cosmo)
+            if self._source_redshift_list is None:
                 self._multi_source_plane = False
-            elif len(source_redshift_list) != len(light_model_list):
+            elif len(self._source_redshift_list) != len(light_model_list):
                 raise ValueError("length of redshift_list must correspond to length of light_model_list")
-            elif np.max(source_redshift_list) > self._lensModel.z_source:
+            elif np.max(self._source_redshift_list) > self._lensModel.z_source:
                 raise ValueError("redshift of source_redshift_list have to be smaler or equal to the one specified in the lens model.")
-            #if len(light_model_list) < 1:
-            #    self._sorted_source_redshift_index = []
             else:
-                self._sorted_source_redshift_index = self._index_ordering(source_redshift_list)
+                self._sorted_source_redshift_index = self._index_ordering(self._source_redshift_list)
         else:
-            if source_scale_factor_list is None:
+            if self._deflection_scaling_list is None:
                 self._multi_source_plane = False
-            elif len(source_scale_factor_list) != len(light_model_list):
+            elif len(self._deflection_scaling_list) != len(light_model_list):
                 raise ValueError('length of scale_factor_list must correspond to length of light_model_list!')
 
-    def ray_trace_joint(self, x, y, kwargs_lens, kwargs_source):
+    def image2source(self, x, y, kwargs_lens, idex_source):
+        """
+        mapping of image plane to source plane coordinates
+        WARNING: for multi lens plane computations and multi source planes, this computation can be slow and should be
+        used as rarely as possible.
+
+        :param x: image plane coordinate
+        :param y: image plane coordinate
+        :param kwargs_lens: lens model kwargs list
+        :param idex_source: int, index of source model
+        :return: source plane coordinate corresponding to the source model of index idex_source
+        """
+        if self._multi_source_plane is False:
+            x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
+        else:
+            if self._multi_lens_plane is False:
+                x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
+                scale_factor = self._deflection_scaling_list[idex_source]
+                x_source = x - x_alpha * scale_factor
+                y_source = y - y_alpha * scale_factor
+            else:
+                z_stop = self._source_redshift_list[idex_source]
+                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(0, 0, x, y,
+                                                                                                     0, z_stop,
+                                                                                                     kwargs_lens,
+                                                                                                     keep_range=False,
+                                                                                                     include_z_start=False)
+
+                T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                x_source = x_comov / T_z
+                y_source = y_comov / T_z
+        return x_source, y_source
+
+    def image_flux_joint(self, x, y, kwargs_lens, kwargs_source):
         """
 
         :param x: coordinate in image plane
@@ -71,8 +101,8 @@ class MultiSourcePlane(object):
             flux = np.zeros_like(x)
             if self._multi_lens_plane is False:
                 x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
-                for i in range(len(self._scale_factor_list)):
-                    scale_factor = self._scale_factor_list[i]
+                for i in range(len(self._deflection_scaling_list)):
+                    scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
                     flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=i)
@@ -94,7 +124,7 @@ class MultiSourcePlane(object):
                     z_start = z_stop
             return flux
 
-    def ray_trace_functions_split(self, x, y, kwargs_lens, kwargs_source):
+    def image_flux_split(self, x, y, kwargs_lens, kwargs_source):
         """
 
         :param x: coordinate in image plane
@@ -112,8 +142,8 @@ class MultiSourcePlane(object):
             n = 0
             if self._multi_lens_plane is False:
                 x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
-                for i in range(len(self._scale_factor_list)):
-                    scale_factor = self._scale_factor_list[i]
+                for i in range(len(self._deflection_scaling_list)):
+                    scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
                     response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=i)

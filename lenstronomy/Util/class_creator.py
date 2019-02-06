@@ -4,7 +4,6 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.ImSim.image_model_multi_source import ImageModelMultiSource
 from lenstronomy.ImSim.MultiBand.multiband import MultiBand
 from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 from lenstronomy.ImSim.MultiBand.multi_frame import MultiFrame
@@ -35,11 +34,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list
                                          additional_images_list=additional_images_list, min_distance=min_distance,
                                          search_window=search_window, precision_limit=precision_limit,
                                          num_iter_max=num_iter_max)
-    if source_deflection_scaling_list is not None or source_redshift_list is not None:
-        imageModel = ImageModelMultiSource(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                            point_source_class, kwargs_numerics)
-    else:
-        imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
+    imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                             point_source_class, kwargs_numerics)
     return imageModel
 

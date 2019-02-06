@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.ImSim.image_numerics import ImageNumerics
 import lenstronomy.ImSim.de_lens as de_lens
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 import numpy as np
@@ -20,11 +21,13 @@ class ImageModel(object):
         :param source_model_class: instance of LightModel() class describing the source parameters
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
-        :param kwargs_numerics: keyword argument with various numerics description (see ImageNumerics class for options)
+        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
         """
         self.PSF = psf_class
         self.Data = data_class
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
+        if lens_model_class is None:
+            lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
         self._error_map_bool_list = None

@@ -55,7 +55,6 @@ class MultiSourcePlane(object):
             elif len(source_scale_factor_list) != len(light_model_list):
                 raise ValueError('length of scale_factor_list must correspond to length of light_model_list!')
 
-
     def ray_trace_joint(self, x, y, kwargs_lens, kwargs_source):
         """
 
@@ -102,7 +101,8 @@ class MultiSourcePlane(object):
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default amplitude amp=1
+        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as
+        the light_model_list
         """
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
@@ -141,7 +141,8 @@ class MultiSourcePlane(object):
                 response = self._re_order_split(response)
             return response, n
 
-    def _index_ordering(self, redshift_list):
+    @staticmethod
+    def _index_ordering(redshift_list):
         """
 
         :param redshift_list: list of redshifts

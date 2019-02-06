@@ -15,9 +15,6 @@ class MultiPlane(object):
         :param cosmo: instance of astropy.cosmology
         :return: Background class with instance of astropy.cosmology
         """
-        if cosmo is None:
-            from astropy.cosmology import default_cosmology
-            cosmo = default_cosmology.get()
         self._cosmo_bkg = Background(cosmo)
         self._z_source = z_source
         if not len(lens_model_list) == len(redshift_list):
@@ -95,7 +92,7 @@ class MultiPlane(object):
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
+            if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
             #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if keep_range is True:
@@ -116,7 +113,6 @@ class MultiPlane(object):
             delta_T = self._cosmo_bkg_T_stop
         else:
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
-
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 

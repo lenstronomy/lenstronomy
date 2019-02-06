@@ -4,7 +4,6 @@ import numpy as np
 import numpy.testing as npt
 import lenstronomy.ImSim.de_lens as DeLens
 import pytest
-import sys
 
 
 class TestDeLens(object):

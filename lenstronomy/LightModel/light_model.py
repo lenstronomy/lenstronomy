@@ -113,7 +113,7 @@ class LightModel(object):
                                          % self.profile_type_list[i])
         return flux
 
-    def functions_split(self, x, y, kwargs_list):
+    def functions_split(self, x, y, kwargs_list, k=None):
         """
 
         :param x:
@@ -123,32 +123,33 @@ class LightModel(object):
         """
         response = []
         n = 0
-        for k, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM']:
-                new = {'amp': 1}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += [self.func_list[k].function(x, y, **kwargs_new)]
-                n += 1
-            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                num = len(kwargs_list[k]['amp'])
-                new = {'amp': np.ones(num)}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += self.func_list[k].function_split(x, y, **kwargs_new)
-                n += num
-            elif model in ['SHAPELETS']:
-                kwargs = kwargs_list[k]
-                n_max = kwargs['n_max']
-                num_param = int((n_max + 1) * (n_max + 2) / 2)
-                new = {'amp': np.ones(num_param)}
-                kwargs_new = kwargs_list[k].copy()
-                kwargs_new.update(new)
-                response += self.func_list[k].function_split(x, y, **kwargs_new)
-                n += num_param
-            else:
-                raise ValueError('model type %s not valid!' % model)
+        for i, model in enumerate(self.profile_type_list):
+            if k is None or k == i:
+                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM']:
+                    new = {'amp': 1}
+                    kwargs_new = kwargs_list[i].copy()
+                    kwargs_new.update(new)
+                    response += [self.func_list[i].function(x, y, **kwargs_new)]
+                    n += 1
+                elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                    num = len(kwargs_list[i]['amp'])
+                    new = {'amp': np.ones(num)}
+                    kwargs_new = kwargs_list[i].copy()
+                    kwargs_new.update(new)
+                    response += self.func_list[i].function_split(x, y, **kwargs_new)
+                    n += num
+                elif model in ['SHAPELETS']:
+                    kwargs = kwargs_list[i]
+                    n_max = kwargs['n_max']
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
+                    new = {'amp': np.ones(num_param)}
+                    kwargs_new = kwargs_list[i].copy()
+                    kwargs_new.update(new)
+                    response += self.func_list[i].function_split(x, y, **kwargs_new)
+                    n += num_param
+                else:
+                    raise ValueError('model type %s not valid!' % model)
         return response, n
 
     def update_linear(self, param, i, kwargs_list):

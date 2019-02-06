@@ -210,6 +210,24 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
 
+    def test_pseudo_multiplane(self):
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS']
+        sis1 = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        sis2 = {'theta_E': .2, 'center_x': 0.5, 'center_y': 0}
+        z1 = 0.5
+        z2 = 0.5
+
+        redshift_list = [z1, z2]
+        kwargs_lens = [sis1, sis2]
+        lensModelMulti = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelSingle = LensModel(lens_model_list=lens_model_list)
+
+        beta_x, beta_y = lensModelMulti.ray_shooting(1, 1, kwargs_lens)
+        beta_x_single, beta_y_single = lensModelSingle.ray_shooting(1, 1, kwargs_lens)
+        npt.assert_almost_equal(beta_x, beta_x_single, decimal=10)
+        npt.assert_almost_equal(beta_y, beta_y_single, decimal=10)
+
 
 class TestForegroundShear(object):
 
@@ -267,6 +285,7 @@ class TestForegroundShear(object):
         dt_simple = t_simple[0] - t_simple[1]
         print(t_simple, t_multi)
         npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -186,6 +186,14 @@ class TestOutputPlots(object):
         output_plots.text_description(ax, d=3, text='test', color='w', backgroundcolor='k', flipped=True)
         plt.close()
 
+    def test_lens_model_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        output_plots.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
+                    point_source=True, with_caustics=True)
+        plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

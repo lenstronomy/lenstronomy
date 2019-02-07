@@ -9,7 +9,7 @@ class MultiPlane(object):
     Multi-plane lensing class
     """
 
-    def __init__(self, z_source, lens_model_list, redshift_list, cosmo=None, **lensmodel_kwargs):
+    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, **lensmodel_kwargs):
         """
 
         :param cosmo: instance of astropy.cosmology
@@ -17,14 +17,14 @@ class MultiPlane(object):
         """
         self._cosmo_bkg = Background(cosmo)
         self._z_source = z_source
-        if not len(lens_model_list) == len(redshift_list):
+        if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
         self._lens_model_list = lens_model_list
-        self._redshift_list = redshift_list
+        self._redshift_list = lens_redshift_list
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
         else:
-            self._sorted_redshift_index = self._index_ordering(redshift_list)
+            self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
         self._lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
         z_before = 0
         self._T_ij_list = []

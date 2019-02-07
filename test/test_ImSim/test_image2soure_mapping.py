@@ -15,10 +15,10 @@ class TestMultiSourcePlane(object):
         lens_model_list = ['SIS', 'SIS']
         self.kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'theta_E': 0.5, 'center_x': 1, 'center_y':1}]
         singlePlane = LensModel(lens_model_list=lens_model_list)
-        multiPlane = LensModel(lens_model_list=lens_model_list, multi_plane=True, z_source=3, redshift_list=[0.2, 0.5],
+        multiPlane = LensModel(lens_model_list=lens_model_list, multi_plane=True, z_source=3, lens_redshift_list=[0.2, 0.5],
                                cosmo=None)
         pseudoMultiPlane = LensModel(lens_model_list=lens_model_list, multi_plane=True, z_source=3,
-                                     redshift_list=[0.5, 0.5],
+                                     lens_redshift_list=[0.5, 0.5],
                                      cosmo=None)
         # test single plane single source
 

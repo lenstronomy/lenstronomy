@@ -23,7 +23,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list
     """
     data_class = Data(kwargs_data)
     psf_class = PSF(kwargs_psf)
-    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, redshift_list=lens_redshift_list,
+    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, lens_redshift_list=lens_redshift_list,
                                  multi_plane=multi_plane)
     source_model_class = LightModel(light_model_list=source_light_model_list,
                                     deflection_scaling_list=source_deflection_scaling_list,
@@ -55,7 +55,7 @@ def create_multiband(multi_band_list, lens_model_list=[], z_source=None, lens_re
     :return:
     """
 
-    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, redshift_list=lens_redshift_list,
+    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, lens_redshift_list=lens_redshift_list,
                                  multi_plane=multi_plane)
     source_model_class = LightModel(light_model_list=source_light_model_list,
                                     deflection_scaling_list=source_deflection_scaling_list,

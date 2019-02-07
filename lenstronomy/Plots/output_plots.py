@@ -68,6 +68,60 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     return ax
 
 
+def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
+                    point_source=False, with_caustics=False):
+    """
+    plots a lens model (convergence) and the critical curves and caustics
+
+    :param ax:
+    :param kwargs_lens:
+    :param numPix:
+    :param deltaPix:
+    :return:
+    """
+    from lenstronomy.SimulationAPI.simulations import Simulation
+    simAPI = Simulation()
+    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    data = Data(kwargs_data)
+    _frame_size = numPix * deltaPix
+    _coords = data._coords
+    x_grid, y_grid = data.coordinates
+    lensModelExt = LensModelExtensions(lensModel)
+    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
+    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
+    x_grid1d = util.image2array(x_grid)
+    y_grid1d = util.image2array(y_grid)
+    kappa_result = lensModel.kappa(x_grid1d, y_grid1d, kwargs_lens)
+    kappa_result = util.array2image(kappa_result)
+    im = ax.matshow(np.log10(kappa_result), origin='lower', extent=[0, _frame_size, 0, _frame_size], cmap='Greys',
+                    vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+    if with_caustics is True:
+        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
+                                                                         start_scale=deltaPix, max_order=10)
+        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
+        plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
+    if point_source:
+        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+        solver = LensEquationSolver(lensModel)
+        theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens)
+        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * deltaPix
+            y_ = (y_image[i] + 0.5) * deltaPix
+            ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
+        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*k', markersize=10)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    #image_position_plot(ax, _coords, self._kwargs_else)
+    #source_position_plot(ax, self._coords, self._kwargs_source)
+    return ax
+
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
     """
 
@@ -144,9 +198,9 @@ class LensModelPlot(object):
         self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, **kwargs_model)
         self._analysis = LensAnalysis(kwargs_model)
         self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-                                 z_source=kwargs_model.get('z_source', None),
-                                 redshift_list=kwargs_model.get('redshift_list', None),
-                                 multi_plane=kwargs_model.get('multi_plane', False))
+                                    z_source=kwargs_model.get('z_source', None),
+                                    lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
+                                    multi_plane=kwargs_model.get('multi_plane', False))
         self._lensModelExt = LensModelExtensions(self._lensModel)
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps, inv_bool=True)

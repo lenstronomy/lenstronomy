@@ -71,8 +71,8 @@ class Param(object):
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
-                                    redshift_list=kwargs_model.get('redshift_list', None),
-                                    multi_plane=kwargs_model.get('multi_plane', False))
+                              lens_redshift_list=kwargs_model.get('redshift_list', None),
+                              multi_plane=kwargs_model.get('multi_plane', False))
         sourceModel = LightModel(light_model_list=self._source_light_model_list,
                                  deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
                                  redshift_list=kwargs_model.get('source_redshift_list', None))

@@ -122,6 +122,17 @@ class TestMultiSourcePlane(object):
                                                                     kwargs_source=kwargs_light)
         npt.assert_almost_equal(np.sum(response_multi_multi), 1413, decimal=-1)
 
+    def test_image2source(self):
+        x, y = 1, 1
+        beta_x, beta_y = self.multi_multi.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        npt.assert_almost_equal(beta_x, 0.7433428403740511, decimal=2)
+
+        beta_x0, beta_y0 = self.singlePlane_singlePlane.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        beta_x, beta_y = self.singlePlane_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
+        beta_x, beta_y = self.pseudoMulti_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
+
 
 if __name__ == '__main__':
     pytest.main()

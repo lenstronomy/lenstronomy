@@ -22,6 +22,14 @@ class FittingSequence(object):
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
+    def kwargs_fixed(self):
+        """
+        returns the updated kwargs_fixed from the update Manager
+
+        :return:
+        """
+        return self._updateManager.fixed_kwargs
+
     def fit_sequence(self, fitting_list):
         """
 

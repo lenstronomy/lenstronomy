@@ -31,23 +31,23 @@ class TestMultiSourcePlane(object):
                         {'amp':2, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 1, 'center_y': 1}]
         self.singlePlane_singlePlane = Image2SourceMapping(singlePlane, LightModel(light_model_list,
                                                                                    deflection_scaling_list=None,
-                                                                                   redshift_list=None))
+                                                                                   source_redshift_list=None))
         self.singlePlane_pseudoMulti = Image2SourceMapping(singlePlane, LightModel(light_model_list,
                                                                                    deflection_scaling_list=[1, 1],
-                                                                                   redshift_list=None))
+                                                                                   source_redshift_list=None))
         self.pseudoMulti_pseudoMulti = Image2SourceMapping(pseudoMultiPlane, LightModel(light_model_list,
                                                                                         deflection_scaling_list=None,
-                                                                                        redshift_list=[3, 3]))
+                                                                                        source_redshift_list=[3, 3]))
         self.pseudoMulti_single = Image2SourceMapping(pseudoMultiPlane, LightModel(light_model_list,
                                                                                    deflection_scaling_list=None,
-                                                                                   redshift_list=None))
+                                                                                   source_redshift_list=None))
         self.multi_single = Image2SourceMapping(multiPlane, LightModel(light_model_list, deflection_scaling_list=None,
-                                                                       redshift_list=None))
+                                                                       source_redshift_list=None))
         self.multi_pseudoMulti = Image2SourceMapping(multiPlane, LightModel(light_model_list,
                                                                             deflection_scaling_list=None,
-                                                                            redshift_list=[3, 3]))
+                                                                            source_redshift_list=[3, 3]))
         self.multi_multi = Image2SourceMapping(multiPlane, LightModel(light_model_list, deflection_scaling_list=None,
-                                                                      redshift_list=[0.3, 2]))
+                                                                      source_redshift_list=[0.3, 2]))
 
     def test_pseudo_multi_ray_tracing(self):
         x, y = util.make_grid(numPix=10, deltapix=0.5)

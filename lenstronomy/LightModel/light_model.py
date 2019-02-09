@@ -9,18 +9,18 @@ class LightModel(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, deflection_scaling_list=None, redshift_list=None, smoothing=0.0000001):
+    def __init__(self, light_model_list, deflection_scaling_list=None, source_redshift_list=None, smoothing=0.0000001):
         """
 
         :param light_model_list: list of light models
         :param deflection_scaling_list: list of floats, rescales the original reduced deflection angles from the lens model
         to enable different models to be placed at different optical (redshift) distances. None means they are all
-        :param redshift_list: list of redshifts of the model components
+        :param source_redshift_list: list of redshifts of the model components
         :param smoothing: smoothing factor for certain models (deprecated)
         """
         self.profile_type_list = light_model_list
         self.deflection_scaling_list = deflection_scaling_list
-        self.redshift_list = redshift_list
+        self.redshift_list = source_redshift_list
         self.func_list = []
         for profile_type in light_model_list:
             if profile_type == 'GAUSSIAN':

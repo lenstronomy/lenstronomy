@@ -172,6 +172,9 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
 
+        kwargs_fixed = fittingSequence.kwargs_fixed()
+        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
+
 
 if __name__ == '__main__':
     pytest.main()

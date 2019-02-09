@@ -75,7 +75,7 @@ class Param(object):
                               multi_plane=kwargs_model.get('multi_plane', False))
         sourceModel = LightModel(light_model_list=self._source_light_model_list,
                                  deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
-                                 redshift_list=kwargs_model.get('source_redshift_list', None))
+                                 source_redshift_list=kwargs_model.get('source_redshift_list', None))
         self._image2SourceMapping = Image2SourceMapping(lensModel=lensModel, sourceModel=sourceModel)
 
         if kwargs_fixed_lens is None:

@@ -26,7 +26,7 @@ class FittingSequence(object):
         """
         returns the updated kwargs_fixed from the update Manager
 
-        :return:
+        :return: list of fixed kwargs, see UpdateManager()
         """
         return self._updateManager.fixed_kwargs
 

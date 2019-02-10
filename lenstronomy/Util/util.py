@@ -71,8 +71,7 @@ def rotate(xcoords, ycoords, angle):
     :param angle: angle in radians
     :return: x points and y points rotated ccw by angle theta
     """
-    return xcoords*np.cos(angle)+ycoords*np.sin(angle),\
-           -xcoords*np.sin(angle)+ycoords*np.cos(angle)
+    return xcoords*np.cos(angle)+ycoords*np.sin(angle), -xcoords*np.sin(angle)+ycoords*np.cos(angle)
 
 
 def map_coord2pix(ra, dec, x_0, y_0, M):

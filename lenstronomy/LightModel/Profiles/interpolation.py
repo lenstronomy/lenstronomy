@@ -41,9 +41,12 @@ class Interpol(object):
     def image_interp(self, x, y, image):
         if not hasattr(self, '_image_interp'):
             nx, ny = np.shape(image)
-            x_grid = np.linspace(start=-(nx - 1) / 2, stop=(nx - 1) / 2, num=nx)
-            y_grid = np.linspace(start=-(ny - 1) / 2, stop=(ny - 1) / 2, num=ny)
-            self._image_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, image, kx=1, ky=1, s=0)
+            image_bounds = np.zeros((nx + 2, ny + 2))
+            nx0, ny0 = nx + 2, ny + 2
+            image_bounds[1:-1, 1:-1] = image
+            x_grid = np.linspace(start=-(nx0 - 1) / 2, stop=(nx0 - 1) / 2, num=nx0)
+            y_grid = np.linspace(start=-(ny0 - 1) / 2, stop=(ny0 - 1) / 2, num=ny0)
+            self._image_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, image_bounds, kx=1, ky=1, s=0)
         return self._image_interp(y, x)
 
     @staticmethod
@@ -64,4 +67,3 @@ class Interpol(object):
         y_ = dec_ / scale
         x, y = util.rotate(x_, y_, phi_G)
         return x, y
-

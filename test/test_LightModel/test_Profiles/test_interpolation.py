@@ -35,6 +35,9 @@ class TestInterpol(object):
         output = interp.function(x, y, **kwargs_interp)
         npt.assert_almost_equal(output, flux, decimal=0)
 
+        out = interp.function(x=1000, y=0, **kwargs_interp)
+        assert out == 0
+
 
 if __name__ == '__main__':
     pytest.main()

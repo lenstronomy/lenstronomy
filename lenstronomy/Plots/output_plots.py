@@ -55,7 +55,7 @@ def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05):
     ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=15, ha='center')
 
 
-def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
+def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color='g'):
     """
 
     :param coords:
@@ -64,7 +64,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, color='g'):
     deltaPix = coords.pixel_size
     #for i in range(len(ra_caustic_list)):
     x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
-    ax.plot((x_c + 0.5) * (deltaPix), (y_c + 0.5) * (deltaPix), ',', color=color)
+    ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
     return ax
 
 
@@ -121,6 +121,69 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     ax.autoscale(False)
     #image_position_plot(ax, _coords, self._kwargs_else)
     #source_position_plot(ax, self._coords, self._kwargs_source)
+    return ax
+
+
+def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
+                         with_caustics=False, point_source=False, n_levels=10):
+    """
+
+    :param ax:
+    :param lensModel:
+    :param kwargs_lens:
+    :param numPix:
+    :param deltaPix:
+    :param sourcePos_x:
+    :param sourcePos_y:
+    :param with_caustics:
+    :return:
+    """
+    from lenstronomy.SimulationAPI.simulations import Simulation
+    simAPI = Simulation()
+    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    data = Data(kwargs_data)
+    _frame_size = numPix * deltaPix
+    _coords = data._coords
+    x_grid, y_grid = data.coordinates
+    lensModelExt = LensModelExtensions(lensModel)
+    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
+    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
+    x_grid1d = util.image2array(x_grid)
+    y_grid1d = util.image2array(y_grid)
+    fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, sourcePos_x, sourcePos_y, kwargs_lens)
+    fermat_surface = util.array2image(fermat_surface)
+    vmin = np.min(fermat_surface)
+    vmax = np.max(fermat_surface)
+    levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
+    im = ax.contourf(x_grid, y_grid, fermat_surface, origin='lower',# extent=[0, _frame_size, 0, _frame_size],
+                     levels=levels)
+        #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+    if with_caustics is True:
+        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
+                                                                             start_scale=deltaPix, max_order=10)
+        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, shift=_frame_size/2., color='g')
+        plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, shift=_frame_size/2., color='r')
+    if point_source is True:
+        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+        solver = LensEquationSolver(lensModel)
+        theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                 min_distance=deltaPix, search_window=deltaPix*numPix)
+        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
+            y_ = (y_image[i] + 0.5) * deltaPix - _frame_size/2
+            #x_ = x_image[i] * deltaPix
+            #y_ = y_image[i] * deltaPix
+            ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
+        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=10)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
     return ax
 
 

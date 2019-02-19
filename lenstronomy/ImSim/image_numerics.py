@@ -2,7 +2,6 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.kernel_util as kernel_util
-import scipy.ndimage.interpolation as interp
 
 
 class ImageNumerics(object):
@@ -10,7 +9,7 @@ class ImageNumerics(object):
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
     def __init__(self, data, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
-                 point_source_subgrid=3, subsampling_size=5):
+                 point_source_subgrid=3, subsampling_size=5, conv_type='fft', subgrid_conv_type='fft'):
         """
 
         optional keywords for masking purposes:
@@ -28,9 +27,12 @@ class ImageNumerics(object):
         'psf_subgrid': bool, if True performs the PSF convolution on the higher resolution subgrid surface brightness,
             otherwise on the data frame.
         'point_source_subgrid': int, subsampling of point source PSF
+        'conv_type': 'fft' or 'grid', using either scipy.convolve2d or scipy.signal.fftconvolve for
+         convolution of kernel
+         'subgrid_conv_type': 'fft' or 'grid', using either scipy.convolve2d or scipy.signal.fftconvolve for subgrid
+         convolution of kernel
 
         :param data: instance of the lenstronomy Data() class
-        :param kwargs_numerics: keyword arguments which specify the nummerics
         """
 
         deltaPix = data.deltaPix
@@ -67,6 +69,8 @@ class ImageNumerics(object):
             if self._point_source_subgrid % 2 == 0 and psf._point_source_subsampling_factor != self._point_source_subgrid:
                 raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
         self._subsampling_size = subsampling_size
+        self._conv_type = conv_type
+        self._subgrid_conv_type = subgrid_conv_type
 
     @property
     def exposure_map_array(self):
@@ -196,7 +200,8 @@ class ImageNumerics(object):
         else:
             image_convolved = self._PSF.psf_convolution_new(image, subgrid_res=self._subgrid_res,
                                                             subsampling_size=self._subsampling_size,
-                                                            psf_subgrid=self._psf_subgrid)
+                                                            psf_subgrid=self._psf_subgrid, conv_type=self._conv_type,
+                                                            subgrid_conv_type=self._subgrid_conv_type)
         image_full = self._add_psf(image_convolved)
         return image_full
 

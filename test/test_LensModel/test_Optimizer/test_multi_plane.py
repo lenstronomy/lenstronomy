@@ -54,18 +54,18 @@ class TestMultiPlaneOptimizer(object):
         redshift_list_full = redshift_list_simple + front_redshifts + main_redshifts + back_redshifts
         self.kwargs_lens_full = self.kwargs_lens_simple + self.front_args + self.main_args + self.back_args
 
-        self.lens_model_full = LensModel(lens_model_list_full, z_source=1.5, redshift_list=redshift_list_full,
+        self.lens_model_full = LensModel(lens_model_list_full, z_source=1.5, lens_redshift_list=redshift_list_full,
                                          cosmo=self.cosmo,
                                          multi_plane=True)
 
-        self.lens_model_front = LensModel(front_halos + main_halos, redshift_list=front_redshifts + main_redshifts,
+        self.lens_model_front = LensModel(front_halos + main_halos, lens_redshift_list=front_redshifts + main_redshifts,
                                           z_source=1.5,
                                           cosmo=self.cosmo, multi_plane=True)
         self.kwargs_front = self.front_args + self.main_args
 
-        self.lens_model_simple = LensModel(lens_model_list_simple, z_source=1.5, redshift_list=redshift_list_simple,
-                                         cosmo=self.cosmo,
-                                         multi_plane=True)
+        self.lens_model_simple = LensModel(lens_model_list_simple, z_source=1.5, lens_redshift_list=redshift_list_simple,
+                                           cosmo=self.cosmo,
+                                           multi_plane=True)
 
         self.optimizer_simple = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                           magnification_target=self.magnification_simple,

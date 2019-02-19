@@ -23,7 +23,7 @@ class TestFittingSequence(object):
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
-        numPix = 50  # cutout pixel size
+        numPix = 10  # cutout pixel size
         deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
@@ -171,6 +171,9 @@ class TestFittingSequence(object):
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
+
+        kwargs_fixed = fittingSequence.kwargs_fixed()
+        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
 
 
 if __name__ == '__main__':

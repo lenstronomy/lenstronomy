@@ -100,7 +100,7 @@ class Optimizer(object):
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-        self._lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
+        self._lensModel = LensModel(lens_model_list=lens_model_list, lens_redshift_list=redshift_list,
                                     z_source=z_source,
                                     cosmo=astropy_instance, multi_plane=multiplane)
 

@@ -10,7 +10,7 @@ class LensModel(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, redshift_list=None, cosmo=None,
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
                  multi_plane=False, **lensmodel_kwargs):
         """
 
@@ -19,7 +19,7 @@ class LensModel(object):
         Is only needed for specific functions that require a cosmology.
         :param z_source: redshift of the source: Needed in multi_plane option,
         not required for the core functionalities in the single plane mode.
-        :param redshift_list: list of deflector redshift (corresponding to the lens model list),
+        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
@@ -27,11 +27,11 @@ class LensModel(object):
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         self.z_source = z_source
-        self.redshift_list = redshift_list
+        self.redshift_list = lens_redshift_list
         self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
-            self.lens_model = MultiPlane(z_source, lens_model_list, redshift_list, cosmo=cosmo, **lensmodel_kwargs)
+            self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo, **lensmodel_kwargs)
         else:
             self.lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
         if z_lens is not None and z_source is not None:

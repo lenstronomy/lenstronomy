@@ -17,7 +17,7 @@ class Simulation(object):
     def __init__(self):
         self.gaussian = Gaussian()
 
-    def data_configure(self, numPix, deltaPix, exposure_time=1, sigma_bkg=1):
+    def data_configure(self, numPix, deltaPix, exposure_time=1, sigma_bkg=1, inverse=False):
         """
         configures the data keyword arguments with a coordinate grid centered at zero.
 
@@ -29,7 +29,7 @@ class Simulation(object):
         """
         mean = 0.  # background mean flux (default zero)
         # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
-        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1)
+        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1, inverse=inverse)
         # mask (1= model this pixel, 0= leave blanck)
         exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 

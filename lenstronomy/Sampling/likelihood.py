@@ -166,8 +166,7 @@ class LikelihoodModule(object):
         if len(ra_image_list) > 0:
             if len(ra_image_list[0]) > self.param.num_point_source_images:
                 return True
-        else:
-            return False
+        return False
 
     def likelihood_image_pos(self, kwargs_lens, kwargs_ps, kwargs_cosmo, sigma):
         """

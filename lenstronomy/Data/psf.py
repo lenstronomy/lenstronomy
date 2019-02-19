@@ -203,13 +203,18 @@ class PSF(object):
         else:
             raise ValueError('PSF type %s not valid!' % psf_type)
 
-    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=11, psf_subgrid=True):
+    def psf_convolution_new(self, unconvolved_image, subgrid_res=1, subsampling_size=5, psf_subgrid=True,
+                            subgrid_conv_type='grid', conv_type='fft'):
         """
 
         :param unconvolved_image: 2d image with subsampled pixels with subgrid_res
         :param subgrid_res: subsampling resolution
         :param subsampling_size: size of the subsampling convolution in units of image pixels
         :param psf_subgrid: bool, if False, the convolution is performed on the pixel size of the data
+        :param subgrid_conv_type: 'grid' or 'fft', using either scipy.convolve2d or scipy.signal.fftconvolve for
+         convolution of subsampled kernel
+        :param conv_type: 'grid' or 'fft', using either scipy.convolve2d or scipy.signal.fftconvolve for
+         convolution of regular kernel
         :return: convolved 2d image in units of the pixels
         """
         unconvolved_image_resized = image_util.re_size(unconvolved_image, subgrid_res)
@@ -231,9 +236,19 @@ class PSF(object):
             if subgrid_res > 1 and psf_subgrid is True:
                 kernel_subgrid = self.subgrid_pixel_kernel(subgrid_res)
                 kernel, kernel_subgrid = kernel_util.split_kernel(kernel, kernel_subgrid, subsampling_size, subgrid_res)
-                image_conv_subgrid = signal.fftconvolve(unconvolved_image, kernel_subgrid, mode='same')
+                if subgrid_conv_type == 'fft':
+                    image_conv_subgrid = signal.fftconvolve(unconvolved_image, kernel_subgrid, mode='same')
+                elif subgrid_conv_type == 'grid':
+                    image_conv_subgrid = signal.convolve2d(unconvolved_image, kernel_subgrid, mode='same')
+                else:
+                    raise ValueError('subgrid_conv_type %s not valid!' % subgrid_conv_type)
                 image_conv_resized_1 = image_util.re_size(image_conv_subgrid, subgrid_res)
-                image_conv_resized_2 = signal.fftconvolve(unconvolved_image_resized, kernel, mode='same')
+                if conv_type == 'fft':
+                    image_conv_resized_2 = signal.fftconvolve(unconvolved_image_resized, kernel, mode='same')
+                elif conv_type == 'grid':
+                    image_conv_resized_2 = signal.convolve2d(unconvolved_image_resized, kernel, mode='same')
+                else:
+                    raise ValueError('conv_type %s not valid!' % conv_type)
                 image_conv_resized = image_conv_resized_1 + image_conv_resized_2
             else:
                 image_conv_resized = signal.fftconvolve(unconvolved_image_resized, kernel, mode='same')

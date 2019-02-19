@@ -109,6 +109,16 @@ class TestData(object):
         image_unconvolved_highres = kernel_util.kernel_gaussian(kernel_numPix=numPix*subsampling_res, deltaPix=deltaPix/subsampling_res, fwhm=fwhm_object) * subsampling_res**2
         image_convolved_subsampled = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres, subgrid_res=subsampling_res, subsampling_size=5)
 
+        grid_grid_conv = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres,
+                                                                              subgrid_res=subsampling_res,
+                                                                              subsampling_size=5, conv_type='grid',
+                                                                              subgrid_conv_type='grid')
+        fft_fft_conv = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres,
+                                                                  subgrid_res=subsampling_res,
+                                                                  subsampling_size=5, conv_type='fft',
+                                                                  subgrid_conv_type='fft')
+        npt.assert_almost_equal(grid_grid_conv, fft_fft_conv, decimal=15)
+
         # We demand the two procedures to be the same up to the numerics affecting the finite resolution
         npt.assert_almost_equal(np.sum(image_convolved_regular), np.sum(image_convolved_subsampled), decimal=8)
         npt.assert_almost_equal((image_convolved_subsampled - image_convolved_regular) / (np.max(image_convolved_subsampled)), 0, decimal=2)

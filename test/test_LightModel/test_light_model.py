@@ -15,7 +15,8 @@ class TestLightModel(object):
     def setup(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
-                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE'
+                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
+                                 'INTERPOL'
                                  ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -34,6 +35,7 @@ class TestLightModel(object):
             {'amp': 1},  # 'UNIFORM'
             {'amp': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'POWER_LAW'
             {'amp': .001, 'e1': 0, 'e2': 1., 'center_x': 0, 'center_y': 0, 's_scale': 1.},  # 'NIE'
+            {'image': np.zeros((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0}
             ]
 
         self.LightModel = LightModel(light_model_list=self.light_model_list)

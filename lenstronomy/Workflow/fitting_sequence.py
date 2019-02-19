@@ -22,6 +22,14 @@ class FittingSequence(object):
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
+    def kwargs_fixed(self):
+        """
+        returns the updated kwargs_fixed from the update Manager
+
+        :return: list of fixed kwargs, see UpdateManager()
+        """
+        return self._updateManager.fixed_kwargs
+
     def fit_sequence(self, fitting_list):
         """
 
@@ -246,15 +254,15 @@ class FittingSequence(object):
         :param kwargs_model: kwargs, specified keyword arguments overwrite the existing ones
         :param kwargs_constraints: kwargs, specified keyword arguments overwrite the existing ones
         :param kwargs_likelihood: kwargs, specified keyword arguments overwrite the existing ones
-        :param lens_add_fixed: [i_model, ['param1', 'param2',...], [...]]
-        :param source_add_fixed:[i_model, ['param1', 'param2',...], [...]]
-        :param lens_light_add_fixed:[i_model, ['param1', 'param2',...], [...]]
-        :param ps_add_fixed:[i_model, ['param1', 'param2',...], [...]]
+        :param lens_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param source_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
+        :param lens_light_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
+        :param ps_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_add_fixed: ['param1', 'param2',...]
-        :param lens_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
-        :param source_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
-        :param lens_light_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
-        :param ps_remove_fixed: [i_model, ['param1', 'param2',...], [...]]
+        :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
         :return: 0, the settings are overwritten for the next fitting step to come
         """

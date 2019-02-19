@@ -251,7 +251,7 @@ class TestSolver4Point(object):
 
     def test_solver_multiplane(self):
         lens_model_list = ['SPEP', 'SHEAR', 'SIS']
-        lensModel = LensModel(lens_model_list, z_source=1, redshift_list=[0.5, 0.5, 0.3], multi_plane=True)
+        lensModel = LensModel(lens_model_list, z_source=1, lens_redshift_list=[0.5, 0.5, 0.3], multi_plane=True)
 
         lensEquationSolver = LensEquationSolver(lensModel)
         sourcePos_x = 0.1

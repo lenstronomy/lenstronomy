@@ -22,11 +22,12 @@ class Optimizer(object):
 
     def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[],
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
-                 z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
+                 z_main = None, z_source=None, tol_source=1e-5, tol_image = 0.003, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=400, compute_mags_postpso = False, optimizer_kwargs = {}):
+                 simplex_n_iterations=400, compute_mags_postpso = False, chi2_mode = 'source',
+                 optimizer_kwargs = {}):
 
         """
         :param x_pos: observed position in arcsec
@@ -136,7 +137,7 @@ class Optimizer(object):
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
-                                    verbose=verbose)
+                                    verbose=verbose, chi2_mode=chi2_mode, tol_image = tol_image, solver = self.solver)
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 

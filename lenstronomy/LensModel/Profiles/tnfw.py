@@ -19,14 +19,12 @@ class TNFW(object):
     lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'r_trunc': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'r_trunc': 100, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, interpol=True, num_interp_X=1000, max_interp_X=10):
+    def __init__(self):
         """
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
-        self._interpol = interpol
-        self._max_interp_X = max_interp_X
-        self._num_interp_X = num_interp_X
+        pass
 
     def function(self, x, y, Rs, theta_Rs, r_trunc, center_x=0, center_y=0):
         """
@@ -113,7 +111,7 @@ class TNFW(object):
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def density(self, R, Rs, rho0, t):
+    def density(self, R, Rs, rho0, r_trunc):
         """
         three dimenstional truncated NFW profile
 
@@ -125,7 +123,7 @@ class TNFW(object):
         :type rho0: float
         :return: rho(R) density
         """
-        return (t ** 2 * (t ** 2 + R ** 2) ** -1) * rho0 / (R / Rs * (1 + R / Rs) ** 2)
+        return (r_trunc ** 2 * (r_trunc ** 2 + R ** 2) ** -1) * rho0 / (R / Rs * (1 + R / Rs) ** 2)
 
     def density_2d(self, x, y, Rs, rho0, r_trunc, center_x=0, center_y=0):
         """
@@ -149,7 +147,7 @@ class TNFW(object):
         Fx = self._F(x, tau)
         return 2 * rho0 * Rs * Fx
 
-    def mass_3d_infinity(self, R, Rs, rho0, t):
+    def mass_3d(self, R, Rs, rho0, r_trunc):
         """
         mass enclosed a 3d sphere or radius r
 
@@ -158,24 +156,15 @@ class TNFW(object):
         :param Rs:
         :return:
         """
-        Rs = float(Rs)
-        tau = t * Rs ** -1
-        m_3d = 4. * np.pi * rho0 * Rs ** 3 * \
-               ((tau ** 2 - 1) * np.log(tau) + tau * np.pi - (tau ** 2 + 1))
 
-        return m_3d
+        x = R * Rs ** -1
 
-    def mass_3d_lens(self, R, Rs, theta_Rs, t):
-        """
-        mass enclosed a 3d sphere or radius r
+        func = (r_trunc ** 2 * (-2 * x * (1 + r_trunc ** 2) + 4 * (1 + x) * r_trunc * np.arctan(x / r_trunc) -
+                                2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs) + 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs * (1 + x)) +
+                                2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs * r_trunc) -
+                                (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs ** 2 * (x ** 2 + r_trunc ** 2)))) / (2. * (1 + x) * (1 + r_trunc ** 2) ** 2)
 
-        :param r:
-        :param Ra:
-        :param Rs:
-        :return:
-        """
-        rho0 = self._alpha2rho0(theta_Rs, Rs)
-        m_3d = self.mass_3d(R, Rs, rho0, t)
+        m_3d = 4*np.pi*Rs ** 3 * rho0 * func
         return m_3d
 
     def nfwPot(self, R, Rs, rho0, r_trunc):

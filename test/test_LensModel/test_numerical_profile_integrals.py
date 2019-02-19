@@ -164,6 +164,12 @@ class TestNumerics(object):
         kwargs = {'rho0': 1., 'Rs': 9, 'r_core': 11}
         self.assert_integrals(Model, kwargs)
 
+    def test_tnfw(self):
+
+        from lenstronomy.LensModel.Profiles.tnfw import TNFW as Model
+        kwargs = {'rho0': 1., 'Rs': 1, 'r_trunc': 4}
+        self.assert_integrals(Model, kwargs)
+
     def test_cnfw(self):
 
         from lenstronomy.LensModel.Profiles.cnfw import CNFW as Model

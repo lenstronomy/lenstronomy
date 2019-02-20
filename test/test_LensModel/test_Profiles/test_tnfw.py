@@ -35,8 +35,8 @@ class TestTNFW(object):
         x = np.linspace(0.1 * Rs, 5 * Rs, 1000)
         y = np.linspace(0.2, 1, 1000)
 
-        pot_t = self.tnfw.nfwPot((x ** 2 + y ** 2) ** .5, Rs, theta_Rs, r_trunc)
-        pot = self.nfw.nfwPot((x ** 2 + y ** 2) ** .5, Rs, theta_Rs)
+        pot_t = self.tnfw.function(x, y, Rs, theta_Rs, r_trunc)
+        pot = self.nfw.function(x, y, Rs, theta_Rs)
 
         np.testing.assert_almost_equal(pot, pot_t, 4)
 
@@ -83,6 +83,27 @@ class TestTNFW(object):
         kappa_t = self.tnfw.density_2d(x, y, Rs, theta_Rs, r_trunc)
         kappa = self.nfw.density_2d(x, y, Rs, theta_Rs)
         np.testing.assert_almost_equal(kappa, kappa_t, 5)
+
+    def test_potential(self):
+
+        Rs = 0.2
+        theta_Rs = 0.1
+        r_trunc = 1000000000000 * Rs
+
+        x = np.linspace(0.1, 0.7, 100)
+
+        pot1 = self.tnfw.function(x, 0, Rs, theta_Rs, r_trunc)
+        pot_nfw1 = self.nfw.function(x, 0, Rs, theta_Rs)
+        npt.assert_almost_equal(pot1, pot_nfw1, 5)
+
+    def test_transform(self):
+
+        rho0, Rs = 1, 2
+
+        trs = self.tnfw._rho02alpha(rho0, Rs)
+        rho_out = self.tnfw._alpha2rho0(trs, Rs)
+
+        npt.assert_almost_equal(rho0, rho_out)
 
     def test_numerical_derivatives(self):
 

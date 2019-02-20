@@ -7,7 +7,6 @@ import lenstronomy.Util.util as util
 import scipy.ndimage.interpolation as interp
 
 
-
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     """
     adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order

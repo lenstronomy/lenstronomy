@@ -1,5 +1,6 @@
 import scipy.special as special
 import numpy as np
+import scipy
 
 
 class SersicUtil(object):
@@ -25,7 +26,8 @@ class SersicUtil(object):
         Re = (bn/k)**n
         return Re
 
-    def b_n(self, n):
+    @staticmethod
+    def b_n(n):
         """
         b(n) computation
         :param n:
@@ -112,3 +114,15 @@ class SersicUtil(object):
         :return:
         """
         raise ValueError("not implemented! Use a Multi-Gaussian-component decomposition.")
+
+    def total_flux(self, r_eff, I_eff, n_sersic):
+        """
+        computes total flux of a Sersic profile
+
+        :param r_eff: projected half light radius
+        :param I_eff: surface brightness at r_eff (in same units as r_eff)
+        :param n_sersic: Sersic index
+        :return: integrated flux to infinity
+        """
+        bn = self.b_n(n_sersic)
+        return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)

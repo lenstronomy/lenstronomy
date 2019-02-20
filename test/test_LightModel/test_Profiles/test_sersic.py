@@ -117,6 +117,13 @@ class TestSersic(object):
         npt.assert_almost_equal(values[1], 0.33653478121594838, decimal=6)
         npt.assert_almost_equal(values[2], 0.14050402887681532, decimal=6)
 
+    def test_total_flux(self):
+        r_eff = 0.2
+        I_eff = 1.
+        n_sersic = 4
+        flux = self.sersic.total_flux(r_eff, I_eff, n_sersic)
+        npt.assert_almost_equal(flux, 0.9065917451904356, decimal=5)
+
 
 if __name__ == '__main__':
     pytest.main()

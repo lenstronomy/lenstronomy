@@ -137,12 +137,21 @@ class LensCosmo(object):
     def time_delay_units(self, fermat_pot, kappa_ext=0):
         """
 
-        :param delay_unitless: in units of arcsec^2 (e.g. Fermat potential)
+        :param fermat_pot: in units of arcsec^2 (e.g. Fermat potential)
         :param kappa_ext: unit-less
         :return: time delay in days
         """
         D_dt = self.D_dt / (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
+
+    def time_delay2fermat_pot(self, dt):
+        """
+
+        :param dt: time delay in units of days
+        :return: Fermat potential in units arcsec**2 for a given cosmology
+        """
+        D_dt = self.D_dt * const.Mpc
+        return dt * const.c * const.day_s / D_dt / const.arcsec ** 2
 
     def nfw_angle2physical(self, Rs_angle, theta_Rs):
         """

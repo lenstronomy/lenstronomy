@@ -72,9 +72,9 @@ class TestSimulation(object):
         kwargs_lens_list = [kwargs_spemd, kwargs_shear]
         # list of light profiles (for lens and source)
         # 'SERSIC': spherical Sersic profile
-        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1./0.05**2, 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
+        kwargs_sersic_ellipse = {'amp': 1./0.05**2, 'R_sersic': .6, 'n_sersic': 7, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.2, 'e2': 0.3}
 
         kwargs_lens_light_list = [kwargs_sersic]

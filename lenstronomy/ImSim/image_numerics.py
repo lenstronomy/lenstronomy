@@ -203,7 +203,7 @@ class ImageNumerics(object):
                                                             psf_subgrid=self._psf_subgrid, conv_type=self._conv_type,
                                                             subgrid_conv_type=self._subgrid_conv_type)
         image_full = self._add_psf(image_convolved)
-        return image_full
+        return image_full * self._Data.deltaPix**2
 
     def _init_mask_psf(self):
         """

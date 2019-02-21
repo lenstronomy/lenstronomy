@@ -26,6 +26,18 @@ class Interpol(object):
         pass
 
     def function(self, x, y, image=None, amp=1, center_x=0, center_y=0, phi_G=0, scale=1):
+        """
+
+        :param x: x-coordinate to evaluate surface brightness
+        :param y: y-coordinate to evaluate surface brightness
+        :param image: 2d numpy array (image) to be used to interpolate
+        :param amp: amplitude of surface brightness scaling in respect of original image
+        :param center_x: center of interpolated image
+        :param center_y: center of interpolated image
+        :param phi_G: rotation angle of simulated image in respect to input gird
+        :param scale: pixel scale (in angular units) of the simulated image
+        :return:
+        """
         #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         n = len(np.atleast_1d(x))
         x_, y_ = self.coord2image_pixel(x, y, center_x, center_y, phi_G, scale)

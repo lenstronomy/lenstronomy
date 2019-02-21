@@ -78,18 +78,18 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05**2, decimal=4)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13536114618182182, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13536114618182182 * 0.05**2, decimal=4)
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
-        npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534, decimal=4)
+        npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534 * 0.05**2, decimal=4)
 
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
-        npt.assert_almost_equal(lens_flux[50, 50], 4.7310552067454452, decimal=4)
+        npt.assert_almost_equal(lens_flux[50, 50], 4.7310552067454452 * 0.05**2, decimal=4)
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)

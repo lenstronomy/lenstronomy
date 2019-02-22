@@ -147,6 +147,7 @@ class PSF(object):
         else:
             if self.psf_type == 'GAUSSIAN':
                 kernel_numPix = self._truncation / self._pixel_size * subgrid_res
+                kernel_numPix = int(round(kernel_numPix))
                 if kernel_numPix % 2 == 0:
                     kernel_numPix += 1
                 self._kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size/subgrid_res, self._fwhm)

@@ -174,7 +174,11 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+            amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
+                                                        search_window=self._search_window,
+                                                        precision_limit=self._precision_limit,
+                                                        num_iter_max=self._num_iter_max, x_center=self._x_center,
+                                                        y_center=self._y_center))
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -201,6 +205,7 @@ class PointSource(object):
         dec_pos = []
         amp = []
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
+
         for i, model in enumerate(self._point_source_list):
                 if i == k or k is None:
                     x_pos = x_image_list[i]

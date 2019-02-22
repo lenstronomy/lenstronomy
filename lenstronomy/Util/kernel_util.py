@@ -227,6 +227,8 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
 
 def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     sigma = util.fwhm2sigma(fwhm)
+    #if kernel_numPix % 2 == 0:
+    #    kernel_numPix += 1
     x_grid, y_grid = util.make_grid(kernel_numPix, deltaPix)
     gaussian = Gaussian()
     kernel = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,

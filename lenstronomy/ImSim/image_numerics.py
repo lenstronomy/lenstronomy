@@ -271,7 +271,6 @@ class ImageNumerics(object):
         x_pos_subgird = x_pos * subgrid + (subgrid - 1) / 2.
         y_pos_subgrid = y_pos * subgrid + (subgrid - 1) / 2.
         kernel_point_source_subgrid = self.kernel_point_source_subgrid
-
         # initialize grid with higher resolution
         nx, ny = np.shape(self._Data.data)
         subgrid2d = np.zeros((nx*subgrid, ny*subgrid))

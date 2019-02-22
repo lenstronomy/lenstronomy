@@ -156,7 +156,7 @@ class TestImageModel(object):
 
     def test_point_source_rendering(self):
         # initialize data
-        from lenstronomy.SimulationAPI.simulations import Simulation
+
         SimAPI = Simulation()
         numPix = 100
         deltaPix = 0.05
@@ -197,6 +197,27 @@ class TestImageModel(object):
             print(int(y_pix[i]), int(x_pix[i]+0.5))
             npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i])], 0.5, decimal=1)
             npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i]+0.5)], 0.5, decimal=1)
+
+    def test_point_source(self):
+
+        pointSource = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
+        kwargs_ps = [{'source_amp': 1000, 'ra_source': 0.1, 'dec_source': 0.1}]
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        numPix = 64
+        deltaPix = 0.13
+        SimAPI = Simulation()
+        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        data_class = Data(kwargs_data)
+
+        psf_type = "GAUSSIAN"
+        fwhm = 0.9
+        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
+        psf_class = PSF(kwargs_psf)
+        imageModel = ImageModel(data_class=data_class, psf_class=psf_class, lens_model_class=lensModel,
+                                point_source_class=pointSource)
+        image = imageModel.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
+        assert np.sum(image) > 0
 
 
 if __name__ == '__main__':

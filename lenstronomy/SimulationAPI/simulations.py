@@ -147,4 +147,3 @@ class Simulation(object):
         image1d = sourceModel.surface_brightness(x, y, kwargs_source)
         image2d = util.array2image(image1d)
         return image2d
-

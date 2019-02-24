@@ -33,8 +33,8 @@ def observation_constructor(instrument_name, observation_name):
 
 
 LSST_camera = {'read_noise': 10,
-                          'pixel_scale': 0.263,
-                          'ccd_gain': 4.5}
+               'pixel_scale': 0.263,
+               'ccd_gain': 4.5}
 
 LSST_g_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 21.7,

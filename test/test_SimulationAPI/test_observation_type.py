@@ -34,14 +34,14 @@ class TestInstrumentObservation(object):
 class TestData(object):
 
     def setup(self):
-        self.ccd_gain = 4
+        self.ccd_gain = 4.
         pixel_scale = 0.13
-        self.read_noise = 10
+        self.read_noise = 10.
         kwargs_instrument = {'read_noise': self.read_noise, 'pixel_scale': pixel_scale, 'ccd_gain': self.ccd_gain}
 
         exposure_time = 100
-        sky_brightness = 20
-        self.magnitude_zero_point = 21
+        sky_brightness = 20.
+        self.magnitude_zero_point = 21.
         num_exposures = 2
         seeing = 0.9
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
@@ -69,11 +69,11 @@ class TestData(object):
         assert bkg_adu == bkg_e_ / self.ccd_gain
 
     def test_flux_noise(self):
-        flux_iid = 50
+        flux_iid = 50.
         flux_adu = flux_iid / self.ccd_gain
         noise_adu = self.data_adu.flux_noise(flux_adu)
         noise_e_ = self.data_e_.flux_noise(flux_iid)
-        assert noise_e_ == 100/200.
+        assert noise_e_ == 100./200.
         assert noise_e_ == noise_adu * self.ccd_gain
 
     def test_noise_for_model(self):

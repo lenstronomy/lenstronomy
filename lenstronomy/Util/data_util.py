@@ -58,3 +58,23 @@ def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
     """
     m_apparent = 5.8 * (np.log10(d_parsec) - 1) + absolute_magnitude
     return m_apparent
+
+
+def adu2electrons(adu, ccd_gain):
+    """
+    converts analog-to-digital units into electron counts
+
+    :param adu: counts in analog-to-digital unit
+    :return: counts in electrons
+    """
+    return adu * ccd_gain
+
+
+def electrons2adu(electrons, ccd_gain):
+    """
+    converts electron counts into analog-to-digital unit
+
+    :param electrons:
+    :return: adu value corresponding to electron count
+    """
+    return electrons / ccd_gain

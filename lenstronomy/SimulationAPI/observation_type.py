@@ -18,24 +18,6 @@ class Instrument(object):
         self._read_noise = read_noise
         self.pixel_scale = pixel_scale
 
-    def adu2electrons(self, adu):
-        """
-        converts analog-to-digital units into electron counts
-
-        :param adu: counts in analog-to-digital unit
-        :return: counts in electrons
-        """
-        return adu * self.ccd_gain
-
-    def electrons2adu(self, electrons):
-        """
-        converts electron counts into analog-to-digital unit
-
-        :param electrons:
-        :return: adu value corresponding to electron count
-        """
-        return electrons / self.ccd_gain
-
 
 class Observation(object):
     """
@@ -89,8 +71,6 @@ class Data(Instrument, Observation):
         """
         Instrument.__init__(self, read_noise, pixel_scale, ccd_gain)
         Observation.__init__(self, exposure_time, sky_brightness, magnitude_zero_point, seeing, num_exposures, psf_type)
-        #super(Observation, self).__init__(exposure_time, sky_brightness, magnitude_zero_point, num_exposures,
-        #                           point_spread_function)
         if data_count_unit not in ['e-', 'ADU']:
             raise ValueError("count_unit type %s not supported! Please chose e- or ADU." % data_count_unit)
         self._data_count_unit = data_count_unit

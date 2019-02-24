@@ -21,4 +21,5 @@ class TestObservationConstructor(unittest.TestCase):
                 constructor.observation_constructor(instrument_name=inst_name, observation_name=obs_name)
         with self.assertRaises(ValueError):
             constructor.observation_constructor(instrument_name='wrong', observation_name='LSST_g_band')
+        with self.assertRaises(ValueError):
             constructor.observation_constructor(instrument_name='LSST', observation_name='wrong')

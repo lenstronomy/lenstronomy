@@ -24,7 +24,8 @@ class MultiBand(object):
         self._exposure_list = []
         self._name_list = []
 
-    def add_band(self, name, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time, psf_type="GAUSSIAN", fwhm=1., *args, **kwargs):
+    def add_band(self, name, collector_area, numPix, deltaPix, readout_noise, sky_brightness, extinction, exposure_time,
+                 psf_type="GAUSSIAN", fwhm=1., *args, **kwargs):
         """
 
         :param name: string, name of exposure e.g. DES-Y_band

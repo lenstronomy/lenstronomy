@@ -121,7 +121,7 @@ class TestSersic(object):
         r_eff = 0.2
         I_eff = 1.
         n_sersic = 4
-        flux = self.sersic.total_flux(r_eff, I_eff, n_sersic)
+        flux = self.sersic._total_flux(r_eff, I_eff, n_sersic)
         npt.assert_almost_equal(flux, 0.9065917451904356, decimal=5)
 
 

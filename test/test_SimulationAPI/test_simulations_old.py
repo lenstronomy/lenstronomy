@@ -1,5 +1,5 @@
 # import main simulation class of lenstronomy
-from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations_old import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
@@ -9,7 +9,6 @@ from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.param_util as param_util
 import numpy.testing as npt
 import numpy as np
-import copy
 import pytest
 
 

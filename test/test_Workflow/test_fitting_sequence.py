@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
-from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations_old import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel

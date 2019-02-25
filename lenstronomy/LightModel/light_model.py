@@ -51,8 +51,8 @@ class LightModel(object):
                 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())
             elif profile_type == 'HERNQUIST_ELLIPSE':
-                from lenstronomy.LightModel.Profiles.hernquist import Hernquist_Ellipse
-                self.func_list.append(Hernquist_Ellipse())
+                from lenstronomy.LightModel.Profiles.hernquist import HernquistEllipse
+                self.func_list.append(HernquistEllipse())
             elif profile_type == 'PJAFFE':
                 from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())
@@ -205,3 +205,29 @@ class LightModel(object):
                 kwargs_list_k['amp'] *= norm_factor
             kwargs_list_new.append(kwargs_list_k)
         return kwargs_list_new
+
+    def total_flux(self, kwargs_list, norm=False):
+        """
+        computes the total flux of each individual light profile. This allows to estimate the total flux as
+        well as lenstronomy amp to magnitude conversions.
+        Not all models are supported
+
+        :param kwargs_list: list of keyword arguments corresponding to the light profiles. The 'amp' parameter can be
+        missing.
+        :param norm: bool, if True, computes the flux for amp=1
+        :return: list of (total) flux values attributed to each profile
+        """
+        norm_flux_list = []
+        for i, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'INTERPOL']:
+                kwargs_new = kwargs_list[i].copy()
+                if norm is True:
+                    new = {'amp': 1}
+                    kwargs_new.update(new)
+                norm_flux = self.func_list[i].total_flux(**kwargs_new)
+                norm_flux_list.append(norm_flux)
+            else:
+                raise ValueError("profile %s does not support flux normlization." % model)
+            #  TODO implement total flux for e.g. 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM'
+        return norm_flux_list

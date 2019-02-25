@@ -79,7 +79,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param deltaPix:
     :return:
     """
-    from lenstronomy.SimulationAPI.simulations import Simulation
+    from lenstronomy.SimulationAPI.simulations_old import Simulation
     simAPI = Simulation()
     kwargs_data = simAPI.data_configure(numPix, deltaPix)
     data = Data(kwargs_data)
@@ -138,7 +138,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :param with_caustics:
     :return:
     """
-    from lenstronomy.SimulationAPI.simulations import Simulation
+    from lenstronomy.SimulationAPI.simulations_old import Simulation
     simAPI = Simulation()
     kwargs_data = simAPI.data_configure(numPix, deltaPix)
     data = Data(kwargs_data)

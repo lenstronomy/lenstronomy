@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
-from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations_old import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource

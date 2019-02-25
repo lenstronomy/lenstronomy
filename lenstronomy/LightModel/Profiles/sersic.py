@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to make a sersic profile
+#  this file contains a class to make a Sersic profile
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil

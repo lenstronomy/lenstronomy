@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations_old import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver

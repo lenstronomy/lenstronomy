@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import pytest
 import numpy as np
 import numpy.testing as npt
-from lenstronomy.SimulationAPI.simulations import Simulation
+from lenstronomy.SimulationAPI.simulations_old import Simulation
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param

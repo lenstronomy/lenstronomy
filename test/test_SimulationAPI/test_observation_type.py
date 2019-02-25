@@ -1,7 +1,8 @@
-from lenstronomy.SimulationAPI.observation_type import Instrument, Observation, Data
+from lenstronomy.SimulationAPI.observation_type import Instrument, Observation, SingleBand
 import lenstronomy.Util.util as util
 import numpy.testing as npt
 import numpy as np
+import unittest
 
 
 class TestInstrumentObservation(object):
@@ -31,9 +32,9 @@ class TestInstrumentObservation(object):
         assert observation.exposure_time == exposure_time * num_exposures
 
 
-class TestData(object):
+class TestRaise(unittest.TestCase):
 
-    def setup(self):
+    def test_raise(self):
         self.ccd_gain = 4.
         pixel_scale = 0.13
         self.read_noise = 10.
@@ -47,9 +48,30 @@ class TestData(object):
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': num_exposures,
                                'seeing': seeing, 'psf_type': 'GAUSSIAN'}
-        kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
-        self.data_adu = Data(data_count_unit='ADU', **kwargs_data)
-        self.data_e_ = Data(data_count_unit='e-', **kwargs_data)
+        self.kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
+        with self.assertRaises(ValueError):
+            SingleBand(data_count_unit='wrong', **self.kwargs_data)
+
+
+class TestData(object):
+
+    def setup(self):
+        self.ccd_gain = 4.
+        pixel_scale = 0.13
+        self.read_noise = 10.
+        self.kwargs_instrument = {'read_noise': self.read_noise, 'pixel_scale': pixel_scale, 'ccd_gain': self.ccd_gain}
+
+        exposure_time = 100
+        sky_brightness = 20.
+        self.magnitude_zero_point = 21.
+        num_exposures = 2
+        seeing = 0.9
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+        self.kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
+        self.data_adu = SingleBand(data_count_unit='ADU', **self.kwargs_data)
+        self.data_e_ = SingleBand(data_count_unit='e-', **self.kwargs_data)
 
     def test_read_noise(self):
         read_noise_adu = self.data_adu.read_noise
@@ -103,3 +125,26 @@ class TestData(object):
 
         mag_0 = self.data_adu.magnitude2cps(magnitude=self.magnitude_zero_point - 1)
         npt.assert_almost_equal(mag_0, 2.51188643150958, decimal=10)
+
+    def test_scaled_exposure_time(self):
+        exp_time_adu = self.data_adu.scaled_exposure_time
+        exp_time_e_ = self.data_e_.scaled_exposure_time
+
+        flux_adu = 10
+        flux_e_ = flux_adu * self.ccd_gain
+        noise_e_ = self.data_e_.flux_noise(flux_e_)
+        noise_e_new = np.sqrt(flux_e_ / exp_time_e_)
+        npt.assert_almost_equal(noise_e_new, noise_e_, decimal=8)
+
+        noise = self.data_adu.flux_noise(flux_adu)
+        noise_new = np.sqrt(flux_adu / exp_time_adu)
+        npt.assert_almost_equal(noise_new, noise, decimal=8)
+
+    def test_psf_type(self):
+        assert self.data_adu._psf_type == 'GAUSSIAN'
+        kwargs_observations = {'exposure_time': 1, 'sky_brightness': 1,
+                               'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': 1,
+                               'seeing': 1, 'psf_type': 'PIXEL'}
+        kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
+        data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
+        assert data_pixel._psf_type == 'PIXEL'

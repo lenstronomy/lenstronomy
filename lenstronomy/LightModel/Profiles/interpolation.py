@@ -61,6 +61,19 @@ class Interpol(object):
             self._image_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, image_bounds, kx=1, ky=1, s=0)
         return self._image_interp(y, x)
 
+    def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
+        """
+
+        :param image:
+        :param scale:
+        :param amp:
+        :param center_x:
+        :param center_y:
+        :param phi_G:
+        :return:
+        """
+        return np.sum(image) * scale**2 * amp
+
     @staticmethod
     def coord2image_pixel(ra, dec, center_x, center_y, phi_G, scale):
         """

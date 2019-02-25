@@ -115,7 +115,7 @@ class SersicUtil(object):
         """
         raise ValueError("not implemented! Use a Multi-Gaussian-component decomposition.")
 
-    def total_flux(self, r_eff, I_eff, n_sersic):
+    def _total_flux(self, r_eff, I_eff, n_sersic):
         """
         computes total flux of a Sersic profile
 
@@ -126,3 +126,21 @@ class SersicUtil(object):
         """
         bn = self.b_n(n_sersic)
         return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)
+
+    def total_flux(self, amp, R_sersic, n_sersic, Re=None, gamma=None, e1=None, e2=None, center_x=None, center_y=None,
+                   alpha=None):
+        """
+
+        :param amp:
+        :param R_sersic:
+        :param Re:
+        :param n_sersic:
+        :param gamma:
+        :param e1:
+        :param e2:
+        :param center_x:
+        :param center_y:
+        :param alpha:
+        :return:
+        """
+        return self._total_flux(r_eff=R_sersic, I_eff=amp, n_sersic=n_sersic)

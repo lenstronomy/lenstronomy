@@ -1,4 +1,4 @@
-from lenstronomy.SimulationAPI.observation_type import SingleBand
+from lenstronomy.SimulationAPI.observation_api import SingleBand
 import lenstronomy.Util.util as util
 
 
@@ -29,7 +29,7 @@ def observation_constructor(instrument_name, observation_name):
         raise ValueError('observation name %s not supported! Chose among %s' %
                          (observation_name, observation_name_list))
     kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observation)
-    return SingleBand(data_count_unit='ADU', **kwargs_data)
+    return kwargs_data
 
 
 LSST_camera = {'read_noise': 10,

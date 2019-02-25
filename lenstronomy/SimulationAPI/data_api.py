@@ -1,4 +1,4 @@
-from lenstronomy.SimulationAPI.observation_type import SingleBand
+from lenstronomy.SimulationAPI.observation_api import SingleBand
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util

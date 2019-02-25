@@ -1,4 +1,4 @@
-from lenstronomy.SimulationAPI.observation_type import Instrument, Observation, SingleBand
+from lenstronomy.SimulationAPI.observation_api import Instrument, Observation, SingleBand
 import lenstronomy.Util.util as util
 import numpy.testing as npt
 import numpy as np

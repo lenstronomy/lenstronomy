@@ -17,7 +17,7 @@ class LensModel(object):
         :param lens_model_list: list of strings with lens model names
         :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
         Is only needed for specific functions that require a cosmology.
-        :param z_source: redshift of the source: Needed in multi_plane option,
+        :param z_source: redshift of the source: Needed in multi_plane option only,
         not required for the core functionalities in the single plane mode.
         :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
         only applicable in multi_plane mode.

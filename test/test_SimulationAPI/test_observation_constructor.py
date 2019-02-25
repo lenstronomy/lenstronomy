@@ -1,4 +1,5 @@
 import lenstronomy.SimulationAPI.observation_constructor as constructor
+from lenstronomy.SimulationAPI.data_api import SingleBand
 import unittest
 
 
@@ -10,7 +11,8 @@ class TestObservationConstructor(unittest.TestCase):
     def test_constructor(self):
         instrument_name = 'LSST'
         observation_name = 'LSST_g_band'
-        data = constructor.observation_constructor(instrument_name=instrument_name, observation_name=observation_name)
+        kwargs_data = constructor.observation_constructor(instrument_name=instrument_name, observation_name=observation_name)
+        data = SingleBand(**kwargs_data)
         assert data.pixel_scale == 0.263
         assert data.exposure_time == 900
 
@@ -20,6 +22,8 @@ class TestObservationConstructor(unittest.TestCase):
             for inst_name in inst_name_list:
                 constructor.observation_constructor(instrument_name=inst_name, observation_name=obs_name)
         with self.assertRaises(ValueError):
-            constructor.observation_constructor(instrument_name='wrong', observation_name='LSST_g_band')
+            kwargs_data = constructor.observation_constructor(instrument_name='wrong', observation_name='LSST_g_band')
+            SingleBand(**kwargs_data)
         with self.assertRaises(ValueError):
-            constructor.observation_constructor(instrument_name='LSST', observation_name='wrong')
+            kwargs_data = constructor.observation_constructor(instrument_name='LSST', observation_name='wrong')
+            SingleBand(**kwargs_data)

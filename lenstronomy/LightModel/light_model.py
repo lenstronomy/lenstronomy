@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 #this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
+import copy
 
 
 class LightModel(object):
@@ -195,12 +196,14 @@ class LightModel(object):
     def re_normalize_flux(self, kwargs_list, norm_factor=1):
         """
 
-        :param kwargs:
-        :return:
+        :param kwargs_list: list of keyword arguments
+        :param norm_factor: float, multiplicative factor to rescale the amplitude parameters
+        :return: new updated kwargs_list
         """
+        kwargs_list_copy = copy.deepcopy(kwargs_list)
         kwargs_list_new = []
         for k, model in enumerate(self.profile_type_list):
-            kwargs_list_k = kwargs_list[k].copy()
+            kwargs_list_k = kwargs_list_copy[k]
             if 'amp' in kwargs_list_k:
                 kwargs_list_k['amp'] *= norm_factor
             kwargs_list_new.append(kwargs_list_k)

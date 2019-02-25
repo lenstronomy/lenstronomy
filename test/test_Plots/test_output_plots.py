@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
-from lenstronomy.SimulationAPI.simulations_old import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
@@ -23,7 +23,6 @@ class TestOutputPlots(object):
     test the fitting sequences
     """
     def setup(self):
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
@@ -34,12 +33,12 @@ class TestOutputPlots(object):
 
         # PSF specification
 
-        self.kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(self.kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
+        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        self.kwargs_psf = self.SimAPI.psf_configure(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
+        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                     truncate=6,
                                                     kernel=kwargs_psf['kernel_point_source'])
         psf_class = PSF(kwargs_psf)
@@ -76,7 +75,7 @@ class TestOutputPlots(object):
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
 
         data_class.update_data(image_sim)

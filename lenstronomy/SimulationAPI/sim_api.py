@@ -1,7 +1,7 @@
 from lenstronomy.SimulationAPI.observation_type import SingleBand
 
 
-class ModelAPI(SingleBand):
+class SimAPI(SingleBand):
     """
     This class manages the model parameters in regard of the data specified in SingleBand. In particular,
     this API translates models specified in units of astronomical magnitudes into the amplitude parameters used in the

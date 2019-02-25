@@ -5,12 +5,11 @@ import numpy as np
 import pytest
 
 import lenstronomy.Util.param_util as param_util
-from lenstronomy.Data.psf import PSF
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.SimulationAPI.simulations_old import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
@@ -21,7 +20,6 @@ class TestImageModel(object):
     tests the source model routines
     """
     def setup(self):
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = .05  # background noise per pixel
@@ -32,9 +30,9 @@ class TestImageModel(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg, inverse=True)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg, inverse=True)
         data_class = Data(kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
         psf_class = PSF(kwargs_psf)
         psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
@@ -68,7 +66,7 @@ class TestImageModel(object):
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                        self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
 
@@ -127,7 +125,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
 
     def test_reduced_residuals(self):
-        model = self.SimAPI.simulate(self.imageModel, self.kwargs_lens, self.kwargs_source,
+        model = sim_util.simulate_simple(self.imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps, no_noise=True)
         residuals = self.imageModel.reduced_residuals(model, error_map=0)
         npt.assert_almost_equal(np.std(residuals), 1.01, decimal=1)
@@ -157,10 +155,9 @@ class TestImageModel(object):
     def test_point_source_rendering(self):
         # initialize data
 
-        SimAPI = Simulation()
         numPix = 100
         deltaPix = 0.05
-        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
         data_class = Data(kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
@@ -206,8 +203,7 @@ class TestImageModel(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         numPix = 64
         deltaPix = 0.13
-        SimAPI = Simulation()
-        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
         data_class = Data(kwargs_data)
 
         psf_type = "GAUSSIAN"

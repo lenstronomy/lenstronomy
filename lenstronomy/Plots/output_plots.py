@@ -1,10 +1,10 @@
 import copy
 
 import lenstronomy.Util.util as util
-import lenstronomy.Util.mask as util_maskl
+import lenstronomy.Util.mask as util_mask
+import lenstronomy.Util.simulation_util as sim_util
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.ndimage as ndimage
 from lenstronomy.LensModel.Profiles.shear import Shear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model import LensModel
@@ -79,9 +79,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param deltaPix:
     :return:
     """
-    from lenstronomy.SimulationAPI.simulations_old import Simulation
-    simAPI = Simulation()
-    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
     data = Data(kwargs_data)
     _frame_size = numPix * deltaPix
     _coords = data._coords
@@ -138,9 +136,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :param with_caustics:
     :return:
     """
-    from lenstronomy.SimulationAPI.simulations_old import Simulation
-    simAPI = Simulation()
-    kwargs_data = simAPI.data_configure(numPix, deltaPix)
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
     data = Data(kwargs_data)
     _frame_size = numPix * deltaPix
     _coords = data._coords
@@ -779,8 +775,8 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     center_x = np.mean(x_grid)
     center_y = np.mean(y_grid)
     radius = (np.max(x_grid) - np.min(x_grid))/4
-    circle_shear = util_maskl.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
-    circle_foreground = util_maskl.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
+    circle_shear = util_mask.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
+    circle_foreground = util_mask.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
     f, ax = plt.subplots(1, 1, figsize=(16, 8))
     im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")

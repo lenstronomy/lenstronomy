@@ -11,7 +11,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.SimulationAPI.simulations_old import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
@@ -20,7 +20,6 @@ class TestImageModel(object):
     tests the source model routines
     """
     def setup(self):
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = .05  # background noise per pixel
@@ -31,9 +30,9 @@ class TestImageModel(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
+        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=5)
         psf_class = PSF(kwargs_psf)
         # 'EXERNAL_SHEAR': external shear
@@ -66,7 +65,7 @@ class TestImageModel(object):
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
         kwargs_data['image_data'] = image_sim

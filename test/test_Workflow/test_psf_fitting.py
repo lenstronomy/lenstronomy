@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import pytest
 import numpy as np
 import lenstronomy.Util.util as util
-from lenstronomy.SimulationAPI.simulations_old import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
@@ -20,7 +20,6 @@ class TestImageModel(object):
     """
 
     def setup(self):
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = 0.01  # background noise per pixel
@@ -31,7 +30,7 @@ class TestImageModel(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(kwargs_data)
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
@@ -76,7 +75,7 @@ class TestImageModel(object):
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                      lens_light_model_class,
                                      point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,

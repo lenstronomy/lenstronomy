@@ -209,7 +209,7 @@ class LightModel(object):
             kwargs_list_new.append(kwargs_list_k)
         return kwargs_list_new
 
-    def total_flux(self, kwargs_list, norm=False):
+    def total_flux(self, kwargs_list, norm=False, k=None):
         """
         computes the total flux of each individual light profile. This allows to estimate the total flux as
         well as lenstronomy amp to magnitude conversions.
@@ -218,19 +218,25 @@ class LightModel(object):
         :param kwargs_list: list of keyword arguments corresponding to the light profiles. The 'amp' parameter can be
         missing.
         :param norm: bool, if True, computes the flux for amp=1
+        :param k: int, if set, only evaluates the specific light model
         :return: list of (total) flux values attributed to each profile
         """
         norm_flux_list = []
         for i, model in enumerate(self.profile_type_list):
-            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'INTERPOL']:
-                kwargs_new = kwargs_list[i].copy()
-                if norm is True:
-                    new = {'amp': 1}
-                    kwargs_new.update(new)
-                norm_flux = self.func_list[i].total_flux(**kwargs_new)
-                norm_flux_list.append(norm_flux)
-            else:
-                raise ValueError("profile %s does not support flux normlization." % model)
-            #  TODO implement total flux for e.g. 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM'
+            if k is None or k == i:
+                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'INTERPOL', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE',
+                             'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                    kwargs_new = kwargs_list[i].copy()
+                    if norm is True:
+                        if model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                            new = {'amp': np.array(kwargs_new['amp'])/kwargs_new['amp'][0]}
+                        else:
+                            new = {'amp': 1}
+                        kwargs_new.update(new)
+                    norm_flux = self.func_list[i].total_flux(**kwargs_new)
+                    norm_flux_list.append(norm_flux)
+                else:
+                    raise ValueError("profile %s does not support flux normlization." % model)
+                #  TODO implement total flux for e.g. 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                    # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list

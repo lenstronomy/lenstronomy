@@ -27,6 +27,17 @@ class Gaussian(object):
         R2 = (x - center_x) ** 2/sigma_x**2 + (y - center_y) ** 2/sigma_y**2
         return c * np.exp(-R2 / 2.)
 
+    def total_flux(self, amp, sigma_x, sigma_y, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param sigma:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        return amp
+
     def light_3d(self, r, amp, sigma_x, sigma_y):
         """
 
@@ -69,6 +80,19 @@ class GaussianEllipse(object):
         x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
         return self.gaussian.function(x_, y_, amp, sigma, sigma, center_x, center_y)
 
+    def total_flux(self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None):
+        """
+
+        :param amp:
+        :param sigma:
+        :param e1:
+        :param e2:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        return self.gaussian.total_flux(amp, sigma, sigma, center_x, center_y)
+
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
         """
 
@@ -109,6 +133,20 @@ class MultiGaussian(object):
         for i in range(len(amp)):
             f_ += self.gaussian.function(x, y, amp[i], sigma[i], sigma[i], center_x, center_y)
         return f_
+
+    def total_flux(self, amp, sigma, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param sigma:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        flux = 0
+        for i in range(len(amp)):
+            flux += self.gaussian.total_flux(amp[i], sigma[i], sigma[i], center_x, center_y)
+        return flux
 
     def function_split(self, x, y, amp, sigma, center_x=0, center_y=0):
         f_list = []
@@ -161,6 +199,22 @@ class MultiGaussianEllipse(object):
         for i in range(len(amp)):
             f_ += self.gaussian.function(x_, y_, amp[i], sigma[i], sigma[i], center_x, center_y)
         return f_
+
+    def total_flux(self, amp, sigma, e1, e2, center_x=0, center_y=0):
+        """
+
+        :param amp:
+        :param sigma:
+        :param e1:
+        :param e2:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        flux = 0
+        for i in range(len(amp)):
+            flux += self.gaussian.total_flux(amp[i], sigma[i], sigma[i], center_x, center_y)
+        return flux
 
     def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         x_, y_ = param_util.transform_e1e2(x, y, e1, e2)

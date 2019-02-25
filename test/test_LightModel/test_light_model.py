@@ -73,13 +73,30 @@ class TestLightModel(object):
         assert kwargs_out[0]['amp'] == 2
 
     def test_total_flux(self):
-        light_model_list = ['SERSIC', 'INTERPOL']
+        light_model_list = ['SERSIC', 'SERSIC_ELLIPSE', 'INTERPOL', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
+                            'MULTI_GAUSSIAN_ELLIPSE']
         kwargs_list = [{'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
-                       {'image': np.ones((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0}  # 'INTERPOL'
+                       {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
+                       {'image': np.ones((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},  # 'INTERPOL'
+                       {'amp': 2, 'sigma_x': 2, 'sigma_y': 1, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
+                       {'amp': 2, 'sigma': 2, 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN_ELLIPSE'
+                       {'amp': [1,1], 'sigma': [2, 1], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
+                       {'amp': [1, 1], 'sigma': [2, 1], 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0}  # 'MULTI_GAUSSIAN_ELLIPSE'
                       ]
         lightModel = LightModel(light_model_list=light_model_list)
         total_flux_list = lightModel.total_flux(kwargs_list)
-        assert total_flux_list[1] == 100
+        assert total_flux_list[2] == 100
+        assert total_flux_list[3] == 2
+        assert total_flux_list[4] == 2
+        assert total_flux_list[5] == 2
+        assert total_flux_list[6] == 2
+
+        total_flux_list = lightModel.total_flux(kwargs_list, norm=True)
+        assert total_flux_list[2] == 100
+        assert total_flux_list[3] == 1
+        assert total_flux_list[4] == 1
+        assert total_flux_list[5] == 2
+        assert total_flux_list[6] == 2
 
 
 if __name__ == '__main__':

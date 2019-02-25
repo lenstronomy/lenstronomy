@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 from lenstronomy.PointSource.point_source_types import PointSourceCached
 
 
@@ -286,8 +287,28 @@ class PointSource(object):
             if model == 'UNLENSED':
                 kwargs_ps[i]['point_amp'] *= norm_factor
             elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification_list:
+                if self._fixed_magnification_list[i] is True:
                     kwargs_ps[i]['source_amp'] *= norm_factor
                 else:
                     kwargs_ps[i]['point_amp'] *= norm_factor
         return kwargs_ps
+
+    def set_amplitudes(self, amp_list, kwargs_ps):
+        """
+
+        :param amp_list: list of model amplitudes for each point source model
+        :param kwargs_ps: list of point source keywords
+        :return: overwrites kwargs_ps with new amplitudes
+        """
+        kwargs_list = copy.deepcopy(kwargs_ps)
+        for i, model in enumerate(self._point_source_type_list):
+            amp = amp_list[i]
+            if model == 'UNLENSED':
+                kwargs_list[i]['point_amp'] = amp
+            elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+                if self._fixed_magnification_list[i] is True:
+                    kwargs_list[i]['source_amp'] = amp
+                else:
+                    kwargs_list[i]['point_amp'] = amp
+        return kwargs_list
+

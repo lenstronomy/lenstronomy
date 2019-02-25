@@ -2,6 +2,9 @@ from lenstronomy.SimulationAPI.data_api import DataAPI
 from lenstronomy.SimulationAPI.model_api import ModelAPI
 from lenstronomy.ImSim.image_model import ImageModel
 
+import copy
+import numpy as np
+
 
 class SimAPI(DataAPI, ModelAPI):
     """
@@ -34,13 +37,46 @@ class SimAPI(DataAPI, ModelAPI):
         """
         return self._image_model_class
 
-    def magnitude2amplitude(self, magnitude, light_model):
+    def magnitude2amplitude(self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None):
         """
 
-        :param magnitude: magnitude of the object
-        :param light_model: model type of the object
+        :param
         :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this
-        magnitude
+        magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
         """
-        amp = 0
-        return amp
+
+        kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)
+        if kwargs_lens_light_mag is not None:
+            for i, kwargs_mag in enumerate(kwargs_lens_light_mag):
+                kwargs_new = kwargs_lens_light[i]
+                del kwargs_new['magnitude']
+                cps_norm = self.lens_light_model_class.total_flux(kwargs_list=kwargs_lens_light, norm=True, k=i)[0]
+                magnitude = kwargs_mag['magnitude']
+                cps = self.magnitude2cps(magnitude)
+                amp = cps / cps_norm
+                kwargs_new['amp'] = amp
+
+        kwargs_source = copy.deepcopy(kwargs_source_mag)
+        if kwargs_source_mag is not None:
+            for i, kwargs_mag in enumerate(kwargs_source_mag):
+                kwargs_new = kwargs_source[i]
+                del kwargs_new['magnitude']
+                cps_norm = self.source_model_class.total_flux(kwargs_list=kwargs_source, norm=True, k=i)[0]
+                magnitude = kwargs_mag['magnitude']
+                cps = self.magnitude2cps(magnitude)
+                amp = cps / cps_norm
+                kwargs_new['amp'] = amp
+
+        kwargs_ps = copy.deepcopy(kwargs_ps_mag)
+        if kwargs_ps_mag is not None:
+            amp_list = []
+            for i, kwargs_mag in enumerate(kwargs_ps_mag):
+                kwargs_new = kwargs_ps[i]
+                del kwargs_new['magnitude']
+                cps_norm = 1
+                magnitude = np.array(kwargs_mag['magnitude'])
+                cps = self.magnitude2cps(magnitude)
+                amp = cps / cps_norm
+                amp_list.append(amp)
+            kwargs_ps = self.point_source_model_class.set_amplitudes(amp_list, kwargs_ps)
+        return kwargs_lens_light, kwargs_source, kwargs_ps

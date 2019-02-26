@@ -29,9 +29,13 @@ class Observation(object):
 
         :param exposure_time: exposure time per image (in seconds)
         :param sky_brightness: sky brightness (in magnitude per square arcseconds)
+        :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
         :param point_spread_function: 2d array characterising the point spread function (odd numbers per axis, centered)
         :param magnitude_zero_point: magnitude in which 1 count per second per arcsecond square is registered (in ADU's)
         :param num_exposures: number of exposures that are combined
+        :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+        :param psf_model: 2d numpy array, model of PSF centered with odd number of pixels per axis
+        (optional when psf_type='PIXEL' is chosen)
         """
         self._exposure_time = exposure_time
         self._sky_brightness = sky_brightness

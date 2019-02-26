@@ -35,7 +35,8 @@ class ModelAPI(object):
                                         source_redshift_list=source_redshift_list)
         self._lens_light_model_class = LightModel(light_model_list=lens_light_model_list)
         self._point_source_model_class = PointSource(point_source_type_list=point_source_model_list,
-                                                     lensModel=self._lens_model_class)
+                                                     lensModel=self._lens_model_class,
+                                                     fixed_magnification_list=[True] * len(point_source_model_list))
 
     @property
     def lens_model_class(self):

@@ -90,6 +90,10 @@ class TestData(object):
         bkg_e_ = self.data_e_.background_noise
         assert bkg_adu == bkg_e_ / self.ccd_gain
 
+        self.data_adu._background_noise = 1
+        bkg = self.data_adu.background_noise
+        assert bkg == 1
+
     def test_flux_noise(self):
         flux_iid = 50.
         flux_adu = flux_iid / self.ccd_gain

@@ -16,8 +16,17 @@ class Sersic(SersicUtil):
 
     def function(self, x, y, n_sersic, R_sersic, k_eff, center_x=0, center_y=0):
         """
-        returns Gaussian
+
+        :param x: x-coordinate
+        :param y: y-coordinate
+        :param n_sersic: Sersic index
+        :param R_sersic: half light radius
+        :param k_eff: convergence at half light radius
+        :param center_x: x-center
+        :param center_y: y-center
+        :return:
         """
+
         n = n_sersic
         x_red = self._x_reduced(x, y, n, R_sersic, center_x, center_y)
         b = self.b_n(n)

@@ -35,6 +35,9 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     :param kernel: the layer to be added to the image
     :return: image with added layer
     """
+    nx, ny = np.shape(kernel)
+    if nx % 2 == 0:
+        raise ValueError("kernel needs odd numbers of pixels")
 
     num_x, num_y = np.shape(grid2d)
     x_int = int(round(x_pos))

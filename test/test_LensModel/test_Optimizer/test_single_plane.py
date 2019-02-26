@@ -32,6 +32,10 @@ class TestSinglePlaneOptimizer(object):
                                lens_model_list=lens_model_list_subs, kwargs_lens=kwargs_lens_subs, multiplane=False, verbose=True,
                                optimizer_routine='fixed_powerlaw_shear')
 
+    optimizer_image_plane = Optimizer(x_pos_simple, y_pos_simple, magnification_target=magnification_simple, redshift_list=[],
+                                 lens_model_list=lens_model_list_simple, kwargs_lens=kwargs_lens_simple, multiplane=False, verbose=True,
+                                 optimizer_routine='fixed_powerlaw_shear', chi2_mode='image', tol_image=0.006, pso_convergence_mean=100)
+
     def test_single_plane_simple(self):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=30, n_iterations=30,restart=2)
@@ -42,6 +46,9 @@ class TestSinglePlaneOptimizer(object):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=2)
         mags = self.optimizer_subs._lensModel.magnification(x_image, y_image, kwargs_lens)
+
+    def test_image_plane_chi2(self):
+        kwargs_lens, source, [x_image, y_image] = self.optimizer_image_plane.optimize(n_particles=20, n_iterations=150, restart=1)
 
 if __name__ == '__main__':
     pytest.main()

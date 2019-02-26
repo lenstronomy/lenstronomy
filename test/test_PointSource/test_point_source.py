@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import copy
 import numpy.testing as npt
 
 from lenstronomy.PointSource.point_source import PointSource
@@ -19,7 +20,7 @@ class TestPointSource(object):
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
-                                       lensModel=lensModel, fixed_magnification_list=[False]*4, additional_images_list=[False]*4)
+                                       lensModel=lensModel, fixed_magnification_list=[False]*3, additional_images_list=[False]*4)
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos)},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
                           {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'point_amp': np.ones_like(self.x_pos)}, {}]
@@ -70,6 +71,19 @@ class TestPointSource(object):
                                                                      kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(x_image_list[0][0], -0.82654997748011705 , decimal=8)
 
+    def test_re_normalize_flux(self):
+        norm_factor = 10
+        kwargs_input = copy.deepcopy(self.kwargs_ps)
+        kwargs_ps = self.PointSource.re_normalize_flux(kwargs_input, norm_factor)
+        npt.assert_almost_equal(kwargs_ps[0]['point_amp'][0] / self.kwargs_ps[0]['point_amp'][0], norm_factor, decimal=8)
+
+    def test_set_amplitudes(self):
+        amp_list = [np.ones_like(self.x_pos)*10, [100], np.ones_like(self.x_pos)*10]
+        kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
+        assert kwargs_out[0]['point_amp'][0] == 10* self.kwargs_ps[0]['point_amp'][0]
+        assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
+        assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
+
 
 class TestPointSource_fixed_mag(object):
 
@@ -119,6 +133,19 @@ class TestPointSource_fixed_mag(object):
     def test_check_image_positions(self):
         bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
         assert bool == True
+
+    def test_re_normalize_flux(self):
+        norm_factor = 10
+        kwargs_input = copy.deepcopy(self.kwargs_ps)
+        kwargs_ps = self.PointSource.re_normalize_flux(kwargs_input, norm_factor)
+        npt.assert_almost_equal(kwargs_ps[0]['source_amp'] / self.kwargs_ps[0]['source_amp'], norm_factor, decimal=8)
+
+    def test_set_amplitudes(self):
+        amp_list = [10, [100], 10]
+        kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
+        assert kwargs_out[0]['source_amp'] == 10 * self.kwargs_ps[0]['source_amp']
+        assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
+        assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
 
 
 if __name__ == '__main__':

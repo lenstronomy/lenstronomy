@@ -227,18 +227,18 @@ class MultiPlaneLensing(object):
                 macro_redshifts.append(z)
                 macro_args.append(lensmodel_args[i])
 
-        macromodel = LensModel(lens_model_list=macro_names, redshift_list=macro_redshifts, cosmo=self._astropy_instance,
+        macromodel = LensModel(lens_model_list=macro_names, lens_redshift_list=macro_redshifts, cosmo=self._astropy_instance,
                                multi_plane=True,
                                z_source=self._z_source)
 
-        halo_lensmodel = LensModel(lens_model_list=front_model_names+back_model_names, redshift_list=front_redshifts+back_redshifts,
+        halo_lensmodel = LensModel(lens_model_list=front_model_names+back_model_names, lens_redshift_list=front_redshifts + back_redshifts,
                                    cosmo=self._astropy_instance, multi_plane=True, z_source=self._z_source)
         halo_args = front_args+back_args
 
         front_lensmodel = LensModel(lens_model_list=front_model_names+macro_names,
-                                    redshift_list=front_redshifts+macro_redshifts,
+                                    lens_redshift_list=front_redshifts + macro_redshifts,
                                     cosmo=self._astropy_instance,
-                                    multi_plane=True,z_source=self._z_source)
+                                    multi_plane=True, z_source=self._z_source)
 
         return macromodel, macro_args, halo_lensmodel, halo_args, front_lensmodel,front_args,\
                background_z_current

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.image_util &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.Util.image_util &#8212; lenstronomy 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,12 +59,28 @@
 <span class="sd">    :return: image with added layer, cut to original size</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">num_x</span><span class="p">,</span> <span class="n">num_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">grid2d</span><span class="p">)</span>
     <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
     <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="p">))</span>
     <span class="n">shift_x</span> <span class="o">=</span> <span class="n">x_int</span> <span class="o">-</span> <span class="n">x_pos</span>
     <span class="n">shift_y</span> <span class="o">=</span> <span class="n">y_int</span> <span class="o">-</span> <span class="n">y_pos</span>
     <span class="n">kernel_shifted</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">shift_y</span><span class="p">,</span> <span class="o">-</span><span class="n">shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">add_layer2image_int</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">kernel_shifted</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_layer2image_int"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image_int">[docs]</a><span class="k">def</span> <span class="nf">add_layer2image_int</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel</span>
+<span class="sd">    :param grid2d: 2d pixel grid (i.e. image)</span>
+<span class="sd">    :param x_pos: x-position center (pixel coordinate) of the layer to be added</span>
+<span class="sd">    :param y_pos: y-position center (pixel coordinate) of the layer to be added</span>
+<span class="sd">    :param kernel: the layer to be added to the image</span>
+<span class="sd">    :return: image with added layer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">num_x</span><span class="p">,</span> <span class="n">num_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">grid2d</span><span class="p">)</span>
+    <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
+    <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="p">))</span>
+
     <span class="n">k_x</span><span class="p">,</span> <span class="n">k_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
     <span class="n">k_l2_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">k_x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">k_l2_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">k_y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
@@ -80,9 +96,8 @@
     <span class="n">max_yk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">k_y</span><span class="p">,</span> <span class="o">-</span><span class="n">y_int</span> <span class="o">+</span> <span class="n">k_l2_y</span> <span class="o">+</span> <span class="n">num_y</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">min_x</span> <span class="o">&gt;=</span> <span class="n">max_x</span> <span class="ow">or</span> <span class="n">min_y</span> <span class="o">&gt;=</span> <span class="n">max_y</span> <span class="ow">or</span> <span class="n">min_xk</span> <span class="o">&gt;=</span> <span class="n">max_xk</span> <span class="ow">or</span> <span class="n">min_yk</span> <span class="o">&gt;=</span> <span class="n">max_yk</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_x</span><span class="o">-</span><span class="n">min_x</span> <span class="o">!=</span> <span class="n">max_xk</span><span class="o">-</span><span class="n">min_xk</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">max_y</span><span class="o">-</span><span class="n">min_y</span> <span class="o">!=</span> <span class="n">max_yk</span><span class="o">-</span><span class="n">min_yk</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">grid2d</span>
-    <span class="n">kernel_re_sized</span> <span class="o">=</span> <span class="n">kernel_shifted</span><span class="p">[</span><span class="n">min_yk</span><span class="p">:</span><span class="n">max_yk</span><span class="p">,</span> <span class="n">min_xk</span><span class="p">:</span><span class="n">max_xk</span><span class="p">]</span>
+    <span class="n">kernel_re_sized</span> <span class="o">=</span> <span class="n">kernel</span><span class="p">[</span><span class="n">min_yk</span><span class="p">:</span><span class="n">max_yk</span><span class="p">,</span> <span class="n">min_xk</span><span class="p">:</span><span class="n">max_xk</span><span class="p">]</span>
     <span class="n">new</span> <span class="o">=</span> <span class="n">grid2d</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
     <span class="n">new</span><span class="p">[</span><span class="n">min_y</span><span class="p">:</span><span class="n">max_y</span><span class="p">,</span> <span class="n">min_x</span><span class="p">:</span><span class="n">max_x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">kernel_re_sized</span>
     <span class="k">return</span> <span class="n">new</span></div>
 
@@ -230,16 +245,19 @@
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">bin_size</span><span class="p">)</span>
-    <span class="n">factor</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">numPix</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">numPix</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">bin_size</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;image with size </span><span class="si">%s</span><span class="s2"> can not be rebinned with factor </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">),</span> <span class="n">bin_size</span><span class="p">))</span>
-    <span class="n">image_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">numPix_precut</span> <span class="o">=</span> <span class="n">numPix</span> <span class="o">*</span> <span class="n">bin_size</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">numPix</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numPix</span> <span class="o">*</span> <span class="n">bin_size</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+        <span class="n">image_precut</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">image_precut</span> <span class="o">=</span> <span class="n">image</span>
+    <span class="n">image_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">image_precut</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
     <span class="n">image_resized</span> <span class="o">*=</span> <span class="n">bin_size</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">wht_map_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">wht_map</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">wht_map_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">wht_map</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
     <span class="n">sigma_bkg_resized</span> <span class="o">=</span> <span class="n">bin_size</span><span class="o">*</span><span class="n">sigma_bkg</span>
-    <span class="n">ra_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">ra_coords</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
-    <span class="n">dec_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">dec_coords</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
-    <span class="n">idex_mask_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">,</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">ra_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">ra_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">dec_coords_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">dec_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
+    <span class="n">idex_mask_resized</span> <span class="o">=</span> <span class="n">re_size</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">numPix_precut</span><span class="p">],</span> <span class="n">factor</span><span class="p">)</span>
     <span class="n">idex_mask_resized</span><span class="p">[</span><span class="n">idex_mask_resized</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">image_resized</span><span class="p">,</span> <span class="n">wht_map_resized</span><span class="p">,</span> <span class="n">sigma_bkg_resized</span><span class="p">,</span> <span class="n">ra_coords_resized</span><span class="p">,</span> <span class="n">dec_coords_resized</span><span class="p">,</span> <span class="n">idex_mask_resized</span></div>
 
@@ -341,7 +359,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

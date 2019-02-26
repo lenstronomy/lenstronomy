@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import copy
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
@@ -58,7 +60,7 @@ class Param(object):
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
-                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE'):
+                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', cosmo_type=None):
         """
 
         :return:
@@ -68,9 +70,13 @@ class Param(object):
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
-        self._lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
-                                    redshift_list=kwargs_model.get('redshift_list', None),
-                                    multi_plane=kwargs_model.get('multi_plane', False))
+        lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
+                              lens_redshift_list=kwargs_model.get('redshift_list', None),
+                              multi_plane=kwargs_model.get('multi_plane', False))
+        sourceModel = LightModel(light_model_list=self._source_light_model_list,
+                                 deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
+                                 source_redshift_list=kwargs_model.get('source_redshift_list', None))
+        self._image2SourceMapping = Image2SourceMapping(lensModel=lensModel, sourceModel=sourceModel)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
@@ -123,7 +129,7 @@ class Param(object):
             self._solver = False
         else:
             self._solver = True
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lensModel,
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=lensModel,
                                          num_images=self._num_images)
 
         # fix parameters joint within the same model types
@@ -150,7 +156,7 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.cosmoParams = CosmoParam(kwargs_model.get('cosmo_type', None), mass_scaling=self._mass_scaling,
+        self.cosmoParams = CosmoParam(cosmo_type=cosmo_type, mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
                                       point_source_offset=self._point_source_offset, num_images=self._num_images)
@@ -271,7 +277,8 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_source_copy):
             if self._image_plane_source_list[i] is True and not image_plane:
                 if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens)
+                    x_mapped, y_mapped = self._image2SourceMapping.image2source(kwargs['center_x'], kwargs['center_y'],
+                                                                                kwargs_lens, idex_source=i)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
         return kwargs_source_copy
@@ -287,7 +294,8 @@ class Param(object):
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
                 x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
-                x_mapped, y_mapped = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_list)
+                x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
+                                                                            idex_source=k_source)
             for param_name in param_list:
                 if param_name == 'center_x':
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)

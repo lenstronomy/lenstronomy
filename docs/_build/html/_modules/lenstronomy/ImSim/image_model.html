@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -84,7 +84,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span> <span class="o">=</span> <span class="n">lens_light_model_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_bands</span> <span class="o">=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="ImageModel.reset_point_source_cache"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.reset_point_source_cache">[docs]</a>    <span class="k">def</span> <span class="nf">reset_point_source_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageModel.reset_point_source_cache"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.reset_point_source_cache">[docs]</a>    <span class="k">def</span> <span class="nf">reset_point_source_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deletes all the cache in the point source class and saves it from then on</span>
 
@@ -92,7 +92,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImageModel.update_data"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.update_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_class</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -503,7 +503,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

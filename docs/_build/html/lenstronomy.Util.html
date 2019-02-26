@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -158,7 +158,7 @@ image (including fracitonal pixels).</p>
 <span id="lenstronomy-util-class-creator-module"></span><h2>lenstronomy.Util.class_creator module<a class="headerlink" href="#module-lenstronomy.Util.class_creator" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Util.class_creator.create_image_model">
-<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_image_model</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_numerics</em>, <em>kwargs_model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_image_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_image_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_image_model</code><span class="sig-paren">(</span><em>kwargs_data</em>, <em>kwargs_psf</em>, <em>kwargs_numerics</em>, <em>lens_model_list=[]</em>, <em>z_source=None</em>, <em>redshift_list=None</em>, <em>multi_plane=False</em>, <em>source_light_model_list=[]</em>, <em>lens_light_model_list=[]</em>, <em>point_source_model_list=[]</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>multi_band_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_image_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_image_model" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -179,21 +179,23 @@ image (including fracitonal pixels).</p>
 
 <dl class="function">
 <dt id="lenstronomy.Util.class_creator.create_multiband">
-<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_multiband</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>type='multi-band'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_multiband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_multiband" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_multiband</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>lens_model_list=[]</em>, <em>z_source=None</em>, <em>redshift_list=None</em>, <em>multi_plane=False</em>, <em>source_light_model_list=[]</em>, <em>lens_light_model_list=[]</em>, <em>point_source_model_list=[]</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>multi_band_type='multi-band'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_multiband"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_multiband" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_data</strong> – </li>
-<li><strong>kwargs_psf</strong> – </li>
-<li><strong>kwargs_options</strong> – </li>
-<li><strong>type</strong> – string, ‘multi-band’ or ‘multi-exposure’</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>multi_band_type</strong> – <p>string, option when having multiple imaging data sets modelled simultaneously.
+Options are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>’multi-band’: linear amplitudes are inferred on single data set</li>
+<li>’multi-exposure’: linear amplitudes ae jointly inferred</li>
+<li>’multi-frame’: multiple frames (as single exposures with disjoint lens model</li>
 </ul>
+</div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -335,6 +337,17 @@ image (including fracitonal pixels).</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.image_util.add_layer2image_int">
+<code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_layer2image_int</code><span class="sig-paren">(</span><em>grid2d</em>, <em>x_pos</em>, <em>y_pos</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_layer2image_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_layer2image_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+:param grid2d: 2d pixel grid (i.e. image)
+:param x_pos: x-position center (pixel coordinate) of the layer to be added
+:param y_pos: y-position center (pixel coordinate) of the layer to be added
+:param kernel: the layer to be added to the image
+:return: image with added layer</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.image_util.add_poisson">
 <code class="descclassname">lenstronomy.Util.image_util.</code><code class="descname">add_poisson</code><span class="sig-paren">(</span><em>image</em>, <em>exp_time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#add_poisson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.image_util.add_poisson" title="Permalink to this definition">¶</a></dt>
 <dd><p>adds a poison (or Gaussian) distributed noise with mean given by surface brightness
@@ -450,8 +463,8 @@ center is well defined for odd pixel sizes.
 <span id="lenstronomy-util-kernel-util-module"></span><h2>lenstronomy.Util.kernel_util module<a class="headerlink" href="#module-lenstronomy.Util.kernel_util" title="Permalink to this headline">¶</a></h2>
 <p>routines that manipulate convolution kernels</p>
 <dl class="function">
-<dt id="lenstronomy.Util.kernel_util.averaging_odd_kernel">
-<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">averaging_odd_kernel</code><span class="sig-paren">(</span><em>kernel_high_res</em>, <em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#averaging_odd_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.averaging_odd_kernel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Util.kernel_util.averaging_even_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">averaging_even_kernel</code><span class="sig-paren">(</span><em>kernel_high_res</em>, <em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#averaging_even_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.averaging_even_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
 meant to be centered.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -459,12 +472,12 @@ meant to be centered.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kernel_high_res</strong> – </li>
-<li><strong>subgrid_res</strong> – </li>
+<li><strong>kernel_high_res</strong> – high resolution kernel with even subsampling resolution, centered</li>
+<li><strong>subgrid_res</strong> – subsampling resolution (even number)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">averaged undersampling kernel</p>
 </td>
 </tr>
 </tbody>
@@ -520,7 +533,7 @@ moves the center in an iterative process such that it is centered</p>
 <dl class="docutils">
 <dt>The input kernel is the solution of a linear interpolated shift of a sharper kernel centered in the middle of the</dt>
 <dd>pixel. To find the de-shifted kernel, we perform an iterative correction of proposed de-shifted kernels and compare
-their shifted version with the input kernel.</dd>
+its shifted version with the input kernel.</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -635,7 +648,7 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 
 <dl class="function">
 <dt id="lenstronomy.Util.kernel_util.subgrid_kernel">
-<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">subgrid_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>subgrid_res</em>, <em>odd=False</em>, <em>num_iter=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#subgrid_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.subgrid_kernel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">subgrid_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>subgrid_res</em>, <em>odd=False</em>, <em>num_iter=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#subgrid_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.subgrid_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an
 iterative approach</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -673,6 +686,31 @@ iterative approach</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.mask.mask_ellipse">
+<code class="descclassname">lenstronomy.Util.mask.</code><code class="descname">mask_ellipse</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x</em>, <em>center_y</em>, <em>a</em>, <em>b</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/mask.html#mask_ellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.mask.mask_ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinates of pixels</li>
+<li><strong>y</strong> – y-coordinates of pixels</li>
+<li><strong>center_x</strong> – center of mask</li>
+<li><strong>center_y</strong> – center of mask</li>
+<li><strong>a</strong> – major axis</li>
+<li><strong>b</strong> – minor axis</li>
+<li><strong>angle</strong> – angle of major axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mask (list of zeros and ones)</p>
 </td>
 </tr>
 </tbody>
@@ -1521,7 +1559,7 @@ into pixel coordinates in an image
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

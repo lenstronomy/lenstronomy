@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import pytest
 import numpy as np
 import numpy.testing as npt
-from lenstronomy.SimulationAPI.simulations import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
@@ -21,7 +21,6 @@ class TestFittingSequence(object):
 
     def setup(self):
         np.random.seed(42)
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = 0.05  # background noise per pixel
@@ -32,9 +31,9 @@ class TestFittingSequence(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                               truncate=3,
                                               kernel=None)
         psf_class = PSF(kwargs_psf)
@@ -44,7 +43,7 @@ class TestFittingSequence(object):
         lens_model_list = ['SPEP']
         self.kwargs_lens = [kwargs_spemd]
         lens_model_class = LensModel(lens_model_list=lens_model_list)
-        kwargs_sersic = {'amp': 1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
+        kwargs_sersic = {'amp': 1/0.05**2., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
                                  'e1': 0.1, 'e2': 0.1}
@@ -64,7 +63,7 @@ class TestFittingSequence(object):
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
 
         data_class.update_data(image_sim)
@@ -75,7 +74,6 @@ class TestFittingSequence(object):
                              'source_light_model_list': source_model_list,
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
-                             'cosmo_type': 'D_dt'
                              }
 
         self.kwargs_numerics = {
@@ -85,6 +83,7 @@ class TestFittingSequence(object):
         kwargs_constraints = {
                                    'num_point_source_list': [4],
                                    'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
+                                   'cosmo_type': 'D_dt'
                                    }
 
         kwargs_likelihood = {'force_no_add_image': True,
@@ -119,7 +118,7 @@ class TestFittingSequence(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
         logL, _ = likelihood.logL(args)
-        npt.assert_almost_equal(logL, -3313.79, decimal=-1)
+        npt.assert_almost_equal(logL, -3340.79, decimal=-1)
 
     def test_solver(self):
         # make simulation with point source positions in image plane
@@ -148,7 +147,7 @@ class TestFittingSequence(object):
         kwargs_constraints = {}
         param_class = Param(kwargs_model, **kwargs_constraints)
 
-        kwargs_data = self.SimAPI.data_configure(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
         data_class = Data(kwargs_data)
         kwargs_psf = {'psf_type': 'NONE'}
         psf_class = PSF(kwargs_psf)
@@ -159,7 +158,7 @@ class TestFittingSequence(object):
 
         imageModel = ImageModel(data_class, psf_class, lens_model_class=None, source_model_class=source_model_class)
 
-        image_sim = self.SimAPI.simulate(imageModel, [], kwargs_source)
+        image_sim = sim_util.simulate_simple(imageModel, [], kwargs_source)
 
         data_class.update_data(image_sim)
         likelihood = LikelihoodModule(imSim_class=imageModel, param_class=param_class,

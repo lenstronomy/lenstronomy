@@ -2,6 +2,9 @@ __author__ = 'sibirrer'
 
 from lenstronomy.ImSim.image_numerics import ImageNumerics
 import lenstronomy.ImSim.de_lens as de_lens
+from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LightModel.light_model import LightModel
 
 
 import numpy as np
@@ -20,11 +23,13 @@ class ImageModel(object):
         :param source_model_class: instance of LightModel() class describing the source parameters
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
-        :param kwargs_numerics: keyword argument with various numerics description (see ImageNumerics class for options)
+        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
         """
         self.PSF = psf_class
         self.Data = data_class
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
+        if lens_model_class is None:
+            lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
         self.PointSource = point_source_class
         self._error_map_bool_list = None
@@ -39,8 +44,11 @@ class ImageModel(object):
                 self._psf_error_map = False
         else:
             self._psf_error_map = False
+        if source_model_class is None:
+            source_model_class = LightModel(light_model_list=[])
         self.SourceModel = source_model_class
         self.LensLightModel = lens_light_model_class
+        self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
         self.num_bands = 1
 
     def reset_point_source_cache(self, bool=True):
@@ -73,17 +81,6 @@ class ImageModel(object):
         self.PSF = psf_class
         self.ImageNumerics._PSF = psf_class
 
-    def update_numerics(self, kwargs_numerics):
-        """
-
-        update numerical options
-
-        :param kwargs_numerics:
-        :return: no return. Class is updated.
-        """
-        self._psf_error_map = kwargs_numerics.get('psf_error_map', False)
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
-
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
 
@@ -95,14 +92,15 @@ class ImageModel(object):
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :return: 1d array of surface brightness pixels
         """
-        if self.SourceModel is None:
+        if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros_like(self.Data.data)
-        if de_lensed is True or self.LensModel is None:
+        if de_lensed is True:
             x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
+            source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
         else:
-            x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
-                                                             self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
-        source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
+            source_light = self.source_mapping.image_flux_joint(self.ImageNumerics.ra_grid_ray_shooting,
+                                                                self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens,
+                                                                kwargs_source)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -171,15 +169,8 @@ class ImageModel(object):
         :param kwargs_ps:
         :return:
         """
-        if not self.LensModel is None:
-            x_source, y_source = self.LensModel.ray_shooting(self.ImageNumerics.ra_grid_ray_shooting,
-                                                         self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens)
-        else:
-            x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
-
-        A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting,
-                                             self.ImageNumerics.dec_grid_ray_shooting, x_source, y_source,
-                                             kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
+        A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting,
+                                      kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
         return A
 
     @property
@@ -351,7 +342,7 @@ class ImageModel(object):
             phi_fermat.append(phi_fermat_i)
         return phi_fermat
 
-    def _response_matrix(self, x_grid, y_grid, x_source, y_source, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, mask, unconvolved=False):
+    def _response_matrix(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, mask, unconvolved=False):
         """
 
         return linear response Matrix
@@ -369,7 +360,8 @@ class ImageModel(object):
         :return:
         """
         if not self.SourceModel is None:
-            source_light_response, n_source = self.SourceModel.functions_split(x_source, y_source, kwargs_source)
+            source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
+                                                                                   kwargs_source)
         else:
             source_light_response, n_source = [], 0
         if not self.LensLightModel is None:

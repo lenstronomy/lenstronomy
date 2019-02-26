@@ -169,8 +169,7 @@ class LikelihoodModule(object):
         if len(ra_image_list) > 0:
             if len(ra_image_list[0]) > self.param.num_point_source_images:
                 return True
-        else:
-            return False
+        return False
 
     def likelihood_image_pos(self, kwargs_lens, kwargs_ps, kwargs_cosmo, sigma):
         """
@@ -196,6 +195,8 @@ class LikelihoodModule(object):
         #dist = util.min_square_dist(x_pos, y_pos, x_image, y_image)
         dist = ((x_pos - x_image)**2 + (y_pos - y_image)**2)/sigma**2/2
         logL = -np.sum(dist)
+        if np.isnan(logL) is True:
+            return -10 ** 15
         return logL
 
     def check_bounds(self, args, lowerLimit, upperLimit):

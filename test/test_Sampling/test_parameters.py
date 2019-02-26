@@ -5,6 +5,8 @@ import numpy.testing as npt
 import pytest
 
 from lenstronomy.Sampling.parameters import Param
+from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
 
 class TestParam(object):
@@ -42,6 +44,8 @@ class TestParam(object):
                                    linear_solver=True, **kwargs_param)
         num_param, list = param_class_linear.num_param()
         assert list[0] == 'theta_E_lens'
+        print(list)
+        assert len(list) == num_param
         assert num_param == 9
 
     def test_num_param_linear(self):
@@ -70,8 +74,8 @@ class TestParam(object):
     def test_get_cosmo(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
-                        'cosmo_type': 'D_dt'}
-        kwargs_param = {}
+                        }
+        kwargs_param = {'cosmo_type': 'D_dt'}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
@@ -95,15 +99,19 @@ class TestParam(object):
         assert param_class.cosmoParams._Ddt_sampling is True
 
     def test_mass_scaling(self):
-        kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW']}
-        kwargs_constraints = {'mass_scaling_list': [False, 1, 1]}
-        kwargs_fixed_lens = [{}, {'theta_Rs': 0.1}, {'theta_Rs': 0.3}]
+        kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW', 'SIS', 'SERSIC', 'HERNQUIST']}
+        kwargs_constraints = {'mass_scaling_list': [False, 1, 1, 1, 1, 1]}
+        kwargs_fixed_lens = [{}, {'theta_Rs': 0.1}, {'theta_Rs': 0.3}, {'theta_E': 0.1},
+                             {'k_eff': 0.3}, {'sigma0': 1}]
         kwargs_fixed_cosmo = {}
         param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_cosmo=kwargs_fixed_cosmo
                             , **kwargs_constraints)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
                        {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 1., 'center_y': 0},
-                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 0, 'center_y': 1.}]
+                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 0, 'center_y': 1.},
+                       {'theta_E': 0.1, 'center_x': 3, 'center_y': 1.},
+                       {'k_eff': 0.3, 'R_sersic': 1, 'n_sersic': 2, 'center_x': 3, 'center_y': 1.},
+                       {'sigma0': 1, 'Rs': 1, 'center_x': 3, 'center_y': 1.}]
         kwargs_source = []
         kwargs_lens_light = []
         kwargs_ps = []
@@ -112,11 +120,15 @@ class TestParam(object):
         args = param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         assert args[-1] == mass_scale
 
+
         kwargs_lens, _, _, _, _ = param_class.args2kwargs(args)
         print(kwargs_lens, 'test')
         assert kwargs_lens[0]['theta_E'] == 1
         assert kwargs_lens[1]['theta_Rs'] == 0.1 * mass_scale
         assert kwargs_lens[2]['theta_Rs'] == 0.3 * mass_scale
+        assert kwargs_lens[3]['theta_E'] == 0.1 * mass_scale
+        assert kwargs_lens[4]['k_eff'] == 0.3 * mass_scale
+        assert kwargs_lens[5]['sigma0'] == 1 * mass_scale
 
         kwargs_lens, _, _, _, _ = param_class.args2kwargs(args, bijective=True)
         assert kwargs_lens[0]['theta_E'] == 1
@@ -173,6 +185,44 @@ class TestParam(object):
         kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
         assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
         npt.assert_almost_equal(kwargs_source_out[0]['center_x'], -0.207, decimal=2)
+
+    def test_joint_lens_light_with_point_source(self):
+        kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
+                        'point_source_model_list': ['LENSED_POSITION'],
+                        'lens_light_model_list': ['SERSIC']}
+        i_lens_light, k_ps = 0, 0
+        kwargs_constraints = {'joint_lens_light_with_point_source': [
+            [k_ps, i_lens_light]]}  # list[[i_point_source, k_source, ['param_name1', 'param_name2', ...]], [
+
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]
+        kwargs_lens_light = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_ps = [{'ra_image': [0.5], 'dec_image': [0.5]}]
+        param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
+        args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, kwargs_lens_light=kwargs_lens_light, kwargs_ps=kwargs_ps)
+        kwargs_lens_out, kwargs_source_out, kwargs_lens_light_out, kwargs_ps_out, _ = param.args2kwargs(args)
+        assert kwargs_lens_light_out[0]['center_x'] == kwargs_ps_out[0]['ra_image']
+
+    def test_with_solver(self):
+        kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['SERSIC'],
+                        'point_source_model_list': ['LENSED_POSITION']}
+        i_lens_light, k_ps = 0, 0
+        kwargs_constraints = {'solver_type': 'PROFILE', 'num_point_source_list': [4]}
+
+        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0}]
+        kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]
+        kwargs_lens_light = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 0.2, 'center_y': 0.2}]
+        lensModel = LensModel(lens_model_list=['SPEP'])
+        lensEquationSlover = LensEquationSolver(lensModel=lensModel)
+        x_image, y_image = lensEquationSlover.image_position_from_source(sourcePos_x=0.0, sourcePos_y=0.01, kwargs_lens=kwargs_lens)
+        print(x_image, y_image, 'test')
+        kwargs_ps = [{'ra_image': x_image, 'dec_image': y_image}]
+        param = Param(kwargs_model=kwargs_model, kwargs_lens_init=kwargs_lens, **kwargs_constraints)
+        args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source,
+                                 kwargs_lens_light=kwargs_lens_light, kwargs_ps=kwargs_ps)
+        kwargs_lens_out, kwargs_source_out, kwargs_lens_light_out, kwargs_ps_out, _ = param.args2kwargs(args)
+        dist = param.check_solver(kwargs_lens=kwargs_lens_out, kwargs_ps=kwargs_ps_out)
+        npt.assert_almost_equal(dist, 0, decimal=10)
 
 
 if __name__ == '__main__':

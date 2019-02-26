@@ -20,6 +20,14 @@ lenstronomy.LensModel.Profiles.chameleon module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.cnfw module
+------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.cnfw
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.convergence module
 -------------------------------------------------
 

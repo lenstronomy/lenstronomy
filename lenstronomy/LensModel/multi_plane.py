@@ -9,25 +9,22 @@ class MultiPlane(object):
     Multi-plane lensing class
     """
 
-    def __init__(self, z_source, lens_model_list, redshift_list, cosmo=None, **lensmodel_kwargs):
+    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, **lensmodel_kwargs):
         """
 
         :param cosmo: instance of astropy.cosmology
         :return: Background class with instance of astropy.cosmology
         """
-        if cosmo is None:
-            from astropy.cosmology import default_cosmology
-            cosmo = default_cosmology.get()
         self._cosmo_bkg = Background(cosmo)
         self._z_source = z_source
-        if not len(lens_model_list) == len(redshift_list):
+        if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
         self._lens_model_list = lens_model_list
-        self._redshift_list = redshift_list
+        self._redshift_list = lens_redshift_list
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
         else:
-            self._sorted_redshift_index = self._index_ordering(redshift_list)
+            self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
         self._lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
         z_before = 0
         self._T_ij_list = []
@@ -95,7 +92,7 @@ class MultiPlane(object):
         first_deflector = True
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
-            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
+            if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
             #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if keep_range is True:
@@ -116,7 +113,6 @@ class MultiPlane(object):
             delta_T = self._cosmo_bkg_T_stop
         else:
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
-
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 

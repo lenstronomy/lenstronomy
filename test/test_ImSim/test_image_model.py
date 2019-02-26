@@ -5,12 +5,11 @@ import numpy as np
 import pytest
 
 import lenstronomy.Util.param_util as param_util
-from lenstronomy.Data.psf import PSF
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.SimulationAPI.simulations import Simulation
+import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
@@ -21,7 +20,6 @@ class TestImageModel(object):
     tests the source model routines
     """
     def setup(self):
-        self.SimAPI = Simulation()
 
         # data specifics
         sigma_bkg = .05  # background noise per pixel
@@ -32,9 +30,9 @@ class TestImageModel(object):
 
         # PSF specification
 
-        kwargs_data = self.SimAPI.data_configure(numPix, deltaPix, exp_time, sigma_bkg)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg, inverse=True)
         data_class = Data(kwargs_data)
-        kwargs_psf = self.SimAPI.psf_configure(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
+        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
         psf_class = PSF(kwargs_psf)
         psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
@@ -68,7 +66,7 @@ class TestImageModel(object):
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
-        image_sim = self.SimAPI.simulate(imageModel, self.kwargs_lens, self.kwargs_source,
+        image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                        self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
 
@@ -78,18 +76,18 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05**2, decimal=4)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13536114618182182, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13536114618182182 * 0.05**2, decimal=4)
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
-        npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534, decimal=4)
+        npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534 * 0.05**2, decimal=4)
 
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
-        npt.assert_almost_equal(lens_flux[50, 50], 4.7310552067454452, decimal=4)
+        npt.assert_almost_equal(lens_flux[50, 50], 4.7310552067454452 * 0.05**2, decimal=4)
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
@@ -127,7 +125,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
 
     def test_reduced_residuals(self):
-        model = self.SimAPI.simulate(self.imageModel, self.kwargs_lens, self.kwargs_source,
+        model = sim_util.simulate_simple(self.imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps, no_noise=True)
         residuals = self.imageModel.reduced_residuals(model, error_map=0)
         npt.assert_almost_equal(np.std(residuals), 1.01, decimal=1)
@@ -156,11 +154,10 @@ class TestImageModel(object):
 
     def test_point_source_rendering(self):
         # initialize data
-        from lenstronomy.SimulationAPI.simulations import Simulation
-        SimAPI = Simulation()
+
         numPix = 100
         deltaPix = 0.05
-        kwargs_data = SimAPI.data_configure(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
         data_class = Data(kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
@@ -197,6 +194,26 @@ class TestImageModel(object):
             print(int(y_pix[i]), int(x_pix[i]+0.5))
             npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i])], 0.5, decimal=1)
             npt.assert_almost_equal(image[int(y_pix[i]), int(x_pix[i]+0.5)], 0.5, decimal=1)
+
+    def test_point_source(self):
+
+        pointSource = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
+        kwargs_ps = [{'source_amp': 1000, 'ra_source': 0.1, 'dec_source': 0.1}]
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        numPix = 64
+        deltaPix = 0.13
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
+        data_class = Data(kwargs_data)
+
+        psf_type = "GAUSSIAN"
+        fwhm = 0.9
+        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
+        psf_class = PSF(kwargs_psf)
+        imageModel = ImageModel(data_class=data_class, psf_class=psf_class, lens_model_class=lensModel,
+                                point_source_class=pointSource)
+        image = imageModel.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
+        assert np.sum(image) > 0
 
 
 if __name__ == '__main__':

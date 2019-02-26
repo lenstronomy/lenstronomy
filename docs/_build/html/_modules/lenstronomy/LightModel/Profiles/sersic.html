@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.sersic &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.sersic &#8212; lenstronomy 0.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -127,12 +127,14 @@
                 <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span><span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">R_frac</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">n_sersic</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">R_frac_real</span> <span class="o">=</span> <span class="n">R_frac</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">]</span>
             <span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span><span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">R_frac_real</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">n_sersic</span><span class="p">)</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">R_</span><span class="p">)</span>
             <span class="n">result</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div></div>
 
 
@@ -209,7 +211,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

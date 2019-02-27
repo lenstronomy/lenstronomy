@@ -1,0 +1,345 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Optimizer.optimizer &#8212; lenstronomy 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Optimizer.optimizer</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;dgilman&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.particle_swarm</span> <span class="k">import</span> <span class="n">ParticleSwarmOptimizer</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.params</span> <span class="k">import</span> <span class="n">Params</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.single_plane</span> <span class="k">import</span> <span class="n">SinglePlaneLensing</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.multi_plane</span> <span class="k">import</span> <span class="n">MultiPlaneLensing</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.penalties</span> <span class="k">import</span> <span class="n">Penalties</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.lens_equation_solver</span> <span class="k">import</span> <span class="n">LensEquationSolver</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.optimizer.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class which executes the optimization routines. Currently implemented as a particle swarm optimization followed by</span>
+<span class="sd">    a downhill simplex routine.</span>
+
+<span class="sd">    Particle swarm optimizer is modified from the CosmoHammer particle swarm routine with different convergence criteria implemented.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">redshift_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">optimizer_routine</span><span class="o">=</span><span class="s1">&#39;fixed_powerlaw_shear&#39;</span><span class="p">,</span><span class="n">magnification_target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multiplane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">z_main</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_source</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">tol_image</span> <span class="o">=</span> <span class="mf">0.003</span><span class="p">,</span> <span class="n">tol_mag</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">tol_centroid</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">centroid_0</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">astropy_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">re_optimize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">particle_swarm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">pso_convergence_standardDEV</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">pso_convergence_mean</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">pso_compute_magnification</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                 <span class="n">tol_simplex_params</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span><span class="n">tol_simplex_func</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span><span class="n">tol_src_penalty</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">constrain_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">simplex_n_iterations</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">compute_mags_postpso</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">chi2_mode</span> <span class="o">=</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span>
+                 <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="p">{}):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param x_pos: observed position in arcsec</span>
+<span class="sd">        :param y_pos: observed position in arcsec</span>
+<span class="sd">        :param magnification_target: observed magnifications, uncertainty for the magnifications</span>
+<span class="sd">        :param redshift_list: list of lens model redshifts</span>
+<span class="sd">        :param lens_model_list: list of lens models</span>
+<span class="sd">        :param kwargs_lens: keywords for lens models</span>
+<span class="sd">        :param optimizer_routine: a set optimization routine; currently only &#39;optimize_SIE_shear&#39; is implemented</span>
+<span class="sd">        :param multiplane: multi-plane flag</span>
+<span class="sd">        :param z_main: if multi-plane, macromodel redshift</span>
+<span class="sd">        :param z_source: if multi-plane, macromodel redshift</span>
+<span class="sd">        :param tol_source: tolerance on the source position in the optimization</span>
+<span class="sd">        :param tol_mag: tolerance on the magnification</span>
+<span class="sd">        :param tol_centroid: tolerance on the centroid of the mass distributions</span>
+<span class="sd">        :param centroid_0: centroid of the optimized lens model (list [x,y])</span>
+<span class="sd">        :param astropy_instance: instance of astropy</span>
+<span class="sd">        :param interpolate: if multi-plane; flag to interpolate the background lens models</span>
+<span class="sd">        :param verbose: flag to print status updates during optimization</span>
+<span class="sd">        :param re_optimize: flag to run in re-optimization mode; the particle swarm particles will be initialized clustered</span>
+<span class="sd">        around the values in kwargs_lens</span>
+<span class="sd">        :param particle_swarm: if False, the optimizer will skip the particle swarm optimization and go straight to</span>
+<span class="sd">        downhill simplex</span>
+<span class="sd">        :param pso_convergence_standardDEV: convergence criterion for particle swarm algorithm</span>
+<span class="sd">        :param pso_convergence_mean: alternate convergence criterion for PSO; usually dominates the former</span>
+<span class="sd">        :param pso_compute_magnification: flag for computing magnifications in the PSO; useful to avoid computing</span>
+<span class="sd">        the magnification for lens models that are obviously wrong</span>
+<span class="sd">        :param tol_simplex_func/params: tolerance for the scipy downhill simplex routine</span>
+<span class="sd">        :param tol_src_penalty: if the source penalty is less than this value, the recomputation of the image positions</span>
+<span class="sd">        will be skipped. (if the source penalty is good enough, you&#39;re guaranteed to match the input image positions so</span>
+<span class="sd">        not point in recomputing them)</span>
+<span class="sd">        :param constrain_params: additional parameters to constrain (type: dictionary)</span>
+
+<span class="sd">        Format: {&#39;parameter_name_1&#39;:[desired_value,uncertainty], &#39;parameter_name_2&#39;:[desired_value,uncertainty]}</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        {&#39;theta_E:[1,0.01]} will constrain the Einstein radius to 1 plus/minus 0.01</span>
+<span class="sd">        The parameter name must be part of the &#39;params_to_vary&#39; attribute of the specific optimization routine used</span>
+<span class="sd">        (see class &#39;fixed_routines&#39;)</span>
+
+<span class="sd">        Special cases are constraining shear and shear_pa in polar coordinates:</span>
+<span class="sd">        {&#39;shear&#39;:[0.05,0.01], &#39;shear_pa&#39;:[30,5]} will constrain the shear parameters in polar coordinates</span>
+<span class="sd">        based on the cartesian e1/e2 values</span>
+
+<span class="sd">        :param simplex_n_iterations: simplex_n_iterations times problem dimension gives the maximum # of iterations</span>
+<span class="sd">        for the downhill simplex routine</span>
+<span class="sd">        :param optimizer_kwargs: optional keyword arguments for the mutliplane optimizer</span>
+<span class="sd">        :param compute_mags_postpso: flag to automatically compute magnifications when perfomring downhill simplex</span>
+<span class="sd">        optimization.</span>
+
+<span class="sd">        Note: if running with particle_swarm = False, the re_optimize variable does nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiplane</span> <span class="o">=</span> <span class="n">multiplane</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_pos</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_pos</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pos</span> <span class="o">=</span> <span class="n">x_pos</span><span class="p">,</span><span class="n">y_pos</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_re_optimize</span> <span class="o">=</span> <span class="n">re_optimize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_particle_swarm</span> <span class="o">=</span> <span class="n">particle_swarm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs</span> <span class="o">=</span> <span class="n">kwargs_lens</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pso_convergence_standardDEV</span> <span class="o">=</span> <span class="n">pso_convergence_standardDEV</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tol_simplex_params</span> <span class="o">=</span> <span class="n">tol_simplex_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tol_simplex_func</span> <span class="o">=</span> <span class="n">tol_simplex_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tol_src_penalty</span> <span class="o">=</span> <span class="n">tol_src_penalty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_iter</span> <span class="o">=</span> <span class="n">simplex_n_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags_postpso</span> <span class="o">=</span> <span class="n">compute_mags_postpso</span>
+
+        <span class="c1"># make sure the length of observed positions matches, length of observed magnifications, etc.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_test</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">magnification_target</span><span class="p">,</span> <span class="n">tol_source</span><span class="p">,</span> <span class="n">redshift_list</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                        <span class="n">z_source</span><span class="p">,</span> <span class="n">z_main</span><span class="p">,</span> <span class="n">multiplane</span><span class="p">,</span> <span class="n">astropy_instance</span><span class="p">)</span>
+
+        <span class="c1"># initialize lens model class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">redshift_list</span><span class="p">,</span>
+                                    <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span>
+                                    <span class="n">cosmo</span><span class="o">=</span><span class="n">astropy_instance</span><span class="p">,</span> <span class="n">multi_plane</span><span class="o">=</span><span class="n">multiplane</span><span class="p">)</span>
+
+        <span class="c1"># initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">Params</span><span class="p">(</span><span class="n">zlist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">redshift_list</span><span class="p">,</span> <span class="n">lens_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">arg_list</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span>
+                              <span class="n">optimizer_routine</span><span class="o">=</span><span class="n">optimizer_routine</span><span class="p">,</span> <span class="n">xpos</span><span class="o">=</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">ypos</span> <span class="o">=</span> <span class="n">y_pos</span><span class="p">)</span>
+        
+        <span class="c1"># initialize particle swarm inital param limits</span>
+        <span class="k">if</span> <span class="s1">&#39;re_optimize_scale&#39;</span> <span class="ow">in</span> <span class="n">optimizer_kwargs</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">&#39;re_optimize_scale&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_re_optimize_scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_re_optimize_scale</span> <span class="o">=</span> <span class="n">scale</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">to_vary_limits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_re_optimize</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span><span class="p">)</span>
+
+        <span class="c1"># initiate optimizer classes, one for particle swarm and one for the downhill simplex</span>
+        <span class="k">if</span> <span class="n">multiplane</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">lensing_class</span> <span class="o">=</span> <span class="n">SinglePlaneLensing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="c1"># don&#39;t bother with anything special here, just use the regular lensmodel class</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lensing_class</span> <span class="o">=</span> <span class="n">MultiPlaneLensing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">z_main</span><span class="p">,</span>
+                                                    <span class="n">astropy_instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">tovary_indicies</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="n">lensing_class</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">lensModel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span> <span class="o">=</span> <span class="n">Penalties</span><span class="p">(</span><span class="n">tol_source</span><span class="p">,</span> <span class="n">tol_mag</span><span class="p">,</span> <span class="n">tol_centroid</span><span class="p">,</span> <span class="n">lensing_class</span><span class="p">,</span> <span class="n">centroid_0</span><span class="p">,</span> <span class="n">magnification_target</span><span class="p">,</span>
+                                    <span class="n">params_to_constrain</span><span class="o">=</span><span class="n">constrain_params</span><span class="p">,</span> <span class="n">param_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">,</span>
+                                    <span class="n">pso_convergence_mean</span><span class="o">=</span><span class="n">pso_convergence_mean</span><span class="p">,</span>
+                                    <span class="n">pso_compute_magnification</span><span class="o">=</span><span class="n">pso_compute_magnification</span><span class="p">,</span> <span class="n">compute_mags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">chi2_mode</span><span class="o">=</span><span class="n">chi2_mode</span><span class="p">,</span> <span class="n">tol_image</span> <span class="o">=</span> <span class="n">tol_image</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Optimizer.optimize"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.optimizer.Optimizer.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the best result of all optimizations will be returned.</span>
+<span class="sd">        total number of lens models sovled: n_particles*n_iterations</span>
+
+<span class="sd">        :param n_particles: number of particle swarm particles</span>
+<span class="sd">        :param n_iterations: number of particle swarm iternations</span>
+<span class="sd">        :param restart: number of times to execute the optimization;</span>
+
+<span class="sd">        :return: lens model keywords, [optimized source position], best fit image positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">restart</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;parameter &#39;restart&#39; must be integer of value &gt; 0&quot;</span><span class="p">)</span>
+
+        <span class="c1"># particle swarm optimization</span>
+        <span class="n">penalties</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">src_pen_best</span> <span class="o">=</span> <span class="p">[],[],</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">restart</span><span class="p">):</span>
+
+            <span class="n">penalty</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_optimization</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">)</span>
+            <span class="n">penalties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">penalty</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">src_pen_best</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">src_pen_best</span><span class="p">)</span>
+
+        <span class="c1"># select the best optimization</span>
+        <span class="n">best_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">penalties</span><span class="p">)</span>
+
+        <span class="c1"># combine the optimized parameters with the parameters kept fixed during the optimization to obtain full kwargs_lens</span>
+        <span class="n">kwargs_varied</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">argstovary_todictionary</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="n">best_index</span><span class="p">])</span>
+        <span class="n">kwargs_lens_final</span> <span class="o">=</span> <span class="n">kwargs_varied</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">argsfixed_todictionary</span><span class="p">()</span>
+
+        <span class="c1"># solve for the optimized image positions</span>
+        <span class="n">srcx</span><span class="p">,</span> <span class="n">srcy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">lensing</span><span class="o">.</span><span class="n">_ray_shooting_fast</span><span class="p">(</span><span class="n">kwargs_varied</span><span class="p">)</span>
+        <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">srcx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">srcy</span><span class="p">)</span>
+
+        <span class="c1"># if we have a good enough solution, no point in recomputing the image positions since this can be quite slow</span>
+        <span class="c1"># and will give the same answer</span>
+        <span class="k">if</span> <span class="n">src_pen_best</span><span class="p">[</span><span class="n">best_index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol_src_penalty</span><span class="p">:</span>
+            <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pos</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Here, the solver has the instance of &quot;lensing_class&quot; or &quot;LensModel&quot; for multiplane/singleplane respectively.</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: possibly a bad fit.&#39;</span><span class="p">)</span>
+            <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">findBrightImage</span><span class="p">(</span><span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">kwargs_lens_final</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1">#x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;optimization done.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Recovered source position: &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">srcx</span><span class="p">,</span> <span class="n">srcy</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">kwargs_lens_final</span><span class="p">,</span> <span class="p">[</span><span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">],</span> <span class="p">[</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_single_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">_init_particles</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_swarm</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PSO done.&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">_kwargs_to_tovary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;starting amoeba... &#39;</span><span class="p">)</span>
+
+        <span class="c1"># downhill simplex optimization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">_reset</span><span class="p">(</span><span class="n">compute_mags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags_postpso</span><span class="p">)</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;adaptive&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;fatol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol_simplex_func</span><span class="p">,</span> <span class="s1">&#39;xatol&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol_simplex_params</span><span class="p">,</span>
+                       <span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_iter</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)}</span>
+
+        <span class="n">optimized_downhill_simplex</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">,</span>
+                             <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+
+        <span class="n">penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">_get_best</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">optimized_downhill_simplex</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_pso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param n_particles: number of PSO particles</span>
+<span class="sd">        :param n_iterations: number of PSO iterations</span>
+<span class="sd">        :param optimizer: instance of SinglePlaneOptimizer or MultiPlaneOptimizer</span>
+<span class="sd">        :return: optimized kwargs_lens</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pso</span> <span class="o">=</span> <span class="n">ParticleSwarmOptimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">,</span> <span class="n">particleCount</span><span class="o">=</span><span class="n">n_particles</span><span class="p">)</span>
+
+        <span class="n">gBests</span> <span class="o">=</span> <span class="n">pso</span><span class="o">.</span><span class="n">_optimize</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="n">n_iterations</span><span class="p">,</span><span class="n">standard_dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pso_convergence_standardDEV</span><span class="p">)</span>
+
+        <span class="n">likelihoods</span> <span class="o">=</span> <span class="p">[</span><span class="n">particle</span><span class="o">.</span><span class="n">fitness</span> <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">gBests</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gBests</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+
+    <span class="k">def</span> <span class="nf">_init_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x_pos</span><span class="p">,</span><span class="n">y_pos</span><span class="p">,</span><span class="n">magnification_target</span><span class="p">,</span><span class="n">tol_source</span><span class="p">,</span><span class="n">zlist</span><span class="p">,</span><span class="n">lens_list</span><span class="p">,</span><span class="n">arg_list</span><span class="p">,</span>
+                   <span class="n">z_source</span><span class="p">,</span><span class="n">z_main</span><span class="p">,</span><span class="n">multiplane</span><span class="p">,</span><span class="n">astropy_instance</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check inputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_pos</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">magnification_target</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">tol_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">lens_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">multiplane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">zlist</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">lens_list</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">z_main</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">astropy_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

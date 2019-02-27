@@ -1,0 +1,375 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Optimizer.penalties &#8212; lenstronomy 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Optimizer.penalties</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">import</span> <span class="n">cart2polar</span><span class="p">,</span><span class="n">polar2cart</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">import</span> <span class="n">sort_image_index</span>
+
+<div class="viewcode-block" id="Penalties"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.penalties.Penalties">[docs]</a><span class="k">class</span> <span class="nc">Penalties</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol_source</span><span class="p">,</span> <span class="n">tol_mag</span><span class="p">,</span> <span class="n">tol_centroid</span><span class="p">,</span> <span class="n">lensing</span><span class="p">,</span> <span class="n">centroid_0</span><span class="p">,</span> <span class="n">magnification_target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">params_to_constrain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pso_convergence_mean</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pso_compute_magnification</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">compute_mags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chi2_mode</span> <span class="o">=</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="n">tol_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class calls the mutli/single plane lensing classes to do all the high level lensing computations in the</span>
+<span class="sd">        optimization. It also logs things like the source position penalties, magnifiction penalities, centroid penalities,</span>
+<span class="sd">        and any additional parameter penalties specific by the user.</span>
+<span class="sd">        :param tol_image: tolerance on recovered source position, or the image positions if chi2_mode = &#39;image&#39;</span>
+<span class="sd">        :param tol_mag: flux uncertainty</span>
+<span class="sd">        :param tol_centroid: mass centroid uncertainty</span>
+<span class="sd">        :param lensing: the instance of multi/single plane lensing used to do the ray shooting</span>
+<span class="sd">        :param centroid_0: best guess mass centroid</span>
+<span class="sd">        :param magnification_target: the magnifications to optimize for</span>
+<span class="sd">        :param params_to_constrain: additional parameters to constrain (see documentation in &#39;Optimizer&#39; class)</span>
+<span class="sd">        :param param_class: isntance of Params class</span>
+<span class="sd">        :param pso_convergence_mean: convergence criterion</span>
+<span class="sd">        :param pso_compute_magnification: when to start computing magnifications</span>
+<span class="sd">        :param compute_mags: user shouldn&#39;t touch this</span>
+<span class="sd">        :param verbose: print things</span>
+<span class="sd">        :param chi2_mode: flag to use the image/source plane chi^2 in the optimizer. Image plane can be slow</span>
+<span class="sd">        &#39;image&#39; -&gt; image plane chi^2, &#39;source&#39; -&gt; source plane chi^2</span>
+<span class="sd">        :param solver: only used if chi2_mode == &#39;image&#39;, solves the lens equation to determine image positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol_source</span> <span class="o">=</span> <span class="n">tol_source</span>
+        <span class="k">if</span> <span class="n">chi2_mode</span> <span class="o">==</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span>
+
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_source</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_source</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_chi_mode</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">elif</span> <span class="n">chi2_mode</span> <span class="o">==</span> <span class="s1">&#39;image&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span> <span class="o">=</span> <span class="n">tol_image</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_chi_mode</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">solver</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ximage</span> <span class="o">=</span> <span class="n">lensing</span><span class="o">.</span><span class="n">_x_pos</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_yimage</span> <span class="o">=</span> <span class="n">lensing</span><span class="o">.</span><span class="n">_y_pos</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ximage</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;chi2_mode must be either &#39;source&#39; or &#39;image&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">tol_mag</span><span class="p">,</span><span class="nb">list</span><span class="p">),</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">tol_mag</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">tol_mag</span> <span class="o">=</span> <span class="p">[</span><span class="n">tol_mag</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol_mag</span> <span class="o">=</span> <span class="n">tol_mag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">magnification_target</span> <span class="o">=</span> <span class="n">magnification_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol_centroid</span> <span class="o">=</span> <span class="n">tol_centroid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lensing</span> <span class="o">=</span> <span class="n">lensing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centroid_0</span> <span class="o">=</span> <span class="n">centroid_0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pso_convergence_mean</span> <span class="o">=</span> <span class="n">pso_convergence_mean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pso_compute_magnification</span> <span class="o">=</span> <span class="n">pso_compute_magnification</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span> <span class="o">=</span> <span class="n">param_class</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span> <span class="o">=</span> <span class="n">params_to_constrain</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">(</span><span class="n">compute_mags</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lens_args_to_vary_array</span><span class="p">):</span>
+
+        <span class="n">mag_penalty</span><span class="p">,</span> <span class="n">centroid_penalty</span><span class="p">,</span> <span class="n">param_penalties</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">params_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">argsfixed_todictionary</span><span class="p">()</span>
+        <span class="n">total_penalty</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># this function accepts the array, not the dictionary</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">param_penalties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_penalties</span><span class="p">(</span><span class="n">lens_args_to_vary_array</span><span class="p">)</span>
+            <span class="n">total_penalty</span> <span class="o">+=</span> <span class="n">param_penalties</span>
+
+        <span class="n">lens_args_to_vary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">argstovary_todictionary</span><span class="p">(</span><span class="n">lens_args_to_vary_array</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lens_args_latest</span> <span class="o">=</span> <span class="n">lens_args_to_vary</span><span class="o">+</span><span class="n">params_fixed</span>
+
+        <span class="n">img_penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_position_penalty</span><span class="p">(</span><span class="n">lens_args_to_vary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chi_mode</span><span class="p">)</span>
+
+        <span class="n">total_penalty</span> <span class="o">+=</span> <span class="n">img_penalty</span>
+
+        <span class="n">centroid_penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_centroid_penalty</span><span class="p">(</span><span class="n">lens_args_to_vary</span><span class="p">)</span>
+        <span class="n">total_penalty</span> <span class="o">+=</span> <span class="n">centroid_penalty</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags_criterion</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags</span><span class="p">:</span>
+            <span class="n">mag_penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_magnification_penalty</span><span class="p">(</span><span class="n">lens_args_to_vary</span><span class="p">)</span>
+            <span class="n">total_penalty</span> <span class="o">+=</span> <span class="n">mag_penalty</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_book_keeping</span><span class="p">(</span><span class="n">img_penalty</span><span class="p">,</span> <span class="n">centroid_penalty</span><span class="p">,</span> <span class="n">mag_penalty</span><span class="p">,</span> <span class="n">param_penalties</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">total_penalty</span>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compute_mags</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mag_penalty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_penalty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">centroid_penalty</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags</span> <span class="o">=</span> <span class="n">compute_mags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_converged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_get_total_pen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mag_penalty</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centroid_penalty</span><span class="p">)</span> <span class="o">+</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_penalty</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_best</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_total_pen</span><span class="p">()</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_pen_best</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">total</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_book_keeping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">src_penalty</span><span class="p">,</span><span class="n">centroid_penalty</span><span class="p">,</span><span class="n">mag_penalty</span><span class="p">,</span><span class="n">param_pen</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">%</span> <span class="mi">500</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_total_pen</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;source penalty: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;centroid penalty: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_penalty</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">mag_penalty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mag penalty: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mag_penalty</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;param penalty: &#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">param_penalty</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">mag_penalty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mag_penalty</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+        <span class="k">if</span> <span class="n">src_penalty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">src_penalty</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+        <span class="k">if</span> <span class="n">centroid_penalty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">centroid_penalty</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+        <span class="k">if</span> <span class="n">param_pen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">param_pen</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">src_penalty</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mag_penalty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mag_penalty</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centroid_penalty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">centroid_penalty</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_penalty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_pen</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lens_args_latest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_convergence</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags_criterion</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_particles</span><span class="p">,</span><span class="n">n_iterations</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_total_iter</span> <span class="o">=</span> <span class="n">n_iterations</span><span class="o">*</span><span class="n">n_particles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_particles</span> <span class="o">=</span> <span class="n">n_particles</span>
+
+    <span class="k">def</span> <span class="nf">_compute_mags_criterion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_mags</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_particles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_particles</span><span class="p">:])</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pso_compute_magnification</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_test_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_particles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_converged</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">src_penalty</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_particles</span><span class="p">:])</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pso_convergence_mean</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_converged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_param_penalties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lens_args_tovary</span><span class="p">):</span>
+
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">pname</span> <span class="o">==</span> <span class="s1">&#39;shear&#39;</span><span class="p">:</span>
+
+                <span class="n">index1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">params_to_vary</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;shear_e1&#39;</span><span class="p">)</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">params_to_vary</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;shear_e2&#39;</span><span class="p">)</span>
+                <span class="n">shear</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">cart2polar</span><span class="p">(</span><span class="n">lens_args_tovary</span><span class="p">[</span><span class="n">index1</span><span class="p">],</span><span class="n">lens_args_tovary</span><span class="p">[</span><span class="n">index2</span><span class="p">])</span>
+
+                <span class="n">penalty</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="n">shear</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="s1">&#39;shear&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="s1">&#39;shear&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+            <span class="k">elif</span> <span class="n">pname</span> <span class="o">==</span> <span class="s1">&#39;shear_pa&#39;</span><span class="p">:</span>
+
+                <span class="n">index1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">params_to_vary</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;shear_e1&#39;</span><span class="p">)</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">params_to_vary</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;shear_e2&#39;</span><span class="p">)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">shear_pa</span> <span class="o">=</span> <span class="n">cart2polar</span><span class="p">(</span><span class="n">lens_args_tovary</span><span class="p">[</span><span class="n">index1</span><span class="p">],</span> <span class="n">lens_args_tovary</span><span class="p">[</span><span class="n">index2</span><span class="p">])</span>
+
+                <span class="n">penalty</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+                            <span class="p">(</span><span class="n">shear_pa</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="s1">&#39;shear_pa&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="s1">&#39;shear_pa&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">params_to_vary</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">lens_args_tovary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="n">pname</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_to_constrain</span><span class="p">[</span><span class="n">pname</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">penalty</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">value</span><span class="o">-</span><span class="n">target</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">penalty</span>
+
+    <span class="k">def</span> <span class="nf">_image_position_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_args_tovary</span><span class="p">,</span> <span class="n">chi_mode</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensing</span><span class="o">.</span><span class="n">_ray_shooting_fast</span><span class="p">(</span><span class="n">lens_args_tovary</span><span class="p">)</span>
+
+        <span class="n">dx_source</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">dy_source</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">src_plane_pen</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx_source</span> <span class="o">+</span> <span class="n">dy_source</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_source</span> <span class="o">**</span> <span class="o">-</span><span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">chi_mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">src_plane_pen</span>
+        <span class="k">elif</span> <span class="n">src_plane_pen</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pso_convergence_mean</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">src_plane_pen</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># compute the positions in the image plane</span>
+            <span class="n">kwargs_lens_final</span> <span class="o">=</span> <span class="n">lens_args_tovary</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">argsfixed_todictionary</span><span class="p">()</span>
+            <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">findBrightImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betax</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">betay</span><span class="p">),</span>
+                                                            <span class="n">kwargs_lens_final</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># if we have the wrong number of images, use the source plane chi^2</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_image</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ximage</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_image</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_yimage</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">src_plane_pen</span>
+
+            <span class="c1"># compute the image plane chi^2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># try to match image positions, compute chi^2</span>
+                <span class="n">inds</span> <span class="o">=</span> <span class="n">sort_image_index</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ximage</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yimage</span><span class="p">)</span>
+
+                <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_image</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ximage</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_image</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yimage</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">image_plane_penalty</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dx_dy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">):</span>
+                        <span class="n">image_plane_penalty</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="o">-</span><span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">image_plane_penalty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_image</span> <span class="o">**</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">image_plane_penalty</span>
+
+    <span class="k">def</span> <span class="nf">_magnification_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lens_args</span><span class="p">):</span>
+
+        <span class="n">magnifications</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensing</span><span class="o">.</span><span class="n">_magnification_fast</span><span class="p">(</span><span class="n">lens_args</span><span class="p">)</span>
+
+        <span class="n">magnifications</span> <span class="o">*=</span> <span class="nb">max</span><span class="p">(</span><span class="n">magnifications</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mags</span> <span class="o">=</span> <span class="n">magnifications</span>
+
+        <span class="n">dM</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">magnification_target</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">target</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">mag_tol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_mag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">target</span>
+                <span class="n">dM</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">magnifications</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">*</span> <span class="n">mag_tol</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">dM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dM</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dM</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_centroid_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values_dic</span><span class="p">):</span>
+
+        <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">values_dic</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_centroid</span><span class="o">**-</span><span class="mi">1</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">values_dic</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_0</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_centroid</span><span class="o">**-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">dy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

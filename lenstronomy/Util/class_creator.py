@@ -48,12 +48,13 @@ def create_multiband(multi_band_list, lens_model_list=[], z_source=None, lens_re
     """
 
 
-    :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously.
-        Options are:
-            - 'multi-band': linear amplitudes are inferred on single data set
-            - 'multi-exposure': linear amplitudes ae jointly inferred
-            - 'multi-frame': multiple frames (as single exposures with disjoint lens model
-    :return:
+    :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
+
+    - 'multi-band': linear amplitudes are inferred on single data set
+    - 'multi-exposure': linear amplitudes ae jointly inferred
+    - 'multi-frame': multiple frames (as single exposures with disjoint lens model
+
+    :return: MultiBand class instance
     """
 
     lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, lens_redshift_list=lens_redshift_list,

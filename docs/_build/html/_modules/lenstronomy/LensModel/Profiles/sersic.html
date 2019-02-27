@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.sersic &#8212; lenstronomy 0.5.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.sersic &#8212; lenstronomy 0.6.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,8 +57,17 @@
 
 <div class="viewcode-block" id="Sersic.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic.Sersic.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">k_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns Gaussian</span>
+
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param n_sersic: Sersic index</span>
+<span class="sd">        :param R_sersic: half light radius</span>
+<span class="sd">        :param k_eff: convergence at half light radius</span>
+<span class="sd">        :param center_x: x-center</span>
+<span class="sd">        :param center_y: y-center</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">n</span> <span class="o">=</span> <span class="n">n_sersic</span>
         <span class="n">x_red</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_reduced</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -139,7 +148,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -1,0 +1,190 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Optimizer.params &#8212; lenstronomy 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Optimizer.params</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Optimizer.fixed_routines</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="Params"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params">[docs]</a><span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">known_routines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fixed_powerlaw_shear&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">optimizer_routine</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">xpos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ypos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">assert</span> <span class="n">optimizer_routine</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_routines</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">routine_name</span> <span class="o">=</span> <span class="n">optimizer_routine</span>
+
+        <span class="k">if</span> <span class="n">optimizer_routine</span> <span class="o">==</span> <span class="s1">&#39;fixed_powerlaw_shear&#39;</span><span class="p">:</span>
+            <span class="n">routine</span> <span class="o">=</span> <span class="n">FixedPowerLaw_Shear</span><span class="p">(</span><span class="n">lens_list</span><span class="p">,</span><span class="n">arg_list</span><span class="p">,</span><span class="n">xpos</span><span class="p">,</span><span class="n">ypos</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;optimizer_routine must be called </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">known_routines</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zlist</span> <span class="o">=</span> <span class="n">zlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_list</span> <span class="o">=</span> <span class="n">lens_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arg_list</span> <span class="o">=</span> <span class="n">arg_list</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_k_start</span> <span class="o">=</span> <span class="n">routine</span><span class="o">.</span><span class="n">_k_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span> <span class="o">=</span> <span class="n">routine</span><span class="o">.</span><span class="n">_Ntovary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tovary_indicies</span> <span class="o">=</span> <span class="n">routine</span><span class="o">.</span><span class="n">_tovary_indicies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="n">routine</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">zlist_tovary</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lenslist_tovary</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">args_tovary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_vary</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zlist_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenslist_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Params.to_vary_limits"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.to_vary_limits">[docs]</a>    <span class="k">def</span> <span class="nf">to_vary_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">re_optimize</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">lower_limit</span><span class="p">,</span><span class="n">upper_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">get_param_ranges</span><span class="p">(</span><span class="n">re_optimize</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lower_limit</span><span class="p">,</span><span class="n">upper_limit</span></div>
+
+<div class="viewcode-block" id="Params.to_vary"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.to_vary">[docs]</a>    <span class="k">def</span> <span class="nf">to_vary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">zlist_tovary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zlist</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">]</span>
+        <span class="n">lenslist_tovary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">]</span>
+        <span class="n">args_tovary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_list</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">zlist_tovary</span><span class="p">,</span> <span class="n">lenslist_tovary</span><span class="p">,</span> <span class="n">args_tovary</span></div>
+
+<div class="viewcode-block" id="Params.tovary_array"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.tovary_array">[docs]</a>    <span class="k">def</span> <span class="nf">tovary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tovary_indicies</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">to_vary_names</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args_tovary</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Params.fixed"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.fixed">[docs]</a>    <span class="k">def</span> <span class="nf">fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">zlist_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zlist</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">:]</span>
+        <span class="n">lenslist_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">:]</span>
+        <span class="n">args_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">zlist_fixed</span><span class="p">,</span> <span class="n">lenslist_fixed</span><span class="p">,</span> <span class="n">args_fixed</span></div>
+
+<div class="viewcode-block" id="Params.argsfixed_values"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.argsfixed_values">[docs]</a>    <span class="k">def</span> <span class="nf">argsfixed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_fixed</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Params.argstovary_todictionary"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.argstovary_todictionary">[docs]</a>    <span class="k">def</span> <span class="nf">argstovary_todictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+
+        <span class="n">args_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">)):</span>
+
+            <span class="n">args</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">fixed_names</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">fixed_values</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">key</span><span class="p">]})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span><span class="n">values</span><span class="p">[</span><span class="n">count</span><span class="p">]})</span>
+                    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">args_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">args_list</span></div>
+
+<div class="viewcode-block" id="Params.argsfixed_todictionary"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.params.Params.argsfixed_todictionary">[docs]</a>    <span class="k">def</span> <span class="nf">argsfixed_todictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args_fixed</span></div>
+
+    <span class="k">def</span> <span class="nf">_kwargs_to_tovary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ntovary</span><span class="p">)):</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">param_names</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routine</span><span class="o">.</span><span class="n">fixed_names</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

@@ -33,8 +33,7 @@ class FittingSequence(object):
     def fit_sequence(self, fitting_list):
         """
 
-        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and
-        kwargs being the arguments passed to this option
+        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and kwargs being the arguments passed to this option
         :return: fitting results
         """
         chain_list = []
@@ -71,8 +70,7 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted.
-        If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
         param_class = self._updateManager.param_class(self._lens_temp)
@@ -93,8 +91,7 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.
-        Otherwise starts from scratch.
+        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
         :return: MCMC samples, parameter names, logL distances of all samples
         """
 
@@ -255,9 +252,9 @@ class FittingSequence(object):
         :param kwargs_constraints: kwargs, specified keyword arguments overwrite the existing ones
         :param kwargs_likelihood: kwargs, specified keyword arguments overwrite the existing ones
         :param lens_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
-        :param source_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
-        :param lens_light_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
-        :param ps_add_fixed:[[i_model, ['param1', 'param2',...], [...]]
+        :param source_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param lens_light_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
+        :param ps_add_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_add_fixed: ['param1', 'param2',...]
         :param lens_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param source_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]

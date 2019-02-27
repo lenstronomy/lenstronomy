@@ -79,3 +79,8 @@ History
 * improved parameter handling
 * improved PSF subsampling module
 * relative astrometric precision of point sources implemented
+
+0.6.0 (2019-2-26)
++++++++++++++++++
+* Simulation API module for mock generations
+* Multi-source plane modelling

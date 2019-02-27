@@ -448,7 +448,7 @@ class LensModelPlot(object):
                                     dec_at_xy_0=y_grid_source[0])
 
         source = self._imageModel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source)
-        source = util.array2image(source)
+        source = util.array2image(source) * deltaPix_source**2
 
         im = ax.matshow(np.log10(source), origin='lower', extent=[0, d_s, 0, d_s],
                         cmap=self._cmap, vmin=v_min, vmax=v_max)  # source

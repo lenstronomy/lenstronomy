@@ -14,7 +14,18 @@ class FittingSequence(object):
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
     The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False, verbose=True):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
+                 verbose=True):
+        """
+
+        :param multi_band_list:
+        :param kwargs_model:
+        :param kwargs_constraints:
+        :param kwargs_likelihood:
+        :param kwargs_params:
+        :param mpi:
+        :param verbose: bool, if True
+        """
         self.multi_band_list = multi_band_list
         self._verbose = verbose
         self._mpi = mpi
@@ -81,6 +92,41 @@ class FittingSequence(object):
             lens_temp, source_temp = self._lens_temp, self._source_temp
         return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp
 
+    @property
+    def best_fit_likelihood(self):
+        """
+        returns the log likelihood of the best fit model of the current state of this class
+
+        :return: log likelihood, float
+        """
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
+        param_class = self._param_class
+        likelihoodModule = self.likelihoodModule
+        logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                                                             kwargs_cosmo))
+        return logL
+
+    @property
+    def _param_class(self):
+        """
+
+        :return: Param() class instance reflecting the current state of Fittingsequence
+        """
+        return self._updateManager.param_class(self._lens_temp)
+
+    @property
+    def likelihoodModule(self):
+        """
+
+        :return: Likelihood() class instance reflecting the current state of Fittingsequence
+        """
+        kwargs_model = self._updateManager.kwargs_model
+        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        param_class = self._updateManager.param_class(self._lens_temp)
+        imSim_class = class_creator.create_multiband(self.multi_band_list, **kwargs_model)
+        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
+        return likelihoodModule
+
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True):
         """
         MCMC routine
@@ -95,14 +141,9 @@ class FittingSequence(object):
         :return: MCMC samples, parameter names, logL distances of all samples
         """
 
-        kwargs_model = self._updateManager.kwargs_model
-        kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._updateManager.param_class(self._lens_temp)
-
-        imSim_class = class_creator.create_multiband(self.multi_band_list, **kwargs_model)
-        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
+        param_class = self._param_class
         # run PSO
-        mcmc_class = Sampler(likelihoodModule=likelihoodModule)
+        mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
         mean_start = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
                                            self._cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
@@ -138,10 +179,7 @@ class FittingSequence(object):
         :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
         """
 
-
-        kwargs_model = self._updateManager.kwargs_model
-        kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._updateManager.param_class(self._lens_temp)
+        param_class = self._param_class
         init_pos = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
                                            self._cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
@@ -150,11 +188,8 @@ class FittingSequence(object):
         upperLimit = np.array(init_pos) + np.array(sigma_start) * sigma_scale
         num_param, param_list = param_class.num_param()
 
-        # initialize ImSim() class
-        imSim_class = class_creator.create_multiband(self.multi_band_list, **kwargs_model)
-        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
         # run PSO
-        sampler = Sampler(likelihoodModule=likelihoodModule)
+        sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
                                        threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.args2kwargs(result,
@@ -179,7 +214,7 @@ class FittingSequence(object):
         """
         #lens_temp = copy.deepcopy(lens_input)
         kwargs_model = self._updateManager.kwargs_model
-        param_class = self._updateManager.param_class(self._lens_temp)
+        param_class = self._param_class
         lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
         source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
         if compute_bands is None:
@@ -269,4 +304,3 @@ class FittingSequence(object):
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         return 0
-

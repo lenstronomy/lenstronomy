@@ -34,9 +34,13 @@ class ModelAPI(object):
         self._source_model_class = LightModel(light_model_list=source_light_model_list,
                                         source_redshift_list=source_redshift_list)
         self._lens_light_model_class = LightModel(light_model_list=lens_light_model_list)
+        fixed_magnification = [False] * len(point_source_model_list)
+        for i, ps_type in enumerate(point_source_model_list):
+            if ps_type == 'SOURCE_POSITION':
+                fixed_magnification[i] = True
         self._point_source_model_class = PointSource(point_source_type_list=point_source_model_list,
                                                      lensModel=self._lens_model_class,
-                                                     fixed_magnification_list=[True] * len(point_source_model_list))
+                                                     fixed_magnification_list=fixed_magnification)
 
     @property
     def lens_model_class(self):

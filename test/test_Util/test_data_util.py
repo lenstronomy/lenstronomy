@@ -18,5 +18,13 @@ def test_adu_electron_conversion():
     npt.assert_almost_equal(adu_new, adu, decimal=9)
 
 
+def test_magnitude2cps():
+    mag_zero_point = 30
+    cps = 100
+    magnitude = data_util.cps2magnitude(cps, magnitude_zero_point=mag_zero_point)
+    cps_new = data_util.magnitude2cps(magnitude, magnitude_zero_point=mag_zero_point)
+    npt.assert_almost_equal(cps, cps_new, decimal=9)
+
+
 if __name__ == '__main__':
     pytest.main()

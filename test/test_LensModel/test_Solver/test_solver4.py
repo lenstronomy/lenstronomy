@@ -227,6 +227,7 @@ class TestSolver4Point(object):
         kwargs_lens = [kwargs_spemd, kwargs_shear]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
+        print(x_pos, y_pos, 'test positions')
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': -e2}]
         solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
@@ -254,8 +255,8 @@ class TestSolver4Point(object):
         lensModel = LensModel(lens_model_list, z_source=1, lens_redshift_list=[0.5, 0.5, 0.3], multi_plane=True)
 
         lensEquationSolver = LensEquationSolver(lensModel)
-        sourcePos_x = 0.1
-        sourcePos_y = -0.1
+        sourcePos_x = 0.01
+        sourcePos_y = -0.01
         deltapix = 0.05
         numPix = 150
         gamma = 1.96
@@ -266,6 +267,7 @@ class TestSolver4Point(object):
         kwargs_lens = [kwargs_spemd, kwargs_shear, kwargs_sis]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
+        print(x_pos, y_pos, 'test positions')
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0.1, 'e2': 0, 'center_x': 0., 'center_y': 0},
                             {'e1': e1, 'e2': e2}, {'theta_E': .1, 'center_x': 1, 'center_y': 0}]
         solver = Solver4Point(lensModel, solver_type='PROFILE')

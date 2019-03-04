@@ -9,8 +9,8 @@ from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 from lenstronomy.ImSim.MultiBand.multi_frame import MultiFrame
 
 
-def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list=[], z_source=None, lens_redshift_list=None,
-                       multi_plane=False, source_light_model_list=[], lens_light_model_list=[],
+def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list=[], z_lens=None, z_source=None,
+                       lens_redshift_list=None, multi_plane=False, source_light_model_list=[], lens_light_model_list=[],
                        point_source_model_list=[], fixed_magnification_list=None, additional_images_list=None,
                        min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
                        multi_band_type=None, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None):
@@ -23,7 +23,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list
     """
     data_class = Data(kwargs_data)
     psf_class = PSF(kwargs_psf)
-    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, lens_redshift_list=lens_redshift_list,
+    lens_model_class = LensModel(lens_model_list=lens_model_list, z_lens=z_lens, z_source=z_source, lens_redshift_list=lens_redshift_list,
                                  multi_plane=multi_plane, cosmo=cosmo)
     source_model_class = LightModel(light_model_list=source_light_model_list,
                                     deflection_scaling_list=source_deflection_scaling_list,
@@ -39,7 +39,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, lens_model_list
     return imageModel
 
 
-def create_multiband(multi_band_list, lens_model_list=[], z_source=None, lens_redshift_list=None,
+def create_multiband(multi_band_list, lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
                        multi_plane=False, source_light_model_list=[], lens_light_model_list=[],
                        point_source_model_list=[], fixed_magnification_list=None, additional_images_list=None,
                        min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
@@ -57,7 +57,7 @@ def create_multiband(multi_band_list, lens_model_list=[], z_source=None, lens_re
     :return: MultiBand class instance
     """
 
-    lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, lens_redshift_list=lens_redshift_list,
+    lens_model_class = LensModel(lens_model_list=lens_model_list, z_lens=z_lens, z_source=z_source, lens_redshift_list=lens_redshift_list,
                                  multi_plane=multi_plane, cosmo=cosmo)
     source_model_class = LightModel(light_model_list=source_light_model_list,
                                     deflection_scaling_list=source_deflection_scaling_list,

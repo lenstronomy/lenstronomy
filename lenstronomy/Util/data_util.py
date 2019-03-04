@@ -48,6 +48,18 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     return counts
 
 
+def cps2magnitude(cps, magnitude_zero_point):
+    """
+
+    :param cps: float, count-per-second
+    :param magnitude_zero_point: magnitude zero point
+    :return: magnitude for given counts
+    """
+    delta_M = -np.log10(cps) * 2.5
+    magnitude = delta_M + magnitude_zero_point
+    return magnitude
+
+
 def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
     """
     converts absolute to apparent magnitudes

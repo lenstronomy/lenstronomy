@@ -1,13 +1,12 @@
 Metadata-Version: 1.1
 Name: lenstronomy
-Version: 0.2.7
+Version: 0.6.0
 Summary: Strong lens modeling package.
 Home-page: https://github.com/sibirrer/lenstronomy
 Author: Simon Birrer
 Author-email: sibirrer@gmail.com
 License: MIT
-Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.2.7.tar.gz
-Description-Content-Type: UNKNOWN
+Download-URL: https://github.com/sibirrer/lenstronomy/archive/0.6.0.tar.gz
 Description: ========================================================
         lenstronomy - gravitational lensing software package
         ========================================================
@@ -31,9 +30,10 @@ Description: ========================================================
         .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
             :target: https://arxiv.org/abs/1803.09746
         
-        ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses.
-        The software is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_  and finds application in
-        e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_ for time-delay cosmography and measuring
+        ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
+        `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
+        ``lenstronomy`` finds application in e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_ and
+        `Birrer et al 2018 <http://adsabs.harvard.edu/abs/2018arXiv180901274B>`_ for time-delay cosmography and measuring
         the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ for
         quantifying lensing substructure to infer dark matter properties.
         
@@ -107,6 +107,21 @@ Description: ========================================================
         * `Measuring cosmic shear with Einstein rings <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/EinsteinRingShear_simulations.ipynb>`_
         * `Fitting of galaxy light profiles, like e.g. GALFIT <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb>`_
         * `Quasar-host galaxy decomposition <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb>`_
+        * `Hiding and seeking a single subclump <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/substructure_challenge_simple.ipynb>`_
+        * `Mock generation of realistic images with substructure in the lens <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/substructure_challenge_mock_production.ipynb>`_
+        * `Mock simulation API with multi color models <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/simulation_api.ipynb>`_
+        
+        
+        Mailing list
+        ------------
+        
+        You can join the **lenstronomy** mailing list by signing up on the
+        `google groups page <https://groups.google.com/forum/#!forum/lenstronomy>`_.
+        
+        The email list is meant to provide a communication platform between users and developers. You can ask questions,
+        and suggest new features. New releases will be announced via this mailing list.
+        
+        If you encounter errors or problems with **lenstronomy**, please let us know!
         
         
         Shapelet reconstruction demonstration movies

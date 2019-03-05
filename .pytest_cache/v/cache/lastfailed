@@ -1,0 +1,17 @@
+{
+  "test/test_Cosmo/test_background.py": true,
+  "test/test_GalKin/test_anisotropy.py": true,
+  "test/test_GalKin/test_aperture.py": true,
+  "test/test_GalKin/test_mass_profile.py": true,
+  "test/test_LensModel/test_Profiles/test_dipole.py": true,
+  "test/test_LensModel/test_Profiles/test_p_jaffe.py": true,
+  "test/test_LensModel/test_Profiles/test_point_mass.py": true,
+  "test/test_LensModel/test_Profiles/test_shapelet_pot_cartesian.py": true,
+  "test/test_LensModel/test_Profiles/test_shapelet_pot_polar.py": true,
+  "test/test_LensModel/test_Profiles/test_sis.py": true,
+  "test/test_LensModel/test_Profiles/test_sis_truncate.py": true,
+  "test/test_LightModel/test_Profiles/test_moffat.py": true,
+  "test/test_LightModel/test_Profiles/test_torus.py": true,
+  "test/test_Util/test_correlation.py": true,
+  "test/test_Util/test_derivative_util.py": true
+}

@@ -43,8 +43,8 @@ class LensEquationSolver(object):
             x_init = np.random.uniform(-search_window/2., search_window/2) + x_center
             y_init = np.random.uniform(-search_window / 2., search_window / 2) + y_center
             xinitial = np.array([x_init, y_init])
-            result = minimize(self.root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit**2, method='Nelder-Mead')
-            if self.root(result.x, kwargs_lens, source_x, source_y) < precision_limit**2:
+            result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2, method='Nelder-Mead')
+            if self._root(result.x, kwargs_lens, source_x, source_y) < precision_limit**2:
                 x_solve.append(result.x[0])
                 y_solve.append(result.x[1])
 
@@ -53,7 +53,15 @@ class LensEquationSolver(object):
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         return x_mins, y_mins
 
-    def root(self, x, kwargs_lens, source_x, source_y):
+    def _root(self, x, kwargs_lens, source_x, source_y):
+        """
+
+        :param x: parameters [x-coord, y-coord]
+        :param kwargs_lens: list of keyword arguments of the lens model
+        :param source_x: source position
+        :param source_y: source position
+        :return: square distance between ray-traced image position and given source position
+        """
         x_, y_ = x
         beta_x, beta_y = self.lensModel.ray_shooting(x_, y_, kwargs_lens)
         return (beta_x - source_x)**2 + (beta_y - source_y)**2
@@ -113,10 +121,8 @@ class LensEquationSolver(object):
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
-        #print(x_mins, y_mins, 'after precision limit requirement')
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
-        #print(x_mins, y_mins, 'after overlap removals')
         if arrival_time_sort is True:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)

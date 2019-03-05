@@ -114,8 +114,10 @@ lenstronomy/LensModel/Profiles/convergence.py
 lenstronomy/LensModel/Profiles/coreBurkert.py
 lenstronomy/LensModel/Profiles/dipole.py
 lenstronomy/LensModel/Profiles/flexion.py
+lenstronomy/LensModel/Profiles/gauss_expansion.py
 lenstronomy/LensModel/Profiles/gaussian_kappa.py
 lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.py
+lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py
 lenstronomy/LensModel/Profiles/gaussian_potential.py
 lenstronomy/LensModel/Profiles/hernquist.py
 lenstronomy/LensModel/Profiles/hernquist_ellipse.py
@@ -130,6 +132,7 @@ lenstronomy/LensModel/Profiles/p_jaffe_ellipse.py
 lenstronomy/LensModel/Profiles/point_mass.py
 lenstronomy/LensModel/Profiles/sersic.py
 lenstronomy/LensModel/Profiles/sersic_ellipse.py
+lenstronomy/LensModel/Profiles/sersic_to_gauss.py
 lenstronomy/LensModel/Profiles/sersic_utils.py
 lenstronomy/LensModel/Profiles/shapelet_pot_cartesian.py
 lenstronomy/LensModel/Profiles/shapelet_pot_polar.py
@@ -139,6 +142,7 @@ lenstronomy/LensModel/Profiles/sis.py
 lenstronomy/LensModel/Profiles/sis_truncate.py
 lenstronomy/LensModel/Profiles/spemd.py
 lenstronomy/LensModel/Profiles/spemd_smooth.py
+lenstronomy/LensModel/Profiles/spemd_to_gauss.py
 lenstronomy/LensModel/Profiles/spep.py
 lenstronomy/LensModel/Profiles/spp.py
 lenstronomy/LensModel/Profiles/tnfw.py

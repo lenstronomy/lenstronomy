@@ -65,6 +65,9 @@ class SinglePlane(object):
             elif lens_type == 'SPEMD':
                 from lenstronomy.LensModel.Profiles.spemd import SPEMD
                 self.func_list.append(SPEMD())
+            elif lens_type == 'SERSIC2GAUSS':
+                from lenstronomy.LensModel.Profiles.sersic_to_gauss import SersicToGauss
+                self.func_list.append(SersicToGauss())
             elif lens_type == 'SPEMD_SMOOTH':
                 from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
                 self.func_list.append(SPEMD_SMOOTH())

@@ -72,8 +72,8 @@ class Sersic_elliptic(SersicUtil):
 
         xt1 = cos_phi*x_shift+sin_phi*y_shift
         xt2 = -sin_phi*x_shift+cos_phi*y_shift
-        xt2difq2 = xt2/(q*q)
-        R_ = np.sqrt(xt1*xt1+xt2*xt2difq2)
+        #xt2difq2 = xt2/(q*q)
+        R_ = np.sqrt(q*q*xt1*xt1+xt2*xt2)
         if isinstance(R_, int) or isinstance(R_, float):
             R_ = max(self._smoothing, R_)
         else:
@@ -86,7 +86,7 @@ class Sersic_elliptic(SersicUtil):
                 result = 0
             else:
                 exponent = -bn*(R_frac**(1./n_sersic)-1.)
-                exp = np.exp(exponent)
+                #exp = np.exp(exponent)
                 result = amp * np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= 100]

@@ -6,7 +6,7 @@ from scipy.special import erfi
 from scipy.special import erf
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
-
+#from mpmath import erfi
 
 class GaussianKappaEllipse(object):
     """
@@ -69,18 +69,36 @@ class GaussianKappaEllipse(object):
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
+        #e = abs(1 - q)
         x_ = (cos_phi * x_shift + sin_phi * y_shift) #* np.sqrt(1 - e)
         y_ = (-sin_phi * x_shift + cos_phi * y_shift) # * np.sqrt(1 + e)
 
-        _b = 1 / 2 / sigma ** 2
-        _p = np.sqrt(_b * q ** 2 / (1 - q ** 2))
+        _b = 1. / 2. / sigma**2
+        _p = np.sqrt(_b * q**2 / (1. - q**2))
 
-        alpha = amp * self.sgn(x_ + 1j * y_) * np.sqrt(
-            np.pi / _b / (1 - q ** 2)) * np.exp(-_p ** 2 * (x_ + 1j * y_) **
-                                                2) * (
-                            erfi(_p * (x_ + 1j * y_)) - erfi(
-                        _p * (q * x_ + 1j * y_ / q)))
+        #print(_p * x, _p * y / q)
+
+        if not np.isscalar(x):
+            x_[np.abs(_p*x_)>26.] = 0.
+            y_[np.abs(_p*y_/q)>26.] = 0.
+        elif np.abs(_p*x_)>26. or np.abs(_p*y_/q)>26.:
+            x_ = 0.
+            y_ = 0.
+
+        derfi = erfi(_p * (x_ + 1j*y_)) - erfi(_p*(q*x_ + 1j*y_/q))
+        #print(_p * x, _p * y / q, derfi)
+        #print(x_, y_, amp, q, sigma, derfi)
+        #derfi = np.float128(derfi.tolist())
+        alpha = amp * self.sgn(x_+1j*y_) * np.sqrt(np.pi*sigma**2*(1.-q**2)) \
+                * np.exp(-_p**2 * (x_ + 1j*y_)**2) *derfi
+
+        #if np.isnan(alpha.any()) or np.isinf(alpha.any()):
+        #print(x_, y_, amp, q, sigma, alpha)
+        #print(_b, _p, q, x_, y_, alpha, _p * (x_ + 1j * y_), erfi(_p * (x_ +
+        #                                                               1j *
+        #
+        #                                                                y_)),  _p * (q * x_ + 1j * y_ / q), erfi(
+        #                _p * (q * x_ + 1j * y_ / q)))
 
         return alpha.real, -alpha.imag
 
@@ -115,18 +133,20 @@ class GaussianKappaEllipse(object):
         x_ = (cos_phi * x_shift + sin_phi * y_shift) #* np.sqrt(1 - e)
         y_ = (-sin_phi * x_shift + cos_phi * y_shift) #* np.sqrt(1 + e)
 
-        q2 = 1 - q ** 2
+        q2 = 1. - q ** 2
         rq2 = np.sqrt(q2)
         p = np.sqrt(np.pi)
         s2 = sigma ** 2
         s = sigma
-        r2 = np.sqrt(2)
+        r2 = np.sqrt(2.)
 
-        shear = - amp / (q2**1.5 * s) * (s * rq2 * ((1 + q**2) * np.exp(
-            -(q**2 * x_**2 + y_**2) / (2 * s2)) - 2 * q) + r2 * p * q**2
-            * (x_ + 1j*y_) * np.exp(-q**2 * (x_ + 1j*y_)**2 / 2 / q2 / s2)
-            * (erfi(q * (x_ + 1j*y_) / r2 / rq2 / s) - erfi((q**2 * x_
-                                                    + 1j*y_) / r2 / rq2 / s)))
+        shear = - amp / (q2**1.5 * s) * (s * rq2 * ((1. + q**2) * np.exp(
+            -(q**2 * x_**2 + y_**2) / (2. * s2)) - 2. * q) + r2 * p * q**2
+            * (x_ + 1j*y_) * np.exp(-q**2 * (x_ + 1j*y_)**2 / 2. / q2 / s2)
+            * (erfi((q * (x_ + 1j*y_) / r2 / rq2 / s)) - erfi(
+                    ((
+                                                                                q**2 * x_
+                                                    + 1j*y_) / r2 / rq2 / s))))
 
         return shear.real, -shear.imag
 
@@ -176,7 +196,7 @@ class GaussianKappaEllipse(object):
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         g1, g2 = self.shear(x, y, amp, sigma, e1, e2, center_x, center_y)
-        kappa = self.convergence(x, y, amp, sigma, e1, e2, center_x, center_y)
+        kappa = self.kappa(x, y, amp, sigma, e1, e2, center_x, center_y)
 
         f_xx = kappa + g1
         f_yy = kappa - g1
@@ -194,11 +214,12 @@ class GaussianKappaEllipse(object):
         :param sigma_y:
         :return:
         """
-        return self.convergence(x, y, amp, sigma, e1, e2, center_x, center_y)
+        return self.kappa(x, y, amp, sigma, e1, e2, center_x, center_y)
 
     @staticmethod
     def sgn(z):
         return 1.  # np.sqrt(z*z)/z #np.sign(z.real*z.imag)
+        #return np.sign(z.real)
         if z.real != 0:
             return np.sign(z.real)
         else:

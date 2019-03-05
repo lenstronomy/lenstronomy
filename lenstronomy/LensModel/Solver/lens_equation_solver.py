@@ -23,8 +23,9 @@ class LensEquationSolver(object):
                                   precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
                                   y_center=0, num_random=1000, verbose=False):
         """
-        solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
-        the backwards ray-shooted proposed image position and the source position
+        Solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
+        the backwards ray-shooted proposed image position and the source position.
+        Credits to Giulia Pagano
 
         :param source_x: source position
         :param source_y: source position

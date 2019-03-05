@@ -165,7 +165,7 @@ class PointSource(object):
                 n += len(ra_pos_list[i])
         return n
 
-    def image_amplitude(self, kwargs_ps, kwargs_lens):
+    def image_amplitude(self, kwargs_ps, kwargs_lens, k=None):
         """
         returns the image amplitudes
 
@@ -175,7 +175,8 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
+            if k is None or k == i:
+                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
                                                         search_window=self._search_window,
                                                         precision_limit=self._precision_limit,
                                                         num_iter_max=self._num_iter_max, x_center=self._x_center,
@@ -215,14 +216,14 @@ class PointSource(object):
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
                         if with_amp:
-                            mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
+                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
                             mag = np.abs(mag)
                         amp.append(list(mag))
                     else:
                         if with_amp:
-                            mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
+                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = np.ones_like(x_pos)
                         for j in range(len(x_pos)):

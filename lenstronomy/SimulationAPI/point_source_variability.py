@@ -81,7 +81,6 @@ class PointSourceVariability(object):
         :return: image with time variable source at given time
         """
         kwargs_ps_time = self.point_source_time(time)
-        print(kwargs_ps_time, 'test')
         point_source = self.sim_api_ps.image_model_class.point_source(kwargs_ps_time, kwargs_lens=self._kwargs_lens)
         return point_source + self.image_bkg
 

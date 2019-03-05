@@ -41,7 +41,7 @@ class LensEquationSolver(object):
         """
         x_solve, y_solve = [], []
         for i in range(num_random):
-            x_init = np.random.uniform(-search_window/2., search_window/2) + x_center
+            x_init = np.random.uniform(-search_window / 2., search_window / 2) + x_center
             y_init = np.random.uniform(-search_window / 2., search_window / 2) + y_center
             xinitial = np.array([x_init, y_init])
             result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2, method='Nelder-Mead')

@@ -370,7 +370,6 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
                 scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
-                print(scale_factor, 'test')
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor
                 elif 'theta_Rs' in kwargs:

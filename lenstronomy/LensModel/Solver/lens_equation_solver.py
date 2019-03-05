@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
+from scipy.optimize import minimize
 
 
 class LensEquationSolver(object):
@@ -18,9 +19,48 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
+    def image_position_stochastic(self, source_x, source_y, kwargs_lens, search_window=10,
+                                  precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
+                                  y_center=0, num_random=1000, verbose=False):
+        """
+        solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
+        the backwards ray-shooted proposed image position and the source position
+
+        :param source_x: source position
+        :param source_y: source position
+        :param kwargs_lens: lens model list of keyword arguments
+        :param search_window: angular size of search window
+        :param precision_limit: limit required on the precision in the source plane
+        :param arrival_time_sort: bool, if True sorts according to arrival time
+        :param x_center: center of search window
+        :param y_center: center of search window
+        :param num_random: number of random starting points of the non-linear solver in the search window
+        :param verbose: bool, if True, prints performance information
+        :return: x_image, y_image
+        """
+        x_solve, y_solve = [], []
+        for i in range(num_random):
+            x_init = np.random.uniform(-search_window/2., search_window/2) + x_center
+            y_init = np.random.uniform(-search_window / 2., search_window / 2) + y_center
+            xinitial = np.array([x_init, y_init])
+            result = minimize(self.root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit**2, method='Nelder-Mead')
+            if self.root(result.x, kwargs_lens, source_x, source_y) < precision_limit**2:
+                x_solve.append(result.x[0])
+                y_solve.append(result.x[1])
+
+        x_mins, y_mins = image_util.findOverlap(x_solve, y_solve, precision_limit)
+        if arrival_time_sort is True:
+            x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+        return x_mins, y_mins
+
+    def root(self, x, kwargs_lens, source_x, source_y):
+        x_, y_ = x
+        beta_x, beta_y = self.lensModel.ray_shooting(x_, y_, kwargs_lens)
+        return (beta_x - source_x)**2 + (beta_y - source_y)**2
+
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0):
+                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0):
         """
         finds image position source position and lense model
 
@@ -62,7 +102,10 @@ class LensEquationSolver(object):
             y_mins = y_mins[delta_map <= min_distance*mag*5]
             if verbose is True:
                 print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
-        #print(x_mins, y_mins, 'after requirement of min_distance')
+        x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
+                                                     size=num_random))
+        y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
+                                             size=num_random))
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
                                                                precision_limit, num_iter_max, verbose=verbose,

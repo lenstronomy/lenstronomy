@@ -105,6 +105,34 @@ class UpdateManager(object):
         kwargs_likelihood_updated = self.kwargs_likelihood.update(kwargs_likelihood)
         return kwargs_model_updated, kwargs_constraints_updated, kwargs_likelihood_updated
 
+    def update_limits(self, change_source_lower_limit=None, change_source_upper_limit=None):
+        """
+        updates the limits (lower and upper) of the update manager instance
+
+        :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :return: updates internal state of lower and upper limits accessible from outside
+        """
+        if not change_source_lower_limit is None:
+            self._source_lower = self._update_limit(change_source_lower_limit, self._source_lower)
+        if not change_source_upper_limit is None:
+            self._source_upper = self._update_limit(change_source_upper_limit, self._source_upper)
+
+    def _update_limit(self, change_limit, kwargs_limit_previous):
+        """
+
+        :param change_limit: imput format of def update_limits
+        :param kwargs_limit_previous: all limits of a model type
+        :return: update limits
+        """
+        kwargs_limit_updated = copy.deepcopy(kwargs_limit_previous)
+        for i in range(len(change_limit)):
+            i_model = change_limit[i][0]
+            change_names = change_limit[i][1]
+            values = change_limit[i][2]
+            for j, param_name in enumerate(change_names):
+                kwargs_limit_updated[i_model][param_name] = values[j]
+        return kwargs_limit_updated
+
     def update_fixed(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo, lens_add_fixed=[],
                      source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[], lens_remove_fixed=[],
                      source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[]):

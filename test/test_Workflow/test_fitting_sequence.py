@@ -165,7 +165,8 @@ class TestFittingSequence(object):
         fitting_list.append(['restart', None])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]]}
+                         'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
+            , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],

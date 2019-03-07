@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a4626eab-9ccf-4570-840e-f185b01e757e" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_to_gauss.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/spemd_to_gauss.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lenstronomy.egg-info/SOURCES.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy.egg-info/SOURCES.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py" afterDir="false" />
-    </list>
+    <list default="true" id="a4626eab-9ccf-4570-840e-f185b01e757e" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,19 +32,7 @@
         <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="500">
-              <caret line="80" column="45" selection-start-line="80" selection-start-column="8" selection-end-line="80" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="220" column="8" selection-start-line="220" selection-start-column="8" selection-end-line="220" selection-end-column="8" />
-              <folding>
-                <element signature="e#72#90#0" expanded="true" />
-              </folding>
+              <caret line="80" column="45" selection-start-line="80" selection-start-column="45" selection-end-line="80" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -61,31 +41,7 @@
         <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="549">
-              <caret line="64" column="38" lean-forward="true" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gauss_expansion.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="91" column="18" selection-start-line="91" selection-start-column="18" selection-end-line="91" selection-end-column="18" />
-              <folding>
-                <element signature="e#25#43#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_to_gauss.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-608">
-              <caret line="89" lean-forward="true" selection-start-line="89" selection-end-line="89" />
-              <folding>
-                <element signature="e#25#43#0" expanded="true" />
-              </folding>
+              <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -111,13 +67,34 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/chameleon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-408">
-              <caret line="8" column="90" selection-start-line="8" selection-start-column="80" selection-end-line="8" selection-end-column="90" />
+            <state relative-caret-position="447">
+              <caret line="65" column="53" selection-start-line="65" selection-start-column="53" selection-end-line="65" selection-end-column="53" />
               <folding>
                 <element signature="e#0#50#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1350">
+              <caret line="92" column="12" selection-start-line="92" selection-start-column="12" selection-end-line="92" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1213">
+              <caret line="220" column="8" selection-start-line="220" selection-start-column="8" selection-end-line="220" selection-end-column="8" />
+              <folding>
+                <element signature="e#72#90#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -307,13 +284,7 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1485">
-          <caret line="106" column="12" selection-start-line="106" selection-start-column="12" selection-end-line="106" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/parameters.py" />
     <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/light_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -449,8 +420,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="17" column="31" selection-end-line="141" />
+        <state relative-caret-position="1350">
+          <caret line="92" column="12" selection-start-line="92" selection-start-column="12" selection-end-line="92" selection-end-column="12" />
         </state>
       </provider>
     </entry>
@@ -548,7 +519,7 @@
     <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
-          <caret line="80" column="45" selection-start-line="80" selection-start-column="8" selection-end-line="80" selection-end-column="45" />
+          <caret line="80" column="45" selection-start-line="80" selection-start-column="45" selection-end-line="80" selection-end-column="45" />
         </state>
       </provider>
     </entry>
@@ -565,7 +536,7 @@
     <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="549">
-          <caret line="64" column="38" lean-forward="true" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
+          <caret line="64" column="38" selection-start-line="64" selection-start-column="38" selection-end-line="64" selection-end-column="38" />
         </state>
       </provider>
     </entry>
@@ -579,22 +550,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py">
+    <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/chameleon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="220" column="8" selection-start-line="220" selection-start-column="8" selection-end-line="220" selection-end-column="8" />
+        <state relative-caret-position="447">
+          <caret line="65" column="53" selection-start-line="65" selection-start-column="53" selection-end-line="65" selection-end-column="53" />
           <folding>
-            <element signature="e#72#90#0" expanded="true" />
+            <element signature="e#0#50#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/chameleon.py">
+    <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse_complex.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-408">
-          <caret line="8" column="90" selection-start-line="8" selection-start-column="80" selection-end-line="8" selection-end-column="90" />
+        <state relative-caret-position="1213">
+          <caret line="220" column="8" selection-start-line="220" selection-start-column="8" selection-end-line="220" selection-end-column="8" />
           <folding>
-            <element signature="e#0#50#0" expanded="true" />
+            <element signature="e#72#90#0" expanded="true" />
           </folding>
         </state>
       </provider>

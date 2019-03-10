@@ -70,6 +70,7 @@ class GaussExpansionEllipse(object):
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
+
         return f_xx, f_yy, f_xy
 
     def density(self, r, amp, sigma, e1, e2, scale_factor=1):

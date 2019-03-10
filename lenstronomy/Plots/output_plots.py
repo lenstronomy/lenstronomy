@@ -297,7 +297,8 @@ class LensModelPlot(object):
                                                                                      dec_crit_list, self._kwargs_lens)
         return self._ra_caustic_list, self._dec_caustic_list
 
-    def data_plot(self, ax, v_min=None, v_max=None, text='Observed', fsize=15):
+    def data_plot(self, ax, v_min=None, v_max=None, text='Observed',
+                  fsize=15, **kwargs):
         """
 
         :param ax:
@@ -316,7 +317,10 @@ class LensModelPlot(object):
 
         scale_bar(ax, self._frame_size, dist=1, text='1"')
         text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
+        if 'no_arrow' in kwargs and kwargs['no_arrow']:
+            pass
+        else:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
 
@@ -325,7 +329,8 @@ class LensModelPlot(object):
 
         return ax
 
-    def model_plot(self, ax, v_min=None, v_max=None, image_names=False, fsize=15):
+    def model_plot(self, ax, v_min=None, v_max=None, image_names=False,
+                   fsize=15, **kwargs):
         """
 
         :param ax:
@@ -345,7 +350,10 @@ class LensModelPlot(object):
         ax.autoscale(False)
         scale_bar(ax, self._frame_size, dist=1, text='1"')
         text_description(ax, self._frame_size, text="Reconstructed", color="w", backgroundcolor='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
+        if 'no_arrow' in kwargs and kwargs['no_arrow']:
+            pass
+        else:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -358,7 +366,7 @@ class LensModelPlot(object):
             image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
-    def convergence_plot(self, ax, v_min=None, v_max=None, fsize=15):
+    def convergence_plot(self, ax, v_min=None, v_max=None, fsize=15, **kwargs):
         """
 
         :param x_grid:
@@ -367,14 +375,21 @@ class LensModelPlot(object):
         :param kwargs_else:
         :return:
         """
+        if not 'cmap' in kwargs:
+            kwargs['cmap'] = self._cmap
+
         kappa_result = util.array2image(self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens))
         im = ax.matshow(np.log10(kappa_result), origin='lower',
-                        extent=[0, self._frame_size, 0, self._frame_size], cmap=self._cmap, vmin=v_min, vmax=v_max)
+                        extent=[0, self._frame_size, 0, self._frame_size],
+                        cmap=kwargs['cmap'], vmin=v_min, vmax=v_max)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         scale_bar(ax, self._frame_size, dist=1, text='1"', color='w')
-        coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
+        if 'no_arrow' in kwargs and kwargs['no_arrow']:
+            pass
+        else:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         text_description(ax, self._frame_size, text="Convergence", color="w", backgroundcolor='k', flipped=False)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -382,7 +397,8 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ $\kappa$', fontsize=fsize)
         return ax
 
-    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, fsize=15, **kwargs):
+    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, fsize=15,
+                                 no_arrow=False, **kwargs):
         """
 
         :param ax:
@@ -394,13 +410,17 @@ class LensModelPlot(object):
         if not 'cmap' in kwargs:
             kwargs['cmap'] = 'bwr'
         im = ax.matshow(self._norm_residuals, vmin=v_min, vmax=v_max,
-                        extent=[0, self._frame_size, 0, self._frame_size], origin='lower', **kwargs)
+                        extent=[0, self._frame_size, 0, self._frame_size], origin='lower',
+                        **kwargs)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
         text_description(ax, self._frame_size, text="Normalized Residuals", color="k", backgroundcolor='w')
-        coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
+        if no_arrow:
+            pass
+        else:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -428,7 +448,9 @@ class LensModelPlot(object):
         cb.set_label(r'(f$_{model}$-f$_{data}$)', fontsize=15)
         return ax
 
-    def source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False, fsize=15):
+    def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
+                    v_max=None, with_caustics=False, caustic_color='yellow',
+                    fsize=15, **kwargs):
         """
 
         :param ax:
@@ -466,9 +488,13 @@ class LensModelPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
+            plot_line_set(ax, coords_source, ra_caustic_list,
+                          dec_caustic_list, color=caustic_color)
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
-        coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
+        if 'no_arrow' in kwargs and kwargs['no_arrow']:
+            pass
+        else:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
@@ -503,7 +529,9 @@ class LensModelPlot(object):
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def magnification_plot(self, ax, v_min=-10, v_max=10, image_name_list=None, fsize=15, **kwargs):
+    def magnification_plot(self, ax, v_min=-10, v_max=10,
+                           image_name_list=None, fsize=15, no_arrow=False,
+                                                                    **kwargs):
         """
 
         :param ax:
@@ -524,7 +552,8 @@ class LensModelPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
+        if not no_arrow:
+            coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
         text_description(ax, self._frame_size, text="Magnification model", color="k", backgroundcolor='w')
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

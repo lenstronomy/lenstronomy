@@ -180,6 +180,8 @@ class TestFittingSequence(object):
 
         kwargs_fixed = fittingSequence.kwargs_fixed()
         npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
 
 
 if __name__ == '__main__':

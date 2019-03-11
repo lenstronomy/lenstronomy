@@ -319,7 +319,7 @@ class SinglePlane(object):
             return MultiGaussianKappaEllipse()
         elif lens_type == 'INTERPOL':
             from lenstronomy.LensModel.Profiles.interpol import Interpol
-            return Interpol()
+            return Interpol(grid=False, min_grid_number=100)
         elif lens_type == 'INTERPOL_SCALED':
             from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
             return InterpolScaled()

@@ -168,7 +168,7 @@ class UpdateManager(object):
         for param_name in cosmo_remove_fixed:
             if param_name in cosmo_fixed:
                 del cosmo_fixed[param_name]
-        return lens_fixed, source_fixed, lens_light_fixed, ps_fixed, cosmo_fixed
+                self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._cosmo_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, cosmo_fixed
 
     @staticmethod
     def _add_fixed(kwargs_model, kwargs_fixed, add_fixed):

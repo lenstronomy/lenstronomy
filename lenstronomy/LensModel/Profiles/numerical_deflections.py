@@ -16,9 +16,9 @@ class NumericalAlpha(object):
         1) custom_class.deflections: a numpy array of length N; stores pre-computed deflection angles
         2) custom_class.params: numpy array shape (N,P), where P is the number of parameters
 
-        custom_class should also contain the a call method:
+        custom_class should also contain a call method:
 
-        custom_class(x, y, *args)
+        custom_class(x, y, **args)
         - converts an (x,y) coordinate, and the specific function arguments, into a deflection angle
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

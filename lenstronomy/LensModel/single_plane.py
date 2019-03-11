@@ -24,8 +24,13 @@ class SinglePlane(object):
         self._foreground_shear = False
         self._model_list = lens_model_list
 
+        if numerical_alpha_class is not None:
+            if not isinstance(numerical_alpha_class, list) or \
+                    len(numerical_alpha_class) != len(lens_model_list):
+                raise Exception('If specified, numerical_alpha_class must a be list with len(lens_model_list).')
+
         for i, lens_type in enumerate(lens_model_list):
-            lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class[i])
+            lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class)
             self.func_list.append(lensing_function)
 
     def ray_shooting(self, x, y, kwargs, k=None):
@@ -337,7 +342,7 @@ class SinglePlane(object):
             return coreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
-            return NumericalAlpha(custom_class)
+            return NumericalAlpha(custom_class[i])
         else:
             raise ValueError('%s is not a valid lens model' % lens_type)
 

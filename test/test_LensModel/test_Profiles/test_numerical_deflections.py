@@ -11,10 +11,6 @@ import pytest
 
 class TestClass():
 
-    def __init__(self):
-
-        pass
-
     def __call__(self, x, y, Rs, norm, center_x = 0, center_y = 0):
 
         """

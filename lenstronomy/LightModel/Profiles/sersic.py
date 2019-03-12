@@ -45,8 +45,7 @@ class Sersic(SersicUtil):
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R)
             result[R_frac <= 100] = amp * np.exp(exponent)
-        result = np.nan_to_num(result)
-        return result
+        return np.nan_to_num(result)
 
 
 class SersicElliptic(SersicUtil):
@@ -95,8 +94,7 @@ class SersicElliptic(SersicUtil):
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R_)
             result[R_frac <= 100] = amp * np.exp(exponent)
-        np.nan_to_num(result)
-        return result
+        return np.nan_to_num(result)
 
 
 class CoreSersic(SersicUtil):

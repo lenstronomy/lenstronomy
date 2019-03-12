@@ -2,10 +2,10 @@ __author__ = 'dgilman'
 
 import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
-from lenstronomy.LensModel.Optimizer.params import Params
+from lenstronomy.LensModel.Optimizer.optimizer_params import Params
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
-from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
+from lenstronomy.LensModel.Optimizer.single_plane_optimizer import SinglePlaneLensing
+from lenstronomy.LensModel.Optimizer.multi_plane_optimizer import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
 from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -20,7 +20,7 @@ class Optimizer(object):
     Particle swarm optimizer is modified from the CosmoHammer particle swarm routine with different convergence criteria implemented.
     """
 
-    def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[],
+    def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], numerical_alpha_class = None,
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
                  z_main = None, z_source=None, tol_source=1e-5, tol_image = 0.003, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
@@ -103,7 +103,8 @@ class Optimizer(object):
         # initialize lens model class
         self._lensModel = LensModel(lens_model_list=lens_model_list, lens_redshift_list=redshift_list,
                                     z_source=z_source,
-                                    cosmo=astropy_instance, multi_plane=multiplane)
+                                    cosmo=astropy_instance, multi_plane=multiplane,
+                                    numerical_alpha_class = numerical_alpha_class)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
         self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,

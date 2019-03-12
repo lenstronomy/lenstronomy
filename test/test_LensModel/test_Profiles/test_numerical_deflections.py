@@ -83,9 +83,10 @@ class TestNumericalAlpha(object):
     def test_derivatives(self):
 
         Rs = 10.
-        theta_Rs = 2
+        theta_Rs = 10
         x = np.linspace(Rs, Rs, 1000)
         y = np.linspace(0.2 * Rs, 2 * Rs, 1000)
+        center_x, center_y = -1.2, 0.46
 
         zlist_single = [0.5, 0.5]
         zlist_multi = [0.5, 0.8]
@@ -99,11 +100,11 @@ class TestNumericalAlpha(object):
             lensmodel_nfw = LensModel(lens_model_list=['NFW', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
                                   multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
+            keywords_num = [{'norm': theta_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
+                            {'theta_Rs': 0.7*theta_Rs, 'Rs': 2*Rs, 'center_x': center_x, 'center_y': center_y}]
+            keywords_nfw = [{'theta_Rs': theta_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
+                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_x': center_x, 'center_y': center_y}]
 
-            keywords_num = [{'norm': theta_Rs, 'Rs': Rs, 'center_y': -0.2, 'center_x': 0.4},
-                            {'theta_Rs': 0.7*theta_Rs, 'Rs': 2*Rs, 'center_y': -0.2, 'center_x': 0.4}]
-            keywords_nfw = [{'theta_Rs': theta_Rs, 'Rs': Rs, 'center_y': -0.2, 'center_x': 0.4},
-                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_y': -0.2, 'center_x': 0.4}]
             dx, dy = lensmodel.alpha(x, y, keywords_num)
             dxnfw, dynfw = lensmodel_nfw.alpha(x, y, keywords_nfw)
             npt.assert_almost_equal(dx, dxnfw)
@@ -115,6 +116,7 @@ class TestNumericalAlpha(object):
         theta_Rs = 2
         x = np.linspace(Rs, Rs, 1000)
         y = np.linspace(0.2 * Rs, 2 * Rs, 1000)
+        center_x, center_y = -1.2, 0.46
 
         zlist_single = [0.5, 0.5]
         zlist_multi = [0.5, 0.8]
@@ -130,17 +132,18 @@ class TestNumericalAlpha(object):
                                       lens_redshift_list=zlist[i],
                                       multi_plane=flag, numerical_alpha_class=numerical_alpha_class)
 
-            keywords_num = [{'norm': theta_Rs, 'Rs': Rs, 'center_y': -0.2, 'center_x': 0.4},
-                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_y': -0.2, 'center_x': 0.4}]
-            keywords_nfw = [{'theta_Rs': theta_Rs, 'Rs': Rs, 'center_y': -0.2, 'center_x': 0.4},
-                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_y': -0.2, 'center_x': 0.4}]
+            keywords_num = [{'norm': theta_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
+                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_x': center_x, 'center_y': center_y}]
+            keywords_nfw = [{'theta_Rs': theta_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
+                            {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_x': center_x, 'center_y': center_y}]
+
+
             hess_num = lensmodel.hessian(x, y, keywords_num)
             hess_nfw = lensmodel_nfw.hessian(x, y, keywords_nfw)
             for (hn, hnfw) in zip(hess_num, hess_nfw):
                 diff = hn * hnfw ** -1
                 L = len(diff)
-                npt.assert_almost_equal(np.sum(diff) * L**-1, 1, 5)
-
+                npt.assert_almost_equal(np.sum(diff) * L**-1, 1, 6)
 
 if __name__ == '__main__':
     pytest.main()

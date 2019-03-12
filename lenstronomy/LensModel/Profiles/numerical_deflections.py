@@ -56,11 +56,11 @@ class NumericalAlpha(object):
 
         self._interp = custom_class
 
-    def function(self, x, y, *args):
+    def function(self, x, y,center_x = 0, center_y = 0, **kwargs):
 
         raise Exception('no potential for this class.')
 
-    def derivatives(self, x, y, **kwargs):
+    def derivatives(self, x, y, center_x = 0, center_y = 0, **kwargs):
 
         """
         returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table
@@ -69,30 +69,33 @@ class NumericalAlpha(object):
         assert 'norm' in kwargs.keys(), "key word arguments must contain 'norm', " \
                                         "the normalization of deflection angle in units of arcsec."
 
-        x_ = x - kwargs['center_x']
-        y_ = y - kwargs['center_y']
+        x_ = x - center_x
+        y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
 
-        alpha = self._interp(x, y, **kwargs)
+        alpha = self._interp(x_, y_, **kwargs)
 
-        cos_theta = (x - kwargs['center_x']) * R ** -1
-        sin_theta = (y - kwargs['center_y']) * R ** -1
+        cos_theta = x_ * R ** -1
+        sin_theta = y_ * R ** -1
 
         f_x, f_y = alpha * cos_theta, alpha * sin_theta
 
         return f_x, f_y
 
-    def hessian(self, x, y, **kwargs):
+    def hessian(self, x, y, center_x = 0, center_y = 0, **kwargs):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         (un-normalized!!!) interpolated from the numerical deflection table
         """
 
         diff = 1e-6
-        alpha_ra, alpha_dec = self.derivatives(x, y, **kwargs)
+        alpha_ra, alpha_dec = self.derivatives(x, y, center_x = center_x, center_y = center_y,
+                                               **kwargs)
 
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, **kwargs)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, **kwargs)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, center_x = center_x, center_y = center_y,
+                                               **kwargs)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, center_x = center_x, center_y = center_y,
+                                               **kwargs)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra) / diff
         dalpha_radec = (alpha_ra_dy - alpha_ra) / diff

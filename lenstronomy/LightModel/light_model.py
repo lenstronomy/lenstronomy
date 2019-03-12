@@ -40,8 +40,8 @@ class LightModel(object):
                 from lenstronomy.LightModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic(smoothing=smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
-                from lenstronomy.LightModel.Profiles.sersic import Sersic_elliptic
-                self.func_list.append(Sersic_elliptic(smoothing=smoothing))
+                from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
+                self.func_list.append(SersicElliptic(smoothing=smoothing))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
                 self.func_list.append(CoreSersic(smoothing=smoothing))

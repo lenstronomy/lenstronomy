@@ -49,7 +49,7 @@ class Sersic(SersicUtil):
         return result
 
 
-class Sersic_elliptic(SersicUtil):
+class SersicElliptic(SersicUtil):
     """
     this class contains functions to evaluate an elliptical Sersic function
     """

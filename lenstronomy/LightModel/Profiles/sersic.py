@@ -23,6 +23,7 @@ class Sersic(SersicUtil):
         #    n_sersic = 0.2
         #if R_sersic < 10.**(-6):
         #    R_sersic = 10.**(-6)
+        R_sersic = np.maximum(0, R_sersic)
         x_shift = x - center_x
         y_shift = y - center_y
         R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
@@ -64,6 +65,7 @@ class Sersic_elliptic(SersicUtil):
         #    n_sersic = 0.2
         #if R_sersic < 10.**(-6):
         #    R_sersic = 10.**(-6)
+        R_sersic = np.maximum(0, R_sersic)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y

@@ -395,7 +395,7 @@ class ImageModel(object):
             A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         A = self._add_mask(A, mask)
-        return A
+        return np.nan_to_num(A)
 
     def _add_mask(self, A, mask):
         """

@@ -26,9 +26,9 @@ class MultiFrame(MultiDataBase):
             kwargs_data = multi_band_list[i][0]
             kwargs_psf = multi_band_list[i][1]
             kwargs_numerics = multi_band_list[i][2]
-            idex_lens_list = multi_band_list[i][3]
-            self._idex_lens_list.append(idex_lens_list)
-            lens_model_list_sub = [lens_model_list[k] for k in idex_lens_list]
+            index_lens_list = multi_band_list[i][3].get('index_lens_list', [k for k in range(len(lens_model_list))])
+            self._idex_lens_list.append(index_lens_list)
+            lens_model_list_sub = [lens_model_list[k] for k in index_lens_list]
             lens_model_class = LensModel(lens_model_list=lens_model_list_sub)
             data_i = Data(kwargs_data=kwargs_data)
             psf_i = PSF(kwargs_psf=kwargs_psf)

@@ -5,6 +5,7 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multiband_multimodel import MultiBandMultiModel
 from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
 from lenstronomy.ImSim.MultiBand.multi_frame import MultiFrame
 
@@ -70,6 +71,9 @@ def create_multiband(multi_band_list, lens_model_list=[], z_lens=None, z_source=
                                      num_iter_max=num_iter_max)
     if multi_band_type == 'multi-band':
         multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+    elif multi_band_type == 'multi-band-multi-model':
+        multiband = MultiBandMultiModel(multi_band_list, lens_model_class, source_model_list=source_light_model_list,
+                                        lens_light_model_list=lens_light_model_list, point_source_class=point_source_class)
     elif multi_band_type == 'multi-exposure':
         multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     elif multi_band_type == 'multi-frame':

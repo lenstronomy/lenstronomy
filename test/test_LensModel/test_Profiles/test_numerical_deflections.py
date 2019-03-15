@@ -91,7 +91,7 @@ class TestNumericalAlpha(object):
         zlist_single = [0.5, 0.5]
         zlist_multi = [0.5, 0.8]
         zlist = [zlist_single, zlist_multi]
-        numerical_alpha_class = [TestClass(), None]
+        numerical_alpha_class = TestClass()
 
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5, lens_redshift_list=zlist[i],
@@ -121,7 +121,7 @@ class TestNumericalAlpha(object):
         zlist_single = [0.5, 0.5]
         zlist_multi = [0.5, 0.8]
         zlist = [zlist_single, zlist_multi]
-        numerical_alpha_class = [TestClass(), None]
+        numerical_alpha_class = TestClass()
 
         for i, flag in enumerate([False, True]):
             lensmodel = LensModel(lens_model_list=['NumericalAlpha', 'NFW'], z_source=1.5, z_lens=0.5,

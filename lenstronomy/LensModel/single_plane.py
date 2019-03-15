@@ -14,8 +14,7 @@ class SinglePlane(object):
         """
 
         :param lens_model_list: list of strings with lens model names
-        :param numerical_alpha_class: a list of possible custom classes the the user can define
-        to use a grid of precomputed. If not None, should be len(lens_model_list)
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         deflection angles as a lensmodel. See the documentation in Profiles.numerical_deflections
         """
 
@@ -23,11 +22,6 @@ class SinglePlane(object):
         self._imported_classes = {}
         self._foreground_shear = False
         self._model_list = lens_model_list
-
-        if numerical_alpha_class is not None:
-            if not isinstance(numerical_alpha_class, list) or \
-                    len(numerical_alpha_class) != len(lens_model_list):
-                raise Exception('If specified, numerical_alpha_class must a be list with len(lens_model_list).')
 
         for i, lens_type in enumerate(lens_model_list):
             lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class)
@@ -342,7 +336,7 @@ class SinglePlane(object):
             return coreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
-            return NumericalAlpha(custom_class[i])
+            return NumericalAlpha(custom_class)
         else:
             raise ValueError('%s is not a valid lens model' % lens_type)
 

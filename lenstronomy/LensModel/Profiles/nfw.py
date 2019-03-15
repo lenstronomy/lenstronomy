@@ -59,6 +59,7 @@ class NFW(object):
         returns df/dx and df/dy of the function (integral of NFW)
         """
         rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x

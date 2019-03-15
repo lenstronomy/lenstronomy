@@ -137,7 +137,6 @@ class TestNumericalAlpha(object):
             keywords_nfw = [{'theta_Rs': theta_Rs, 'Rs': Rs, 'center_x': center_x, 'center_y': center_y},
                             {'theta_Rs': 0.7 * theta_Rs, 'Rs': 2 * Rs, 'center_x': center_x, 'center_y': center_y}]
 
-
             hess_num = lensmodel.hessian(x, y, keywords_num)
             hess_nfw = lensmodel_nfw.hessian(x, y, keywords_nfw)
             for (hn, hnfw) in zip(hess_num, hess_nfw):

@@ -30,6 +30,7 @@ class SinglePlane(object):
                 raise Exception('If specified, numerical_alpha_class must a be list with len(lens_model_list).')
 
         for i, lens_type in enumerate(lens_model_list):
+
             lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class)
             self.func_list.append(lensing_function)
 
@@ -223,7 +224,8 @@ class SinglePlane(object):
         return self._imported_classes[lens_type]
 
     def _import_class(self, lens_type, i, custom_class):
-
+        print(lens_type, i, custom_class)
+        a=input('continue')
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
             return Shift()

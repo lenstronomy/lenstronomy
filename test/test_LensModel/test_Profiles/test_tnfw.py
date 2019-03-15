@@ -99,11 +99,16 @@ class TestTNFW(object):
     def test_transform(self):
 
         rho0, Rs = 1, 2
+        r_trunc = 5*Rs
+        r_trunc_2 = 100000*Rs
 
-        trs = self.tnfw._rho02alpha(rho0, Rs)
-        rho_out = self.tnfw._alpha2rho0(trs, Rs)
-
+        trs = self.tnfw._rho02alpha(rho0, Rs, r_trunc)
+        rho_out = self.tnfw._alpha2rho0(trs, Rs, r_trunc)
         npt.assert_almost_equal(rho0, rho_out)
+
+        trs_nfw = self.nfw._rho02alpha(rho0, Rs)
+        trs_tnfw_max = self.tnfw._rho02alpha(rho0, Rs, r_trunc_2)
+        npt.assert_almost_equal(trs_nfw, trs_tnfw_max)
 
     def test_numerical_derivatives(self):
 

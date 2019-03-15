@@ -7,7 +7,7 @@ class MultiPlaneLensing(object):
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
-                 z_macro, astropy_instance, macro_indicies, optimizer_kwargs={}):
+                 z_macro, astropy_instance, macro_indicies, optimizer_kwargs, numerical_alpha_class=None):
 
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
@@ -34,7 +34,7 @@ class MultiPlaneLensing(object):
         self._T_z_source = full_lensmodel.lens_model._T_z_source
 
         macromodel_lensmodel, macro_args, halo_lensmodel, halo_args, front_lensmodel, front_args, self._z_background = \
-            self._split_lensmodel(full_lensmodel,lensmodel_params,z_break=z_macro,macro_indicies=macro_indicies)
+            self._split_lensmodel(full_lensmodel,lensmodel_params,z_macro,macro_indicies,numerical_alpha_class)
         self._macro_indicies = macro_indicies
 
         self._front_lensmodel = front_lensmodel
@@ -178,7 +178,7 @@ class MultiPlaneLensing(object):
 
         return alpha_x, alpha_y
 
-    def _split_lensmodel(self, lensmodel, lensmodel_args, z_break, macro_indicies):
+    def _split_lensmodel(self, lensmodel, lensmodel_args, z_break, macro_indicies, numerical_alpha_class):
 
         """
 
@@ -229,16 +229,17 @@ class MultiPlaneLensing(object):
 
         macromodel = LensModel(lens_model_list=macro_names, lens_redshift_list=macro_redshifts, cosmo=self._astropy_instance,
                                multi_plane=True,
-                               z_source=self._z_source)
+                               z_source=self._z_source, numerical_alpha_class=numerical_alpha_class)
 
         halo_lensmodel = LensModel(lens_model_list=front_model_names+back_model_names, lens_redshift_list=front_redshifts + back_redshifts,
-                                   cosmo=self._astropy_instance, multi_plane=True, z_source=self._z_source)
+                                   cosmo=self._astropy_instance, multi_plane=True, z_source=self._z_source,
+                                   numerical_alpha_class = numerical_alpha_class)
         halo_args = front_args+back_args
 
         front_lensmodel = LensModel(lens_model_list=front_model_names+macro_names,
                                     lens_redshift_list=front_redshifts + macro_redshifts,
                                     cosmo=self._astropy_instance,
-                                    multi_plane=True, z_source=self._z_source)
+                                    multi_plane=True, z_source=self._z_source, numerical_alpha_class=numerical_alpha_class)
 
         return macromodel, macro_args, halo_lensmodel, halo_args, front_lensmodel,front_args,\
                background_z_current

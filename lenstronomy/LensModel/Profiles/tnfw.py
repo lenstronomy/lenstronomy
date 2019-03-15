@@ -37,7 +37,7 @@ class TNFW(object):
         :param center_y: center of halo
         :return:
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_trunc=r_trunc)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -81,7 +81,7 @@ class TNFW(object):
 
     def derivatives(self, x, y, Rs=None, theta_Rs=None, r_trunc=None, center_x=0, center_y=0):
 
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_trunc=r_trunc)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -97,7 +97,7 @@ class TNFW(object):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_trunc=r_trunc)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -395,14 +395,20 @@ class TNFW(object):
 
             return values
 
-    def _alpha2rho0(self, theta_Rs, Rs):
+    def _alpha2rho0(self, theta_Rs, Rs, r_trunc):
         """
         convert angle at Rs into rho0; neglects the truncation
         """
-        rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
+        #rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
+
+        tau = r_trunc * Rs ** -1
+        factor = self._g(1, tau)
+
+        rho0 = theta_Rs / (4 * Rs ** 2 * factor)
+
         return rho0
 
-    def _rho02alpha(self, rho0, Rs):
+    def _rho02alpha(self, rho0, Rs, r_trunc):
         """
         neglects the truncation
 
@@ -411,5 +417,10 @@ class TNFW(object):
         :param Rs:
         :return:
         """
-        theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        #theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        tau = r_trunc * Rs ** -1
+        factor = self._g(1, tau)
+
+        theta_Rs = rho0 * 4 * Rs ** 2 * factor
+
         return theta_Rs

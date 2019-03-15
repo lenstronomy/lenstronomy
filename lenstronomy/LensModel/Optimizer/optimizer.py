@@ -128,7 +128,8 @@ class Optimizer(object):
 
         else:
             lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
+                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs,
+                                              numerical_alpha_class)
 
             self.solver = LensEquationSolver(lensing_class)
 

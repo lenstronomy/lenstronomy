@@ -23,6 +23,8 @@ class LensModel(object):
         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
+        (see documentation in Profiles/numerical_alpha)
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens

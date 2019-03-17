@@ -92,10 +92,9 @@ class Shapelets(object):
         if not self._interpolation:
             n_array = np.zeros(n+1)
             n_array[n] = 1
-            return self.hermval(x, n_array, tensor=False) #attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
+            return self.hermval(x, n_array, tensor=False)  # attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
         else:
             return np.interp(x, self.x_grid, self.H_interp[n])
-            #return self.H_interp[n](x)
 
     def phi_n(self, n, x):
         """

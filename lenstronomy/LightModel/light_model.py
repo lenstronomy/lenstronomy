@@ -48,6 +48,9 @@ class LightModel(object):
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
+            elif profile_type == 'SHAPELETS_POLAR':
+                from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletSetPolar
+                self.func_list.append(ShapeletSetPolar())
             elif profile_type == 'HERNQUIST':
                 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())
@@ -153,7 +156,7 @@ class LightModel(object):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS']:
+                elif model in ['SHAPELETS', 'SHAPELETS_POLAR']:
                     kwargs = kwargs_list[i]
                     n_max = kwargs['n_max']
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
@@ -184,7 +187,7 @@ class LightModel(object):
                 num_param = len(kwargs_list[k]['sigma'])
                 kwargs_list[k]['amp'] = param[i:i + num_param]
                 i += num_param
-            elif model in ['SHAPELETS']:
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR']:
                 n_max = kwargs_list[k]['n_max']
                 num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]

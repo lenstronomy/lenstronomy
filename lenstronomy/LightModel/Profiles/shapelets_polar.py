@@ -149,7 +149,7 @@ class ShapeletsPolar(object):
 
 class ShapeletsPolarExp(object):
     """
-    2D exponential shapelets, Bergé et al. 2019
+    2D exponential shapelets, Berge et al. 2019
     """
     param_names = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'beta': 0, 'n': 0, 'm': 0, 'center_x': -100, 'center_y': -100}
@@ -188,7 +188,7 @@ class ShapeletsPolarExp(object):
         :param beta: shapelet scale
         :param n: non-negative integer
         :param m: integer, running from -n to n in steps of two
-        :return: value of function (20) in Bergé et al. 2019 without complex coefficient
+        :return: value of function (20) in Berge et al. 2019 without complex coefficient
         """
         m_abs = int(abs(m))
         p = int(n - m_abs)

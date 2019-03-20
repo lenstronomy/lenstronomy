@@ -377,3 +377,10 @@ class ShapeletSetPolar(object):
             param_list[i] = param
         return param_list
 
+    def index2poly(self, index):
+        """
+
+        :param index: index of coefficient in the convention here
+        :return: n, m, complex_bool
+        """
+        return self.shapelets.index2poly(index)

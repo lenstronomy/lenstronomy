@@ -304,6 +304,13 @@ class TestShapeletSetPolarExp(object):
         print(np.shape(test_flux))
         assert function_set[0][10] == test_flux[10]
 
+    def test_index2poly(self):
+        index = 0
+        n, m, complex_bool = self.shapeletSet.index2poly(index)
+        assert n == 0
+        assert m == 0
+        assert complex_bool is False
+
 
 if __name__ == '__main__':
     pytest.main()

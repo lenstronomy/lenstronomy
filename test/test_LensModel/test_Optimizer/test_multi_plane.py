@@ -141,10 +141,10 @@ class TestMultiPlaneOptimizer(object):
     def test_split_multi_plane_lensmodels(self):
 
         split = MultiPlaneLensing(self.lens_model_full,self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full,
-                                  1.5,0.5,self.cosmo,[0,1])
+                                  1.5,0.5,self.cosmo,[0,1], {}, None)
 
         macromodel_lensmodel, macro_args, halos_lensmodel, halos_args, _, _, _ = \
-            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, z_break=0.5, macro_indicies=[0, 1])
+            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, 0.5, [0, 1], None)
 
         assert macro_args == self.kwargs_lens_simple
 
@@ -178,7 +178,7 @@ class TestMultiPlaneOptimizer(object):
         xpos,ypos = self.x_pos_simple, self.y_pos_simple
 
         split = MultiPlaneLensing(model, xpos, ypos, kwargs,
-                                  1.5, 0.5, self.cosmo, [0, 1])
+                                  1.5, 0.5, self.cosmo, [0, 1], {}, None)
 
         betax_true, betay_true = model.ray_shooting(xpos, ypos, kwargs)
 
@@ -201,7 +201,7 @@ class TestMultiPlaneOptimizer(object):
     def test_split_multiplane_hessian(self):
 
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
-                                  1.5, 0.5, self.cosmo, [0, 1])
+                                  1.5, 0.5, self.cosmo, [0, 1], {}, None)
 
         _ = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 
@@ -224,7 +224,7 @@ class TestMultiPlaneOptimizer(object):
     def test_split_multi_plane_magnification(self):
 
         split = MultiPlaneLensing(self.lens_model_full, self.x_pos_simple, self.y_pos_simple, self.kwargs_lens_full,
-                                  1.5, 0.5, self.cosmo, [0, 1])
+                                  1.5, 0.5, self.cosmo, [0, 1], {}, None)
 
         _ = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 

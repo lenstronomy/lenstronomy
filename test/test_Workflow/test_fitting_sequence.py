@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
+import numpy as np
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.PointSource.point_source import PointSource
@@ -23,19 +24,19 @@ class TestFittingSequence(object):
         sigma_bkg = 0.05  # background noise per pixel
         exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
         numPix = 10  # cutout pixel size
-        deltaPix = 0.1  # pixel size in arcsec (area per pixel = deltaPix**2)
+        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
         fwhm = 0.5  # full width half max of PSF
 
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = Data(self.kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
-        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-                                                    truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
+        #self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
+        #                                            truncate=6,
+        #                                            kernel=kwargs_psf['kernel_point_source'])
         psf_class = PSF(self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
@@ -102,7 +103,7 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
 
     def test_simulationAPI_psf(self):
-        npt.assert_almost_equal(self.psf_class.kernel_pixel[1, 1], 0.0010335243878451812, decimal=6)
+        npt.assert_almost_equal(np.sum(self.psf_class.kernel_point_source),1, decimal=6)
 
     def test_fitting_sequence(self):
         # kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
@@ -141,6 +142,11 @@ class TestFittingSequence(object):
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
 
+        logL = fittingSequence.best_fit_likelihood
+        print(logL, 'test')
+        print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+        npt.assert_almost_equal(logL, -10000000061.792593, decimal=-4)
+
         n_p = 2
         n_i = 2
         fitting_list = []
@@ -159,7 +165,8 @@ class TestFittingSequence(object):
         fitting_list.append(['restart', None])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]]}
+                         'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
+            , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
@@ -173,6 +180,8 @@ class TestFittingSequence(object):
 
         kwargs_fixed = fittingSequence.kwargs_fixed()
         npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
 
 
 if __name__ == '__main__':

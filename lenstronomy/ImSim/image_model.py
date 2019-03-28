@@ -100,7 +100,7 @@ class ImageModel(object):
         else:
             source_light = self.source_mapping.image_flux_joint(self.ImageNumerics.ra_grid_ray_shooting,
                                                                 self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens,
-                                                                kwargs_source)
+                                                                kwargs_source, k=k)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -395,7 +395,7 @@ class ImageModel(object):
             A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         A = self._add_mask(A, mask)
-        return A
+        return np.nan_to_num(A)
 
     def _add_mask(self, A, mask):
         """

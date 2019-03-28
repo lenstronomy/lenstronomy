@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
+from scipy.optimize import minimize
 
 
 class LensEquationSolver(object):
@@ -18,9 +19,57 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
+    def image_position_stochastic(self, source_x, source_y, kwargs_lens, search_window=10,
+                                  precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
+                                  y_center=0, num_random=1000, verbose=False):
+        """
+        Solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
+        the backwards ray-shooted proposed image position and the source position.
+        Credits to Giulia Pagano
+
+        :param source_x: source position
+        :param source_y: source position
+        :param kwargs_lens: lens model list of keyword arguments
+        :param search_window: angular size of search window
+        :param precision_limit: limit required on the precision in the source plane
+        :param arrival_time_sort: bool, if True sorts according to arrival time
+        :param x_center: center of search window
+        :param y_center: center of search window
+        :param num_random: number of random starting points of the non-linear solver in the search window
+        :param verbose: bool, if True, prints performance information
+        :return: x_image, y_image
+        """
+        x_solve, y_solve = [], []
+        for i in range(num_random):
+            x_init = np.random.uniform(-search_window / 2., search_window / 2) + x_center
+            y_init = np.random.uniform(-search_window / 2., search_window / 2) + y_center
+            xinitial = np.array([x_init, y_init])
+            result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2, method='Nelder-Mead')
+            if self._root(result.x, kwargs_lens, source_x, source_y) < precision_limit**2:
+                x_solve.append(result.x[0])
+                y_solve.append(result.x[1])
+
+        x_mins, y_mins = image_util.findOverlap(x_solve, y_solve, precision_limit)
+        if arrival_time_sort is True:
+            x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+        return x_mins, y_mins
+
+    def _root(self, x, kwargs_lens, source_x, source_y):
+        """
+
+        :param x: parameters [x-coord, y-coord]
+        :param kwargs_lens: list of keyword arguments of the lens model
+        :param source_x: source position
+        :param source_y: source position
+        :return: square distance between ray-traced image position and given source position
+        """
+        x_, y_ = x
+        beta_x, beta_y = self.lensModel.ray_shooting(x_, y_, kwargs_lens)
+        return (beta_x - source_x)**2 + (beta_y - source_y)**2
+
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0):
+                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0):
         """
         finds image position source position and lense model
 
@@ -57,65 +106,85 @@ class LensEquationSolver(object):
         #print(x_mins, y_mins, 'before requirement of min_distance')
         if initial_guess_cut is True:
             mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+            mag[mag < 1] = 1
             x_mins = x_mins[delta_map <= min_distance*mag*5]
             y_mins = y_mins[delta_map <= min_distance*mag*5]
             if verbose is True:
                 print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
-        #print(x_mins, y_mins, 'after requirement of min_distance')
+        x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
+                                                     size=num_random))
+        y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
+                                             size=num_random))
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
-                                                               precision_limit, num_iter_max, verbose=verbose)
+                                                               precision_limit, num_iter_max, verbose=verbose,
+                                                               min_distance=min_distance)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
-        #print(x_mins, y_mins, 'after precision limit requirement')
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
-        #print(x_mins, y_mins, 'after overlap removals')
         if arrival_time_sort is True:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
         return x_mins, y_mins
 
-    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10**(-10),
-                       num_iter_max=100, verbose=False):
-
-        """
-        find iterative solution to the demanded level of precision for the pre-selected regions given a lense model and source position
-
-        :param mins: indices of local minimas found with def neighborSelect and def valueSelect
-        :type mins: 1d numpy array
-        :returns:  (n,3) numpy array with exact position, displacement and magnification [posAngel,delta,mag]
-        :raises: AttributeError, KeyError
-        """
+    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
+                       num_iter_max=100, verbose=False, min_distance=0.01):
         num_candidates = len(x_min)
         x_mins = np.zeros(num_candidates)
         y_mins = np.zeros(num_candidates)
         solver_precision = np.zeros(num_candidates)
-
         for i in range(len(x_min)):
-            l = 0
-            x_mapped, y_mapped = self.lensModel.ray_shooting(x_min[i], y_min[i], kwargs_lens)
-            delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-            f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_min[i], y_min[i], kwargs_lens)
-            DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
-            det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
-            posAngel = np.array([x_min[i], y_min[i]])
-            while(delta > precision_limit and l < num_iter_max):
-                deltaVec = np.array([x_mapped - sourcePos_x, y_mapped - sourcePos_y])
-                posAngel = posAngel - DistMatrix.dot(deltaVec)/det
-                x_mapped, y_mapped = self.lensModel.ray_shooting(posAngel[0], posAngel[1], kwargs_lens)
-                delta = np.sqrt((x_mapped - sourcePos_x)**2+(y_mapped - sourcePos_y)**2)
-                f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(posAngel[0], posAngel[1], kwargs_lens)
-                DistMatrix = np.array([[1 - f_yy, f_xy], [f_yx, 1 - f_xx]])
-                det = (1 - f_xx) * (1 - f_yy) - f_xy * f_xy
-                l += 1
-            x_mins[i] = posAngel[0]
-            y_mins[i] = posAngel[1]
-            solver_precision[i] = delta
+            x_guess, y_guess, delta, l = self._solve_single_proposal(x_min[i], y_min[i], sourcePos_x, sourcePos_y,
+                                                                  kwargs_lens, precision_limit, num_iter_max, min_distance)
             if verbose is True:
                 print("Solution found for region %s with required precision at iteration %s" % (i, l))
+            x_mins[i] = x_guess
+            y_mins[i] = y_guess
+            solver_precision[i] = delta
         return x_mins, y_mins, solver_precision
+
+    def _solve_single_proposal(self, x_guess, y_guess, source_x, source_y, kwargs_lens, precision_limit, num_iter_max,
+                               max_step):
+        l = 0
+        x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
+        delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
+
+        while (delta > precision_limit and l < num_iter_max):
+            x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
+            delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
+            f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_guess, y_guess, kwargs_lens)
+            DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
+            det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
+            deltaVec = np.array([x_mapped - source_x, y_mapped - source_y])
+            image_plane_vector = DistMatrix.dot(deltaVec) / det
+            dist = np.sqrt(image_plane_vector[0]**2 + image_plane_vector[1]**2)
+            if dist > max_step:
+                image_plane_vector *= max_step/dist
+            x_guess, y_guess, delta, l = self._do_step(x_guess, y_guess, source_x, source_y, delta,
+                                                              image_plane_vector, kwargs_lens, l, num_iter_max)
+
+        return x_guess, y_guess, delta, l
+
+    def _do_step(self, x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num,
+                 num_iter_max):
+        x_new = x_guess - image_plane_vector[0]
+        y_new = y_guess - image_plane_vector[1]
+        x_mapped, y_mapped = self.lensModel.ray_shooting(x_new, y_new, kwargs_lens)
+        delta_new = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
+        iter_num += 1
+        if delta_new > delta_init:
+            if num_iter_max < iter_num:
+                return x_guess, y_guess, delta_init, iter_num
+            else:
+                #
+                #image_plane_vector /= 10
+                image_plane_vector[0] *= np.random.normal(loc=0, scale=0.5)
+                image_plane_vector[1] *= np.random.normal(loc=0, scale=0.5)
+                return self._do_step(x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num, num_iter_max)
+        else:
+            return x_new, y_new, delta_new, iter_num
 
     def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5,
                         precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True):

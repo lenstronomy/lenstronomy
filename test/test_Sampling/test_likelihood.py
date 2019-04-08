@@ -86,10 +86,13 @@ class TestLikelihoodModule(object):
                              'check_solver': True,
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
-                                  }
+                             'flux_ratio_likelihood': True,
+                             }
         self.kwargs_data = {'multi_band_list': [kwargs_band, kwargs_psf, kwargs_numerics], 'image_type': 'single-band',
                             'time_delays_measured': np.ones(4),
-                            'time_delays_uncertainties': np.ones(4)
+                            'time_delays_uncertainties': np.ones(4),
+                            'flux_ratios': np.ones(4),
+                            'flux_ratio_errors': np.ones(4)
                             }
         self.param_class = Param(self.kwargs_model, **kwargs_constraints)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,

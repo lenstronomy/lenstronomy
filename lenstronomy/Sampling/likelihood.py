@@ -1,8 +1,10 @@
 __author__ = 'sibirrer'
 
+import numpy as np
+
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
-from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
+from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood, FluxRatioLikelihood
 import lenstronomy.Util.class_creator as class_reator
 
 
@@ -20,7 +22,8 @@ class LikelihoodModule(object):
                  point_source_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
-                 force_minimum_source_surface_brightness=False, flux_min=0):
+                 force_minimum_source_surface_brightness=False, flux_min=0,
+                 flux_ratio_likelihood=False):
         """
         initializing class
 
@@ -54,6 +57,9 @@ class LikelihoodModule(object):
         time_delays_measured = kwargs_data_joint.get('time_delays_measured', None)
         time_delays_uncertainties = kwargs_data_joint.get('time_delays_uncertainties', None)
 
+        flux_ratios = kwargs_data_joint.get('flux_ratios', None)
+        flux_ratio_errors = kwargs_data_joint.get('flux_ratio_errors', None)
+
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
         lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_reator.create_class_instances(**kwargs_model)
@@ -66,7 +72,6 @@ class LikelihoodModule(object):
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:
-
             self.image_likelihood = ImageLikelihood(multi_band_list, multi_band_type, lens_model_class,
                                                     source_model_class, lens_light_model_class,
                                                     point_source_class, bands_compute=bands_compute,
@@ -76,6 +81,9 @@ class LikelihoodModule(object):
         self._position_likelihood = PositionLikelihood(point_source_class, param_class, point_source_likelihood,
                                                        position_uncertainty, check_solver, solver_tolerance,
                                                        force_no_add_image, restrict_image_number, max_num_images)
+        self._flux_ratio_likelihood = flux_ratio_likelihood
+        if self._flux_ratio_likelihood is True:
+            self.flux_ratio_likelihood = FluxRatioLikelihood(point_source_class, lens_model_class, param_class, flux_ratios, flux_ratio_errors)
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
 
@@ -107,6 +115,8 @@ class LikelihoodModule(object):
             bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
                 logL -= 10**10
+        if self._flux_ratio_likelihood is True:
+            logL += self.flux_ratio_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)
         return logL, None
@@ -165,11 +175,5 @@ class LikelihoodModule(object):
         pass
 
 
-class FluxLikelihood(object):
-    """
-    likelihood class for magnification of multiply lensed images
-    """
-    def __init__(self, point_source_class, lens_model_class):
-        pass
 
 

@@ -136,7 +136,8 @@ class TestFittingSequence(object):
         # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        fittingSequence = FittingSequence(multi_band_list, self.kwargs_model, self.kwargs_constraints,
+        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-band'}
+        fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)

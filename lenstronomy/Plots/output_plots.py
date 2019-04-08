@@ -123,7 +123,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
 
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10):
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}):
     """
 
     :param ax:
@@ -151,12 +151,12 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     vmin = np.min(fermat_surface)
     vmax = np.max(fermat_surface)
     levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-    im = ax.contourf(x_grid, y_grid, fermat_surface, origin='lower',# extent=[0, _frame_size, 0, _frame_size],
-                     levels=levels)
+    im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',# extent=[0, _frame_size, 0, _frame_size],
+                     levels=levels, **kwargs_contours)
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
-                                                                             start_scale=deltaPix, max_order=10)
+                                                                             start_scale=deltaPix/5, max_order=10)
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
         plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, shift=_frame_size/2., color='g')
         plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, shift=_frame_size/2., color='r')
@@ -256,7 +256,7 @@ class LensModelPlot(object):
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
-        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, **kwargs_model)
+        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
         self._analysis = LensAnalysis(kwargs_model)
         self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                     z_source=kwargs_model.get('z_source', None),
@@ -350,7 +350,7 @@ class LensModelPlot(object):
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
-            ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+            ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
             image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
@@ -525,7 +525,7 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'det(A$^{-1}$)', fontsize=15)
-        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
@@ -562,7 +562,7 @@ class LensModelPlot(object):
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
-        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax

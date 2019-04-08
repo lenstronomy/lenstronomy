@@ -19,6 +19,7 @@ class MultiBandMultiModel(MultiDataBase):
 
     def __init__(self, multi_band_list, lens_model_class=None, source_model_list=None, lens_light_model_list=None,
                  point_source_class=None):
+        self.type = 'multi-band-multi-model'
         imageModel_list = []
         self._index_source_list = []
         self._index_lens_light_list = []
@@ -71,17 +72,6 @@ class MultiBandMultiModel(MultiDataBase):
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def image_positions(self, kwargs_ps, kwargs_lens):
-        """
-        lens equation solver for image positions given lens model and source position
-        :param kwargs_lens: keyword arguments of lens models (as list)
-        :param sourcePos_x: source position in relative arc sec
-        :param sourcePos_y: source position in relative arc sec
-        :return: x_coords, y_coords of image positions
-        """
-        x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
-        return x_mins, y_mins
-
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
                                     compute_bool=None):
         """
@@ -109,9 +99,16 @@ class MultiBandMultiModel(MultiDataBase):
                                                                              source_marg=source_marg)
         return logL
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
         """
 
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :param compute_bool:
+        :return: number of linear coefficients to be solved for in the linear inversion
         """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)
+        num = 0
+        for i in range(self._num_bands):
+            if compute_bool[i] is True:
+                kwargs_source_i = [kwargs_source[k] for k in self._index_source_list[i]]
+                kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light_list[i]]
+                num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source_i, kwargs_lens_light_i, kwargs_ps)
+        return num

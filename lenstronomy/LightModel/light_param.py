@@ -8,8 +8,8 @@ class LightParam(object):
 
     def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, type='light',
                  linear_solver=True):
-        lightModel = LightModel(light_model_list=light_model_list)
-        self._param_name_list = lightModel.param_name_list()
+        self._lightModel = LightModel(light_model_list=light_model_list)
+        self._param_name_list = self._lightModel.param_name_list()
         self._type = type
         self.model_list = light_model_list
         self.kwargs_fixed = kwargs_fixed
@@ -18,11 +18,11 @@ class LightParam(object):
         self._linear_solve = linear_solver
         if kwargs_lower is None:
             kwargs_lower = []
-            for func in lightModel.func_list:
+            for func in self._lightModel.func_list:
                 kwargs_lower.append(func.lower_limit_default)
         if kwargs_upper is None:
             kwargs_upper = []
-            for func in lightModel.func_list:
+            for func in self._lightModel.func_list:
                 kwargs_upper.append(func.upper_limit_default)
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
@@ -149,20 +149,7 @@ class LightParam(object):
 
         :return: number of linear basis set coefficients
         """
-        num = 0
-        for k, model in enumerate(self.model_list):
-            kwargs_fixed = self.kwargs_fixed[k]
-            param_names = self._param_name_list[k]
-            if 'amp' in param_names:
-                if self._linear_solve is True:
-                    if model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                        num += len(kwargs_fixed['sigma'])
-                    elif model in ['SHAPELETS']:
-                        n_max = kwargs_fixed['n_max']
-                        num += int((n_max + 1) * (n_max + 2) / 2)
-                    else:
-                        num += 1
-        return num
+        return self._lightModel.num_param_linear(kwargs_list=self.kwargs_fixed)
 
     def check_positive_flux_profile(self, kwargs_list):
         pos_bool = True

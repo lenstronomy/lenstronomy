@@ -82,9 +82,9 @@ class Sampler(object):
             pass
         else:
             lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.args2kwargs(result)
-            print(pso.gbest.fitness * 2 / (self.chain.effectiv_numData_points()), 'reduced X^2 of best position')
+            print(pso.gbest.fitness * 2 / (self.chain.effectiv_num_data_points(lens_dict, source_dict, lens_light_dict, ps_dict)), 'reduced X^2 of best position')
             print(pso.gbest.fitness, 'logL')
-            print(self.chain.effectiv_numData_points(), 'effective number of data points')
+            print(self.chain.effectiv_num_data_points(lens_dict, source_dict, lens_light_dict, ps_dict), 'effective number of data points')
             print(lens_dict, 'lens result')
             print(source_dict, 'source result')
             print(lens_light_dict, 'lens light result')

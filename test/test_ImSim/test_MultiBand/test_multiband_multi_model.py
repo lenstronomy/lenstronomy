@@ -79,17 +79,6 @@ class TestImageModel(object):
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
-    def test_image_positions(self):
-        x_im, y_im = self.imageModel.image_positions(self.kwargs_ps, self.kwargs_lens)
-        ra_pos, dec_pos = self.solver.image_position_from_source(sourcePos_x=self.kwargs_ps[0]['ra_source'],
-                                                                 sourcePos_y=self.kwargs_ps[0]['dec_source'],
-                                                                 kwargs_lens=self.kwargs_lens)
-        ra_pos_new = x_im[0]
-        npt.assert_almost_equal(ra_pos_new[0], ra_pos[0], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[1], ra_pos[1], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[2], ra_pos[2], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[3], ra_pos[3], decimal=8)
-
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
         npt.assert_almost_equal(logL, -5100, decimal=-3)
@@ -99,16 +88,8 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-2)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate()
+        numData = self.imageModel.num_data_evaluate()
         assert numData == 10000
-
-    def test_fermat_potential(self):
-        phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_ps)
-        phi_fermat = phi_fermat[0]
-        npt.assert_almost_equal(phi_fermat[0], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[1], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[2], -0.51082354, decimal=3)
-        npt.assert_almost_equal(phi_fermat[3], -0.51082354, decimal=3)
 
 
 if __name__ == '__main__':

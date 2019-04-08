@@ -14,7 +14,7 @@ class FittingSequence(object):
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
     The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
+    def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
         """
 
@@ -26,7 +26,8 @@ class FittingSequence(object):
         :param mpi:
         :param verbose: bool, if True
         """
-        self.multi_band_list = multi_band_list
+        self.kwargs_data_joint = kwargs_data_joint
+        self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
         self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
@@ -123,8 +124,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         param_class = self._updateManager.param_class(self._lens_temp)
-        imSim_class = class_creator.create_multiband(self.multi_band_list, **kwargs_model)
-        likelihoodModule = LikelihoodModule(imSim_class=imSim_class, param_class=param_class, **kwargs_likelihood)
+        likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
         return likelihoodModule
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True):
@@ -228,7 +228,7 @@ class FittingSequence(object):
                 image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
                                                                kwargs_psf=kwargs_psf,
                                                                kwargs_numerics=kwargs_numerics,
-                                                               **kwargs_model)
+                                                               kwargs_model=kwargs_model)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        self._lens_light_temp, self._ps_temp, num_iter=num_iter,

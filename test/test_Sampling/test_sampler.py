@@ -62,6 +62,8 @@ class TestFittingSequence(object):
                                          self.kwargs_lens_light)
 
         data_class.update_data(image_sim)
+        kwargs_data['image_data'] = image_sim
+        kwargs_data_joint = {'multi_band_list': [kwargs_data, kwargs_psf, kwargs_numerics], 'image_type': 'single-band'}
         self.data_class = data_class
         self.psf_class = psf_class
 
@@ -74,11 +76,7 @@ class TestFittingSequence(object):
             'subgrid_res': 1,
             'psf_subgrid': False}
 
-        num_source_model = len(source_model_list)
-
-        kwargs_constraints = {
-                                   'image_plane_source_list': [False] * num_source_model,
-                                   }
+        kwargs_constraints = {'image_plane_source_list': [False] * len(source_model_list)}
 
         kwargs_likelihood = {
                                   'source_marg': True,
@@ -88,7 +86,8 @@ class TestFittingSequence(object):
                                   'solver_tolerance': 0.001,
                                   }
         self.param_class = Param(kwargs_model, **kwargs_constraints)
-        self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, **kwargs_likelihood)
+        self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
+                                           param_class=self.param_class, **kwargs_likelihood)
         self.sampler = Sampler(likelihoodModule=self.Likelihood)
 
     def test_pso(self):

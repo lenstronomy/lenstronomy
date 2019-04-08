@@ -14,6 +14,7 @@ class MultiExposures(MultiBand):
                  point_source_class=None):
         super(MultiExposures, self).__init__(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
                  point_source_class)
+        self.type = 'multi-exposure'
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """

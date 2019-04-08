@@ -13,6 +13,7 @@ class MultiBand(MultiDataBase):
 
     def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):
+        self.type = 'multi-band'
         imageModel_list = []
         for i in range(len(multi_band_list)):
             kwargs_data = multi_band_list[i][0]
@@ -50,17 +51,6 @@ class MultiBand(MultiDataBase):
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def image_positions(self, kwargs_ps, kwargs_lens):
-        """
-        lens equation solver for image positions given lens model and source position
-        :param kwargs_lens: keyword arguments of lens models (as list)
-        :param sourcePos_x: source position in relative arc sec
-        :param sourcePos_y: source position in relative arc sec
-        :return: x_coords, y_coords of image positions
-        """
-        x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
-        return x_mins, y_mins
-
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
                                     compute_bool=None):
         """
@@ -85,10 +75,3 @@ class MultiBand(MultiDataBase):
                                                                              kwargs_lens_light, kwargs_ps,
                                                                              source_marg=source_marg)
         return logL
-
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
-        """
-
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
-        """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)

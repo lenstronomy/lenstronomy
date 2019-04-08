@@ -23,7 +23,7 @@ class TestModelAPI(object):
 
     def test_point_source_model_class(self):
         model = self.api.point_source_model_class
-        assert model._point_source_type_list[0] == 'UNLENSED'
+        assert model.point_source_type_list[0] == 'UNLENSED'
 
 
 if __name__ == '__main__':

@@ -175,6 +175,31 @@ class LightModel(object):
                     raise ValueError('model type %s not valid!' % model)
         return response, n
 
+    def num_param_linear(self, kwargs_list=None):
+        """
+
+        :return: number of linear basis set coefficients
+        """
+        n = 0
+        for i, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                n += 1
+            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                num = len(kwargs_list[i]['sigma'])
+                n += num
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+                n_max = kwargs_list[i]['n_max']
+                if model in ['SHAPELETS_POLAR_EXP']:
+                    num_param = int((n_max+1)**2)
+                else:
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
+                n += num_param
+            else:
+                raise ValueError('model type %s not valid!' % model)
+        return n
+
     def update_linear(self, param, i, kwargs_list):
         """
 

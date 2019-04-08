@@ -14,12 +14,14 @@ class MultiFrame(MultiDataBase):
     class to model multiple patches of the sky simultaneous (e.g. multiple images in a cluster) with different lens models
     for each frame but with shared light components (source and lens)
 
-    multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_model_list], [...], ...]
-    idex_lens_model_list: list of index in order of lerns_model_list to be evaluated by the data frame. idex_lens_model_list = [0, 1, 2]
+    multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, kwargs_index], [...], ...]
+    kwargs_index: supports:
+     'idex_lens_model_list': [0, 1, 2]
 
     """
     def __init__(self, multi_band_list, lens_model_list=None, source_model_class=None, lens_light_model_class=None,
                  point_source_class=None):
+        self.type = 'multi-frame'
         imageModel_list = []
         self._idex_lens_list = []
         for i in range(len(multi_band_list)):
@@ -152,3 +154,12 @@ class MultiFrame(MultiDataBase):
             marg_const = de_lens.marginalisation_const(cov_matrix)
             logL += marg_const
         return logL
+
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
+        """
+
+        :param compute_bool:
+        :return: number of linear coefficients to be solved for in the linear inversion
+        """
+        #TODO this routine might not rightfully compute the number of point sources that are present in all frames when solving for their positions
+        return self._imageModel_list[0].num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

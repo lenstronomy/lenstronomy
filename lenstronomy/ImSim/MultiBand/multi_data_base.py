@@ -13,6 +13,7 @@ class MultiDataBase(object):
             self._num_response_list.append(imageModel.ImageNumerics.num_response)
         self.LensModel = self._imageModel_list[0].LensModel
         self.SourceModel = self._imageModel_list[0].SourceModel
+        self.LensLightModel = self._imageModel_list[0].LensLightModel
         self.PointSource = self._imageModel_list[0].PointSource
 
     @property
@@ -37,7 +38,7 @@ class MultiDataBase(object):
         for imageModel in self._imageModel_list:
             imageModel.reset_point_source_cache(bool=bool)
 
-    def numData_evaluate(self, compute_bool=None):
+    def num_data_evaluate(self, compute_bool=None):
         if compute_bool is None:
             compute_bool = [True] * self._num_bands
         else:
@@ -46,12 +47,17 @@ class MultiDataBase(object):
         num = 0
         for i in range(self._num_bands):
             if compute_bool[i] is True:
-                num += self._imageModel_list[i].numData_evaluate()
+                num += self._imageModel_list[i].num_data_evaluate()
         return num
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
         """
 
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :param compute_bool:
+        :return: number of linear coefficients to be solved for in the linear inversion
         """
-        raise ValueError("Method not implemented!")
+        num = 0
+        for i in range(self._num_bands):
+            if compute_bool[i] is True:
+                num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return num

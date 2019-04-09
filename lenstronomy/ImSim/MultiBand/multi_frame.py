@@ -26,7 +26,7 @@ class MultiFrame(MultiDataBase):
             compute_bool = [True] * len(multi_band_list)
         else:
             if not len(compute_bool) == len(multi_band_list):
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
+                raise ValueError('compute_bool statement has not the same range as number of bands available! (%s vs %s)' % (len(compute_bool), len(multi_band_list)))
         imageModel_list = []
         self._idex_lens_list = []
         for i in range(len(multi_band_list)):
@@ -46,6 +46,7 @@ class MultiFrame(MultiDataBase):
                                         kwargs_numerics=kwargs_numerics)
                 imageModel_list.append(imageModel)
         super(MultiFrame, self).__init__(imageModel_list)
+        self._num_bands = len(multi_band_list)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """

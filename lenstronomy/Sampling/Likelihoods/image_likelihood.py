@@ -35,7 +35,7 @@ class ImageLikelihood(object):
             bands_compute = [True] * self.imSim.num_bands
         self._compute_bool = bands_compute
         if not len(self._compute_bool) == self.imSim.num_bands:
-            raise ValueError('compute_bool statement has not the same range as number of bands available!')
+            raise ValueError('compute_bool statement has not the same range as number of bands available! (%s vs %s)' % (len(self._compute_bool), self.imSim.num_bands))
         self._source_marg = source_marg
         self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
         self._flux_min = flux_min

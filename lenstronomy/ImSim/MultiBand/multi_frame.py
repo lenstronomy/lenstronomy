@@ -46,7 +46,6 @@ class MultiFrame(MultiDataBase):
                                         kwargs_numerics=kwargs_numerics)
                 imageModel_list.append(imageModel)
         super(MultiFrame, self).__init__(imageModel_list)
-        self._num_bands = len(multi_band_list)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """

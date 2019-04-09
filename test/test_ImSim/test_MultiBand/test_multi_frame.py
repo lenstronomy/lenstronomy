@@ -95,7 +95,7 @@ class TestImageModel(object):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens_joint, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False,
                                                            compute_bool=None)
         chi2_reduced = logL * 2 / self.imageModel.num_data_evaluate()
-        npt.assert_almost_equal(chi2_reduced, -1, 1)
+        npt.assert_almost_equal(chi2_reduced, -1.1, 1)
 
 
 if __name__ == '__main__':

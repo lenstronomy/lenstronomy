@@ -32,10 +32,10 @@ class ImageLikelihood(object):
                                    lens_light_model_class, point_source_class, bands_compute=bands_compute)
         self._model_type = self.imSim.type
         if bands_compute is None:
-            bands_compute = [True] * self.imSim.num_bands
+            bands_compute = [True] * len(multi_band_list)
         self._compute_bool = bands_compute
-        if not len(self._compute_bool) == self.imSim.num_bands:
-            raise ValueError('compute_bool statement has not the same range as number of bands available! (%s vs %s)' % (len(self._compute_bool), self.imSim.num_bands))
+        if not len(self._compute_bool) == len(multi_band_list):
+            raise ValueError('compute_bool statement has not the same range as number of bands available! (%s vs %s)' % (len(self._compute_bool), len(multi_band_list)))
         self._source_marg = source_marg
         self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
         self._flux_min = flux_min

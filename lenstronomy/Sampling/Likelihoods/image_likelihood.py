@@ -31,11 +31,6 @@ class ImageLikelihood(object):
         self.imSim = create_im_sim(multi_band_list, multi_band_type, lens_model_class, source_model_class,
                                    lens_light_model_class, point_source_class, bands_compute=bands_compute)
         self._model_type = self.imSim.type
-        if bands_compute is None:
-            bands_compute = [True] * len(multi_band_list)
-        self._compute_bool = bands_compute
-        if not len(self._compute_bool) == len(multi_band_list):
-            raise ValueError('compute_bool statement has not the same range as number of bands available! (%s vs %s)' % (len(self._compute_bool), len(multi_band_list)))
         self._source_marg = source_marg
         self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
         self._flux_min = flux_min
@@ -51,7 +46,7 @@ class ImageLikelihood(object):
         """
 
         logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                      source_marg=self._source_marg, compute_bool=self._compute_bool)
+                                                      source_marg=self._source_marg)
 
         if self._force_minimum_source_surface_brightness is True and len(kwargs_source) > 0:
             bool = self._check_minimum_source_flux(kwargs_lens, kwargs_source)
@@ -74,14 +69,14 @@ class ImageLikelihood(object):
 
         :return: number of image data points
         """
-        return self.imSim.num_data_evaluate(compute_bool=self._compute_bool)
+        return self.imSim.num_data_evaluate()
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         :return:  number of linear parameters solved for during the image reconstruction process
         """
-        return self.imSim.num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self._compute_bool)
+        return self.imSim.num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -110,12 +105,15 @@ def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_cl
     source_light_model_list = source_model_class.profile_type_list
     lens_light_model_list = lens_light_model_class.profile_type_list
     if image_type == 'multi-band':
-        multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
+                              point_source_class, compute_bool=bands_compute)
     elif image_type == 'multi-band-multi-model':
         multiband = MultiBandMultiModel(multi_band_list, lens_model_class, source_model_list=source_light_model_list,
-                                        lens_light_model_list=lens_light_model_list, point_source_class=point_source_class)
+                                        lens_light_model_list=lens_light_model_list,
+                                        point_source_class=point_source_class, compute_bool=bands_compute)
     elif image_type == 'multi-exposure':
-        multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
+                                   point_source_class, compute_bool=bands_compute)
     elif image_type == 'multi-frame':
         multiband = MultiFrame(multi_band_list, lens_model_list, source_model_class, lens_light_model_class,
                                point_source_class, compute_bool=bands_compute)

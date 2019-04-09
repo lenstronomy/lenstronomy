@@ -18,7 +18,7 @@ class MultiBandMultiModel(MultiDataBase):
     """
 
     def __init__(self, multi_band_list, lens_model_class=None, source_model_list=None, lens_light_model_list=None,
-                 point_source_class=None):
+                 point_source_class=None, compute_bool=None):
         self.type = 'multi-band-multi-model'
         imageModel_list = []
         self._index_source_list = []
@@ -44,7 +44,7 @@ class MultiBandMultiModel(MultiDataBase):
                                                     lens_light_model_class, point_source_class,
                                                     kwargs_numerics=kwargs_numerics)
             imageModel_list.append(imageModel)
-        super(MultiBandMultiModel, self).__init__(imageModel_list)
+        super(MultiBandMultiModel, self).__init__(imageModel_list, compute_bool=compute_bool)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """
@@ -59,21 +59,21 @@ class MultiBandMultiModel(MultiDataBase):
         """
         wls_list, error_map_list, cov_param_list, param_list = [], [], [], []
         for i in range(self._num_bands):
-            kwargs_source_i = [kwargs_source[k] for k in self._index_source_list[i]]
-            kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light_list[i]]
-            wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
-                                                                                                 kwargs_source_i,
-                                                                                                 kwargs_lens_light_i,
-                                                                                                 kwargs_ps,
-                                                                                                 inv_bool=inv_bool)
-            wls_list.append(wls_model)
-            error_map_list.append(error_map)
-            cov_param_list.append(cov_param)
-            param_list.append(param)
+            if self._compute_bool[i] is True:
+                kwargs_source_i = [kwargs_source[k] for k in self._index_source_list[i]]
+                kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light_list[i]]
+                wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
+                                                                                                     kwargs_source_i,
+                                                                                                     kwargs_lens_light_i,
+                                                                                                     kwargs_ps,
+                                                                                                     inv_bool=inv_bool)
+                wls_list.append(wls_model)
+                error_map_list.append(error_map)
+                cov_param_list.append(cov_param)
+                param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
-                                    compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -83,15 +83,10 @@ class MultiBandMultiModel(MultiDataBase):
         :param kwargs_ps:
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
-        if compute_bool is None:
-            compute_bool = [True] * self._num_bands
-        else:
-            if not len(compute_bool) == self._num_bands:
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         # generate image
         logL = 0
         for i in range(self._num_bands):
-            if compute_bool[i] is True:
+            if self._compute_bool[i] is True:
                 kwargs_source_i = [kwargs_source[k] for k in self._index_source_list[i]]
                 kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light_list[i]]
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source_i,
@@ -99,7 +94,7 @@ class MultiBandMultiModel(MultiDataBase):
                                                                              source_marg=source_marg)
         return logL
 
-    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         :param compute_bool:
@@ -107,7 +102,7 @@ class MultiBandMultiModel(MultiDataBase):
         """
         num = 0
         for i in range(self._num_bands):
-            if compute_bool[i] is True:
+            if self._compute_bool[i] is True:
                 kwargs_source_i = [kwargs_source[k] for k in self._index_source_list[i]]
                 kwargs_lens_light_i = [kwargs_lens_light[k] for k in self._index_lens_light_list[i]]
                 num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source_i, kwargs_lens_light_i, kwargs_ps)

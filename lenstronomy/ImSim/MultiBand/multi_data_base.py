@@ -5,9 +5,15 @@ class MultiDataBase(object):
     Base class with definitions that are shared among all variations of modelling multiple data sets
     """
 
-    def __init__(self, imageModel_list):
-        self._imageModel_list = imageModel_list
+    def __init__(self, imageModel_list, compute_bool=None):
         self._num_bands = len(imageModel_list)
+        if compute_bool is None:
+            compute_bool = [True] * self._num_bands
+        else:
+            if not len(compute_bool) == self._num_bands:
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
+        self._compute_bool = compute_bool
+        self._imageModel_list = imageModel_list
         self._num_response_list = []
         for imageModel in imageModel_list:
             self._num_response_list.append(imageModel.ImageNumerics.num_response)
@@ -38,19 +44,14 @@ class MultiDataBase(object):
         for imageModel in self._imageModel_list:
             imageModel.reset_point_source_cache(bool=bool)
 
-    def num_data_evaluate(self, compute_bool=None):
-        if compute_bool is None:
-            compute_bool = [True] * self._num_bands
-        else:
-            if not len(compute_bool) == self._num_bands:
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
+    def num_data_evaluate(self):
         num = 0
         for i in range(self._num_bands):
-            if compute_bool[i] is True:
+            if self._compute_bool[i] is True:
                 num += self._imageModel_list[i].num_data_evaluate()
         return num
 
-    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         :param compute_bool:
@@ -58,6 +59,6 @@ class MultiDataBase(object):
         """
         num = 0
         for i in range(self._num_bands):
-            if compute_bool[i] is True:
+            if self._compute_bool[i] is True:
                 num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return num

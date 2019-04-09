@@ -258,8 +258,7 @@ class ImageModel(object):
             point_list.append(point_source)
         return point_list
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                    source_marg=False, compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
 
         computes the likelihood of the data given a model
@@ -304,17 +303,16 @@ class ImageModel(object):
         chi2 = self.reduced_residuals(model, error_map)
         return np.sum(chi2**2) / self.num_data_evaluate()
 
-    def num_data_evaluate(self, compute_bool=None):
+    def num_data_evaluate(self):
         """
         number of data points to be used in the linear solver
         :return:
         """
         return self.ImageNumerics.numData_evaluate
 
-    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, compute_bool=None):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
-        :param compute_bool:
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0

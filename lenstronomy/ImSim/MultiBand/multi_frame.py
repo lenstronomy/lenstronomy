@@ -20,25 +20,31 @@ class MultiFrame(MultiDataBase):
 
     """
     def __init__(self, multi_band_list, lens_model_list=None, source_model_class=None, lens_light_model_class=None,
-                 point_source_class=None):
+                 point_source_class=None, compute_bool=None):
         self.type = 'multi-frame'
+        if compute_bool is None:
+            compute_bool = [True] * len(multi_band_list)
+        else:
+            if not len(compute_bool) == len(multi_band_list):
+                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         imageModel_list = []
         self._idex_lens_list = []
         for i in range(len(multi_band_list)):
-            kwargs_data = multi_band_list[i][0]
-            kwargs_psf = multi_band_list[i][1]
-            kwargs_numerics = multi_band_list[i][2]
-            index_lens_list = multi_band_list[i][3].get('index_lens_list', [k for k in range(len(lens_model_list))])
-            self._idex_lens_list.append(index_lens_list)
-            lens_model_list_sub = [lens_model_list[k] for k in index_lens_list]
-            lens_model_class = LensModel(lens_model_list=lens_model_list_sub)
-            data_i = Data(kwargs_data=kwargs_data)
-            psf_i = PSF(kwargs_psf=kwargs_psf)
-            point_source_class_i = copy.deepcopy(point_source_class)
-            imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,
-                                    lens_light_model_class, point_source_class_i,
-                                    kwargs_numerics=kwargs_numerics)
-            imageModel_list.append(imageModel)
+            if compute_bool[i] is True:
+                kwargs_data = multi_band_list[i][0]
+                kwargs_psf = multi_band_list[i][1]
+                kwargs_numerics = multi_band_list[i][2]
+                index_lens_list = multi_band_list[i][3].get('index_lens_list', [k for k in range(len(lens_model_list))])
+                self._idex_lens_list.append(index_lens_list)
+                lens_model_list_sub = [lens_model_list[k] for k in index_lens_list]
+                lens_model_class = LensModel(lens_model_list=lens_model_list_sub)
+                data_i = Data(kwargs_data=kwargs_data)
+                psf_i = PSF(kwargs_psf=kwargs_psf)
+                point_source_class_i = copy.deepcopy(point_source_class)
+                imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,
+                                        lens_light_model_class, point_source_class_i,
+                                        kwargs_numerics=kwargs_numerics)
+                imageModel_list.append(imageModel)
         super(MultiFrame, self).__init__(imageModel_list)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):

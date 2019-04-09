@@ -29,7 +29,7 @@ class ImageLikelihood(object):
         """
 
         self.imSim = create_im_sim(multi_band_list, multi_band_type, lens_model_class, source_model_class,
-                                   lens_light_model_class, point_source_class)
+                                   lens_light_model_class, point_source_class, bands_compute=bands_compute)
         self._model_type = self.imSim.type
         if bands_compute is None:
             bands_compute = [True] * self.imSim.num_bands
@@ -93,7 +93,7 @@ class ImageLikelihood(object):
 
 
 def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class, lens_light_model_class,
-                  point_source_class):
+                  point_source_class, bands_compute=None):
     """
 
 
@@ -117,7 +117,8 @@ def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_cl
     elif image_type == 'multi-exposure':
         multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
     elif image_type == 'multi-frame':
-        multiband = MultiFrame(multi_band_list, lens_model_list, source_model_class, lens_light_model_class, point_source_class)
+        multiband = MultiFrame(multi_band_list, lens_model_list, source_model_class, lens_light_model_class,
+                               point_source_class, compute_bool=bands_compute)
     elif image_type == 'single-band':
         kwargs_data, kwargs_psf, kwargs_numerics = multi_band_list
         data_class = Data(kwargs_data)

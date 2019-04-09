@@ -62,3 +62,16 @@ class MultiDataBase(object):
             if self._compute_bool[i] is True:
                 num += self._imageModel_list[i].num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return num
+
+    def reduced_residuals(self, model_list, error_map_list=0):
+        """
+
+        :param model:
+        :return:
+        """
+        residual_list = []
+        index = 0
+        for i in range(self._num_bands):
+            if self._compute_bool[i] is True:
+                residual_list.append(self._imageModel_list[i].reduced_residuals(model_list[index], error_map=error_map_list[index]))
+        return residual_list

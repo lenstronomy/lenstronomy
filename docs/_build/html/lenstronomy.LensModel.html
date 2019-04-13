@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.7.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.MultiBand.html" title="lenstronomy.ImSim.MultiBand package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,12 +55,12 @@
 <li class="toctree-l1"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html">lenstronomy.LensModel.Optimizer package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.fixed_routines">lenstronomy.LensModel.Optimizer.fixed_routines module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.multi_plane">lenstronomy.LensModel.Optimizer.multi_plane module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.multi_plane_optimizer">lenstronomy.LensModel.Optimizer.multi_plane_optimizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.optimizer">lenstronomy.LensModel.Optimizer.optimizer module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.params">lenstronomy.LensModel.Optimizer.params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.optimizer_params">lenstronomy.LensModel.Optimizer.optimizer_params module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.particle_swarm">lenstronomy.LensModel.Optimizer.particle_swarm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.penalties">lenstronomy.LensModel.Optimizer.penalties module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.single_plane">lenstronomy.LensModel.Optimizer.single_plane module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer.single_plane_optimizer">lenstronomy.LensModel.Optimizer.single_plane_optimizer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Optimizer.html#module-lenstronomy.LensModel.Optimizer">Module contents</a></li>
 </ul>
 </li>
@@ -123,7 +123,7 @@
 <span id="lenstronomy-lensmodel-lens-model-module"></span><h2>lenstronomy.LensModel.lens_model module<a class="headerlink" href="#module-lenstronomy.LensModel.lens_model" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.lens_model.LensModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>**lensmodel_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle an arbitrary list of lens models</p>
 <dl class="method">
@@ -568,7 +568,7 @@ A = 1 - d^2phi/d_ij</p>
 <span id="lenstronomy-lensmodel-multi-plane-module"></span><h2>lenstronomy.LensModel.multi_plane module<a class="headerlink" href="#module-lenstronomy.LensModel.multi_plane" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">MultiPlane</code><span class="sig-paren">(</span><em>z_source</em>, <em>lens_model_list</em>, <em>lens_redshift_list</em>, <em>cosmo=None</em>, <em>**lensmodel_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">MultiPlane</code><span class="sig-paren">(</span><em>z_source</em>, <em>lens_model_list</em>, <em>lens_redshift_list</em>, <em>cosmo=None</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Multi-plane lensing class</p>
 <dl class="method">
@@ -726,7 +726,7 @@ at each lens plane.</p>
 <span id="lenstronomy-lensmodel-numeric-lens-differentials-module"></span><h2>lenstronomy.LensModel.numeric_lens_differentials module<a class="headerlink" href="#module-lenstronomy.LensModel.numeric_lens_differentials" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>**lensmodel_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.lens_model.LensModel" title="lenstronomy.LensModel.lens_model.LensModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.lens_model.LensModel</span></code></a></p>
 <p>this class computes numerical differentials of lens model quantities</p>
 <dl class="attribute">
@@ -859,7 +859,7 @@ at each lens plane.</p>
 <span id="lenstronomy-lensmodel-single-plane-module"></span><h2>lenstronomy.LensModel.single_plane module<a class="headerlink" href="#module-lenstronomy.LensModel.single_plane" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.single_plane.SinglePlane">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.single_plane.</code><code class="descname">SinglePlane</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.single_plane.</code><code class="descname">SinglePlane</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle an arbitrary list of lens models</p>
 <dl class="method">
@@ -1081,7 +1081,7 @@ at each lens plane.</p>
         <li class="right" >
           <a href="lenstronomy.ImSim.MultiBand.html" title="lenstronomy.ImSim.MultiBand package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

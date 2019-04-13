@@ -16,7 +16,7 @@ class MultiFrame(MultiDataBase):
 
     multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, kwargs_index], [...], ...]
     kwargs_index: supports:
-     'idex_lens_model_list': [0, 1, 2]
+    'idex_lens_model_list': [0, 1, 2]
 
     """
     def __init__(self, multi_band_list, lens_model_list=None, source_model_class=None, lens_light_model_class=None,

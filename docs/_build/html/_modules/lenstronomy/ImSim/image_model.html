@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.ImSim.image_model &#8212; lenstronomy 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -66,6 +66,7 @@
 <span class="sd">        :param point_source_class: instance of PointSource() class describing the point sources</span>
 <span class="sd">        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;single-band&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PSF</span> <span class="o">=</span> <span class="n">psf_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Data</span> <span class="o">=</span> <span class="n">data_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span> <span class="o">=</span> <span class="n">ImageNumerics</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">PSF</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_numerics</span><span class="p">)</span>
@@ -80,7 +81,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">update_search_window</span><span class="p">(</span><span class="n">search_window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="n">y_center</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PSF</span><span class="o">.</span><span class="n">psf_error_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_error_map_bool_list</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error_map_bool_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">_point_source_type_list</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_map_bool_list</span> <span class="o">=</span> <span class="n">kwargs_numerics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error_map_bool_list&#39;</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_type_list</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
@@ -141,7 +142,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">source_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_mapping</span><span class="o">.</span><span class="n">image_flux_joint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">ra_grid_ray_shooting</span><span class="p">,</span>
                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">dec_grid_ray_shooting</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
-                                                                <span class="n">kwargs_source</span><span class="p">)</span>
+                                                                <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="n">source_light_final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">re_size_convolve</span><span class="p">(</span><span class="n">source_light</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">source_light_final</span></div>
 
@@ -298,23 +299,7 @@
             <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_source</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">point_list</span></div>
 
-<div class="viewcode-block" id="ImageModel.image_positions"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.image_positions">[docs]</a>    <span class="k">def</span> <span class="nf">image_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        lens equation solver for image positions given lens model and source position (only for image positions within</span>
-<span class="sd">        the data frame).</span>
-
-<span class="sd">        :param kwargs_lens: keyword arguments of lens models (as list)</span>
-<span class="sd">        :param sourcePos_x: source position in relative arc sec</span>
-<span class="sd">        :param sourcePos_y: source position in relative arc sec</span>
-<span class="sd">        :return: x_coords, y_coords of image positions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
-        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
-
-<div class="viewcode-block" id="ImageModel.likelihood_data_given_model"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span>
-                                    <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageModel.likelihood_data_given_model"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood_data_given_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">source_marg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        computes the likelihood of the data given a model</span>
@@ -357,31 +342,25 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chi2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduced_residuals</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">error_map</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">chi2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numData_evaluate</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">chi2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_data_evaluate</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ImageModel.numData_evaluate"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.numData_evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">numData_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compute_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageModel.num_data_evaluate"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.num_data_evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">num_data_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        number of data points to be used in the linear solver</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">numData_evaluate</span></div>
 
-<div class="viewcode-block" id="ImageModel.fermat_potential"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.fermat_potential">[docs]</a>    <span class="k">def</span> <span class="nf">fermat_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
+<div class="viewcode-block" id="ImageModel.num_param_linear"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.num_param_linear">[docs]</a>    <span class="k">def</span> <span class="nf">num_param_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles</span>
-<span class="sd">        :param kwargs_else: keyword arguments corresponding to &quot;other&quot; parameters, such as external shear and point source image positions</span>
-<span class="sd">        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</span>
+<span class="sd">        :return: number of linear coefficients to be solved for in the linear inversion</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">ra_pos_list</span><span class="p">,</span> <span class="n">dec_pos_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">source_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="n">phi_fermat</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra_pos_list</span><span class="p">)):</span>
-            <span class="n">phi_fermat_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">ra_pos_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dec_pos_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ra_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                           <span class="n">dec_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-            <span class="n">phi_fermat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_fermat_i</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">phi_fermat</span></div>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">num_param_linear</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span><span class="o">.</span><span class="n">num_param_linear</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">num_basis</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">num</span></div>
 
     <span class="k">def</span> <span class="nf">_response_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -436,7 +415,7 @@
             <span class="n">A</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_mask</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">A</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -495,7 +474,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

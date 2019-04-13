@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,7 +52,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">):</span>
+                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
@@ -64,6 +64,8 @@
 <span class="sd">        only applicable in multi_plane mode.</span>
 <span class="sd">        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.</span>
 <span class="sd">        :param multi_plane: bool, if True, uses multi-plane mode. Default is False.</span>
+<span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
+<span class="sd">        (see documentation in Profiles/numerical_alpha)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
@@ -72,9 +74,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                         <span class="n">numerical_alpha_class</span> <span class="o">=</span> <span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">z_lens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">)</span>
 
@@ -278,7 +281,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

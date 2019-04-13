@@ -84,3 +84,9 @@ History
 +++++++++++++++++
 * Simulation API module for mock generations
 * Multi-source plane modelling
+
+0.7.0 (2019-4-13)
++++++++++++++++++
+* New design of Likelihood module
+* Updated design of FittingSequence
+* Exponential Shapelets implemented

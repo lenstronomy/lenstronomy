@@ -25,7 +25,7 @@ class ImageLikelihood(object):
         linear coefficients
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions exceed the minimum flux
-        :param flux_min: float, minimum flux (surface brightness to obey when forec_minimym_source_brightness is enabled
+        :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         """
 
         self.imSim = create_im_sim(multi_band_list, multi_band_type, lens_model_class, source_model_class,

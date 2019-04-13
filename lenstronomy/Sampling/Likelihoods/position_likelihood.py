@@ -130,7 +130,7 @@ class FluxRatioLikelihood(object):
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         x_pos, y_pos = self._param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
         mag = np.abs(self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens))
-        mag_ratio = mag[1:] - mag[0]
+        mag_ratio = mag[1:] / mag[0]
         dist = (mag_ratio - self._flux_ratios)**2 / self._flux_ratio_errors**2 / 2
         logL = -np.sum(dist)
         if np.isnan(logL) is True:

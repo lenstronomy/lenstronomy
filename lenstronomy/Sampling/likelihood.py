@@ -1,10 +1,9 @@
 __author__ = 'sibirrer'
 
-import numpy as np
-
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood, FluxRatioLikelihood
+from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 import lenstronomy.Util.class_creator as class_reator
 
 
@@ -23,7 +22,7 @@ class LikelihoodModule(object):
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0,
-                 flux_ratio_likelihood=False):
+                 flux_ratio_likelihood=False, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
         """
         initializing class
 
@@ -65,6 +64,7 @@ class LikelihoodModule(object):
         lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_reator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
+        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo)
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
@@ -118,6 +118,7 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             logL += self.flux_ratio_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
+        logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)
         return logL, None
 
@@ -173,7 +174,4 @@ class LikelihoodModule(object):
 
     def setup(self):
         pass
-
-
-
 

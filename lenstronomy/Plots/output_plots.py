@@ -123,7 +123,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
 
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}):
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
+                         letter_font_size=20):
     """
 
     :param ax:
@@ -168,15 +169,18 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
             y_ = (y_image[i] + 0.5) * deltaPix - _frame_size/2
-            #x_ = x_image[i] * deltaPix
-            #y_ = y_image[i] * deltaPix
-            ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+            if image_color_list is None:
+                color = 'k'
+            else:
+                color = image_color_list[i]
+            ax.plot(x_, y_, 'dk', markersize=8*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5, color=color)
+            ax.text(x_, y_, abc_list[i], fontsize=letter_font_size, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
-        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=10)
+        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

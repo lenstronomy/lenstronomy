@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
+import numpy as np
 
 from lenstronomy.Data.imaging_data import Data
 from lenstronomy.Data.psf import PSF
@@ -77,6 +78,8 @@ class TestImageModel(object):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
+        chi2_reduced_list = self.imageModel.reduced_residuals(model_list=model, error_map_list=error_map)
+        npt.assert_almost_equal(np.sum(chi2_reduced_list[0]**2)/(100**2), 1, decimal=1)
 
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)

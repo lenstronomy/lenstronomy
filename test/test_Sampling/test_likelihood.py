@@ -87,6 +87,7 @@ class TestLikelihoodModule(object):
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
                              'flux_ratio_likelihood': True,
+                             'prior_lens': [[0, 'theta_E', 1, 0.1]]
                              }
         self.kwargs_data = {'multi_band_list': [kwargs_band, kwargs_psf, kwargs_numerics], 'image_type': 'single-band',
                             'time_delays_measured': np.ones(4),

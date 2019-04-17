@@ -33,7 +33,7 @@ class PointSource(object):
 
         """
         self._lensModel = lensModel
-        self._point_source_type_list = point_source_type_list
+        self.point_source_type_list = point_source_type_list
         self._point_source_list = []
         if fixed_magnification_list is None:
             fixed_magnification_list = [False] * len(point_source_type_list)
@@ -158,7 +158,7 @@ class PointSource(object):
     def num_basis(self, kwargs_ps, kwargs_lens):
         n = 0
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
-        for i, model in enumerate(self._point_source_type_list):
+        for i, model in enumerate(self.point_source_type_list):
             if self._fixed_magnification_list[i]:
                 n += 1
             else:
@@ -284,7 +284,7 @@ class PointSource(object):
         :param norm_factor:
         :return:
         """
-        for i, model in enumerate(self._point_source_type_list):
+        for i, model in enumerate(self.point_source_type_list):
             if model == 'UNLENSED':
                 kwargs_ps[i]['point_amp'] *= norm_factor
             elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
@@ -302,7 +302,7 @@ class PointSource(object):
         :return: overwrites kwargs_ps with new amplitudes
         """
         kwargs_list = copy.deepcopy(kwargs_ps)
-        for i, model in enumerate(self._point_source_type_list):
+        for i, model in enumerate(self.point_source_type_list):
             amp = amp_list[i]
             if model == 'UNLENSED':
                 kwargs_list[i]['point_amp'] = amp

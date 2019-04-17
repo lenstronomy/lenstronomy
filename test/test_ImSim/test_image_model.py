@@ -104,18 +104,6 @@ class TestImageModel(object):
         point_source_list = self.imageModel.point_sources_list(self.kwargs_ps, self.kwargs_lens)
         assert len(point_source_list) == 4
 
-    def test_image_positions(self):
-        x_im, y_im = self.imageModel.image_positions(self.kwargs_ps, self.kwargs_lens)
-        ra_pos, dec_pos = self.solver.image_position_from_source(sourcePos_x=self.kwargs_ps[0]['ra_source'],
-                                                                 sourcePos_y=self.kwargs_ps[0]['dec_source'],
-                                                                 kwargs_lens=self.kwargs_lens)
-        ra_pos_new = x_im[0]
-        print(ra_pos_new, ra_pos)
-        npt.assert_almost_equal(ra_pos_new[0], ra_pos[0], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[1], ra_pos[1], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[2], ra_pos[2], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[3], ra_pos[3], decimal=8)
-
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
         npt.assert_almost_equal(logL, -5000, decimal=-3)
@@ -134,16 +122,8 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2, 1, decimal=1)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate()
+        numData = self.imageModel.num_data_evaluate()
         assert numData == 10000
-
-    def test_fermat_potential(self):
-        phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_ps)
-        print(phi_fermat)
-        npt.assert_almost_equal(phi_fermat[0][0], -0.2630531731871062, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][1], -0.2809100018126987, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][2], -0.5086643370512096, decimal=3)
-        npt.assert_almost_equal(phi_fermat[0][3], -0.5131716608238992, decimal=3)
 
     def test_add_mask(self):
         mask = np.array([[0, 1],[1, 0]])

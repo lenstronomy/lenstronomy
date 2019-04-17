@@ -2,9 +2,6 @@ __author__ = 'sibirrer'
 
 
 import lenstronomy.Util.class_creator as class_creator
-from lenstronomy.LensModel.lens_model import LensModel
-
-import numpy.testing as npt
 import pytest
 
 
@@ -16,24 +13,16 @@ class TestClassCreator(object):
         self.kwargs_psf = {'psf_type': 'NONE'}
         self.kwargs_data = {'numPix': 10}
 
+    def test_create_class_instances(self):
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(**self.kwargs_model)
+        assert lens_model_class.lens_model_list[0] == 'SIS'
+
     def test_create_image_model(self):
-        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, **self.kwargs_model)
+        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, kwargs_model=self.kwargs_model)
         assert imageModel.LensModel.lens_model_list[0] == 'SIS'
 
-        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={})
+        imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, kwargs_model={})
         assert imageModel.LensModel.lens_model_list == []
-
-    def test_create_multiband(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}, []]]
-        multi_band = class_creator.create_multiband(multi_band_list, **self.kwargs_model)
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
-
-        multi_band = class_creator.create_multiband(multi_band_list)
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
-        multi_band = class_creator.create_multiband(multi_band_list, multi_band_type='multi-exposure')
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
-        multi_band = class_creator.create_multiband(multi_band_list, multi_band_type='multi-frame')
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list == []
 
 
 if __name__ == '__main__':

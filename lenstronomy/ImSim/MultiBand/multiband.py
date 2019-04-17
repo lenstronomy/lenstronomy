@@ -12,7 +12,8 @@ class MultiBand(MultiDataBase):
     """
 
     def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
-                 point_source_class=None):
+                 point_source_class=None, compute_bool=None):
+        self.type = 'multi-band'
         imageModel_list = []
         for i in range(len(multi_band_list)):
             kwargs_data = multi_band_list[i][0]
@@ -24,7 +25,7 @@ class MultiBand(MultiDataBase):
                                                     lens_light_model_class, point_source_class,
                                                     kwargs_numerics=kwargs_numerics)
             imageModel_list.append(imageModel)
-        super(MultiBand, self).__init__(imageModel_list)
+        super(MultiBand, self).__init__(imageModel_list, compute_bool=compute_bool)
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
         """
@@ -50,19 +51,7 @@ class MultiBand(MultiDataBase):
             param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def image_positions(self, kwargs_ps, kwargs_lens):
-        """
-        lens equation solver for image positions given lens model and source position
-        :param kwargs_lens: keyword arguments of lens models (as list)
-        :param sourcePos_x: source position in relative arc sec
-        :param sourcePos_y: source position in relative arc sec
-        :return: x_coords, y_coords of image positions
-        """
-        x_mins, y_mins = self._imageModel_list[0].image_positions(kwargs_ps, kwargs_lens)
-        return x_mins, y_mins
-
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
-                                    compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -72,23 +61,11 @@ class MultiBand(MultiDataBase):
         :param kwargs_ps:
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
-        if compute_bool is None:
-            compute_bool = [True] * self._num_bands
-        else:
-            if not len(compute_bool) == self._num_bands:
-                raise ValueError('compute_bool statement has not the same range as number of bands available!')
         # generate image
         logL = 0
         for i in range(self._num_bands):
-            if compute_bool[i] is True:
+            if self._compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                              kwargs_lens_light, kwargs_ps,
                                                                              source_marg=source_marg)
         return logL
-
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
-        """
-
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
-        """
-        return self._imageModel_list[0].fermat_potential(kwargs_lens, kwargs_ps)

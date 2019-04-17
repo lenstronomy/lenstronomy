@@ -11,9 +11,10 @@ class MultiExposures(MultiBand):
 
     """
     def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
-                 point_source_class=None):
+                 point_source_class=None, compute_bool=None):
         super(MultiExposures, self).__init__(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
-                 point_source_class)
+                 point_source_class, compute_bool=compute_bool)
+        self.type = 'multi-exposure'
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """
@@ -46,11 +47,12 @@ class MultiExposures(MultiBand):
         """
         A = []
         for i in range(self._num_bands):
-            A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-            if i == 0:
-                A = A_i
-            else:
-                A = np.append(A, A_i, axis=1)
+            if self._compute_bool[i] is True:
+                A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+                if A == []:
+                    A = A_i
+                else:
+                    A = np.append(A, A_i, axis=1)
         return A
 
     @property
@@ -62,11 +64,12 @@ class MultiExposures(MultiBand):
         """
         d = []
         for i in range(self._num_bands):
-            d_i = self._imageModel_list[i].data_response
-            if i == 0:
-                d = d_i
-            else:
-                d = np.append(d, d_i)
+            if self._compute_bool[i] is True:
+                d_i = self._imageModel_list[i].data_response
+                if d == []:
+                    d = d_i
+                else:
+                    d = np.append(d, d_i)
         return d
 
     def _array2image_list(self, array):
@@ -79,11 +82,12 @@ class MultiExposures(MultiBand):
         image_list = []
         k = 0
         for i in range(self._num_bands):
-            num_data = self.num_response_list[i]
-            array_i = array[k:k + num_data]
-            image_i = self._imageModel_list[i].ImageNumerics.array2image(array_i)
-            image_list.append(image_i)
-            k += num_data
+            if self._compute_bool[i] is True:
+                num_data = self.num_response_list[i]
+                array_i = array[k:k + num_data]
+                image_i = self._imageModel_list[i].ImageNumerics.array2image(array_i)
+                image_list.append(image_i)
+                k += num_data
         return image_list
 
     def error_response(self, kwargs_lens, kwargs_ps):
@@ -94,16 +98,16 @@ class MultiExposures(MultiBand):
         """
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
-            C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
-            model_error.append(model_error_i)
-            if i == 0:
-                C_D_response = C_D_response_i
-            else:
-                C_D_response = np.append(C_D_response, C_D_response_i)
+            if self._compute_bool[i] is True:
+                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
+                model_error.append(model_error_i)
+                if C_D_response == []:
+                    C_D_response = C_D_response_i
+                else:
+                    C_D_response = np.append(C_D_response, C_D_response_i)
         return C_D_response, model_error
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
-                                    compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -119,8 +123,11 @@ class MultiExposures(MultiBand):
                                                                          inv_bool=source_marg)
         # compute X^2
         logL = 0
+        index = 0
         for i in range(self._num_bands):
-            logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[i], self._imageModel_list[i].ImageNumerics.mask, model_error_list[i])
+            if self._compute_bool[i] is True:
+                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].ImageNumerics.mask, model_error_list[index])
+                index += 1
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             logL += marg_const

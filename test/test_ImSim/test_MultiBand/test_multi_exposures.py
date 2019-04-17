@@ -87,9 +87,8 @@ class TestImageModel(object):
         assert len(wls_list) == 2
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False,
-                                    compute_bool=None)
-        chi2_reduced = logL * 2 / self.imageModel.numData_evaluate()
+        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
+        chi2_reduced = logL * 2 / self.imageModel.num_data_evaluate()
         npt.assert_almost_equal(chi2_reduced, -1, 1)
 
 

@@ -74,7 +74,7 @@ class TestImageModel(object):
         self.solver = LensEquationSolver(lensModel=lens_model_class)
         idex_lens_1 = [0, 1]
         idex_lens_2 = [2, 3]
-        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_1], [kwargs_data, kwargs_psf, kwargs_numerics, idex_lens_2]]
+        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics, {'index_lens_model_list': idex_lens_1}], [kwargs_data, kwargs_psf, kwargs_numerics, {'index_lens_model_list': idex_lens_2}]]
         lens_model_list_joint = lens_model_list + lens_model_list
         self.kwargs_lens_joint = self.kwargs_lens + self.kwargs_lens
         self.imageModel = MultiFrame(multi_band_list, lens_model_list_joint, source_model_class, lens_light_model_class, point_source_class)
@@ -92,10 +92,9 @@ class TestImageModel(object):
         assert len(wls_list) == 2
 
     def test_likelihood_data_given_model(self):
-        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens_joint, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False,
-                                                           compute_bool=None)
-        chi2_reduced = logL * 2 / self.imageModel.numData_evaluate()
-        npt.assert_almost_equal(chi2_reduced, -1, 1)
+        logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens_joint, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
+        chi2_reduced = logL * 2 / self.imageModel.num_data_evaluate()
+        npt.assert_almost_equal(chi2_reduced, -1.1, 1)
 
 
 if __name__ == '__main__':

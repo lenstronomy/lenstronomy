@@ -7,7 +7,7 @@ class MultiPlaneLensing(object):
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
-                 z_macro, astropy_instance, macro_indicies, optimizer_kwargs, numerical_alpha_class=None):
+                 z_macro, astropy_instance, macro_indicies, optimizer_kwargs, numerical_alpha_class):
 
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios

@@ -25,6 +25,7 @@ class ImageModel(object):
         :param point_source_class: instance of PointSource() class describing the point sources
         :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
         """
+        self.type = 'single-band'
         self.PSF = psf_class
         self.Data = data_class
         self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
@@ -39,7 +40,7 @@ class ImageModel(object):
             self.PointSource.update_search_window(search_window=self.Data.width, x_center=x_center, y_center=y_center)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
-                self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource._point_source_type_list))
+                self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource.point_source_type_list))
             else:
                 self._psf_error_map = False
         else:
@@ -257,23 +258,7 @@ class ImageModel(object):
             point_list.append(point_source)
         return point_list
 
-    def image_positions(self, kwargs_ps, kwargs_lens):
-        """
-        lens equation solver for image positions given lens model and source position (only for image positions within
-        the data frame).
-
-        :param kwargs_lens: keyword arguments of lens models (as list)
-        :param sourcePos_x: source position in relative arc sec
-        :param sourcePos_y: source position in relative arc sec
-        :return: x_coords, y_coords of image positions
-        """
-        if self.PointSource is None:
-            return [], []
-        x_mins, y_mins = self.PointSource.image_position(kwargs_ps, kwargs_lens)
-        return x_mins, y_mins
-
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                    source_marg=False, compute_bool=None):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
 
         computes the likelihood of the data given a model
@@ -316,31 +301,25 @@ class ImageModel(object):
         :return:
         """
         chi2 = self.reduced_residuals(model, error_map)
-        return np.sum(chi2**2) / self.numData_evaluate()
+        return np.sum(chi2**2) / self.num_data_evaluate()
 
-    def numData_evaluate(self, compute_bool=None):
+    def num_data_evaluate(self):
         """
         number of data points to be used in the linear solver
         :return:
         """
         return self.ImageNumerics.numData_evaluate
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
-        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :return: time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :return: number of linear coefficients to be solved for in the linear inversion
         """
-
-        ra_pos_list, dec_pos_list = self.PointSource.image_position(kwargs_ps, kwargs_lens)
-        ra_source_list, dec_source_list = self.PointSource.source_position(kwargs_ps, kwargs_lens)
-        phi_fermat = []
-        for i in range(len(ra_pos_list)):
-            phi_fermat_i = self.LensModel.fermat_potential(ra_pos_list[i], dec_pos_list[i], ra_source_list[i],
-                                                           dec_source_list[i], kwargs_lens)
-            phi_fermat.append(phi_fermat_i)
-        return phi_fermat
+        num = 0
+        num += self.SourceModel.num_param_linear(kwargs_source)
+        num += self.LensLightModel.num_param_linear(kwargs_lens_light)
+        num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
+        return num
 
     def _response_matrix(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, mask, unconvolved=False):
         """
@@ -395,7 +374,7 @@ class ImageModel(object):
             A[n, :] = self.ImageNumerics.image2array(image)
             n += 1
         A = self._add_mask(A, mask)
-        return A
+        return np.nan_to_num(A)
 
     def _add_mask(self, A, mask):
         """

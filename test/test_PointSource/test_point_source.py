@@ -69,7 +69,7 @@ class TestPointSource(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         x_image_list, y_image_list = self.PointSource.image_position(kwargs_ps=self.kwargs_ps,
                                                                      kwargs_lens=kwargs_lens)
-        npt.assert_almost_equal(x_image_list[0][0], -0.82654997748011705 , decimal=8)
+        npt.assert_almost_equal(x_image_list[0][-1], -0.82654997748011705 , decimal=8)
 
     def test_re_normalize_flux(self):
         norm_factor = 10

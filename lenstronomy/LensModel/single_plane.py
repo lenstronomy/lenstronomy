@@ -218,8 +218,7 @@ class SinglePlane(object):
         return self._imported_classes[lens_type]
 
     def _import_class(self, lens_type, i, custom_class):
-        print(lens_type, i, custom_class)
-        a=input('continue')
+
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
             return Shift()

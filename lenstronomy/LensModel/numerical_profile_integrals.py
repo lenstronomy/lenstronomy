@@ -129,7 +129,7 @@ class ConvergenceIntegrals(object):
         y_mean = np.mean(y_grid)
         x_shift = x_grid - x_mean
         y_shift = y_grid - y_mean
-        r2 = x_shift**2 + x_shift**2
+        r2 = x_shift**2 + y_shift**2
         l0 = np.where(r2 == 0)
 
         kernel_x = util.array2image(x_shift / r2)

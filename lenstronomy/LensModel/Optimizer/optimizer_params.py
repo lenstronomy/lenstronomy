@@ -18,8 +18,6 @@ class Params(object):
             routine = FixedPowerLaw_Shear(lens_list,arg_list,xpos,ypos)
         elif optimizer_routine == 'variable_powerlaw_shear':
             routine = VariablePowerLaw_Shear(lens_list, arg_list, xpos, ypos)
-        else:
-            raise ValueError("optimizer_routine must be called %s" %self.known_routines)
 
         self._zlist = zlist
         self._lens_list = lens_list
@@ -46,14 +44,14 @@ class Params(object):
 
         return zlist_tovary, lenslist_tovary, args_tovary
 
-    def tovary_array(self):
+    #def tovary_array(self):
 
-        values = []
+    #    values = []
 
-        for index in self._tovary_indicies:
-            for name in self.routine.to_vary_names[index]:
-                values.append(self.args_tovary[index][name])
-        return np.array(values)
+    #    for index in self._tovary_indicies:
+    #        for name in self.routine.to_vary_names[index]:
+    #            values.append(self.args_tovary[index][name])
+    #    return np.array(values)
 
     def fixed(self):
         zlist_fixed = self._zlist[self._Ntovary:]
@@ -62,9 +60,9 @@ class Params(object):
 
         return zlist_fixed, lenslist_fixed, args_fixed
 
-    def argsfixed_values(self):
-
-        return np.array([args.values() for args in self.args_fixed])
+    #def argsfixed_values(self):
+    #
+    #    return np.array([args.values() for args in self.args_fixed])
 
     def argstovary_todictionary(self,values):
 

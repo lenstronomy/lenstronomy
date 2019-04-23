@@ -4,20 +4,20 @@ import numpy as np
 
 class Params(object):
 
-    known_routines = ['fixed_powerlaw_shear']
+    known_routines = ['fixed_powerlaw_shear', 'variable_powerlaw_shear']
 
     def __init__(self, zlist=None, lens_list=None, arg_list=None,
                  optimizer_routine=str, xpos = None, ypos = None):
 
-        assert optimizer_routine in self.known_routines
+        if optimizer_routine not in self.known_routines:
+            raise Exception('routine '+str(optimizer_routine)+' not recognized.')
 
         self.routine_name = optimizer_routine
 
         if optimizer_routine == 'fixed_powerlaw_shear':
             routine = FixedPowerLaw_Shear(lens_list,arg_list,xpos,ypos)
-
-        else:
-            raise ValueError("optimizer_routine must be called %s" %self.known_routines)
+        elif optimizer_routine == 'variable_powerlaw_shear':
+            routine = VariablePowerLaw_Shear(lens_list, arg_list, xpos, ypos)
 
         self._zlist = zlist
         self._lens_list = lens_list
@@ -44,14 +44,14 @@ class Params(object):
 
         return zlist_tovary, lenslist_tovary, args_tovary
 
-    def tovary_array(self):
+    #def tovary_array(self):
 
-        values = []
+    #    values = []
 
-        for index in self._tovary_indicies:
-            for name in self.routine.to_vary_names[index]:
-                values.append(self.args_tovary[index][name])
-        return np.array(values)
+    #    for index in self._tovary_indicies:
+    #        for name in self.routine.to_vary_names[index]:
+    #            values.append(self.args_tovary[index][name])
+    #    return np.array(values)
 
     def fixed(self):
         zlist_fixed = self._zlist[self._Ntovary:]
@@ -60,9 +60,9 @@ class Params(object):
 
         return zlist_fixed, lenslist_fixed, args_fixed
 
-    def argsfixed_values(self):
-
-        return np.array([args.values() for args in self.args_fixed])
+    #def argsfixed_values(self):
+    #
+    #    return np.array([args.values() for args in self.args_fixed])
 
     def argstovary_todictionary(self,values):
 

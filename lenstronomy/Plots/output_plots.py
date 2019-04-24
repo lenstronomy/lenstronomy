@@ -149,11 +149,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, sourcePos_x, sourcePos_y, kwargs_lens)
     fermat_surface = util.array2image(fermat_surface)
-    vmin = np.min(fermat_surface)
-    vmax = np.max(fermat_surface)
-    levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-    im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',# extent=[0, _frame_size, 0, _frame_size],
-                     levels=levels, **kwargs_contours)
+
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
@@ -166,6 +162,10 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         solver = LensEquationSolver(lensModel)
         theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                  min_distance=deltaPix, search_window=deltaPix*numPix)
+
+        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, sourcePos_x, sourcePos_y, kwargs_lens)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=np.sort(fermat_pot_images), **kwargs_contours)
         mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
@@ -177,10 +177,16 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
                 color = 'k'
             else:
                 color = image_color_list[i]
-            ax.plot(x_, y_, 'dk', markersize=8*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5, color=color)
-            ax.text(x_, y_, abc_list[i], fontsize=letter_font_size, color='k')
+            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
+            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
+    else:
+        vmin = np.min(fermat_surface)
+        vmax = np.max(fermat_surface)
+        levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=levels, **kwargs_contours)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

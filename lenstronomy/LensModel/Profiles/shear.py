@@ -15,8 +15,11 @@ class Shear(object):
     def function(self, x, y, e1, e2, ra_0=0, dec_0=0):
         # change to polar coordinates
         psi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
-        theta, phi = param_util.cart2polar(x-ra_0, y-dec_0)
-        f_ = 1./2 * gamma_ext * theta**2 * np.cos(2*(phi - psi_ext))
+        r, phi = param_util.cart2polar(x-ra_0, y-dec_0)
+        f_ = 1./2 * gamma_ext * r**2 * np.cos(2*(phi - psi_ext))
+        #x_ = x - ra_0
+        #y_ = y - dec_0
+        #f_ = 1/2. * (e1 * x_ * x_ + 2 * e2 * x_ * y_ - e1 * y_ * y_)
         return f_
 
     def derivatives(self, x, y, e1, e2, ra_0=0, dec_0=0):

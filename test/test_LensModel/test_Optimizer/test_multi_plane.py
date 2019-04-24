@@ -74,7 +74,6 @@ class TestMultiPlaneOptimizer(object):
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                           astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear')
 
-
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                         magnification_target=self.magnification_simple,
                                         redshift_list=redshift_list_full,
@@ -121,13 +120,20 @@ class TestMultiPlaneOptimizer(object):
 
         sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
 
-        assert np.absolute(sie._theta_E_start - 0.7) < 0.2
-        for i,group in enumerate(sie.param_names):
-            for name in group:
-                assert name in self.kwargs_lens_simple[i]
+        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
 
-        low,high = sie.get_param_ranges()
-        assert len(low) == len(high)
+        models = [sie, powerlaw]
+
+        for model in models:
+
+            assert np.absolute(model._theta_E_start - 0.7) < 0.2
+
+            for i,group in enumerate(model.param_names):
+                for name in group:
+                    assert name in self.kwargs_lens_simple[i]
+
+            low,high = model.get_param_ranges()
+            assert len(low) == len(high)
 
         spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
         assert np.absolute(spep._theta_E_start - 0.7) < 0.2
@@ -257,18 +263,21 @@ class TestMultiPlaneOptimizer(object):
         redshift_list_reoptimize = self.lens_model_full.redshift_list
         scale = [0.5, 1]
 
-        for i, val in enumerate([False,True]):
-            reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
-                                    magnification_target=self.magnification_simple,
-                                    redshift_list=redshift_list_reoptimize,
-                                    lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
-                                    verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
-                                    optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
+        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear']
 
-            kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
+        for rout in routine:
+            for i, val in enumerate([False,True]):
+                reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
+                                        magnification_target=self.magnification_simple,
+                                        redshift_list=redshift_list_reoptimize,
+                                        lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
+                                        verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
+                                        optimizer_routine=rout, re_optimize=True, particle_swarm=val,
+                                        optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
 
-            _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
+                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=5, n_iterations=3, restart=2)
+
+                _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays, 'optimization_algorithm': 'powell'}
         reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,

@@ -36,7 +36,8 @@ class Optimizer(object):
         :param redshift_list: list of lens model redshifts
         :param lens_model_list: list of lens models
         :param kwargs_lens: keywords for lens models
-        :param optimizer_routine: a set optimization routine; currently only 'optimize_SIE_shear' is implemented
+        :param optimizer_routine: a set optimization routine; currently only 'fixed_powerlaw_shear' and 'variable_powerlaw_shear'
+         are implemented
         :param multiplane: multi-plane flag
         :param z_main: if multi-plane, macromodel redshift
         :param z_source: if multi-plane, macromodel redshift

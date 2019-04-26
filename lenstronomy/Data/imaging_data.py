@@ -1,9 +1,9 @@
 import numpy as np
 
-from lenstronomy.Data.coord_transforms import Coordinates
+from lenstronomy.Data.pixel_grid import PixelGrid
 
 
-class Data(object):
+class Data(PixelGrid):
     """
     class to handle the data, coordinate system and masking, including convolution with various numerical precisions
 
@@ -43,23 +43,18 @@ class Data(object):
 
         if not 'image_data' in kwargs_data:
             if not 'numPix' in kwargs_data:
-                raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array  or at least 'numPix'!")
+                raise ValueError("keyword 'image_data' must be specified and consist of a 2d numpy array or at least 'numPix'!")
             else:
                 numPix = kwargs_data['numPix']
                 data = np.zeros((numPix, numPix))
         else:
             data = kwargs_data['image_data']
-        self.nx, self.ny = np.shape(data)
-        if self.nx != self.ny:
-            raise ValueError("'image_data' with non-equal pixel number in x- and y-axis not yet supported!")
-
+        nx, ny = np.shape(data)
         ra_at_xy_0 = kwargs_data.get('ra_at_xy_0', 0) + kwargs_data.get('ra_shift', 0)
         dec_at_xy_0 = kwargs_data.get('dec_at_xy_0', 0) + kwargs_data.get('dec_shift', 0)
         transform_pix2angle = kwargs_data.get('transform_pix2angle', np.array([[1, 0], [0, 1]]))
-        self._coords = Coordinates(transform_pix2angle=transform_pix2angle, ra_at_xy_0=ra_at_xy_0,
-                                    dec_at_xy_0=dec_at_xy_0)
+        super(Data, self).__init__(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0)
 
-        self._x_grid, self._y_grid = self._coords.coordinate_grid(self.nx)
         if 'exposure_map' in kwargs_data:
             exp_map = kwargs_data['exposure_map']
             exp_map[exp_map <= 0] = 10**(-10)
@@ -86,20 +81,9 @@ class Data(object):
         :return: None
         """
         nx, ny = np.shape(image_data)
-        if not self.nx == nx and not self.ny == ny:
-            raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self.nx, self.ny))
+        if not self._nx == nx and not self._ny == ny:
+            raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self._nx, self._ny))
         self._data = image_data
-
-    def shift_coordinate_grid(self, x_shift, y_shift, pixel_unit=False):
-        """
-        shifts the coordinate system
-        :param x_shif: shift in x (or RA)
-        :param y_shift: shift in y (or DEC)
-        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
-        :return: updated data class with change in coordinate system
-        """
-        self._coords.shift_coordinate_grid(x_shift, y_shift, pixel_unit=pixel_unit)
-        self._x_grid, self._y_grid = self._coords.coordinate_grid(self.nx)
 
     @property
     def data(self):
@@ -108,30 +92,6 @@ class Data(object):
         :return: 2d numpy array of data
         """
         return self._data
-
-    @property
-    def deltaPix(self):
-        """
-
-        :return: pixel size (in units of arcsec)
-        """
-        return self._coords.pixel_size
-
-    @property
-    def width(self):
-        """
-
-        :return: width of data frame
-        """
-        return len(self.data) * self.deltaPix
-
-    @property
-    def center(self):
-        """
-
-        :return: center_x, center_y of coordinate system
-        """
-        return np.mean(self._x_grid), np.mean(self._y_grid)
 
     @property
     def background_rms(self):
@@ -182,43 +142,6 @@ class Data(object):
             else:
                 self._C_D = self.covariance_matrix(self.data, self.background_rms, self.exposure_map)
         return self._C_D
-
-    @property
-    def numData(self):
-        """
-
-        :return: number of pixels in the data
-        """
-        nx, ny = np.shape(self._x_grid)
-        return nx*ny
-
-    @property
-    def coordinates(self):
-        """
-
-        :return: ra and dec coordinates of the pixels, each in 1d numpy arrays
-        """
-        return self._x_grid, self._y_grid
-
-    def map_coord2pix(self, ra, dec):
-        """
-        maps the (ra,dec) coordinates of the system into the pixel coordinate of the image
-
-        :param ra: relative RA coordinate as defined by the coordinate frame
-        :param dec: relative DEC coordinate as defined by the coordinate frame
-        :return: (x, y) pixel coordinates
-        """
-        return self._coords.map_coord2pix(ra, dec)
-
-    def map_pix2coord(self, x, y):
-        """
-        maps the (x,y) pixel coordinates of the image into the system coordinates
-
-        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
-        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
-        :return: relative (RA, DEC) coordinates of the system
-        """
-        return self._coords.map_pix2coord(x, y)
 
     def covariance_matrix(self, data, background_rms=1, exposure_map=1, noise_map=None, verbose=False):
         """

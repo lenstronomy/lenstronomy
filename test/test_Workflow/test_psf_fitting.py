@@ -144,7 +144,7 @@ class TestImageModel(object):
     def test_mask_point_source(self):
         ra_image, dec_image, amp = self.imageModel.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         print(ra_image, dec_image, amp)
-        x_grid, y_grid = self.imageModel.Data.coordinates
+        x_grid, y_grid = self.imageModel.Data.pixel_coordinates
         x_grid = util.image2array(x_grid)
         y_grid = util.image2array(y_grid)
         radius = 0.5

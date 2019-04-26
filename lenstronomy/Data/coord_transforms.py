@@ -38,20 +38,22 @@ class Coordinates(object):
 
     def map_coord2pix(self, ra, dec):
         """
+        maps the (ra,dec) coordinates of the system into the pixel coordinate of the image
 
-        :param ra: ra coordinates, relative
-        :param dec: dec coordinates, relative
-        :return: (x, y) pixel position of coordinate (ra, dec)
+        :param ra: relative RA coordinate as defined by the coordinate frame
+        :param dec: relative DEC coordinate as defined by the coordinate frame
+        :return: (x, y) pixel coordinates
         """
 
         return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
 
     def map_pix2coord(self, x_pos, y_pos):
         """
+        maps the (x,y) pixel coordinates of the image into the system coordinates
 
-        :param x_pos: pixel position
-        :param y_pos: pixel position
-        :return: (ra, dec) coordinates of pixel position (x_pos, y_pos)
+        :param x: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
+        :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
+        :return: relative (RA, DEC) coordinates of the system
         """
         return util.map_coord2pix(x_pos, y_pos, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
 
@@ -64,26 +66,37 @@ class Coordinates(object):
         return np.abs(linalg.det(self._Mpix2a))
 
     @property
-    def pixel_size(self):
+    def pixel_width(self):
         """
         size of pixel
         :return: sqrt(pixel_area)
         """
         return np.sqrt(self.pixel_area)
 
-    def coordinate_grid(self, numPix):
+    def coordinate_grid(self, nx, ny):
         """
 
         :param numPix: number of pixels per axis
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(numPix, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
-        ra_coords = util.array2image(ra_coords)  # new
-        dec_coords = util.array2image(dec_coords)  # new
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords = util.array2image(ra_coords, nx, ny)  # new
+        dec_coords = util.array2image(dec_coords, nx, ny)  # new
         return ra_coords, dec_coords
 
-    def shift_coordinate_grid(self, x_shift, y_shift, pixel_unit=False):
+    def shift_coordinate_system(self, x_shift, y_shift, pixel_unit=False):
         """
+        shifts the coordinate system
+        :param x_shif: shift in x (or RA)
+        :param y_shift: shift in y (or DEC)
+        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC
+        :return: updated data class with change in coordinate system
+        """
+        self._shift_coordinates(x_shift, y_shift, pixel_unit)
+
+    def _shift_coordinates(self, x_shift, y_shift, pixel_unit=False):
+        """
+
         shifts the coordinate system
         :param x_shif: shift in x (or RA)
         :param y_shift: shift in y (or DEC)

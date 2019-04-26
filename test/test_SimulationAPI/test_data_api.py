@@ -33,7 +33,7 @@ class TestDataAPI(object):
 
     def test_data_class(self):
         data_class = self.api.data_class
-        assert data_class.deltaPix == self.pixel_scale
+        assert data_class.pixel_width == self.pixel_scale
 
     def test_psf_class(self):
         psf_class = self.api.psf_class

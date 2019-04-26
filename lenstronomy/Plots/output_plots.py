@@ -38,7 +38,7 @@ def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05):
     d0 = d / 8.
     p0 = d / 15.
     pt = d / 9.
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
     xx_, yy_ = coords.map_coord2pix(ra0, dec0)
     xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
@@ -61,7 +61,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color
     :param coords:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     #for i in range(len(ra_caustic_list)):
     x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
     ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
@@ -81,9 +81,9 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
     data = Data(kwargs_data)
+    _coords = data
     _frame_size = numPix * deltaPix
-    _coords = data._coords
-    x_grid, y_grid = data.coordinates
+    x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -140,8 +140,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
     data = Data(kwargs_data)
     _frame_size = numPix * deltaPix
-    _coords = data._coords
-    x_grid, y_grid = data.coordinates
+    _coords = data
+    x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -201,7 +201,7 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     :param kwargs_else:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     if len(ra_image) > 0:
         if len(ra_image[0]) > 0:
             x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
@@ -223,7 +223,7 @@ def source_position_plot(ax, coords, kwargs_source):
     :param kwargs_source:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     if len(kwargs_source) > 0:
         if 'center_x' in kwargs_source[0]:
             x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
@@ -254,15 +254,15 @@ class LensModelPlot(object):
         self._cmap = cmap
         self._arrow_size = arrow_size
         data = Data(kwargs_data)
-        self._coords = data._coords
+        self._coords = data
         nx, ny = np.shape(kwargs_data['image_data'])
         Mpix2coord = kwargs_data['transform_pix2angle']
         self._Mpix2coord = Mpix2coord
 
-        self._deltaPix = self._coords.pixel_size
+        self._deltaPix = self._coords.pixel_width
         self._frame_size = self._deltaPix * nx
 
-        x_grid, y_grid = data.coordinates
+        x_grid, y_grid = data.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
@@ -759,7 +759,7 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     :param else_result:
     :return:
     """
-    x_grid, y_grid = data_class.coordinates
+    x_grid, y_grid = data_class.pixel_coordinates
     x_grid = util.image2array(x_grid)
     y_grid = util.image2array(y_grid)
     shear = Shear()

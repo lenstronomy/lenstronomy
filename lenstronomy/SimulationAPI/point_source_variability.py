@@ -39,7 +39,7 @@ class PointSourceVariability(object):
         self._image_bkg = self.sim_api_bkg.image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         # compute image positions of point source
         x_center, y_center = self.sim_api_bkg.data_class.center
-        search_window = self.sim_api_bkg.data_class.width
+        search_window = np.max(self.sim_api_bkg.data_class.width)
         lensModel = self.sim_api_bkg.image_model_class.LensModel
         solver = LensEquationSolver(lensModel=lensModel)
         image_x, image_y = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.1, search_window=search_window,

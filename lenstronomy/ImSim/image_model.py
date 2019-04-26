@@ -28,7 +28,7 @@ class ImageModel(object):
         self.type = 'single-band'
         self.PSF = psf_class
         self.Data = data_class
-        self.ImageNumerics = ImageNumerics(data=self.Data, psf=self.PSF, **kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics)
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
@@ -37,7 +37,7 @@ class ImageModel(object):
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
             x_center, y_center = self.Data.center
-            self.PointSource.update_search_window(search_window=self.Data.width, x_center=x_center, y_center=y_center)
+            self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center, y_center=y_center)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource.point_source_type_list))
@@ -69,7 +69,7 @@ class ImageModel(object):
         :return: no return. Class is updated.
         """
         self.Data = data_class
-        self.ImageNumerics._Data = data_class
+        self.ImageNumerics._PixelGrid = data_class
 
     def update_psf(self, psf_class):
         """
@@ -191,8 +191,7 @@ class ImageModel(object):
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
         model_error = self.error_map(kwargs_lens, kwargs_ps)
-        error_map_1d = self.ImageNumerics.image2array(model_error)
-        C_D_response = self.ImageNumerics.C_D_response + error_map_1d
+        C_D_response = self.ImageNumerics.image2array(self.Data.C_D + model_error)
         return C_D_response, model_error
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
@@ -239,7 +238,7 @@ class ImageModel(object):
                 if bool is True:
                     ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
                     for i in range(0, n_points):
-                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i])
+                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
                         error_map += error_map_add
         return error_map
 

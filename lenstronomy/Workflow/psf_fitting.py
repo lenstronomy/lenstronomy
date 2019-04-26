@@ -178,7 +178,7 @@ class PsfFitting(object):
         :return:
         """
         mask = self._image_model_class.ImageNumerics.mask
-        ra_grid, dec_grid = self._image_model_class.Data.coordinates
+        ra_grid, dec_grid = self._image_model_class.Data.pixel_coordinates
         ra_grid = util.image2array(ra_grid)
         dec_grid = util.image2array(dec_grid)
         radius = block_center_neighbour

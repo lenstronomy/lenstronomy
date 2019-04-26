@@ -3,7 +3,7 @@ import numpy as np
 import numpy.testing as npt
 
 from lenstronomy.ImSim.image_numerics import ImageNumerics
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.psf import PSF
 
 
@@ -11,12 +11,13 @@ class TestImageNumerics(object):
 
     def setup(self):
         self.numPix = 10
-        kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix))}
-        self.Data = Data(kwargs_data)
+        kwargs_grid = {'nx': self.numPix, 'ny': self.numPix, 'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
+                       'transform_pix2angle': np.array([[1, 0], [0, 1]])}
+        self.PixelGrid = PixelGrid(**kwargs_grid)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
         self.PSF = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
-        self.ImageNumerics = ImageNumerics(self.Data, self.PSF, **kwargs_numerics)
+        self.ImageNumerics = ImageNumerics(self.PixelGrid, self.PSF, **kwargs_numerics)
 
     def test_psf_cutout(self):
         idex_mask = np.zeros((5, 5))
@@ -24,10 +25,12 @@ class TestImageNumerics(object):
         idex_mask[1, 1] = 1
         image_data = np.zeros((5, 5))
         image_data[1, 1] = 1
-        kwargs_data = {'image_data': image_data}
-        data = Data(kwargs_data)
+        numPix = 5
+        kwargs_grid = {'nx': numPix, 'ny': numPix, 'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
+                       'transform_pix2angle': np.array([[1, 0], [0, 1]])}
+        pixel_grid = PixelGrid(**kwargs_grid)
         kwargs_numerics = {'idex_mask': idex_mask}
-        imageNumerics = ImageNumerics(data, self.PSF, **kwargs_numerics)
+        imageNumerics = ImageNumerics(pixel_grid, self.PSF, **kwargs_numerics)
         cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
         print(cut_data)
         assert cut_data[0, 0] == 1
@@ -37,10 +40,10 @@ class TestImageNumerics(object):
         assert ny == 2
 
         idex_mask = np.ones((5, 5))
-        kwargs_data = {'image_data': image_data}
-        data = Data(kwargs_data)
+        #kwargs_data = {'image_data': image_data}
+        #data = Data(kwargs_data)
         kwargs_numerics = {'idex_mask': idex_mask}
-        imageNumerics = ImageNumerics(data, self.PSF, **kwargs_numerics)
+        imageNumerics = ImageNumerics(pixel_grid, self.PSF, **kwargs_numerics)
         cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
         assert cut_data[1, 1] == 1
 
@@ -59,26 +62,28 @@ class TestImageNumerics(object):
 
     def test_point_source_rendering(self):
         numPix = 20
-        deltaPix = 0.05
-        ra_at_xy_0 = 0
-        dec_at_xy_0 = 0
-        kwargs_data = {'image_data': np.zeros((numPix, numPix))}
-        data = Data(kwargs_data)
+        kwargs_grid = {'nx': numPix, 'ny': numPix, 'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
+                       'transform_pix2angle': np.array([[1, 0], [0, 1]])}
+        pixel_grid = PixelGrid(**kwargs_grid)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1., 'point_source_subgrid': 1}
         psf = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
-        imageNumerics = ImageNumerics(data, psf, **kwargs_numerics)
+        imageNumerics = ImageNumerics(pixel_grid, psf, **kwargs_numerics)
+
+        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        imageNumerics_simple = ImageNumerics(pixel_grid, psf, **kwargs_numerics)
+
         ra_pos = np.array([10, 7])
         dec_pos = np.array([6, 7])
         amp = np.array([10, 10])
-        image = imageNumerics.point_source_rendering_old(ra_pos, dec_pos, amp)
+        image = imageNumerics_simple.point_source_rendering(ra_pos, dec_pos, amp)
         image_subgrid = imageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
         npt.assert_almost_equal(image[10, 7], image_subgrid[10, 7], decimal=8)
 
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 2., 'point_source_subgrid': 3}
         psf = PSF(kwargs_psf)
         kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': True}
-        imageNumerics = ImageNumerics(data, psf, **kwargs_numerics)
+        imageNumerics = ImageNumerics(pixel_grid, psf, **kwargs_numerics)
         ra_pos = np.array([7.1, 14])
         dec_pos = np.array([7, 7.32])
         amp = np.array([10, 10])

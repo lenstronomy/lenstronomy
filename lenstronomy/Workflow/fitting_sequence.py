@@ -126,7 +126,8 @@ class FittingSequence(object):
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
         return likelihoodModule
 
-    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True):
+    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
+             sampler_type='COSMOHAMMER'):
         """
         MCMC routine
 
@@ -137,6 +138,7 @@ class FittingSequence(object):
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
         :return: MCMC samples, parameter names, logL distances of all samples
         """
 
@@ -161,9 +163,16 @@ class FittingSequence(object):
                 initpos = None
         else:
             initpos = None
-        samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
+        if sampler_type is 'COSMOHAMMER':
+            samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
                                            threadCount=threadCount,
                                            mpi=self._mpi, init_pos=initpos)
+        elif sampler_type is 'EMCEE':
+            n_walkers = num_param * walkerRatio
+            samples = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
+            dist = None
+        else:
+            raise ValueError('sampler_type %s not supported!' % sampler_type)
         return samples, param_list, dist
 
     def pso(self, n_particles, n_iterations, sigma_scale=1, print_key='PSO', threadCount=1):

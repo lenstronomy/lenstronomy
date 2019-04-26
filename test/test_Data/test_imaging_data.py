@@ -22,7 +22,7 @@ class TestData(object):
         assert result[1] == 1.2
 
     def test_numData(self):
-        assert self.Data.numData == self.numPix**2
+        assert self.Data.num_pixel == self.numPix ** 2
 
     def test_shift_coords(self):
         numPix = 10
@@ -54,7 +54,7 @@ class TestData(object):
         npt.assert_almost_equal(x, x_new, decimal=10)
         npt.assert_almost_equal(y, y_new, decimal=10)
 
-    def test_shift_coordinate_grid(self):
+    def test_shift_coordinate_system(self):
         x_shift = 0.05
         y_shift = 0
 
@@ -68,7 +68,7 @@ class TestData(object):
 
         data = Data(kwargs_data)
         data_new = copy.deepcopy(data)
-        data_new.shift_coordinate_grid(x_shift, y_shift, pixel_unit=False)
+        data_new.shift_coordinate_system(x_shift, y_shift, pixel_unit=False)
         ra, dec = 0, 0
         x, y = data.map_coord2pix(ra, dec)
         x_new, y_new = data_new.map_coord2pix(ra + x_shift, dec + y_shift)
@@ -80,8 +80,8 @@ class TestData(object):
         npt.assert_almost_equal(ra, ra_new-x_shift, decimal=10)
         npt.assert_almost_equal(dec, dec_new-y_shift, decimal=10)
 
-        x_coords, y_coords = data.coordinates
-        x_coords_new, y_coords_new = data_new.coordinates
+        x_coords, y_coords = data.pixel_coordinates
+        x_coords_new, y_coords_new = data_new.pixel_coordinates
         npt.assert_almost_equal(x_coords[0], x_coords_new[0]-x_shift, decimal=10)
         npt.assert_almost_equal(y_coords[0], y_coords_new[0]-y_shift, decimal=10)
 

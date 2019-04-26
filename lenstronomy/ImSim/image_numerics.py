@@ -8,7 +8,7 @@ class ImageNumerics(object):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
-    def __init__(self, data, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
+    def __init__(self, pixel_grid, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
                  point_source_subgrid=3, subsampling_size=5, conv_type='fft', subgrid_conv_type='fft'):
         """
 
@@ -32,35 +32,35 @@ class ImageNumerics(object):
          'subgrid_conv_type': 'fft' or 'grid', using either scipy.convolve2d or scipy.signal.fftconvolve for subgrid
          convolution of kernel
 
-        :param data: instance of the lenstronomy Data() class
+        :param pixel_grid: instance of the lenstronomy PixelGrid() or inheritances of it, such as Data()
         """
 
-        deltaPix = data.deltaPix
+        deltaPix = pixel_grid.pixel_width
         psf.set_pixel_size(deltaPix)
-        self._Data = data
+        self._PixelGrid = pixel_grid
         self._PSF = psf
-        self._nx, self._ny = np.shape(self._Data.data)
+        self._nx, self._ny = self._PixelGrid.num_pixel_axes
         self._subgrid_res = subgrid_res
         self._psf_subgrid = psf_subgrid
         self._fix_psf_error_map = fix_psf_error_map
         if idex_mask is not None:
             self._idex_mask_2d = idex_mask
-            if not np.shape(self._idex_mask_2d) == np.shape(self._Data.data):
+            if not np.shape(self._idex_mask_2d) == (self._nx, self._ny):
                 raise ValueError("'idex_mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
-                                 % (np.shape(self._idex_mask_2d), np.shape(self._Data.data)))
+                                 % (np.shape(self._idex_mask_2d), (self._nx, self._ny)))
             self._idex_mask_bool = True
         else:
-            self._idex_mask_2d = np.ones_like(self._Data.data)
+            self._idex_mask_2d = np.ones((self._nx, self._ny))
             self._idex_mask_bool = False
         self._idex_mask = util.image2array(self._idex_mask_2d)
 
         if mask is not None:
             self._mask = mask
-            if not np.shape(self._mask) == np.shape(self._Data.data):
+            if not np.shape(self._mask) == np.shape(self._PixelGrid.data):
                 raise ValueError("'mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
-                                 % (np.shape(self._mask), np.shape(self._Data.data)))
+                                 % (np.shape(self._mask), (self._nx, self._ny)))
         else:
-            self._mask = np.ones_like(self._Data.data)
+            self._mask = np.ones((self._nx, self._ny))
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
@@ -71,22 +71,6 @@ class ImageNumerics(object):
         self._subsampling_size = subsampling_size
         self._conv_type = conv_type
         self._subgrid_conv_type = subgrid_conv_type
-
-    @property
-    def exposure_map_array(self):
-        if not hasattr(self, '_f'):
-            exp_map = self._Data.exposure_map
-            self._f = util.image2array(exp_map)[self._idex_mask == 1]
-        return self._f
-
-    @property
-    def noise_map_array(self):
-        if not hasattr(self, '_noise_map'):
-            noise_map = self._Data.noise_map
-            if noise_map is not None:
-                self._noise_map = util.image2array(noise_map)[self._idex_mask == 1]
-            else: self._noise_map = None
-        return self._noise_map
 
     @property
     def ra_grid_ray_shooting(self):
@@ -100,24 +84,12 @@ class ImageNumerics(object):
 
     def _check_subgrid(self):
         if not hasattr(self, '_ra_subgrid') or not hasattr(self, '_dec_subgrid'):
-            ra_grid, dec_grid = self._Data.coordinates
+            ra_grid, dec_grid = self._PixelGrid.pixel_coordinates
             ra_grid = util.image2array(ra_grid)
             dec_grid = util.image2array(dec_grid)
             x_grid_sub, y_grid_sub = util.make_subgrid(ra_grid, dec_grid, self._subgrid_res)
             self._ra_subgrid = x_grid_sub[self._idex_mask_sub == 1]
             self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]
-
-    @property
-    def C_D_response(self):
-        """
-
-        :return: covariance matrix of pixels within index_mask as a 1d array
-        """
-        if not hasattr(self, '_C_D_response'):
-            self._C_D_response = self._Data.covariance_matrix(self.image2array(self._Data.data),
-                                                              self._Data.background_rms, self.exposure_map_array,
-                                                              self.noise_map_array)
-        return self._C_D_response
 
     @property
     def num_response(self):
@@ -203,7 +175,7 @@ class ImageNumerics(object):
                                                             psf_subgrid=self._psf_subgrid, conv_type=self._conv_type,
                                                             subgrid_conv_type=self._subgrid_conv_type)
         image_full = self._add_psf(image_convolved)
-        return image_full * self._Data.deltaPix**2
+        return image_full * self._PixelGrid.pixel_width ** 2
 
     def _init_mask_psf(self):
         """
@@ -240,22 +212,6 @@ class ImageNumerics(object):
         image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
         return image
 
-    def point_source_rendering_old(self, ra_pos, dec_pos, amp):
-        """
-
-        :param n_points:
-        :param x_pos:
-        :param y_pos:
-        :param psf_large:
-        :return: response matrix of point sources
-        """
-        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
-        psf_point_source = self._PSF.kernel_point_source
-        grid2d = np.zeros_like(self._Data.data)
-        for i in range(len(x_pos)):
-            grid2d = image_util.add_layer2image(grid2d, x_pos[i], y_pos[i], amp[i] * psf_point_source)
-        return grid2d
-
     def point_source_rendering(self, ra_pos, dec_pos, amp):
         """
 
@@ -266,14 +222,13 @@ class ImageNumerics(object):
         :return:
         """
         subgrid = self._point_source_subgrid
-        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
+        x_pos, y_pos = self._PixelGrid.map_coord2pix(ra_pos, dec_pos)
         # translate coordinates to higher resolution grid
         x_pos_subgird = x_pos * subgrid + (subgrid - 1) / 2.
         y_pos_subgrid = y_pos * subgrid + (subgrid - 1) / 2.
         kernel_point_source_subgrid = self.kernel_point_source_subgrid
         # initialize grid with higher resolution
-        nx, ny = np.shape(self._Data.data)
-        subgrid2d = np.zeros((nx*subgrid, ny*subgrid))
+        subgrid2d = np.zeros((self._nx*subgrid, self._ny*subgrid))
         # add_layer2image
         for i in range(len(x_pos)):
             subgrid2d = image_util.add_layer2image(subgrid2d, x_pos_subgird[i], y_pos_subgrid[i], amp[i] * kernel_point_source_subgrid)
@@ -285,9 +240,8 @@ class ImageNumerics(object):
     def kernel_point_source_subgrid(self):
         return self._PSF.subgrid_point_source_kernel(self._point_source_subgrid)
 
-    def psf_error_map(self, ra_pos, dec_pos, amp):
-        x_pos, y_pos = self._Data.map_coord2pix(ra_pos, dec_pos)
-        data = self._Data.data
+    def psf_error_map(self, ra_pos, dec_pos, amp, data):
+        x_pos, y_pos = self._PixelGrid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._PSF.kernel_point_source
         psf_error_map = self._PSF.psf_error_map
         error_map = np.zeros_like(data)

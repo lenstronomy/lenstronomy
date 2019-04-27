@@ -10,7 +10,7 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Workflow.psf_fitting import PsfFitting
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -31,7 +31,7 @@ class TestImageModel(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian

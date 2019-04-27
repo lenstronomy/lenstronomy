@@ -9,7 +9,7 @@ from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -36,7 +36,7 @@ class TestLikelihoodModule(object):
 
         # PSF specification
         kwargs_band = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_band)
+        data_class = ImageData(**kwargs_band)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                               truncate=3,
                                               kernel=None)
@@ -146,7 +146,7 @@ class TestLikelihoodModule(object):
         param_class = Param(kwargs_model, **kwargs_constraints)
 
         kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         kwargs_psf = {'psf_type': 'NONE'}
         psf_class = PSF(kwargs_psf)
         kwargs_sersic = {'amp': -1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}

@@ -11,7 +11,7 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -31,7 +31,7 @@ class TestImageModel(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg, inverse=True)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
         psf_class = PSF(kwargs_psf)
@@ -138,7 +138,7 @@ class TestImageModel(object):
         numPix = 100
         deltaPix = 0.05
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
         kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}
@@ -184,7 +184,7 @@ class TestImageModel(object):
         numPix = 64
         deltaPix = 0.13
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
 
         psf_type = "GAUSSIAN"
         fwhm = 0.9

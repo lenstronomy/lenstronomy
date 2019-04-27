@@ -26,7 +26,7 @@ def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, invers
 
     kwargs_data = {
         'background_rms': sigma_bkg,
-        'exposure_map': exposure_map
+        'exposure_time': exposure_map
         , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
         , 'image_data': np.zeros((numPix, numPix))
         }

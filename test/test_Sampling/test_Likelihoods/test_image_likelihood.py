@@ -1,5 +1,6 @@
 import lenstronomy.Util.class_creator as class_creator
 import lenstronomy.Sampling.Likelihoods.image_likelihood as img_likelihood
+import numpy as np
 
 
 class TestImageLikelihood(object):
@@ -8,7 +9,7 @@ class TestImageLikelihood(object):
         self.kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
                              'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
         self.kwargs_psf = {'psf_type': 'NONE'}
-        self.kwargs_data = {'numPix': 10}
+        self.kwargs_data = {'image_data': np.ones((10, 10))}
 
     def test_create_im_sim(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}, {}]]

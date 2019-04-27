@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.ImSim.MultiBand.multiband import MultiBand
@@ -119,7 +119,7 @@ def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_cl
                                point_source_class, compute_bool=bands_compute)
     elif image_type == 'single-band':
         kwargs_data, kwargs_psf, kwargs_numerics = multi_band_list
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         psf_class = PSF(kwargs_psf)
         multiband = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                             point_source_class, kwargs_numerics)

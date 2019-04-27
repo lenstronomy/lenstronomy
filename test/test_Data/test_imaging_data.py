@@ -3,23 +3,15 @@ import numpy as np
 import numpy.testing as npt
 import copy
 
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 import lenstronomy.Util.util as util
 
 
 class TestData(object):
     def setup(self):
         self.numPix = 10
-        kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix))}
-        self.Data = Data(kwargs_data)
-
-    def test_get_covariance_matrix(self):
-        d = np.array([1, 2, 3])
-        sigma_b = 1
-        f = 10.
-        result = self.Data.covariance_matrix(d, sigma_b, f)
-        assert result[0] == 1.1
-        assert result[1] == 1.2
+        kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix)), 'noise_map': np.ones((self.numPix, self.numPix))}
+        self.Data = ImageData(**kwargs_data)
 
     def test_numData(self):
         assert self.Data.num_pixel == self.numPix ** 2
@@ -32,13 +24,13 @@ class TestData(object):
 
         kwargs_data = {'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': Mpix2coord, 'image_data': np.ones((numPix, numPix))}
-        data = Data(kwargs_data)
+        data = ImageData(**kwargs_data)
 
         ra_shift = 0.05
         dec_shift = 0.
         kwargs_data['ra_shift'] = ra_shift
         kwargs_data['dec_shift'] = dec_shift
-        data_shift = Data(kwargs_data)
+        data_shift = ImageData(**kwargs_data)
 
         ra, dec = data.map_pix2coord(1, 1)
         ra_new, dec_new = data_shift.map_pix2coord(1, 1)
@@ -66,7 +58,7 @@ class TestData(object):
         kwargs_data = {'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': Mpix2coord, 'image_data': np.ones((numPix, numPix))}
 
-        data = Data(kwargs_data)
+        data = ImageData(**kwargs_data)
         data_new = copy.deepcopy(data)
         data_new.shift_coordinate_system(x_shift, y_shift, pixel_unit=False)
         ra, dec = 0, 0

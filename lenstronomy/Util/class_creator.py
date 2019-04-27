@@ -1,4 +1,4 @@
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -55,7 +55,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
     :param kwargs_options:
     :return:
     """
-    data_class = Data(kwargs_data)
+    data_class = ImageData(**kwargs_data)
     psf_class = PSF(kwargs_psf)
     lens_model_class, source_model_class, lens_light_model_class, point_source_class = create_class_instances(**kwargs_model)
     imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,

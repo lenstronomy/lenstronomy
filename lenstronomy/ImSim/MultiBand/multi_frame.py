@@ -1,7 +1,7 @@
 from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 import lenstronomy.ImSim.de_lens as de_lens
 
@@ -38,7 +38,7 @@ class MultiFrame(MultiDataBase):
             self._idex_lens_list.append(index_lens_list)
             lens_model_list_sub = [lens_model_list[k] for k in index_lens_list]
             lens_model_class = LensModel(lens_model_list=lens_model_list_sub)
-            data_i = Data(kwargs_data=kwargs_data)
+            data_i = ImageData(**kwargs_data)
             psf_i = PSF(kwargs_psf=kwargs_psf)
             point_source_class_i = copy.deepcopy(point_source_class)
             imageModel = ImageModel(data_i, psf_i, lens_model_class, source_model_class,

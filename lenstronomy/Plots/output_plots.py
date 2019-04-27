@@ -12,7 +12,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.Data.coord_transforms import Coordinates
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 
 
 def text_description(ax, d, text, color='w', backgroundcolor='k', flipped=False):
@@ -80,7 +80,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
-    data = Data(kwargs_data)
+    data = ImageData(**kwargs_data)
     _coords = data
     _frame_size = numPix * deltaPix
     x_grid, y_grid = data.pixel_coordinates
@@ -138,7 +138,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
-    data = Data(kwargs_data)
+    data = ImageData(**kwargs_data)
     _frame_size = numPix * deltaPix
     _coords = data
     x_grid, y_grid = data.pixel_coordinates
@@ -253,7 +253,7 @@ class LensModelPlot(object):
         cmap.set_under('k')
         self._cmap = cmap
         self._arrow_size = arrow_size
-        data = Data(kwargs_data)
+        data = ImageData(**kwargs_data)
         self._coords = data
         nx, ny = np.shape(kwargs_data['image_data'])
         Mpix2coord = kwargs_data['transform_pix2angle']

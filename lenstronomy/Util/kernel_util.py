@@ -7,6 +7,7 @@ import scipy.ndimage.interpolation as interp
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+import lenstronomy.Util.multi_gauss_expansion as mge
 
 
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20):
@@ -353,3 +354,21 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     else:
         amp_estimated = 0
     return amp_estimated
+
+
+def mge_kernel(kernel, order=5):
+    """
+    azimutal Multi-Gaussian expansion of a pixelized kernel
+
+    :param kernel: 2d numpy array
+    :return:
+    """
+    # radial average
+    n = len(kernel)
+    center = int((n - 1) / 2)
+    psf_r = image_util.radial_profile(kernel, center=[center, center])
+    # MGE of radial average
+    n_r = len(psf_r)
+    r_array = np.linspace(start=0, stop=n_r - 1, num=n_r)
+    amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
+    return amps, sigmas, norm

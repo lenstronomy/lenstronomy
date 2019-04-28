@@ -289,3 +289,21 @@ def cut_edges(image, numPix):
         cy += 1
     resized = image[cx-d:cx+d+1, cy-d:cy+d+1]
     return copy.deepcopy(resized)
+
+
+def radial_profile(data, center=[0, 0]):
+    """
+    computes radial profile
+
+    :param data: 2d numpy array
+    :param center: center [x, y] from where to compute the radial profile
+    :return: radial profile (in units pixel)
+    """
+    y, x = np.indices((data.shape))
+    r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    r = r.astype(np.int)
+
+    tbin = np.bincount(r.ravel(), data.ravel())
+    nr = np.bincount(r.ravel())
+    radialprofile = tbin / nr
+    return radialprofile

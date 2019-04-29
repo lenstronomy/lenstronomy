@@ -90,7 +90,7 @@ class TestMultiGaussianConvolution(object):
         sigma_list = [0.5, 1, 2]
         fraction_list = [0.5, 0.2, 0.3]
         mge_conv = MultiGaussianConvolution(sigma_list=sigma_list, fraction_list=fraction_list, pixel_scale=self.delta_pix)
-        image_convolved = mge_conv.convolve2d(self.model)
+        image_convolved = mge_conv.convolution2d(self.model)
         npt.assert_almost_equal(np.sum(image_convolved), np.sum(self.model), decimal=2)
 
 
@@ -100,19 +100,19 @@ class TestMGEConvolution(object):
         lightModel = LightModel(light_model_list=['GAUSSIAN'])
         self.delta_pix = 1
         x, y = util.make_grid(10, deltapix=self.delta_pix)
-        kwargs = [{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
         flux = lightModel.surface_brightness(x, y, kwargs)
         self.model = util.array2image(flux)
 
     def test_convolve2d(self):
 
-        sigma_list = [0.5, 1, 2]
+        sigma_list = [2, 3, 4]
         fraction_list = [0.5, 0.2, 0.3]
         mg_conv = MultiGaussianConvolution(sigma_list=sigma_list, fraction_list=fraction_list, pixel_scale=self.delta_pix)
         pixel_kernel = mg_conv.pixel_kernel(num_pix=11)
-        mge_conv = MGEConvolution(pixel_kernel, pixel_scale=self.delta_pix, order=10)
-        image_conv_mg = mg_conv.convolve2d(self.model)
-        image_conv_mge = mge_conv.convolve2d(self.model)
+        mge_conv = MGEConvolution(pixel_kernel, pixel_scale=self.delta_pix, order=20)
+        image_conv_mg = mg_conv.convolution2d(self.model)
+        image_conv_mge = mge_conv.convolution2d(self.model)
         npt.assert_almost_equal(image_conv_mge/np.max(image_conv_mg), image_conv_mg/np.max(image_conv_mg), decimal=2)
 
         diff_kernel = mge_conv.kernel_difference()

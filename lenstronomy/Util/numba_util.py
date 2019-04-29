@@ -1,7 +1,7 @@
 import numba
 
 """
-From pyautolens
+From pyautolens:
 Depending on if we're using a super computer, we want two different numba decorators:
 If on laptop:
 @numba.jit(nopython=True, cache=True, parallel=False)

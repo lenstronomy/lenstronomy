@@ -54,7 +54,7 @@ def _mge_1d(r_array, flux_r, N=20, linspace=False):
     if linspace is True:
         sigmas = np.linspace(r_array[0], r_array[-1] / 2, N + 2)[1:-1]
     else:
-        sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.001) / 2.), N + 2)[1:-1]
+        sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.0000001) / 2.), N + 2)[1:-1]
     # sigmas = np.linspace(r_array[0], r_array[-1]/2, N + 2)[1:-1]
 
     A = np.zeros((len(flux_r), N))

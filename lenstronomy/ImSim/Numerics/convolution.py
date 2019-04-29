@@ -87,7 +87,7 @@ class MultiGaussianConvolution(object):
     relative to a pixelized kernel.
     """
 
-    def __init__(self, sigma_list, fraction_list, pixel_scale, truncation=4):
+    def __init__(self, sigma_list, fraction_list, pixel_scale, truncation=2):
         """
 
         :param sigma_list: list of std value of Gaussian kernel
@@ -103,7 +103,7 @@ class MultiGaussianConvolution(object):
         self._truncation = truncation
         self._pixel_scale = pixel_scale
 
-    def convolve2d(self, image):
+    def convolution2d(self, image):
         """
         2d convolution
 
@@ -135,6 +135,32 @@ class MultiGaussianConvolution(object):
         return kernel / np.sum(kernel)
 
 
+class FWHMGaussianConvolution(object):
+    """
+    uses a two-dimensional Gaussian function with same FWHM of given kernel as approximation
+    """
+    def __init__(self, kernel, truncation=4):
+        """
+
+        :param kernel: 2d kernel
+        :param truncation: sigma scaling of kernel truncation
+        """
+        fwhm = kernel_util.fwhm_kernel(kernel)
+        self._sigma = util.fwhm2sigma(fwhm)
+        self._truncation = truncation
+
+    def convolution2d(self, image):
+        """
+        2d convolution
+
+        :param image: 2d numpy array, image to be convolved
+        :return: convolved image, 2d numpy array
+        """
+
+        image_conv = ndimage.filters.gaussian_filter(image, self._sigma, mode='nearest', truncate=self._truncation)
+        return image_conv
+
+
 class MGEConvolution(object):
     """
     approximates a 2d kernel with an azimuthal Multi-Gaussian expansion
@@ -145,20 +171,21 @@ class MGEConvolution(object):
         :param kernel: 2d convolution kernel (centered, odd axis number)
         :param order: order of Multi-Gaussian Expansion
         """
+        #kernel_util.fwhm_kernel(kernel)
         amps, sigmas, norm = kernel_util.mge_kernel(kernel, order=order)
         # make instance o MultiGaussian convolution kernel
-        self._mge_conv = MultiGaussianConvolution(sigma_list=sigmas, fraction_list=np.array(amps) / np.sum(amps),
+        self._mge_conv = MultiGaussianConvolution(sigma_list=sigmas*pixel_scale, fraction_list=np.array(amps) / np.sum(amps),
                                                   pixel_scale=pixel_scale, truncation=4)
         self._kernel = kernel
         # store difference between MGE approximation and real kernel
 
-    def convolve2d(self, image):
+    def convolution2d(self, image):
         """
 
         :param image:
         :return:
         """
-        return self._mge_conv.convolve2d(image)
+        return self._mge_conv.convolution2d(image)
 
     def kernel_difference(self):
         """

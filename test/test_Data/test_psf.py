@@ -124,20 +124,20 @@ class TestData(object):
         npt.assert_almost_equal((image_convolved_subsampled - image_convolved_regular) / (np.max(image_convolved_subsampled)), 0, decimal=2)
 
     def test_fwhm(self):
-        deltaPix = 0.05
-        fwhm = 0.1
+        deltaPix = 1.
+        fwhm = 5.6
         kwargs = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncate': 5, 'pixel_size': deltaPix}
         fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
         assert fwhm_compute == fwhm
 
-        kernel = kernel_util.kernel_gaussian(kernel_numPix=11, deltaPix=deltaPix, fwhm=fwhm)
+        kernel = kernel_util.kernel_gaussian(kernel_numPix=31, deltaPix=deltaPix, fwhm=fwhm)
         kwargs = {'psf_type': 'PIXEL',  'truncate': 5, 'pixel_size': deltaPix, 'kernel_point_source': kernel}
         fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
-        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=6)
+        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=1)
 
         kwargs = {'psf_type': 'PIXEL', 'truncate': 5, 'pixel_size': deltaPix, 'kernel_point_source_subsampled': kernel}
         fwhm_compute = self.psf_gaussian.psf_fwhm(kwargs=kwargs, deltaPix=deltaPix)
-        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=6)
+        npt.assert_almost_equal(fwhm_compute, fwhm, decimal=1)
 
 
 if __name__ == '__main__':

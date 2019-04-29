@@ -314,20 +314,21 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
 
 def fwhm_kernel(kernel):
     """
-    computes the full width at half maximum of a (PSF) kernel
-    :param kernel: (psf) kernel, 2d numpy array
-    :return: fwhm in units of pixels
+
+    :param kernel:
+    :return:
     """
     n = len(kernel)
+    center = (n - 1) / 2.
+    I_r = image_util.radial_profile(kernel, center=[center, center])
     if n % 2 == 0:
         raise ValueError('only works with odd number of pixels in kernel!')
     max_flux = kernel[int((n-1)/2), int((n-1)/2)]
-    I_2 = max_flux/2.
-    I_r = kernel[int((n-1)/2), int((n-1)/2):]
-    r = np.linspace(0, (n-1)/2, int((n + 1) / 2))
-    for i in range(1, len(r)):
+    I_2 = max_flux / 2.
+    r = np.linspace(0, (n - 1) / 2, int((n + 1) / 2)) + 0.33
+    for i in range(1, len(I_r)):
         if I_r[i] < I_2:
-            fwhm_2 = (I_2 - I_r[i-1])/(I_r[i] - I_r[i-1]) + r[i-1]
+            fwhm_2 = (I_2 - I_r[i - 1]) / (I_r[i] - I_r[i - 1]) + r[i - 1]
             return fwhm_2 * 2
     raise ValueError('The kernel did not drop to half the max value - fwhm not determined!')
 
@@ -365,10 +366,10 @@ def mge_kernel(kernel, order=5):
     """
     # radial average
     n = len(kernel)
-    center = int((n - 1) / 2)
+    center = (n - 1) / 2.
     psf_r = image_util.radial_profile(kernel, center=[center, center])
     # MGE of radial average
     n_r = len(psf_r)
-    r_array = np.linspace(start=0, stop=n_r - 1, num=n_r)
+    r_array = np.linspace(start=0., stop=n_r - 1, num=n_r)
     amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
     return amps, sigmas, norm

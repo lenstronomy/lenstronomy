@@ -196,29 +196,5 @@ class MGEConvolution(object):
         return self._kernel - kernel_mge
 
 
-class PartialConvolution(object):
-    """
-    class to convolve explicit pixels only
-    """
-    def __init__(self, kernel, x_index, y_index):
-        """
-
-        :param kernel: convolution kernel in units of the image pixels provided
-        :param x_index: x-axis index list of pixels to be convolved
-        :param y_index: y-axis index list of pixels to be convolved
-        """
-        self._kernel = kernel
-        self._x_index = x_index
-        self._y_index = y_index
-
-    def convolve2d(self, image):
-        """
-        2d convolution
-
-        :param image: 2d numpy array, image to be convolved
-        :return: convolved image, 2d numpy array
-        """
-        return 0
-
 
 

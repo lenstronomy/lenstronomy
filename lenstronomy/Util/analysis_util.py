@@ -15,7 +15,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     """
     lens_light[lens_light < 0] = 0
     total_flux_2 = np.sum(lens_light)/2.
-    r_max = np.max(np.sqrt(x_grid**2 + y_grid**2))
+    r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
     for i in range(1000):
         r = i/500. * r_max
         mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, r)
@@ -36,7 +36,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     :param n: number of discrete steps
     :return:
     """
-    r_max = np.max(np.sqrt(x_grid**2 + y_grid**2))
+    r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
     if n is None:
         n = int(np.sqrt(len(x_grid)))
     I_r = np.zeros(n)

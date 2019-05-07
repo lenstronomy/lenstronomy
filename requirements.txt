@@ -7,4 +7,5 @@ emcee
 matplotlib
 corner
 sklearn
+numba
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

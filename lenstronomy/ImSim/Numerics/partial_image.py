@@ -15,7 +15,7 @@ class PartialImage(object):
         self._partial_read_bools = np.array(partial_read_bools, dtype=bool)
         self._nx, self._ny = np.shape(partial_read_bools)
         self._partial_read_bools_array = util.image2array(partial_read_bools)
-        self._num_partial = np.sum(self._partial_read_bools_array)
+        self._num_partial = int(np.sum(self._partial_read_bools_array))
 
     def partial_array(self, image):
         """
@@ -25,6 +25,19 @@ class PartialImage(object):
         """
         array = util.image2array(image)
         return array[self._partial_read_bools_array]
+
+    @property
+    def index_array(self):
+        """
+
+        :return: 2d array with indexes (integers) corresponding to the 1d array, -1 when masked
+        """
+        if not hasattr(self, '_index_array'):
+            full_array = -1 * np.ones(len(self._partial_read_bools_array))
+            num_array = np.linspace(start=0, stop=self.num_partial-1, num=self.num_partial)
+            full_array[self._partial_read_bools_array] = num_array
+            self._index_array = util.array2image(full_array, nx=self._nx, ny=self._ny)
+        return self._index_array
 
     def array_from_partial(self, partial_array):
         """

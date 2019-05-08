@@ -287,7 +287,7 @@ class TestMultiPlaneOptimizer(object):
                                 multiplane=True,
                                 verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                 optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=False,
-                                optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True)
+                                optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True, tol_mag=None)
 
         kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20,
                                                                                          n_iterations=10, restart=2)

@@ -9,17 +9,24 @@ the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLe
 """
 
 
-class PixelConvolution(object):
+class NumbaConvolution(object):
     """
     class to convolve explicit pixels only
     """
-    def __init__(self, kernel, conv_pixels, compute_pixels=None):
+    def __init__(self, kernel, conv_pixels, compute_pixels=None, nopython=True, cache=True, parallel=False):
         """
 
         :param kernel: convolution kernel in units of the image pixels provided, odd length per axis
         :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
         :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
+        :param nopython: bool, numba jit setting to use python or compiled.
+        :param cache: bool, numba jit setting to use cache
+        :param parallel: bool, numba jit setting to use parallel mode
         """
+        numba_util.nopython = nopython
+        numba_util.cache = cache
+        numba_util.parallel = parallel
+
         self._kernel = kernel
         self._conv_pixels = conv_pixels
         self._nx, self._ny = np.shape(conv_pixels)
@@ -67,7 +74,7 @@ class PixelConvolution(object):
         return conv_image
 
     @staticmethod
-    @numba_util.jit()
+    @numba_util.jit(nopython=numba_util.nopython, cache=numba_util.cache, parallel=numba_util.parallel)
     def pre_compute_frame_kernel(image_index, kernel, mask, index_array):
         """
 
@@ -102,7 +109,7 @@ class PixelConvolution(object):
         return frame_kernels, frame_indexes, frame_counter
 
     @staticmethod
-    @numba_util.jit()
+    @numba_util.jit(nopython=numba_util.nopython, cache=numba_util.cache, parallel=numba_util.parallel)
     def _convolve_jit(image_array, num_data, image_frame_kernels, image_frame_indexes, image_frame_lengths):
         """
 

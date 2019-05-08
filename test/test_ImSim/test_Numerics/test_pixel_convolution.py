@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import numpy.testing as npt
-from lenstronomy.ImSim.Numerics.pixel_convolution import PixelConvolution
+from lenstronomy.ImSim.Numerics.pixel_convolution import NumbaConvolution
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Util import util
@@ -30,7 +30,7 @@ class TestPixelConvolution(object):
     def test_convolve2d(self):
         conv_pixels = np.ones_like(self.model)
         conv_pixels = np.array(conv_pixels, dtype=bool)
-        numba_conv = PixelConvolution(kernel=self.kernel, conv_pixels=conv_pixels, compute_pixels=conv_pixels)
+        numba_conv = NumbaConvolution(kernel=self.kernel, conv_pixels=conv_pixels, compute_pixels=conv_pixels)
 
         model_conv_numba = numba_conv.convolve2d(self.model)
 

@@ -118,9 +118,11 @@ class TestMultiPlaneOptimizer(object):
 
     def test_fixed_routines(self):
 
-        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                  constrain_params={'shear':[0.06, 0.01]})
 
-        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                          constrain_params={'shear': [0.06, 0.01]})
 
         models = [sie, powerlaw]
 
@@ -135,7 +137,8 @@ class TestMultiPlaneOptimizer(object):
             low,high = model.get_param_ranges()
             assert len(low) == len(high)
 
-        spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                   constrain_params={'shear': [0.06, 0.01]})
         assert np.absolute(spep._theta_E_start - 0.7) < 0.2
         for i, group in enumerate(sie.param_names):
             for name in group:

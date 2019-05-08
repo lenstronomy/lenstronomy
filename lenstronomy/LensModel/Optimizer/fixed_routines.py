@@ -5,7 +5,7 @@ from lenstronomy.Util.util import approx_theta_E
 
 class FixedPowerLaw_Shear(object):
 
-    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos):
+    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
 
         assert lens_model_list[0] in ['SPEMD','SPEP']
         assert lens_model_list[1] == 'SHEAR'
@@ -20,6 +20,8 @@ class FixedPowerLaw_Shear(object):
         self.fixed_names = [['gamma'], []]
         self.fixed_values = [{'gamma': kwargs_lens[0]['gamma']}, {}]
         self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','shear_e1','shear_e2']
+
+        self._constrain_params = constrain_params
 
     def _new_ellip(self,start_e1,start_e2,delta_phi,delta_gamma):
 
@@ -71,6 +73,18 @@ class FixedPowerLaw_Shear(object):
             low_centery = self._kwargs_lens[0]['center_y'] - center
             hi_centery = self._kwargs_lens[0]['center_y'] + center
 
+            if self._constrain_params is not None:
+                # keep the same PA, but change the shear magnitude
+                if 'shear' in self._constrain_params.keys():
+                    phi_start, gamma_start = ellipticity2phi_gamma(self._kwargs_lens[1]['e1'], self._kwargs_lens[1]['e2'])
+
+                    rescale = self._constrain_params['shear'][0] * gamma_start ** -1
+                    low_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 0.8
+                    high_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 1.2
+
+                    low_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 0.8
+                    high_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 1.2
+
         else:
 
             low_e1 = -0.3
@@ -91,6 +105,14 @@ class FixedPowerLaw_Shear(object):
             low_centery = low_centerx
             hi_centery = hi_centerx
 
+            if self._constrain_params is not None:
+                if 'shear' in self._constrain_params.keys():
+                    shear_value = self._constrain_params['shear'][0]
+                    low_shear_e1 = -0.5*shear_value
+                    high_shear_e1 = 0.5*shear_value
+                    low_shear_e2 = -(shear_value ** 2 - low_shear_e1 ** 2)**0.5
+                    high_shear_e2 = (shear_value ** 2 - low_shear_e1 ** 2) ** 0.5
+
         sie_list_low = [low_Rein, low_centerx, low_centery, low_e1, low_e2]
         sie_list_high = [hi_Rein, hi_centerx, hi_centery, high_e1, high_e2]
         shear_list_low = [low_shear_e1, low_shear_e2]
@@ -100,7 +122,7 @@ class FixedPowerLaw_Shear(object):
 
 class VariablePowerLaw_Shear(object):
 
-    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos):
+    def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
 
         assert lens_model_list[0] in ['SPEMD','SPEP']
         assert lens_model_list[1] == 'SHEAR'
@@ -115,6 +137,8 @@ class VariablePowerLaw_Shear(object):
         self.fixed_names = [[], []]
         self.fixed_values = [{}, {}]
         self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma','shear_e1','shear_e2']
+
+        self._constrain_params = constrain_params
 
     def _new_ellip(self,start_e1,start_e2,delta_phi,delta_gamma):
 
@@ -169,6 +193,19 @@ class VariablePowerLaw_Shear(object):
             low_gamma = self._kwargs_lens[0]['gamma'] - 0.03
             high_gamma = self._kwargs_lens[0]['gamma'] + 0.03
 
+            if self._constrain_params is not None:
+                # keep the same PA, but change the shear magnitude
+                if 'shear' in self._constrain_params.keys():
+                    phi_start, gamma_start = ellipticity2phi_gamma(self._kwargs_lens[1]['e1'],
+                                                                   self._kwargs_lens[1]['e2'])
+
+                    rescale = self._constrain_params['shear'][0] * gamma_start ** -1
+                    low_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 0.8
+                    high_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 1.2
+
+                    low_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 0.8
+                    high_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 1.2
+
         else:
 
             low_e1 = -0.3
@@ -191,6 +228,14 @@ class VariablePowerLaw_Shear(object):
 
             low_gamma = self._kwargs_lens[0]['gamma'] - 0.06
             high_gamma = self._kwargs_lens[0]['gamma'] + 0.06
+
+            if self._constrain_params is not None:
+                if 'shear' in self._constrain_params.keys():
+                    shear_value = self._constrain_params['shear'][0]
+                    low_shear_e1 = -0.5*shear_value
+                    high_shear_e1 = 0.5*shear_value
+                    low_shear_e2 = -(shear_value ** 2 - low_shear_e1 ** 2)**0.5
+                    high_shear_e2 = (shear_value ** 2 - low_shear_e1 ** 2) ** 0.5
 
         sie_list_low = [low_Rein, low_centerx, low_centery, low_e1, low_e2, low_gamma]
         sie_list_high = [hi_Rein, hi_centerx, hi_centery, high_e1, high_e2, high_gamma]

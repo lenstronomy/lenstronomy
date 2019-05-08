@@ -109,7 +109,7 @@ class Optimizer(object):
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
         self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,
-                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
+                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos, constrain_params=constrain_params)
         
         # initialize particle swarm inital param limits
         if 're_optimize_scale' in optimizer_kwargs:

@@ -9,8 +9,8 @@ If on super computer:
 @numba.jit(nopython=True, cache=False, parallel=True)
 """
 
-nopython = True #False#True
-cache = True
+nopython = False#True
+cache = False# True
 parallel = False
 
 

@@ -4,7 +4,7 @@ import numpy as np
 
 class Params(object):
 
-    known_routines = ['fixed_powerlaw_shear', 'variable_powerlaw_shear']
+    known_routines = ['fixed_powerlaw_shear', 'variable_powerlaw_shear', 'fixed_shearpowerlaw']
 
     def __init__(self, zlist=None, lens_list=None, arg_list=None,
                  optimizer_routine=str, xpos = None, ypos = None):
@@ -18,6 +18,8 @@ class Params(object):
             routine = FixedPowerLaw_Shear(lens_list,arg_list,xpos,ypos)
         elif optimizer_routine == 'variable_powerlaw_shear':
             routine = VariablePowerLaw_Shear(lens_list, arg_list, xpos, ypos)
+        elif optimizer_routine == 'fixed_shearpowerlaw':
+            routine = FixedShearPowerLaw(lens_list, arg_list, xpos, ypos)
 
         self._zlist = zlist
         self._lens_list = lens_list

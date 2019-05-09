@@ -6,7 +6,7 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
-                 save_cache=False, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
+                 save_cache=False, min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
                  x_center=0, y_center=0):
         """
 
@@ -57,15 +57,18 @@ class PointSource(object):
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center
 
-    def update_search_window(self, search_window, x_center, y_center):
+    def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
         update the search area for the lens equation solver
 
         :param search_window: search_window: window size of the image position search with the lens equation solver.
         :param x_center: center of search window
         :param y_center: center of search window
+        :param min_distance: minimum search distance
         :return: updated self instances
         """
+        if min_distance is not None:
+            self._min_distance = min_distance
         self._search_window, self._x_center, self._y_center = search_window, x_center, y_center
 
     def update_lens_model(self, lens_model_class):

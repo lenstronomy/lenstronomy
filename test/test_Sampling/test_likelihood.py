@@ -117,7 +117,7 @@ class TestLikelihoodModule(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
         logL, _ = likelihood.logL(args)
-        npt.assert_almost_equal(logL, -3098.81, decimal=-1)
+        npt.assert_almost_equal(logL, -3080.29, decimal=-1)
 
     def test_solver(self):
         # make simulation with point source positions in image plane

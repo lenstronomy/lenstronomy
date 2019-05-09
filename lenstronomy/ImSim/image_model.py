@@ -37,7 +37,8 @@ class ImageModel(object):
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
             x_center, y_center = self.Data.center
-            self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center, y_center=y_center)
+            self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center,
+                                                  y_center=y_center, min_distance=self.Data.pixel_width)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
                 self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource.point_source_type_list))

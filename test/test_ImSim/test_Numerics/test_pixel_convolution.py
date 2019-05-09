@@ -64,7 +64,6 @@ class TestSubgirdNumbaConvolution(object):
         self.model_super = util.array2image(flux)
         self.model = image_util.re_size(self.model_super, factor=self.supersampling_factor)
 
-
     def test_convolve2d(self):
         conv_pixels = np.ones_like(self.model)
         conv_pixels = np.array(conv_pixels, dtype=bool)

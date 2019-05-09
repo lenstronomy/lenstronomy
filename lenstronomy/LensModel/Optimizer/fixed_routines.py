@@ -198,8 +198,3 @@ class VariablePowerLaw_Shear(object):
         shear_list_high = [high_shear_e1, high_shear_e2]
 
         return sie_list_low+shear_list_low, sie_list_high+shear_list_high
-
-
-
-
-

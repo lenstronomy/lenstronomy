@@ -31,7 +31,8 @@ class NumbaConvolution(object):
         self._conv_pixels = conv_pixels
         self._nx, self._ny = np.shape(conv_pixels)
         if compute_pixels is None:
-            compute_pixels = copy.deepcopy(conv_pixels)
+            compute_pixels = np.ones_like(conv_pixels)
+            compute_pixels = np.array(compute_pixels, dtype=bool)
         assert np.shape(conv_pixels) == np.shape(compute_pixels)
         self._mask = compute_pixels
         self._partialInput = PartialImage(partial_read_bools=conv_pixels)
@@ -143,7 +144,7 @@ class SubgridNumbaConvolution(object):
     This makes use of the regualr NumbaConvolution class as a loop through the different sub-pixel positions
     """
 
-    def __init__(self, kernel_super, supersampling_factor, conv_pixels, compute_pixels=None, nopython=True, cache=True, parallel=False):
+    def __init__(self, kernel_super, supersampling_factor, conv_pixels, compute_pixels=None, kernel_size=None, nopython=True, cache=True, parallel=False):
         """
 
         :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
@@ -158,10 +159,16 @@ class SubgridNumbaConvolution(object):
         self._supersampling_factor = supersampling_factor
         # loop through the different supersampling sectors
         self._numba_conv_list = []
+        if compute_pixels is None:
+            compute_pixels = np.ones_like(conv_pixels)
+            compute_pixels = np.array(compute_pixels, dtype=bool)
+
         for i in range(supersampling_factor):
             for j in range(supersampling_factor):
                 # compute shifted psf kernel
                 kernel = self._partial_kernel(kernel_super, i, j)
+                if kernel_size is not None:
+                    kernel = image_util.cut_edges(kernel, kernel_size)
                 numba_conv = NumbaConvolution(kernel, conv_pixels, compute_pixels=compute_pixels, nopython=nopython, cache=cache, parallel=parallel)
                 self._numba_conv_list.append(numba_conv)
 
@@ -175,7 +182,6 @@ class SubgridNumbaConvolution(object):
         count = 0
         for i in range(self._supersampling_factor):
             for j in range(self._supersampling_factor):
-                print(i, j)
                 image_select = self._partial_image(image_high_res, i, j)
                 conv_image += self._numba_conv_list[count].convolve2d(image_select)
                 count += 1
@@ -209,5 +215,6 @@ class SubgridNumbaConvolution(object):
         i0 = delta  # index where to start kernel for i=0
         j0 = delta  # index where to start kernel for j=0  (should be symmetric)
         kernel_super_match[i0 + i:i0 + i + n, j0 + j:j0 + j + n] = kernel_super
+        #kernel_super_match = image_util.cut_edges(kernel_super_match, numPix=n)
         kernel = image_util.re_size(kernel_super_match, factor=self._supersampling_factor)
         return kernel

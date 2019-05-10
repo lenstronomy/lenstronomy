@@ -286,5 +286,17 @@ def test_mge_kernel():
     npt.assert_almost_equal(kernel_new, kernel, decimal=3)
 
 
+def kernel_average_pixel():
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gaussian = Gaussian()
+    subgrid_res = 3
+    x_grid, y_gird = Util.make_grid(9, 1., subgrid_res)
+    sigma = 2
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel_super = Util.array2image(flux)
+    kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=subgrid_res)
+    npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
+
+
 if __name__ == '__main__':
     pytest.main()

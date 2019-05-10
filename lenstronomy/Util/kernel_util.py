@@ -226,6 +226,35 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
     return kernel_norm(kernel_pixel)
 
 
+def kernel_average_pixel(kernel_super, supersampling_factor):
+    """
+    computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel
+
+    :param kernel_super: supersampled PSF of a point source
+    :param supersampling_factor: supersampling factor (int)
+    :return:
+    """
+    kernel_sum = np.sum(kernel_super)
+    kernel_size = int(round(len(kernel_super)/float(supersampling_factor) + 0.5))
+    if kernel_size % 2 == 0:
+        kernel_size += 1
+    n_high = kernel_size*supersampling_factor
+    kernel_pixel = np.zeros((kernel_size*supersampling_factor, kernel_size*supersampling_factor))
+    for i in range(supersampling_factor):
+        k_x = int((kernel_size - 1) / 2 * supersampling_factor + i)
+        for j in range(supersampling_factor):
+            k_y = int((kernel_size - 1) / 2 * supersampling_factor + j)
+            kernel_pixel = image_util.add_layer2image(kernel_pixel, k_x, k_y, kernel_super)
+
+    if supersampling_factor % 2 == 0:
+        kernel_pixel = averaging_even_kernel(kernel_pixel, supersampling_factor)
+    else:
+        kernel_pixel = util.averaging(kernel_pixel, numGrid=n_high,
+                                                   numPix=kernel_size)
+    kernel_pixel /= np.sum(kernel_pixel)
+    return kernel_pixel * kernel_sum
+
+
 def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     sigma = util.fwhm2sigma(fwhm)
     #if kernel_numPix % 2 == 0:

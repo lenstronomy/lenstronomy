@@ -286,7 +286,7 @@ def test_mge_kernel():
     npt.assert_almost_equal(kernel_new, kernel, decimal=3)
 
 
-def kernel_average_pixel():
+def test_kernel_average_pixel():
     from lenstronomy.LightModel.Profiles.gaussian import Gaussian
     gaussian = Gaussian()
     subgrid_res = 3

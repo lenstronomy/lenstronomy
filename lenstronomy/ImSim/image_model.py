@@ -243,21 +243,6 @@ class ImageModel(object):
                         error_map += error_map_add
         return error_map
 
-    def point_sources_list(self, kwargs_ps, kwargs_lens, k=None):
-        """
-
-        :param kwargs_ps:
-        :return: list of images containing only single point sources
-        """
-        point_list = []
-        if self.PointSource is None:
-            return point_list
-        ra_array, dec_array, amp_array = self.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
-        for i in range(len(ra_array)):
-            point_source = self.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
-            point_list.append(point_source)
-        return point_list
-
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
 

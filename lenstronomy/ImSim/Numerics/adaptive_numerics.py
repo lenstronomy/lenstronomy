@@ -16,7 +16,13 @@ class AdaptiveNumerics(object):
     2.1 convolution only applied where flux is present (avoid convolving a lot of zeros)
     2.2 simplified Multi-Gaussian convolution in regimes of low contrast
     2.3 (super-) sampled PSF convolution only at high contrast of highly variable sources
+
+
+    the class performs the convolution with two different input arrays, one with low resolution and one on a subpart with high resolution
+
     """
+    def __init__(self):
+        pass
 
 
 class AdaptiveConvolution(object):
@@ -79,6 +85,3 @@ class AdaptiveConvolution(object):
         image_low_res_partial_conv = self._low_res_partial.convolve2d(image_low_res)# * self._supersampling_factor**2
         image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
         return image_low_res_conv + image_high_res_partial_conv - image_low_res_partial_conv
-
-
-

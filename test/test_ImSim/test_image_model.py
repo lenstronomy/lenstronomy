@@ -100,10 +100,6 @@ class TestImageModel(object):
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
-    def test_point_sources_list(self):
-        point_source_list = self.imageModel.point_sources_list(self.kwargs_ps, self.kwargs_lens)
-        assert len(point_source_list) == 4
-
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
         npt.assert_almost_equal(logL, -5000, decimal=-3)

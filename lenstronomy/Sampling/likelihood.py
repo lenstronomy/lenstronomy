@@ -2,7 +2,8 @@ __author__ = 'sibirrer'
 
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
-from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood, FluxRatioLikelihood
+from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
+from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 import lenstronomy.Util.class_creator as class_reator
 
@@ -22,7 +23,7 @@ class LikelihoodModule(object):
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0,
-                 flux_ratio_likelihood=False, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
+                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
         """
         initializing class
 
@@ -50,6 +51,7 @@ class LikelihoodModule(object):
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions have positive flux
+        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         """
         multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         multi_band_type = kwargs_data_joint.get('image_type', 'single-band')
@@ -82,8 +84,10 @@ class LikelihoodModule(object):
                                                        position_uncertainty, check_solver, solver_tolerance,
                                                        force_no_add_image, restrict_image_number, max_num_images)
         self._flux_ratio_likelihood = flux_ratio_likelihood
+        self._kwargs_flux_compute = kwargs_flux_compute
         if self._flux_ratio_likelihood is True:
-            self.flux_ratio_likelihood = FluxRatioLikelihood(point_source_class, lens_model_class, param_class, flux_ratios, flux_ratio_errors)
+            self.flux_ratio_likelihood = FluxRatioLikelihood(point_source_class, lens_model_class, param_class,
+                                                             flux_ratios, flux_ratio_errors, **self._kwargs_flux_compute)
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
 

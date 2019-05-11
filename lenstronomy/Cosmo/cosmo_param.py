@@ -6,7 +6,7 @@ class CosmoParam(object):
     """
 
     def __init__(self, cosmo_type=None, mass_scaling=False, kwargs_fixed={}, num_scale_factor=1, kwargs_lower=None,
-                 kwargs_upper=None, point_source_offset=False, num_images=0):
+                 kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0):
         """
 
 
@@ -26,6 +26,7 @@ class CosmoParam(object):
         self._point_source_offset = point_source_offset
         self._num_images = num_images
         self._kwargs_fixed = kwargs_fixed
+        self._source_size = source_size
         if kwargs_lower is None:
             kwargs_lower = {}
             if self._Ddt_sampling is True:
@@ -36,6 +37,8 @@ class CosmoParam(object):
             if self._point_source_offset is True:
                 kwargs_lower['delta_x_image'] = [-1] * self._num_images
                 kwargs_lower['delta_y_image'] = [-1] * self._num_images
+            if self._source_size is True:
+                kwargs_lower['source_size'] = 0
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._Ddt_sampling is True:
@@ -44,8 +47,10 @@ class CosmoParam(object):
             if self._mass_scaling is True:
                 kwargs_upper['scale_factor'] = [1000] * self._num_scale_factor
             if self._point_source_offset is True:
-                kwargs_lower['delta_x_image'] = [1] * self._num_images
-                kwargs_lower['delta_y_image'] = [1] * self._num_images
+                kwargs_upper['delta_x_image'] = [1] * self._num_images
+                kwargs_upper['delta_y_image'] = [1] * self._num_images
+            if self._source_size is True:
+                kwargs_upper[source_size] = 1
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -81,6 +86,10 @@ class CosmoParam(object):
                 i += self._num_images
             else:
                 kwargs_cosmo['delta_y_image'] = self._kwargs_fixed['delta_y_image']
+        if self._source_size is True:
+            if 'source_size' not in self._kwargs_fixed:
+                kwargs_cosmo['source_size'] = args[i]
+                i += 1
         return kwargs_cosmo, i
 
     def setParams(self, kwargs_cosmo):
@@ -105,6 +114,9 @@ class CosmoParam(object):
             if 'delta_y_image' not in self._kwargs_fixed:
                 for i in range(self._num_images):
                     args.append(kwargs_cosmo['delta_y_image'][i])
+        if self._source_size is True:
+            if 'source_size' not in self._kwargs_fixed:
+                args.append(kwargs_cosmo['source_size'])
         return args
 
     def num_param(self):
@@ -133,4 +145,8 @@ class CosmoParam(object):
                 num += self._num_images
                 for i in range(self._num_images):
                     list.append('delta_y_image')
+        if self._source_size is True:
+            if 'source_size' not in self._kwargs_fixed:
+                num += 1
+                list.append('source_size')
         return num, list

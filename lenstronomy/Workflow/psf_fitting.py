@@ -160,13 +160,26 @@ class PsfFitting(object):
         #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
         mask = image_model_class.ImageNumerics.mask
-        point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens)
+        point_source_list = self._point_sources_list(image_model_class, kwargs_ps, kwargs_lens)
         n = len(point_source_list)
         model_single_source_list = []
         for i in range(n):
             model_single_source = (data - model + point_source_list[i]) * mask
             model_single_source_list.append(model_single_source)
         return model_single_source_list
+
+    def _point_sources_list(self, image_model_class, kwargs_ps, kwargs_lens, k=None):
+        """
+
+        :param kwargs_ps:
+        :return: list of images containing only single point sources
+        """
+        point_list = []
+        ra_array, dec_array, amp_array = image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
+        for i in range(len(ra_array)):
+            point_source = image_model_class.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
+            point_list.append(point_source)
+        return point_list
 
     def cutout_psf(self, ra_image, dec_image, x, y, image_list, kernelsize, kernel_init, block_center_neighbour=0):
         """

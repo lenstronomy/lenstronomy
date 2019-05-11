@@ -10,8 +10,9 @@ class TestParam(object):
     def setup(self):
         cosmo_type = 'D_dt'
         kwargs_fixed = {}
-        self.param = CosmoParam(cosmo_type=cosmo_type, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2)
-        self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0]}
+        self.param = CosmoParam(cosmo_type=cosmo_type, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2,
+                                source_size=True)
+        self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1}
 
     def test_get_setParams(self):
         args = self.param.setParams(self.kwargs)
@@ -22,7 +23,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 5
+        assert num == 6
 
     def test_mass_scaling(self):
         kwargs_fixed = {}

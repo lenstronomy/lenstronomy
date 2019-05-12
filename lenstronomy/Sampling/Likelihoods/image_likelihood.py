@@ -1,7 +1,7 @@
 import numpy as np
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.image_linear_solve import ImageModelLinear
 from lenstronomy.ImSim.MultiBand.multiband import MultiBand
 from lenstronomy.ImSim.MultiBand.multiband_multimodel import MultiBandMultiModel
 from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
@@ -121,7 +121,7 @@ def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_cl
         kwargs_data, kwargs_psf, kwargs_numerics = multi_band_list
         data_class = ImageData(**kwargs_data)
         psf_class = PSF(kwargs_psf)
-        multiband = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
+        multiband = ImageModelLinear(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                             point_source_class, kwargs_numerics)
     else:
         raise ValueError("type %s is not supported!" % image_type)

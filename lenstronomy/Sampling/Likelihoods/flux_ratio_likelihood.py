@@ -52,8 +52,9 @@ class FluxRatioLikelihood(object):
                                                                    grid_number=self._gird_number,
                                                                    shape=self._source_type, polar_grid=self._polar_grid,
                                                                    aspect_ratio=self._aspect_ratio)
-
         mag_ratio = mag[1:] / mag[0]
+        if np.isnan(mag_ratio) is True:
+            return -10 ** 15
         dist = (mag_ratio - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
         logL = -np.sum(dist)
         if np.isnan(logL) is True:

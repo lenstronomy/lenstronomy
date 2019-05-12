@@ -24,6 +24,19 @@ class AdaptiveNumerics(object):
     def __init__(self):
         pass
 
+    def convolve2d(self, image_hig_res, image_low_res):
+        """
+
+        :param image_hig_res: super-sampled surface brightness
+        :param image_low_res: regular sampled surface brightness
+        :return: convolved image on regular grid
+        """
+        # add supersampled region to lower resolution on
+        # convolve low res grid
+        # make complete super-sampled grid (adding zeros)
+        # convolve differences with numba on subpart (even subpart of the high resolution sampling)
+        # combine convolutions (1 + 2 -3)
+
 
 class AdaptiveConvolution(object):
     """

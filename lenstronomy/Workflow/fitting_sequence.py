@@ -7,6 +7,7 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 import numpy as np
 
+
 class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class

@@ -9,6 +9,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.image_linear_solve import ImageModelLinear
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
@@ -70,7 +71,7 @@ class TestImageModel(object):
                                        self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
 
-        self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
+        self.imageModel = ImageModelLinear(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):

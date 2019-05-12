@@ -3,7 +3,7 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
-from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.image_linear_solve import ImageModelLinear
 
 
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
@@ -58,7 +58,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model):
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(kwargs_psf)
     lens_model_class, source_model_class, lens_light_model_class, point_source_class = create_class_instances(**kwargs_model)
-    imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
+    imageModel = ImageModelLinear(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                             point_source_class, kwargs_numerics)
     return imageModel
 

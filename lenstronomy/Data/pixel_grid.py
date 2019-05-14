@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.Data.coord_transforms import Coordinates
+from lenstronomy.Data.coord_transforms import Coordinates, Coordinates1D
 
 
 class PixelGrid(Coordinates):

@@ -111,3 +111,17 @@ class Coordinates(object):
         self._dec_at_xy_0 += dec_shift
         self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
                                                                     self._Ma2pix)
+
+
+class Coordinates1D(Coordinates):
+    """
+    coordinate grid described in 1-d arrays
+    """
+    def coordinate_grid(self, nx, ny):
+        """
+
+        :param numPix: number of pixels per axis
+        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
+        """
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        return ra_coords, dec_coords

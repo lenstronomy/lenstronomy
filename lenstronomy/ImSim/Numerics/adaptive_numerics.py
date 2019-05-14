@@ -1,4 +1,3 @@
-
 from lenstronomy.ImSim.Numerics.pixel_convolution import SubgridNumbaConvolution, NumbaConvolution
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import kernel_util
@@ -21,8 +20,8 @@ class AdaptiveNumerics(object):
     the class performs the convolution with two different input arrays, one with low resolution and one on a subpart with high resolution
 
     """
-    def __init__(self):
-        pass
+    def __init__(self, supersampled_indexes):
+        self._supersampled_indexes = util.image2array(supersampled_indexes)
 
     def convolve2d(self, image_hig_res, image_low_res):
         """
@@ -36,6 +35,7 @@ class AdaptiveNumerics(object):
         # make complete super-sampled grid (adding zeros)
         # convolve differences with numba on subpart (even subpart of the high resolution sampling)
         # combine convolutions (1 + 2 -3)
+
 
 
 class AdaptiveConvolution(object):

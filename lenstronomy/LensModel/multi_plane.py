@@ -65,7 +65,8 @@ class MultiPlane(object):
         i = -1
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
-            x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+            if delta_T > 0:
+                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
             alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
         delta_T = self._T_ij_list[i+1]
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)

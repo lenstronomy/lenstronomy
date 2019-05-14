@@ -131,12 +131,11 @@ class ImageNumerics(object):
         """
         nx, ny = self._nx * subgrid_res, self._ny * subgrid_res
         if self._idex_mask_bool is True:
-            idex_mask = self._idex_mask
             grid1d = np.zeros((nx * ny))
             if subgrid_res > 1:
                 idex_mask_subgrid = self._idex_mask_sub
             else:
-                idex_mask_subgrid = idex_mask
+                idex_mask_subgrid = self._idex_mask
             grid1d[idex_mask_subgrid == 1] = array
         else:
             grid1d = array

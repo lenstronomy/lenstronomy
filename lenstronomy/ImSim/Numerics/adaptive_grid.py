@@ -48,8 +48,8 @@ class AdaptiveGrid(Coordinates1D):
         count = 0
         for i in range(self._supersampling_factor):
             for j in range(self._supersampling_factor):
-                x_ij = 1./self._supersampling_factor/2. + i/self._supersampling_factor - 1./2
-                y_ij = 1. / self._supersampling_factor / 2. + j / self._supersampling_factor - 1. / 2
+                x_ij = 1. / self._supersampling_factor / 2. + i / float(self._supersampling_factor) - 1. / 2
+                y_ij = 1. / self._supersampling_factor / 2. + j / float(self._supersampling_factor) - 1. / 2
                 delta_ra, delta_dec = self.map_pix2coord(x_ij, y_ij)
                 delta_ra0, delta_dec_0 = self.map_pix2coord(0, 0)
                 x_sub_grid[count::self._num_sub] = x_grid_select + delta_ra - delta_ra0

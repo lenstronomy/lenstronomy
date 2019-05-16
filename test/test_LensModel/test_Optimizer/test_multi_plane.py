@@ -266,8 +266,8 @@ class TestMultiPlaneOptimizer(object):
         redshift_list_reoptimize = self.lens_model_full.redshift_list
         scale = [0.5, 1]
 
-        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear', 'fixed_powerlaw_shear']
-        constrainparams = [None, None, {'shear': [0.06, 1]}]
+        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear', 'fixed_powerlaw_shear', 'variable_powerlaw_shear']
+        constrainparams = [None, None, {'shear': [0.06, 1]}, {'shear': [0.06, 1]}]
 
         for ri, rout in enumerate(routine):
             for i, val in enumerate([False,True]):

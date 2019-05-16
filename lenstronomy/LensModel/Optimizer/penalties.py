@@ -77,6 +77,8 @@ class Penalties(object):
         params_fixed = self.param_class.argsfixed_todictionary()
         total_penalty = 0
 
+
+
         # this function accepts the array, not the dictionary
 
         if self.params_to_constrain is not None:
@@ -196,6 +198,9 @@ class Penalties(object):
         penalty = 0
 
         for pname in self.params_to_constrain.keys():
+
+            if pname == 'shear' and hasattr(self.param_class.routine, '_fixshear'):
+                continue
 
             if pname == 'shear':
 

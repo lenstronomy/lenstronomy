@@ -109,7 +109,7 @@ class Optimizer(object):
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
         self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,
-                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
+                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos, constrain_params=constrain_params)
         
         # initialize particle swarm inital param limits
         if 're_optimize_scale' in optimizer_kwargs:
@@ -187,6 +187,16 @@ class Optimizer(object):
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
             print('Warning: possibly a bad fit.')
             x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort=False)
+            if len(x_image) != len(self.x_pos) or len(y_image) != len(self.y_pos):
+                x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,
+                                                               arrival_time_sort=False,
+                                                               precision_limit=10**(-11), num_iter_max=15)
+                if len(x_image) != len(self.x_pos) or len(y_image) != len(self.y_pos):
+                    print('Solver cannot determine locations on the image plane, despite convergence '
+                          'in the source plane. Returning the input images... ')
+                    x_image = self.x_pos
+                    y_image = self.y_pos
+
             #x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
         if self._verbose:
             print('optimization done.')

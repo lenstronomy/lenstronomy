@@ -16,7 +16,7 @@ class MultiDataBase(object):
         self._imageModel_list = imageModel_list
         self._num_response_list = []
         for imageModel in imageModel_list:
-            self._num_response_list.append(imageModel.ImageNumerics.num_response)
+            self._num_response_list.append(imageModel.num_data_evaluate)
         self.LensModel = self._imageModel_list[0].LensModel
         self.SourceModel = self._imageModel_list[0].SourceModel
         self.LensLightModel = self._imageModel_list[0].LensLightModel
@@ -44,11 +44,12 @@ class MultiDataBase(object):
         for imageModel in self._imageModel_list:
             imageModel.reset_point_source_cache(bool=bool)
 
+    @property
     def num_data_evaluate(self):
         num = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                num += self._imageModel_list[i].num_data_evaluate()
+                num += self._imageModel_list[i].num_data_evaluate
         return num
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):

@@ -1,5 +1,5 @@
 from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
-from lenstronomy.ImSim.image_linear_solve import ImageModelLinear
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
@@ -41,7 +41,7 @@ class MultiFrame(MultiDataBase):
             data_i = ImageData(**kwargs_data)
             psf_i = PSF(kwargs_psf=kwargs_psf)
             point_source_class_i = copy.deepcopy(point_source_class)
-            imageModel = ImageModelLinear(data_i, psf_i, lens_model_class, source_model_class,
+            imageModel = ImageLinearFit(data_i, psf_i, lens_model_class, source_model_class,
                                         lens_light_model_class, point_source_class_i,
                                         kwargs_numerics=kwargs_numerics)
             imageModel_list.append(imageModel)
@@ -118,7 +118,7 @@ class MultiFrame(MultiDataBase):
             if self._compute_bool[i] is True:
                 num_data = self.num_response_list[i]
                 array_i = array[k:k + num_data]
-                image_i = self._imageModel_list[i].ImageNumerics.array2image(array_i)
+                image_i = self._imageModel_list[i].array_masked2image(array_i)
                 image_list.append(image_i)
                 k += num_data
         return image_list
@@ -160,7 +160,7 @@ class MultiFrame(MultiDataBase):
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].ImageNumerics.mask, model_error_list[index])
+                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].mask, model_error_list[index])
                 index += 1
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)

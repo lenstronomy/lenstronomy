@@ -1,10 +1,10 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
-import lenstronomy.Util.kernel_util as kernel_util
+from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
 
 
-class ImageNumerics(object):
+class ImageNumerics(PointSourceRendering):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
@@ -42,7 +42,6 @@ class ImageNumerics(object):
         self._nx, self._ny = self._PixelGrid.num_pixel_axes
         self._subgrid_res = subgrid_res
         self._psf_subgrid = psf_subgrid
-        self._fix_psf_error_map = fix_psf_error_map
         if idex_mask is not None:
             self._idex_mask_2d = idex_mask
             if not np.shape(self._idex_mask_2d) == (self._nx, self._ny):
@@ -64,13 +63,19 @@ class ImageNumerics(object):
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
         self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+
+        """
+        
         self._point_source_subgrid = point_source_subgrid
         if self._point_source_subgrid % 2 == 0:
             if self._point_source_subgrid % 2 == 0 and psf._point_source_subsampling_factor != self._point_source_subgrid:
                 raise ValueError("point_source_subgird needs to be an odd integer. The value %s is not supported." % self._point_source_subgrid)
+        """
         self._subsampling_size = subsampling_size
         self._conv_type = conv_type
         self._subgrid_conv_type = subgrid_conv_type
+        super(ImageNumerics, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_subgrid,
+                                                            psf=psf, fix_psf_error_map=fix_psf_error_map)
 
     @property
     def ra_grid_ray_shooting(self):
@@ -92,20 +97,8 @@ class ImageNumerics(object):
             self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]
 
     @property
-    def num_response(self):
-        """
-        number of pixels as part of the response array
-        :return:
-        """
-        return int(np.sum(self._idex_mask))
-
-    @property
     def mask(self):
         return self._mask
-
-    @property
-    def numData_evaluate(self):
-        return int(np.sum(self.mask))
 
     def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
         """
@@ -141,20 +134,6 @@ class ImageNumerics(object):
             grid1d = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
-
-    def image2array(self, image):
-        """
-        returns 1d array of values in image in idex_mask
-        :param image:
-        :param idex_mask:
-        :return:
-        """
-        idex_mask = self._idex_mask
-        array = util.image2array(image)
-        if self._idex_mask_bool is True:
-            return array[idex_mask == 1]
-        else:
-            return array
 
     def re_size_convolve(self, array, unconvolved=False):
         """
@@ -210,44 +189,3 @@ class ImageNumerics(object):
         image = np.zeros((self._nx, self._ny))
         image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
         return image
-
-    def point_source_rendering(self, ra_pos, dec_pos, amp):
-        """
-
-        :param ra_pos:
-        :param dec_pos:
-        :param amp:
-        :param subgrid:
-        :return:
-        """
-        subgrid = self._point_source_subgrid
-        x_pos, y_pos = self._PixelGrid.map_coord2pix(ra_pos, dec_pos)
-        # translate coordinates to higher resolution grid
-        x_pos_subgird = x_pos * subgrid + (subgrid - 1) / 2.
-        y_pos_subgrid = y_pos * subgrid + (subgrid - 1) / 2.
-        kernel_point_source_subgrid = self.kernel_point_source_subgrid
-        # initialize grid with higher resolution
-        subgrid2d = np.zeros((self._nx*subgrid, self._ny*subgrid))
-        # add_layer2image
-        for i in range(len(x_pos)):
-            subgrid2d = image_util.add_layer2image(subgrid2d, x_pos_subgird[i], y_pos_subgrid[i], amp[i] * kernel_point_source_subgrid)
-        # re-size grid to data resolution
-        grid2d = image_util.re_size(subgrid2d, factor=subgrid)
-        return grid2d*subgrid**2
-
-    @property
-    def kernel_point_source_subgrid(self):
-        return self._PSF.subgrid_point_source_kernel(self._point_source_subgrid)
-
-    def psf_error_map(self, ra_pos, dec_pos, amp, data):
-        x_pos, y_pos = self._PixelGrid.map_coord2pix(ra_pos, dec_pos)
-        psf_kernel = self._PSF.kernel_point_source
-        psf_error_map = self._PSF.psf_error_map
-        error_map = np.zeros_like(data)
-        for i in range(len(x_pos)):
-            if self._fix_psf_error_map:
-                amp_estimated = amp
-            else:
-                amp_estimated = kernel_util.estimate_amp(data, x_pos[i], y_pos[i], psf_kernel)
-            error_map = image_util.add_layer2image(error_map, x_pos[i], y_pos[i], psf_error_map * (psf_kernel * amp_estimated) ** 2)
-        return error_map

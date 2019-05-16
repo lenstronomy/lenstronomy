@@ -1,12 +1,21 @@
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.ImSim.de_lens as de_lens
+from lenstronomy.Util import util
 import numpy as np
 
 
-class ImageModelLinear(ImageModel):
+class ImageLinearFit(ImageModel):
     """
     linear version class, inherits ImageModel
     """
+    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+        super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
+                                             source_model_class=source_model_class,
+                                             lens_light_model_class=lens_light_model_class,
+                                             point_source_class=point_source_class, kwargs_numerics=kwargs_numerics)
+        self.mask = np.array(self.ImageNumerics.mask, dtype=bool)
+        self._mask1d = util.image2array(self.mask)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            inv_bool=False):
@@ -27,7 +36,7 @@ class ImageModelLinear(ImageModel):
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
         _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        model = self.ImageNumerics.array2image(wls_model)
+        model = self.array_masked2image(wls_model)
         return model, model_error, cov_param, param
 
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
@@ -40,8 +49,7 @@ class ImageModelLinear(ImageModel):
         :param kwargs_ps:
         :return:
         """
-        A = self._response_matrix(self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting,
-                                  kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, self.ImageNumerics.mask)
+        A = self._response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return A
 
     @property
@@ -51,7 +59,7 @@ class ImageModelLinear(ImageModel):
 
         :return: 1d numpy array
         """
-        d = self.ImageNumerics.image2array(self.Data.data * self.ImageNumerics.mask)
+        d = self.image2array_masked(self.Data.data)
         return d
 
     def error_response(self, kwargs_lens, kwargs_ps):
@@ -61,7 +69,7 @@ class ImageModelLinear(ImageModel):
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
         model_error = self.error_map(kwargs_lens, kwargs_ps)
-        C_D_response = self.ImageNumerics.image2array(self.Data.C_D + model_error)
+        C_D_response = self.image2array_masked(self.Data.C_D + model_error)
         return C_D_response, model_error
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
@@ -81,7 +89,7 @@ class ImageModelLinear(ImageModel):
                                                                          kwargs_lens_light, kwargs_ps,
                                                                          inv_bool=source_marg)
         # compute X^2
-        logL = self.Data.log_likelihood(im_sim, self.ImageNumerics.mask, model_error)
+        logL = self.Data.log_likelihood(im_sim, self.mask, model_error)
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             # if marg_const + logL > 0:
@@ -100,24 +108,20 @@ class ImageModelLinear(ImageModel):
         num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
         return num
 
-    def _response_matrix(self, x_grid, y_grid, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, mask,
+    def _response_matrix(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                          unconvolved=False):
         """
 
         return linear response Matrix
 
-        :param x_grid:
-        :param y_grid:
-        :param x_source:
-        :param y_source:
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :param mask:
         :param unconvolved:
         :return:
         """
+        x_grid, y_grid = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting,
         if not self.SourceModel is None:
             source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
                                                                                    kwargs_source)
@@ -134,37 +138,28 @@ class ImageModelLinear(ImageModel):
             ra_pos, dec_pos, amp, n_points = [], [], [], 0
         num_param = n_points + n_lens_light + n_source
 
-        num_response = self.ImageNumerics.num_response
+        num_response = self.num_data_evaluate
+        print(num_response, 'test')
         A = np.zeros((num_param, num_response))
         n = 0
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.ImageNumerics.image2array(image)
+            A[n, :] = self.image2array_masked(image)
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.ImageNumerics.image2array(image)
+            A[n, :] = self.image2array_masked(image)
             n += 1
         # response of point sources
         for i in range(0, n_points):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
-            A[n, :] = self.ImageNumerics.image2array(image)
+            A[n, :] = self.image2array_masked(image)
             n += 1
-        A = self._add_mask(A, mask)
         return np.nan_to_num(A)
-
-    def _add_mask(self, A, mask):
-        """
-
-        :param A: 2d matrix n*len(mask)
-        :param mask: 1d vector of 1 or zeros
-        :return: column wise multiplication of A*mask
-        """
-        return A[:] * self.ImageNumerics.image2array(mask)
 
     def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
@@ -182,3 +177,61 @@ class ImageModelLinear(ImageModel):
         if self.PointSource is not None:
             kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+
+    def reduced_residuals(self, model, error_map=0):
+        """
+
+        :param model:
+        :return:
+        """
+        mask = self.ImageNumerics.mask
+        residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
+        return residual
+
+    def reduced_chi2(self, model, error_map=0):
+        """
+        returns reduced chi2
+        :param model:
+        :param error_map:
+        :return:
+        """
+        chi2 = self.reduced_residuals(model, error_map)
+        return np.sum(chi2**2) / self.num_data_evaluate
+
+    @property
+    def num_data_evaluate(self):
+        """
+        number of data points to be used in the linear solver
+        :return:
+        """
+        return int(np.sum(self.mask))
+
+    def update_data(self, data_class):
+        """
+
+        :param data_class: instance of Data() class
+        :return: no return. Class is updated.
+        """
+        self.Data = data_class
+        self.ImageNumerics._PixelGrid = data_class
+
+    def image2array_masked(self, image):
+        """
+        returns 1d array of values in image that are not masked out for the likelihood computation/linear minimization
+        :param image: 2d numpy array of full image
+        :return: 1d array
+        """
+        array = util.image2array(image)
+        return array[self._mask1d]
+
+    def array_masked2image(self, array):
+        """
+
+        :param array: 1d array of values not masked out (part of linear fitting)
+        :return: 2d array of full image
+        """
+        nx, ny = self.Data.num_pixel_axes
+        grid1d = np.zeros(nx * ny)
+        grid1d[self._mask1d] = array
+        grid2d = util.array2image(grid1d, nx, ny)
+        return grid2d

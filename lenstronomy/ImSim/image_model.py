@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.image_numerics import ImageNumerics
+from lenstronomy.ImSim.image_numerics import ImageNumerics, PointSourceRendering
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -60,15 +60,6 @@ class ImageModel(object):
         if self.PointSource is not None:
             self.PointSource.delete_lens_model_cach()
             self.PointSource.set_save_cache(bool)
-
-    def update_data(self, data_class):
-        """
-
-        :param data_class: instance of Data() class
-        :return: no return. Class is updated.
-        """
-        self.Data = data_class
-        self.ImageNumerics._PixelGrid = data_class
 
     def update_psf(self, psf_class):
         """
@@ -166,7 +157,7 @@ class ImageModel(object):
             point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
         else:
             point_source = np.zeros_like(self.Data.data)
-        model = (source_light + lens_light + point_source) * self.ImageNumerics.mask
+        model = (source_light + lens_light + point_source)# * self.ImageNumerics.mask
         return model
 
     def error_map(self, kwargs_lens, kwargs_ps):
@@ -185,30 +176,3 @@ class ImageModel(object):
                         error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
                         error_map += error_map_add
         return error_map
-
-    def reduced_residuals(self, model, error_map=0):
-        """
-
-        :param model:
-        :return:
-        """
-        mask = self.ImageNumerics.mask
-        residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
-        return residual
-
-    def reduced_chi2(self, model, error_map=0):
-        """
-        returns reduced chi2
-        :param model:
-        :param error_map:
-        :return:
-        """
-        chi2 = self.reduced_residuals(model, error_map)
-        return np.sum(chi2**2) / self.num_data_evaluate()
-
-    def num_data_evaluate(self):
-        """
-        number of data points to be used in the linear solver
-        :return:
-        """
-        return self.ImageNumerics.numData_evaluate

@@ -1,4 +1,4 @@
-from lenstronomy.ImSim.Numerics.pixel_convolution import SubgridNumbaConvolution, NumbaConvolution
+from lenstronomy.ImSim.Numerics.numba_convolution import SubgridNumbaConvolution, NumbaConvolution
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.ImSim.Numerics.adaptive_grid import AdaptiveGrid
 from lenstronomy.Util import kernel_util
@@ -21,22 +21,47 @@ class AdaptiveNumerics(object):
     the class performs the convolution with two different input arrays, one with low resolution and one on a subpart with high resolution
 
     """
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_indexes, supersampling_factor):
-        self._adaptive_grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_indexes, supersampling_factor)
+    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, compute_indexes, supersampled_pixel_indexes,
+                 supersampling_factor, supersampling_size, kernel_super):
+        self._grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampled_pixel_indexes,
+                                  supersampling_factor, compute_indexes)
+        self._conv = AdaptiveConvolution(kernel_super, supersampling_factor, conv_supersample_pixels=supersampled_pixel_indexes,
+                                         supersampling_size=supersampling_size,
+                                         compute_pixels=None, nopython=True, cache=True, parallel=False)
 
-    def convolve2d(self, image_hig_res, image_low_res):
+    def re_size_convolve(self, array_low_res_partial, array_high_res_partial):
         """
 
-        :param image_hig_res: super-sampled surface brightness
-        :param image_low_res: regular sampled surface brightness
-        :return: convolved image on regular grid
+        :param array_high_res_partial: super-sampled surface brightness, 1d array
+        :param array_low_res_partial: regular sampled surface brightness, 1d array
+        :return: convolved image on regular pixel grid, 2d array
         """
+
         # add supersampled region to lower resolution on
-        # convolve low res grid
-        # make complete super-sampled grid (adding zeros)
-        # convolve differences with numba on subpart (even subpart of the high resolution sampling)
-        # combine convolutions (1 + 2 -3)
+        image_low_res = self._grid.merge_low_high_res(array_low_res_partial, array_high_res_partial)
+        image_high_res_partial = self._grid.high_res_image(array_high_res_partial)
 
+        # convolve low res grid and high res grid
+        image_conv = self._conv.re_size_convolve(image_low_res, image_high_res_partial)
+        return image_conv
+
+    @property
+    def low_res_coordinates(self):
+        """
+        low resolution coordinates
+        returns all low resolution coordinates in two arrays (x, y)
+        :return: 1d array, 1d array
+        """
+        return self._grid.low_res_coordinates
+
+    @property
+    def high_res_coordinates(self):
+        """
+        low resolution coordinates
+        returns all low resolution coordinates in two arrays (x, y)
+        :return: 1d array, 1d array
+        """
+        return self._grid.high_res_coordinates
 
 
 class AdaptiveConvolution(object):
@@ -52,8 +77,8 @@ class AdaptiveConvolution(object):
     adaptive solution is 1 + 2 -3
 
     """
-    def __init__(self, kernel_super, supersampling_factor, conv_supersample_pixels, supersampling_size=None, compute_pixels=None, nopython=True, cache=True,
-                 parallel=False):
+    def __init__(self, kernel_super, supersampling_factor, conv_supersample_pixels, supersampling_size=None,
+                 compute_pixels=None, nopython=True, cache=True, parallel=False):
         """
 
         :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
@@ -88,6 +113,17 @@ class AdaptiveConvolution(object):
                                                         parallel=parallel)#, kernel_size=len(kernel_cut))
         self._supersampling_factor = supersampling_factor
 
+    def re_size_convolve(self, image_low_res, image_high_res):
+        """
+
+        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
+        :return: convolved and re-sized image
+        """
+        image_low_res_conv = self._low_res_conv.convolution2d(image_low_res)
+        image_low_res_partial_conv = self._low_res_partial.convolve2d(image_low_res)
+        image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
+        return image_low_res_conv + image_high_res_partial_conv - image_low_res_partial_conv
+
     def convolve2d(self, image_high_res):
         """
 
@@ -95,7 +131,4 @@ class AdaptiveConvolution(object):
         :return: convolved and re-sized image
         """
         image_low_res = image_util.re_size(image_high_res, factor=self._supersampling_factor)
-        image_low_res_conv = self._low_res_conv.convolution2d(image_low_res)# * self._supersampling_factor**2 * self._supersampling_factor**2
-        image_low_res_partial_conv = self._low_res_partial.convolve2d(image_low_res)# * self._supersampling_factor**2
-        image_high_res_partial_conv = self._hig_res_partial.convolve2d(image_high_res)
-        return image_low_res_conv + image_high_res_partial_conv - image_low_res_partial_conv
+        return self.re_size_convolve(image_low_res, image_high_res)

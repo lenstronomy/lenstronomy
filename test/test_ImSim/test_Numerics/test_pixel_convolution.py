@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import numpy.testing as npt
-from lenstronomy.ImSim.Numerics.pixel_convolution import NumbaConvolution, SubgridNumbaConvolution
+from lenstronomy.ImSim.Numerics.numba_convolution import NumbaConvolution, SubgridNumbaConvolution
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Util import util

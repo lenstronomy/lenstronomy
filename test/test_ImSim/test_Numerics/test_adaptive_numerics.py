@@ -50,7 +50,7 @@ class TestAdaptiveConvolution(object):
         conv_supersample_pixels = np.array(conv_supersample_pixels, dtype=bool)
         conv_supersample_pixels[self.model > np.max(self.model) / 2] = True
         adaptive_conv = AdaptiveConvolution(self.kernel_sub, self.supersampling_factor, conv_supersample_pixels,
-                                            supersampling_size=1, compute_pixels=None)
+                                                supersampling_size=1, compute_pixels=None)
 
         model_adaptive_conv = adaptive_conv.convolve2d(self.model_sub)
 

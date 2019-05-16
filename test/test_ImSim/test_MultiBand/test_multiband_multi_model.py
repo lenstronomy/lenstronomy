@@ -88,7 +88,7 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-2)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.num_data_evaluate()
+        numData = self.imageModel.num_data_evaluate
         assert numData == 10000
 
 

@@ -1,6 +1,5 @@
 import numpy as np
 import lenstronomy.Util.util as util
-from lenstronomy.Data.coord_transforms import Coordinates1D
 
 
 class PartialImage(object):

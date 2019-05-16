@@ -53,10 +53,10 @@ class NumbaConvolution(object):
         for x in range(index_array_input.shape[0]):
             for y in range(index_array_input.shape[1]):
                 if conv_pixels[x][y]:
-                    image_frame_psfs, image_frame_indexes, frame_length = self.pre_compute_frame_kernel((x, y),
+                    image_frame_psfs, image_frame_indexes, frame_length = self._pre_compute_frame_kernel((x, y),
                                                                                                         self._kernel[:, :],
-                                                                                                        compute_pixels,
-                                                                                                        index_array_out)
+                                                                                                         compute_pixels,
+                                                                                                         index_array_out)
 
                     self._image_frame_indexes[image_index, :] = image_frame_indexes
                     self._image_frame_psfs[image_index, :] = image_frame_psfs
@@ -80,7 +80,7 @@ class NumbaConvolution(object):
 
     @staticmethod
     @numba_util.jit()
-    def pre_compute_frame_kernel(image_index, kernel, mask, index_array):
+    def _pre_compute_frame_kernel(image_index, kernel, mask, index_array):
         """
 
         :param image_index: (int, int) index of pixels

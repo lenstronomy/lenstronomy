@@ -9,7 +9,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.ImSim.image_linear_solve import ImageModelLinear
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
@@ -71,7 +71,7 @@ class TestImageModel(object):
                                        self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
 
-        self.imageModel = ImageModelLinear(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
+        self.imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
@@ -119,15 +119,8 @@ class TestImageModel(object):
         npt.assert_almost_equal(chi2, 1, decimal=1)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.num_data_evaluate()
+        numData = self.imageModel.num_data_evaluate
         assert numData == 10000
-
-    def test_add_mask(self):
-        mask = np.array([[0, 1],[1, 0]])
-        A = np.ones((10, 4))
-        A_masked = self.imageModel._add_mask(A, mask)
-        assert A[0, 1] == A_masked[0, 1]
-        assert A_masked[0, 3] == 0
 
     def test_point_source_rendering(self):
         # initialize data

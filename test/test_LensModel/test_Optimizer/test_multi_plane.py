@@ -266,9 +266,10 @@ class TestMultiPlaneOptimizer(object):
         redshift_list_reoptimize = self.lens_model_full.redshift_list
         scale = [0.5, 1]
 
-        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear']
+        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear', 'fixed_powerlaw_shear']
+        constrainparams = [None, None, {'shear': [0.06, 1]}]
 
-        for rout in routine:
+        for ri, rout in enumerate(routine):
             for i, val in enumerate([False,True]):
                 reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                         magnification_target=self.magnification_simple,
@@ -276,9 +277,9 @@ class TestMultiPlaneOptimizer(object):
                                         lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                         verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                         optimizer_routine=rout, re_optimize=True, particle_swarm=val,
-                                        optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
+                                        optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val}, constrain_params=constrainparams[ri])
 
-                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=5, n_iterations=3, restart=2)
+                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=2, n_iterations=2, restart=2)
 
                 _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 

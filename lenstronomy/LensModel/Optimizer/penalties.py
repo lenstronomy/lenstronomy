@@ -77,6 +77,8 @@ class Penalties(object):
         params_fixed = self.param_class.argsfixed_todictionary()
         total_penalty = 0
 
+
+
         # this function accepts the array, not the dictionary
 
         if self.params_to_constrain is not None:

@@ -139,7 +139,6 @@ class ImageLinearFit(ImageModel):
         num_param = n_points + n_lens_light + n_source
 
         num_response = self.num_data_evaluate
-        print(num_response, 'test')
         A = np.zeros((num_param, num_response))
         n = 0
         # response of sersic source profile

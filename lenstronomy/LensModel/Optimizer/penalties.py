@@ -199,6 +199,9 @@ class Penalties(object):
 
         for pname in self.params_to_constrain.keys():
 
+            if pname == 'shear' and hasattr(self.param_class.routine, '_fixshear'):
+                continue
+
             if pname == 'shear':
 
                 index1 = self.param_class.routine.params_to_vary.index('shear_e1')

@@ -267,7 +267,7 @@ class TestMultiPlaneOptimizer(object):
         scale = [0.5, 1]
 
         routine = ['fixed_powerlaw_shear','variable_powerlaw_shear', 'fixed_powerlaw_shear', 'variable_powerlaw_shear']
-        constrainparams = [None, None, {'shear': [0.06, 1]}, {'shear': [0.06, 1]}]
+        constrainparams = [None, None, {'shear': [0.06, 1]}, {'shear': [0.06, 1]}, {'shear': 0.06}]
 
         for ri, rout in enumerate(routine):
             for i, val in enumerate([False,True]):

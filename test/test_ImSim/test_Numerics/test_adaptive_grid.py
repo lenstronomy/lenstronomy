@@ -24,6 +24,11 @@ class TestAdaptiveGrid(object):
         self.nx, self.ny = nx, ny
         self._adaptive_grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampling_indexes, self._supersampling_factor)
 
+    def test_coordinates_evaluate(self):
+        x_grid, y_grid = self._adaptive_grid.coordinates_evaluate
+        print(np.shape(x_grid), 'test shape')
+        assert len(x_grid) == self._supersampling_factor**2 + self.nx * self.ny - 1
+
     def test_subpixel_coordinates(self):
         subpixel_x, subpixel_y = self._adaptive_grid._high_res_coordinates
         assert len(subpixel_x) == 4**2
@@ -54,6 +59,14 @@ class TestAdaptiveGrid(object):
         assert added_array[util.image2array(self._supersampling_indexes)] == supersampled_values
 
         image_high_res = self._adaptive_grid._high_res_image(subgrid_values)
+        assert len(image_high_res) == self.nx * self._supersampling_factor
+
+    def test_flux_array2image_low_high(self):
+        x, y = self._adaptive_grid.coordinates_evaluate
+        model = LightModel(light_model_list=['GAUSSIAN'])
+        kwargs_light = [{'center_x': 0, 'center_y': 0, 'sigma_x': 1, 'sigma_y': 1, 'amp': 1}]
+        flux_values = model.surface_brightness(x, y, kwargs_light)
+        image_low_res, image_high_res = self._adaptive_grid.flux_array2image_low_high(flux_values)
         assert len(image_high_res) == self.nx * self._supersampling_factor
 
 

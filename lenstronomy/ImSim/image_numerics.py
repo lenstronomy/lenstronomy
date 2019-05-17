@@ -144,7 +144,7 @@ class ImageNumerics(PointSourceRendering):
         :return: array with convolved and re-binned data/model
         """
         image = self._array2image(array, self._subgrid_res)
-        image = self._cutout_psf(image, self._subgrid_res)
+        #image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True:
             image_convolved = image_util.re_size(image, self._subgrid_res)
         else:
@@ -152,40 +152,41 @@ class ImageNumerics(PointSourceRendering):
                                                             subsampling_size=self._subsampling_size,
                                                             psf_subgrid=self._psf_subgrid, conv_type=self._conv_type,
                                                             subgrid_conv_type=self._subgrid_conv_type)
-        image_full = self._add_psf(image_convolved)
-        return image_full * self._PixelGrid.pixel_width ** 2
+        #image_full = self._add_psf(image_convolved)
+        return image_convolved * self._PixelGrid.pixel_width ** 2
 
-    def _init_mask_psf(self):
-        """
-        smaller frame that encolses all the idex_mask
-        :param idex_mask:
-        :param nx:
-        :param ny:
-        :return:
-        """
-        if not hasattr(self, '_x_min_psf'):
-            idex_2d = self._idex_mask_2d
-            self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
-            self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
-            self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
-            self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
+    #def _init_mask_psf(self):
+    #    """
+    #    smaller frame that encolses all the idex_mask
+    #    :param idex_mask:
+    #    :param nx:
+    #    :param ny:
+    #    :return:
+    #    """
+    #    if not hasattr(self, '_x_min_psf'):
+    #        idex_2d = self._idex_mask_2d
+    #        self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
+    #        self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
+    #        self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
+    #        self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
 
-    def _cutout_psf(self, image, subgrid_res):
-        """
-        cutout the part of the image relevant for the psf convolution
-        :param image:
-        :return:
-        """
-        self._init_mask_psf()
-        return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
 
-    def _add_psf(self, image_psf):
-        """
+    #def _cutout_psf(self, image, subgrid_res):
+    #    """
+    #    cutout the part of the image relevant for the psf convolution
+    #    :param image:
+    #    :return:
+    #    """
+    #    self._init_mask_psf()
+    #    return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
 
-        :param image_psf:
-        :return:
-        """
-        self._init_mask_psf()
-        image = np.zeros((self._nx, self._ny))
-        image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
-        return image
+    #def _add_psf(self, image_psf):
+    #    """
+
+    #    :param image_psf:
+    #    :return:
+    #    """
+    #    self._init_mask_psf()
+    #    image = np.zeros((self._nx, self._ny))
+    #    image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
+    #    return image

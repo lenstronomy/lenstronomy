@@ -28,7 +28,7 @@ class AdaptiveGrid(Coordinates1D):
             compute_indexes = np.ones_like(self._x_grid, dtype=bool)
         supersampled_indexes1d = util.image2array(supersampling_indexes)
         self._high_res_indexes1d = (supersampled_indexes1d) & (compute_indexes)
-        self._low_res_indexes1d = (supersampled_indexes1d is False) & (compute_indexes)
+        self._low_res_indexes1d = (np.invert(supersampled_indexes1d)) & (compute_indexes)
         self._supersampling_factor = supersampling_factor
         self._num_sub = supersampling_factor * supersampling_factor
         self._x_low_res = self._x_grid[self._low_res_indexes1d]

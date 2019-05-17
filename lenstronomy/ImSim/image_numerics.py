@@ -113,7 +113,7 @@ class ImageNumerics(PointSourceRendering):
         idex_sub = util.image2array(idex_sub)
         return idex_sub
 
-    def array2image(self, array, subgrid_res=1):
+    def _array2image(self, array, subgrid_res=1):
         """
         maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
         :param array: 1d array
@@ -143,7 +143,7 @@ class ImageNumerics(PointSourceRendering):
         :param unconvolved: bool, if True, no convlolution performed, only re-binning
         :return: array with convolved and re-binned data/model
         """
-        image = self.array2image(array, self._subgrid_res)
+        image = self._array2image(array, self._subgrid_res)
         image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True:
             image_convolved = image_util.re_size(image, self._subgrid_res)

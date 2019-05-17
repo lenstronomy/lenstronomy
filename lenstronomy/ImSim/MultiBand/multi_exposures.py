@@ -49,7 +49,7 @@ class MultiExposures(MultiBand):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-                if A == []:
+                if len(A) == 0:
                     A = A_i
                 else:
                     A = np.append(A, A_i, axis=1)
@@ -66,7 +66,7 @@ class MultiExposures(MultiBand):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 d_i = self._imageModel_list[i].data_response
-                if d == []:
+                if len(d) == 0:
                     d = d_i
                 else:
                     d = np.append(d, d_i)
@@ -85,7 +85,7 @@ class MultiExposures(MultiBand):
             if self._compute_bool[i] is True:
                 num_data = self.num_response_list[i]
                 array_i = array[k:k + num_data]
-                image_i = self._imageModel_list[i].ImageNumerics.array2image(array_i)
+                image_i = self._imageModel_list[i].array_masked2image(array_i)
                 image_list.append(image_i)
                 k += num_data
         return image_list
@@ -101,7 +101,7 @@ class MultiExposures(MultiBand):
             if self._compute_bool[i] is True:
                 C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
                 model_error.append(model_error_i)
-                if C_D_response == []:
+                if len(C_D_response) == 0:
                     C_D_response = C_D_response_i
                 else:
                     C_D_response = np.append(C_D_response, C_D_response_i)

@@ -82,7 +82,7 @@ class MultiFrame(MultiDataBase):
             if self._compute_bool[i] is True:
                 kwargs_lens_i = [kwargs_lens[k] for k in self._idex_lens_list[i]]
                 A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens_i, kwargs_source, kwargs_lens_light, kwargs_ps)
-                if A == []:
+                if len(A) == 0:
                     A = A_i
                 else:
                     A = np.append(A, A_i, axis=1)
@@ -99,7 +99,7 @@ class MultiFrame(MultiDataBase):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 d_i = self._imageModel_list[i].data_response
-                if d == []:
+                if len(d) == 0:
                     d = d_i
                 else:
                     d = np.append(d, d_i)
@@ -135,7 +135,7 @@ class MultiFrame(MultiDataBase):
                 kwargs_lens_i = [kwargs_lens[k] for k in self._idex_lens_list[i]]
                 C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens_i, kwargs_ps)
                 model_error.append(model_error_i)
-                if C_D_response == []:
+                if len(C_D_response) == 0:
                     C_D_response = C_D_response_i
                 else:
                     C_D_response = np.append(C_D_response, C_D_response_i)

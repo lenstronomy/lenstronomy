@@ -122,20 +122,10 @@ class ImageLinearFit(ImageModel):
         :return:
         """
         x_grid, y_grid = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting,
-        if not self.SourceModel is None:
-            source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
-                                                                                   kwargs_source)
-        else:
-            source_light_response, n_source = [], 0
-        if not self.LensLightModel is None:
-            lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
-        else:
-            lens_light_response, n_lens_light = [], 0
-        if not self.PointSource is None:
-            ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens,
-                                                                                  with_amp=False)
-        else:
-            ra_pos, dec_pos, amp, n_points = [], [], [], 0
+        source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
+                                                                               kwargs_source)
+        lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
+        ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=False)
         num_param = n_points + n_lens_light + n_source
 
         num_response = self.num_data_evaluate
@@ -169,12 +159,9 @@ class ImageLinearFit(ImageModel):
         :return: updated list of kwargs with linear parameter values
         """
         i = 0
-        if self.SourceModel is not None:
-            kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
-        if self.LensLightModel is not None:
-            kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
-        if self.PointSource is not None:
-            kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
+        kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
+        kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
+        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def reduced_residuals(self, model, error_map=0):

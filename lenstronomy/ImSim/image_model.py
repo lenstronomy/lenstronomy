@@ -47,6 +47,8 @@ class ImageModel(object):
         if source_model_class is None:
             source_model_class = LightModel(light_model_list=[])
         self.SourceModel = source_model_class
+        if lens_light_model_class is None:
+            lens_light_model_class = LightModel(light_model_list=[])
         self.LensLightModel = lens_light_model_class
         self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
         self.num_bands = 1

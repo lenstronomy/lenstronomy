@@ -8,7 +8,7 @@ class ImageNumerics(PointSourceRendering):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
-    def __init__(self, pixel_grid, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, idex_mask=None, mask=None,
+    def __init__(self, pixel_grid, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, index_mask=None, mask=None,
                  point_source_subgrid=3, subsampling_size=5, conv_type='fft', subgrid_conv_type='fft'):
         """
 
@@ -42,8 +42,8 @@ class ImageNumerics(PointSourceRendering):
         self._nx, self._ny = self._PixelGrid.num_pixel_axes
         self._subgrid_res = subgrid_res
         self._psf_subgrid = psf_subgrid
-        if idex_mask is not None:
-            self._idex_mask_2d = idex_mask
+        if index_mask is not None:
+            self._idex_mask_2d = index_mask
             if not np.shape(self._idex_mask_2d) == (self._nx, self._ny):
                 raise ValueError("'idex_mask' must be the same shape as 'image_data'! Shape of mask %s, Shape of data %s"
                                  % (np.shape(self._idex_mask_2d), (self._nx, self._ny)))
@@ -62,7 +62,7 @@ class ImageNumerics(PointSourceRendering):
             self._mask = np.ones((self._nx, self._ny))
         self._mask[self._idex_mask_2d == 0] = 0
         self._mask[self._idex_mask_2d == 0] = 0
-        self._idex_mask_sub = self._subgrid_idex(self._idex_mask, self._subgrid_res, self._nx, self._ny)
+        self._idex_mask_sub = self._subgrid_index(self._idex_mask, self._subgrid_res, self._nx, self._ny)
 
         """
         
@@ -100,7 +100,7 @@ class ImageNumerics(PointSourceRendering):
     def mask(self):
         return self._mask
 
-    def _subgrid_idex(self, idex_mask, subgrid_res, nx, ny):
+    def _subgrid_index(self, idex_mask, subgrid_res, nx, ny):
         """
 
         :param idex_mask: 1d array of mask of data
@@ -144,7 +144,6 @@ class ImageNumerics(PointSourceRendering):
         :return: array with convolved and re-binned data/model
         """
         image = self._array2image(array, self._subgrid_res)
-        #image = self._cutout_psf(image, self._subgrid_res)
         if unconvolved is True:
             image_convolved = image_util.re_size(image, self._subgrid_res)
         else:
@@ -152,41 +151,4 @@ class ImageNumerics(PointSourceRendering):
                                                             subsampling_size=self._subsampling_size,
                                                             psf_subgrid=self._psf_subgrid, conv_type=self._conv_type,
                                                             subgrid_conv_type=self._subgrid_conv_type)
-        #image_full = self._add_psf(image_convolved)
         return image_convolved * self._PixelGrid.pixel_width ** 2
-
-    #def _init_mask_psf(self):
-    #    """
-    #    smaller frame that encolses all the idex_mask
-    #    :param idex_mask:
-    #    :param nx:
-    #    :param ny:
-    #    :return:
-    #    """
-    #    if not hasattr(self, '_x_min_psf'):
-    #        idex_2d = self._idex_mask_2d
-    #        self._x_min_psf = np.min(np.where(idex_2d == 1)[0])
-    #        self._x_max_psf = np.max(np.where(idex_2d == 1)[0])
-    #        self._y_min_psf = np.min(np.where(idex_2d == 1)[1])
-    #        self._y_max_psf = np.max(np.where(idex_2d == 1)[1])
-
-
-    #def _cutout_psf(self, image, subgrid_res):
-    #    """
-    #    cutout the part of the image relevant for the psf convolution
-    #    :param image:
-    #    :return:
-    #    """
-    #    self._init_mask_psf()
-    #    return image[self._x_min_psf*subgrid_res:(self._x_max_psf+1)*subgrid_res, self._y_min_psf*subgrid_res:(self._y_max_psf+1)*subgrid_res]
-
-    #def _add_psf(self, image_psf):
-    #    """
-
-    #    :param image_psf:
-    #    :return:
-    #    """
-    #    self._init_mask_psf()
-    #    image = np.zeros((self._nx, self._ny))
-    #    image[self._x_min_psf:self._x_max_psf+1, self._y_min_psf:self._y_max_psf+1] = image_psf
-    #    return image

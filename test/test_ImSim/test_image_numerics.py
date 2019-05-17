@@ -53,7 +53,7 @@ class TestImageNumerics(object):
         nx, ny = int(np.sqrt(len(idex_mask))), int(np.sqrt(len(idex_mask)))
         idex_mask[n] = 1
         subgrid_res = 2
-        idex_mask_subgrid = self.ImageNumerics._subgrid_idex(idex_mask, subgrid_res, nx, ny)
+        idex_mask_subgrid = self.ImageNumerics._subgrid_index(idex_mask, subgrid_res, nx, ny)
         assert idex_mask_subgrid[(n + 1) * subgrid_res - 1] == 1
         assert idex_mask_subgrid[(n + 1) * subgrid_res - 2] == 1
         print(type(nx * subgrid_res + (n + 1) * subgrid_res - 1))

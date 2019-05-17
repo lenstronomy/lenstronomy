@@ -31,26 +31,54 @@ class AdaptiveGrid(Coordinates1D):
         self._low_res_indexes1d = (supersampled_indexes1d is False) & (compute_indexes)
         self._supersampling_factor = supersampling_factor
         self._num_sub = supersampling_factor * supersampling_factor
+        self._x_low_res = self._x_grid[self._low_res_indexes1d]
+        self._y_low_res = self._y_grid[self._low_res_indexes1d]
+        self._num_low_res = len(self._x_low_res)
 
     @property
-    def high_res_coordinates(self):
+    def coordinates_evaluate(self):
+        """
+
+        :return: 1d array of all coordinates being evaluated to perform the image computation
+        """
+        ra_low, dec_low = self._low_res_coordinates
+        ra_high, dec_high = self._high_res_coordinates
+        ra_joint = np.append(ra_low, ra_high)
+        dec_joint = np.append(dec_low, dec_high)
+        return ra_joint, dec_joint
+
+    def flux_array2image_low_high(self, flux_array):
+        """
+
+        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate
+        order
+        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
+        """
+        low_res_values = flux_array[0:self._num_low_res]
+        high_res_values = flux_array[self._num_low_res:]
+        image_low_res = self._merge_low_high_res(low_res_values, high_res_values)
+        image_high_res_partial = self._high_res_image(high_res_values)
+        return image_low_res, image_high_res_partial
+
+    @property
+    def _high_res_coordinates(self):
         """
 
         :return: 1d arrays of subpixel grid coordinates
         """
         if not hasattr(self, '_x_sub_grid'):
             self._subpixel_coordinates()
-        return self._x_sub_grid, self._y_sub_grid
+        return self._x_high_res, self._y_high_res
 
     @property
-    def low_res_coordinates(self):
+    def _low_res_coordinates(self):
         """
 
         :return:
         """
-        return self._x_grid[self._low_res_indexes1d], self._y_grid[self._low_res_indexes1d]
+        return self._x_low_res, self._y_low_res
 
-    def merge_low_high_res(self, low_res_values, supersampled_values):
+    def _merge_low_high_res(self, low_res_values, supersampled_values):
         """
         adds/overwrites the supersampled values on the image
 
@@ -65,7 +93,7 @@ class AdaptiveGrid(Coordinates1D):
         array[self._high_res_indexes1d] = array_low_res_partial
         return util.array2image(array)
 
-    def high_res_image(self, supersampled_values):
+    def _high_res_image(self, supersampled_values):
         """
 
         :param supersampled_values: 1d array of supersampled values corresponding to coordinates
@@ -100,8 +128,8 @@ class AdaptiveGrid(Coordinates1D):
                 x_sub_grid[count::self._num_sub] = x_grid_select + delta_ra - delta_ra0
                 y_sub_grid[count::self._num_sub] = y_grid_select + delta_dec - delta_dec_0
                 count += 1
-        self._x_sub_grid = x_sub_grid
-        self._y_sub_grid = y_sub_grid
+        self._x_high_res = x_sub_grid
+        self._y_high_res = y_sub_grid
 
     def _average_subgrid(self, subgrid_values):
         """

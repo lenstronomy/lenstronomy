@@ -78,14 +78,14 @@ class ImageNumerics(PointSourceRendering):
                                                             psf=psf, fix_psf_error_map=fix_psf_error_map)
 
     @property
-    def ra_grid_ray_shooting(self):
-        self._check_subgrid()
-        return self._ra_subgrid
+    def coordinates_evaluate(self):
+        """
 
-    @property
-    def dec_grid_ray_shooting(self):
+        :return: RA, DEC coordinates, 1d numpy array, of all coordinates used in performing the image computation
+        (e.g. adaptive convolution)
+        """
         self._check_subgrid()
-        return self._dec_subgrid
+        return self._ra_subgrid, self._dec_subgrid
 
     def _check_subgrid(self):
         if not hasattr(self, '_ra_subgrid') or not hasattr(self, '_dec_subgrid'):

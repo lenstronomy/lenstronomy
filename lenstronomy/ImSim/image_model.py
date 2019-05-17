@@ -87,13 +87,11 @@ class ImageModel(object):
         """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros_like(self.Data.data)
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
-            x_source, y_source = self.ImageNumerics.ra_grid_ray_shooting, self.ImageNumerics.dec_grid_ray_shooting
-            source_light = self.SourceModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
+            source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         else:
-            source_light = self.source_mapping.image_flux_joint(self.ImageNumerics.ra_grid_ray_shooting,
-                                                                self.ImageNumerics.dec_grid_ray_shooting, kwargs_lens,
-                                                                kwargs_source, k=k)
+            source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -108,9 +106,8 @@ class ImageModel(object):
         """
         if self.LensLightModel is None:
             return np.zeros_like(self.Data.data)
-        lens_light = self.LensLightModel.surface_brightness(self.ImageNumerics.ra_grid_ray_shooting,
-                                                            self.ImageNumerics.dec_grid_ray_shooting,
-                                                            kwargs_lens_light, k=k)
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 

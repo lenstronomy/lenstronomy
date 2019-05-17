@@ -29,39 +29,26 @@ class AdaptiveNumerics(object):
                                          supersampling_size=supersampling_size,
                                          compute_pixels=None, nopython=True, cache=True, parallel=False)
 
-    def re_size_convolve(self, array_low_res_partial, array_high_res_partial):
+    def re_size_convolve(self, flux_array):
         """
 
-        :param array_high_res_partial: super-sampled surface brightness, 1d array
+        :param flux_array: 1d array, flux values corresponding to coordinates_evaluate
         :param array_low_res_partial: regular sampled surface brightness, 1d array
         :return: convolved image on regular pixel grid, 2d array
         """
-
         # add supersampled region to lower resolution on
-        image_low_res = self._grid.merge_low_high_res(array_low_res_partial, array_high_res_partial)
-        image_high_res_partial = self._grid.high_res_image(array_high_res_partial)
-
+        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array)
         # convolve low res grid and high res grid
         image_conv = self._conv.re_size_convolve(image_low_res, image_high_res_partial)
         return image_conv
 
     @property
-    def low_res_coordinates(self):
+    def coordinates_evaluate(self):
         """
-        low resolution coordinates
-        returns all low resolution coordinates in two arrays (x, y)
-        :return: 1d array, 1d array
-        """
-        return self._grid.low_res_coordinates
 
-    @property
-    def high_res_coordinates(self):
+        :return: 1d array of all coordinates being evaluated to perform the image computation
         """
-        low resolution coordinates
-        returns all low resolution coordinates in two arrays (x, y)
-        :return: 1d array, 1d array
-        """
-        return self._grid.high_res_coordinates
+        return self._grid.coordinates_evaluate
 
 
 class AdaptiveConvolution(object):

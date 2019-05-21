@@ -1,6 +1,6 @@
 from lenstronomy.ImSim.Numerics.numba_convolution import SubgridNumbaConvolution, NumbaConvolution
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
-from lenstronomy.ImSim.Numerics.adaptive_grid import AdaptiveGrid
+from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
 from lenstronomy.Util import kernel_util
 from lenstronomy.Util import image_util
 from lenstronomy.Util import util
@@ -21,13 +21,13 @@ class AdaptiveNumerics(object):
     the class performs the convolution with two different input arrays, one with low resolution and one on a subpart with high resolution
 
     """
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, compute_indexes, supersampled_pixel_indexes,
-                 supersampling_factor, supersampling_size, kernel_super):
-        self._grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampled_pixel_indexes,
-                                  supersampling_factor, compute_indexes)
-        self._conv = AdaptiveConvolution(kernel_super, supersampling_factor, conv_supersample_pixels=supersampled_pixel_indexes,
-                                         supersampling_size=supersampling_size,
-                                         compute_pixels=None, nopython=True, cache=True, parallel=False)
+    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, flux_evaluate_indexes, compute_indexes, supersampled_indexes,
+                 supersampling_factor, supersampling_kernel_size, kernel_super):
+        self._grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampled_indexes,
+                                  supersampling_factor, flux_evaluate_indexes)
+        self._conv = AdaptiveConvolution(kernel_super, supersampling_factor, conv_supersample_pixels=supersampled_indexes,
+                                         supersampling_kernel_size=supersampling_kernel_size,
+                                         compute_pixels=compute_indexes, nopython=True, cache=True, parallel=False)
 
     def re_size_convolve(self, flux_array):
         """
@@ -64,14 +64,14 @@ class AdaptiveConvolution(object):
     adaptive solution is 1 + 2 -3
 
     """
-    def __init__(self, kernel_super, supersampling_factor, conv_supersample_pixels, supersampling_size=None,
+    def __init__(self, kernel_super, supersampling_factor, conv_supersample_pixels, supersampling_kernel_size=None,
                  compute_pixels=None, nopython=True, cache=True, parallel=False):
         """
 
         :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis
         :param supersampling_factor: factor of supersampling relative to pixel grid
         :param conv_supersample_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
-        :param supersampling_size: number of pixels (in units of the image pixels) that are convolved with the
+        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
         supersampled kernel
         :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
         :param nopython: bool, numba jit setting to use python or compiled.
@@ -88,11 +88,11 @@ class AdaptiveConvolution(object):
                                                        numPix=numPix)
         kernel *= supersampling_factor**2
         self._low_res_conv = PixelKernelConvolution(kernel, convolution_type='fft')
-        if supersampling_size is None:
-            supersampling_size = len(kernel)
+        if supersampling_kernel_size is None:
+            supersampling_kernel_size = len(kernel)
 
-        kernel_cut = image_util.cut_edges(kernel, supersampling_size)
-        kernel_super_cut = image_util.cut_edges(kernel_super, supersampling_size*supersampling_factor)
+        kernel_cut = image_util.cut_edges(kernel, supersampling_kernel_size)
+        kernel_super_cut = image_util.cut_edges(kernel_super, supersampling_kernel_size * supersampling_factor)
         self._low_res_partial = NumbaConvolution(kernel_cut, conv_supersample_pixels, compute_pixels=compute_pixels,
                                                  nopython=nopython, cache=cache, parallel=parallel, memory_raise=True)
         self._hig_res_partial = SubgridNumbaConvolution(kernel_super_cut, supersampling_factor, conv_supersample_pixels,

@@ -156,7 +156,7 @@ class ImageModel(object):
             point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
         else:
             point_source = np.zeros_like(self.Data.data)
-        model = (source_light + lens_light + point_source)# * self.ImageNumerics.mask
+        model = (source_light + lens_light + point_source)
         return model
 
     def error_map(self, kwargs_lens, kwargs_ps):

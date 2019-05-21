@@ -22,7 +22,7 @@ class LikelihoodModule(object):
                  point_source_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
-                 force_minimum_source_surface_brightness=False, flux_min=0,
+                 force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
         """
         initializing class
@@ -40,6 +40,7 @@ class LikelihoodModule(object):
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
         :param solver_tolerance: float, punishment of check_solver occures when image positions are predicted further
         away than this number
+        :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
         images predicted than modelled, a punishment occures
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
@@ -74,9 +75,8 @@ class LikelihoodModule(object):
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:
-            self.image_likelihood = ImageLikelihood(multi_band_list, multi_band_type, lens_model_class,
-                                                    source_model_class, lens_light_model_class,
-                                                    point_source_class, bands_compute=bands_compute,
+            self.image_likelihood = ImageLikelihood(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
+                                                    likelihood_mask_list=image_likelihood_mask_list,
                                                     source_marg=source_marg,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
                                                     flux_min=flux_min)

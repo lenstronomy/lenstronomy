@@ -1,4 +1,3 @@
-import lenstronomy.Util.class_creator as class_creator
 import lenstronomy.Sampling.Likelihoods.image_likelihood as img_likelihood
 import numpy as np
 
@@ -12,25 +11,17 @@ class TestImageLikelihood(object):
         self.kwargs_data = {'image_data': np.ones((10, 10))}
 
     def test_create_im_sim(self):
-        multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}, {}]]
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
-            **self.kwargs_model)
-        image_type = 'multi-band'
-        multi_band = img_likelihood.create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class, lens_light_model_class,
-                  point_source_class)
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, {}]]
+        multi_band_type = 'multi-linear'
+
+        multi_band = img_likelihood.create_im_sim(multi_band_list, multi_band_type, self.kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
-        image_type = 'multi-exposure'
-        multi_band = img_likelihood.create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class,
-                                                  lens_light_model_class,
-                                                  point_source_class)
+        multi_band_type = 'joint-linear'
+        multi_band = img_likelihood.create_im_sim(multi_band_list, multi_band_type, self.kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
-        image_type = 'multi-frame'
-        multi_band = img_likelihood.create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class,
-                                                  lens_light_model_class,
-                                                  point_source_class)
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
-        image_type = 'multi-band-multi-model'
-        multi_band = img_likelihood.create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class,
-                                                  lens_light_model_class,
-                                                  point_source_class)
-        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
+        multi_band_type = 'single-band'
+        multi_band = img_likelihood.create_im_sim(multi_band_list, multi_band_type, self.kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
+        assert multi_band._imageModel.LensModel.lens_model_list[0] == 'SIS'

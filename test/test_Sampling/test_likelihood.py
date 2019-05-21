@@ -89,7 +89,7 @@ class TestLikelihoodModule(object):
                              'flux_ratio_likelihood': True,
                              'prior_lens': [[0, 'theta_E', 1, 0.1]]
                              }
-        self.kwargs_data = {'multi_band_list': [kwargs_band, kwargs_psf, kwargs_numerics], 'image_type': 'single-band',
+        self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
                             'time_delays_measured': np.ones(4),
                             'time_delays_uncertainties': np.ones(4),
                             'flux_ratios': np.ones(4),
@@ -159,7 +159,7 @@ class TestLikelihoodModule(object):
         image_sim = sim_util.simulate_simple(imageModel, [], kwargs_source)
 
         kwargs_data['image_data'] = image_sim
-        kwargs_data_joint = {'multi_band_list': [kwargs_data, kwargs_psf, {}]}
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, {}]]}
         likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model, param_class=param_class, **kwargs_likelihood)
 
         logL, _ = likelihood.logL(args=param_class.kwargs2args(kwargs_source=kwargs_source))

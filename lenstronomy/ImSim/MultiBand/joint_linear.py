@@ -1,20 +1,27 @@
-from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
 import lenstronomy.ImSim.de_lens as de_lens
 
 import numpy as np
 
 
-class MultiExposures(MultiBand):
+class JointLinear(MultiLinear):
     """
     class to model multiple exposures in the same band and makes a constraint fit to all bands simultaneously
-    with joint constraints on the surface brightness of the model
+    with joint constraints on the surface brightness of the model. This model setting require the same surface
+    brightness models to be called in all available images/bands
 
     """
-    def __init__(self, multi_band_list, lens_model_class=None, source_model_class=None, lens_light_model_class=None,
-                 point_source_class=None, compute_bool=None):
-        super(MultiExposures, self).__init__(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
-                 point_source_class, compute_bool=compute_bool)
-        self.type = 'multi-exposure'
+    def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None):
+
+        #if kwargs_model.get('index_source_light_model_list', None) is not None or \
+        #        kwargs_model.get('index_lens_light_model_list', None) is not None or \
+        #        kwargs_model.get('index_point_source_model_list', None) is not None:
+        #    raise ValueError('You are not allowed to set partial surface brightness models to individual bands in the '
+        #                     'joint-linear mode. Your settings are: ', kwargs_model)
+
+        super(JointLinear, self).__init__(multi_band_list, kwargs_model=kwargs_model, compute_bool=compute_bool,
+                                          likelihood_mask_list=likelihood_mask_list)
+        self.type = 'joint-linear'
 
     def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
         """

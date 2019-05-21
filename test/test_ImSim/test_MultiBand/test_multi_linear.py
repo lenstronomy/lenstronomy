@@ -6,7 +6,7 @@ import numpy as np
 
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -72,7 +72,9 @@ class TestImageModel(object):
         kwargs_data['image_data'] = image_sim
         self.solver = LensEquationSolver(lensModel=lens_model_class)
         multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
-        self.imageModel = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        kwargs_model = {'lens_model_list': lens_model_list, 'source_light_model_list': source_model_list,
+                        'point_source_model_list': ['SOURCE_POSITION'], 'fixed_magnification_list': [True]}
+        self.imageModel = MultiLinear(multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None)
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)

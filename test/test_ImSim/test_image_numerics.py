@@ -19,34 +19,6 @@ class TestImageNumerics(object):
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         self.ImageNumerics = ImageNumerics(self.PixelGrid, self.PSF, **kwargs_numerics)
 
-    #def test_psf_cutout(self):
-    #    idex_mask = np.zeros((5, 5))
-    #    idex_mask[3, 2] = 1
-    #    idex_mask[1, 1] = 1
-    #    image_data = np.zeros((5, 5))
-    #    image_data[1, 1] = 1
-    #    numPix = 5
-    #    kwargs_grid = {'nx': numPix, 'ny': numPix, 'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
-    #                   'transform_pix2angle': np.array([[1, 0], [0, 1]])}
-    #    pixel_grid = PixelGrid(**kwargs_grid)
-    #    kwargs_numerics = {'idex_mask': idex_mask}
-    #    imageNumerics = ImageNumerics(pixel_grid, self.PSF, **kwargs_numerics)
-    #    cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
-    #    print(cut_data)
-    #    assert cut_data[0, 0] == 1
-    #    assert cut_data[2, 1] == 0
-    #    nx, ny = np.shape(cut_data)
-    #    assert nx == 3
-    #    assert ny == 2
-
-    #    idex_mask = np.ones((5, 5))
-    #    #kwargs_data = {'image_data': image_data}
-    #    #data = Data(kwargs_data)
-    #    kwargs_numerics = {'idex_mask': idex_mask}
-    #    imageNumerics = ImageNumerics(pixel_grid, self.PSF, **kwargs_numerics)
-    #    cut_data = imageNumerics._cutout_psf(image_data, subgrid_res=1)
-    #    assert cut_data[1, 1] == 1
-
     def test_idex_subgrid(self):
         idex_mask = np.zeros(self.numPix**2)
         n = 8

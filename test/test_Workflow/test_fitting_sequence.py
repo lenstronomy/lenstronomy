@@ -136,7 +136,7 @@ class TestFittingSequence(object):
         # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-band'}
+        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-linear'}
         fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 

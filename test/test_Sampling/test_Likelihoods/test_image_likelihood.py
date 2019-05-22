@@ -22,6 +22,6 @@ class TestImageLikelihood(object):
                                                   likelihood_mask_list=None, band_index=0)
         assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
         multi_band_type = 'single-band'
-        multi_band = img_likelihood.create_im_sim(multi_band_list, multi_band_type, self.kwargs_model, bands_compute=None,
+        multi_band = img_likelihood.create_im_sim(multi_band_list[0], multi_band_type, self.kwargs_model, bands_compute=None,
                                                   likelihood_mask_list=None, band_index=0)
         assert multi_band._imageModel.LensModel.lens_model_list[0] == 'SIS'

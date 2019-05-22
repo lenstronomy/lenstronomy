@@ -101,7 +101,7 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     elif multi_band_type == 'joint-linear':
         multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
     elif multi_band_type == 'single-band':
-        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+        multiband = SingleBandMultiModel([multi_band_list], kwargs_model, likelihood_mask_list=likelihood_mask_list,
                                          band_index=band_index)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)

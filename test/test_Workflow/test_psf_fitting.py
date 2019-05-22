@@ -43,7 +43,7 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        psf_class = PSF(kwargs_psf=self.kwargs_psf)
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -72,7 +72,9 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
                            'source_amp': 10.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 3, 'psf_subgrid': True}
+
+        kwargs_numerics = {'supersampling_factor': 3, 'supersampling_convolution': False, 'compute_mode': 'regular',
+                           'point_source_supersampling_factor': 3}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                      lens_light_model_class,
                                      point_source_class, kwargs_numerics=kwargs_numerics)

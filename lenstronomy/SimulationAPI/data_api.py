@@ -58,5 +58,5 @@ class DataAPI(SingleBand):
                 raise ValueError("You need to create the class instance with a psf_model!")
         else:
             raise ValueError("psf_type %s not supported!" % self._psf_type)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         return psf_class

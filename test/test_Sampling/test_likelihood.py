@@ -40,8 +40,8 @@ class TestLikelihoodModule(object):
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                               truncate=3,
                                               kernel=None)
-        psf_class = PSF(kwargs_psf)
-
+        psf_class = PSF(**kwargs_psf)
+        print(np.shape(psf_class.kernel_point_source), 'test kernel shape -')
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         self.kwargs_lens = [kwargs_spemd]
@@ -55,7 +55,7 @@ class TestLikelihoodModule(object):
         self.kwargs_ps = [{'ra_source': 0.55, 'dec_source': 0.02,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         self.kwargs_cosmo = {'D_dt': 1000}
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'gaussian'}
         lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(**kwargs_model)
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
@@ -148,7 +148,7 @@ class TestLikelihoodModule(object):
         kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {'psf_type': 'NONE'}
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         kwargs_sersic = {'amp': -1., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         source_model_list = ['SERSIC']
         kwargs_source = [kwargs_sersic]

@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.image_numerics import ImageNumerics, PointSourceRendering
+from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -26,7 +26,8 @@ class ImageModel(object):
         self.type = 'single-band'
         self.PSF = psf_class
         self.Data = data_class
-        self.ImageNumerics = ImageNumerics(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics)
+        self.PSF.set_pixel_size(self.Data.pixel_width)
+        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics)
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
@@ -52,6 +53,7 @@ class ImageModel(object):
         self.LensLightModel = lens_light_model_class
         self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
         self.num_bands = 1
+        self._kwargs_numerics = kwargs_numerics
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -72,7 +74,8 @@ class ImageModel(object):
         :return: no return. Class is updated.
         """
         self.PSF = psf_class
-        self.ImageNumerics._PSF = psf_class
+        self.PSF.set_pixel_size(self.Data.pixel_width)
+        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """
@@ -86,7 +89,7 @@ class ImageModel(object):
         :return: 1d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
-            return np.zeros_like(self.Data.data)
+            return np.zeros((self.Data.num_pixel_axes))
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
@@ -105,7 +108,7 @@ class ImageModel(object):
         :return: 1d array of surface brightness pixels
         """
         if self.LensLightModel is None:
-            return np.zeros_like(self.Data.data)
+            return np.zeros((self.Data.num_pixel_axes))
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
@@ -120,7 +123,7 @@ class ImageModel(object):
         :param k:
         :return:
         """
-        point_source_image = np.zeros_like(self.Data.data)
+        point_source_image = np.zeros((self.Data.num_pixel_axes))
         if unconvolved or self.PointSource is None:
             return point_source_image
         ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=True, k=k)
@@ -147,31 +150,14 @@ class ImageModel(object):
         if source_add:
             source_light = self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
         else:
-            source_light = np.zeros_like(self.Data.data)
+            source_light = np.zeros((self.Data.num_pixel_axes))
         if lens_light_add:
             lens_light = self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         else:
-            lens_light = np.zeros_like(self.Data.data)
+            lens_light = np.zeros((self.Data.num_pixel_axes))
         if point_source_add:
             point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
         else:
-            point_source = np.zeros_like(self.Data.data)
+            point_source = np.zeros((self.Data.num_pixel_axes))
         model = (source_light + lens_light + point_source)
         return model
-
-    def error_map(self, kwargs_lens, kwargs_ps):
-        """
-
-        :param kwargs_lens:
-        :param kwargs_ps:
-        :return:
-        """
-        error_map = np.zeros_like(self.Data.data)
-        if self._psf_error_map is True:
-            for k, bool in enumerate(self._error_map_bool_list):
-                if bool is True:
-                    ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
-                    for i in range(0, n_points):
-                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
-                        error_map += error_map_add
-        return error_map

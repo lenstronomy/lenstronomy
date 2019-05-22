@@ -1,54 +1,8 @@
 from lenstronomy.ImSim.Numerics.numba_convolution import SubgridNumbaConvolution, NumbaConvolution
-from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
-from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution, SubgridKernelConvolution
 from lenstronomy.Util import kernel_util
 from lenstronomy.Util import image_util
 from lenstronomy.Util import util
-
-
-class AdaptiveNumerics(object):
-    """
-    this class manages and computes a surface brightness convolved image in an adaptive approach.
-    The strategie applied are:
-    1.1 surface brightness computation only where significant flux is expected
-    1.2 super sampled surface brightness only in regimes of high spacial variability in the surface brightness and at
-    high contrast
-    2.1 convolution only applied where flux is present (avoid convolving a lot of zeros)
-    2.2 simplified Multi-Gaussian convolution in regimes of low contrast
-    2.3 (super-) sampled PSF convolution only at high contrast of highly variable sources
-
-
-    the class performs the convolution with two different input arrays, one with low resolution and one on a subpart with high resolution
-
-    """
-    def __init__(self, nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, flux_evaluate_indexes, compute_indexes, supersampled_indexes,
-                 supersampling_factor, supersampling_kernel_size, kernel_super):
-        self._grid = AdaptiveGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, supersampled_indexes,
-                                  supersampling_factor, flux_evaluate_indexes)
-        self._conv = AdaptiveConvolution(kernel_super, supersampling_factor, conv_supersample_pixels=supersampled_indexes,
-                                         supersampling_kernel_size=supersampling_kernel_size,
-                                         compute_pixels=compute_indexes, nopython=True, cache=True, parallel=False)
-
-    def re_size_convolve(self, flux_array):
-        """
-
-        :param flux_array: 1d array, flux values corresponding to coordinates_evaluate
-        :param array_low_res_partial: regular sampled surface brightness, 1d array
-        :return: convolved image on regular pixel grid, 2d array
-        """
-        # add supersampled region to lower resolution on
-        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array)
-        # convolve low res grid and high res grid
-        image_conv = self._conv.re_size_convolve(image_low_res, image_high_res_partial)
-        return image_conv
-
-    @property
-    def coordinates_evaluate(self):
-        """
-
-        :return: 1d array of all coordinates being evaluated to perform the image computation
-        """
-        return self._grid.coordinates_evaluate
 
 
 class AdaptiveConvolution(object):

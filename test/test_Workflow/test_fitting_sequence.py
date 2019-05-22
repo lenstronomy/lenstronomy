@@ -37,7 +37,7 @@ class TestFittingSequence(object):
         #self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
         #                                            truncate=6,
         #                                            kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(self.kwargs_psf)
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -61,7 +61,8 @@ class TestFittingSequence(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'regular',
+                           'point_source_supersampling_factor': 1}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -78,9 +79,7 @@ class TestFittingSequence(object):
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
                              }
-        self.kwargs_numerics = {
-            'subgrid_res': 1,
-            'psf_subgrid': False}
+        self.kwargs_numerics = kwargs_numerics
 
         num_source_model = len(source_model_list)
 

@@ -61,9 +61,9 @@ def ellipticity2phi_gamma(e1, e2):
 def phi_q2_ellipticity(phi, q):
     """
 
-    :param phi:
-    :param q:
-    :return:
+    :param phi: angle of orientation (in radian)
+    :param q: axis ratio minor axis / major axis
+    :return: excentricities e1 and e2
     """
     e1 = (1.-q)/(1.+q)*np.cos(2*phi)
     e2 = (1.-q)/(1.+q)*np.sin(2*phi)

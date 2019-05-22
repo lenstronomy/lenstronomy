@@ -133,7 +133,7 @@ class JointLinear(MultiLinear):
         index = 0
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].ImageNumerics.mask, model_error_list[index])
+                logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].likelihood_mask, model_error_list[index])
                 index += 1
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)

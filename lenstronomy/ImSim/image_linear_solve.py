@@ -183,7 +183,7 @@ class ImageLinearFit(ImageModel):
         :param model:
         :return:
         """
-        mask = self.ImageNumerics.mask
+        mask = self.likelihood_mask
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
@@ -234,3 +234,20 @@ class ImageLinearFit(ImageModel):
         grid1d[self._mask1d] = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
+
+    def error_map(self, kwargs_lens, kwargs_ps):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :return:
+        """
+        error_map = np.zeros((self.Data.num_pixel_axes))
+        if self._psf_error_map is True:
+            for k, bool in enumerate(self._error_map_bool_list):
+                if bool is True:
+                    ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
+                    for i in range(0, n_points):
+                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
+                        error_map += error_map_add
+        return error_map

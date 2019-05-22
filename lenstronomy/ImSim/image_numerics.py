@@ -8,7 +8,7 @@ class ImageNumerics(PointSourceRendering):
     """
     class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking
     """
-    def __init__(self, pixel_grid, psf, subgrid_res=1, psf_subgrid=False, fix_psf_error_map=False, index_mask=None, mask=None,
+    def __init__(self, pixel_grid, psf, subgrid_res=1, psf_subgrid=False, index_mask=None, mask=None,
                  point_source_subgrid=3, subsampling_size=5, conv_type='fft', subgrid_conv_type='fft'):
         """
 
@@ -74,8 +74,7 @@ class ImageNumerics(PointSourceRendering):
         self._subsampling_size = subsampling_size
         self._conv_type = conv_type
         self._subgrid_conv_type = subgrid_conv_type
-        super(ImageNumerics, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_subgrid,
-                                                            psf=psf, fix_psf_error_map=fix_psf_error_map)
+        super(ImageNumerics, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_subgrid, psf=psf)
 
     @property
     def coordinates_evaluate(self):
@@ -95,10 +94,6 @@ class ImageNumerics(PointSourceRendering):
             x_grid_sub, y_grid_sub = util.make_subgrid(ra_grid, dec_grid, self._subgrid_res)
             self._ra_subgrid = x_grid_sub[self._idex_mask_sub == 1]
             self._dec_subgrid = y_grid_sub[self._idex_mask_sub == 1]
-
-    @property
-    def mask(self):
-        return self._mask
 
     def _subgrid_index(self, idex_mask, subgrid_res, nx, ny):
         """

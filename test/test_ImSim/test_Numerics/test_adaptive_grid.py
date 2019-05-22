@@ -34,8 +34,8 @@ class TestAdaptiveGrid(object):
         assert len(subpixel_x) == 4**2
         assert subpixel_x[0] == -0.375
         assert subpixel_y[0] == -0.375
-        assert subpixel_y[3] == 0.375
-        assert subpixel_x[3] == -0.375
+        assert subpixel_y[3] == -0.375
+        assert subpixel_x[3] == 0.375
 
     def test_average_subgrid(self):
         subpixel_x, subpixel_y = self._adaptive_grid._high_res_coordinates

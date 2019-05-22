@@ -35,17 +35,25 @@ class PixelKernelConvolution(object):
             raise ValueError('convolution_type %s not supported!' % self._type)
         return image_conv
 
+    def re_size_convolve(self, image_low_res, image_high_res=None):
+        """
+
+        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
+        :return: convolved and re-sized image
+        """
+        return self.convolution2d(image_low_res)
+
 
 class SubgridKernelConvolution(object):
     """
     class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid
     """
-    def __init__(self, kernel_supersampled, supersampling_factor, supersampling_size=None, convolution_type='fft'):
+    def __init__(self, kernel_supersampled, supersampling_factor, supersampling_kernel_size=None, convolution_type='fft'):
         """
 
         :param kernel_supersampled: kernel in supersampled pixels
         :param supersampling_factor: supersampling factor relative to the image pixel grid
-        :param supersampling_size: number of pixels (in units of the image pixels) that are convolved with the
+        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the
         supersampled kernel
         """
         n_high = len(kernel_supersampled)
@@ -55,12 +63,12 @@ class SubgridKernelConvolution(object):
             self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
         else:
             self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
-        if supersampling_size is None:
+        if supersampling_kernel_size is None:
             kernel_low_res, kernel_high_res = np.zeros_like(self._kernel), kernel_supersampled
             self._low_res_convolution = False
         else:
             kernel_low_res, kernel_high_res = kernel_util.split_kernel(self._kernel, kernel_supersampled,
-                                                                       supersampling_size, self._supersampling_factor)
+                                                                       supersampling_kernel_size, self._supersampling_factor)
             self._low_res_convolution = True
         self._low_res_conv = PixelKernelConvolution(kernel_low_res, convolution_type=convolution_type)
         self._high_res_conv = PixelKernelConvolution(kernel_high_res, convolution_type=convolution_type)
@@ -79,6 +87,18 @@ class SubgridKernelConvolution(object):
             image_resized_conv += self._low_res_conv.convolution2d(image_resized)
         return image_resized_conv
 
+    def re_size_convolve(self, image_low_res, image_high_res):
+        """
+
+        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
+        :return: convolved and re-sized image
+        """
+        image_high_res_conv = self._high_res_conv.convolution2d(image_high_res)
+        image_resized_conv = image_util.re_size(image_high_res_conv, self._supersampling_factor)
+        if self._low_res_convolution is True:
+            image_resized_conv += self._low_res_conv.convolution2d(image_low_res)
+        return image_resized_conv
+
 
 class MultiGaussianConvolution(object):
     """
@@ -87,7 +107,8 @@ class MultiGaussianConvolution(object):
     relative to a pixelized kernel.
     """
 
-    def __init__(self, sigma_list, fraction_list, pixel_scale, truncation=2):
+    def __init__(self, sigma_list, fraction_list, pixel_scale, supersampling_factor=1, supersampling_convolution=False,
+                 truncation=2):
         """
 
         :param sigma_list: list of std value of Gaussian kernel
@@ -97,11 +118,13 @@ class MultiGaussianConvolution(object):
         Default is 4.0.
         """
         self._num_gaussians = len(sigma_list)
-        self._sigmas_scaled = np.array(sigma_list) / pixel_scale
+        self._sigmas_scaled = np.array(sigma_list) / pixel_scale / supersampling_factor
         self._fraction_list = fraction_list / np.sum(fraction_list)
         assert len(self._sigmas_scaled) == len(self._fraction_list)
         self._truncation = truncation
         self._pixel_scale = pixel_scale
+        self._supersampling_factor = supersampling_factor
+        self._supersampling_convolution = supersampling_convolution
 
     def convolution2d(self, image):
         """
@@ -119,6 +142,19 @@ class MultiGaussianConvolution(object):
                 image_conv += ndimage.filters.gaussian_filter(image, self._sigmas_scaled[i], mode='nearest',
                                                               truncate=self._truncation) * self._fraction_list[i]
         return image_conv
+
+    def re_size_convolve(self, image_low_res, image_high_res):
+        """
+
+        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
+        :return: convolved and re-sized image
+        """
+        if self._supersampling_convolution is True:
+            image_high_res_conv = self.convolution2d(image_high_res)
+            image_resized_conv = image_util.re_size(image_high_res_conv, self._supersampling_factor)
+        else:
+            image_resized_conv = self.convolution2d(image_low_res)
+        return image_resized_conv
 
     def pixel_kernel(self, num_pix):
         """

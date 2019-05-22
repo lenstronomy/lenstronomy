@@ -25,7 +25,7 @@ class SingleBandMultiModel(ImageLinearFit):
         kwargs_psf = multi_band_list[band_index][1]
         kwargs_numerics = multi_band_list[band_index][2]
         data_i = ImageData(**kwargs_data)
-        psf_i = PSF(kwargs_psf=kwargs_psf)
+        psf_i = PSF(**kwargs_psf)
 
         index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for i in range(len(multi_band_list))])
         self._index_lens_model = index_lens_model_list[band_index]

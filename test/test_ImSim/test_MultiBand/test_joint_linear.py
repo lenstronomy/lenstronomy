@@ -35,7 +35,7 @@ class TestJointLinear(object):
         data_class = ImageData(**kwargs_data)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=5)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         phi, q = 0.2, 0.8
@@ -63,7 +63,7 @@ class TestJointLinear(object):
         self.kwargs_ps = [{'ra_source': 0.0001, 'dec_source': 0.0,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
+        kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': True, 'compute_mode': 'gaussian'}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,

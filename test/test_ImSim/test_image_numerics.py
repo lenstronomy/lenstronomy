@@ -15,7 +15,7 @@ class TestImageNumerics(object):
                        'transform_pix2angle': np.array([[1, 0], [0, 1]])}
         self.PixelGrid = PixelGrid(**kwargs_grid)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
-        self.PSF = PSF(kwargs_psf)
+        self.PSF = PSF(**kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         self.ImageNumerics = ImageNumerics(self.PixelGrid, self.PSF, **kwargs_numerics)
 
@@ -37,8 +37,8 @@ class TestImageNumerics(object):
         kwargs_grid = {'nx': numPix, 'ny': numPix, 'ra_at_xy_0': 0, 'dec_at_xy_0': 0,
                        'transform_pix2angle': np.array([[1, 0], [0, 1]])}
         pixel_grid = PixelGrid(**kwargs_grid)
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1., 'point_source_subgrid': 1}
-        psf = PSF(kwargs_psf)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1.}
+        psf = PSF(**kwargs_psf)
         kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
         imageNumerics = ImageNumerics(pixel_grid, psf, **kwargs_numerics)
 
@@ -52,8 +52,8 @@ class TestImageNumerics(object):
         image_subgrid = imageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
         npt.assert_almost_equal(image[10, 7], image_subgrid[10, 7], decimal=8)
 
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 2., 'point_source_subgrid': 3}
-        psf = PSF(kwargs_psf)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 2}
+        psf = PSF(**kwargs_psf)
         kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': True}
         imageNumerics = ImageNumerics(pixel_grid, psf, **kwargs_numerics)
         ra_pos = np.array([7.1, 14])

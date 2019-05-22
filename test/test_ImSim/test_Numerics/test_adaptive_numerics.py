@@ -34,7 +34,7 @@ class TestAdaptiveConvolution(object):
 
     def test_convolve2d(self):
         #kernel_supersampled = kernel_util.subgrid_kernel(self.kernel, self.supersampling_factor, odd=True, num_iter=5)
-        subgrid_conv = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_size=None, convolution_type='fft')
+        subgrid_conv = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=None, convolution_type='fft')
         model_subgrid_conv = subgrid_conv.convolution2d(self.model_sub)
 
         conv_supersample_pixels = np.zeros_like(self.model)

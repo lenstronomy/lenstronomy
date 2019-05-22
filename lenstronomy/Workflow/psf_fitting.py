@@ -55,7 +55,7 @@ class PsfFitting(object):
         :param kwargs_ps:
         :return:
         """
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
         kernel_old = psf_class.kernel_point_source
@@ -65,7 +65,7 @@ class PsfFitting(object):
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
         if 'psf_error_map' in kwargs_psf_copy:
             kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
-        self._image_model_class.update_psf(PSF(kwargs_psf_new))
+        self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
@@ -80,7 +80,7 @@ class PsfFitting(object):
         kwargs_psf_new['kernel_point_source'] = kernel_new
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
-        self._image_model_class.update_psf(PSF(kwargs_psf_new))
+        self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                kwargs_lens_light, kwargs_ps)
         return kwargs_psf_new, logL_after, error_map
@@ -112,7 +112,7 @@ class PsfFitting(object):
         else:
             error_map_final = np.zeros_like(kernel_point_source_init)
         error_map_init = copy.deepcopy(error_map_final)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                           kwargs_lens_light, kwargs_ps)
@@ -159,7 +159,7 @@ class PsfFitting(object):
                                                                               kwargs_lens_light, kwargs_ps)
         #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
-        mask = image_model_class.ImageNumerics.mask
+        mask = image_model_class.likelihood_mask
         point_source_list = self._point_sources_list(image_model_class, kwargs_ps, kwargs_lens)
         n = len(point_source_list)
         model_single_source_list = []
@@ -190,7 +190,7 @@ class PsfFitting(object):
         :param kernelsize:
         :return:
         """
-        mask = self._image_model_class.ImageNumerics.mask
+        mask = self._image_model_class.likelihood_mask
         ra_grid, dec_grid = self._image_model_class.Data.pixel_coordinates
         ra_grid = util.image2array(ra_grid)
         dec_grid = util.image2array(dec_grid)

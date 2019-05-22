@@ -7,7 +7,7 @@ class PointSourceRendering(object):
     """
     numerics to compute the point source response on an image
     """
-    def __init__(self, pixel_grid, supersampling_factor, psf, fix_psf_error_map=False):
+    def __init__(self, pixel_grid, supersampling_factor, psf):
         """
 
         :param pixel_grid: PixelGrid() instance
@@ -18,7 +18,6 @@ class PointSourceRendering(object):
         self._nx, self._ny = self._pixel_grid.num_pixel_axes
         self._supersampling_factor = supersampling_factor
         self._psf = psf
-        self._fix_psf_error_map = fix_psf_error_map
 
     def point_source_rendering(self, ra_pos, dec_pos, amp):
         """
@@ -46,15 +45,15 @@ class PointSourceRendering(object):
 
     @property
     def _kernel_supersampled(self):
-        return self._psf.subgrid_point_source_kernel(self._supersampling_factor)
+        return self._psf.kernel_point_source_supersampled(self._supersampling_factor)
 
-    def psf_error_map(self, ra_pos, dec_pos, amp, data):
+    def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._psf.kernel_point_source
         psf_error_map = self._psf.psf_error_map
         error_map = np.zeros_like(data)
         for i in range(len(x_pos)):
-            if self._fix_psf_error_map:
+            if fix_psf_error_map:
                 amp_estimated = amp
             else:
                 amp_estimated = kernel_util.estimate_amp(data, x_pos[i], y_pos[i], psf_kernel)

@@ -35,64 +35,6 @@ class TestData(object):
         assert np.sum(kernel_point_source) == np.sum(kernel_super)
         assert np.sum(kernel_point_source) == 1
 
-    def test_psf_convolution(self):
-
-        deltaPix = 0.05
-        fwhm = 0.2
-        fwhm_object = 0.1
-        kwargs_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
-        psf_gaussian = PSF(**kwargs_gaussian)
-        kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix=21, deltaPix=deltaPix, fwhm=fwhm)
-        kwargs_pixel = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
-        psf_pixel = PSF(**kwargs_pixel)
-
-        subgrid_res_input = 15
-
-        grid = kernel_util.kernel_gaussian(kernel_numPix=11*subgrid_res_input, deltaPix=deltaPix / float(subgrid_res_input), fwhm=fwhm_object)
-        grid_true = image_util.re_size(grid, subgrid_res_input)
-        grid_conv = psf_gaussian.psf_convolution(grid, deltaPix / float(subgrid_res_input))
-        grid_conv_true = image_util.re_size(grid_conv, subgrid_res_input)
-
-        # subgrid resoluton Gaussian convolution
-        for i in range(1, subgrid_res_input+1):
-
-            subgrid_res = i
-
-            grid = kernel_util.kernel_gaussian(kernel_numPix=11*subgrid_res, deltaPix=deltaPix / float(subgrid_res), fwhm=fwhm_object)
-            grid_conv = psf_gaussian.psf_convolution(grid, deltaPix / float(subgrid_res))
-            grid_conv_finite = image_util.re_size(grid_conv, subgrid_res)
-            min_diff = np.min(grid_conv_true-grid_conv_finite)
-            max_diff = np.max(grid_conv_true-grid_conv_finite)
-            print(min_diff, max_diff)
-        npt.assert_almost_equal(min_diff, 0, decimal=7)
-        npt.assert_almost_equal(max_diff, 0, decimal=7)
-        # subgrid resoluton Pixel convolution
-        for i in range(1,subgrid_res_input+1):
-
-            subgrid_res = i
-
-            grid = kernel_util.kernel_gaussian(kernel_numPix=11*subgrid_res, deltaPix=deltaPix / float(subgrid_res), fwhm=fwhm_object)
-            grid_conv = psf_pixel.psf_convolution(grid, deltaPix / float(subgrid_res), subgrid_res=subgrid_res, psf_subgrid=True)
-            grid_conv_finite = image_util.re_size(grid_conv, subgrid_res)
-            min_diff = np.min(grid_conv_true-grid_conv_finite)
-            max_diff = np.max(grid_conv_true-grid_conv_finite)
-            print(min_diff, max_diff)
-        npt.assert_almost_equal(min_diff, 0, decimal=3)
-        npt.assert_almost_equal(max_diff, 0, decimal=3)
-        # subgrid ray-tracing but pixel convolution on normal grid
-        for i in range(1,subgrid_res_input+1):
-
-            subgrid_res = i
-
-            grid = kernel_util.kernel_gaussian(kernel_numPix=11*subgrid_res, deltaPix=deltaPix / float(subgrid_res), fwhm=0.2)
-            grid_finite = image_util.re_size(grid, subgrid_res)
-            grid_conv_finite = psf_pixel.psf_convolution(grid_finite, deltaPix, subgrid_res=1)
-            min_diff = np.min(grid_conv_true-grid_conv_finite)
-            max_diff = np.max(grid_conv_true-grid_conv_finite)
-            print(min_diff, max_diff)
-        npt.assert_almost_equal(min_diff, 0, decimal=3)
-        npt.assert_almost_equal(max_diff, 0, decimal=3)
-
     def test_kernel_subsampled(self):
         deltaPix = 0.05  # pixel size of image
         numPix = 40  # number of pixels per axis
@@ -119,34 +61,6 @@ class TestData(object):
         npt.assert_almost_equal(np.sum(kernel_point_source), np.sum(kernel_super), decimal=8)
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=8)
 
-
-        # here we create the image of the Gaussian source and convolve it with the regular kernel
-        image_unconvolved = kernel_util.kernel_gaussian(kernel_numPix=numPix, deltaPix=deltaPix, fwhm=fwhm_object)
-        image_convolved_regular = psf_pixel.psf_convolution_new(image_unconvolved, subgrid_res=1, subsampling_size=None)
-        print(np.sum(image_convolved_regular), 'test sum regular convolution')
-        print(np.sum(image_unconvolved), 'test sum unconvolution')
-        npt.assert_almost_equal(np.sum(image_convolved_regular), np.sum(image_unconvolved), decimal=8)
-
-
-        # here we create the image by computing the sub-sampled Gaussian source and convolve it with the sub-sampled PSF kernel
-        image_unconvolved_highres = kernel_util.kernel_gaussian(kernel_numPix=numPix*subsampling_res, deltaPix=deltaPix/subsampling_res, fwhm=fwhm_object) * subsampling_res**2
-        image_convolved_subsampled = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres, subgrid_res=subsampling_res, subsampling_size=5)
-        #image_convolved_subsampled /= subsampling_res**2
-        print(np.sum(image_convolved_subsampled), 'test sum super convolution')
-
-        grid_grid_conv = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres,
-                                                                              subgrid_res=subsampling_res,
-                                                                              subsampling_size=5, conv_type='grid',
-                                                                              subgrid_conv_type='grid')
-        fft_fft_conv = psf_pixel_subsampled.psf_convolution_new(image_unconvolved_highres,
-                                                                  subgrid_res=subsampling_res,
-                                                                  subsampling_size=5, conv_type='fft',
-                                                                  subgrid_conv_type='fft')
-        npt.assert_almost_equal(grid_grid_conv, fft_fft_conv, decimal=15)
-
-        # We demand the two procedures to be the same up to the numerics affecting the finite resolution
-        npt.assert_almost_equal(np.sum(image_convolved_regular), np.sum(image_convolved_subsampled), decimal=8)
-        npt.assert_almost_equal((image_convolved_subsampled - image_convolved_regular) / (np.max(image_convolved_subsampled)), 0, decimal=2)
 
     def test_fwhm(self):
         deltaPix = 1.

@@ -41,7 +41,6 @@ def approx_theta_E(ximg,yimg):
 
     return 0.5*(dr_greatest*dr_second)**0.5
 
-
 def sort_image_index(ximg,yimg,xref,yref):
 
     """

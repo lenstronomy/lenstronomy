@@ -43,7 +43,7 @@ class PsfFitting(object):
         self._image_model_class = image_model_class
 
     def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, stacking_method='median',
-                 psf_symmetry=1, psf_iter_factor=1, block_center_neighbour=0):
+                 psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
         """
 
         :param kwargs_data:
@@ -78,6 +78,7 @@ class PsfFitting(object):
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
+        kwargs_psf_new['point_source_supersampling_factor'] = 1
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
@@ -87,7 +88,7 @@ class PsfFitting(object):
 
     def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, num_iter=10,
                          no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
-                 psf_symmetry=1, psf_iter_factor=1, verbose=True):
+                 psf_symmetry=1, psf_iter_factor=0.2, verbose=True):
         """
 
         :param kwargs_data:
@@ -122,7 +123,9 @@ class PsfFitting(object):
             kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source,
                                                                     kwargs_lens_light, kwargs_ps,
                                                                     stacking_method=stacking_method,
-                 psf_symmetry=psf_symmetry, psf_iter_factor=psf_iter_factor, block_center_neighbour=block_center_neighbour)
+                                                                    psf_symmetry=psf_symmetry,
+                                                                    psf_iter_factor=psf_iter_factor,
+                                                                    block_center_neighbour=block_center_neighbour)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -245,7 +248,7 @@ class PsfFitting(object):
         return kernel_deshifted
 
     @staticmethod
-    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1, stacking_option='median', symmetry=1):
+    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1., stacking_option='median', symmetry=1):
         """
         updates psf estimate based on old kernel and several new estimates
         :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image

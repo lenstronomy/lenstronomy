@@ -1,4 +1,5 @@
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
+from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Util import class_creator
@@ -112,6 +113,19 @@ class SingleBandMultiModel(ImageLinearFit):
 
         A = self._imageModel.linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return A
+
+    def update_psf(self, psf_class):
+        """
+
+        update the instance of the class with a new instance of PSF() with a potentially different point spread function
+
+        :param psf_class:
+        :return: no return. Class is updated.
+        """
+        self.PSF = psf_class
+        self.PSF.set_pixel_size(self.Data.pixel_width)
+        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
+        self._imageModel.update_psf(psf_class)
 
     def _select_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """

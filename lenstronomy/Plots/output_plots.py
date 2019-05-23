@@ -236,7 +236,7 @@ class LensModelPlot(object):
     class that manages the summary plots of a lens model
     """
     def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat"):
+                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask=None):
         """
 
         :param kwargs_options:
@@ -266,7 +266,8 @@ class LensModelPlot(object):
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
-        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model)
+        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
+                                                            likelihood_mask=likelihood_mask)
         self._analysis = LensAnalysis(kwargs_model)
         self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                     z_source=kwargs_model.get('z_source', None),

@@ -18,10 +18,10 @@ class PointSourceVariability(object):
                  kwargs_lens, kwargs_source_mag=None, kwargs_lens_light_mag=None, kwargs_ps_mag=None):
         """
 
-        :param source_x:
-        :param source_y:
+        :param source_x: RA of source position
+        :param source_y: DEC of source position
         :param variability_func: function that returns a brightness (in magnitude) as a function of time t
-        :param numpix:
+        :param numpix: number of pixels per axis
         :param kwargs_single_band:
         :param kwargs_model:
         :param kwargs_numerics:
@@ -57,6 +57,10 @@ class PointSourceVariability(object):
         self._mag = mag
         self._image_x, self._image_y = image_x, image_y
         self._variability_func = variability_func
+        # save the computed image position of the lensed point source in cache such that the solving the lens equation
+        # only needs to be applied once.
+        self.sim_api_bkg.reset_point_source_cache(bool=True)
+        #self.sim_api_ps.reset_point_source_cache(bool=True)
 
     @property
     def delays(self):

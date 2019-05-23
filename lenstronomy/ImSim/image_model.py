@@ -62,11 +62,11 @@ class ImageModel(object):
         """
         deletes all the cache in the point source class and saves it from then on
 
-        :return:
+        :param bool: boolean, if True, saves the next occuring point source positions in the cache
+        :return: None
         """
-        if self.PointSource is not None:
-            self.PointSource.delete_lens_model_cach()
-            self.PointSource.set_save_cache(bool)
+        self.PointSource.delete_lens_model_cache()
+        self.PointSource.set_save_cache(bool)
 
     def update_psf(self, psf_class):
         """
@@ -150,17 +150,11 @@ class ImageModel(object):
         :param point_source_add: if True, add point sources, otherwise without
         :return: 1d array of surface brightness pixels of the simulation
         """
-        if source_add:
-            source_light = self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
-        else:
-            source_light = np.zeros((self.Data.num_pixel_axes))
-        if lens_light_add:
-            lens_light = self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
-        else:
-            lens_light = np.zeros((self.Data.num_pixel_axes))
-        if point_source_add:
-            point_source = self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
-        else:
-            point_source = np.zeros((self.Data.num_pixel_axes))
-        model = (source_light + lens_light + point_source)
+        model = np.zeros((self.Data.num_pixel_axes))
+        if source_add is True:
+            model += self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
+        if lens_light_add is True:
+            model += self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
+        if point_source_add is True:
+            model += self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
         return model

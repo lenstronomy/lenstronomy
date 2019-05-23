@@ -35,7 +35,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
                                           kernel=None)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
 
         # 'EXERNAL_SHEAR': external shear
@@ -65,7 +65,7 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.01, 'dec_source': 0.0,
                        'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
+        kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': False, 'compute_mode': 'gaussian'}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                        self.kwargs_lens_light, self.kwargs_ps)
@@ -77,7 +77,7 @@ class TestImageModel(object):
     def test_source_surface_brightness(self):
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
-        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05**2, decimal=4)
+        npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05 ** 2, decimal=4)
 
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=True, de_lensed=False)
         assert len(source_model) == 100
@@ -85,7 +85,9 @@ class TestImageModel(object):
 
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
-        npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534 * 0.05**2, decimal=4)
+        print(np.sum(lens_flux), 'test lens flux')
+        npt.assert_almost_equal(lens_flux[50, 50], 0.0010788981265391802, decimal=4)
+        #npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534 * 0.05 ** 2, decimal=4)
 
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
         npt.assert_almost_equal(lens_flux[50, 50], 4.7310552067454452 * 0.05**2, decimal=4)
@@ -131,12 +133,12 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'kernel_pixel': kernel, 'psf_type': 'PIXEL'}
-        psf_class = PSF(kwargs_psf)
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL'}
+        psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
         lens_light_model_class = LightModel([])
-        kwargs_numerics = {'subgrid_res': 2, 'point_source_subgrid': 1}
+        kwargs_numerics =  {'supersampling_factor': 2, 'supersampling_convolution': True, 'point_source_supersampling_factor': 1}
         point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], fixed_magnification_list=[False])
         makeImage = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         # chose point source positions
@@ -180,7 +182,7 @@ class TestImageModel(object):
         psf_type = "GAUSSIAN"
         fwhm = 0.9
         kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         imageModel = ImageModel(data_class=data_class, psf_class=psf_class, lens_model_class=lensModel,
                                 point_source_class=pointSource)
         image = imageModel.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)

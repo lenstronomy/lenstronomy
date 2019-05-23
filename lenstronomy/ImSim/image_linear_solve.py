@@ -9,13 +9,26 @@ class ImageLinearFit(ImageModel):
     linear version class, inherits ImageModel
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}, likelihood_mask=None):
+        """
+
+        :param data_class:
+        :param psf_class:
+        :param lens_model_class:
+        :param source_model_class:
+        :param lens_light_model_class:
+        :param point_source_class:
+        :param kwargs_numerics:
+        :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
+        """
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
                                              point_source_class=point_source_class, kwargs_numerics=kwargs_numerics)
-        self.mask = np.array(self.ImageNumerics.mask, dtype=bool)
-        self._mask1d = util.image2array(self.mask)
+        if likelihood_mask is None:
+            likelihood_mask = np.ones_like(self.Data.data)
+        self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
+        self._mask1d = util.image2array(self.likelihood_mask)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            inv_bool=False):
@@ -89,7 +102,7 @@ class ImageLinearFit(ImageModel):
                                                                          kwargs_lens_light, kwargs_ps,
                                                                          inv_bool=source_marg)
         # compute X^2
-        logL = self.Data.log_likelihood(im_sim, self.mask, model_error)
+        logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalisation_const(cov_matrix)
             # if marg_const + logL > 0:
@@ -170,7 +183,7 @@ class ImageLinearFit(ImageModel):
         :param model:
         :return:
         """
-        mask = self.ImageNumerics.mask
+        mask = self.likelihood_mask
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
@@ -190,7 +203,7 @@ class ImageLinearFit(ImageModel):
         number of data points to be used in the linear solver
         :return:
         """
-        return int(np.sum(self.mask))
+        return int(np.sum(self.likelihood_mask))
 
     def update_data(self, data_class):
         """
@@ -221,3 +234,20 @@ class ImageLinearFit(ImageModel):
         grid1d[self._mask1d] = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
+
+    def error_map(self, kwargs_lens, kwargs_ps):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :return:
+        """
+        error_map = np.zeros((self.Data.num_pixel_axes))
+        if self._psf_error_map is True:
+            for k, bool in enumerate(self._error_map_bool_list):
+                if bool is True:
+                    ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
+                    for i in range(0, n_points):
+                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
+                        error_map += error_map_add
+        return error_map

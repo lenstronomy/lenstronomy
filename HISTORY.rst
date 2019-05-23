@@ -90,3 +90,9 @@ History
 * New design of Likelihood module
 * Updated design of FittingSequence
 * Exponential Shapelets implemented
+
+0.8.0 (2019-5-23)
++++++++++++++++++
+* New design of Numerics module
+* New design of PSF and Data module
+* New design of multi-band fitting module

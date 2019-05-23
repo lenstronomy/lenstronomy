@@ -1,7 +1,7 @@
 from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
-import lenstronomy.Util.class_creator as class_creator
+from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.update_manager import UpdateManager
 from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -221,23 +221,20 @@ class FittingSequence(object):
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
         :return: 0, updated PSF is stored in self.mult_iband_list
         """
-        #lens_temp = copy.deepcopy(lens_input)
         kwargs_model = self._updateManager.kwargs_model
+        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
         param_class = self._param_class
         lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
         source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
-        for i in range(len(self.multi_band_list)):
-            if compute_bands[i] is True:
-                kwargs_data = self.multi_band_list[i][0]
-                kwargs_psf = self.multi_band_list[i][1]
-                kwargs_numerics = self.multi_band_list[i][2]
-                image_model = class_creator.create_image_model(kwargs_data=kwargs_data,
-                                                               kwargs_psf=kwargs_psf,
-                                                               kwargs_numerics=kwargs_numerics,
-                                                               kwargs_model=kwargs_model)
+        for band_index in range(len(self.multi_band_list)):
+            if compute_bands[band_index] is True:
+                kwargs_psf = self.multi_band_list[band_index][1]
+                image_model = SingleBandMultiModel(self.multi_band_list, kwargs_model,
+                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
                                                        self._lens_light_temp, self._ps_temp, num_iter=num_iter,
@@ -245,7 +242,7 @@ class FittingSequence(object):
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map,
                  psf_symmetry=psf_symmetry, psf_iter_factor=psf_iter_factor, verbose=verbose)
-                self.multi_band_list[i][1] = kwargs_psf
+                self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 
     def align_images(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1,
@@ -263,6 +260,8 @@ class FittingSequence(object):
         :return:
         """
         kwargs_model = self._updateManager.kwargs_model
+        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
         param_class = self._updateManager.param_class(self._lens_temp)
         lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
         source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
@@ -271,11 +270,10 @@ class FittingSequence(object):
 
         for i in range(len(self.multi_band_list)):
             if compute_bands[i] is True:
-                kwargs_data = self.multi_band_list[i][0]
-                kwargs_psf = self.multi_band_list[i][1]
-                kwargs_numerics = self.multi_band_list[i][2]
-                alignmentFitting = AlignmentFitting(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, lens_updated, source_updated,
-                                                        self._lens_light_temp, self._ps_temp)
+
+                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, lens_updated, source_updated,
+                                                        self._lens_light_temp, self._ps_temp, band_index=i,
+                                                    likelihood_mask_list=likelihood_mask_list)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
                                                           lowerLimit=lowerLimit, upperLimit=upperLimit,

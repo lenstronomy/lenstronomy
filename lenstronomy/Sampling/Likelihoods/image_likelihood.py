@@ -1,11 +1,7 @@
 import numpy as np
-from lenstronomy.Data.imaging_data import ImageData
-from lenstronomy.Data.psf import PSF
-from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
-from lenstronomy.ImSim.MultiBand.multiband import MultiBand
-from lenstronomy.ImSim.MultiBand.multiband_multimodel import MultiBandMultiModel
-from lenstronomy.ImSim.MultiBand.multi_exposures import MultiExposures
-from lenstronomy.ImSim.MultiBand.multi_frame import MultiFrame
+from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
+from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
+from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
 
 
 class ImageLikelihood(object):
@@ -13,14 +9,14 @@ class ImageLikelihood(object):
     manages imaging data likelihoods
     """
 
-    def __init__(self, multi_band_list, multi_band_type, lens_model_class, source_model_class, lens_light_model_class,
-                     point_source_class, bands_compute=None, source_marg=False,
+    def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None, source_marg=False,
                  force_minimum_source_surface_brightness=False, flux_min=0):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
         ImageModel(), Multiband(), MulitExposure()
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
+        :param likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
         linear coefficients
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
@@ -28,8 +24,8 @@ class ImageLikelihood(object):
         :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         """
 
-        self.imSim = create_im_sim(multi_band_list, multi_band_type, lens_model_class, source_model_class,
-                                   lens_light_model_class, point_source_class, bands_compute=bands_compute)
+        self.imSim = create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
+                                   likelihood_mask_list=likelihood_mask_list, band_index=0)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
@@ -87,12 +83,11 @@ class ImageLikelihood(object):
         self.imSim.reset_point_source_cache(bool=bool)
 
 
-def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_class, lens_light_model_class,
-                  point_source_class, bands_compute=None):
+def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None, band_index=0):
     """
 
 
-    :param image_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
+    :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
 
     - 'multi-band': linear amplitudes are inferred on single data set
     - 'multi-exposure': linear amplitudes ae jointly inferred
@@ -101,28 +96,13 @@ def create_im_sim(multi_band_list, image_type, lens_model_class, source_model_cl
     :return: MultiBand class instance
     """
 
-    lens_model_list = lens_model_class.lens_model_list
-    source_light_model_list = source_model_class.profile_type_list
-    lens_light_model_list = lens_light_model_class.profile_type_list
-    if image_type == 'multi-band':
-        multiband = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
-                              point_source_class, compute_bool=bands_compute)
-    elif image_type == 'multi-band-multi-model':
-        multiband = MultiBandMultiModel(multi_band_list, lens_model_class, source_model_list=source_light_model_list,
-                                        lens_light_model_list=lens_light_model_list,
-                                        point_source_class=point_source_class, compute_bool=bands_compute)
-    elif image_type == 'multi-exposure':
-        multiband = MultiExposures(multi_band_list, lens_model_class, source_model_class, lens_light_model_class,
-                                   point_source_class, compute_bool=bands_compute)
-    elif image_type == 'multi-frame':
-        multiband = MultiFrame(multi_band_list, lens_model_list, source_model_class, lens_light_model_class,
-                               point_source_class, compute_bool=bands_compute)
-    elif image_type == 'single-band':
-        kwargs_data, kwargs_psf, kwargs_numerics = multi_band_list
-        data_class = ImageData(**kwargs_data)
-        psf_class = PSF(kwargs_psf)
-        multiband = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                   point_source_class, kwargs_numerics)
+    if multi_band_type == 'multi-linear':
+        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
+    elif multi_band_type == 'joint-linear':
+        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
+    elif multi_band_type == 'single-band':
+        multiband = SingleBandMultiModel([multi_band_list], kwargs_model, likelihood_mask_list=likelihood_mask_list,
+                                         band_index=band_index)
     else:
-        raise ValueError("type %s is not supported!" % image_type)
+        raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

@@ -184,7 +184,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
 
 def re_size(image, factor=1):
     """
-    resizes image with nx x ny to nx/factor x ny/factor
+    re-sizes image with nx x ny to nx/factor x ny/factor
     :param image: 2d image with shape (nx,ny)
     :param factor: integer >=1
     :return:

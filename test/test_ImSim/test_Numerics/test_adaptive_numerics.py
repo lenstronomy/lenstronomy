@@ -34,13 +34,13 @@ class TestAdaptiveConvolution(object):
 
     def test_convolve2d(self):
         #kernel_supersampled = kernel_util.subgrid_kernel(self.kernel, self.supersampling_factor, odd=True, num_iter=5)
-        subgrid_conv = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_size=None, convolution_type='fft')
+        subgrid_conv = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=None, convolution_type='fft')
         model_subgrid_conv = subgrid_conv.convolution2d(self.model_sub)
 
         conv_supersample_pixels = np.zeros_like(self.model)
         conv_supersample_pixels = np.array(conv_supersample_pixels, dtype=bool)
         conv_supersample_pixels[self.model > np.max(self.model)/20] = True
-        adaptive_conv = AdaptiveConvolution(self.kernel_sub, self.supersampling_factor, conv_supersample_pixels, supersampling_size=5, compute_pixels=None)
+        adaptive_conv = AdaptiveConvolution(self.kernel_sub, self.supersampling_factor, conv_supersample_pixels, supersampling_kernel_size=5, compute_pixels=None)
 
         model_adaptive_conv = adaptive_conv.convolve2d(self.model_sub)
         npt.assert_almost_equal(np.sum(model_subgrid_conv), np.sum(model_adaptive_conv), decimal=2)
@@ -50,7 +50,7 @@ class TestAdaptiveConvolution(object):
         conv_supersample_pixels = np.array(conv_supersample_pixels, dtype=bool)
         conv_supersample_pixels[self.model > np.max(self.model) / 2] = True
         adaptive_conv = AdaptiveConvolution(self.kernel_sub, self.supersampling_factor, conv_supersample_pixels,
-                                                supersampling_size=1, compute_pixels=None)
+                                            supersampling_kernel_size=1, compute_pixels=None)
 
         model_adaptive_conv = adaptive_conv.convolve2d(self.model_sub)
 

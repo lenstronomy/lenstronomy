@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.MultiBand.multi_data_base &#8212; lenstronomy 0.7.0 documentation</title>
+    <title>lenstronomy.ImSim.MultiBand.multi_data_base &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,11 +57,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span> <span class="o">=</span> <span class="n">imageModel_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_response_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">imageModel</span> <span class="ow">in</span> <span class="n">imageModel_list</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_num_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imageModel</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">num_response</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">LensModel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">SourceModel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">LensLightModel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PointSource</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imageModel</span><span class="o">.</span><span class="n">num_data_evaluate</span><span class="p">)</span>
+        <span class="c1">#self.LensModel = self._imageModel_list[0].LensModel</span>
+        <span class="c1">#self.SourceModel = self._imageModel_list[0].SourceModel</span>
+        <span class="c1">#self.LensLightModel = self._imageModel_list[0].LensLightModel</span>
+        <span class="c1">#self.PointSource = self._imageModel_list[0].PointSource</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -85,12 +85,13 @@
         <span class="k">for</span> <span class="n">imageModel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">:</span>
             <span class="n">imageModel</span><span class="o">.</span><span class="n">reset_point_source_cache</span><span class="p">(</span><span class="nb">bool</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MultiDataBase.num_data_evaluate"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.num_data_evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">num_data_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_data_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_data_evaluate</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">num</span></div>
+                <span class="n">num</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_data_evaluate</span>
+        <span class="k">return</span> <span class="n">num</span>
 
 <div class="viewcode-block" id="MultiDataBase.num_param_linear"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.num_param_linear">[docs]</a>    <span class="k">def</span> <span class="nf">num_param_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -151,7 +152,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

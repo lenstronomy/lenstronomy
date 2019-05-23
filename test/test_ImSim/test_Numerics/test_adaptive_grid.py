@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 from lenstronomy.Util import util
-from lenstronomy.ImSim.Numerics.adaptive_grid import AdaptiveGrid
+from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
 from lenstronomy.LightModel.light_model import LightModel
 
 import pytest
@@ -34,8 +34,8 @@ class TestAdaptiveGrid(object):
         assert len(subpixel_x) == 4**2
         assert subpixel_x[0] == -0.375
         assert subpixel_y[0] == -0.375
-        assert subpixel_y[3] == 0.375
-        assert subpixel_x[3] == -0.375
+        assert subpixel_y[3] == -0.375
+        assert subpixel_x[3] == 0.375
 
     def test_average_subgrid(self):
         subpixel_x, subpixel_y = self._adaptive_grid._high_res_coordinates
@@ -47,7 +47,7 @@ class TestAdaptiveGrid(object):
 
     def test_merge_low_high_res(self):
         subpixel_x, subpixel_y = self._adaptive_grid._high_res_coordinates
-        x, y = self._adaptive_grid._low_res_coordinates
+        x, y = self._adaptive_grid._x_low_res, self._adaptive_grid._x_low_res
         model = LightModel(light_model_list=['GAUSSIAN'])
         kwargs_light = [{'center_x': 0, 'center_y': 0, 'sigma_x': 1, 'sigma_y': 1, 'amp': 1}]
         subgrid_values = model.surface_brightness(subpixel_x, subpixel_y, kwargs_light)

@@ -55,8 +55,7 @@ def psf_configure_simple(psf_type="GAUSSIAN", fwhm=1, kernelsize=11, deltaPix=1,
         kernel_large = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
         kernel_large /= np.sum(kernel_large)
         kernel_large = util.array2image(kernel_large)
-        kernel_pixel = kernel_util.pixel_kernel(kernel_large)
-        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm, 'truncation': truncate*fwhm, 'kernel_point_source': kernel_large, 'kernel_pixel': kernel_pixel, 'pixel_size': deltaPix}
+        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm, 'truncation': truncate, 'kernel_point_source': kernel_large, 'pixel_size': deltaPix}
     elif psf_type == 'PIXEL':
         kernel_large = copy.deepcopy(kernel)
         kernel_large = kernel_util.cut_psf(kernel_large, psf_size=kernelsize)

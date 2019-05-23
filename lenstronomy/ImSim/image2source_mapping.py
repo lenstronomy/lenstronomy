@@ -133,8 +133,7 @@ class Image2SourceMapping(object):
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as
-        the light_model_list
+        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list
         """
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)

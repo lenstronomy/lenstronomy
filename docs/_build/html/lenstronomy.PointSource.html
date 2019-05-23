@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource package &#8212; lenstronomy 0.7.0 documentation</title>
+    <title>lenstronomy.PointSource package &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-pointsource-point-source-module"></span><h2>lenstronomy.PointSource.point_source module<a class="headerlink" href="#module-lenstronomy.PointSource.point_source" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.PointSource.point_source.PointSource">
-<em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source.</code><code class="descname">PointSource</code><span class="sig-paren">(</span><em>point_source_type_list</em>, <em>lensModel=None</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>save_cache=False</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source.</code><code class="descname">PointSource</code><span class="sig-paren">(</span><em>point_source_type_list</em>, <em>lensModel=None</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>save_cache=False</em>, <em>min_distance=0.05</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source.PointSource.check_image_positions">
@@ -320,7 +320,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source.PointSource.update_search_window">
-<code class="descname">update_search_window</code><span class="sig-paren">(</span><em>search_window</em>, <em>x_center</em>, <em>y_center</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.update_search_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.update_search_window" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_search_window</code><span class="sig-paren">(</span><em>search_window</em>, <em>x_center</em>, <em>y_center</em>, <em>min_distance=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.update_search_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.update_search_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the search area for the lens equation solver</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,6 +330,7 @@
 <li><strong>search_window</strong> – search_window: window size of the image position search with the lens equation solver.</li>
 <li><strong>x_center</strong> – center of search window</li>
 <li><strong>y_center</strong> – center of search window</li>
+<li><strong>min_distance</strong> – minimum search distance</li>
 </ul>
 </td>
 </tr>
@@ -723,7 +724,7 @@ parameters: ra_image, dec_image, point_amp</p>
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

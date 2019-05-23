@@ -29,12 +29,28 @@ class Coordinates(object):
         return self._Ma2pix
 
     @property
+    def transform_pix2angle(self):
+        """
+
+        :return: transformation matrix from pixel to angular coordinates
+        """
+        return self._Mpix2a
+
+    @property
     def xy_at_radec_0(self):
         """
 
         :return: pixel coordinate at angular (0,0) point
         """
         return self._x_at_radec_0, self._y_at_radec_0
+
+    @property
+    def radec_at_xy_0(self):
+        """
+
+        :return: RA, DEC coordinate at (0,0) pixel coordinate
+        """
+        return self._ra_at_xy_0, self._dec_at_xy_0
 
     def map_coord2pix(self, ra, dec):
         """
@@ -47,7 +63,7 @@ class Coordinates(object):
 
         return util.map_coord2pix(ra, dec, self._x_at_radec_0, self._y_at_radec_0, self._Ma2pix)
 
-    def map_pix2coord(self, x_pos, y_pos):
+    def map_pix2coord(self, x, y):
         """
         maps the (x,y) pixel coordinates of the image into the system coordinates
 
@@ -55,7 +71,7 @@ class Coordinates(object):
         :param y: pixel coordinate (can be 1d numpy array), defined in the center of the pixel
         :return: relative (RA, DEC) coordinates of the system
         """
-        return util.map_coord2pix(x_pos, y_pos, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
+        return util.map_coord2pix(x, y, self._ra_at_xy_0, self._dec_at_xy_0, self._Mpix2a)
 
     @property
     def pixel_area(self):

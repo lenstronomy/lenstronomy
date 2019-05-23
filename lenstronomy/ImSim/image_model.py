@@ -4,6 +4,7 @@ from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.PointSource.point_source import PointSource
 
 import numpy as np
 
@@ -31,6 +32,8 @@ class ImageModel(object):
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
+        if point_source_class is None:
+            point_source_class = PointSource(point_source_type_list=[])
         self.PointSource = point_source_class
         self._error_map_bool_list = None
         if self.PointSource is not None:

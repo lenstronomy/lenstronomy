@@ -118,7 +118,9 @@ class MultiGaussianConvolution(object):
         Default is 4.0.
         """
         self._num_gaussians = len(sigma_list)
-        self._sigmas_scaled = np.array(sigma_list) / pixel_scale / supersampling_factor
+        self._sigmas_scaled = np.array(sigma_list) / pixel_scale
+        if supersampling_convolution is True:
+            self._sigmas_scaled *= supersampling_factor
         self._fraction_list = fraction_list / np.sum(fraction_list)
         assert len(self._sigmas_scaled) == len(self._fraction_list)
         self._truncation = truncation

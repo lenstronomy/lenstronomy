@@ -1,8 +1,5 @@
-import scipy.ndimage as ndimage
-import scipy.signal as signal
 import numpy as np
 import lenstronomy.Util.kernel_util as kernel_util
-import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.util as util
 
 
@@ -12,7 +9,7 @@ class PSF(object):
     """
 
     def __init__(self, psf_type='NONE', fwhm=None, truncation=5, pixel_size=None, kernel_point_source=None,
-                 psf_error_map=None, point_source_supersampling_factor=1):
+                 psf_error_map=None, point_source_supersampling_factor=1, kernel_point_source_init=None):
         """
 
         :param psf_type: string, type of PSF: options are 'NONE', 'PIXEL', 'GAUSSIAN'
@@ -24,15 +21,17 @@ class PSF(object):
         This error will be added to the pixel error around the position of point sources as follows:
         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
+        :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf iteration
         """
         self.psf_type = psf_type
+        self._pixel_size = pixel_size
+        self.kernel_point_source_init = kernel_point_source_init
         if self.psf_type == 'GAUSSIAN':
             if fwhm is None:
                 raise ValueError('fwhm must be set for GAUSSIAN psf type!')
             self._fwhm = fwhm
             self._sigma_gaussian = util.fwhm2sigma(self._fwhm)
             self._truncation = truncation
-            self._pixel_size = pixel_size
             self._point_source_supersampling_factor = 0
         elif self.psf_type == 'PIXEL':
             if kernel_point_source is None:
@@ -139,6 +138,6 @@ class PSF(object):
         :return: full width at half maximum of kernel (in units of pixel)
         """
         if self.psf_type == 'GAUSSIAN':
-            return self._fwhm / self._pixel_size
+            return self._fwhm
         else:
-            return kernel_util.fwhm_kernel(self.kernel_point_source)
+            return kernel_util.fwhm_kernel(self.kernel_point_source) * self._pixel_size

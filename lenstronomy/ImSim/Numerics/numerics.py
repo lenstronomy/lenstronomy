@@ -71,8 +71,8 @@ class Numerics(PointSourceRendering):
 
         elif self._psf_type == 'GAUSSIAN':
             pixel_scale = pixel_grid.pixel_width
-            fwhm = psf.fwhm  # FWHM  in units of pixels
-            sigma = util.fwhm2sigma(fwhm) * pixel_scale
+            fwhm = psf.fwhm  # FWHM  in units of angle
+            sigma = util.fwhm2sigma(fwhm)
             sigma_list = [sigma]
             fraction_list = [1]
             self._conv = MultiGaussianConvolution(sigma_list, fraction_list, pixel_scale, supersampling_factor,

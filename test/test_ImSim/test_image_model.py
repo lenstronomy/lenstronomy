@@ -86,7 +86,7 @@ class TestImageModel(object):
     def test_lens_surface_brightness(self):
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=False)
         print(np.sum(lens_flux), 'test lens flux')
-        npt.assert_almost_equal(lens_flux[50, 50], 0.002996607366601222, decimal=4)
+        npt.assert_almost_equal(lens_flux[50, 50], 0.0010788981265391802, decimal=4)
         #npt.assert_almost_equal(lens_flux[50, 50], 0.54214440654021534 * 0.05 ** 2, decimal=4)
 
         lens_flux = self.imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)

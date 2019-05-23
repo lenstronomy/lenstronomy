@@ -52,8 +52,7 @@ class AdaptiveGrid(Coordinates1D):
     def flux_array2image_low_high(self, flux_array):
         """
 
-        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate
-        order
+        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
         :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
         """
         low_res_values = flux_array[0:self._num_low_res]
@@ -191,8 +190,7 @@ class RegularGrid(Coordinates1D):
     def flux_array2image_low_high(self, flux_array):
         """
 
-        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate
-        order
+        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
         :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
         """
         image = self._array2image(flux_array)
@@ -220,6 +218,7 @@ class RegularGrid(Coordinates1D):
     def _array2image(self, array):
         """
         maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
+
         :param array: 1d array
         :param idex_mask: 1d array of length nx*ny
         :param nx: x-axis of 2d grid

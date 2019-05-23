@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 0.7.0 documentation</title>
+    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -47,7 +47,7 @@
 <div class="viewcode-block" id="PointSource"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource">[docs]</a><span class="k">class</span> <span class="nc">PointSource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_source_type_list</span><span class="p">,</span> <span class="n">lensModel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_images_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">save_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">save_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                  <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -98,15 +98,18 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_window</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precision_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_iter_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span> <span class="o">=</span> <span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span>
 
-<div class="viewcode-block" id="PointSource.update_search_window"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_search_window">[docs]</a>    <span class="k">def</span> <span class="nf">update_search_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="p">):</span>
+<div class="viewcode-block" id="PointSource.update_search_window"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_search_window">[docs]</a>    <span class="k">def</span> <span class="nf">update_search_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        update the search area for the lens equation solver</span>
 
 <span class="sd">        :param search_window: search_window: window size of the image position search with the lens equation solver.</span>
 <span class="sd">        :param x_center: center of search window</span>
 <span class="sd">        :param y_center: center of search window</span>
+<span class="sd">        :param min_distance: minimum search distance</span>
 <span class="sd">        :return: updated self instances</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">min_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_min_distance</span> <span class="o">=</span> <span class="n">min_distance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_search_window</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span> <span class="o">=</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span></div>
 
 <div class="viewcode-block" id="PointSource.update_lens_model"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_lens_model">[docs]</a>    <span class="k">def</span> <span class="nf">update_lens_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_class</span><span class="p">):</span>
@@ -386,7 +389,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

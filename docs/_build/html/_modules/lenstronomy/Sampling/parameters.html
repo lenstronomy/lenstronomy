@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 0.7.0 documentation</title>
+    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -101,7 +101,8 @@
                  <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear_solver</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">joint_lens_with_lens</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_lens_light_with_lens_light</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">joint_source_with_source</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_lens_with_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_source_with_point_source</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">joint_lens_light_with_point_source</span><span class="o">=</span><span class="p">[],</span> <span class="n">mass_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">num_point_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_plane_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">cosmo_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">num_point_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_plane_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">cosmo_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">source_size</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>
@@ -200,7 +201,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmoParams</span> <span class="o">=</span> <span class="n">CosmoParam</span><span class="p">(</span><span class="n">cosmo_type</span><span class="o">=</span><span class="n">cosmo_type</span><span class="p">,</span> <span class="n">mass_scaling</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mass_scaling</span><span class="p">,</span>
                                       <span class="n">kwargs_fixed</span><span class="o">=</span><span class="n">kwargs_fixed_cosmo</span><span class="p">,</span> <span class="n">num_scale_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_scale_factor</span><span class="p">,</span>
                                       <span class="n">kwargs_lower</span><span class="o">=</span><span class="n">kwargs_lower_cosmo</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="n">kwargs_upper_cosmo</span><span class="p">,</span>
-                                      <span class="n">point_source_offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_source_offset</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">)</span>
+                                      <span class="n">point_source_offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_source_offset</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">,</span>
+                                      <span class="n">source_size</span><span class="o">=</span><span class="n">source_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_point_source_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -529,7 +531,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

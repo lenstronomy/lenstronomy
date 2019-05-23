@@ -7,6 +7,9 @@ import lenstronomy.Util.constants as const
 class MultiPlane(object):
     """
     Multi-plane lensing class
+
+    The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the
+    sourde redshift of the class instance.
     """
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None):
@@ -393,8 +396,8 @@ class MultiPlane(object):
         alpha_y_new = alpha_y - alpha_y_phys
         return alpha_x_new, alpha_y_new
 
-    #@staticmethod
-    def _start_condition(self, inclusive, z_lens, z_start):
+    @staticmethod
+    def _start_condition(inclusive, z_lens, z_start):
 
         if inclusive:
             return z_lens >= z_start

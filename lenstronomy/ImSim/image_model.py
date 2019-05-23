@@ -16,7 +16,7 @@ class ImageModel(object):
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
-        :param data_class: instance of Data() class
+        :param data_class: instance of ImageData() or PixelGrid() class
         :param psf_class: instance of PSF() class
         :param lens_model_class: instance of LensModel() class
         :param source_model_class: instance of LightModel() class describing the source parameters

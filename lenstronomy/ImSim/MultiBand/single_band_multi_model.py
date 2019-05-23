@@ -1,5 +1,4 @@
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
-from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Util import class_creator
@@ -40,9 +39,6 @@ class SingleBandMultiModel(ImageLinearFit):
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class,
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index])
-        self._imageModel = ImageLinearFit(data_i, psf_i, lens_model_class, source_model_class,
-                                          lens_light_model_class, point_source_class,
-                                          kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index])
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            inv_bool=False):
@@ -61,7 +57,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                                kwargs_source,
                                                                                                kwargs_lens_light,
                                                                                                kwargs_ps)
-        wls_model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens_i, kwargs_source_i,
+        wls_model, error_map, cov_param, param = self._image_linear_solve(kwargs_lens_i, kwargs_source_i,
                                                                                      kwargs_lens_light_i, kwargs_ps_i,
                                                                                      inv_bool=inv_bool)
         return wls_model, error_map, cov_param, param
@@ -81,7 +77,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                                kwargs_source,
                                                                                                kwargs_lens_light,
                                                                                                kwargs_ps)
-        logL = self._imageModel.likelihood_data_given_model(kwargs_lens_i, kwargs_source_i,
+        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i,
                                                             kwargs_lens_light_i, kwargs_ps_i,
                                                             source_marg=source_marg)
         return logL
@@ -93,7 +89,7 @@ class SingleBandMultiModel(ImageLinearFit):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self._select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        num = self._imageModel.num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
+        num = self._num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return num
 
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
@@ -110,22 +106,8 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                                kwargs_source,
                                                                                                kwargs_lens_light,
                                                                                                kwargs_ps)
-
-        A = self._imageModel.linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
+        A = self._linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return A
-
-    def update_psf(self, psf_class):
-        """
-
-        update the instance of the class with a new instance of PSF() with a potentially different point spread function
-
-        :param psf_class:
-        :return: no return. Class is updated.
-        """
-        self.PSF = psf_class
-        self.PSF.set_pixel_size(self.Data.pixel_width)
-        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
-        self._imageModel.update_psf(psf_class)
 
     def _select_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """

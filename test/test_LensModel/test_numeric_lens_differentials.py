@@ -224,11 +224,6 @@ class TestNumericsProfile(object):
         lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_gauss_complex(self):
-        kwargs={'amp': 2, 'sigma': 1., 'e1':0, 'e2': 0}
-        lens_model = ['GAUSS_EXACT']
-        self.assert_differentials(lens_model, kwargs)
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

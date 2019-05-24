@@ -74,8 +74,8 @@ class SersicElliptic(SersicUtil):
 
         xt1 = cos_phi*x_shift+sin_phi*y_shift
         xt2 = -sin_phi*x_shift+cos_phi*y_shift
-        #xt2difq2 = xt2/(q*q)
-        R_ = np.sqrt(q*q*xt1*xt1+xt2*xt2)
+        xt2difq2 = xt2/(q*q)
+        R_ = np.sqrt(xt1*xt1+xt2*xt2difq2)
         if isinstance(R_, int) or isinstance(R_, float):
             R_ = max(self._smoothing, R_)
         else:

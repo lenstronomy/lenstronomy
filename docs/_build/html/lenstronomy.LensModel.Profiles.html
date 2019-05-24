@@ -1272,15 +1272,15 @@ normalized by rho0, the central core density</p>
 <div class="section" id="module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse">
 <span id="lenstronomy-lensmodel-profiles-gaussian-kappa-ellipse-module"></span><h2>lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.</code><code class="descname">GaussianKappaEllipse</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.</code><code class="descname">GaussianKappaEllipsePot</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
 with ellipticity in the convergence</p>
 <p>the calculation follows Glenn van de Ven et al. 2009</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.density" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1300,8 +1300,8 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density_2d">
-<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density_2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.density_2d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1322,31 +1322,31 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.derivatives" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns df/dx and df/dy of the function</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.function" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Gaussian</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d">
-<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_2d">
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_2d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1367,8 +1367,8 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d_lens">
-<code class="descname">mass_2d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_2d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_2d_lens">
+<code class="descname">mass_2d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.mass_2d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_2d_lens" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1389,8 +1389,8 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_3d">
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1412,8 +1412,8 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d_lens">
-<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipsePot.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1435,13 +1435,13 @@ with ellipticity in the convergence</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.param_names">
-<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipsePot.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

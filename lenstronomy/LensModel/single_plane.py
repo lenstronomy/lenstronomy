@@ -287,6 +287,9 @@ class SinglePlane(object):
         elif lens_type == 'SERSIC_ELLIPSE_2':
             from lenstronomy.LensModel.Profiles.sersic_ellipse_2 import SersicEllipse2
             return SersicEllipse2()
+        elif lens_type == 'COMPOSITE_DISK':
+            from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
+            return CompDisk()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
             return PJaffe()

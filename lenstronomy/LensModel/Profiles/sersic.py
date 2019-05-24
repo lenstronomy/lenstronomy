@@ -5,7 +5,6 @@ import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 
-
 class Sersic(SersicUtil):
     """
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf

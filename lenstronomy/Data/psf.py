@@ -40,15 +40,8 @@ class PSF(object):
                 raise ValueError('kernel needs to have odd axis number, not ', np.shape(kernel_point_source))
             if point_source_supersampling_factor > 1:
                 self._kernel_point_source_supersampled = kernel_point_source
-                n_high = len(self._kernel_point_source_supersampled)
                 self._point_source_supersampling_factor = point_source_supersampling_factor
-                numPix = int(n_high / self._point_source_supersampling_factor)
-                if self._point_source_supersampling_factor % 2 == 0:
-                    self._kernel_point_source = kernel_util.averaging_even_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
-                else:
-                    kernel_point_source = util.averaging(self._kernel_point_source_supersampled, numGrid=n_high, numPix=numPix)
-            else:
-                kernel_point_source = kernel_point_source
+                kernel_point_source = kernel_util.degrade_kernel(self._kernel_point_source_supersampled, self._point_source_supersampling_factor)
             self._kernel_point_source = kernel_point_source / np.sum(kernel_point_source)
 
         elif self.psf_type == 'NONE':

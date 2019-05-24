@@ -118,12 +118,12 @@
 <span class="sd">        :param lens_model_class: instance of LensModel class</span>
 <span class="sd">        :return: update instance of lens model class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span> <span class="o">=</span> <span class="n">lens_model_class</span>
         <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="p">:</span>
             <span class="n">model</span><span class="o">.</span><span class="n">update_lens_model</span><span class="p">(</span><span class="n">lens_model_class</span><span class="o">=</span><span class="n">lens_model_class</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PointSource.delete_lens_model_cach"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.delete_lens_model_cach">[docs]</a>    <span class="k">def</span> <span class="nf">delete_lens_model_cach</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PointSource.delete_lens_model_cache"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.delete_lens_model_cache">[docs]</a>    <span class="k">def</span> <span class="nf">delete_lens_model_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deletes the variables saved for a specific lens model</span>
 

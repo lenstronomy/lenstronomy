@@ -70,5 +70,11 @@ class TestAdaptiveGrid(object):
         assert len(image_high_res) == self.nx * self._supersampling_factor
 
 
+class TestRegularGrid(object):
+
+    def __init__(self):
+        pass
+
+
 if __name__ == '__main__':
     pytest.main()

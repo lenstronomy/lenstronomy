@@ -278,7 +278,7 @@ def cut_edges(image, numPix):
         return image
     if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
         #pass
-        print("WARNING: image or cutout side are even number. This routine only works for odd numbers %s %s %s"
+        print("WARNING: image or cutout side are even number. The cut_edges routine only works for odd numbers %s %s %s"
                          % (nx, ny, numPix))
     cx = int((nx-1)/2)
     cy = int((ny-1)/2)

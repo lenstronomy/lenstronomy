@@ -591,6 +591,26 @@ its shifted version with the input kernel.</dd>
 </dd></dl>
 
 <dl class="function">
+<dt id="lenstronomy.Util.kernel_util.degrade_kernel">
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">degrade_kernel</code><span class="sig-paren">(</span><em>kernel_super</em>, <em>degrading_factor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#degrade_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.degrade_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kernel_super</strong> – higher resolution kernel (odd number per axis)</li>
+<li><strong>degrading_factor</strong> – degrading factor (effectively the supersampling resolution of the kernel given</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">degraded kernel with odd axis number</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.Util.kernel_util.estimate_amp">
 <code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">estimate_amp</code><span class="sig-paren">(</span><em>data</em>, <em>x_pos</em>, <em>y_pos</em>, <em>psf_kernel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#estimate_amp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.estimate_amp" title="Permalink to this definition">¶</a></dt>
 <dd><p>estimates the amplitude of a point source located at x_pos, y_pos
@@ -706,7 +726,7 @@ its shifted version with the input kernel.</dd>
 
 <dl class="function">
 <dt id="lenstronomy.Util.kernel_util.split_kernel">
-<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">split_kernel</code><span class="sig-paren">(</span><em>kernel</em>, <em>kernel_subgrid</em>, <em>subsampling_size</em>, <em>subgrid_res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#split_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.split_kernel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">split_kernel</code><span class="sig-paren">(</span><em>kernel_super</em>, <em>supersampling_kernel_size</em>, <em>supersampling_factor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#split_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.split_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
 performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -715,8 +735,8 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kernel</strong> – PSF kernel of the size of the pixel</li>
-<li><strong>kernel_subgrid</strong> – subsampled kernel</li>
-<li><strong>subsampling_size</strong> – size of subsampling PSF in units of image pixels</li>
+<li><strong>kernel_super</strong> – subsampled kernel</li>
+<li><strong>supersampling_kernel_size</strong> – size of subsampling PSF in units of image pixels</li>
 </ul>
 </td>
 </tr>

@@ -77,12 +77,12 @@ class PointSource(object):
         :param lens_model_class: instance of LensModel class
         :return: update instance of lens model class
         """
-        self.delete_lens_model_cach()
+        self.delete_lens_model_cache()
         self._lensModel = lens_model_class
         for model in self._point_source_list:
             model.update_lens_model(lens_model_class=lens_model_class)
 
-    def delete_lens_model_cach(self):
+    def delete_lens_model_cache(self):
         """
         deletes the variables saved for a specific lens model
 

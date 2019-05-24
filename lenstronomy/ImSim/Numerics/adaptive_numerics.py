@@ -32,21 +32,19 @@ class AdaptiveConvolution(object):
         :param cache: bool, numba jit setting to use cache
         :param parallel: bool, numba jit setting to use parallel mode
         """
-        #kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor)
-        n_high = len(kernel_super)
-        numPix = int(n_high / supersampling_factor)
-        if supersampling_factor % 2 == 0:
-            kernel = kernel_util.averaging_even_kernel(kernel_super, supersampling_factor)
-        else:
-            kernel = util.averaging(kernel_super, numGrid=n_high,
-                                                       numPix=numPix)
-        kernel *= supersampling_factor**2
+        kernel = kernel_util.degrade_kernel(kernel_super, degrading_factor=supersampling_factor)
         self._low_res_conv = PixelKernelConvolution(kernel, convolution_type='fft')
         if supersampling_kernel_size is None:
             supersampling_kernel_size = len(kernel)
 
-        kernel_cut = image_util.cut_edges(kernel, supersampling_kernel_size)
-        kernel_super_cut = image_util.cut_edges(kernel_super, supersampling_kernel_size * supersampling_factor)
+        n_cut_super = supersampling_kernel_size * supersampling_factor
+        if n_cut_super % 2 == 0:
+            n_cut_super += 1
+        #kernel_super_cut = image_util.cut_edges(kernel_super, n_cut_super)
+        #kernel_cut = kernel_util.degrade_kernel(kernel_super_cut, degrading_factor=supersampling_factor)
+        kernel_super_cut = image_util.cut_edges(kernel_super, n_cut_super)
+        kernel_cut = kernel_util.degrade_kernel(kernel_super_cut, degrading_factor=supersampling_factor)
+
         self._low_res_partial = NumbaConvolution(kernel_cut, conv_supersample_pixels, compute_pixels=compute_pixels,
                                                  nopython=nopython, cache=cache, parallel=parallel, memory_raise=True)
         self._hig_res_partial = SubgridNumbaConvolution(kernel_super_cut, supersampling_factor, conv_supersample_pixels,

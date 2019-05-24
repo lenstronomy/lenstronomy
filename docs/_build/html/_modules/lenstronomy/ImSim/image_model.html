@@ -57,7 +57,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_class</span><span class="p">,</span> <span class="n">psf_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">lens_light_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param data_class: instance of Data() class</span>
+<span class="sd">        :param data_class: instance of ImageData() or PixelGrid() class</span>
 <span class="sd">        :param psf_class: instance of PSF() class</span>
 <span class="sd">        :param lens_model_class: instance of LensModel() class</span>
 <span class="sd">        :param source_model_class: instance of LightModel() class describing the source parameters</span>
@@ -103,11 +103,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deletes all the cache in the point source class and saves it from then on</span>
 
-<span class="sd">        :return:</span>
+<span class="sd">        :param bool: boolean, if True, saves the next occuring point source positions in the cache</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cach</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImageModel.update_psf"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.update_psf">[docs]</a>    <span class="k">def</span> <span class="nf">update_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_class</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -191,19 +191,13 @@
 <span class="sd">        :param point_source_add: if True, add point sources, otherwise without</span>
 <span class="sd">        :return: 1d array of surface brightness pixels of the simulation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">source_add</span><span class="p">:</span>
-            <span class="n">source_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_surface_brightness</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">source_light</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">lens_light_add</span><span class="p">:</span>
-            <span class="n">lens_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_surface_brightness</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">lens_light</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">point_source_add</span><span class="p">:</span>
-            <span class="n">point_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_source</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">point_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">))</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="p">(</span><span class="n">source_light</span> <span class="o">+</span> <span class="n">lens_light</span> <span class="o">+</span> <span class="n">point_source</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">source_add</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_surface_brightness</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lens_light_add</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_surface_brightness</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">point_source_add</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_source</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">unconvolved</span><span class="o">=</span><span class="n">unconvolved</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">model</span></div></div>
 </pre></div>
 

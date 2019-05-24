@@ -92,7 +92,7 @@ class LikelihoodModule(object):
         self._check_bounds = check_bounds
 
     def _reset_point_source_cache(self, bool=True):
-        self.PointSource.delete_lens_model_cach()
+        self.PointSource.delete_lens_model_cache()
         self.PointSource.set_save_cache(bool)
         if self._image_likelihood is True:
             self.image_likelihood.reset_point_source_cache(bool)

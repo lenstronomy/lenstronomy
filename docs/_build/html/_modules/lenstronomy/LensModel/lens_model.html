@@ -52,7 +52,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
@@ -74,6 +74,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source needs to be set for multi-plane lens modelling.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                          <span class="n">numerical_alpha_class</span> <span class="o">=</span> <span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

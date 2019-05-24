@@ -48,6 +48,9 @@
 <div class="viewcode-block" id="MultiPlane"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane">[docs]</a><span class="k">class</span> <span class="nc">MultiPlane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multi-plane lensing class</span>
+
+<span class="sd">    The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the</span>
+<span class="sd">    sourde redshift of the class instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -434,8 +437,8 @@
         <span class="n">alpha_y_new</span> <span class="o">=</span> <span class="n">alpha_y</span> <span class="o">-</span> <span class="n">alpha_y_phys</span>
         <span class="k">return</span> <span class="n">alpha_x_new</span><span class="p">,</span> <span class="n">alpha_y_new</span>
 
-    <span class="c1">#@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_start_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inclusive</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_start</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_start_condition</span><span class="p">(</span><span class="n">inclusive</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_start</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">inclusive</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">z_lens</span> <span class="o">&gt;=</span> <span class="n">z_start</span>

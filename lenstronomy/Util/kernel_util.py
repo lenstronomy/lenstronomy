@@ -149,10 +149,10 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
     :return: averaged undersampling kernel
     """
     n_kernel_high_res = len(kernel_high_res)
-    n_low = round(n_kernel_high_res / subgrid_res + 0.5)
+    n_low = int(round(n_kernel_high_res / subgrid_res + 0.5))
     if n_low % 2 == 0:
         n_low += 1
-    n_high = n_low * subgrid_res - 1
+    n_high = int(n_low * subgrid_res - 1)
     assert n_high % 2 == 1
     if n_high == n_kernel_high_res:
         kernel_high_res_edges = kernel_high_res

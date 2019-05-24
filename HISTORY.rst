@@ -96,3 +96,7 @@ History
 * New design of Numerics module
 * New design of PSF and Data module
 * New design of multi-band fitting module
+
+0.8.1 (2019-5-23)
++++++++++++++++++
+* PSF numerics improved and redundancies removed.

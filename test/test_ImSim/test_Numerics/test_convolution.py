@@ -69,7 +69,7 @@ class TestSubgridKernelConvolution(object):
         npt.assert_almost_equal(np.sum(model_subgrid_conv), np.sum(model_subgrid_conv_split), decimal=8)
         npt.assert_almost_equal(model_subgrid_conv, model_subgrid_conv_split, decimal=8)
 
-        subgrid_conv_split = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=2,
+        subgrid_conv_split = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=3,
                                                       convolution_type='fft')
         model_subgrid_conv_split = subgrid_conv_split.convolution2d(self.model_sub)
         npt.assert_almost_equal(np.sum(model_subgrid_conv), np.sum(model_subgrid_conv_split), decimal=5)

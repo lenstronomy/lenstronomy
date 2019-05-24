@@ -59,16 +59,16 @@ class SubgridKernelConvolution(object):
         n_high = len(kernel_supersampled)
         self._supersampling_factor = supersampling_factor
         numPix = int(n_high / self._supersampling_factor)
-        if self._supersampling_factor % 2 == 0:
-            self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
-        else:
-            self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
+        #if self._supersampling_factor % 2 == 0:
+        #    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)
+        #else:
+        #    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)
         if supersampling_kernel_size is None:
-            kernel_low_res, kernel_high_res = np.zeros_like(self._kernel), kernel_supersampled
+            kernel_low_res, kernel_high_res = np.zeros((3, 3)), kernel_supersampled
             self._low_res_convolution = False
         else:
-            kernel_low_res, kernel_high_res = kernel_util.split_kernel(self._kernel, kernel_supersampled,
-                                                                       supersampling_kernel_size, self._supersampling_factor)
+            kernel_low_res, kernel_high_res = kernel_util.split_kernel(kernel_supersampled, supersampling_kernel_size,
+                                                                       self._supersampling_factor)
             self._low_res_convolution = True
         self._low_res_conv = PixelKernelConvolution(kernel_low_res, convolution_type=convolution_type)
         self._high_res_conv = PixelKernelConvolution(kernel_high_res, convolution_type=convolution_type)

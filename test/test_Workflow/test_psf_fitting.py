@@ -5,12 +5,13 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Workflow.psf_fitting import PsfFitting
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -31,7 +32,7 @@ class TestImageModel(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         sigma = util.fwhm2sigma(fwhm)
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -42,7 +43,7 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        psf_class = PSF(kwargs_psf=self.kwargs_psf)
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -71,16 +72,18 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.0, 'dec_source': 0.0,
                            'source_amp': 10.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 3, 'psf_subgrid': True}
+
+        kwargs_numerics = {'supersampling_factor': 3, 'supersampling_convolution': False, 'compute_mode': 'regular',
+                           'point_source_supersampling_factor': 3}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                      lens_light_model_class,
                                      point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
         data_class.update_data(image_sim)
-        self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
-                                lens_light_model_class,
-                                point_source_class, kwargs_numerics=kwargs_numerics)
+        self.imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class,
+                                         lens_light_model_class,
+                                         point_source_class, kwargs_numerics=kwargs_numerics)
 
         self.psf_fitting = PsfFitting(self.imageModel)
 
@@ -144,7 +147,7 @@ class TestImageModel(object):
     def test_mask_point_source(self):
         ra_image, dec_image, amp = self.imageModel.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         print(ra_image, dec_image, amp)
-        x_grid, y_grid = self.imageModel.Data.coordinates
+        x_grid, y_grid = self.imageModel.Data.pixel_coordinates
         x_grid = util.image2array(x_grid)
         y_grid = util.image2array(y_grid)
         radius = 0.5

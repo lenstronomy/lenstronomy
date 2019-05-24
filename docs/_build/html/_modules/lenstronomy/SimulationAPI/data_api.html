@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.data_api &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.SimulationAPI.data_api &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -40,9 +40,11 @@
             
   <h1>Source code for lenstronomy.SimulationAPI.data_api</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.SimulationAPI.observation_api</span> <span class="k">import</span> <span class="n">SingleBand</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Data.imaging_data</span> <span class="k">import</span> <span class="n">Data</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Data.imaging_data</span> <span class="k">import</span> <span class="n">ImageData</span>
+<span class="c1">#from lenstronomy.Data.pixel_grid import PixelGrid</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="k">import</span> <span class="n">PSF</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="DataAPI"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.data_api.DataAPI">[docs]</a><span class="k">class</span> <span class="nc">DataAPI</span><span class="p">(</span><span class="n">SingleBand</span><span class="p">):</span>
@@ -71,11 +73,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid_with_coordtransform</span><span class="p">(</span>
             <span class="n">numPix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">numpix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">kwargs_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numPix&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">numpix</span><span class="p">,</span> <span class="s1">&#39;ra_at_xy_0&#39;</span><span class="p">:</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="s1">&#39;dec_at_xy_0&#39;</span><span class="p">:</span> <span class="n">dec_at_xy_0</span><span class="p">,</span>
+        <span class="n">kwargs_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;image_data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numpix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numpix</span><span class="p">)),</span> <span class="s1">&#39;ra_at_xy_0&#39;</span><span class="p">:</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="s1">&#39;dec_at_xy_0&#39;</span><span class="p">:</span> <span class="n">dec_at_xy_0</span><span class="p">,</span>
                        <span class="s1">&#39;transform_pix2angle&#39;</span><span class="p">:</span> <span class="n">Mpix2coord</span><span class="p">,</span>
                        <span class="s1">&#39;background_rms&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_noise</span><span class="p">,</span>
-                       <span class="s1">&#39;exp_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled_exposure_time</span><span class="p">}</span>
-        <span class="n">data_class</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">kwargs_data</span><span class="p">)</span>
+                       <span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled_exposure_time</span><span class="p">}</span>
+        <span class="n">data_class</span> <span class="o">=</span> <span class="n">ImageData</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data_class</span>
 
     <span class="nd">@property</span>
@@ -97,7 +99,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to create the class instance with a psf_model!&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psf_type </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_type</span><span class="p">)</span>
-        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">psf_class</span></div>
 </pre></div>
 
@@ -131,7 +133,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

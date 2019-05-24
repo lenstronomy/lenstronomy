@@ -46,9 +46,13 @@ class Penalties(object):
         else:
             raise Exception("chi2_mode must be either 'source' or 'image'")
 
-        if not np.logical_or(isinstance(tol_mag,list),isinstance(tol_mag,np.ndarray)):
-            tol_mag = [tol_mag]*4
-        self.tol_mag = tol_mag
+        if tol_mag is None:
+            self.tol_mag = None
+        else:
+            if not np.logical_or(isinstance(tol_mag,list),isinstance(tol_mag,np.ndarray)):
+                tol_mag = [tol_mag]*4
+            self.tol_mag = tol_mag
+
         self.magnification_target = magnification_target
         self.tol_centroid = tol_centroid
         self.lensing = lensing
@@ -162,6 +166,9 @@ class Penalties(object):
 
     def _compute_mags_criterion(self):
 
+        if self.tol_mag is None:
+            return False
+
         if self._compute_mags:
             return True
 
@@ -189,6 +196,9 @@ class Penalties(object):
         penalty = 0
 
         for pname in self.params_to_constrain.keys():
+
+            if pname == 'shear' and hasattr(self.param_class.routine, '_fixshear'):
+                continue
 
             if pname == 'shear':
 

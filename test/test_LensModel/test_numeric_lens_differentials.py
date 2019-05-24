@@ -154,7 +154,7 @@ class TestNumericsProfile(object):
 
     def test_sersic_ellipse(self):
         kwargs = {'n_sersic': 2., 'R_sersic': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
-        lens_model = ['SERSIC_ELLIPSE']
+        lens_model = ['SERSIC_ELLIPSE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
 
     def test_shapelets_pot_2(self):

@@ -2,10 +2,11 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
+import numpy as np
 
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.ImSim.MultiBand.multiband import MultiBand
+from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -31,10 +32,10 @@ class TestImageModel(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_data)
+        data_class = ImageData(**kwargs_data)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
                                                truncate=5)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         phi, q = 0.2, 0.8
@@ -62,7 +63,7 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.0001, 'dec_source': 0.0,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 2, 'psf_subgrid': True}
+        kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': True, 'compute_mode': 'gaussian'}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
@@ -71,24 +72,16 @@ class TestImageModel(object):
         kwargs_data['image_data'] = image_sim
         self.solver = LensEquationSolver(lensModel=lens_model_class)
         multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
-        self.imageModel = MultiBand(multi_band_list, lens_model_class, source_model_class, lens_light_model_class, point_source_class)
+        kwargs_model = {'lens_model_list': lens_model_list, 'source_light_model_list': source_model_list,
+                        'point_source_model_list': ['SOURCE_POSITION'], 'fixed_magnification_list': [True]}
+        self.imageModel = MultiLinear(multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None)
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, inv_bool=False)
         chi2_reduced = self.imageModel._imageModel_list[0].reduced_chi2(model[0], error_map[0])
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
-
-    def test_image_positions(self):
-        x_im, y_im = self.imageModel.image_positions(self.kwargs_ps, self.kwargs_lens)
-        ra_pos, dec_pos = self.solver.image_position_from_source(sourcePos_x=self.kwargs_ps[0]['ra_source'],
-                                                                 sourcePos_y=self.kwargs_ps[0]['dec_source'],
-                                                                 kwargs_lens=self.kwargs_lens)
-        ra_pos_new = x_im[0]
-        npt.assert_almost_equal(ra_pos_new[0], ra_pos[0], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[1], ra_pos[1], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[2], ra_pos[2], decimal=8)
-        npt.assert_almost_equal(ra_pos_new[3], ra_pos[3], decimal=8)
-
+        chi2_reduced_list = self.imageModel.reduced_residuals(model_list=model, error_map_list=error_map)
+        npt.assert_almost_equal(np.sum(chi2_reduced_list[0]**2)/(100**2), 1, decimal=1)
 
     def test_likelihood_data_given_model(self):
         logL = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, source_marg=False)
@@ -99,19 +92,9 @@ class TestImageModel(object):
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-2)
 
     def test_numData_evaluate(self):
-        numData = self.imageModel.numData_evaluate()
+        numData = self.imageModel.num_data_evaluate
         assert numData == 10000
-
-    def test_fermat_potential(self):
-        phi_fermat = self.imageModel.fermat_potential(self.kwargs_lens, self.kwargs_ps)
-        phi_fermat = phi_fermat[0]
-        npt.assert_almost_equal(phi_fermat[0], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[1], -0.2719737, decimal=3)
-        npt.assert_almost_equal(phi_fermat[2], -0.51082354, decimal=3)
-        npt.assert_almost_equal(phi_fermat[3], -0.51082354, decimal=3)
 
 
 if __name__ == '__main__':
     pytest.main()
-
-

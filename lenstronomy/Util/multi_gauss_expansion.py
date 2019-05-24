@@ -21,7 +21,7 @@ def gaussian(R, sigma, amp):
     return c * np.exp(-(R/float(sigma))**2/2.)
 
 
-def mge_1d(r_array, flux_r, N=20):
+def mge_1d(r_array, flux_r, N=20, linspace=False):
     """
 
     :param r_array: list or radii (numpy array)
@@ -30,7 +30,7 @@ def mge_1d(r_array, flux_r, N=20):
     :return: amplitudes and Gaussian sigmas for the best 1d flux profile
     """
     try:
-        amplitudes, sigmas, norm = _mge_1d(r_array, flux_r, N)
+        amplitudes, sigmas, norm = _mge_1d(r_array, flux_r, N, linspace=linspace)
     except:
         N_new = N - 1
         if N_new == 0:
@@ -39,11 +39,11 @@ def mge_1d(r_array, flux_r, N=20):
             sigmas = [1]
             norm = 0
         else:
-            amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new)
+            amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new, linspace=linspace)
     return amplitudes, sigmas, norm
 
 
-def _mge_1d(r_array, flux_r, N=20):
+def _mge_1d(r_array, flux_r, N=20, linspace=False):
     """
 
     :param r_array:
@@ -51,7 +51,10 @@ def _mge_1d(r_array, flux_r, N=20):
     :param N:
     :return:
     """
-    sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.001) / 2.), N + 2)[1:-1]
+    if linspace is True:
+        sigmas = np.linspace(r_array[0], r_array[-1] / 2, N + 2)[1:-1]
+    else:
+        sigmas = np.logspace(np.log10(r_array[0]), np.log10((r_array[-1] + 0.0000001) / 2.), N + 2)[1:-1]
     # sigmas = np.linspace(r_array[0], r_array[-1]/2, N + 2)[1:-1]
 
     A = np.zeros((len(flux_r), N))

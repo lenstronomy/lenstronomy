@@ -40,14 +40,20 @@ class LightModel(object):
                 from lenstronomy.LightModel.Profiles.sersic import Sersic
                 self.func_list.append(Sersic(smoothing=smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
-                from lenstronomy.LightModel.Profiles.sersic import Sersic_elliptic
-                self.func_list.append(Sersic_elliptic(smoothing=smoothing))
+                from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
+                self.func_list.append(SersicElliptic(smoothing=smoothing))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
                 self.func_list.append(CoreSersic(smoothing=smoothing))
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
+            elif profile_type == 'SHAPELETS_POLAR':
+                from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletSetPolar
+                self.func_list.append(ShapeletSetPolar(exponential=False))
+            elif profile_type == 'SHAPELETS_POLAR_EXP':
+                from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletSetPolar
+                self.func_list.append(ShapeletSetPolar(exponential=True))
             elif profile_type == 'HERNQUIST':
                 from lenstronomy.LightModel.Profiles.hernquist import Hernquist
                 self.func_list.append(Hernquist())
@@ -153,10 +159,13 @@ class LightModel(object):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num
-                elif model in ['SHAPELETS']:
+                elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
                     kwargs = kwargs_list[i]
                     n_max = kwargs['n_max']
-                    num_param = int((n_max + 1) * (n_max + 2) / 2)
+                    if model in ['SHAPELETS_POLAR_EXP']:
+                        num_param = int((n_max+1)**2)
+                    else:
+                        num_param = int((n_max + 1) * (n_max + 2) / 2)
                     new = {'amp': np.ones(num_param)}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)
@@ -165,6 +174,31 @@ class LightModel(object):
                 else:
                     raise ValueError('model type %s not valid!' % model)
         return response, n
+
+    def num_param_linear(self, kwargs_list=None):
+        """
+
+        :return: number of linear basis set coefficients
+        """
+        n = 0
+        for i, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                n += 1
+            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                num = len(kwargs_list[i]['sigma'])
+                n += num
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+                n_max = kwargs_list[i]['n_max']
+                if model in ['SHAPELETS_POLAR_EXP']:
+                    num_param = int((n_max+1)**2)
+                else:
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
+                n += num_param
+            else:
+                raise ValueError('model type %s not valid!' % model)
+        return n
 
     def update_linear(self, param, i, kwargs_list):
         """
@@ -184,7 +218,7 @@ class LightModel(object):
                 num_param = len(kwargs_list[k]['sigma'])
                 kwargs_list[k]['amp'] = param[i:i + num_param]
                 i += num_param
-            elif model in ['SHAPELETS']:
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
                 n_max = kwargs_list[k]['n_max']
                 num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]

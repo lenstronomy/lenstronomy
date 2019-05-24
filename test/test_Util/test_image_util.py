@@ -252,5 +252,16 @@ def test_rebin_image():
     npt.assert_almost_equal(ra_coords_resized[0, 0], -0.225, decimal=8)
 
 
+def test_radial_profile():
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gauss = Gaussian()
+    x, y = util.make_grid(11, 1)
+    flux = gauss.function(x, y, sigma_x=10, sigma_y=10, amp=1)
+    data = util.array2image(flux)
+    profile_r = image_util.radial_profile(data, center=[5, 5])
+    profile_r_true = gauss.function(np.linspace(0, stop=7, num=8), 0, sigma_x=10, sigma_y=10, amp=1)
+    npt.assert_almost_equal(profile_r, profile_r_true, decimal=3)
+
+
 if __name__ == '__main__':
     pytest.main()

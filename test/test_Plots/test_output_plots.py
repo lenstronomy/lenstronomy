@@ -9,7 +9,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Plots.output_plots import LensModelPlot
 import lenstronomy.Plots.output_plots as output_plots
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 import matplotlib
@@ -34,14 +34,14 @@ class TestOutputPlots(object):
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(self.kwargs_data)
+        data_class = ImageData(**self.kwargs_data)
         kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
         self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
                                                     truncate=6,
                                                     kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -71,7 +71,7 @@ class TestOutputPlots(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -87,7 +87,7 @@ class TestOutputPlots(object):
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = kwargs_numerics
-        self.data_class = Data(self.kwargs_data)
+        self.data_class = ImageData(**self.kwargs_data)
 
     def test_lensModelPlot(self):
 
@@ -199,6 +199,13 @@ class TestOutputPlots(object):
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
                                      point_source=True, with_caustics=True)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
+                                          sourcePos_y=0,
+                                          point_source=False, with_caustics=False)
         plt.close()
 
 

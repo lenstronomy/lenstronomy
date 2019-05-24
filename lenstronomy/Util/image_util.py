@@ -184,7 +184,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
 
 def re_size(image, factor=1):
     """
-    resizes image with nx x ny to nx/factor x ny/factor
+    re-sizes image with nx x ny to nx/factor x ny/factor
     :param image: 2d image with shape (nx,ny)
     :param factor: integer >=1
     :return:
@@ -278,7 +278,7 @@ def cut_edges(image, numPix):
         return image
     if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
         #pass
-        print("WARNING: image or cutout side are even number. This routine only works for odd numbers %s %s %s"
+        print("WARNING: image or cutout side are even number. The cut_edges routine only works for odd numbers %s %s %s"
                          % (nx, ny, numPix))
     cx = int((nx-1)/2)
     cy = int((ny-1)/2)
@@ -289,3 +289,21 @@ def cut_edges(image, numPix):
         cy += 1
     resized = image[cx-d:cx+d+1, cy-d:cy+d+1]
     return copy.deepcopy(resized)
+
+
+def radial_profile(data, center=[0, 0]):
+    """
+    computes radial profile
+
+    :param data: 2d numpy array
+    :param center: center [x, y] from where to compute the radial profile
+    :return: radial profile (in units pixel)
+    """
+    y, x = np.indices((data.shape))
+    r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    r = r.astype(np.int)
+
+    tbin = np.bincount(r.ravel(), data.ravel())
+    nr = np.bincount(r.ravel())
+    radialprofile = tbin / nr
+    return radialprofile

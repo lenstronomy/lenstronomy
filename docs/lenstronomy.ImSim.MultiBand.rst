@@ -4,6 +4,14 @@ lenstronomy.ImSim.MultiBand package
 Submodules
 ----------
 
+lenstronomy.ImSim.MultiBand.joint\_linear module
+------------------------------------------------
+
+.. automodule:: lenstronomy.ImSim.MultiBand.joint_linear
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.ImSim.MultiBand.multi\_data\_base module
 ----------------------------------------------------
 
@@ -12,26 +20,18 @@ lenstronomy.ImSim.MultiBand.multi\_data\_base module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.ImSim.MultiBand.multi\_exposures module
----------------------------------------------------
+lenstronomy.ImSim.MultiBand.multi\_linear module
+------------------------------------------------
 
-.. automodule:: lenstronomy.ImSim.MultiBand.multi_exposures
+.. automodule:: lenstronomy.ImSim.MultiBand.multi_linear
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.ImSim.MultiBand.multi\_frame module
------------------------------------------------
+lenstronomy.ImSim.MultiBand.single\_band\_multi\_model module
+-------------------------------------------------------------
 
-.. automodule:: lenstronomy.ImSim.MultiBand.multi_frame
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy.ImSim.MultiBand.multiband module
---------------------------------------------
-
-.. automodule:: lenstronomy.ImSim.MultiBand.multiband
+.. automodule:: lenstronomy.ImSim.MultiBand.single_band_multi_model
     :members:
     :undoc-members:
     :show-inheritance:

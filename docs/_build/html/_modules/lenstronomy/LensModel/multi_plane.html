@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,9 +48,12 @@
 <div class="viewcode-block" id="MultiPlane"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane">[docs]</a><span class="k">class</span> <span class="nc">MultiPlane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multi-plane lensing class</span>
+
+<span class="sd">    The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the</span>
+<span class="sd">    sourde redshift of the class instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param cosmo: instance of astropy.cosmology</span>
@@ -66,7 +69,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_sorted_redshift_index</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sorted_redshift_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_ordering</span><span class="p">(</span><span class="n">lens_redshift_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="n">z_before</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_T_z_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -106,7 +109,8 @@
         <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorted_redshift_index</span><span class="p">):</span>
             <span class="n">delta_T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ray_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">delta_T</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">delta_T</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ray_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">delta_T</span><span class="p">)</span>
             <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_deflection</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">delta_T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_list</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ray_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">delta_T</span><span class="p">)</span>
@@ -433,8 +437,8 @@
         <span class="n">alpha_y_new</span> <span class="o">=</span> <span class="n">alpha_y</span> <span class="o">-</span> <span class="n">alpha_y_phys</span>
         <span class="k">return</span> <span class="n">alpha_x_new</span><span class="p">,</span> <span class="n">alpha_y_new</span>
 
-    <span class="c1">#@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_start_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inclusive</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_start</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_start_condition</span><span class="p">(</span><span class="n">inclusive</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_start</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">inclusive</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">z_lens</span> <span class="o">&gt;=</span> <span class="n">z_start</span>
@@ -472,7 +476,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

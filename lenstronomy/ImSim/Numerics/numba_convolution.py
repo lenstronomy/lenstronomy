@@ -1,5 +1,4 @@
 import numpy as np
-import copy
 
 from lenstronomy.Util import numba_util
 from lenstronomy.ImSim.Numerics.partial_image import PartialImage

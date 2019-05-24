@@ -274,8 +274,8 @@ def cut_edges(image, numPix):
     """
     nx, ny = image.shape
     if nx < numPix or ny < numPix:
-        print('WARNING: image can not be resized, in routine cut_edges.')
-        return image
+        raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
+                         'and desired new shape (%s %s)' % (nx, ny, numPix, numPix))
     if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
         #pass
         print("WARNING: image or cutout side are even number. The cut_edges routine only works for odd numbers %s %s %s"

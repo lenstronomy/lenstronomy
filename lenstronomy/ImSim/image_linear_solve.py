@@ -9,7 +9,8 @@ class ImageLinearFit(ImageModel):
     linear version class, inherits ImageModel
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}, likelihood_mask=None):
+                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}, likelihood_mask=None,
+                 psf_error_map_bool_list=None):
         """
 
         :param data_class: ImageData() instance
@@ -20,15 +21,21 @@ class ImageLinearFit(ImageModel):
         :param point_source_class: PointSource() instance
         :param kwargs_numerics: keyword arguments passed to the Numerics module
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
+        :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
+        being applied to the point sources.
         """
+        if likelihood_mask is None:
+            likelihood_mask = np.ones_like(data_class.data)
+        self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
+        self._mask1d = util.image2array(self.likelihood_mask)
+        kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
                                              point_source_class=point_source_class, kwargs_numerics=kwargs_numerics)
-        if likelihood_mask is None:
-            likelihood_mask = np.ones_like(self.Data.data)
-        self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
-        self._mask1d = util.image2array(self.likelihood_mask)
+        if psf_error_map_bool_list is None:
+            psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
+        self._psf_error_map_bool_list = psf_error_map_bool_list
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            inv_bool=False):
@@ -289,7 +296,7 @@ class ImageLinearFit(ImageModel):
         """
         error_map = np.zeros((self.Data.num_pixel_axes))
         if self._psf_error_map is True:
-            for k, bool in enumerate(self._error_map_bool_list):
+            for k, bool in enumerate(self._psf_error_map_bool_list):
                 if bool is True:
                     ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
                     for i in range(0, n_points):

@@ -1,8 +1,7 @@
 from lenstronomy.ImSim.Numerics.numba_convolution import SubgridNumbaConvolution, NumbaConvolution
-from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution, SubgridKernelConvolution
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import kernel_util
 from lenstronomy.Util import image_util
-from lenstronomy.Util import util
 
 
 class AdaptiveConvolution(object):

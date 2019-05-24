@@ -45,7 +45,9 @@ class PointSourceRendering(object):
 
     @property
     def _kernel_supersampled(self):
-        return self._psf.kernel_point_source_supersampled(self._supersampling_factor)
+        if not hasattr(self, '_kernel_supersampled_instance'):
+            self._kernel_supersampled_instance = self._psf.kernel_point_source_supersampled(self._supersampling_factor, updata_cache=False)
+        return self._kernel_supersampled_instance
 
     def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)

@@ -1,4 +1,3 @@
-from lenstronomy.ImSim.Numerics.adaptive_numerics import AdaptiveConvolution
 from lenstronomy.ImSim.Numerics.grid import RegularGrid, AdaptiveGrid
 from lenstronomy.ImSim.Numerics.convolution import SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution
 from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
@@ -54,6 +53,7 @@ class Numerics(PointSourceRendering):
                                      flux_evaluate_indexes)
         if self._psf_type == 'PIXEL':
             if compute_mode == 'adaptive' and supersampling_convolution is True:
+                from lenstronomy.ImSim.Numerics.adaptive_numerics import AdaptiveConvolution
                 kernel_super = psf.kernel_point_source_supersampled(supersampling_factor)
                 self._conv = AdaptiveConvolution(kernel_super, supersampling_factor,
                                                  conv_supersample_pixels=supersampled_indexes,

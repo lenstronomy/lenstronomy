@@ -72,7 +72,7 @@ class TestAdaptiveGrid(object):
 
 class TestRegularGrid(object):
 
-    def __init__(self):
+    def setup(self):
         pass
 
 

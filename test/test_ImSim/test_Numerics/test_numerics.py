@@ -90,12 +90,24 @@ class TestNumerics(object):
                                    'supersampling_kernel_size': None,  # does not matter for supersampling_factor=1
                                    }
 
+        flux_evaluate_indexes = np.zeros((numPix, numPix), dtype=bool)
+        flux_evaluate_indexes[flux >= flux_max / 1000] = True
+        # low resolution convolution on subframe
+        self.kwargs_numerics_partial = {'supersampling_factor': 1,
+                                        'compute_mode': 'regular',
+                                        'supersampling_convolution': False,
+                                        # does not matter for supersampling_factor=1
+                                        'supersampling_kernel_size': None,  # does not matter for supersampling_factor=1
+                                        'flux_evaluate_indexes': flux_evaluate_indexes,
+                                        }
+
+
         # import PSF file
         kernel_super = kernel_util.kernel_gaussian(kernel_numPix=11 * self._supersampling_factor,
                                                                      deltaPix=deltaPix / self._supersampling_factor, fwhm=0.1)
 
 
-        kernel_size = 91
+        kernel_size = 9
         kernel_super = kernel_util.cut_psf(psf_data=kernel_super, psf_size=kernel_size * self._supersampling_factor)
 
         # make instance of the PixelGrid class
@@ -152,6 +164,13 @@ class TestNumerics(object):
                                       kwargs_numerics=self.kwargs_numerics_low_res)
         image_conv = image_model.image(kwargs_lens_light=self.kwargs_light, unconvolved=False)
         npt.assert_almost_equal((self.image_true - image_conv) / self.image_true, 0, decimal=1)
+
+    def test_sub_frame(self):
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=self.kwargs_numerics_partial)
+        image_conv = image_model.image(kwargs_lens_light=self.kwargs_light, unconvolved=False)
+        delta = (self.image_true - image_conv) / self.image_true
+        npt.assert_almost_equal(delta[self._conv_pixels_partial], 0, decimal=1)
 
 
 if __name__ == '__main__':

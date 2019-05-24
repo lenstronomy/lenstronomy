@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.ImSim.Numerics.numerics import Numerics
+from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
@@ -28,14 +28,13 @@ class ImageModel(object):
         self.PSF = psf_class
         self.Data = data_class
         self.PSF.set_pixel_size(self.Data.pixel_width)
-        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics)
+        self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics)
         if lens_model_class is None:
             lens_model_class = LensModel(lens_model_list=[])
         self.LensModel = lens_model_class
         if point_source_class is None:
             point_source_class = PointSource(point_source_type_list=[])
         self.PointSource = point_source_class
-        self._error_map_bool_list = None
         if self.PointSource is not None:
             self.PointSource.update_lens_model(lens_model_class=lens_model_class)
             x_center, y_center = self.Data.center
@@ -43,7 +42,6 @@ class ImageModel(object):
                                                   y_center=y_center, min_distance=self.Data.pixel_width)
             if self.PSF.psf_error_map is not None:
                 self._psf_error_map = True
-                self._error_map_bool_list = kwargs_numerics.get('error_map_bool_list', [True]*len(self.PointSource.point_source_type_list))
             else:
                 self._psf_error_map = False
         else:
@@ -78,7 +76,7 @@ class ImageModel(object):
         """
         self.PSF = psf_class
         self.PSF.set_pixel_size(self.Data.pixel_width)
-        self.ImageNumerics = Numerics(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
+        self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
         """

@@ -85,7 +85,7 @@ class Image2SourceMapping(object):
                 y_source = y_comov / T_z
         return x_source, y_source
 
-    def image_flux_joint(self, x, y, kwargs_lens, kwargs_source):
+    def image_flux_joint(self, x, y, kwargs_lens, kwargs_source, k=None):
         """
 
         :param x: coordinate in image plane
@@ -96,7 +96,7 @@ class Image2SourceMapping(object):
         """
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)
-            return self._lightModel.surface_brightness(x_source, y_source, kwargs_source)
+            return self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=k)
         else:
             flux = np.zeros_like(x)
             if self._multi_lens_plane is False:
@@ -105,7 +105,8 @@ class Image2SourceMapping(object):
                     scale_factor = self._deflection_scaling_list[i]
                     x_source = x - x_alpha * scale_factor
                     y_source = y - y_alpha * scale_factor
-                    flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=i)
+                    if k is None or k ==i:
+                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=i)
             else:
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
@@ -120,7 +121,8 @@ class Image2SourceMapping(object):
                     T_z = self._bkg_cosmo.T_xy(0, z_stop)
                     x_source = x_comov/T_z
                     y_source = y_comov/T_z
-                    flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=idex)
+                    if k is None or k == i:
+                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=idex)
                     z_start = z_stop
             return flux
 
@@ -131,8 +133,7 @@ class Image2SourceMapping(object):
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
-        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as
-        the light_model_list
+        :return: list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list
         """
         if self._multi_source_plane is False:
             x_source, y_source = self._lensModel.ray_shooting(x, y, kwargs_lens)

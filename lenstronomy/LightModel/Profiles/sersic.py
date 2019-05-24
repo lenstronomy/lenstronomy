@@ -23,6 +23,7 @@ class Sersic(SersicUtil):
         #    n_sersic = 0.2
         #if R_sersic < 10.**(-6):
         #    R_sersic = 10.**(-6)
+        R_sersic = np.maximum(0, R_sersic)
         x_shift = x - center_x
         y_shift = y - center_y
         R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
@@ -44,10 +45,10 @@ class Sersic(SersicUtil):
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R)
             result[R_frac <= 100] = amp * np.exp(exponent)
-        return result
+        return np.nan_to_num(result)
 
 
-class Sersic_elliptic(SersicUtil):
+class SersicElliptic(SersicUtil):
     """
     this class contains functions to evaluate an elliptical Sersic function
     """
@@ -63,6 +64,7 @@ class Sersic_elliptic(SersicUtil):
         #    n_sersic = 0.2
         #if R_sersic < 10.**(-6):
         #    R_sersic = 10.**(-6)
+        R_sersic = np.maximum(0, R_sersic)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
@@ -86,15 +88,13 @@ class Sersic_elliptic(SersicUtil):
                 result = 0
             else:
                 exponent = -bn*(R_frac**(1./n_sersic)-1.)
-                exp = np.exp(exponent)
                 result = amp * np.exp(exponent)
         else:
             R_frac_real = R_frac[R_frac <= 100]
             exponent = -bn*(R_frac_real**(1./n_sersic)-1.)
             result = np.zeros_like(R_)
             result[R_frac <= 100] = amp * np.exp(exponent)
-        np.nan_to_num(result)
-        return result
+        return np.nan_to_num(result)
 
 
 class CoreSersic(SersicUtil):
@@ -137,4 +137,5 @@ class CoreSersic(SersicUtil):
             R[R_ > self._smoothing] = _R
 
         k, bn = self.k_bn(n_sersic, Re)
-        return amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * np.exp(-bn * (((R ** alpha + Rb ** alpha) / Re ** alpha) ** (1. / (alpha * n_sersic)) - 1.))
+        result = amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * np.exp(-bn * (((R ** alpha + Rb ** alpha) / Re ** alpha) ** (1. / (alpha * n_sersic)) - 1.))
+        return np.nan_to_num(result)

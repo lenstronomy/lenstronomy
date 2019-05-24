@@ -80,3 +80,12 @@ class SimAPI(DataAPI, ModelAPI):
                 amp_list.append(amp)
             kwargs_ps = self.point_source_model_class.set_amplitudes(amp_list, kwargs_ps)
         return kwargs_lens_light, kwargs_source, kwargs_ps
+
+    def reset_point_source_cache(self, bool=True):
+        """
+        deletes all the cache in the point source class and saves it from then on
+
+        :param bool: boolean, if True, saves the next occuring point source positions in the cache
+        :return: None
+        """
+        self._image_model_class.reset_point_source_cache(bool)

@@ -1,6 +1,13 @@
 lenstronomy.Sampling package
 ============================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.Sampling.Likelihoods
+
 Submodules
 ----------
 

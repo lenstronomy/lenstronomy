@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Optimizer package &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.LensModel.Optimizer package &#8212; lenstronomy 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -56,7 +56,7 @@
 <span id="lenstronomy-lensmodel-optimizer-fixed-routines-module"></span><h2>lenstronomy.LensModel.Optimizer.fixed_routines module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.fixed_routines" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Optimizer.fixed_routines.FixedPowerLaw_Shear">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.fixed_routines.</code><code class="descname">FixedPowerLaw_Shear</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_lens</em>, <em>xpos</em>, <em>ypos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#FixedPowerLaw_Shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.FixedPowerLaw_Shear" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.fixed_routines.</code><code class="descname">FixedPowerLaw_Shear</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_lens</em>, <em>xpos</em>, <em>ypos</em>, <em>constrain_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#FixedPowerLaw_Shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.FixedPowerLaw_Shear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Optimizer.fixed_routines.FixedPowerLaw_Shear.get_param_ranges">
@@ -65,64 +65,86 @@
 
 </dd></dl>
 
+<dl class="class">
+<dt id="lenstronomy.LensModel.Optimizer.fixed_routines.FixedShearPowerLaw">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.fixed_routines.</code><code class="descname">FixedShearPowerLaw</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_lens</em>, <em>xpos</em>, <em>ypos</em>, <em>constrain_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#FixedShearPowerLaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.FixedShearPowerLaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Optimizer.fixed_routines.FixedShearPowerLaw.get_param_ranges">
+<code class="descname">get_param_ranges</code><span class="sig-paren">(</span><em>reoptimize=False</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#FixedShearPowerLaw.get_param_ranges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.FixedShearPowerLaw.get_param_ranges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LensModel.Optimizer.fixed_routines.VariablePowerLaw_Shear">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.fixed_routines.</code><code class="descname">VariablePowerLaw_Shear</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_lens</em>, <em>xpos</em>, <em>ypos</em>, <em>constrain_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#VariablePowerLaw_Shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.VariablePowerLaw_Shear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Optimizer.fixed_routines.VariablePowerLaw_Shear.get_param_ranges">
+<code class="descname">get_param_ranges</code><span class="sig-paren">(</span><em>reoptimize=False</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html#VariablePowerLaw_Shear.get_param_ranges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.fixed_routines.VariablePowerLaw_Shear.get_param_ranges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-lenstronomy.LensModel.Optimizer.multi_plane">
-<span id="lenstronomy-lensmodel-optimizer-multi-plane-module"></span><h2>lenstronomy.LensModel.Optimizer.multi_plane module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.multi_plane" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.LensModel.Optimizer.multi_plane_optimizer">
+<span id="lenstronomy-lensmodel-optimizer-multi-plane-optimizer-module"></span><h2>lenstronomy.LensModel.Optimizer.multi_plane_optimizer module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.multi_plane_optimizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.Background">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>background_lensmodel</em>, <em>z_background</em>, <em>z_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.Background" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane_optimizer.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>background_lensmodel</em>, <em>z_background</em>, <em>z_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.Background.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>alphax</em>, <em>alphay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#Background.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.Background.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background.ray_shooting">
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>alphax</em>, <em>alphay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#Background.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.Background.ray_shooting_steps">
-<code class="descname">ray_shooting_steps</code><span class="sig-paren">(</span><em>alphax</em>, <em>alphay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#Background.ray_shooting_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.Background.ray_shooting_steps" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background.ray_shooting_steps">
+<code class="descname">ray_shooting_steps</code><span class="sig-paren">(</span><em>alphax</em>, <em>alphay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#Background.ray_shooting_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Background.ray_shooting_steps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.Foreground">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane.</code><code class="descname">Foreground</code><span class="sig-paren">(</span><em>foreground_lensmodel</em>, <em>z_to_vary</em>, <em>x_pos</em>, <em>y_pos</em>, <em>precompupted_rays=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#Foreground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.Foreground" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Foreground">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane_optimizer.</code><code class="descname">Foreground</code><span class="sig-paren">(</span><em>foreground_lensmodel</em>, <em>z_to_vary</em>, <em>x_pos</em>, <em>y_pos</em>, <em>precompupted_rays=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#Foreground"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Foreground" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.Foreground.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>args</em>, <em>offset_index=None</em>, <em>thetax=None</em>, <em>thetay=None</em>, <em>force_compute=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#Foreground.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.Foreground.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Foreground.ray_shooting">
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>args</em>, <em>offset_index=None</em>, <em>thetax=None</em>, <em>thetay=None</em>, <em>force_compute=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#Foreground.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.Foreground.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane.</code><code class="descname">MultiPlaneLensing</code><span class="sig-paren">(</span><em>full_lensmodel</em>, <em>x_pos</em>, <em>y_pos</em>, <em>lensmodel_params</em>, <em>z_source</em>, <em>z_macro</em>, <em>astropy_instance</em>, <em>macro_indicies</em>, <em>optimizer_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#MultiPlaneLensing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane_optimizer.</code><code class="descname">MultiPlaneLensing</code><span class="sig-paren">(</span><em>full_lensmodel</em>, <em>x_pos</em>, <em>y_pos</em>, <em>lensmodel_params</em>, <em>z_source</em>, <em>z_macro</em>, <em>astropy_instance</em>, <em>macro_indicies</em>, <em>optimizer_kwargs</em>, <em>numerical_alpha_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#MultiPlaneLensing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>diff=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#MultiPlaneLensing.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>diff=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#MultiPlaneLensing.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.hessian" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.magnification">
-<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#MultiPlaneLensing.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.magnification" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.magnification">
+<code class="descname">magnification</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#MultiPlaneLensing.magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.magnification" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#MultiPlaneLensing.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.MultiPlaneLensing.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.ray_shooting">
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#MultiPlaneLensing.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.ToVary">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane.</code><code class="descname">ToVary</code><span class="sig-paren">(</span><em>tovary_lensmodel</em>, <em>z_to_vary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#ToVary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.ToVary" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.ToVary">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.multi_plane_optimizer.</code><code class="descname">ToVary</code><span class="sig-paren">(</span><em>tovary_lensmodel</em>, <em>z_to_vary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#ToVary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.ToVary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.multi_plane.ToVary.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>thetax</em>, <em>thetay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane.html#ToVary.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane.ToVary.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.multi_plane_optimizer.ToVary.ray_shooting">
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>thetax</em>, <em>thetay</em>, <em>args</em>, <em>x_in</em>, <em>y_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.html#ToVary.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.ToVary.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -132,7 +154,7 @@
 <span id="lenstronomy-lensmodel-optimizer-optimizer-module"></span><h2>lenstronomy.LensModel.Optimizer.optimizer module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.optimizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Optimizer.optimizer.Optimizer">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.optimizer.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], optimizer_routine='fixed_powerlaw_shear', magnification_target=None, multiplane=None, z_main=None, z_source=None, tol_source=1e-05, tol_image=0.003, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0, 0], astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True, pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500, tol_simplex_params=0.001, tol_simplex_func=0.001, tol_src_penalty=0.1, constrain_params=None, simplex_n_iterations=400, compute_mags_postpso=False, chi2_mode='source', optimizer_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.optimizer.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], numerical_alpha_class=None, optimizer_routine='fixed_powerlaw_shear', magnification_target=None, multiplane=None, z_main=None, z_source=None, tol_source=1e-05, tol_image=0.003, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0, 0], astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True, pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500, tol_simplex_params=0.001, tol_simplex_func=0.001, tol_src_penalty=0.1, constrain_params=None, simplex_n_iterations=400, compute_mags_postpso=False, chi2_mode='source', optimizer_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class which executes the optimization routines. Currently implemented as a particle swarm optimization followed by
 a downhill simplex routine.</p>
@@ -163,50 +185,40 @@ total number of lens models sovled: n_particles*n_iterations</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.LensModel.Optimizer.params">
-<span id="lenstronomy-lensmodel-optimizer-params-module"></span><h2>lenstronomy.LensModel.Optimizer.params module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.params" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.LensModel.Optimizer.optimizer_params">
+<span id="lenstronomy-lensmodel-optimizer-optimizer-params-module"></span><h2>lenstronomy.LensModel.Optimizer.optimizer_params module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.optimizer_params" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.params.</code><code class="descname">Params</code><span class="sig-paren">(</span><em>zlist=None</em>, <em>lens_list=None</em>, <em>arg_list=None</em>, <em>optimizer_routine=&lt;class 'str'&gt;</em>, <em>xpos=None</em>, <em>ypos=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.optimizer_params.</code><code class="descname">Params</code><span class="sig-paren">(</span><em>zlist=None</em>, <em>lens_list=None</em>, <em>arg_list=None</em>, <em>optimizer_routine=&lt;class 'str'&gt;</em>, <em>xpos=None</em>, <em>ypos=None</em>, <em>constrain_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.argsfixed_todictionary">
-<code class="descname">argsfixed_todictionary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.argsfixed_todictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.argsfixed_todictionary" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.argsfixed_todictionary">
+<code class="descname">argsfixed_todictionary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params.argsfixed_todictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.argsfixed_todictionary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.argsfixed_values">
-<code class="descname">argsfixed_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.argsfixed_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.argsfixed_values" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.argstovary_todictionary">
+<code class="descname">argstovary_todictionary</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params.argstovary_todictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.argstovary_todictionary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.argstovary_todictionary">
-<code class="descname">argstovary_todictionary</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.argstovary_todictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.argstovary_todictionary" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.fixed">
-<code class="descname">fixed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.fixed" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.fixed">
+<code class="descname">fixed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params.fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.fixed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.known_routines">
-<code class="descname">known_routines</code><em class="property"> = ['fixed_powerlaw_shear']</em><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.known_routines" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.known_routines">
+<code class="descname">known_routines</code><em class="property"> = ['fixed_powerlaw_shear', 'variable_powerlaw_shear', 'fixedshearpowerlaw']</em><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.known_routines" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.to_vary">
-<code class="descname">to_vary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.to_vary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.to_vary" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.to_vary">
+<code class="descname">to_vary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params.to_vary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.to_vary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.to_vary_limits">
-<code class="descname">to_vary_limits</code><span class="sig-paren">(</span><em>re_optimize</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.to_vary_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.to_vary_limits" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Optimizer.params.Params.tovary_array">
-<code class="descname">tovary_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/params.html#Params.tovary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.params.Params.tovary_array" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.optimizer_params.Params.to_vary_limits">
+<code class="descname">to_vary_limits</code><span class="sig-paren">(</span><em>re_optimize</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/optimizer_params.html#Params.to_vary_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.optimizer_params.Params.to_vary_limits" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -269,11 +281,11 @@ total number of lens models sovled: n_particles*n_iterations</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.LensModel.Optimizer.single_plane">
-<span id="lenstronomy-lensmodel-optimizer-single-plane-module"></span><h2>lenstronomy.LensModel.Optimizer.single_plane module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.single_plane" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.LensModel.Optimizer.single_plane_optimizer">
+<span id="lenstronomy-lensmodel-optimizer-single-plane-optimizer-module"></span><h2>lenstronomy.LensModel.Optimizer.single_plane_optimizer module<a class="headerlink" href="#module-lenstronomy.LensModel.Optimizer.single_plane_optimizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Optimizer.single_plane.SinglePlaneLensing">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.single_plane.</code><code class="descname">SinglePlaneLensing</code><span class="sig-paren">(</span><em>lensmodel</em>, <em>x_pos</em>, <em>y_pos</em>, <em>params</em>, <em>arg_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/single_plane.html#SinglePlaneLensing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.single_plane.SinglePlaneLensing" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Optimizer.single_plane_optimizer.SinglePlaneLensing">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Optimizer.single_plane_optimizer.</code><code class="descname">SinglePlaneLensing</code><span class="sig-paren">(</span><em>lensmodel</em>, <em>x_pos</em>, <em>y_pos</em>, <em>params</em>, <em>arg_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Optimizer/single_plane_optimizer.html#SinglePlaneLensing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Optimizer.single_plane_optimizer.SinglePlaneLensing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
@@ -294,12 +306,12 @@ total number of lens models sovled: n_particles*n_iterations</p>
 <li><a class="reference internal" href="#">lenstronomy.LensModel.Optimizer package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.fixed_routines">lenstronomy.LensModel.Optimizer.fixed_routines module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.multi_plane">lenstronomy.LensModel.Optimizer.multi_plane module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.multi_plane_optimizer">lenstronomy.LensModel.Optimizer.multi_plane_optimizer module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.optimizer">lenstronomy.LensModel.Optimizer.optimizer module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.params">lenstronomy.LensModel.Optimizer.params module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.optimizer_params">lenstronomy.LensModel.Optimizer.optimizer_params module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.particle_swarm">lenstronomy.LensModel.Optimizer.particle_swarm module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.penalties">lenstronomy.LensModel.Optimizer.penalties module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.single_plane">lenstronomy.LensModel.Optimizer.single_plane module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer.single_plane_optimizer">lenstronomy.LensModel.Optimizer.single_plane_optimizer module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Optimizer">Module contents</a></li>
 </ul>
 </li>
@@ -349,7 +361,7 @@ total number of lens models sovled: n_particles*n_iterations</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.html" title="lenstronomy.LensModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

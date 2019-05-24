@@ -60,7 +60,8 @@ class Param(object):
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
-                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', cosmo_type=None):
+                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', cosmo_type=None,
+                 source_size=False):
         """
 
         :return:
@@ -159,7 +160,8 @@ class Param(object):
         self.cosmoParams = CosmoParam(cosmo_type=cosmo_type, mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
-                                      point_source_offset=self._point_source_offset, num_images=self._num_images)
+                                      point_source_offset=self._point_source_offset, num_images=self._num_images,
+                                      source_size=source_size)
 
     @property
     def num_point_source_images(self):
@@ -370,7 +372,6 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
                 scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
-                print(scale_factor, 'test')
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor
                 elif 'theta_Rs' in kwargs:

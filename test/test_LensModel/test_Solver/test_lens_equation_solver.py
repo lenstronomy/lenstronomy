@@ -95,6 +95,40 @@ class TestLensEquationSolver(object):
                                                                      precision_limit=10 ** (-10), num_iter_max=10)
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
+        print(x_pos, y_pos)
+        assert len(x_pos) == 4
+
+    def test_example(self):
+        lens_model_list = ['SPEP', 'SHEAR']
+        lensModel = LensModel(lens_model_list)
+
+        lensEquationSolver = LensEquationSolver(lensModel)
+        sourcePos_x = 0.03
+        sourcePos_y = 0.0
+        min_distance = 0.05
+        search_window = 10
+        gamma = 2.
+        e1, e2 = -0.04, -0.1
+        kwargs_shear = {'e1': e1, 'e2': e2}  # shear values to the source plane
+        kwargs_spemd = {'theta_E': 1., 'gamma': gamma, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.01,
+                        'e2': 0.05}  # parameters of the deflector lens model
+
+        kwargs_lens = [kwargs_spemd, kwargs_shear]
+        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                     min_distance=min_distance,
+                                                                     search_window=search_window,
+                                                                     precision_limit=10 ** (-10), num_iter_max=10,
+                                                                     arrival_time_sort=True)
+        x_pos_stoch, y_pos_stoch = lensEquationSolver.image_position_stochastic(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                                search_window=search_window,
+                                                                                precision_limit=10 ** (-10),
+                                                                                arrival_time_sort=True, x_center=0,
+                                                                                y_center=0, num_random=100,
+                                                                                verbose=False
+                                                                                )
+        assert len(x_pos) == 4
+        assert len(x_pos_stoch) == 4
+        npt.assert_almost_equal(x_pos, x_pos_stoch, decimal=5)
 
 
 if __name__ == '__main__':

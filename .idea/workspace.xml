@@ -2,7 +2,317 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a4626eab-9ccf-4570-840e-f185b01e757e" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/docs/lenstronomy.ImSim.Numerics.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/lenstronomy.Sampling.Likelihoods.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Data/image_noise.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Data/pixel_grid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/single_band_multi_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/adaptive_numerics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/convolution.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/grid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/numba_convolution.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/numerics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/partial_image.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/Numerics/point_source_rendering.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/ImSim/image_linear_solve.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/numerical_deflections.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/shapelets_polar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/flux_ratio_likelihood.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/image_likelihood.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/position_likelihood.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/prior_likelihood.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lenstronomy/Util/numba_util.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_Data/test_image_noise.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_adaptive_numerics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_convolution.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_grid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_numerics.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_partial_image.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_ImSim/test_Numerics/test_pixel_convolution.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_LensModel/test_Profiles/test_numerical_deflections.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_LightModel/test_Profiles/test_shapelets_polar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_Sampling/test_Likelihoods/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/test_Sampling/test_Likelihoods/test_image_likelihood.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.rst" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.rst" beforeDir="false" afterPath="$PROJECT_DIR$/README.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/history.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/history.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Cosmo.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Cosmo.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Data.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Data.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.ImSim.MultiBand.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.ImSim.MultiBand.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.ImSim.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.ImSim.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.Optimizer.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.Optimizer.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.Solver.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.Solver.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LensModel.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LightModel.Profiles.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LightModel.Profiles.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LightModel.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.LightModel.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Plots.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Plots.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.PointSource.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.PointSource.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Sampling.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Sampling.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.SimulationAPI.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.SimulationAPI.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Util.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Util.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Workflow.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/lenstronomy.Workflow.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/.buildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/.buildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Analysis/lens_analysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Analysis/lens_analysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Analysis/lens_properties.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Analysis/lens_properties.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cluster/hello.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cluster/hello.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/background.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/background.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmo_param.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmo_param.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmo_solver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmo_solver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmography.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/cosmography.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/lens_cosmo.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Cosmo/lens_cosmo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/coord_transforms.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/coord_transforms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/imaging_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/imaging_data.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/psf.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Data/psf.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/analytic_kinematics.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/analytic_kinematics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/anisotropy.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/anisotropy.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/aperture.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/aperture.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/cosmo.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/cosmo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/galkin.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/galkin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/galkin_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/galkin_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/jeans_equation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/jeans_equation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/light_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/light_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/mass_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/mass_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/velocity_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/GalKin/velocity_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/MultiBand/multi_exposures.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/MultiBand/multi_frame.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/MultiBand/multiband.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/de_lens.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/de_lens.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/image_model.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/image_model.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/ImSim/image_numerics.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/fixed_routines.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/multi_plane.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/optimizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/optimizer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/params.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/particle_swarm.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/particle_swarm.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/penalties.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/penalties.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Optimizer/single_plane.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/alpha_shift.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/alpha_shift.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/chameleon.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/chameleon.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/cnfw.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/cnfw.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/convergence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/convergence.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/coreBurkert.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/coreBurkert.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/dipole.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/dipole.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/flexion.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/flexion.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_kappa.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_kappa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_potential.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/gaussian_potential.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/hernquist.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/hernquist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/hernquist_ellipse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/hernquist_ellipse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/interpol.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/interpol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/multi_gaussian_kappa.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/multi_gaussian_kappa.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nfw.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nfw.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nfw_ellipse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nfw_ellipse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nie.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/nie.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/p_jaffe.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/p_jaffe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/p_jaffe_ellipse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/p_jaffe_ellipse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/point_mass.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/point_mass.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic_utils.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sersic_utils.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shapelet_pot_cartesian.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shapelet_pot_cartesian.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shapelet_pot_polar.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shapelet_pot_polar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shear.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/shear.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sie.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sie.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sis_truncate.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/sis_truncate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spemd.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spemd.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spep.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spep.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spp.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/spp.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/tnfw.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Profiles/tnfw.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver2point.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver2point.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver4point.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/Solver/solver4point.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_model.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_model.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_model_extensions.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_model_extensions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_param.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/lens_param.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/multi_plane.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/multi_plane.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/numeric_lens_differentials.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/numeric_lens_differentials.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/numerical_profile_integrals.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/numerical_profile_integrals.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/single_plane.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LensModel/single_plane.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/chameleon.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/chameleon.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/gaussian.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/gaussian.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/hernquist.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/hernquist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/moffat.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/moffat.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/nie.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/nie.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/p_jaffe.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/p_jaffe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/power_law.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/power_law.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/sersic.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/sersic.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/shapelets.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/shapelets.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/torus.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/torus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/uniform.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/Profiles/uniform.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/light_model.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/light_model.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/light_param.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/LightModel/light_param.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Plots/output_plots.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Plots/output_plots.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source_param.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source_param.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source_types.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/PointSource/point_source_types.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/likelihood.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/likelihood.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/parameters.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/parameters.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/reinitialize.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/reinitialize.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/sampler.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Sampling/sampler.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/data_api.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/data_api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/model_api.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/model_api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/observation_api.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/observation_api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/observation_constructor.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/observation_constructor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/sim_api.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/SimulationAPI/sim_api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/analysis_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/analysis_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/class_creator.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/class_creator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/constants.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/constants.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/correlation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/correlation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/derivative_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/derivative_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/image_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/image_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/kernel_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/kernel_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/mask.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/mask.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/multi_gauss_expansion.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/multi_gauss_expansion.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/param_util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/param_util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/prob_density.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/prob_density.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Util/util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/alignment_matching.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/alignment_matching.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/fitting_sequence.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/fitting_sequence.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/psf_fitting.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/psf_fitting.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/update_manager.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_modules/lenstronomy/Workflow/update_manager.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.ImSim.MultiBand.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.ImSim.MultiBand.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.ImSim.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.ImSim.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.LensModel.Optimizer.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.LensModel.Optimizer.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.Sampling.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/lenstronomy.Sampling.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/documentation_options.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_static/documentation_options.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/authors.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/authors.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/contributing.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/contributing.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/history.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/history.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/installation.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/installation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Analysis.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Analysis.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Cluster.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Cluster.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Cosmo.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Cosmo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Data.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Data.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.GalKin.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.GalKin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.ImSim.MultiBand.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.ImSim.MultiBand.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.ImSim.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.ImSim.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Optimizer.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Optimizer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Profiles.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Profiles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Solver.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.Solver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LensModel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LightModel.Profiles.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LightModel.Profiles.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LightModel.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.LightModel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Plots.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Plots.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.PointSource.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.PointSource.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Sampling.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Sampling.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.SimulationAPI.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.SimulationAPI.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Util.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Util.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Workflow.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.Workflow.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/lenstronomy.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/lenstronomy.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/mailinglist.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/mailinglist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/published.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/published.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/py-modindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/usage.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/usage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/lenstronomy.ImSim.MultiBand.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/lenstronomy.ImSim.MultiBand.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/lenstronomy.ImSim.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/lenstronomy.ImSim.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/lenstronomy.LensModel.Optimizer.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/lenstronomy.LensModel.Optimizer.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/lenstronomy.Sampling.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/lenstronomy.Sampling.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Cosmo/cosmo_param.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Cosmo/cosmo_param.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Cosmo/lens_cosmo.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Cosmo/lens_cosmo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Data/coord_transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Data/coord_transforms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Data/imaging_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Data/imaging_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Data/psf.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Data/psf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multi_data_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multi_data_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multi_exposures.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/joint_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multi_frame.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multiband.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/ImSim/MultiBand/multi_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/image2source_mapping.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/ImSim/image2source_mapping.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/image_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/ImSim/image_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/ImSim/image_numerics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/fixed_routines.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/fixed_routines.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/multi_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/multi_plane_optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/params.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/optimizer_params.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/penalties.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/penalties.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/single_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Optimizer/single_plane_optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/nfw.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/nfw.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/point_mass.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/point_mass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_ellipse.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_ellipse_potential.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/shear.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Profiles/shear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/Solver/lens_equation_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/Solver/lens_equation_solver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/lens_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/lens_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/multi_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/multi_plane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LensModel/single_plane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/shapelets.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LightModel/Profiles/shapelets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LightModel/light_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LightModel/light_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/LightModel/light_param.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/LightModel/light_param.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lenstronomy/Plots/output_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Plots/output_plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/PointSource/point_source.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/PointSource/point_source.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Sampling/likelihood.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Sampling/likelihood.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Sampling/parameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Sampling/parameters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Sampling/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Sampling/sampler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/SimulationAPI/data_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/SimulationAPI/data_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/SimulationAPI/point_source_variability.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/SimulationAPI/point_source_variability.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/SimulationAPI/sim_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/SimulationAPI/sim_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/analysis_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/analysis_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/class_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/class_creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/image_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/image_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/kernel_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/kernel_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/multi_gauss_expansion.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/multi_gauss_expansion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/param_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/param_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/simulation_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/simulation_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Util/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Util/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Workflow/alignment_matching.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Workflow/alignment_matching.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Workflow/fitting_sequence.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Workflow/fitting_sequence.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Workflow/psf_fitting.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Workflow/psf_fitting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/Workflow/update_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/Workflow/update_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lenstronomy/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/lenstronomy/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Analysis/test_lens_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Analysis/test_lens_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Analysis/test_lens_properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Analysis/test_lens_properties.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Cosmo/test_cosmo_param.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Cosmo/test_cosmo_param.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Data/test_coord_transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Data/test_coord_transforms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Data/test_imaging_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Data/test_imaging_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Data/test_psf.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Data/test_psf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ImSim/test_MultiBand/test_multi_exposures.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_ImSim/test_MultiBand/test_joint_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ImSim/test_MultiBand/test_multi_frame.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ImSim/test_MultiBand/test_multiband.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_ImSim/test_MultiBand/test_multi_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ImSim/test_image_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_ImSim/test_image_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ImSim/test_image_numerics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_Optimizer/test_multi_plane.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_Optimizer/test_multi_plane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_Profiles/test_sersic_lens.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_Profiles/test_sersic_lens.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_Solver/test_lens_equation_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_Solver/test_lens_equation_solver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_Solver/test_solver4.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_Solver/test_solver4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_lens_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_lens_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_lens_param.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_lens_param.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LensModel/test_numeric_lens_differentials.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LensModel/test_numeric_lens_differentials.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LightModel/test_Profiles/test_sersic.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LightModel/test_Profiles/test_sersic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LightModel/test_light_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_LightModel/test_light_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Plots/test_output_plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Plots/test_output_plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_PointSource/test_point_source.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_PointSource/test_point_source.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Sampling/test_likelihood.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Sampling/test_likelihood.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Sampling/test_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Sampling/test_sampler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_SimulationAPI/test_data_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_SimulationAPI/test_data_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_SimulationAPI/test_model_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_SimulationAPI/test_model_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_SimulationAPI/test_sim_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_SimulationAPI/test_sim_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Util/simulation_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Util/simulation_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Util/test_class_creator.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Util/test_class_creator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Util/test_image_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Util/test_image_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Util/test_kernel_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Util/test_kernel_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Workflow/test_fitting_sequence.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Workflow/test_fitting_sequence.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Workflow/test_psf_fitting.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Workflow/test_psf_fitting.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,24 +322,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/fitting.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2430">
-              <caret line="166" column="15" selection-start-line="166" selection-start-column="15" selection-end-line="166" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/parameters.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="106" column="12" selection-start-line="106" selection-start-column="12" selection-end-line="106" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -42,7 +334,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/light_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1005">
+            <state relative-caret-position="990">
               <caret line="67" column="44" selection-start-line="67" selection-start-column="44" selection-end-line="67" selection-end-column="44" />
             </state>
           </provider>
@@ -51,7 +343,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/Util/kernel_util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
+            <state relative-caret-position="225">
               <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
               <folding>
                 <element signature="e#53#71#0" expanded="true" />
@@ -60,13 +352,22 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/fitting_sequence.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="11" column="65" lean-forward="true" selection-start-line="11" selection-end-line="12" />
+            <state relative-caret-position="-817">
+              <caret line="20" column="11" lean-forward="true" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lenstronomy/Plots/output_plots.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="12795">
+              <caret line="853" column="18" selection-start-line="853" selection-start-column="18" selection-end-line="853" selection-end-column="18" />
               <folding>
-                <element signature="e#0#52#0" expanded="true" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -75,8 +376,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="13" column="19" selection-start-line="13" selection-end-line="14" />
+            <state relative-caret-position="165">
+              <caret line="13" column="11" selection-start-line="13" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -84,8 +385,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/ImSim/image_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2520">
-              <caret line="172" column="11" selection-start-line="172" selection-start-column="11" selection-end-line="172" selection-end-column="11" />
+            <state relative-caret-position="2310">
+              <caret line="160" selection-start-line="160" selection-end-line="160" />
             </state>
           </provider>
         </entry>
@@ -93,7 +394,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/Analysis/lens_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1095">
+            <state relative-caret-position="1065">
               <caret line="83" column="58" selection-start-line="83" selection-start-column="58" selection-end-line="83" selection-end-column="58" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -105,7 +406,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lenstronomy/Util/analysis_util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
+            <state relative-caret-position="120">
               <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
             </state>
           </provider>
@@ -142,8 +443,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="x" value="25" />
-    <option name="y" value="23" />
+    <option name="x" value="95" />
+    <option name="y" value="97" />
     <option name="width" value="1401" />
     <option name="height" value="797" />
   </component>
@@ -174,6 +475,12 @@
               <item name="lenstronomy" type="b2602c69:ProjectViewProjectNode" />
               <item name="lenstronomy" type="462c0819:PsiDirectoryNode" />
               <item name="lenstronomy" type="462c0819:PsiDirectoryNode" />
+              <item name="Plots" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lenstronomy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lenstronomy" type="462c0819:PsiDirectoryNode" />
+              <item name="lenstronomy" type="462c0819:PsiDirectoryNode" />
               <item name="Workflow" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -184,6 +491,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SearchEverywhereHistoryKey" value="fwhm&#9;null&#9;null&#10;fix_l&#9;null&#9;null" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -281,13 +589,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/ImSim/image_numerics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1269">
-          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/ImSim/image_numerics.py" />
     <entry file="file://$PROJECT_DIR$/../ajshajib.github.io/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="111">
@@ -330,20 +632,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/MCMC/mcmc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="29" selection-start-line="12" selection-start-column="29" selection-end-line="12" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/MCMC/likelihood_module.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="82" column="13" selection-start-line="82" selection-start-column="13" selection-end-line="82" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/MCMC/mcmc.py" />
+    <entry file="file://$PROJECT_DIR$/lenstronomy/MCMC/likelihood_module.py" />
     <entry file="file://$PROJECT_DIR$/lenstronomy/Util/util.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="840">
@@ -386,23 +676,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/Plots/output_plots.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/fitting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2430">
-          <caret line="166" column="15" selection-start-line="166" selection-start-column="15" selection-end-line="166" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/fitting.py" />
+    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/parameters.py" />
     <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/Profiles/sersic.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -412,28 +687,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/LightModel/light_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1005">
+        <state relative-caret-position="990">
           <caret line="67" column="44" selection-start-line="67" selection-start-column="44" selection-end-line="67" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/Util/kernel_util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
+          <folding>
+            <element signature="e#53#71#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/LensModel/Profiles/sersic_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="13" column="19" selection-start-line="13" selection-end-line="14" />
+        <state relative-caret-position="165">
+          <caret line="13" column="11" selection-start-line="13" selection-end-line="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/ImSim/image_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2520">
-          <caret line="172" column="11" selection-start-line="172" selection-start-column="11" selection-end-line="172" selection-end-column="11" />
+        <state relative-caret-position="2310">
+          <caret line="160" selection-start-line="160" selection-end-line="160" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/Analysis/lens_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1095">
+        <state relative-caret-position="1065">
           <caret line="83" column="58" selection-start-line="83" selection-start-column="58" selection-end-line="83" selection-end-column="58" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -443,34 +728,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/Util/analysis_util.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
+        <state relative-caret-position="120">
           <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/parameters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="106" column="12" selection-start-line="106" selection-start-column="12" selection-end-line="106" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lenstronomy/Util/kernel_util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="21" column="43" selection-start-line="21" selection-start-column="43" selection-end-line="21" selection-end-column="43" />
-          <folding>
-            <element signature="e#53#71#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lenstronomy/Workflow/fitting_sequence.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="11" column="65" lean-forward="true" selection-start-line="11" selection-end-line="12" />
+        <state relative-caret-position="-817">
+          <caret line="20" column="11" lean-forward="true" selection-start-line="20" selection-start-column="11" selection-end-line="20" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lenstronomy/Plots/output_plots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12795">
+          <caret line="853" column="18" selection-start-line="853" selection-start-column="18" selection-end-line="853" selection-end-column="18" />
           <folding>
-            <element signature="e#0#52#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>

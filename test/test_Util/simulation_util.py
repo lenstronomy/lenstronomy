@@ -1,6 +1,6 @@
 # import main simulation class of lenstronomy
 import lenstronomy.Util.simulation_util as sim_util
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 import pytest
 
@@ -21,8 +21,8 @@ class TestSimulation(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_data)
-        assert data_class.deltaPix == deltaPix
+        data_class = ImageData(**kwargs_data)
+        assert data_class.pixel_width == deltaPix
 
     def test_psf_configure_simple(self):
         deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)

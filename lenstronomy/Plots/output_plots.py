@@ -12,33 +12,33 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.Data.coord_transforms import Coordinates
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 
 
-def text_description(ax, d, text, color='w', backgroundcolor='k', flipped=False, fsize=15):
+def text_description(ax, d, text, color='w', backgroundcolor='k', flipped=False):
     if flipped:
-        ax.text(d - d / 40., d - d / 10., text, color=color, fontsize=fsize, backgroundcolor=backgroundcolor)
+        ax.text(d - d / 40., d - d / 15., text, color=color, fontsize=15, backgroundcolor=backgroundcolor)
     else:
-        ax.text(d / 40., d - d / 10., text, color=color, fontsize=fsize, backgroundcolor=backgroundcolor)
+        ax.text(d / 40., d - d / 15., text, color=color, fontsize=15, backgroundcolor=backgroundcolor)
 
 
-def scale_bar(ax, d, dist=1., text='1"', color='w', flipped=False, fsize=15):
+def scale_bar(ax, d, dist=1., text='1"', color='w', flipped=False):
     if flipped:
         p0 = d - d / 15. - dist
         p1 = d / 15.
         ax.plot([p0, p0 + dist], [p1, p1], linewidth=2, color=color)
-        ax.text(p0 + dist / 2., p1 + 0.02 * d, text, fontsize=fsize, color=color, ha='center')
+        ax.text(p0 + dist / 2., p1 + 0.01 * d, text, fontsize=15, color=color, ha='center')
     else:
         p0 = d / 15.
         ax.plot([p0, p0 + dist], [p0, p0], linewidth=2, color=color)
-        ax.text(p0 + dist / 2., p0 + 0.02 * d, text, fontsize=fsize, color=color, ha='center')
+        ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=15, color=color, ha='center')
 
 
-def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05, fsize=15):
+def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05):
     d0 = d / 8.
     p0 = d / 15.
     pt = d / 9.
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
     xx_, yy_ = coords.map_coord2pix(ra0, dec0)
     xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
@@ -48,11 +48,11 @@ def coordinate_arrows(ax, d, coords, color='w', arrow_size=0.05, fsize=15):
 
     ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_ra - xx_) * deltaPix, (yy_ra - yy_) * deltaPix,
              head_width=arrow_size * d, head_length=arrow_size * d, fc=color, ec=color, linewidth=1)
-    ax.text(xx_ra_t * deltaPix * 0.98, yy_ra_t * deltaPix*0.85, "E", color=color, fontsize=fsize, ha='center')
+    ax.text(xx_ra_t * deltaPix, yy_ra_t * deltaPix, "E", color=color, fontsize=15, ha='center')
     ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_dec - xx_) * deltaPix, (yy_dec - yy_) * deltaPix,
              head_width=arrow_size * d, head_length=arrow_size * d, fc
              =color, ec=color, linewidth=1)
-    ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=fsize, ha='center')
+    ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=15, ha='center')
 
 
 def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color='g'):
@@ -61,17 +61,15 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color
     :param coords:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     #for i in range(len(ra_caustic_list)):
     x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
-
     ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
-
     return ax
 
 
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                    point_source=False, with_caustics=False, fsize=15):
+                    point_source=False, with_caustics=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -82,10 +80,10 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
-    data = Data(kwargs_data)
+    data = ImageData(**kwargs_data)
+    _coords = data
     _frame_size = numPix * deltaPix
-    _coords = data._coords
-    x_grid, y_grid = data.coordinates
+    x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -113,7 +111,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
             x_ = (x_image[i] + 0.5) * deltaPix
             y_ = (y_image[i] + 0.5) * deltaPix
             ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-            ax.text(x_, y_, abc_list[i], fontsize=fsize, color='k')
+            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*k', markersize=10)
     ax.get_xaxis().set_visible(False)
@@ -125,7 +123,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
 
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10):
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
+                         letter_font_size=20):
     """
 
     :param ax:
@@ -139,10 +138,10 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
-    data = Data(kwargs_data)
+    data = ImageData(**kwargs_data)
     _frame_size = numPix * deltaPix
-    _coords = data._coords
-    x_grid, y_grid = data.coordinates
+    _coords = data
+    x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
     #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
@@ -150,15 +149,11 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, sourcePos_x, sourcePos_y, kwargs_lens)
     fermat_surface = util.array2image(fermat_surface)
-    vmin = np.min(fermat_surface)
-    vmax = np.max(fermat_surface)
-    levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-    im = ax.contourf(x_grid, y_grid, fermat_surface, origin='lower',# extent=[0, _frame_size, 0, _frame_size],
-                     levels=levels)
+
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
-                                                                             start_scale=deltaPix, max_order=10)
+                                                                             start_scale=deltaPix/5, max_order=10)
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
         plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, shift=_frame_size/2., color='g')
         plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, shift=_frame_size/2., color='r')
@@ -167,18 +162,31 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         solver = LensEquationSolver(lensModel)
         theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                  min_distance=deltaPix, search_window=deltaPix*numPix)
+
+        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, sourcePos_x, sourcePos_y, kwargs_lens)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=np.sort(fermat_pot_images), **kwargs_contours)
         mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+
         for i in range(len(x_image)):
             x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
             y_ = (y_image[i] + 0.5) * deltaPix - _frame_size/2
-            #x_ = x_image[i] * deltaPix
-            #y_ = y_image[i] * deltaPix
-            ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+            if image_color_list is None:
+                color = 'k'
+            else:
+                color = image_color_list[i]
+            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
+            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
-        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=10)
+        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
+    else:
+        vmin = np.min(fermat_surface)
+        vmax = np.max(fermat_surface)
+        levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=levels, **kwargs_contours)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -193,7 +201,7 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     :param kwargs_else:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     if len(ra_image) > 0:
         if len(ra_image[0]) > 0:
             x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
@@ -215,7 +223,7 @@ def source_position_plot(ax, coords, kwargs_source):
     :param kwargs_source:
     :return:
     """
-    deltaPix = coords.pixel_size
+    deltaPix = coords.pixel_width
     if len(kwargs_source) > 0:
         if 'center_x' in kwargs_source[0]:
             x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
@@ -228,7 +236,7 @@ class LensModelPlot(object):
     class that manages the summary plots of a lens model
     """
     def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat"):
+                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask=None):
         """
 
         :param kwargs_options:
@@ -245,20 +253,21 @@ class LensModelPlot(object):
         cmap.set_under('k')
         self._cmap = cmap
         self._arrow_size = arrow_size
-        data = Data(kwargs_data)
-        self._coords = data._coords
+        data = ImageData(**kwargs_data)
+        self._coords = data
         nx, ny = np.shape(kwargs_data['image_data'])
         Mpix2coord = kwargs_data['transform_pix2angle']
         self._Mpix2coord = Mpix2coord
 
-        self._deltaPix = self._coords.pixel_size
+        self._deltaPix = self._coords.pixel_width
         self._frame_size = self._deltaPix * nx
 
-        x_grid, y_grid = data.coordinates
+        x_grid, y_grid = data.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
-        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, **kwargs_model)
+        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
+                                                            likelihood_mask=likelihood_mask)
         self._analysis = LensAnalysis(kwargs_model)
         self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                     z_source=kwargs_model.get('z_source', None),
@@ -297,7 +306,7 @@ class LensModelPlot(object):
                                                                                      dec_crit_list, self._kwargs_lens)
         return self._ra_caustic_list, self._dec_caustic_list
 
-    def data_plot(self, ax, v_min=None, v_max=None, text='Observed', fsize=15):
+    def data_plot(self, ax, v_min=None, v_max=None, text='Observed'):
         """
 
         :param ax:
@@ -319,13 +328,11 @@ class LensModelPlot(object):
         coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
-
         cb = plt.colorbar(im, cax=cax, orientation='vertical')
-        cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
-
+        cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def model_plot(self, ax, v_min=None, v_max=None, image_names=False, fsize=15):
+    def model_plot(self, ax, v_min=None, v_max=None, image_names=False):
         """
 
         :param ax:
@@ -349,16 +356,16 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
+        cb.set_label(r'log$_{10}$ flux', fontsize=15)
 
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
-            ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+            ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
             image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
-    def convergence_plot(self, ax, v_min=None, v_max=None, fsize=15):
+    def convergence_plot(self, ax, v_min=None, v_max=None):
         """
 
         :param x_grid:
@@ -379,10 +386,10 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ $\kappa$', fontsize=fsize)
+        cb.set_label(r'log$_{10}$ $\kappa$', fontsize=15)
         return ax
 
-    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, fsize=15, **kwargs):
+    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, **kwargs):
         """
 
         :param ax:
@@ -404,7 +411,7 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'(f$_{\rm model}$-f$_{\rm data}$)/$\sigma$', fontsize=fsize)
+        cb.set_label(r'(f$_{model}$-f$_{data}$)/$\sigma$', fontsize=15)
         return ax
 
     def absolute_residual_plot(self, ax, v_min=-1, v_max=1):
@@ -428,7 +435,7 @@ class LensModelPlot(object):
         cb.set_label(r'(f$_{model}$-f$_{data}$)', fontsize=15)
         return ax
 
-    def source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False, fsize=15):
+    def source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
         """
 
         :param ax:
@@ -462,8 +469,7 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-
-        cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
+        cb.set_label(r'log$_{10}$ flux', fontsize=15)
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
@@ -473,7 +479,7 @@ class LensModelPlot(object):
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False, fsize=15):
+    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._Mpix2coord * deltaPix_source / self._deltaPix)
         x_center = self._kwargs_source[0]['center_x']
@@ -493,7 +499,7 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'error variance', fontsize=fsize)
+        cb.set_label(r'error variance', fontsize=15)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
@@ -503,7 +509,7 @@ class LensModelPlot(object):
         source_position_plot(ax, coords_source, self._kwargs_source)
         return ax
 
-    def magnification_plot(self, ax, v_min=-10, v_max=10, image_name_list=None, fsize=15, **kwargs):
+    def magnification_plot(self, ax, v_min=-10, v_max=10, image_name_list=None, **kwargs):
         """
 
         :param ax:
@@ -529,15 +535,13 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-
-        cb.set_label(r'det(A$^{-1}$)', fontsize=fsize)
-
-        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        cb.set_label(r'det(A$^{-1}$)', fontsize=15)
+        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
-    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False, image_name_list=None, fsize=15):
+    def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False, image_name_list=None):
         """
 
         :param kwargs_lens:
@@ -563,19 +567,18 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-
-        cb.set_label(r'arcsec', fontsize=fsize)
+        cb.set_label(r'arcsec', fontsize=15)
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
-        ra_image, dec_image = self._imageModel.image_positions(self._kwargs_else, self._kwargs_lens)
+        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
         image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         source_position_plot(ax, self._coords, self._kwargs_source)
         return ax
 
-    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False, fsize=15, **kwargs):
+    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False, **kwargs):
         """
 
         :param ax:
@@ -609,10 +612,10 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
+        cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None, v_max=None, point_source_add=False, source_add=False, lens_light_add=False, fsize=15):
+    def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None, v_max=None, point_source_add=False, source_add=False, lens_light_add=False):
         model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
                                           self._kwargs_else, unconvolved=False, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
@@ -631,7 +634,7 @@ class LensModelPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ flux', fontsize=fsize)
+        cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
     def plot_main(self, with_caustics=False, image_names=False):
@@ -757,7 +760,7 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     :param else_result:
     :return:
     """
-    x_grid, y_grid = data_class.coordinates
+    x_grid, y_grid = data_class.pixel_coordinates
     x_grid = util.image2array(x_grid)
     y_grid = util.image2array(y_grid)
     shear = Shear()

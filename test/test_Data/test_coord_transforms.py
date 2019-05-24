@@ -51,7 +51,7 @@ class TestCoordinates(object):
         ra_0 = 1.
         dec_0 = 1.
         coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
-        deltaPix_out = coords.pixel_size
+        deltaPix_out = coords.pixel_width
         assert deltaPix_out == -deltaPix
 
     def test_rescaled_grid(self):
@@ -100,7 +100,7 @@ class TestCoordinates(object):
         ra_0 = 1.
         dec_0 = 1.
         coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
-        ra_grid, dec_grid = coords.coordinate_grid(numPix=10)
+        ra_grid, dec_grid = coords.coordinate_grid(nx=10, ny=10)
 
         assert ra_grid[0, 0] == ra_0
         assert dec_grid[0, 0] == dec_0

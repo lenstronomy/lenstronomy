@@ -9,7 +9,7 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Workflow.fitting_sequence import FittingSequence
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -30,14 +30,14 @@ class TestFittingSequence(object):
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(self.kwargs_data)
+        data_class = ImageData(**self.kwargs_data)
         self.kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
                                                truncate=3,
                                                kernel=None)
         #self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
         #                                            truncate=6,
         #                                            kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(self.kwargs_psf)
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -61,7 +61,8 @@ class TestFittingSequence(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'regular',
+                           'point_source_supersampling_factor': 1}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -78,9 +79,7 @@ class TestFittingSequence(object):
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
                              }
-        self.kwargs_numerics = {
-            'subgrid_res': 1,
-            'psf_subgrid': False}
+        self.kwargs_numerics = kwargs_numerics
 
         num_source_model = len(source_model_list)
 
@@ -136,7 +135,8 @@ class TestFittingSequence(object):
         # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        fittingSequence = FittingSequence(multi_band_list, self.kwargs_model, self.kwargs_constraints,
+        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-linear'}
+        fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
@@ -158,6 +158,8 @@ class TestFittingSequence(object):
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
         fitting_list.append(['MCMC', kwargs_mcmc])
+        kwargs_mcmc['sampler_type'] = 'EMCEE'
+        fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
@@ -165,7 +167,8 @@ class TestFittingSequence(object):
         fitting_list.append(['restart', None])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]]}
+                         'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
+            , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
@@ -179,6 +182,8 @@ class TestFittingSequence(object):
 
         kwargs_fixed = fittingSequence.kwargs_fixed()
         npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
 
 
 if __name__ == '__main__':

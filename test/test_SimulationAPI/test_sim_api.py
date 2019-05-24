@@ -17,7 +17,7 @@ class TestModelAPI(object):
                         'multi_plane': False, 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list':['UNLENSED'],
                         'source_redshift_list': None}
-        kwargs_numerics = {'subgrid_res': 2}
+        kwargs_numerics = {'supersampling_factor': 2}
 
         self.api = SimAPI(numpix, kwargs_single_band, kwargs_model, kwargs_numerics)
 

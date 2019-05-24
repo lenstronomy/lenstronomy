@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LightModel.Profiles.sersic import Sersic, Sersic_elliptic, CoreSersic
+from lenstronomy.LightModel.Profiles.sersic import Sersic, SersicElliptic, CoreSersic
 import lenstronomy.Util.param_util as param_util
 import numpy as np
 import pytest
@@ -14,7 +14,7 @@ class TestSersic(object):
     """
     def setup(self):
         self.sersic = Sersic(smoothing=0.02)
-        self.sersic_elliptic = Sersic_elliptic(smoothing=0.02)
+        self.sersic_elliptic = SersicElliptic(smoothing=0.02)
         self.core_sersic = CoreSersic(smoothing=0.02)
 
     def test_sersic(self):

@@ -3,7 +3,8 @@ __author__ = 'sibirrer'
 import lenstronomy.Util.derivative_util as calc_util
 from lenstronomy.LensModel.Profiles.sersic import Sersic
 from lenstronomy.LightModel.Profiles.sersic import Sersic as Sersic_light
-from lenstronomy.LensModel.Profiles.sersic_ellipse_2 import SersicEllipse2
+from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
+from lenstronomy.Util.param_util import ellipticity2phi_q
 
 import numpy as np
 import pytest
@@ -16,7 +17,7 @@ class TestSersic(object):
     """
     def setup(self):
 
-        self.sersic_2 = SersicEllipse2()
+        self.sersic_2 = SersicEllipseKappa()
         self.sersic = Sersic()
         self.sersic_light = Sersic_light()
 
@@ -196,6 +197,15 @@ class TestSersic(object):
         flux /= flux[0]
         kappa /= kappa[0]
         npt.assert_almost_equal(flux[1], kappa[1], decimal=5)
+
+        xvalues = np.linspace(0.5, 3., 100)
+
+        e1, e2 = 0.4, 0.
+        q = ellipticity2phi_q(e1, e2)[1]
+        kappa_ellipse = self.sersic_2.projected_mass(xvalues, 0, q, n_sersic, R_sersic, k_eff)
+        fxx, fyy, _ = self.sersic_2.hessian(xvalues, 0, n_sersic, R_sersic, k_eff, e1, e2)
+
+        npt.assert_almost_equal(kappa_ellipse, 0.5*(fxx + fyy), decimal=5)
 
     def test_sersic_util(self):
         n = 1.

@@ -5,7 +5,7 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.sersic import Sersic
 from lenstronomy.Util import param_util
 
-class SersicEllipse2(object):
+class SersicEllipseKappa(object):
     """
     this class contains the function and the derivatives of an elliptical sersic profile
     with the ellipticity introduced in the convergence (not the potential).

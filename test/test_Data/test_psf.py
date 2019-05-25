@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 import numpy.testing as npt
 import unittest
+import warnings
 
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.kernel_util as kernel_util
@@ -140,8 +141,19 @@ class TestRaise(unittest.TestCase):
             psf.psf_type = 'WRONG'
             psf.kernel_point_source_supersampled(supersampling_factor=3)
 
-        #with self.assertWarns(Warning):
-
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Trigger a warning.
+            kernel_point_source_subsampled = np.ones((9, 9))
+            subsampling_res = 3
+            kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
+                                       'point_source_supersampling_factor': subsampling_res}
+            psf_pixel_subsampled = PSF(**kwargs_pixel_subsampled)
+            psf_pixel_subsampled.kernel_point_source_supersampled(supersampling_factor=subsampling_res + 4)
+            # Verify some things
+            assert len(w) == 1
+            assert issubclass(w[-1].category, Warning)
 
 
 if __name__ == '__main__':

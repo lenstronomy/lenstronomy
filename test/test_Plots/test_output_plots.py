@@ -134,7 +134,11 @@ class TestOutputPlots(object):
         #plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, with_caustics=True)
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=0)
         plt.close()
 
         numPix = 100

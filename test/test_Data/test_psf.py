@@ -122,9 +122,13 @@ class TestRaise(unittest.TestCase):
         psf.psf_type = 'WRONG'
         with self.assertRaises(ValueError):
             PSF(psf_type='GAUSSIAN')
+        with self.assertRaises(ValueError):
             PSF(psf_type='PIXEL')
+        with self.assertRaises(ValueError):
             PSF(psf_type='PIXEL', kernel_point_source=np.ones((2, 2)))
+        with self.assertRaises(ValueError):
             PSF(psf_type='WRONG')
+        with self.assertRaises(ValueError):
             PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)), psf_error_map=np.ones((5, 5)))
             psf.kernel_point_source_supersampled(supersampling_factor=3)
 

@@ -50,6 +50,7 @@ class TestRaise(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             out = noise.background_rms
+        with self.assertRaises(ValueError):
             out = noise.exposure_map
 
 

@@ -24,7 +24,7 @@ class Gaussian(object):
         :return:
         """
         c = amp / (2 * np.pi * sigma_x * sigma_y)
-        R2 = (x - center_x) ** 2/sigma_x**2 + (y - center_y) ** 2/sigma_y**2
+        R2 = (x - center_x) ** 2 / sigma_x**2 + (y - center_y) ** 2 / sigma_y**2
         return c * np.exp(-R2 / 2.)
 
     def total_flux(self, amp, sigma_x, sigma_y, center_x=0, center_y=0):

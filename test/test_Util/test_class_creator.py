@@ -10,7 +10,10 @@ class TestClassCreator(object):
 
     def setup(self):
         self.kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
-                             'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+                             'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
+                             'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],
+                             'index_lens_light_model_list': [[0]], 'index_point_source_model_list': [[0]],
+                             'band_index': 0}
         self.kwargs_psf = {'psf_type': 'NONE'}
         self.kwargs_data = {'image_data': np.ones((10, 10))}
 

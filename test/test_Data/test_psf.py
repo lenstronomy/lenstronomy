@@ -27,9 +27,7 @@ class TestData(object):
         assert len(kernel_gaussian) == 21
         assert len(kernel_pixel) == 21
 
-        kwargs_psf = simulation_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=0.2, kernelsize=11, deltaPix=0.05,
-                                                   truncate=3,
-                                                   kernel=None)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 0.2, 'truncation': 3, 'pixel_size': 0.05}
         psf_class = PSF(**kwargs_psf)
         kernel_point_source = psf_class.kernel_point_source
         assert len(kernel_point_source) == 13

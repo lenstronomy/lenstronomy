@@ -33,40 +33,6 @@ def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, invers
     return kwargs_data
 
 
-def psf_configure_simple(psf_type="GAUSSIAN", fwhm=1, kernelsize=11, deltaPix=1, truncate=6, kernel=None):
-    """
-    this routine generates keyword arguments to initialize a PSF() class in lenstronomy. Have a look at the PSF class
-    documentation to see the full possibilities.
-
-    :param psf_type: string, type of PSF model
-    :param fwhm: Full width at half maximum of PSF (if GAUSSIAN psf)
-    :param kernelsize: size in pixel of kernel (use odd numbers), only applicable for PIXEL kernels
-    :param deltaPix: pixel size in angular units (only needed for GAUSSIAN kernel
-    :param truncate: how many sigmas out is the truncation happening
-    :param kernel: 2d numpy arra centered PSF (odd number per axis)
-    :return: keyword arguments
-    """
-
-    if psf_type == 'GAUSSIAN':
-        sigma = util.fwhm2sigma(fwhm)
-        sigma_axis = sigma
-        gaussian = Gaussian()
-        x_grid, y_grid = util.make_grid(kernelsize, deltaPix)
-        kernel_large = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma_axis, sigma_y=sigma_axis, center_x=0, center_y=0)
-        kernel_large /= np.sum(kernel_large)
-        kernel_large = util.array2image(kernel_large)
-        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm, 'truncation': truncate, 'kernel_point_source': kernel_large, 'pixel_size': deltaPix}
-    elif psf_type == 'PIXEL':
-        kernel_large = copy.deepcopy(kernel)
-        kernel_large = kernel_util.cut_psf(kernel_large, psf_size=kernelsize)
-        kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': kernel_large}
-    elif psf_type == 'NONE':
-        kwargs_psf = {'psf_type': 'NONE'}
-    else:
-        raise ValueError("psf type %s not supported!" % psf_type)
-    return kwargs_psf
-
-
 def simulate_simple(image_model_class, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                     no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
     """

@@ -33,8 +33,7 @@ class TestImageModel(object):
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg, inverse=True)
         data_class = ImageData(**kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix, truncate=3,
-                                          kernel=None)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
         psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
 

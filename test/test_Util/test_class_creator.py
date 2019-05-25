@@ -14,10 +14,18 @@ class TestClassCreator(object):
                              'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],
                              'index_lens_light_model_list': [[0]], 'index_point_source_model_list': [[0]],
                              'band_index': 0, 'source_deflection_scaling_list': [1], 'source_redshift_list': [1],
-                             'fixed_magnification_list': [True], 'additional_images_list': [False]}
+                             'fixed_magnification_list': [True], 'additional_images_list': [False],
+                             'lens_redshift_list': [0.5]}
         self.kwargs_model_2 = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
                              'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                              }
+        self.kwargs_model_3 = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
+                             'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
+                             'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],
+                             'index_lens_light_model_list': [[0]], 'index_point_source_model_list': [[0]],
+                             }
+
+
         self.kwargs_psf = {'psf_type': 'NONE'}
         self.kwargs_data = {'image_data': np.ones((10, 10))}
 
@@ -27,6 +35,10 @@ class TestClassCreator(object):
 
         lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
             **self.kwargs_model_2)
+        assert lens_model_class.lens_model_list[0] == 'SIS'
+
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
+            **self.kwargs_model_3)
         assert lens_model_class.lens_model_list[0] == 'SIS'
 
     def test_create_image_model(self):

@@ -35,13 +35,10 @@ class TestOutputPlots(object):
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = ImageData(**self.kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=None)
-        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
-                                                    truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(**kwargs_psf)
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        psf_gaussian = PSF(**kwargs_psf_gaussian)
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)

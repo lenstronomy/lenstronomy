@@ -63,8 +63,6 @@ class PSF(object):
                 if kernel_numPix % 2 == 0:
                     kernel_numPix += 1
                 self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)
-            else:
-                raise ValueError("kernel_point_source could not be created. Please follow the guidelines of the PSF class!")
         return self._kernel_point_source
 
     @property
@@ -102,6 +100,8 @@ class PSF(object):
                 if hasattr(self, '_kernel_point_source_subsampled'):
                     print("Warning: subsampled point source kernel overwritten due to different subsampling size requested.")
                 kernel_point_source_supersampled = kernel_util.cut_psf(kernel, psf_size=n_new)
+            elif self.psf_type == 'NONE':
+                kernel_point_source_supersampled = self._kernel_point_source
             else:
                 raise ValueError('psf_type %s not valid!' % self.psf_type)
             if updata_cache is True:

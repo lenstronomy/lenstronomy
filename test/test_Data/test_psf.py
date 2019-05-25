@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
 
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.kernel_util as kernel_util
@@ -51,6 +52,7 @@ class TestData(object):
         kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
                                    'point_source_supersampling_factor': subsampling_res}
         psf_pixel_subsampled = PSF(**kwargs_pixel_subsampled)
+        psf_pixel_subsampled.kernel_point_source_supersampled(supersampling_factor=subsampling_res+1)
         kernel_point_source /= np.sum(kernel_point_source)
         kwargs_pixel = {'psf_type': 'PIXEL',
                         'kernel_point_source': kernel_point_source}
@@ -103,6 +105,28 @@ class TestData(object):
         psf_kernel = PSF(**kwargs)
         fwhm_compute = psf_kernel.fwhm
         npt.assert_almost_equal(fwhm_compute, fwhm, decimal=1)
+
+    def test_kernel_pixel(self):
+        deltaPix = 1.
+        fwhm = 5.6
+        kwargs = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        psf_kernel = PSF(**kwargs)
+        kernel_pixel = psf_kernel.kernel_pixel
+        npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(psf_kernel.kernel_point_source), decimal=9)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        psf = PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)))
+        psf.psf_type = 'WRONG'
+        with self.assertRaises(ValueError):
+            PSF(psf_type='GAUSSIAN')
+            PSF(psf_type='PIXEL')
+            PSF(psf_type='PIXEL', kernel_point_source=np.ones((2, 2)))
+            PSF(psf_type='WRONG')
+            PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)), psf_error_map=np.ones((5, 5)))
+            psf.kernel_point_source_supersampled(supersampling_factor=3)
 
 
 if __name__ == '__main__':

@@ -86,12 +86,7 @@ def add_poisson(image, exp_time):
     """
     adds a poison (or Gaussian) distributed noise with mean given by surface brightness
     """
-    if isinstance(exp_time, int) or isinstance(exp_time, float):
-        if exp_time <= 0:
-            exp_time = 1
-    else:
-        mean_exp_time = np.mean(exp_time)
-        exp_time[exp_time < mean_exp_time/10] = mean_exp_time/10
+
     sigma = np.sqrt(np.abs(image)/exp_time) # Gaussian approximation for Poisson distribution, normalized to exposure time
     nx, ny = np.shape(image)
     poisson = np.random.randn(nx, ny) * sigma
@@ -274,18 +269,16 @@ def cut_edges(image, numPix):
     if nx < numPix or ny < numPix:
         raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
                          'and desired new shape (%s %s)' % (nx, ny, numPix, numPix))
-    if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
-        #pass
-        print("WARNING: image or cutout side are even number. The cut_edges routine only works for odd numbers %s %s %s"
-                         % (nx, ny, numPix))
-    cx = int((nx-1)/2)
-    cy = int((ny-1)/2)
-    d = int((numPix-1)/2)
-    if nx % 2 == 0:
-        cx += 1
-    if ny % 2 == 0:
-        cy += 1
-    resized = image[cx-d:cx+d+1, cy-d:cy+d+1]
+    if (nx % 2 == 0 and ny % 2 == 1) or (nx % 2 == 1 and ny % 2 == 0):
+        raise ValueError('image with odd and even axis (%s %s) not supported for re-sizeing' % (nx, ny))
+    if (nx % 2 == 0 and numPix % 2 == 1) or (nx % 2 == 1 and numPix % 2 == 0):
+        raise ValueError('image can only be re-sized from even to even or odd to odd number.')
+
+    x_min = int((nx - numPix) / 2)
+    y_min = int((ny - numPix) / 2)
+    x_max = nx - x_min
+    y_max = ny - y_min
+    resized = image[x_min:x_max, y_min:y_max]
     return copy.deepcopy(resized)
 
 

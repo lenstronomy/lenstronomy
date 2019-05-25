@@ -86,6 +86,10 @@ class TestData(object):
         npt.assert_almost_equal(np.sum(kernel_point_source), np.sum(kernel_point_source_new), decimal=8)
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=8)
 
+        psf_none = PSF(psf_type='NONE')
+        kernel_super = psf_none.kernel_point_source_supersampled(supersampling_factor=5)
+        npt.assert_almost_equal(kernel_super, psf_none.kernel_point_source, decimal=9)
+
     def test_fwhm(self):
         deltaPix = 1.
         fwhm = 5.6
@@ -131,6 +135,13 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)), psf_error_map=np.ones((5, 5)))
             psf.kernel_point_source_supersampled(supersampling_factor=3)
+        with self.assertRaises(ValueError):
+            psf = PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)))
+            psf.psf_type = 'WRONG'
+            psf.kernel_point_source_supersampled(supersampling_factor=3)
+
+        #with self.assertWarns(Warning):
+
 
 
 if __name__ == '__main__':

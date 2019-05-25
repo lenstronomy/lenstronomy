@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
+import warnings
 
 
 class PSF(object):
@@ -98,7 +99,8 @@ class PSF(object):
                 if n_new % 2 == 0:
                     n_new -= 1
                 if hasattr(self, '_kernel_point_source_subsampled'):
-                    print("Warning: subsampled point source kernel overwritten due to different subsampling size requested.")
+                    warnings.warn("Warning: subsampled point source kernel over-written due to different subsampling"
+                                  " size requested.")
                 kernel_point_source_supersampled = kernel_util.cut_psf(kernel, psf_size=n_new)
             elif self.psf_type == 'NONE':
                 kernel_point_source_supersampled = self._kernel_point_source

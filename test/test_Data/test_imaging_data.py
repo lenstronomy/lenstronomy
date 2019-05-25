@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 import numpy.testing as npt
 import copy
+import unittest
 
 from lenstronomy.Data.imaging_data import ImageData
 import lenstronomy.Util.util as util
@@ -76,6 +77,16 @@ class TestData(object):
         x_coords_new, y_coords_new = data_new.pixel_coordinates
         npt.assert_almost_equal(x_coords[0], x_coords_new[0]-x_shift, decimal=10)
         npt.assert_almost_equal(y_coords[0], y_coords_new[0]-y_shift, decimal=10)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        kwargs_data = {'image_data': np.zeros((10, 10))}
+        Data = ImageData(**kwargs_data)
+        image_data_new = np.zeros((5, 5))
+        with self.assertRaises(ValueError):
+            out = Data.update_data(image_data_new)
 
 
 if __name__ == '__main__':

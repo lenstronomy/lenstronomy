@@ -7,7 +7,7 @@ class FluxRatioLikelihood(object):
     likelihood class for magnification of multiply lensed images
     """
 
-    def __init__(self, point_source_class, lens_model_class, param_class, flux_ratios, flux_ratio_errors,
+    def __init__(self, lens_model_class, flux_ratios, flux_ratio_errors,
                  source_type='INF', window_size=0.1, grid_number=100, polar_grid=False, aspect_ratio=0.5):
         """
 
@@ -20,9 +20,7 @@ class FluxRatioLikelihood(object):
         :param window_size: size of window to compute the finite flux
         :param grid_number: number of grid cells per axis in the window to numerically comute the flux
         """
-        self._pointSource = point_source_class
         self._lens_model_class = lens_model_class
-        self._param = param_class
         self._flux_ratios = np.array(flux_ratios)
         self._flux_ratio_errors = np.array(flux_ratio_errors)
         self._lens_model_extensions = LensModelExtensions(lensModel=lens_model_class)
@@ -32,7 +30,7 @@ class FluxRatioLikelihood(object):
         self._polar_grid = polar_grid
         self._aspect_ratio = aspect_ratio
 
-    def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
+    def logL(self, x_pos, y_pos, kwargs_lens, kwargs_cosmo):
         """
 
         :param kwargs_lens:
@@ -40,9 +38,6 @@ class FluxRatioLikelihood(object):
         :param kwargs_cosmo:
         :return: log likelihood of the measured flux ratios given a model
         """
-
-        ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        x_pos, y_pos = self._param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
         if self._source_type is 'INF':
             mag = np.abs(self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens))
         else:
@@ -53,10 +48,19 @@ class FluxRatioLikelihood(object):
                                                                    shape=self._source_type, polar_grid=self._polar_grid,
                                                                    aspect_ratio=self._aspect_ratio)
         mag_ratio = mag[1:] / mag[0]
-        if np.isnan(mag_ratio) is True:
+        return self._logL(mag_ratio)
+
+    def _logL(self, flux_ratios):
+        """
+
+
+        :param flux_ratios: flux ratios from the model
+        :return: log likelihood fo the measured flux ratios given a model
+        """
+        if not np.isfinite(flux_ratios).any():
             return -10 ** 15
-        dist = (mag_ratio - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
+        dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
         logL = -np.sum(dist)
-        if np.isnan(logL) is True:
+        if not np.isfinite(logL):
             return -10 ** 15
         return logL

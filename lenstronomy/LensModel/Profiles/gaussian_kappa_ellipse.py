@@ -1,10 +1,19 @@
+# -*- coding: utf-8 -*-
+"""
+This module defines `class GaussianKappaEllipse` to compute the lensing
+properties of an elliptical Gaussian profile with ellipticity in the
+convergence using the formulae from Shajib (2019).
+"""
+
 __author__ = 'ajshajib'
-#this file contains a class to make a gaussian
 
 import numpy as np
-from scipy.special import erfcx
 from scipy.special import erf
+from scipy.special import erfi
+from scipy.special import expi
 from scipy.special import wofz
+from scipy.integrate import quad
+from mpmath import hyp2f2
 from copy import deepcopy
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
@@ -12,217 +21,222 @@ import lenstronomy.Util.param_util as param_util
 
 class GaussianKappaEllipse(object):
     """
-    this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
-    with ellipticity in the convergence
+    This class contains functions to evaluate the derivative and hessian matrix
+    of the deflection potential for an elliptical Gaussian convergence.
 
-    the equations are derived using complex formulation of lensing following Shajib 2019.
-
+    The formulae are from Shajib (2019).
     """
     param_names = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'amp': 0, 'sigma': 0, 'e1': -0.5, 'e2': -0.5,
+                           'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5,
+                           'center_x': 100, 'center_y': 100}
 
-    def __init__(self):
-        #self.spherical = GaussianKappa()
-        #self._diff = 0.000001
-        pass
+    def __init__(self, use_scipy_wofz=False, min_ellipticity=1e-5):
+        """
+        :param use_scipy_wofz: If `True`, use `scipy.special.wofz`.
+        :type use_scipy_wofz:
+        :param min_ellipticity: Minimum allowed ellipticity.
+        :type min_ellipticity:
+        """
+        if use_scipy_wofz:
+            self.w_f = wofz
+        else:
+            self.w_f = self.w_f_approx
+
+        self.min_ellipticity = min_ellipticity
+        self.spherical = GaussianKappa()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         returns Gaussian
         """
-        raise('Not implemented yet!')
+        phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        if q > 1 - self.min_ellipticity:
+            print('s')
+            return self.spherical.function(x, y, amp, sigma, center_x,
+                                           center_y)
+
+        # adjusting amplitude to make the notation compatible with the
+        # formulae given in Shajib (2019).
+        amp_ = amp / (2 * np.pi * sigma**2)
+
+        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
+        sigma_ = sigma * q
+
         x_shift = x - center_x
         y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
+        cos_phi = np.cos(phi_g)
+        sin_phi = np.sin(phi_g)
 
-        return -1
+        x_ = cos_phi * x_shift + sin_phi * y_shift
+        y_ = -sin_phi * x_shift + cos_phi * y_shift
 
-    def deflection(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Compute the deflection alpha_x alpha_y at x, y.
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp:
-        :type amp:
-        :param sigma:
-        :type sigma:
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :return:
-        :rtype:
-        """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        #e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) #* np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) # * np.sqrt(1 + e)
+        _b = 1. / 2. / sigma_ ** 2
+        _p = np.sqrt(_b * q ** 2 / (1. - q ** 2))
 
-        _b = 1. / 2. / sigma**2
-        _p = np.sqrt(_b * q**2 / (1. - q**2))
+        def pot_real_line_integrand(_x):
+            sig_func_re, sig_func_im = self.sigma_function(_p * _x, 0, q)
 
-        #print(_p * x, _p * y / q)
+            alpha_x_ = amp_*sigma_ * self.sgn(_x) * np.sqrt(2*np.pi / (
+                    1. - q ** 2)) * sig_func_re
 
-        #if not np.isscalar(x):
-        #   x_[np.abs(_p*x_)>26.] = 0.
-        #    y_[np.abs(_p*y_/q)>26.] = 0.
-        #elif np.abs(_p*x_)>26. or np.abs(_p*y_/q)>26.:
-        #    x_ = 0.
-        #    y_ = 0.
+            return alpha_x_
 
-        #derfi = erfi(_p * (x_ + 1j*y_)) - erfi(_p*(q*x_ + 1j*y_/q))
-        ddaw_er, ddaw_ei = self.ddaw_elliptical(_p * x_, _p * y_, q)
+        def pot_imag_line_integrand(_y):
+            sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * _y, q)
 
-        #print(_p * x, _p * y / q, derfi)
-        #print(x_, y_, amp, q, sigma, derfi)
-        #derfi = np.float128(derfi.tolist())
-        alpha_real = amp * sigma * self.sgn(x_+1j*y_) * np.sqrt(2*np.pi/(
-                1.-q**2)) * ddaw_er
-        alpha_imag = -amp * sigma * self.sgn(x_ + 1j * y_) * np.sqrt(
-            2 * np.pi / (
-                    1. - q ** 2)) * ddaw_ei
+            alpha_y_ = -amp_*sigma_ * self.sgn(x_ + 1j*_y) * np.sqrt(2*np.pi /
+                        (1. - q ** 2)) * sig_func_im
 
-        #if np.isnan(alpha.any()) or np.isinf(alpha.any()):
-        #print(x_, y_, amp, q, sigma, alpha)
-        #print(_b, _p, q, x_, y_, alpha, _p * (x_ + 1j * y_), erfi(_p * (x_ +
-        #                                                               1j *
-        #
-        #                                                                y_)),  _p * (q * x_ + 1j * y_ / q), erfi(
-        #                _p * (q * x_ + 1j * y_ / q)))
+            return alpha_y_
 
-        #if np.isnan(alpha.real).any():
-        #    print(q, x_[np.isnan(alpha.real)], y_[np.isnan(alpha.real)])
+        pot_on_real_line = quad(pot_real_line_integrand, 0, x_)[0]
+        pot_on_imag_parallel = quad(pot_imag_line_integrand, 0, y_)[0]
 
-        return alpha_real, alpha_imag
-
-    def shear(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Return the shear gamma_1 and gamma_2 at x, y.
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp:
-        :type amp:
-        :param sigma:
-        :type sigma:
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :return:
-        :rtype:
-        """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        #e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) #* np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) #* np.sqrt(1 + e)
-
-        q2 = 1. - q**2
-        rq2 = np.sqrt(q2)
-        p = np.sqrt(np.pi)
-        s2 = sigma ** 2
-        s = sigma
-        r2 = np.sqrt(2.)
-
-        _bb = 1. / 2. / sigma ** 2
-        _pp = np.sqrt(1 / 2 / (1. - q**2)) * q / sigma
-
-        ddaw_er, ddaw_ei = self.ddaw_elliptical(_pp * x_, _pp * y_, q)
-
-        #print(np.exp(-(q**2 * x_**2 + y_**2)), x_, y_, q)
-
-        shear_real =  - amp / (q2**1.5 * s) * (s * rq2 * ((1. + q**2) * np.exp(
-            -(q**2 * x_**2 + y_**2) / (2. * s2)) - 2. * q) + r2 * p * q**2
-            * (x_* ddaw_er - y_ * ddaw_ei ))
-
-        shear_imag =  amp / (q2**1.5 * s) * (r2 * p * q**2
-            * (x_ * ddaw_ei + y_ * ddaw_er ))
-
-        return shear_real, shear_imag
-
-    def kappa(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        """
-        Return the convergence at x, y.
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp:
-        :type amp:
-        :param sigma:
-        :type sigma:
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :return:
-        :rtype:
-        """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) #* np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) #* np.sqrt(1 + e)
-
-        return amp * np.exp(-(q**2*x_**2+y_**2)/2/sigma**2)
+        return (pot_on_real_line + pot_on_imag_parallel)
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        returns df/dx and df/dy of the function
+        Compute the derivatives of function angles df/dx, df/dy at x, y.
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param amp:
+        :type amp:
+        :param sigma:
+        :type sigma:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
         """
-        f_x, f_y = self.deflection(x, y, amp, sigma, e1, e2, center_x,
-                                   center_y)
+        phi_g, q = param_util.ellipticity2phi_q(e1, e2)
+
+        if q > 1 - self.min_ellipticity:
+            print('s')
+            return self.spherical.derivatives(x, y, amp, sigma, center_x,
+                                              center_y)
+
+        # adjusting amplitude to make the notation compatible with the
+        # formulae given in Shajib (2019).
+        amp_ = amp / (2 * np.pi * sigma**2)
+
+        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
+        sigma_ = sigma * q
+
+        x_shift = x - center_x
+        y_shift = y - center_y
+        cos_phi = np.cos(phi_g)
+        sin_phi = np.sin(phi_g)
+
+        # rotated coordinates
+        x_ = cos_phi * x_shift + sin_phi * y_shift
+        y_ = -sin_phi * x_shift + cos_phi * y_shift
+
+        _b = 1. / 2. / sigma_**2
+        _p = np.sqrt(_b * q**2 / (1. - q**2))
+
+        sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * y_, q)
+
+        alpha_x_ = amp_ * sigma_ * self.sgn(x_+1j*y_) * np.sqrt(2*np.pi/(
+                1.-q**2)) * sig_func_re
+        alpha_y_ = -amp_ * sigma_ * self.sgn(x_ + 1j * y_) * np.sqrt(
+            2 * np.pi / (1. - q ** 2)) * sig_func_im
+
+        # rotate back to the original frame
+        f_x = alpha_x_ * cos_phi - alpha_y_ * sin_phi
+        f_y = alpha_x_ * sin_phi + alpha_y_ * cos_phi
+
         return f_x, f_y
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        Compute Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param amp:
+        :type amp:
+        :param sigma:
+        :type sigma:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
         """
-        if x == [] or y == []:
-            return [], [], []
+        phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
-        kappa = self.kappa(x, y, amp, sigma, e1, e2, center_x, center_y)
-        #print(x, kappa)
-        g1, g2 = self.shear(x, y, amp, sigma, e1, e2, center_x, center_y)
+        if q > 1 - self.min_ellipticity:
+            print('s')
+            return self.spherical.hessian(x, y, amp, sigma, center_x, center_y)
 
-        f_xx = kappa + g1
-        f_yy = kappa - g1
-        # f_yx = (alpha_dec_dx - alpha_dec)/diff
-        f_xy = g2
-        #print(x, y, f_xx, f_yy, f_xy)
+        # adjusting amplitude to make the notation compatible with the
+        # formulae given in Shajib (2019).
+        amp_ = amp / (2 * np.pi * sigma**2)
+
+        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
+        sigma_ = sigma * q
+
+        x_shift = x - center_x
+        y_shift = y - center_y
+        cos_phi = np.cos(phi_g)
+        sin_phi = np.sin(phi_g)
+
+        # rotated coordinates
+        x_ = cos_phi * x_shift + sin_phi * y_shift
+        y_ = -sin_phi * x_shift + cos_phi * y_shift
+
+        q2 = 1. - q**2
+        rq2 = np.sqrt(q2)
+        p = np.sqrt(np.pi)
+        s2 = sigma_ ** 2
+        s = sigma_
+        r2 = np.sqrt(2.)
+
+        _bb = 1. / 2. / sigma_ ** 2
+        _pp = np.sqrt(1 / 2 / (1. - q**2)) * q / sigma_
+
+        sig_func_re, sig_func_im = self.sigma_function(_pp * x_, _pp * y_, q)
+
+        shear_real = - amp_ / (q2**1.5 * s) * (s * rq2 * ((1. + q**2)
+                        * np.exp(-(q**2 * x_**2 + y_**2) / (2. * s2))
+                        - 2. * q) + r2 * p * q**2 * (x_ * sig_func_re
+                                                     - y_ * sig_func_im))
+
+        shear_imag = amp_ / (q2**1.5 * s) * (r2 * p * q**2
+                            * (x_*sig_func_im + y_*sig_func_re))
+
+        kappa = amp_ * np.exp(-(q**2 * x_**2 + y_**2) / 2 / sigma_**2)
+
+        # in rotated frame
+        f_xx_ = kappa + shear_real
+        f_yy_ = kappa - shear_real
+        f_xy_ = shear_imag
+
+        # rotate back to the original frame
+        f_xx = f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 \
+               - 2 * sin_phi * cos_phi * f_xy_
+        f_yy = f_xx_ * sin_phi**2 + f_yy_ * cos_phi**2 \
+               + 2 * sin_phi * cos_phi * f_xy_
+        f_xy = sin_phi * cos_phi * (f_xx_ - f_yy_) \
+               + (cos_phi**2 - sin_phi**2) * f_xy_
+
         return f_xx, f_yy, f_xy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
@@ -234,11 +248,21 @@ class GaussianKappaEllipse(object):
         :param sigma_y:
         :return:
         """
-        return self.kappa(x, y, amp, sigma, e1, e2, center_x, center_y)
+        f_xx, f_yy, f_xy = self.hessian(x, y, amp, sigma, e1, e2, center_x,
+                                        center_y)
+        return (f_xx + f_yy) / 2
 
     @staticmethod
     def sgn(z):
-        return 1.  # np.sqrt(z*z)/z #np.sign(z.real*z.imag)
+        """
+        Compute the sign(z) factor for deflection as sugggested by Bray (1984).
+        :param z:
+        :type z:
+        :return:
+        :rtype:
+        """
+        return 1.
+        # np.sqrt(z*z)/z #np.sign(z.real*z.imag)
         #return np.sign(z.real)
         #if z.real != 0:
         #    return np.sign(z.real)
@@ -246,114 +270,107 @@ class GaussianKappaEllipse(object):
         #    return np.sign(z.imag)
         #return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))
 
-    @staticmethod
-    def ddaw_elliptical(x, y, q):
+    def sigma_function(self, x, y, q):
+        """
+        Compute the function $\varsigma(z; q)$ from equation (4.12) of
+        Shajib (2019).
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param q:
+        :type q:
+        :return:
+        :rtype:
+        """
         y_sign = np.sign(y)
         y_ = deepcopy(y) * y_sign
         z = x + 1j * y_
         zq = q * x + 1j * y_ / q
 
-        w = wofz(z)
-        wq = wofz(zq)
+        w = self.w_f(z)
+        wq = self.w_f(zq)
 
-        expxyqm1 = np.exp(-x * x * (1 - q * q) - y_ * y_ * (1 / q / q - 1))
+        # exponential factor in the 2nd term of eqn. (4.15) of Shajib (2019)
+        exp_factor = np.exp(-x * x * (1 - q * q) - y_ * y_ * (1 / q / q - 1))
 
-        ddaw_real = w.imag - expxyqm1 * wq.imag
-        ddaw_imag = (- w.real + expxyqm1 * wq.real) * y_sign
+        sigma_func_real = w.imag - exp_factor * wq.imag
+        sigma_func_imag = (- w.real + exp_factor * wq.real) * y_sign
 
-        return ddaw_real, ddaw_imag
+        return sigma_func_real, sigma_func_imag
 
     @staticmethod
-    def ddaw_elliptical_old(x, y, q, abs_tol=1e-10, rel_tol=1e-10):
+    def w_f_approx(z):
         """
-        Compute the elliptical difference in Dawson function at z=x+iy.
+        Compute the Faddeeva function w(z) using the approximation given
+        in Zaghloul (2017).
+        :param z: complex number or array
+        :type z: complex
+        :return: w_f
+        :rtype: complex
         """
-        if x is [] or y is []:
-            return []
+        sqrt_pi = 1 / np.sqrt(np.pi)
+        i_sqrt_pi = 1j * sqrt_pi
 
-        a = np.pi / np.sqrt(-np.log(abs_tol * 0.5))  # 0.5
-        # print(a)
+        wz = np.empty_like(z)
 
-        y_sign = np.sign(y)
-        y *= y_sign
+        z_imag2 = z.imag ** 2
+        abs_z2 = z.real ** 2 + z_imag2
 
-        cos2xy = np.cos(2 * x * y)
-        sin2xy = np.sin(2 * x * y)
-        sinxy = np.sin(x * y)
+        reg1 = (abs_z2 >= 38000.)
+        if np.any(reg1):
+            wz[reg1] = i_sqrt_pi / z[reg1]
 
-        if np.isscalar(x * y):
-            if x * y == 0:
-                sin2xydxy = 1
-                sinxydxy = 1
-            else:
-                sin2xydxy = sin2xy / x / y
-                sinxydxy = sinxy / x / y
-        else:
-            sin2xydxy = np.zeros_like(x * y)
-            sinxydxy = np.zeros_like(x * y)
-            sin2xydxy[x * y == 0] = 1
-            sin2xydxy[x * y != 0] = sin2xy[x * y != 0] / (x * y)[x * y != 0]
-            sinxydxy[x * y == 0] = 1
-            sinxydxy[x * y != 0] = sinxy[x * y != 0] / (x * y)[x * y != 0]
+        reg2 = (256. <= abs_z2) & (abs_z2 < 38000.)
+        if np.any(reg2):
+            t = z[reg2]
+            wz[reg2] = i_sqrt_pi * t / (t * t - 0.5)
 
-        derfcx = - erfcx(y) + np.exp(-y * y * (1 / q / q - 1)) * erfcx(y / q)
+        reg3 = (62. <= abs_z2) & (abs_z2 < 256.)
+        if np.any(reg3):
+            t = z[reg3]
+            wz[reg3] = (i_sqrt_pi / t) * (1 + 0.5 / (t * t - 1.5))
 
-        expxx = np.exp(-x * x)
-        expqxy2 = np.exp(-x * x * (1 - q * q) - y * y * (1 / q / q - 1))
+        reg4 = (30. <= abs_z2) & (abs_z2 < 62.) & (z_imag2 >= 1e-13)
+        if np.any(reg4):
+            t = z[reg4]
+            tt = t * t
+            wz[reg4] = (i_sqrt_pi * t) * (tt - 2.5) / (tt * (tt - 3.) + 0.75)
 
-        real_ddaw = expxx * sin2xy * (
-            derfcx) + expxx * 2 * a * x * sin2xydxy / np.pi * (
-                                1 - q * np.exp(-y * y * (1 / q / q - 1)))
-        imag_ddaw = expxx * cos2xy * (
-            derfcx) - expxx * 2 * a * x * sinxy * sinxydxy / np.pi * (
-                                1 - q * np.exp(-y * y * (1 / q / q - 1)))
+        reg5 = (62. > abs_z2) & np.logical_not(reg4) & (abs_z2 > 2.5) & (
+                    z_imag2 < 0.072)
+        if np.any(reg5):
+            t = z[reg5]
+            u = -t * t
+            f1 = sqrt_pi
+            f2 = 1
+            s1 = [1.320522, 35.7668, 219.031, 1540.787, 3321.99, 36183.31]
+            s2 = [1.841439, 61.57037, 364.2191, 2186.181, 9022.228, 24322.84,
+                  32066.6]
 
-        n = 1
-        if np.isscalar(x):
-            N = 20 + int(np.ceil(np.abs(x / a)))
-        else:
-            try:
-            #print(len(x), x.shape, x)
-                N = 20 + int(np.ceil(np.max(np.abs(x / a).flatten())))
-            except ValueError:
-                N = 20
-        # print(N)
-        while n < N:
-            s1 = np.exp(-a * a * n * n - x * x) / (a * a * n * n + y * y)
-            s1q = np.exp(-a * a * n * n - x * x * q * q) / (
-                        a * a * n * n + y * y / q / q) * expqxy2
+            for s in s1:
+                f1 = s - f1 * u
+            for s in s2:
+                f2 = s - f2 * u
 
-            s2 = np.exp(-(a * n + x) * (a * n + x)) / (a * a * n * n + y * y)
-            s2q = np.exp(-(a * n + q * x) * (a * n + q * x)) / (
-                        a * a * n * n + y * y / q / q) * expqxy2
+            wz[reg5] = np.exp(u) + 1j * t * f1 / f2
 
-            s3 = np.exp(-(a * n - x) * (a * n - x)) / (a * a * n * n + y * y)
-            s3q = np.exp(-(a * n - q * x) * (a * n - q * x)) / (
-                        a * a * n * n + y * y / q / q) * expqxy2
+        reg6 = (30.0 > abs_z2) & np.logical_not(reg5)
+        if np.any(reg6):
+            t3 = - 1j * z[reg6]
 
-            s4 = s2 * a * n
-            s4q = s2q * a * n
+            f1 = sqrt_pi
+            f2 = 1
+            s1 = [5.9126262, 30.180142, 93.15558, 181.92853, 214.38239,
+                  122.60793]
+            s2 = [10.479857, 53.992907, 170.35400, 348.70392, 457.33448,
+                  352.73063, 122.60793]
 
-            s5 = s3 * a * n
-            s5q = s3q * a * n
+            for s in s1:
+                f1 = f1 * t3 + s
+            for s in s2:
+                f2 = f2 * t3 + s
 
-            real_delta = 2 * a / np.pi * (y * sin2xy * (s1 - s1q / q) - 0.5 * (
-                        s4 - s5 - s4q + s5q))
-            imag_delta = 2 * a / np.pi * (
-                        y * cos2xy * (s1 - s1q / q) - y / 2 * (
-                            s2 + s3 - s2q / q - s3q / q))
+            wz[reg6] = f1 / f2
 
-            real_ddaw += real_delta
-            imag_ddaw += imag_delta
-
-            n += 1
-
-        #if np.isnan(real_ddaw).any():
-        #    print(q, x[np.isnan(real_ddaw)], y[np.isnan(real_ddaw)])
-
-        #if np.isnan(imag_ddaw).any():
-        #    print(q, x[np.isnan(imag_ddaw)], y[np.isnan(imag_ddaw)])
-
-        y *= y_sign
-
-        return real_ddaw, imag_ddaw*y_sign
+        return wz

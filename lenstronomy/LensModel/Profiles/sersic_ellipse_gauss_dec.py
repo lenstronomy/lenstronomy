@@ -11,7 +11,7 @@ from .gauss_decomposition import GaussDecompositionEllipse
 import lenstronomy.Util.param_util as param_util
 
 
-class SersicToGauss(object):
+class SersicEllipseGaussianKappa(object):
     """
     class for Sersic profile convergence using Gauss expansion
     """

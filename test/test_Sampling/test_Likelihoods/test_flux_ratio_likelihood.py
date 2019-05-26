@@ -53,13 +53,21 @@ class TestFluxRatioLikelihood(object):
         npt.assert_almost_equal(logL_inf, 0 , decimal=4)
 
     def test__logL(self):
+        lensModel = LensModel(lens_model_list=[])
+        flux_ratios_init = np.array([1, 1, 1])
+        flux_ratio_errors = np.array([1, 1, 1])
+        flux_likelihood = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios_init,
+                            flux_ratio_errors=flux_ratio_errors)
+
         flux_ratios = np.array([0, 1, np.nan])
         print(np.isnan(flux_ratios).any(), 'test')
-        logL = self.flux_likelihood._logL(flux_ratios)
+        logL = flux_likelihood._logL(flux_ratios)
         assert logL == -10 ** 15
-        self.flux_likelihood._flux_ratio_errors = np.array([0, 1, 1])
+
+        flux_likelihood = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios_init,
+                                              flux_ratio_errors=np.array([0, 1, 1]))
         flux_ratios = np.array([1, 1, 1])
-        logL = self.flux_likelihood._logL(flux_ratios)
+        logL = flux_likelihood._logL(flux_ratios)
         assert logL == -10 ** 15
 
 

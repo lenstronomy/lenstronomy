@@ -102,9 +102,14 @@ class TestNumericsProfile(object):
         lens_model = ['GAUSSIAN_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_gausian_kappa_ellipse(self):
+    def test_gausian_ellipse_kappa(self):
         kwargs = {'amp': 1., 'sigma': 2., 'e1': .1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
-        lens_model = ['GAUSSIAN_KAPPA_ELLIPSE']
+        lens_model = ['GAUSSIAN_ELLIPSE_KAPPA']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_gausian_ellipse_potential(self):
+        kwargs = {'amp': 1., 'sigma': 2., 'e1': .1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['GAUSSIAN_ELLIPSE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
 
     def test_external_shear(self):

@@ -18,8 +18,10 @@ class TestLensModel(object):
     def test_init(self):
         lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_POTENTIAL',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
-                            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON', 'DOUBLE_CHAMELEON']
+                           'SHAPELETS_POLAR', 'DIPOLE',
+                           'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL',
+                           'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON',
+                           'DOUBLE_CHAMELEON']
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 

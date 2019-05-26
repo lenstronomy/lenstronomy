@@ -5,5 +5,6 @@
   "test/test_LensModel/test_Profiles/test_gaussian_kappa_ellipse_pot.py::TestGaussianKappa::test_density_2d": true,
   "test/test_LensModel/test_Profiles/test_gaussian_kappa_ellipse_pot.py::TestGaussianKappa::test_derivatives": true,
   "test/test_LensModel/test_Profiles/test_gaussian_kappa_ellipse_pot.py::TestGaussianKappa::test_hessian": true,
+  "test/test_LensModel/test_numeric_lens_differentials.py::TestNumericsProfile::test_gausian_kappa_ellipse": true,
   "test/test_LensModel/test_numeric_lens_differentials.py::TestNumericsProfile::test_gauss_complex": true
 }

@@ -1,5 +1,6 @@
 import lenstronomy.Sampling.Likelihoods.image_likelihood as img_likelihood
 import numpy as np
+import pytest
 
 
 class TestImageLikelihood(object):
@@ -25,3 +26,7 @@ class TestImageLikelihood(object):
         multi_band = img_likelihood.create_im_sim(multi_band_list[0], multi_band_type, self.kwargs_model, bands_compute=None,
                                                   likelihood_mask_list=None, band_index=0)
         assert multi_band.LensModel.lens_model_list[0] == 'SIS'
+
+
+if __name__ == '__main__':
+    pytest.main()

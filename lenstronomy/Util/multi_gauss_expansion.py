@@ -5,6 +5,7 @@ Multi-Gaussian expansion fitting, based on Capellari 2002, http://adsabs.harvard
 
 import numpy as np
 from scipy.optimize import nnls
+import warnings
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 gaussian_func = Gaussian()
 
@@ -29,17 +30,17 @@ def mge_1d(r_array, flux_r, N=20, linspace=False):
     :param N: number of Gaussians
     :return: amplitudes and Gaussian sigmas for the best 1d flux profile
     """
+    if N == 0:
+        warnings.warn('Number of MGE went down to zero! This should not happen!', Warning)
+        amplitudes = [0]
+        sigmas = [1]
+        norm = 0
+        return amplitudes, sigmas, norm
     try:
         amplitudes, sigmas, norm = _mge_1d(r_array, flux_r, N, linspace=linspace)
     except:
         N_new = N - 1
-        if N_new == 0:
-            print("WARNING: Number of MGE went down to zero! This should not happen!")
-            amplitudes = [1]
-            sigmas = [1]
-            norm = 0
-        else:
-            amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new, linspace=linspace)
+        amplitudes, sigmas, norm = mge_1d(r_array, flux_r, N=N_new, linspace=linspace)
     return amplitudes, sigmas, norm
 
 

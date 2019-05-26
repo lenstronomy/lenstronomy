@@ -1,6 +1,8 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
+import warnings
 
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.kernel_util as kernel_util
@@ -25,9 +27,7 @@ class TestData(object):
         assert len(kernel_gaussian) == 21
         assert len(kernel_pixel) == 21
 
-        kwargs_psf = simulation_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=0.2, kernelsize=11, deltaPix=0.05,
-                                                   truncate=3,
-                                                   kernel=None)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 0.2, 'truncation': 3, 'pixel_size': 0.05}
         psf_class = PSF(**kwargs_psf)
         kernel_point_source = psf_class.kernel_point_source
         assert len(kernel_point_source) == 13
@@ -51,6 +51,7 @@ class TestData(object):
         kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
                                    'point_source_supersampling_factor': subsampling_res}
         psf_pixel_subsampled = PSF(**kwargs_pixel_subsampled)
+        psf_pixel_subsampled.kernel_point_source_supersampled(supersampling_factor=subsampling_res+1)
         kernel_point_source /= np.sum(kernel_point_source)
         kwargs_pixel = {'psf_type': 'PIXEL',
                         'kernel_point_source': kernel_point_source}
@@ -84,6 +85,10 @@ class TestData(object):
         npt.assert_almost_equal(np.sum(kernel_point_source), np.sum(kernel_point_source_new), decimal=8)
         npt.assert_almost_equal(np.sum(kernel_point_source), 1, decimal=8)
 
+        psf_none = PSF(psf_type='NONE')
+        kernel_super = psf_none.kernel_point_source_supersampled(supersampling_factor=5)
+        npt.assert_almost_equal(kernel_super, psf_none.kernel_point_source, decimal=9)
+
     def test_fwhm(self):
         deltaPix = 1.
         fwhm = 5.6
@@ -103,6 +108,51 @@ class TestData(object):
         psf_kernel = PSF(**kwargs)
         fwhm_compute = psf_kernel.fwhm
         npt.assert_almost_equal(fwhm_compute, fwhm, decimal=1)
+
+    def test_kernel_pixel(self):
+        deltaPix = 1.
+        fwhm = 5.6
+        kwargs = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        psf_kernel = PSF(**kwargs)
+        kernel_pixel = psf_kernel.kernel_pixel
+        npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(psf_kernel.kernel_point_source), decimal=9)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        psf = PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)))
+        psf.psf_type = 'WRONG'
+        with self.assertRaises(ValueError):
+            PSF(psf_type='GAUSSIAN')
+        with self.assertRaises(ValueError):
+            PSF(psf_type='PIXEL')
+        with self.assertRaises(ValueError):
+            PSF(psf_type='PIXEL', kernel_point_source=np.ones((2, 2)))
+        with self.assertRaises(ValueError):
+            PSF(psf_type='WRONG')
+        with self.assertRaises(ValueError):
+            PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)), psf_error_map=np.ones((5, 5)))
+            psf.kernel_point_source_supersampled(supersampling_factor=3)
+        with self.assertRaises(ValueError):
+            psf = PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)))
+            psf.psf_type = 'WRONG'
+            psf.kernel_point_source_supersampled(supersampling_factor=3)
+
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Trigger a warning.
+            kernel_point_source_subsampled = np.ones((9, 9))
+            subsampling_res = 3
+            kwargs_pixel_subsampled = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
+                                       'point_source_supersampling_factor': subsampling_res}
+            psf_pixel_subsampled = PSF(**kwargs_pixel_subsampled)
+            psf_pixel_subsampled.kernel_point_source_supersampled(supersampling_factor=subsampling_res + 4)
+            # Verify some things
+            assert 1 == 1
+            #assert len(w) == 1
+            #assert issubclass(w[-1].category, Warning)
 
 
 if __name__ == '__main__':

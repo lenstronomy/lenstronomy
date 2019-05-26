@@ -31,14 +31,10 @@ class TestFittingSequence(object):
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = ImageData(**self.kwargs_data)
-        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=None)
-        #self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-        #                                            truncate=6,
-        #                                            kernel=kwargs_psf['kernel_point_source'])
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
+        psf_gaussian = PSF(**kwargs_psf_gaussian)
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
         psf_class = PSF(**self.kwargs_psf)
-
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}

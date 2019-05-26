@@ -4,6 +4,7 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.param_util as param_util
 
@@ -119,6 +120,23 @@ class TestLensModelExtensions(object):
         assert shear1 == 0.1
         assert shear2 == 0.01
         assert kappa_ext == 0
+
+    def test_zoom_source(self):
+        lens_model_list = ['SPEMD', 'SHEAR']
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        lensModelExtensions = LensModelExtensions(lensModel=lensModel)
+        lensEquationSolver = LensEquationSolver(lensModel=lensModel)
+
+        x_source, y_source = 0.02, 0.01
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': 0.1, 'gamma': 2, 'center_x': 0, 'center_y': 0},
+                       {'e1': 0.05, 'e2': -0.03}]
+
+        x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,
+                                                                     sourcePos_y=y_source)
+
+        image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
+                    shape="GAUSSIAN")
+        assert len(image) == 100
 
 
 if __name__ == '__main__':

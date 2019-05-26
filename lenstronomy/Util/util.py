@@ -150,7 +150,6 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         shift = -1. / 2 + 1. / (2 * subgrid_res)
     else:
         shift = np.sum(x_grid) / numPix_eff**2
-
     return x_grid - shift, y_grid - shift
 
 

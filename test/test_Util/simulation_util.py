@@ -24,14 +24,6 @@ class TestSimulation(object):
         data_class = ImageData(**kwargs_data)
         assert data_class.pixel_width == deltaPix
 
-    def test_psf_configure_simple(self):
-        deltaPix = 0.05  # pixel size in arcsec (area per pixel = deltaPix**2)
-        fwhm = 0.5  # full width half max of PSF
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,\
-                                                   truncate=5)
-        psf_class = PSF(kwargs_psf)
-        assert psf_class.psf_type == 'GAUSSIAN'
-
 
 if __name__ == '__main__':
     pytest.main()

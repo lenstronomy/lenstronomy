@@ -33,10 +33,9 @@ class TestImageModel(object):
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = ImageData(**kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=31, deltaPix=deltaPix,
-                                               truncate=5)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
-        # 'EXERNAL_SHEAR': external shear
+        # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         phi, q = 0.2, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)

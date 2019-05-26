@@ -86,8 +86,8 @@ class LikelihoodModule(object):
         self._flux_ratio_likelihood = flux_ratio_likelihood
         self._kwargs_flux_compute = kwargs_flux_compute
         if self._flux_ratio_likelihood is True:
-            self.flux_ratio_likelihood = FluxRatioLikelihood(point_source_class, lens_model_class, param_class,
-                                                             flux_ratios, flux_ratio_errors, **self._kwargs_flux_compute)
+            self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, flux_ratios, flux_ratio_errors,
+                                                             **self._kwargs_flux_compute)
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
 
@@ -120,7 +120,10 @@ class LikelihoodModule(object):
             if bool is False:
                 logL -= 10**10
         if self._flux_ratio_likelihood is True:
-            logL += self.flux_ratio_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
+            ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
+                                                                            kwargs_lens=kwargs_lens)
+            x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
+            logL += self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_cosmo)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)

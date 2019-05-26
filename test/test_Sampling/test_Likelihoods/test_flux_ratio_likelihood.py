@@ -54,8 +54,8 @@ class TestFluxRatioLikelihood(object):
 
     def test__logL(self):
         lensModel = LensModel(lens_model_list=[])
-        flux_ratios_init = np.array([1, 1, 1])
-        flux_ratio_errors = np.array([1, 1, 1])
+        flux_ratios_init = np.array([1., 1., 1.])
+        flux_ratio_errors = np.array([1., 1., 1.])
         flux_likelihood = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios_init,
                             flux_ratio_errors=flux_ratio_errors)
 
@@ -65,8 +65,8 @@ class TestFluxRatioLikelihood(object):
         assert logL == -10 ** 15
 
         flux_likelihood = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios_init,
-                                              flux_ratio_errors=np.array([0, 1, 1]))
-        flux_ratios = np.array([1, 1, 1])
+                                              flux_ratio_errors=np.array([0., 1., 1.]))
+        flux_ratios = np.array([1., 1., 1.])
         logL = flux_likelihood._logL(flux_ratios)
         assert logL == -10 ** 15
 

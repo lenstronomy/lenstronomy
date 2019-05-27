@@ -18,8 +18,41 @@ class TestGaussianKappaEllipse(object):
         self.sersic_light = SersicElliptic()
         self.sersic_sphere = Sersic()
 
-    #def test_function(self):
-    #    pass
+    def test_function(self):
+        k_eff = 1
+        R_sersic = 1
+        n_sersic = 1
+        e1 = 0.2
+        e2 = 0.2
+        center_x = 0.
+        center_y = 0.
+
+        diff = 1e-6
+
+        n = 5
+        xs = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
+        ys = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
+
+        for x, y in zip(xs, ys):
+            func = self.sersic_gauss.function(x, y, n_sersic, R_sersic,
+                                              k_eff, e1, e2, center_x, center_y)
+
+            func_dx = self.sersic_gauss.function(x+diff, y, n_sersic, R_sersic,
+                                                 k_eff, e1, e2, center_x, center_y)
+
+            func_dy = self.sersic_gauss.function(x, y+diff, n_sersic,
+                                                 R_sersic, k_eff, e1, e2, center_x,
+                                                 center_y)
+
+            f_x_num = (func_dx - func) / diff
+            f_y_num = (func_dy - func) / diff
+
+            f_x, f_y = self.sersic_gauss.derivatives(x, y, n_sersic, R_sersic,
+                                                     k_eff, e1, e2, center_x,
+                                                     center_y)
+
+            npt.assert_almost_equal(f_x_num, f_x, decimal=4)
+            npt.assert_almost_equal(f_y_num, f_y, decimal=4)
 
     def test_derivatives(self):
         k_eff = 1

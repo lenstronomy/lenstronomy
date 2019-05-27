@@ -25,12 +25,12 @@ class GaussDecomposition(object):
     def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
         """
 
-        :param use_scipy_wofz: To be passed to `class GaussianEllipseKappa(
-        )`. If True, Gaussian lensing will use `scipy.special.wofz`
-        function. Set False for lower precision, but faster speed.
+        :param use_scipy_wofz: To be passed to `class GaussianEllipseKappa()`.
+        If True, Gaussian lensing will use `scipy.special.wofz` function.
+        Set False for lower precision, but faster speed.
         :type use_scipy_wofz: bool
-        :param min_ellipticity: To be passed to `class GaussianEllipseKappa(
-        )`. Minimum ellipticity for Gaussian elliptical lensing calculation.
+        :param min_ellipticity: To be passed to `class GaussianEllipseKappa()`.
+        Minimum ellipticity for Gaussian elliptical lensing calculation.
         For lower ellipticity than min_ellipticity the equations for the
         spherical case will be used.
         :type min_ellipticity: float
@@ -41,27 +41,27 @@ class GaussDecomposition(object):
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp: Array of amplitudes.
-        :type amp: numpy array
-        :param sigma: Array of sigmas.
-        :type sigma: numpy array
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :param scale_factor:
-        :type scale_factor:
-        :return:
-        :rtype:
+        Compute the potential function for a set of concentric elliptical
+        Gaussian convergence profiles.
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: numpy.array with dtype=float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: numpy.array with dtype=float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Potential for elliptical Gaussian convergence.
+        :rtype: float, or numpy.array with shape = x.shape.
         """
         function = np.zeros_like(x, dtype=float)
 
@@ -76,27 +76,29 @@ class GaussDecomposition(object):
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp: array of amplitudes.
-        :type amp: numpy array
-        :param sigma: array of sigmas.
-        :type sigma: numpy array
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :param scale_factor:
-        :type scale_factor:
-        :return:
-        :rtype:
+        Compute the derivatives of function angles df/dx, df/dy at x,
+        y for a set of concentric elliptic Gaussian convergence profiles.
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: numpy.array with dtype=float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: numpy.array with dtype=float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Deflection angle df/dx, df/dy for elliptical Gaussian
+        convergence.
+        :rtype: tuple (float, float) or (numpy.array, numpy.array) with each
+        numpy.array's shape = x.shape.
         """
         f_x = np.zeros_like(x, dtype=float)
         f_y = np.zeros_like(x, dtype=float)
@@ -112,30 +114,31 @@ class GaussDecomposition(object):
 
         return f_x, f_y
 
-
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp: Array of amplitudes.
-        :type amp: numpy array
-        :param sigma: Array of sigmas.
-        :type sigma: numpy array
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :param scale_factor:
-        :type scale_factor:
-        :return:
-        :rtype:
+        Compute Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy for a
+        set of concentric elliptic Gaussian convergence profiles.
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: numpy.array with dtype=float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: numpy.array with dtype=float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Hessian d^2f/dx^2, d^f/dy^2, d^2/dxdy for elliptical
+        Gaussian convergence.
+        :rtype: tuple (float, float, float) , or (numpy.array, numpy.array,
+        numpy.array) with each numpy.array's shape = x.shape.
         """
         f_xx = np.zeros_like(x, dtype=float)
         f_yy = np.zeros_like(x, dtype=float)
@@ -158,27 +161,29 @@ class GaussDecomposition(object):
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp: Array of amplitudes.
-        :type amp: numpy array
-        :param sigma: Array of amplitudes.
-        :type sigma: numpy array
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :param scale_factor:
-        :type scale_factor:
-        :return:
-        :rtype:
+        Compute the density of a set of concentric elliptical Gaussian
+        convergenc profiles \Sum {A/(2*pi*sigma^2) * exp(-(
+        x^2+y^2/q^2)/2/sigma^2)}.
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: numpy.array with dtype=float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: numpy.array with dtype=float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Density \kappa for elliptical
+        Gaussian convergence.
+        :rtype: float, or numpy.array with shape = x.shape.
         """
         density_2d = np.zeros_like(x, dtype=float)
 

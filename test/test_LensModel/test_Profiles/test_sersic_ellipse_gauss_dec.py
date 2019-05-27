@@ -9,9 +9,10 @@ import numpy.testing as npt
 import pytest
 
 
-class TestGaussianKappaEllipse(object):
+class TestSersicEllipseGaussDec(object):
     """
-    test the Gaussian with Gaussian kappa
+    This class tests the methods for Gauss-decomposed elliptic Sersic
+    convergence.
     """
     def setup(self):
         self.sersic_gauss = SersicEllipseGaussDec()
@@ -19,6 +20,14 @@ class TestGaussianKappaEllipse(object):
         self.sersic_sphere = Sersic()
 
     def test_function(self):
+        """
+        Test the potential function of Gauss-decomposed elliptical Sersic by
+        asserting that the numerical derivative of the computed potential
+        matches with the analytical derivative values.
+        the computed der
+        :return:
+        :rtype:
+        """
         k_eff = 1
         R_sersic = 1
         n_sersic = 1
@@ -55,6 +64,12 @@ class TestGaussianKappaEllipse(object):
             npt.assert_almost_equal(f_y_num, f_y, decimal=4)
 
     def test_derivatives(self):
+        """
+        Test the derivative function of Gauss-decomposed elliptical Sersic by
+        matching with the spherical case.
+        :return:
+        :rtype:
+        """
         k_eff = 1
         R_sersic = 1
         n_sersic = 1
@@ -83,6 +98,12 @@ class TestGaussianKappaEllipse(object):
         npt.assert_almost_equal(f_y, f_y_s, decimal=3)
 
     def test_hessian(self):
+        """
+        Test the Hessian function of Gauss-decomposed elliptical Sersic by
+        matching with the spherical case.
+        :return:
+        :rtype:
+        """
         k_eff = 1
         R_sersic = 1
         n_sersic = 1
@@ -110,7 +131,8 @@ class TestGaussianKappaEllipse(object):
 
     def test_density_2d(self):
         """
-        Test that `density_2d()` returns the 2D Sersic function.
+        Test the density function of Gauss-decomposed elliptical Sersic by
+        checking with the spherical case.
         :return:
         :rtype:
         """
@@ -142,7 +164,7 @@ class TestGaussianKappaEllipse(object):
 
     def test_get_amps(self):
         """
-        Test that `get_amps()` decomposes the Sersic profile within 1%
+        Test that `gauss_decompose_sersic()` decomposes the Sersic profile within 1%
         Poission noise at R_sersic.
         :return:
         :rtype:
@@ -153,7 +175,7 @@ class TestGaussianKappaEllipse(object):
         R_sersic = 1
         n_sersic = 1
 
-        amps, sigmas = self.sersic_gauss.get_amps(n_sersic, R_sersic, k_eff)
+        amps, sigmas = self.sersic_gauss.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
         sersic = self.sersic_gauss.kappa_y(y, n_sersic, R_sersic, k_eff)
 

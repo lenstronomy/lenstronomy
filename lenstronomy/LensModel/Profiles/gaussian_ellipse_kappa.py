@@ -30,10 +30,12 @@ class GaussianEllipseKappa(object):
 
     def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
         """
+        Initiate the
         :param use_scipy_wofz: If `True`, use `scipy.special.wofz`.
-        :type use_scipy_wofz:
-        :param min_ellipticity: Minimum allowed ellipticity.
-        :type min_ellipticity:
+        :type use_scipy_wofz: bool
+        :param min_ellipticity: Minimum allowed ellipticity. For q > 1 -
+        min_ellipticity, values for spherical case will be returned.
+        :type min_ellipticity: float
         """
         if use_scipy_wofz:
             self.w_f = wofz
@@ -45,7 +47,26 @@ class GaussianEllipseKappa(object):
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        returns Gaussian
+        Compute the potential function for elliptical Gaussian convergence.
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Potential for elliptical Gaussian convergence.
+        :rtype: float, or numpy.array with shape = x.shape.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -95,24 +116,27 @@ class GaussianEllipseKappa(object):
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         Compute the derivatives of function angles df/dx, df/dy at x, y.
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp:
-        :type amp:
-        :param sigma:
-        :type sigma:
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :return:
-        :rtype:
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Deflection angle df/dx, df/dy for elliptical Gaussian
+        convergence.
+        :rtype: tuple (float, float) or (numpy.array, numpy.array) with each
+        numpy.array's shape = x.shape.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -154,24 +178,27 @@ class GaussianEllipseKappa(object):
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         Compute Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param amp:
-        :type amp:
-        :param sigma:
-        :type sigma:
-        :param e1:
-        :type e1:
-        :param e2:
-        :type e2:
-        :param center_x:
-        :type center_x:
-        :param center_y:
-        :type center_y:
-        :return:
-        :rtype:
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Hessian d^2f/dx^2, d^f/dy^2, d^2/dxdy for elliptical
+        Gaussian convergence.
+        :rtype: tuple (float, float, float) , or (numpy.array, numpy.array,
+        numpy.array) with each numpy.array's shape = x.shape.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -220,12 +247,28 @@ class GaussianEllipseKappa(object):
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-
-        :param R:
-        :param am:
-        :param sigma_x:
-        :param sigma_y:
-        :return:
+        Compute the density of elliptical Gaussian A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :param x: x coordinate.
+        :type x: float or numpy.array
+        :param y: y coordinate.
+        :type y: float or numpy.array
+        :param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+        exp(-(x^2+y^2/q^2)/2/sigma^2).
+        :type amp: float
+        :param sigma: Standard deviation of Gaussian.
+        :type sigma: float
+        :param e1: Ellipticity parameter 1.
+        :type e1: float
+        :param e2: Ellipticity parameter 2.
+        :type e2: float
+        :param center_x: x coordinate of centroid.
+        :type center_x: float
+        :param center_y: y coordianate of centroid.
+        :type center_y: float
+        :return: Density \kappa for elliptical
+        Gaussian convergence.
+        :rtype: float, or numpy.array with shape = x.shape.
         """
         f_xx, f_yy, f_xy = self.hessian(x, y, amp, sigma, e1, e2, center_x,
                                         center_y)
@@ -234,11 +277,13 @@ class GaussianEllipseKappa(object):
     @staticmethod
     def sgn(z):
         """
-        Compute the sign(z) factor for deflection as sugggested by Bray (1984).
-        :param z:
-        :type z:
-        :return:
-        :rtype:
+        Compute the sign function sgn(z) factor for deflection
+        as sugggested by Bray (1984). For current implementation, returning
+        1 is sufficient.
+        :param z: Complex variable z = x + iy.
+        :type z: complex
+        :return: Sign of z, sgn(z).
+        :rtype: float
         """
         return 1.
         # np.sqrt(z*z)/z #np.sign(z.real*z.imag)
@@ -253,14 +298,14 @@ class GaussianEllipseKappa(object):
         """
         Compute the function $\varsigma(z; q)$ from equation (4.12) of
         Shajib (2019).
-        :param x:
-        :type x:
-        :param y:
-        :type y:
-        :param q:
-        :type q:
-        :return:
-        :rtype:
+        :param x: Real part of complex variable, x = Re(z).
+        :type x: float or numpy.array
+        :param y: Imaginary part of complex variable, y = Re(z).
+        :type y: float or numpy.array
+        :param q: Axis ratio.
+        :type q: float
+        :return: value of Sigma function, equation (4.12) from Shajib (2019).
+        :rtype: tuple (type, type) with type being type(x) or type(y).
         """
         y_sign = np.sign(y)
         y_ = deepcopy(y) * y_sign

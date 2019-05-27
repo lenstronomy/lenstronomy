@@ -10,15 +10,24 @@ from scipy.special import wofz
 import pytest
 
 
-class TestGaussianKappaEllipse(object):
+class TestGaussianEllipseKappa(object):
     """
-    test the Gaussian with Gaussian kappa
+    This class tests the methods for elliptical Gaussian convergence.
     """
     def setup(self):
+        """
+        :return:
+        :rtype:
+        """
         self.gaussian_kappa = GaussianKappa()
         self.gaussian_kappa_ellipse = GaussianEllipseKappa()
 
     def test_function(self):
+        """
+        Test the `function()` method at the spherical limit.
+        :return:
+        :rtype:
+        """
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -33,6 +42,11 @@ class TestGaussianKappaEllipse(object):
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 
     def test_derivatives(self):
+        """
+        Test the `derivatives()` method at the spherical limit.
+        :return:
+        :rtype:
+        """
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -46,6 +60,11 @@ class TestGaussianKappaEllipse(object):
         npt.assert_almost_equal(f_y, f_y_sphere, decimal=4)
 
     def test_hessian(self):
+        """
+        Test the `hessian()` method at the spherical limit.
+        :return:
+        :rtype:
+        """
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -60,6 +79,11 @@ class TestGaussianKappaEllipse(object):
         npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=4)
 
     def test_density_2d(self):
+        """
+        Test the `density_2d()` method at the spherical limit.
+        :return:
+        :rtype:
+        """
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -70,6 +94,12 @@ class TestGaussianKappaEllipse(object):
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 
     def test_w_f_approx(self):
+        """
+        Test the `w_f_approx()` method with values computed using
+        `scipy.special.wofz()`.
+        :return:
+        :rtype:
+        """
         x = np.logspace(-3, 3, 100)
         y = np.logspace(-3, 3, 100)
 

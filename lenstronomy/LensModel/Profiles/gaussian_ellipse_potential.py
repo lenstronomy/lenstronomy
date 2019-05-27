@@ -6,7 +6,7 @@ from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
 
 
-class GaussianKappaEllipse(object):
+class GaussianEllipsePotential(object):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     with ellipticity in the convergence

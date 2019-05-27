@@ -8,7 +8,7 @@ __author__ = 'ajshajib'
 
 import numpy as np
 
-from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
+from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
 
 
 class GaussDecomposition(object):
@@ -22,8 +22,22 @@ class GaussDecomposition(object):
     upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5,
                            'center_x': 100, 'center_y': 100}
 
-    def __init__(self):
-        self.gaussian_ellipse_kappa = GaussianKappaEllipse()
+    def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
+        """
+
+        :param use_scipy_wofz: To be passed to `class GaussianEllipseKappa(
+        )`. If True, Gaussian lensing will use `scipy.special.wofz`
+        function. Set False for lower precision, but faster speed.
+        :type use_scipy_wofz: bool
+        :param min_ellipticity: To be passed to `class GaussianEllipseKappa(
+        )`. Minimum ellipticity for Gaussian elliptical lensing calculation.
+        For lower ellipticity than min_ellipticity the equations for the
+        spherical case will be used.
+        :type min_ellipticity: float
+        """
+        self.gaussian_ellipse_kappa = GaussianEllipseKappa(
+                                            use_scipy_wofz=use_scipy_wofz,
+                                            min_ellipticity=min_ellipticity)
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
@@ -84,42 +98,19 @@ class GaussDecomposition(object):
         :return:
         :rtype:
         """
-        n_dim = len(amp)
+        f_x = np.zeros_like(x, dtype=float)
+        f_y = np.zeros_like(x, dtype=float)
 
-        is_scalar = False
-        if np.isscalar(x) and np.isscalar(y):
-            is_scalar = True
-        is_naked_array = False
-        if not x.shape and not y.shape:
-            is_naked_array = True
-
-        if np.isscalar(x) or not x.shape:
-            x = np.array([x])
-        if np.isscalar(y) or not y.shape:
-            y = np.array([y])
-
-        assert len(x) == len(y)
-
-        xs = np.repeat(x[np.newaxis, :], n_dim, axis=0)
-        ys = np.repeat(y[np.newaxis, :], n_dim, axis=0)
-
-        amps = amp.reshape((-1,) + (1,) * (len(x.shape) ))
-        sigmas = sigma.reshape((-1,) + (1,) * (len(x.shape)))
-
-        f_x, f_y = self.gaussian_ellipse_kappa.derivatives(xs, ys,
-                                                amp=amps,
-                                                sigma=sigmas, e1=e1,
+        for i in range(len(amp)):
+            f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(x, y,
+                                                amp=amp[i],
+                                                sigma=sigma[i], e1=e1,
                                                 e2=e2, center_x=center_x,
                                                 center_y=center_y)
+            f_x += f_x_i
+            f_y += f_y_i
 
-        f_x, f_y = np.sum(f_x, axis=0), np.sum(f_y, axis=0)
-
-        if is_scalar:
-            return f_x[0], f_y[0]
-        elif is_naked_array:
-            return np.reshape(f_x, ()), np.reshape(f_y, ())
-        else:
-            return f_x, f_y
+        return f_x, f_y
 
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
@@ -146,42 +137,24 @@ class GaussDecomposition(object):
         :return:
         :rtype:
         """
-        n_dim = len(amp)
+        f_xx = np.zeros_like(x, dtype=float)
+        f_yy = np.zeros_like(x, dtype=float)
+        f_xy = np.zeros_like(x, dtype=float)
 
-        is_scalar = False
-        if np.isscalar(x) and np.isscalar(y):
-            is_scalar = True
-        is_naked_array = False
-        if not x.shape and not y.shape:
-            is_naked_array = True
+        for i in range(len(amp)):
+            f_xx_i, f_yy_i, f_xy_i = self.gaussian_ellipse_kappa.hessian(
+                                                            x, y,
+                                                            amp=amp[i],
+                                                            sigma=sigma[i],
+                                                            e1=e1,
+                                                            e2=e2,
+                                                            center_x=center_x,
+                                                            center_y=center_y)
+            f_xx += f_xx_i
+            f_yy += f_yy_i
+            f_xy += f_xy_i
 
-        if np.isscalar(x) or not x.shape:
-            x = np.array([x])
-        if np.isscalar(y) or not y.shape:
-            y = np.array([y])
-        assert len(x) == len(y)
-
-        xs = np.repeat(x[np.newaxis, :], n_dim, axis=0)
-        ys = np.repeat(y[np.newaxis, :], n_dim, axis=0)
-
-        amps = amp.reshape((-1,) + (1,) * (len(x.shape)))
-        sigmas = sigma.reshape((-1,) + (1,) * (len(x.shape)))
-
-        f_xx, f_yy, f_xy = self.gaussian_ellipse_kappa.hessian(xs, ys,
-                                                amp=amps,
-                                                sigma=sigmas, e1=e1,
-                                                e2=e2, center_x=center_x,
-                                                center_y=center_y)
-        f_xx, f_yy, f_xy = np.sum(f_xx, axis=0), np.sum(f_yy, axis=0), np.sum(
-            f_xy, axis=0)
-
-        if is_scalar:
-            return f_xx[0], f_yy[0], f_xy[0]
-        elif is_naked_array:
-            return np.reshape(f_xx, ()), np.reshape(f_yy, ()), np.reshape(
-                f_xy, ())
-        else:
-            return f_xx, f_yy, f_xy
+        return f_xx, f_yy, f_xy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
@@ -207,38 +180,14 @@ class GaussDecomposition(object):
         :return:
         :rtype:
         """
-        n_dim = len(amp)
+        density_2d = np.zeros_like(x, dtype=float)
 
-        is_scalar = False
-        if np.isscalar(x) and np.isscalar(y):
-            is_scalar = True
-        is_naked_array = False
-        if not x.shape and not y.shape:
-            is_naked_array = True
-
-        if np.isscalar(x) or not x.shape:
-            x = np.array([x])
-        if np.isscalar(y) or not y.shape:
-            y = np.array([y])
-        assert len(x) == len(y)
-
-        xs = np.repeat(x[np.newaxis, :], n_dim, axis=0)
-        ys = np.repeat(y[np.newaxis, :], n_dim, axis=0)
-
-        amps = amp.reshape((-1,) + (1,) * (len(x.shape)))
-        sigmas = sigma.reshape((-1,) + (1,) * (len(x.shape)))
-
-        density_2d = self.gaussian_ellipse_kappa.density_2d(xs, ys,
-                                                    amp=amps,
-                                                    sigma=sigmas,
+        for i in range(len(amp)):
+            density_2d += self.gaussian_ellipse_kappa.density_2d(x, y,
+                                                    amp=amp[i],
+                                                    sigma=sigma[i],
                                                     e1=e1, e2=e2,
                                                     center_x=center_x,
                                                     center_y=center_y)
-        density_2d = np.sum(density_2d, axis=0)
 
-        if is_scalar:
-            return density_2d[0]
-        elif is_naked_array:
-            return np.reshape(density_2d, ())
-        else:
-            return density_2d
+        return density_2d

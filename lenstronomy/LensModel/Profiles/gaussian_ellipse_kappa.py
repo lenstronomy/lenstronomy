@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This module defines `class GaussianKappaEllipse` to compute the lensing
+This module defines `class GaussianEllipseKappa` to compute the lensing
 properties of an elliptical Gaussian profile with ellipticity in the
 convergence using the formulae from Shajib (2019).
 """
@@ -8,18 +8,14 @@ convergence using the formulae from Shajib (2019).
 __author__ = 'ajshajib'
 
 import numpy as np
-from scipy.special import erf
-from scipy.special import erfi
-from scipy.special import expi
 from scipy.special import wofz
 from scipy.integrate import quad
-from mpmath import hyp2f2
 from copy import deepcopy
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
 
 
-class GaussianKappaEllipse(object):
+class GaussianEllipseKappa(object):
     """
     This class contains functions to evaluate the derivative and hessian matrix
     of the deflection potential for an elliptical Gaussian convergence.
@@ -32,7 +28,7 @@ class GaussianKappaEllipse(object):
     upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5,
                            'center_x': 100, 'center_y': 100}
 
-    def __init__(self, use_scipy_wofz=False, min_ellipticity=1e-5):
+    def __init__(self, use_scipy_wofz=True, min_ellipticity=1e-5):
         """
         :param use_scipy_wofz: If `True`, use `scipy.special.wofz`.
         :type use_scipy_wofz:
@@ -54,7 +50,6 @@ class GaussianKappaEllipse(object):
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
         if q > 1 - self.min_ellipticity:
-            print('s')
             return self.spherical.function(x, y, amp, sigma, center_x,
                                            center_y)
 
@@ -122,7 +117,6 @@ class GaussianKappaEllipse(object):
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
         if q > 1 - self.min_ellipticity:
-            print('s')
             return self.spherical.derivatives(x, y, amp, sigma, center_x,
                                               center_y)
 
@@ -142,14 +136,13 @@ class GaussianKappaEllipse(object):
         x_ = cos_phi * x_shift + sin_phi * y_shift
         y_ = -sin_phi * x_shift + cos_phi * y_shift
 
-        _b = 1. / 2. / sigma_**2
-        _p = np.sqrt(_b * q**2 / (1. - q**2))
+        _p = q / sigma_ / np.sqrt(2 * (1. - q**2))
 
         sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * y_, q)
 
-        alpha_x_ = amp_ * sigma_ * self.sgn(x_+1j*y_) * np.sqrt(2*np.pi/(
+        alpha_x_ = amp_ * sigma_ * self.sgn(x_ + 1j*y_) * np.sqrt(2*np.pi/(
                 1.-q**2)) * sig_func_re
-        alpha_y_ = -amp_ * sigma_ * self.sgn(x_ + 1j * y_) * np.sqrt(
+        alpha_y_ = - amp_ * sigma_ * self.sgn(x_ + 1j*y_) * np.sqrt(
             2 * np.pi / (1. - q ** 2)) * sig_func_im
 
         # rotate back to the original frame
@@ -183,7 +176,6 @@ class GaussianKappaEllipse(object):
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
         if q > 1 - self.min_ellipticity:
-            print('s')
             return self.spherical.hessian(x, y, amp, sigma, center_x, center_y)
 
         # adjusting amplitude to make the notation compatible with the
@@ -202,32 +194,19 @@ class GaussianKappaEllipse(object):
         x_ = cos_phi * x_shift + sin_phi * y_shift
         y_ = -sin_phi * x_shift + cos_phi * y_shift
 
-        q2 = 1. - q**2
-        rq2 = np.sqrt(q2)
-        p = np.sqrt(np.pi)
-        s2 = sigma_ ** 2
-        s = sigma_
-        r2 = np.sqrt(2.)
-
-        _bb = 1. / 2. / sigma_ ** 2
-        _pp = np.sqrt(1 / 2 / (1. - q**2)) * q / sigma_
-
-        sig_func_re, sig_func_im = self.sigma_function(_pp * x_, _pp * y_, q)
-
-        shear_real = - amp_ / (q2**1.5 * s) * (s * rq2 * ((1. + q**2)
-                        * np.exp(-(q**2 * x_**2 + y_**2) / (2. * s2))
-                        - 2. * q) + r2 * p * q**2 * (x_ * sig_func_re
-                                                     - y_ * sig_func_im))
-
-        shear_imag = amp_ / (q2**1.5 * s) * (r2 * p * q**2
-                            * (x_*sig_func_im + y_*sig_func_re))
+        _p = q / sigma_ / np.sqrt(2 * (1. - q**2))
+        sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * y_, q)
 
         kappa = amp_ * np.exp(-(q**2 * x_**2 + y_**2) / 2 / sigma_**2)
 
+        shear = - 1/(1-q*q) * ((1+q**2)*kappa - 2*q*amp_ + np.sqrt(
+            2*np.pi) * q*q * amp_ * (x_ - 1j*y_) / sigma_ / np.sqrt(1-q*q) * (
+            sig_func_re - 1j*sig_func_im))
+
         # in rotated frame
-        f_xx_ = kappa + shear_real
-        f_yy_ = kappa - shear_real
-        f_xy_ = shear_imag
+        f_xx_ = kappa + shear.real
+        f_yy_ = kappa - shear.real
+        f_xy_ = shear.imag
 
         # rotate back to the original frame
         f_xx = f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 \

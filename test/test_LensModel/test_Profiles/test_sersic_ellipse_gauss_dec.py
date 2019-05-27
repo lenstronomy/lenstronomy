@@ -43,14 +43,17 @@ class TestGaussianKappaEllipse(object):
                                                  k_eff, e1, e2, center_x,
                                                  center_y)
 
-        npt.assert_allclose(f_x, f_x_s, atol=1e-3)
-        npt.assert_allclose(f_y, f_y_s, atol=1e-3)
+        npt.assert_allclose(f_x, f_x_s, rtol=1e-3, atol=0)
+        npt.assert_allclose(f_y, f_y_s, rtol=1e-3, atol=0)
+
+        npt.assert_almost_equal(f_x, f_x_s, decimal=3)
+        npt.assert_almost_equal(f_y, f_y_s, decimal=3)
 
     def test_hessian(self):
         k_eff = 1
         R_sersic = 1
         n_sersic = 1
-        e1 = 1e-6
+        e1 = 5e-5
         e2 = 0.0
         center_x = 0.
         center_y = 0.
@@ -61,23 +64,16 @@ class TestGaussianKappaEllipse(object):
 
         X, Y = np.meshgrid(x, y)
 
-        sersic_analytic = self.sersic_light.function(X, Y, k_eff, R_sersic,
-                                                     n_sersic, e1, e2,
-                                                     center_x, center_y)
-
-        tolerance = 1 / np.sqrt(sersic_analytic) / 100
-
         f_xx_s, f_yy_s, f_xy_s = self.sersic_sphere.hessian(X, Y, n_sersic,
                                                             R_sersic, k_eff,
                                                             center_x, center_y)
         f_xx, f_yy, f_xy = self.sersic_gauss.hessian(X, Y, n_sersic, R_sersic,
                                                      k_eff, e1, e2, center_x,
                                                      center_y)
-        k_s = (f_xx_s + f_yy_s) / 2
-        k = (f_xx + f_yy) / 2
 
-        npt.assert_array_less(np.abs(1-k/k_s), 1*tolerance)
-        npt.assert_array_less(np.abs(1 - f_xy/f_xy_s), 1*tolerance)
+        npt.assert_almost_equal(f_xx_s, f_xx, decimal=3)
+        npt.assert_almost_equal(f_yy_s, f_yy, decimal=3)
+        npt.assert_almost_equal(f_xy_s, f_xy, decimal=3)
 
     def test_density_2d(self):
         """

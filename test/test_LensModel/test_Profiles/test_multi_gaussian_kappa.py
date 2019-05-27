@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
-from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse_pot import GaussianKappaEllipsePot
+from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
 from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa, MultiGaussianKappaEllipse
 
 import numpy as np
@@ -74,7 +74,7 @@ class TestGaussianKappaEllipse(object):
     """
     def setup(self):
         self.multi = MultiGaussianKappaEllipse()
-        self.single = GaussianKappaEllipsePot()
+        self.single = GaussianEllipsePotential()
 
     def test_function(self):
         x, y = 1, 2

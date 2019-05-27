@@ -103,7 +103,8 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_gausian_ellipse_kappa(self):
-        kwargs = {'amp': 1., 'sigma': 2., 'e1': .1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
+        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x':
+            0., 'center_y': 0.}
         lens_model = ['GAUSSIAN_ELLIPSE_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
@@ -158,8 +159,8 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_sersic_ellipse_gauss_dec(self):
-        kwargs = {'n_sersic': 1., 'R_sersic': 1., 'k_eff': 1., 'e1': 0.2,
-                  'e2': 0.2}
+        kwargs = {'n_sersic': 1., 'R_sersic': 2., 'k_eff': 1., 'e1': 0.04,
+                  'e2': 0.}
         lens_model = ['SERSIC_ELLIPSE_GAUSS_DEC']
         self.assert_differentials(lens_model, kwargs)
 

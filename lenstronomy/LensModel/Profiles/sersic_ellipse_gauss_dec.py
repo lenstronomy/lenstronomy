@@ -28,7 +28,7 @@ class SersicEllipseGaussDec(object):
                            'center_y': 100}
 
     def __init__(self, n_sigma=15, sigma_start_mult=0.02, sigma_end_mult=15,
-                 precision=10):
+                 precision=10, use_scipy_wofz=True, min_ellipticity=1e-5):
         """
         Set up settings for the Gaussian decomposition. For more details about
         the decomposition parameters, see Shajib (2019).
@@ -40,8 +40,19 @@ class SersicEllipseGaussDec(object):
         :type sigma_end_mult:
         :param precision: Numerical precision of Gaussian decomposition.
         :type precision:
+        :param use_scipy_wofz: To be passed to `class GaussianEllipseKappa(
+        )`. If True, Gaussian lensing will use `scipy.special.wofz`
+        function. Set False for lower precision, but faster speed.
+        :type use_scipy_wofz: bool
+        :param min_ellipticity: To be passed to `class GaussianEllipseKappa(
+        )`. Minimum ellipticity for Gaussian elliptical lensing calculation.
+        For lower ellipticity than min_ellipticity the equations for the
+        spherical case will be used.
+        :type min_ellipticity: float
         """
-        self.gauss_decomposition = GaussDecomposition()
+        self.gauss_decomposition = GaussDecomposition(
+                                            use_scipy_wofz=use_scipy_wofz,
+                                            min_ellipticity=min_ellipticity)
         self.util = SersicUtil()
 
         self.n_sigma = n_sigma
@@ -203,6 +214,41 @@ class SersicEllipseGaussDec(object):
         amps *= 2 * np.pi * sigmas * sigmas
 
         return self.gauss_decomposition.derivatives(x, y, amps, sigmas, e1, e2,
+                                                    center_x, center_y)
+
+    def derivatives_2(self, x, y, n_sersic, R_sersic, k_eff, e1, e2,
+                      center_x=0,
+                    center_y=0):
+        """
+
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param k_eff:
+        :type k_eff:
+        :param R_sersic:
+        :type R_sersic:
+        :param n_sersic:
+        :type n_sersic:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
+        """
+        amps, sigmas = self.get_amps(n_sersic, R_sersic, k_eff)
+
+        # converting the amplitude convention A -> A/(2*pi*sigma^2)
+        amps *= 2 * np.pi * sigmas * sigmas
+
+        return self.gauss_decomposition.derivatives_2(x, y, amps, sigmas, e1,
+                                                     e2,
                                                     center_x, center_y)
 
     def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,

@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse_pot import GaussianKappaEllipsePot
+from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 
 import numpy as np
@@ -14,7 +14,7 @@ class TestGaussianKappaPot(object):
     """
     def setup(self):
         self.gaussian_kappa = GaussianKappa()
-        self.ellipse = GaussianKappaEllipsePot()
+        self.ellipse = GaussianEllipsePotential()
 
     def test_function(self):
         x = 1

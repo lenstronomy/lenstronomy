@@ -313,11 +313,11 @@ class SinglePlane(object):
             from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
             return GaussianKappa()
         elif lens_type == 'GAUSSIAN_ELLIPSE_KAPPA':
-            from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
-            return GaussianKappaEllipse()
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
+            return GaussianEllipseKappa()
         elif lens_type == 'GAUSSIAN_ELLIPSE_POTENTIAL':
-            from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse_pot import GaussianKappaEllipsePot
-            return GaussianKappaEllipsePot()
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
+            return GaussianEllipsePotential()
         elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
             from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
             return MultiGaussianKappa()

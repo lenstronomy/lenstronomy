@@ -21,14 +21,14 @@ class SersicEllipseGaussDec(object):
     """
     param_names = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x',
                    'center_y']
-    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5,
-                           'e1': -0.5, 'e2': -0.5, 'center_x': -100,
-                           'center_y': -100}
-    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8,
-                           'e1': 0.5, 'e2': 0.5, 'center_x': 100,
-                           'center_y': 100}
+    lower_limit_default = {'amp': 0., 'R_sersic': 0., 'n_sersic': 0.5,
+                           'e1': -0.5, 'e2': -0.5, 'center_x': -100.,
+                           'center_y': -100.}
+    upper_limit_default = {'amp': 100., 'R_sersic': 100., 'n_sersic': 8.,
+                           'e1': 0.5, 'e2': 0.5, 'center_x': 100.,
+                           'center_y': 100.}
 
-    def __init__(self, n_sigma=15, sigma_start_mult=0.02, sigma_end_mult=15,
+    def __init__(self, n_sigma=15, sigma_start_mult=0.02, sigma_end_mult=15.,
                  precision=10, use_scipy_wofz=True, min_ellipticity=1e-5):
         """
         Set up settings for the Gaussian decomposition. For more details about
@@ -65,19 +65,19 @@ class SersicEllipseGaussDec(object):
         # nodes and weights based on Fourier-Euler method
         # for details Abate & Whitt (2006)
         kes = np.arange(2 * p + 1)
-        self.betas = np.sqrt(2 * p * np.log(10) / 3. + 2 * 1j * np.pi * kes)
+        self.betas = np.sqrt(2 * p * np.log(10) / 3. + 2. * 1j * np.pi * kes)
         epsilons = np.zeros(2 * p + 1)
 
         epsilons[0] = 0.5
         epsilons[1:p + 1] = 1.
-        epsilons[-1] = 1 / 2 ** p
+        epsilons[-1] = 1 / 2. ** p
 
         for k in range(1, p):
-            epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2 ** p * comb(
+            epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2. ** p * comb(
                 p, k)
 
-        self.etas = (-1) ** kes * epsilons * 10 ** (p / 3) * 2 * np.sqrt(2 *
-                                                                      np.pi)
+        self.etas = (-1.) ** kes * epsilons * 10. ** (p / 3.) * 2. * \
+                    np.sqrt(2. * np.pi)
 
     def gauss_decompose_sersic(self, n_sersic, R_sersic, k_eff):
         """
@@ -111,7 +111,7 @@ class SersicEllipseGaussDec(object):
 
         del_log_sigma = np.abs(np.diff(np.log(sigmas)).mean())
 
-        f_sigmas *= del_log_sigma / np.sqrt(2*np.pi)
+        f_sigmas *= del_log_sigma / np.sqrt(2.*np.pi)
 
         return f_sigmas, sigmas
 
@@ -133,8 +133,8 @@ class SersicEllipseGaussDec(object):
 
         return k_eff * np.exp(-bn * (y / R_sersic) ** (1. / n_sersic) + bn)
 
-    def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
-                 center_y=0):
+    def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0.,
+                 center_y=0.):
         """
         Compute the deflection potential of a Gauss-decomposed
         elliptic Sersic convergence.
@@ -162,13 +162,13 @@ class SersicEllipseGaussDec(object):
         amps, sigmas = self.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
-        amps *= 2*np.pi * sigmas * sigmas
+        amps *= 2.*np.pi * sigmas * sigmas
 
         return self.gauss_decomposition.function(x, y, amps, sigmas, e1, e2,
                                                     center_x, center_y)
 
-    def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
-                    center_y=0):
+    def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0.,
+                    center_y=0.):
         """
         Compute the derivatives of the deflection potential df/dx, df/dy for a
         Gauss-decomposed elliptic Sersic convergence.
@@ -196,13 +196,13 @@ class SersicEllipseGaussDec(object):
         amps, sigmas = self.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
-        amps *= 2 * np.pi * sigmas * sigmas
+        amps *= 2. * np.pi * sigmas * sigmas
 
         return self.gauss_decomposition.derivatives(x, y, amps, sigmas, e1, e2,
                                                     center_x, center_y)
 
-    def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
-                center_y=0):
+    def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0.,
+                center_y=0.):
         """
         Compute the Hessian of the deflection potential d^2f/dx^2,
         d^2f/dy^2, d^f/dxdy of a Gauss-decomposed elliptic Sersic convergence.
@@ -230,13 +230,13 @@ class SersicEllipseGaussDec(object):
         amps, sigmas = self.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
-        amps *= 2 * np.pi * sigmas * sigmas
+        amps *= 2. * np.pi * sigmas * sigmas
 
         return self.gauss_decomposition.hessian(x, y, amps, sigmas, e1, e2,
                                                 center_x, center_y)
 
-    def density_2d(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
-                   center_y=0):
+    def density_2d(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0.,
+                   center_y=0.):
         """
         Compute the convergence profile for Gauss-decomposed
         elliptic Sersic profile.
@@ -264,7 +264,7 @@ class SersicEllipseGaussDec(object):
         amps, sigmas = self.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
-        amps *= 2 * np.pi * sigmas * sigmas
+        amps *= 2. * np.pi * sigmas * sigmas
 
         return self.gauss_decomposition.density_2d(x, y, amps, sigmas, e1, e2,
                                                    center_x, center_y)

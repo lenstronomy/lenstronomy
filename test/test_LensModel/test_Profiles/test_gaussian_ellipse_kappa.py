@@ -28,6 +28,7 @@ class TestGaussianEllipseKappa(object):
         :return:
         :rtype:
         """
+        # almost spherical case
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -41,21 +42,40 @@ class TestGaussianEllipseKappa(object):
                         expi(-r2/2/sigma**2) + np.log(r2/2/sigma**2))
         npt.assert_almost_equal(f_, f_sphere, decimal=4)
 
+        # spherical case
+        e1, e2 = 0, 0
+        f_ = self.gaussian_kappa_ellipse.function(x, y, amp, sigma, e1, e2)
+
+        npt.assert_almost_equal(f_, f_sphere, decimal=4)
+
+
+
     def test_derivatives(self):
         """
         Test the `derivatives()` method at the spherical limit.
         :return:
         :rtype:
         """
+        # almost spherical case
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
         sigma = 1
         amp = 2
+
+        #
         f_x, f_y = self.gaussian_kappa_ellipse.derivatives(x, y, amp, sigma,
                                                            e1, e2)
         f_x_sphere, f_y_sphere = self.gaussian_kappa.derivatives(x, y, amp=amp,
                                                                  sigma=sigma)
+        npt.assert_almost_equal(f_x, f_x_sphere, decimal=4)
+        npt.assert_almost_equal(f_y, f_y_sphere, decimal=4)
+
+        # spherical case
+        e1, e2 = 0, 0
+        f_x, f_y = self.gaussian_kappa_ellipse.derivatives(x, y, amp, sigma,
+                                                           e1, e2)
+
         npt.assert_almost_equal(f_x, f_x_sphere, decimal=4)
         npt.assert_almost_equal(f_y, f_y_sphere, decimal=4)
 
@@ -65,6 +85,7 @@ class TestGaussianEllipseKappa(object):
         :return:
         :rtype:
         """
+        # almost spherical case
         x = 1
         y = 1
         e1, e2 = 5e-5, 0
@@ -78,12 +99,22 @@ class TestGaussianEllipseKappa(object):
         npt.assert_almost_equal(f_yy, f_yy_sphere, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=4)
 
+        # spherical case
+        e1, e2 = 0, 0
+        f_xx, f_yy, f_xy = self.gaussian_kappa_ellipse.hessian(x, y, amp,
+                                                               sigma, e1, e2)
+
+        npt.assert_almost_equal(f_xx, f_xx_sphere, decimal=4)
+        npt.assert_almost_equal(f_yy, f_yy_sphere, decimal=4)
+        npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=4)
+
     def test_density_2d(self):
         """
         Test the `density_2d()` method at the spherical limit.
         :return:
         :rtype:
         """
+        # almost spherical case
         x = 1
         y = 1
         e1, e2 = 5e-5, 0

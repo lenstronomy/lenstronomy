@@ -2,7 +2,7 @@
 .idea/
 .cache/
 .pytest_cache/
-*.DS_store
+.DS_store
 *.nbc
 *.nbi
 

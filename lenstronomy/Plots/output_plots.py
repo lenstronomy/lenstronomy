@@ -491,7 +491,7 @@ class LensModelPlot(object):
             plot_line_set(ax, coords_source, ra_caustic_list,
                           dec_caustic_list, color=caustic_color)
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
-        if 'no_arrow' not in kwargs and not kwargs['no_arrow']:
+        if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
             coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
         source_position_plot(ax, coords_source, self._kwargs_source)

@@ -1,8 +1,10 @@
 *.pyc
-.idea/*
-.cache/*
-.pytest_cache/*
-.DS_store
+.idea/
+.cache/
+.pytest_cache/
+*.DS_store
+*.nbc
+*.nbi
 
 # C extensions
 *.so

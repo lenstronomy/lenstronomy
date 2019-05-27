@@ -58,7 +58,7 @@ class TestNumericsProfile(object):
         lensModelNum.diff = 0.000001
         #x, y = 1., 2.
         x = np.linspace(start=0.1, stop=8, num=10)
-        y = 0
+        y = np.zeros_like(x)
         lensModel = LensModel(lens_model)
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
@@ -157,7 +157,13 @@ class TestNumericsProfile(object):
         lens_model = ['SERSIC']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_sersic_ellipse(self):
+    def test_sersic_ellipse_gauss_dec(self):
+        kwargs = {'n_sersic': 1., 'R_sersic': 1., 'k_eff': 1., 'e1': 0.2,
+                  'e2': 0.2}
+        lens_model = ['SERSIC_ELLIPSE_GAUSS_DEC']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_sersic_ellipse_pot(self):
         kwargs = {'n_sersic': 2., 'R_sersic': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
         lens_model = ['SERSIC_ELLIPSE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)

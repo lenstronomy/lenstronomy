@@ -5,7 +5,7 @@ import lenstronomy.Util.param_util as param_util
 
 class NIE(object):
     """
-    non-divergent isothermal ellipse (projected)
+    non-divergent isothermal gaussian_kappa_ellipse (projected)
     """
     param_names = ['amp', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}

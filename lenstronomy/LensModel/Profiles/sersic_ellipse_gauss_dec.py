@@ -1,21 +1,24 @@
+# -*- coding: utf-8 -*-
+"""
+This module contains `class SersicEllipseGaussDec()` to compute the
+lensing properties of a Sersic profile using the Gaussian decomposition method
+of Shajib (2019).
+"""
+
 __author__ = 'ajshajib'
 
 import numpy as np
 from scipy.special import comb
 
-#from lenstronomy.LensModel.Profiles.spp import SPP
-#from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
-from lenstronomy.LightModel.Profiles.sersic import Sersic_elliptic
-from lenstronomy.LensModel.Profiles.sersic_ellipse import SersicEllipse
-from .gauss_decomposition import GaussDecompositionEllipse
-import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+from lenstronomy.LensModel.Profiles.gauss_decomposition import GaussDecomposition
 
 
-class SersicEllipseGaussianKappa(object):
+class SersicEllipseGaussDec(object):
     """
     class for Sersic profile convergence using Gauss expansion
     """
-    param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x',
+    param_names = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x',
                    'center_y']
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5,
                            'e1': -0.5, 'e2': -0.5, 'center_x': -100,
@@ -24,34 +27,51 @@ class SersicEllipseGaussianKappa(object):
                            'e1': 0.5, 'e2': 0.5, 'center_x': 100,
                            'center_y': 100}
 
-    def __init__(self):
-        #self.s2 = 0.00000001
-        #self.spp = SPP()
-        #self.spemd_smooth = SPEMD_SMOOTH()
-        self.sersic = Sersic_elliptic()
-        self.sersic_pot = SersicEllipse()
-        self.gauss_expansion = GaussDecompositionEllipse()
+    def __init__(self, n_sigma=15, sigma_start_mult=0.02, sigma_end_mult=15,
+                 precision=10):
+        """
+        Set up settings for the Gaussian decomposition. For more details about
+        the decomposition parameters, see Shajib (2019).
+        :param n_sigma: Number of Gaussian components.
+        :type n_sigma:
+        :param sigma_start_mult: Lower range of logarithmically spaced sigmas.
+        :type sigma_start_mult:
+        :param sigma_end_mult: Upper range of logarithmically spaced sigmas.
+        :type sigma_end_mult:
+        :param precision: Numerical precision of Gaussian decomposition.
+        :type precision:
+        """
+        self.gauss_decomposition = GaussDecomposition()
+        self.util = SersicUtil()
 
-        M = 10
+        self.n_sigma = n_sigma
+        self.sigma_start_mult = sigma_start_mult
+        self.sigma_end_mult = sigma_end_mult
+        self.precision = precision
+
+        p = self.precision
         # nodes and weights based on Fourier-Euler method
-        kes = np.arange(2 * M + 1)
-        self.betas = np.sqrt(2 * M * np.log(10) / 3. + 2 * 1j * np.pi * kes)
-        epsilons = np.zeros(2 * M + 1)
+        # for details Abate & Whitt (2006)
+        kes = np.arange(2 * p + 1)
+        self.betas = np.sqrt(2 * p * np.log(10) / 3. + 2 * 1j * np.pi * kes)
+        epsilons = np.zeros(2 * p + 1)
 
         epsilons[0] = 0.5
-        epsilons[1:M + 1] = 1.
-        epsilons[-1] = 1 / 2 ** M
+        epsilons[1:p + 1] = 1.
+        epsilons[-1] = 1 / 2 ** p
 
-        for k in range(1, M):
-            epsilons[2 * M - k] = epsilons[2 * M - k + 1] + 1 / 2 ** M * comb(
-                M, k)
+        for k in range(1, p):
+            epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2 ** p * comb(
+                p, k)
 
-        self.etas = (-1) ** kes * epsilons * 10 ** (M / 3) * 2 * np.sqrt(2 *
+        self.etas = (-1) ** kes * epsilons * 10 ** (p / 3) * 2 * np.sqrt(2 *
                                                                       np.pi)
 
-    def get_amps(self, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
+    def get_amps(self, n_sersic, R_sersic, k_eff):
         """
-
+        Compute the amplitudes and sigmas of Gaussian components using the
+        integral transform with Gaussian kernel from Shajib (2019). The
+        returned values are in the convention of eq. (2.13).
         :param x:
         :type x:
         :param y:
@@ -71,73 +91,35 @@ class SersicEllipseGaussianKappa(object):
         :return:
         :rtype:
         """
-        sig_start = 1e-2*R_sersic
-        sig_end = 1e2*R_sersic
-        n_sig = 17
+        sigma_start = self.sigma_start_mult*R_sersic
+        sigma_end = self.sigma_end_mult*R_sersic
 
-        sigs = np.logspace(np.log10(sig_start), np.log10(sig_end), n_sig)
-        f_sigs = np.zeros_like(sigs)
+        sigmas = np.logspace(np.log10(sigma_start), np.log10(sigma_end),
+                           self.n_sigma)
 
-        for i, s in enumerate(sigs):
-            f_sigs[i] = np.sum(self.etas * self.density_y(s*self.betas,
-                            amp, R_sersic, n_sersic, e1, e2, center_x,
-                            center_y).real)
+        f_sigmas = np.sum(self.etas * self.kappa_y(
+                                sigmas[:,np.newaxis]*self.betas[np.newaxis, :],
+                                n_sersic, R_sersic, k_eff).real,
+                          axis=1
+                          )
 
-        f_sigs[0] *= 0.5
-        f_sigs[-1] *= 0.5
+        # weighting for trapezoid method integral
+        f_sigmas[0] *= 0.5
+        f_sigmas[-1] *= 0.5
 
-        del_log_sigma = np.abs(np.diff(np.log(sigs)).mean())
+        del_log_sigma = np.abs(np.diff(np.log(sigmas)).mean())
 
-        f_sigs *= del_log_sigma
+        f_sigmas *= del_log_sigma / np.sqrt(2*np.pi)
 
-        return f_sigs, sigs
+        return f_sigmas, sigmas
 
-    def density_y(self, y, amp, R_sersic, n_sersic, e1, e2, center_x=0,
-                  center_y=0):
-        _, q = param_util.ellipticity2phi_q(e1, e2)
-
-        k, bn = self.sersic.k_bn(n_sersic, R_sersic)
-
-        return amp * np.exp(-bn*(y/R_sersic)**(1./n_sersic) + bn)
-
-    def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
-        return self.sersic_pot.function(x, y, amp, R_sersic, n_sersic, e1, e2, center_x, center_y)
-
-    def derivatives(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
-        amps, sigma = self.get_amps(amp, R_sersic, n_sersic, e1, e2,
-                                   center_x, center_y)
-        return self.gauss_expansion.derivatives(x, y, amps, sigma, e1, e2,
-                                  center_x, center_y)
-
-    def hessian(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
-        amps, sigma = self.get_amps(amp, R_sersic, n_sersic, e1, e2,
-                                   center_x, center_y)
-        return self.gauss_expansion.hessian(x, y, amps, sigma, e1, e2,
-                              center_x, center_y)
-
-    def mass_3d_lens(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
+    def kappa_y(self, y, n_sersic, R_sersic, k_eff):
         """
-        computes the spherical power-law mass enclosed (with SPP routiune)
-        :param r:
-        :param theta_E:
-        :param gamma:
-        :param q:
-        :param phi_G:
-        :return:
-        """
-        raise('Not implemented')
-        return -1#self.spp.mass_3d_lens(r, theta_E, gamma)
-
-    def density_2d_func(self, x, y, amp, R_sersic, n_sersic, e1, e2,
-                        center_x=0, center_y=0):
-        """
-
-        :param x:
-        :type x:
+        Compute the profile along the minor axis.
         :param y:
         :type y:
-        :param amp:
-        :type amp:
+        :param k_eff:
+        :type k_eff:
         :param R_sersic:
         :type R_sersic:
         :param n_sersic:
@@ -153,16 +135,138 @@ class SersicEllipseGaussianKappa(object):
         :return:
         :rtype:
         """
-        return self.sersic_pot.function(x, y, amp, R_sersic, n_sersic, e1,
-                                        e2, center_x, center_y)
+        bn = self.util.b_n(n_sersic)
 
-    def density_2d(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
+        return k_eff * np.exp(-bn * (y / R_sersic) ** (1. / n_sersic) + bn)
+
+    def function(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
+                 center_y=0):
         """
 
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param k_eff:
+        :type k_eff:
+        :param R_sersic:
+        :type R_sersic:
+        :param n_sersic:
+        :type n_sersic:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
         :return:
         :rtype:
         """
-        amps, sigma = self.get_amps(amp, R_sersic, n_sersic, e1, e2,
-                                   center_x, center_y)
-        return self.gauss_expansion.density_2d(x, y, amps, sigma, e1, e2,
-                              center_x, center_y)
+        amps, sigmas = self.get_amps(n_sersic, R_sersic, k_eff)
+
+        # converting the amplitude convention A -> A/(2*pi*sigma^2)
+        amps *= 2*np.pi * sigmas * sigmas
+
+        return self.gauss_decomposition.function(x, y, amps, sigmas, e1, e2,
+                                                    center_x, center_y)
+
+    def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
+                    center_y=0):
+        """
+
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param k_eff:
+        :type k_eff:
+        :param R_sersic:
+        :type R_sersic:
+        :param n_sersic:
+        :type n_sersic:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
+        """
+        amps, sigmas = self.get_amps(n_sersic, R_sersic, k_eff)
+
+        # converting the amplitude convention A -> A/(2*pi*sigma^2)
+        amps *= 2 * np.pi * sigmas * sigmas
+
+        return self.gauss_decomposition.derivatives(x, y, amps, sigmas, e1, e2,
+                                                    center_x, center_y)
+
+    def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
+                center_y=0):
+        """
+
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param k_eff:
+        :type k_eff:
+        :param R_sersic:
+        :type R_sersic:
+        :param n_sersic:
+        :type n_sersic:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
+        """
+        amps, sigmas = self.get_amps(n_sersic, R_sersic, k_eff)
+
+        # converting the amplitude convention A -> A/(2*pi*sigma^2)
+        amps *= 2 * np.pi * sigmas * sigmas
+
+        return self.gauss_decomposition.hessian(x, y, amps, sigmas, e1, e2,
+                                                center_x, center_y)
+
+    def density_2d(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0,
+                   center_y=0):
+        """
+
+        :param x:
+        :type x:
+        :param y:
+        :type y:
+        :param k_eff:
+        :type k_eff:
+        :param R_sersic:
+        :type R_sersic:
+        :param n_sersic:
+        :type n_sersic:
+        :param e1:
+        :type e1:
+        :param e2:
+        :type e2:
+        :param center_x:
+        :type center_x:
+        :param center_y:
+        :type center_y:
+        :return:
+        :rtype:
+        """
+        amps, sigmas = self.get_amps(n_sersic, R_sersic, k_eff)
+
+        # converting the amplitude convention A -> A/(2*pi*sigma^2)
+        amps *= 2 * np.pi * sigmas * sigmas
+
+        return self.gauss_decomposition.density_2d(x, y, amps, sigmas, e1, e2,
+                                                   center_x, center_y)

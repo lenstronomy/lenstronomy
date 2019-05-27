@@ -116,7 +116,7 @@ class NIE(object):
 
 class NIE_simple(object):
     """
-    this class contains the function and the derivatives of the non-singular isothermal ellipse
+    this class contains the function and the derivatives of the non-singular isothermal gaussian_kappa_ellipse
     See Keeton&Kochanek 1998
     """
     param_names = ['theta_E', 's', 'q', 'center_x', 'center_y']

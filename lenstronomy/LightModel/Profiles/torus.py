@@ -6,7 +6,7 @@ import numpy as np
 
 def function(x, y, amp, a_x, a_y, center_x, center_y):
     """
-    returns torus (gaussian_kappa_ellipse with constant surface brightnes) profile
+    returns torus (ellipse with constant surface brightnes) profile
     """
     x_shift = x - center_x
     y_shift = y - center_y

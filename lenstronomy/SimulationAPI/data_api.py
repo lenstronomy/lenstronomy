@@ -1,7 +1,5 @@
 from lenstronomy.SimulationAPI.observation_api import SingleBand
 from lenstronomy.Data.imaging_data import ImageData
-#from lenstronomy.Data.pixel_grid import PixelGrid
-from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import numpy as np
 
@@ -38,25 +36,3 @@ class DataAPI(SingleBand):
                        'exposure_time': self.scaled_exposure_time}
         data_class = ImageData(**kwargs_data)
         return data_class
-
-    @property
-    def psf_class(self):
-        """
-        creates instance of PSF() class based on knowledge of the observations
-        For the full possibility of how to create such an instance, see the PSF() class documentation
-
-        :return: instance of PSF() class
-        """
-        if self._psf_type == 'GAUSSIAN':
-            psf_type = "GAUSSIAN"
-            fwhm = self._seeing
-            kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
-        elif self._psf_type == 'PIXEL':
-            if self._psf_model is not None:
-                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._psf_model}
-            else:
-                raise ValueError("You need to create the class instance with a psf_model!")
-        else:
-            raise ValueError("psf_type %s not supported!" % self._psf_type)
-        psf_class = PSF(**kwargs_psf)
-        return psf_class

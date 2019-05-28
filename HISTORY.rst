@@ -100,3 +100,8 @@ History
 0.8.1 (2019-5-23)
 +++++++++++++++++
 * PSF numerics improved and redundancies removed.
+
+0.8.2 (2019-5-27)
++++++++++++++++++
+* psf_construction simplified
+* parameter handling for catalogue modelling improved

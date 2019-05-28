@@ -296,8 +296,8 @@ class GaussianEllipseKappa(object):
 
     def sigma_function(self, x, y, q):
         """
-        Compute the function $\varsigma(z; q)$ from equation (4.12) of
-        Shajib (2019).
+        Compute the function varsigma(z; q) from equation (4.12) of Shajib (2019).
+
         :param x: Real part of complex variable, x = Re(z).
         :type x: float or numpy.array
         :param y: Imaginary part of complex variable, y = Re(z).
@@ -326,8 +326,7 @@ class GaussianEllipseKappa(object):
     @staticmethod
     def w_f_approx(z):
         """
-        Compute the Faddeeva function w(z) using the approximation given
-        in Zaghloul (2017).
+        Compute the Faddeeva function w(z) using the approximation given in Zaghloul (2017).
         :param z: complex number or array
         :type z: complex
         :return: w_f
@@ -396,5 +395,4 @@ class GaussianEllipseKappa(object):
                 f2 = f2 * t3 + s
 
             wz[reg6] = f1 / f2
-
         return wz

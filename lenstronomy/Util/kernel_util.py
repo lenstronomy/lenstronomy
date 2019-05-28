@@ -323,6 +323,8 @@ def degrade_kernel(kernel_super, degrading_factor):
     :param degrading_factor: degrading factor (effectively the supersampling resolution of the kernel given
     :return: degraded kernel with odd axis number
     """
+    if degrading_factor == 1:
+        return kernel_super
     if degrading_factor % 2 == 0:
         kernel_low_res = averaging_even_kernel(kernel_super, degrading_factor)
     else:
@@ -331,12 +333,10 @@ def degrade_kernel(kernel_super, degrading_factor):
         if numPix % 2 == 0:
             numPix += 1
         n_high = numPix * degrading_factor
-        if n_high == n_kernel:
-            kernel_super_ = kernel_super
-        else:
-            kernel_super_ = np.zeros((n_high, n_high))
-            i_start = int((n_high-n_kernel)/2)
-            kernel_super_[i_start:i_start+n_kernel, i_start:i_start+n_kernel] = kernel_super
+
+        kernel_super_ = np.zeros((n_high, n_high))
+        i_start = int((n_high-n_kernel)/2)
+        kernel_super_[i_start:i_start+n_kernel, i_start:i_start+n_kernel] = kernel_super
         kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix) * degrading_factor**2
     return kernel_low_res
 

@@ -859,11 +859,10 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
 
     ax = axes[2]
     kwargs_new = copy.deepcopy(kwargs)
-    try:
-        del kwargs_new['vmin']
-        del kwargs_new['vmax']
-    except:
-        pass
+
+    del kwargs_new['vmin']
+    del kwargs_new['vmax']
+
     im = ax.matshow(psf_out-psf_in, origin='lower', vmin=-10**-3, vmax=10**-3, **kwargs_new)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)

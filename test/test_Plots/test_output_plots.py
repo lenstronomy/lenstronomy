@@ -94,42 +94,16 @@ class TestOutputPlots(object):
 
         lensPlot.plot_main(image_names=True, with_caustics=True)
         plt.close()
+        cmap = plt.get_cmap('gist_heat')
 
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        #lensPlot.data_plot(ax=axes[0, 0])
-        #lensPlot.model_plot(ax=axes[0, 1])
-        #lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
-        #lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
-        #lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
-        #lensPlot.magnification_plot(ax=axes[1, 2])
-        #plt.close()
+        lensPlot = LensModelPlot(self.kwargs_data, self.kwargs_psf, self.kwargs_numerics, self.kwargs_model,
+                                 self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
+                                 arrow_size=0.02, cmap_string=cmap)
 
         lensPlot.plot_separate()
         plt.close()
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        #lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
-        #lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
-        #lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
-        #                                unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
-        #                                lens_light_add=True, point_source_add=True)
-        #plt.close()
         lensPlot.plot_subtract_from_data_all()
         plt.close()
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        #lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
-        #lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
-        #plt.close()
-
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
         plt.close()
@@ -157,8 +131,10 @@ class TestOutputPlots(object):
         plt.close()
 
     def test_external_shear_direction(self):
-        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=self.LensModel, kwargs_lens=self.kwargs_lens,
-                        strength_multiply=10)
+        lensModel = LensModel(lens_model_list=['SHEAR', 'FOREGROUND_SHEAR'])
+        kwargs_lens = [{'e1': 0.1, 'e2': -0.1}, {'e1': 0.1, 'e2': -0.1}]
+        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=lensModel,
+                                                 kwargs_lens=kwargs_lens, strength_multiply=10)
         plt.close()
 
     def test_plot_chain(self):
@@ -198,8 +174,9 @@ class TestOutputPlots(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensModel = LensModel(lens_model_list=['SIS'])
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
-                                     point_source=True, with_caustics=True)
+        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
+                                          sourcePos_y=0, point_source=True, with_caustics=True,
+                                          image_color_list=['k', 'k', 'k', 'r'])
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensModel = LensModel(lens_model_list=['SIS'])

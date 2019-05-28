@@ -287,6 +287,10 @@ class SinglePlane(object):
         elif lens_type == 'SERSIC_ELLIPSE_KAPPA':
             from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
             return SersicEllipseKappa()
+        elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec \
+                import SersicEllipseGaussDec
+            return SersicEllipseGaussDec()
         elif lens_type == 'COMPOSITE_DISK':
             from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
             return CompDisk()
@@ -308,9 +312,12 @@ class SinglePlane(object):
         elif lens_type == 'GAUSSIAN_KAPPA':
             from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
             return GaussianKappa()
-        elif lens_type == 'GAUSSIAN_KAPPA_ELLIPSE':
-            from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
-            return GaussianKappaEllipse()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_KAPPA':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
+            return GaussianEllipseKappa()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
+            return GaussianEllipsePotential()
         elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
             from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
             return MultiGaussianKappa()

@@ -28,19 +28,19 @@ class TestSersicEllipseGaussDec(object):
         :return:
         :rtype:
         """
-        k_eff = 1
-        R_sersic = 1
-        n_sersic = 1
+        k_eff = 1.
+        R_sersic = 1.
+        n_sersic = 1.
         e1 = 0.2
         e2 = 0.2
         center_x = 0.
         center_y = 0.
 
-        diff = 1e-6
+        diff = 1.e-6
 
         n = 5
-        xs = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
-        ys = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
+        xs = np.linspace(0.5 * R_sersic, 2. * R_sersic, n)
+        ys = np.linspace(0.5 * R_sersic, 2. * R_sersic, n)
 
         for x, y in zip(xs, ys):
             func = self.sersic_gauss.function(x, y, n_sersic, R_sersic,
@@ -70,17 +70,17 @@ class TestSersicEllipseGaussDec(object):
         :return:
         :rtype:
         """
-        k_eff = 1
-        R_sersic = 1
-        n_sersic = 1
-        e1 = 5e-5
-        e2 = 0.0
+        k_eff = 1.
+        R_sersic = 1.
+        n_sersic = 1.
+        e1 = 5.e-5
+        e2 = 0.
         center_x = 0.
         center_y = 0.
 
         n = 10
-        x = np.linspace(0.5*R_sersic, 2*R_sersic, n)
-        y = np.linspace(0.5*R_sersic, 2*R_sersic, n)
+        x = np.linspace(0.5*R_sersic, 2.*R_sersic, n)
+        y = np.linspace(0.5*R_sersic, 2.*R_sersic, n)
 
         X, Y = np.meshgrid(x, y)
 
@@ -91,8 +91,8 @@ class TestSersicEllipseGaussDec(object):
                                                  k_eff, e1, e2, center_x,
                                                  center_y)
 
-        npt.assert_allclose(f_x, f_x_s, rtol=1e-3, atol=0)
-        npt.assert_allclose(f_y, f_y_s, rtol=1e-3, atol=0)
+        npt.assert_allclose(f_x, f_x_s, rtol=1e-3, atol=0.)
+        npt.assert_allclose(f_y, f_y_s, rtol=1e-3, atol=0.)
 
         npt.assert_almost_equal(f_x, f_x_s, decimal=3)
         npt.assert_almost_equal(f_y, f_y_s, decimal=3)
@@ -104,17 +104,17 @@ class TestSersicEllipseGaussDec(object):
         :return:
         :rtype:
         """
-        k_eff = 1
-        R_sersic = 1
-        n_sersic = 1
+        k_eff = 1.
+        R_sersic = 1.
+        n_sersic = 1.
         e1 = 5e-5
-        e2 = 0.0
+        e2 = 0.
         center_x = 0.
         center_y = 0.
 
         n = 10
-        x = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
-        y = np.linspace(0.5 * R_sersic, 2 * R_sersic, n)
+        x = np.linspace(0.5 * R_sersic, 2. * R_sersic, n)
+        y = np.linspace(0.5 * R_sersic, 2. * R_sersic, n)
 
         X, Y = np.meshgrid(x, y)
 
@@ -136,17 +136,17 @@ class TestSersicEllipseGaussDec(object):
         :return:
         :rtype:
         """
-        k_eff = 1
-        R_sersic = 1
-        n_sersic = 1
+        k_eff = 1.
+        R_sersic = 1.
+        n_sersic = 1.
         e1 = 0.2
         e2 = 0.2
         center_x = 0.
         center_y = 0.
 
         n = 100
-        x = np.logspace(-1, 1, n)
-        y = np.logspace(-1, 1, n)
+        x = np.logspace(-1., 1., n)
+        y = np.logspace(-1., 1., n)
 
         X, Y = np.meshgrid(x, y)
 
@@ -160,20 +160,20 @@ class TestSersicEllipseGaussDec(object):
 
         assert np.all(
             np.abs(sersic_analytic - sersic_gauss) / np.sqrt(sersic_analytic)
-            * 100 < 1.)
+            * 100. < 1.)
 
-    def test_get_amps(self):
+    def test_gauss_decompose_sersic(self):
         """
         Test that `gauss_decompose_sersic()` decomposes the Sersic profile within 1%
         Poission noise at R_sersic.
         :return:
         :rtype:
         """
-        y = np.logspace(-1, 1, 100)
+        y = np.logspace(-1., 1., 100)
 
-        k_eff = 1
-        R_sersic = 1
-        n_sersic = 1
+        k_eff = 1.
+        R_sersic = 1.
+        n_sersic = 1.
 
         amps, sigmas = self.sersic_gauss.gauss_decompose_sersic(n_sersic, R_sersic, k_eff)
 
@@ -182,9 +182,9 @@ class TestSersicEllipseGaussDec(object):
         back_sersic = np.zeros_like(y)
 
         for a, s in zip(amps, sigmas):
-            back_sersic += a * np.exp(-y ** 2 / 2 / s ** 2)
+            back_sersic += a * np.exp(-y ** 2 / 2. / s ** 2)
 
-        assert np.all(np.abs(sersic-back_sersic)/np.sqrt(sersic)*100 < 1.)
+        assert np.all(np.abs(sersic-back_sersic)/np.sqrt(sersic)*100. < 1.)
 
 
 if __name__ == '__main__':

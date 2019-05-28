@@ -74,7 +74,7 @@ class TestLikelihoodModule(object):
         kwargs_constraints = {
                                    'num_point_source_list': [4],
                                    'solver_type': 'NONE',  # 'PROFILE', 'PROFILE_SHEAR', 'ELLIPSE', 'CENTER'
-                                   'cosmo_type': 'D_dt'
+                                   'Ddt_sampling': True
                                    }
 
         kwargs_likelihood = {'force_no_add_image': True,

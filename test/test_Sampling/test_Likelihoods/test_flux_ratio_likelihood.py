@@ -60,7 +60,6 @@ class TestFluxRatioLikelihood(object):
                             flux_ratio_errors=flux_ratio_errors)
 
         flux_ratios = np.array([0, 1, np.nan])
-        print(np.isnan(flux_ratios).any(), 'test')
         logL = flux_likelihood._logL(flux_ratios)
         assert logL == -10 ** 15
 

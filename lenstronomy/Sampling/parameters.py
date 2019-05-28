@@ -60,7 +60,7 @@ class Param(object):
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
-                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', cosmo_type=None,
+                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False):
         """
 
@@ -157,7 +157,7 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.cosmoParams = CosmoParam(cosmo_type=cosmo_type, mass_scaling=self._mass_scaling,
+        self.cosmoParams = CosmoParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
                                       point_source_offset=self._point_source_offset, num_images=self._num_images,

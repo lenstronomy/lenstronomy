@@ -75,7 +75,7 @@ class TestParam(object):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                         }
-        kwargs_param = {'cosmo_type': 'D_dt'}
+        kwargs_param = {'Ddt_sampling': True}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
@@ -96,7 +96,7 @@ class TestParam(object):
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                        kwargs_cosmo={'D_dt': 1000})
-        assert param_class.cosmoParams._Ddt_sampling is True
+        assert param_class.cosmoParams._D_dt_sampling is True
 
     def test_mass_scaling(self):
         kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW', 'SIS', 'SERSIC', 'HERNQUIST']}

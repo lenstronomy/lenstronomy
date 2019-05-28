@@ -25,24 +25,39 @@ class PriorLikelihood(object):
         :return: log likelihood of lens center
         """
         logL = 0
-        logL += self._prior_logL(kwargs_lens, self._prior_lens)
-        logL += self._prior_logL(kwargs_source, self._prior_source)
-        logL += self._prior_logL(kwargs_lens_light, self._prior_lens_light)
-        logL += self._prior_logL(kwargs_ps, self._prior_ps)
-        logL += self._prior_logL(kwargs_cosmo, self._prior_cosmo)
+        logL += self._prior_kwargs_list(kwargs_lens, self._prior_lens)
+        logL += self._prior_kwargs_list(kwargs_source, self._prior_source)
+        logL += self._prior_kwargs_list(kwargs_lens_light, self._prior_lens_light)
+        logL += self._prior_kwargs_list(kwargs_ps, self._prior_ps)
+        logL += self._prior_kwargs(kwargs_cosmo, self._prior_cosmo)
         return logL
 
-    def _prior_logL(self, kwargs_list, prior_list):
+    def _prior_kwargs_list(self, kwargs_list, prior_list):
         """
 
         :param kwargs_list: keyword argument list
         :param prior_list: prior list
-        :return:
+        :return: logL
         """
         logL = 0
         for i in range(len(prior_list)):
-            index, param_name, value, sigma = self._prior_lens[i]
+            index, param_name, value, sigma = prior_list[i]
             model_value = kwargs_list[index][param_name]
+            dist = (model_value - value) ** 2 / sigma ** 2 / 2
+            logL -= np.sum(dist)
+        return logL
+
+    def _prior_kwargs(self, kwargs, prior_list):
+        """
+        prior computation for a keyword argument (not list thereof)
+
+        :param kwargs: keyword argument
+        :return: logL
+        """
+        logL = 0
+        for i in range(len(prior_list)):
+            param_name, value, sigma = prior_list[i]
+            model_value = kwargs[param_name]
             dist = (model_value - value) ** 2 / sigma ** 2 / 2
             logL -= np.sum(dist)
         return logL

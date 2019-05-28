@@ -8,9 +8,8 @@ from lenstronomy.Cosmo.cosmo_param import CosmoParam
 class TestParam(object):
 
     def setup(self):
-        cosmo_type = 'D_dt'
         kwargs_fixed = {}
-        self.param = CosmoParam(cosmo_type=cosmo_type, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2,
+        self.param = CosmoParam(Ddt_sampling=True, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2,
                                 source_size=True)
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1}
 

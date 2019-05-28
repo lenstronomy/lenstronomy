@@ -55,6 +55,8 @@ class LikelihoodModule(object):
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         """
         multi_band_list = kwargs_data_joint.get('multi_band_list', [])
+        if len(multi_band_list) == 0:
+            image_likelihood = False
         multi_band_type = kwargs_data_joint.get('image_type', 'single-band')
         time_delays_measured = kwargs_data_joint.get('time_delays_measured', None)
         time_delays_uncertainties = kwargs_data_joint.get('time_delays_uncertainties', None)

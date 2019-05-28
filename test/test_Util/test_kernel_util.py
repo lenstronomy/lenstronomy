@@ -5,6 +5,7 @@ import lenstronomy.Util.util as util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 gaussian = Gaussian()
 import pytest
+import unittest
 import numpy as np
 import numpy.testing as npt
 import scipy.ndimage.interpolation as interp
@@ -162,20 +163,6 @@ def test_deshift_subgrid():
     kernel_shifted_subgrid = interp.shift(kernel_subgrid, [-shift_y_subgrid, -shift_x_subgird], order=1)
     kernel_shifted = util.averaging(kernel_shifted_subgrid, kernel_subgrid_size, kernel_size)
     kernel_shifted_highres = kernel_util.subgrid_kernel(kernel_shifted, subgrid_res=subgrid, num_iter=1)
-    """
-
-
-    import matplotlib.pyplot as plt
-    plt.matshow(kernel_subgrid)
-    plt.show()
-    plt.matshow(kernel_shifted_subgrid)
-    plt.show()
-    plt.matshow(kernel_shifted)
-    plt.show()
-    plt.matshow(kernel_shifted_highres)
-    plt.show()
-
-    """
     #npt.assert_almost_equal(kernel_shifted_highres[7, 7], kernel_shifted_subgrid[7, 7], decimal=10)
 
 
@@ -303,6 +290,9 @@ def test_kernel_average_pixel():
     kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=subgrid_res)
     npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
 
+    kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=2)
+    npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
+
 
 def test_averaging_even_kernel():
 
@@ -340,6 +330,30 @@ def test_degrade_kernel():
 
     kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=3)
     npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+
+    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=1)
+    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kernel = np.zeros((2, 2))
+            kernel_util.center_kernel(kernel, iterations=1)
+
+        with self.assertRaises(ValueError):
+            kernel_super = np.ones((9, 9))
+            kernel_util.split_kernel(kernel_super, supersampling_kernel_size=2, supersampling_factor=3)
+        with self.assertRaises(ValueError):
+            kernel_util.split_kernel(kernel_super, supersampling_kernel_size=3, supersampling_factor=0)
+        with self.assertRaises(ValueError):
+            image = np.ones((10, 10))
+            kernel_util.cutout_source(x_pos=3, y_pos=2, image=image, kernelsize=2)
+        with self.assertRaises(ValueError):
+            kernel_util.fwhm_kernel(kernel=np.ones((4, 4)))
+        with self.assertRaises(ValueError):
+            kernel_util.fwhm_kernel(kernel=np.ones((5, 5)))
 
 
 if __name__ == '__main__':

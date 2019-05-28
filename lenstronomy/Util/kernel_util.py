@@ -240,7 +240,7 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     """
     computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel
 
-    :param kernel_super: supersampled PSF of a point source
+    :param kernel_super: supersampled PSF of a point source (odd number per axis
     :param supersampling_factor: supersampling factor (int)
     :return:
     """
@@ -249,7 +249,9 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     if kernel_size % 2 == 0:
         kernel_size += 1
     n_high = kernel_size*supersampling_factor
-    kernel_pixel = np.zeros((kernel_size*supersampling_factor, kernel_size*supersampling_factor))
+    if n_high % 2 == 0:
+        n_high += 1
+    kernel_pixel = np.zeros((n_high, n_high))
     for i in range(supersampling_factor):
         k_x = int((kernel_size - 1) / 2 * supersampling_factor + i)
         for j in range(supersampling_factor):
@@ -334,7 +336,6 @@ def degrade_kernel(kernel_super, degrading_factor):
         else:
             kernel_super_ = np.zeros((n_high, n_high))
             i_start = int((n_high-n_kernel)/2)
-            print(i_start)
             kernel_super_[i_start:i_start+n_kernel, i_start:i_start+n_kernel] = kernel_super
         kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix) * degrading_factor**2
     return kernel_low_res

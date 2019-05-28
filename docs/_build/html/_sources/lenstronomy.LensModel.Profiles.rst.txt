@@ -60,18 +60,34 @@ lenstronomy.LensModel.Profiles.flexion module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Profiles.gaussian\_kappa module
------------------------------------------------------
+lenstronomy.LensModel.Profiles.gauss\_decomposition module
+----------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa
+.. automodule:: lenstronomy.LensModel.Profiles.gauss_decomposition
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Profiles.gaussian\_kappa\_ellipse module
+lenstronomy.LensModel.Profiles.gaussian\_ellipse\_kappa module
 --------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.gaussian\_ellipse\_potential module
+------------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian_ellipse_potential
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.gaussian\_kappa module
+-----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.gaussian_kappa
     :members:
     :undoc-members:
     :show-inheritance:
@@ -148,6 +164,14 @@ lenstronomy.LensModel.Profiles.nie module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.numerical\_deflections module
+------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.numerical_deflections
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.p\_jaffe module
 ----------------------------------------------
 
@@ -180,10 +204,26 @@ lenstronomy.LensModel.Profiles.sersic module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Profiles.sersic\_ellipse module
------------------------------------------------------
+lenstronomy.LensModel.Profiles.sersic\_ellipse\_gauss\_dec module
+-----------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.sersic_ellipse
+.. automodule:: lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.sersic\_ellipse\_kappa module
+------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.sersic_ellipse_kappa
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.sersic\_ellipse\_potential module
+----------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.sersic_ellipse_potential
     :members:
     :undoc-members:
     :show-inheritance:

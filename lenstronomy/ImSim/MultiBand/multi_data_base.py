@@ -78,4 +78,5 @@ class MultiDataBase(object):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 residual_list.append(self._imageModel_list[i].reduced_residuals(model_list[index], error_map=error_map_list[index]))
+                index += 1
         return residual_list

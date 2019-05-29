@@ -17,10 +17,10 @@ class MultiDataBase(object):
         self._num_response_list = []
         for imageModel in imageModel_list:
             self._num_response_list.append(imageModel.num_data_evaluate)
-        #self.LensModel = self._imageModel_list[0].LensModel
-        #self.SourceModel = self._imageModel_list[0].SourceModel
-        #self.LensLightModel = self._imageModel_list[0].LensLightModel
-        #self.PointSource = self._imageModel_list[0].PointSource
+        self.LensModel = self._imageModel_list[0].LensModel
+        self.SourceModel = self._imageModel_list[0].SourceModel
+        self.LensLightModel = self._imageModel_list[0].LensLightModel
+        self.PointSource = self._imageModel_list[0].PointSource
 
     @property
     def num_bands(self):

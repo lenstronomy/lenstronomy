@@ -1,6 +1,6 @@
 import numpy as np
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
-from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
+from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
 
 
 class MultiGaussianKappa(object):
@@ -121,7 +121,7 @@ class MultiGaussianKappaEllipse(object):
     upper_limit_default = {'amp': 100, 'sigma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self.gaussian_kappa = GaussianKappaEllipse()
+        self.gaussian_kappa = GaussianEllipsePotential()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0, scale_factor=1):
         """

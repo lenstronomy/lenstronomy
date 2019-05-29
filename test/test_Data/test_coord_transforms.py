@@ -51,7 +51,7 @@ class TestCoordinates(object):
         ra_0 = 1.
         dec_0 = 1.
         coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
-        deltaPix_out = coords.pixel_size
+        deltaPix_out = coords.pixel_width
         assert deltaPix_out == -deltaPix
 
     def test_rescaled_grid(self):
@@ -100,7 +100,7 @@ class TestCoordinates(object):
         ra_0 = 1.
         dec_0 = 1.
         coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
-        ra_grid, dec_grid = coords.coordinate_grid(numPix=10)
+        ra_grid, dec_grid = coords.coordinate_grid(nx=10, ny=10)
 
         assert ra_grid[0, 0] == ra_0
         assert dec_grid[0, 0] == dec_0
@@ -121,6 +121,24 @@ class TestCoordinates(object):
         Ma2pix_ = coords.transform_angle2pix
         Ma2pix = linalg.inv(coords._Mpix2a)
         npt.assert_almost_equal(Ma2pix, Ma2pix_, decimal=8)
+
+    def test_shift_coordinate_system(self):
+        deltaPix = 0.05
+        Mpix2a = np.array([[1, 0], [0, 1]]) * deltaPix
+        ra_0 = 1.
+        dec_0 = 1.
+        coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
+        x0, y0 = coords.xy_at_radec_0
+        coords.shift_coordinate_system(x_shift=deltaPix, y_shift=0, pixel_unit=False)
+        x0_new, y0_new = coords.xy_at_radec_0
+        assert x0_new == x0 - 1
+
+        coords = Coordinates(transform_pix2angle=Mpix2a, ra_at_xy_0=ra_0, dec_at_xy_0=dec_0)
+        x0, y0 = coords.xy_at_radec_0
+        coords.shift_coordinate_system(x_shift=1, y_shift=0, pixel_unit=True)
+        x0_new, y0_new = coords.xy_at_radec_0
+        assert x0_new == x0 - 1
+
 
 
 if __name__ == '__main__':

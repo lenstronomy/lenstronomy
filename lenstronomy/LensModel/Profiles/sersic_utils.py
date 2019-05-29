@@ -1,5 +1,6 @@
 import scipy.special as special
 import numpy as np
+import scipy
 
 
 class SersicUtil(object):
@@ -25,7 +26,8 @@ class SersicUtil(object):
         Re = (bn/k)**n
         return Re
 
-    def b_n(self, n):
+    @staticmethod
+    def b_n(n):
         """
         b(n) computation
         :param n:
@@ -112,3 +114,72 @@ class SersicUtil(object):
         :return:
         """
         raise ValueError("not implemented! Use a Multi-Gaussian-component decomposition.")
+
+    def _total_flux(self, r_eff, I_eff, n_sersic):
+        """
+        computes total flux of a Sersic profile
+
+        :param r_eff: projected half light radius
+        :param I_eff: surface brightness at r_eff (in same units as r_eff)
+        :param n_sersic: Sersic index
+        :return: integrated flux to infinity
+        """
+        bn = self.b_n(n_sersic)
+        return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)
+
+    def total_flux(self, amp, R_sersic, n_sersic, Re=None, gamma=None, e1=None, e2=None, center_x=None, center_y=None,
+                   alpha=None):
+        """
+
+        :param amp:
+        :param R_sersic:
+        :param Re:
+        :param n_sersic:
+        :param gamma:
+        :param e1:
+        :param e2:
+        :param center_x:
+        :param center_y:
+        :param alpha:
+        :return:
+        """
+        return self._total_flux(r_eff=R_sersic, I_eff=amp, n_sersic=n_sersic)
+
+    def _R_stable(self, R):
+        """
+
+        :param R: radius
+        :return: smoothed and stabilized radius
+        """
+
+        if isinstance(R, int) or isinstance(R, float):
+            R = max(self._smoothing, R)
+        else:
+            R[R < self._smoothing] = self._smoothing
+        return R
+
+    def _r_sersic(self, R, R_sersic, n_sersic):
+        """
+
+        :param R: radius (array or float)
+        :param R_sersic: Sersic radius (half-light radius)
+        :param n_sersic: Sersic index (float)
+        :return: Sersic surface brightness at R
+        """
+
+        R_ = self._R_stable(R)
+        k, bn = self.k_bn(n_sersic, R_sersic)
+        R_frac = R_ / R_sersic
+        #R_frac = R_frac.astype(np.float32)
+        if isinstance(R_, int) or isinstance(R_, float):
+            if R_frac > 100:
+                result = 0
+            else:
+                exponent = -bn * (R_frac ** (1. / n_sersic) - 1.)
+                result = np.exp(exponent)
+        else:
+            R_frac_real = R_frac[R_frac <= 100]
+            exponent = -bn * (R_frac_real ** (1. / n_sersic) - 1.)
+            result = np.zeros_like(R_)
+            result[R_frac <= 100] = np.exp(exponent)
+        return np.nan_to_num(result)

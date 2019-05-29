@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.mask &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.Util.mask &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -40,6 +40,7 @@
             
   <h1>Source code for lenstronomy.Util.mask</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 
 
 <div class="viewcode-block" id="mask_center_2d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.mask.mask_center_2d">[docs]</a><span class="k">def</span> <span class="nf">mask_center_2d</span><span class="p">(</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -77,6 +78,27 @@
     <span class="n">mask</span><span class="p">[</span><span class="n">R</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">mask</span></div>
 
+
+<div class="viewcode-block" id="mask_ellipse"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.mask.mask_ellipse">[docs]</a><span class="k">def</span> <span class="nf">mask_ellipse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param x: x-coordinates of pixels</span>
+<span class="sd">    :param y: y-coordinates of pixels</span>
+<span class="sd">    :param center_x: center of mask</span>
+<span class="sd">    :param center_y: center of mask</span>
+<span class="sd">    :param a: major axis</span>
+<span class="sd">    :param b: minor axis</span>
+<span class="sd">    :param angle: angle of major axis</span>
+<span class="sd">    :return: mask (list of zeros and ones)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+    <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+    <span class="n">x_rot</span><span class="p">,</span> <span class="n">y_rot</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+    <span class="n">r_ab</span> <span class="o">=</span> <span class="n">x_rot</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_rot</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">r_ab</span><span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">r_ab</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mask</span><span class="p">[</span><span class="n">r_ab</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">mask</span></div>
 
 <div class="viewcode-block" id="mask_half_moon"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.mask.mask_half_moon">[docs]</a><span class="k">def</span> <span class="nf">mask_half_moon</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">r_in</span><span class="p">,</span> <span class="n">r_out</span><span class="p">,</span> <span class="n">phi0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delta_phi</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -137,7 +159,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

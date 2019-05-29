@@ -6,7 +6,6 @@ __author__ = 'sibirrer'
 import numpy as np
 import scipy.interpolate as interp
 
-
 class NFW(object):
     """
     this class contains functions concerning the NFW profile

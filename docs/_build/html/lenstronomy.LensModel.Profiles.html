@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -313,13 +313,13 @@
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.chameleon.</code><code class="descname">DoubleChameleonPointSource</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.chameleon.</code><code class="descname">DoubleChameleonPointMass</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.derivatives" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointmass</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointMass.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -328,7 +328,7 @@
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
 <li><strong>theta_E</strong> – </li>
-<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_pointmass</strong> – </li>
 <li><strong>ratio_chameleon</strong> – </li>
 <li><strong>w_c1</strong> – </li>
 <li><strong>w_t1</strong> – </li>
@@ -351,8 +351,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.function" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointmass</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointMass.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -361,7 +361,7 @@
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
 <li><strong>theta_E</strong> – </li>
-<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_pointmass</strong> – </li>
 <li><strong>ratio_chameleon</strong> – </li>
 <li><strong>w_c1</strong> – </li>
 <li><strong>w_t1</strong> – </li>
@@ -384,8 +384,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointsource</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointSource.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>ratio_pointmass</em>, <em>ratio_chameleon</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleonPointMass.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -394,7 +394,7 @@
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
 <li><strong>theta_E</strong> – </li>
-<li><strong>ratio_pointsource</strong> – </li>
+<li><strong>ratio_pointmass</strong> – </li>
 <li><strong>ratio_chameleon</strong> – </li>
 <li><strong>w_c1</strong> – </li>
 <li><strong>w_t1</strong> – </li>
@@ -417,8 +417,199 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.param_names">
-<code class="descname">param_names</code><em class="property"> = ['theta_E', 'ratio_chameleon', 'ratio_pointsource', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointSource.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.param_names">
+<code class="descname">param_names</code><em class="property"> = ['theta_E', 'ratio_chameleon', 'ratio_pointmass', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleonPointMass.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.cnfw">
+<span id="lenstronomy-lensmodel-profiles-cnfw-module"></span><h2>lenstronomy.LensModel.Profiles.cnfw module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.cnfw" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.cnfw.</code><code class="descname">CNFW</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class computes the lensing quantities of a cored NFW profile:
+rho = rho0 * (r + r_core)^-1 * (r + rs)^-2</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwAlpha">
+<code class="descname">cnfwAlpha</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em>, <em>ax_x</em>, <em>ax_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.cnfwAlpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>deflection angel of NFW profile along the projection to coordinate axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwGamma">
+<code class="descname">cnfwGamma</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em>, <em>ax_x</em>, <em>ax_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.cnfwGamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwGamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate ‘axis’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>three dimenstional truncated NFW profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (central core density)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho(R) density</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>projected two dimenstional NFW profile (kappa*Sigma_crit)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
+<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – angular position</li>
+<li><strong>y</strong> – angular position</li>
+<li><strong>Rs</strong> – angular turn over point</li>
+<li><strong>theta_Rs</strong> – deflection at Rs</li>
+<li><strong>center_x</strong> – center of halo</li>
+<li><strong>center_y</strong> – center of halo</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'Rs': 0, 'center_x': -100, 'center_y': -100, 'r_core': 0, 'theta_Rs': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_2d">
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>analytic solution of the projection integral
+(convergence)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float &gt;0</em>) – R/Rs</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_3d">
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cnfw.html#CNFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – </li>
+<li><strong>Ra</strong> – </li>
+<li><strong>Rs</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.param_names">
+<code class="descname">param_names</code><em class="property"> = ['Rs', 'theta_Rs', 'r_core', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cnfw.CNFW.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'Rs': 100, 'center_x': 100, 'center_y': 100, 'r_core': 100, 'theta_Rs': 10}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cnfw.CNFW.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -499,7 +690,7 @@
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'dec_0': -100, 'kappa_ext': -1, 'ra_0': -100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'dec_0': -100, 'kappa_ext': -10, 'ra_0': -100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -509,7 +700,7 @@
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'kappa_ext': 1, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'kappa_ext': 10, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -602,7 +793,7 @@ normalized by rho0, the central core density</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
 <li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
-<li><strong>rho0</strong> (<em>float</em>) – central core density</li>
+<li><strong>rho0</strong> (<em>float</em>) – characteristic density</li>
 </ul>
 </td>
 </tr>
@@ -871,6 +1062,505 @@ normalized by rho0, the central core density</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.gauss_decomposition">
+<span id="lenstronomy-lensmodel-profiles-gauss-decomposition-module"></span><h2>lenstronomy.LensModel.Profiles.gauss_decomposition module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gauss_decomposition" title="Permalink to this headline">¶</a></h2>
+<p>This module constains the class to compute lensing properties of a set of
+concentric elliptical Gaussian convergence profiles.</p>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gauss_decomposition.</code><code class="descname">GaussDecomposition</code><span class="sig-paren">(</span><em>use_scipy_wofz=True</em>, <em>min_ellipticity=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gauss_decomposition.html#GaussDecomposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class computes the lensing properties of a set of concentric
+elliptical Gaussian convergences.</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gauss_decomposition.html#GaussDecomposition.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the density of a set of concentric elliptical Gaussian
+convergenc profiles Sum {A/(2*pi*sigma^2) * exp(-(
+x^2+y^2/q^2)/2/sigma^2)}.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: numpy.array with dtype=float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: numpy.array with dtype=float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Density kappa for elliptical
+Gaussian convergence.
+:rtype: float, or numpy.array with shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gauss_decomposition.html#GaussDecomposition.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the derivatives of function angles df/dx, df/dy at x,
+y for a set of concentric elliptic Gaussian convergence profiles.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: numpy.array with dtype=float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: numpy.array with dtype=float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Deflection angle df/dx, df/dy for elliptical Gaussian
+convergence.
+:rtype: tuple (float, float) or (numpy.array, numpy.array) with each
+numpy.array’s shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gauss_decomposition.html#GaussDecomposition.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the potential function for a set of concentric elliptical
+Gaussian convergence profiles.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: numpy.array with dtype=float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: numpy.array with dtype=float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Potential for elliptical Gaussian convergence.
+:rtype: float, or numpy.array with shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gauss_decomposition.html#GaussDecomposition.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy for a
+set of concentric elliptic Gaussian convergence profiles.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: numpy.array with dtype=float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: numpy.array with dtype=float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Hessian d^2f/dx^2, d^f/dy^2, d^2/dxdy for elliptical
+Gaussian convergence.
+:rtype: tuple (float, float, float) , or (numpy.array, numpy.array,
+numpy.array) with each numpy.array’s shape = x.shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecomposition.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa">
+<span id="lenstronomy-lensmodel-profiles-gaussian-ellipse-kappa-module"></span><h2>lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa" title="Permalink to this headline">¶</a></h2>
+<p>This module defines <cite>class GaussianEllipseKappa</cite> to compute the lensing
+properties of an elliptical Gaussian profile with ellipticity in the
+convergence using the formulae from Shajib (2019).</p>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.</code><code class="descname">GaussianEllipseKappa</code><span class="sig-paren">(</span><em>use_scipy_wofz=True</em>, <em>min_ellipticity=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class contains functions to evaluate the derivative and hessian matrix
+of the deflection potential for an elliptical Gaussian convergence.</p>
+<p>The formulae are from Shajib (2019).</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the density of elliptical Gaussian A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Density kappa for elliptical
+Gaussian convergence.
+:rtype: float, or numpy.array with shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the derivatives of function angles df/dx, df/dy at x, y.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Deflection angle df/dx, df/dy for elliptical Gaussian
+convergence.
+:rtype: tuple (float, float) or (numpy.array, numpy.array) with each
+numpy.array’s shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the potential function for elliptical Gaussian convergence.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Potential for elliptical Gaussian convergence.
+:rtype: float, or numpy.array with shape = x.shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param amp: Amplitude of Gaussian. Convention: A/(2*pi*sigma^2) *
+exp(-(x^2+y^2/q^2)/2/sigma^2).
+:type amp: float
+:param sigma: Standard deviation of Gaussian.
+:type sigma: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordianate of centroid.
+:type center_y: float
+:return: Hessian d^2f/dx^2, d^f/dy^2, d^2/dxdy for elliptical
+Gaussian convergence.
+:rtype: tuple (float, float, float) , or (numpy.array, numpy.array,
+numpy.array) with each numpy.array’s shape = x.shape.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sgn">
+<em class="property">static </em><code class="descname">sgn</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.sgn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sgn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the sign function sgn(z) factor for deflection
+as sugggested by Bray (1984). For current implementation, returning
+1 is sufficient.
+:param z: Complex variable z = x + iy.
+:type z: complex
+:return: Sign of z, sgn(z).
+:rtype: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sigma_function">
+<code class="descname">sigma_function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.sigma_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sigma_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the function varsigma(z; q) from equation (4.12) of Shajib (2019).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>float</em><em> or </em><em>numpy.array</em>) – Real part of complex variable, x = Re(z).</li>
+<li><strong>y</strong> (<em>float</em><em> or </em><em>numpy.array</em>) – Imaginary part of complex variable, y = Re(z).</li>
+<li><strong>q</strong> (<em>float</em>) – Axis ratio.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">value of Sigma function, equation (4.12) from Shajib (2019).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple (type, type) with type being type(x) or type(y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.w_f_approx">
+<em class="property">static </em><code class="descname">w_f_approx</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_kappa.html#GaussianEllipseKappa.w_f_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.w_f_approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Faddeeva function w(z) using the approximation given in Zaghloul (2017).
+:param z: complex number or array
+:type z: complex
+:return: w_f
+:rtype: complex</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.gaussian_ellipse_potential">
+<span id="lenstronomy-lensmodel-profiles-gaussian-ellipse-potential-module"></span><h2>lenstronomy.LensModel.Profiles.gaussian_ellipse_potential module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_potential" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.</code><code class="descname">GaussianEllipsePotential</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
+with ellipticity in the convergence</p>
+<p>the calculation follows Glenn van de Ven et al. 2009</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.density" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>sigma</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – </li>
+<li><strong>am</strong> – </li>
+<li><strong>sigma_x</strong> – </li>
+<li><strong>sigma_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns df/dx and df/dy of the function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Gaussian</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_2d">
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_2d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>sigma_x</strong> – </li>
+<li><strong>sigma_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_2d_lens">
+<code class="descname">mass_2d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.mass_2d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_2d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>sigma_x</strong> – </li>
+<li><strong>sigma_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_3d">
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>sigma</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_ellipse_potential.html#GaussianEllipsePotential.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>sigma</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LensModel.Profiles.gaussian_kappa">
 <span id="lenstronomy-lensmodel-profiles-gaussian-kappa-module"></span><h2>lenstronomy.LensModel.Profiles.gaussian_kappa module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gaussian_kappa" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -1073,184 +1763,6 @@ normalized by rho0, the central core density</p>
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.gaussian_kappa.GaussianKappa.upper_limit_default">
 <code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa.GaussianKappa.upper_limit_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse">
-<span id="lenstronomy-lensmodel-profiles-gaussian-kappa-ellipse-module"></span><h2>lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.</code><code class="descname">GaussianKappaEllipse</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
-with ellipticity in the convergence</p>
-<p>the calculation follows Glenn van de Ven et al. 2009</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>sigma</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density_2d">
-<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.density_2d" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> – </li>
-<li><strong>am</strong> – </li>
-<li><strong>sigma_x</strong> – </li>
-<li><strong>sigma_y</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns df/dx and df/dy of the function</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Gaussian</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'sigma': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d">
-<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>sigma_x</strong> – </li>
-<li><strong>sigma_y</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d_lens">
-<code class="descname">mass_2d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_2d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_2d_lens" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>sigma_x</strong> – </li>
-<li><strong>sigma_y</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>sigma</strong> – </li>
-<li><strong>e1</strong> – </li>
-<li><strong>e2</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d_lens">
-<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>amp</em>, <em>sigma</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/gaussian_kappa_ellipse.html#GaussianKappaEllipse.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>sigma</strong> – </li>
-<li><strong>e1</strong> – </li>
-<li><strong>e2</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.param_names">
-<code class="descname">param_names</code><em class="property"> = ['amp', 'sigma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.param_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'sigma': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse.GaussianKappaEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1545,113 +2057,113 @@ with ellipticity in the convergence</p>
 <div class="section" id="module-lenstronomy.LensModel.Profiles.interpol">
 <span id="lenstronomy-lensmodel-profiles-interpol-module"></span><h2>lenstronomy.LensModel.Profiles.interpol module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.interpol" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.interpol.</code><code class="descname">Interpol_func</code><span class="sig-paren">(</span><em>grid=True</em>, <em>min_grid_number=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.interpol.</code><code class="descname">Interpol</code><span class="sig-paren">(</span><em>grid=True</em>, <em>min_grid_number=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class which uses an interpolation of a lens model and its first and second order derivatives</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.derivatives" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns df/dx and df/dy of the function</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.do_interp">
-<code class="descname">do_interp</code><span class="sig-paren">(</span><em>x_grid</em>, <em>y_grid</em>, <em>f_</em>, <em>f_x</em>, <em>f_y</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.do_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.do_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.do_interp">
+<code class="descname">do_interp</code><span class="sig-paren">(</span><em>x_grid</em>, <em>y_grid</em>, <em>f_</em>, <em>f_x</em>, <em>f_y</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.do_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.do_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_interp">
-<code class="descname">f_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_interp">
+<code class="descname">f_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_x_interp">
-<code class="descname">f_x_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_x=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_x_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_x_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_x_interp">
+<code class="descname">f_x_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_x=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_x_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_x_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_xx_interp">
-<code class="descname">f_xx_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_xx=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_xx_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_xx_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_xx_interp">
+<code class="descname">f_xx_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_xx=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_xx_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_xx_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_xy_interp">
-<code class="descname">f_xy_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_xy_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_xy_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_xy_interp">
+<code class="descname">f_xy_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_xy_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_xy_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_y_interp">
-<code class="descname">f_y_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_y_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_y_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_y_interp">
+<code class="descname">f_y_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_y_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_y_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_yy_interp">
-<code class="descname">f_yy_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_yy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.f_yy_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.f_yy_interp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.f_yy_interp">
+<code class="descname">f_yy_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>x_grid=None</em>, <em>y_grid=None</em>, <em>f_yy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.f_yy_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.f_yy_interp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.function" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.param_names">
-<code class="descname">param_names</code><em class="property"> = ['grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.param_names">
+<code class="descname">param_names</code><em class="property"> = ['grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.interpol.</code><code class="descname">Interpol_func_scaled</code><span class="sig-paren">(</span><em>grid=True</em>, <em>min_grid_number=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func_scaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.interpol.</code><code class="descname">InterpolScaled</code><span class="sig-paren">(</span><em>grid=True</em>, <em>min_grid_number=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#InterpolScaled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for handling an interpolated lensing map and has the freedom to scale its lensing effect.
 Applications are e.g. mass to light ratio.</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func_scaled.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.derivatives" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#InterpolScaled.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func_scaled.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.function" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#InterpolScaled.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol_func_scaled.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>scale_factor=1</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#InterpolScaled.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.hessian" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'scale_factor': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'scale_factor': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.param_names">
-<code class="descname">param_names</code><em class="property"> = ['scale_factor', 'grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.param_names">
+<code class="descname">param_names</code><em class="property"> = ['scale_factor', 'grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'scale_factor': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol_func_scaled.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.interpol.InterpolScaled.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'scale_factor': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.InterpolScaled.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2432,6 +2944,33 @@ See Keeton&amp;Kochanek 1998</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.numerical_deflections">
+<span id="lenstronomy-lensmodel-profiles-numerical-deflections-module"></span><h2>lenstronomy.LensModel.Profiles.numerical_deflections module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.numerical_deflections" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.numerical_deflections.</code><code class="descname">NumericalAlpha</code><span class="sig-paren">(</span><em>custom_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+(un-normalized!!!) interpolated from the numerical deflection table</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LensModel.Profiles.p_jaffe">
 <span id="lenstronomy-lensmodel-profiles-p-jaffe-module"></span><h2>lenstronomy.LensModel.Profiles.p_jaffe module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.p_jaffe" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -2829,7 +3368,26 @@ based on Eliasdottir (2013)</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic.Sersic.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Gaussian</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>n_sersic</strong> – Sersic index</li>
+<li><strong>R_sersic</strong> – half light radius</li>
+<li><strong>k_eff</strong> – convergence at half light radius</li>
+<li><strong>center_x</strong> – x-center</li>
+<li><strong>center_y</strong> – y-center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2856,44 +3414,261 @@ based on Eliasdottir (2013)</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.LensModel.Profiles.sersic_ellipse">
-<span id="lenstronomy-lensmodel-profiles-sersic-ellipse-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_ellipse module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec">
+<span id="lenstronomy-lensmodel-profiles-sersic-ellipse-gauss-dec-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec" title="Permalink to this headline">¶</a></h2>
+<p>This module contains <cite>class SersicEllipseGaussDec()</cite> to compute the
+lensing properties of a Sersic profile using the Gaussian decomposition method
+of Shajib (2019).</p>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_ellipse.</code><code class="descname">SersicEllipse</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html#SersicEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.</code><code class="descname">SersicEllipseGaussDec</code><span class="sig-paren">(</span><em>n_sigma=15</em>, <em>sigma_start_mult=0.02</em>, <em>sigma_end_mult=15.0</em>, <em>precision=10</em>, <em>use_scipy_wofz=True</em>, <em>min_ellipticity=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>this class contains functions to evaluate a Sersic mass profile: <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0311559.pdf">https://arxiv.org/pdf/astro-ph/0311559.pdf</a></p>
+<p>This class computes the lensing properties of an elliptical Sersic
+profile using the Gauss decomposition method from Shajib (2019).</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html#SersicEllipse.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns df/dx and df/dy of the function</p>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0.0</em>, <em>center_y=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the convergence profile for Gauss-decomposed
+elliptic Sersic profile.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic scale radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordinate of centroid.
+:type center_y: float
+:return: Convergence profile.
+:rtype: type(x)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html#SersicEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Gaussian</p>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0.0</em>, <em>center_y=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the derivatives of the deflection potential df/dx, df/dy for a
+Gauss-decomposed elliptic Sersic convergence.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.array
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic scale radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordinate of centroid.
+:type center_y: float
+:return: Derivatives of deflection potential.
+:rtype: tuple (type(x), type(x))</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse.html#SersicEllipse.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0.0</em>, <em>center_y=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the deflection potential of a Gauss-decomposed
+elliptic Sersic convergence.
+:param x: x coordinate.
+:type x: float
+:param y: y coordinate.
+:type y: float
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic scale radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordinate of centroid.
+:type center_y: float
+:return: Deflection potential.
+:rtype: float</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.gauss_decompose_sersic">
+<code class="descname">gauss_decompose_sersic</code><span class="sig-paren">(</span><em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.gauss_decompose_sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.gauss_decompose_sersic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the amplitudes and sigmas of Gaussian components using the
+integral transform with Gaussian kernel from Shajib (2019). The
+returned values are in the convention of eq. (2.13).
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:return: Amplitudes and standard deviations of the Gaussian components.
+:rtype: tuple of (numpy.array, numpy.array)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0.0</em>, <em>center_y=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Hessian of the deflection potential d^2f/dx^2,
+d^2f/dy^2, d^f/dxdy of a Gauss-decomposed elliptic Sersic convergence.
+:param x: x coordinate.
+:type x: float or numpy.array
+:param y: y coordinate.
+:type y: float or numpy.arry
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic scale radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:param e1: Ellipticity parameter 1.
+:type e1: float
+:param e2: Ellipticity parameter 2.
+:type e2: float
+:param center_x: x coordinate of centroid.
+:type center_x: float
+:param center_y: y coordinate of centroid.
+:type center_y: float
+:return: Hessian of deflection potential.
+:rtype: tuple (type(x), type(x), type(x))</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.kappa_y">
+<code class="descname">kappa_y</code><span class="sig-paren">(</span><em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_gauss_dec.html#SersicEllipseGaussDec.kappa_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.kappa_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the spherical Sersic profile at $y$.
+:param y: y coordinate.
+:type y: float or numpy.array
+:param n_sersic: Sersic index.
+:type n_sersic: float
+:param R_sersic: Sersic scale radius.
+:type R_sersic: float
+:param k_eff: Sersic convergence at R_sersic.
+:type k_eff: float
+:return: Sersic function at $y$.
+:rtype: type(y)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0.0, 'amp': 0.0, 'center_x': -100.0, 'center_y': -100.0, 'e1': -0.5, 'e2': -0.5, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.param_names">
+<code class="descname">param_names</code><em class="property"> = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100.0, 'amp': 100.0, 'center_x': 100.0, 'center_y': 100.0, 'e1': 0.5, 'e2': 0.5, 'n_sersic': 8.0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec.SersicEllipseGaussDec.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.sersic_ellipse_kappa">
+<span id="lenstronomy-lensmodel-profiles-sersic-ellipse-kappa-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_ellipse_kappa module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_kappa" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.</code><code class="descname">SersicEllipseKappa</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.html#SersicEllipseKappa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class contains the function and the derivatives of an elliptical sersic profile
+with the ellipticity introduced in the convergence (not the potential).</p>
+<p>This requires the use of numerical integrals (Keeton 2004)</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.html#SersicEllipseKappa.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.html#SersicEllipseKappa.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.html#SersicEllipseKappa.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'k_eff': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'k_eff': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.param_names">
-<code class="descname">param_names</code><em class="property"> = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.param_names">
+<code class="descname">param_names</code><em class="property"> = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.projected_mass">
+<code class="descname">projected_mass</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>q</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>u=1</em>, <em>power=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_kappa.html#SersicEllipseKappa.projected_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.projected_mass" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'k_eff': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse.SersicEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'k_eff': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_kappa.SersicEllipseKappa.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.sersic_ellipse_potential">
+<span id="lenstronomy-lensmodel-profiles-sersic-ellipse-potential-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_ellipse_potential module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_potential" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_ellipse_potential.</code><code class="descname">SersicEllipse</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_potential.html#SersicEllipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class contains functions to evaluate a Sersic mass profile: <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0311559.pdf">https://arxiv.org/pdf/astro-ph/0311559.pdf</a></p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_potential.html#SersicEllipse.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns df/dx and df/dy of the function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_potential.html#SersicEllipse.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Gaussian</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>n_sersic</em>, <em>R_sersic</em>, <em>k_eff</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_ellipse_potential.html#SersicEllipse.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'R_sersic': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'k_eff': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.param_names">
+<code class="descname">param_names</code><em class="property"> = ['k_eff', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'R_sersic': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'k_eff': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_ellipse_potential.SersicEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2930,9 +3705,9 @@ based on Eliasdottir (2013)</p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.b_n">
-<code class="descname">b_n</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.b_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.b_n" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">b_n</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.b_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.b_n" title="Permalink to this definition">¶</a></dt>
 <dd><p>b(n) computation
 :param n:
 :return:</p>
@@ -2980,6 +3755,34 @@ Prugniel &amp; Simien (1997)
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.k_bn">
 <code class="descname">k_bn</code><span class="sig-paren">(</span><em>n</em>, <em>Re</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.k_bn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.k_bn" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns normalisation of the sersic profile such that Re is the half light radius given n_sersic slope</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux">
+<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>Re=None</em>, <em>gamma=None</em>, <em>e1=None</em>, <em>e2=None</em>, <em>center_x=None</em>, <em>center_y=None</em>, <em>alpha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>amp</strong> – </li>
+<li><strong>R_sersic</strong> – </li>
+<li><strong>Re</strong> – </li>
+<li><strong>n_sersic</strong> – </li>
+<li><strong>gamma</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+<li><strong>alpha</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -3729,7 +4532,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <span id="lenstronomy-lensmodel-profiles-tnfw-module"></span><h2>lenstronomy.LensModel.Profiles.tnfw module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.tnfw" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.tnfw.</code><code class="descname">TNFW</code><span class="sig-paren">(</span><em>interpol=True</em>, <em>num_interp_X=1000</em>, <em>max_interp_X=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.tnfw.</code><code class="descname">TNFW</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class contains functions concerning the truncated NFW profile with a truncation function (r_trunc^2)*(r^2+r_trunc^2)</p>
 <p>relation are: R_200 = c * Rs</p>
@@ -3752,7 +4555,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density" title="Permalink to this definition">¶</a></dt>
+<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density" title="Permalink to this definition">¶</a></dt>
 <dd><p>three dimenstional truncated NFW profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3851,30 +4654,8 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_infinity">
-<code class="descname">mass_3d_infinity</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d_infinity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_infinity" title="Permalink to this definition">¶</a></dt>
-<dd><p>mass enclosed a 3d sphere or radius r</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – </li>
-<li><strong>Ra</strong> – </li>
-<li><strong>Rs</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_lens">
-<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>theta_Rs</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d">
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 3d sphere or radius r</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3897,7 +4678,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwAlpha">
 <code class="descname">nfwAlpha</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em>, <em>ax_x</em>, <em>ax_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwAlpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwAlpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>deflection angel of NFW profile (<a href="#id1"><span class="problematic" id="id2">*</span></a>Sigma_crit*D_OL) along the projection to coordinate ‘axis’</p>
+<dd><p>deflection angel of NFW profile along the projection to coordinate axis</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3945,7 +4726,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot">
 <code class="descname">nfwPot</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwPot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot" title="Permalink to this definition">¶</a></dt>
-<dd><p>lensing potential of NFW profile (<a href="#id3"><span class="problematic" id="id4">*</span></a>Sigma_crit*D_OL**2)</p>
+<dd><p>lensing potential of NFW profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3994,12 +4775,15 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.alpha_shift">lenstronomy.LensModel.Profiles.alpha_shift module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.chameleon">lenstronomy.LensModel.Profiles.chameleon module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.cnfw">lenstronomy.LensModel.Profiles.cnfw module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.convergence">lenstronomy.LensModel.Profiles.convergence module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.coreBurkert">lenstronomy.LensModel.Profiles.coreBurkert module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gauss_decomposition">lenstronomy.LensModel.Profiles.gauss_decomposition module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_potential">lenstronomy.LensModel.Profiles.gaussian_ellipse_potential module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gaussian_kappa">lenstronomy.LensModel.Profiles.gaussian_kappa module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse">lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.gaussian_potential">lenstronomy.LensModel.Profiles.gaussian_potential module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.hernquist">lenstronomy.LensModel.Profiles.hernquist module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.hernquist_ellipse">lenstronomy.LensModel.Profiles.hernquist_ellipse module</a></li>
@@ -4009,11 +4793,14 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.nfw_ellipse">lenstronomy.LensModel.Profiles.nfw_ellipse module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.nfw_lookup">lenstronomy.LensModel.Profiles.nfw_lookup module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.nie">lenstronomy.LensModel.Profiles.nie module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.numerical_deflections">lenstronomy.LensModel.Profiles.numerical_deflections module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.p_jaffe">lenstronomy.LensModel.Profiles.p_jaffe module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.p_jaffe_ellipse">lenstronomy.LensModel.Profiles.p_jaffe_ellipse module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.point_mass">lenstronomy.LensModel.Profiles.point_mass module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic">lenstronomy.LensModel.Profiles.sersic module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse">lenstronomy.LensModel.Profiles.sersic_ellipse module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec">lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_kappa">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_potential">lenstronomy.LensModel.Profiles.sersic_ellipse_potential module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_utils">lenstronomy.LensModel.Profiles.sersic_utils module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.shapelet_pot_cartesian">lenstronomy.LensModel.Profiles.shapelet_pot_cartesian module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.shapelet_pot_polar">lenstronomy.LensModel.Profiles.shapelet_pot_polar module</a></li>
@@ -4075,7 +4862,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

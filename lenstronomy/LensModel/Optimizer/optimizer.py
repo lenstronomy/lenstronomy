@@ -2,10 +2,10 @@ __author__ = 'dgilman'
 
 import numpy as np
 from lenstronomy.LensModel.Optimizer.particle_swarm import ParticleSwarmOptimizer
-from lenstronomy.LensModel.Optimizer.params import Params
+from lenstronomy.LensModel.Optimizer.optimizer_params import Params
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.Optimizer.single_plane import SinglePlaneLensing
-from lenstronomy.LensModel.Optimizer.multi_plane import MultiPlaneLensing
+from lenstronomy.LensModel.Optimizer.single_plane_optimizer import SinglePlaneLensing
+from lenstronomy.LensModel.Optimizer.multi_plane_optimizer import MultiPlaneLensing
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
 from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -20,13 +20,14 @@ class Optimizer(object):
     Particle swarm optimizer is modified from the CosmoHammer particle swarm routine with different convergence criteria implemented.
     """
 
-    def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[],
+    def __init__(self, x_pos, y_pos, redshift_list=[], lens_model_list=[], kwargs_lens=[], numerical_alpha_class = None,
                  optimizer_routine='fixed_powerlaw_shear',magnification_target=None, multiplane=None,
-                 z_main = None, z_source=None,tol_source=1e-5, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
+                 z_main = None, z_source=None, tol_source=1e-5, tol_image = 0.003, tol_mag=0.2, tol_centroid=0.05, centroid_0=[0,0],
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=400, compute_mags_postpso = False, optimizer_kwargs = {}):
+                 simplex_n_iterations=400, compute_mags_postpso = False, chi2_mode = 'source',
+                 optimizer_kwargs = {}):
 
         """
         :param x_pos: observed position in arcsec
@@ -35,7 +36,8 @@ class Optimizer(object):
         :param redshift_list: list of lens model redshifts
         :param lens_model_list: list of lens models
         :param kwargs_lens: keywords for lens models
-        :param optimizer_routine: a set optimization routine; currently only 'optimize_SIE_shear' is implemented
+        :param optimizer_routine: a set optimization routine; currently only 'fixed_powerlaw_shear' and 'variable_powerlaw_shear'
+         are implemented
         :param multiplane: multi-plane flag
         :param z_main: if multi-plane, macromodel redshift
         :param z_source: if multi-plane, macromodel redshift
@@ -100,13 +102,14 @@ class Optimizer(object):
                         z_source, z_main, multiplane, astropy_instance)
 
         # initialize lens model class
-        self._lensModel = LensModel(lens_model_list=lens_model_list, redshift_list=redshift_list,
+        self._lensModel = LensModel(lens_model_list=lens_model_list, lens_redshift_list=redshift_list,
                                     z_source=z_source,
-                                    cosmo=astropy_instance, multi_plane=multiplane)
+                                    cosmo=astropy_instance, multi_plane=multiplane,
+                                    numerical_alpha_class = numerical_alpha_class)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
         self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,
-                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos)
+                              optimizer_routine=optimizer_routine, xpos=x_pos, ypos = y_pos, constrain_params=constrain_params)
         
         # initialize particle swarm inital param limits
         if 're_optimize_scale' in optimizer_kwargs:
@@ -126,7 +129,8 @@ class Optimizer(object):
 
         else:
             lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
-                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs)
+                                                    astropy_instance, self._params.tovary_indicies, optimizer_kwargs,
+                                              numerical_alpha_class)
 
             self.solver = LensEquationSolver(lensing_class)
 
@@ -136,7 +140,7 @@ class Optimizer(object):
                                     params_to_constrain=constrain_params, param_class=self._params,
                                     pso_convergence_mean=pso_convergence_mean,
                                     pso_compute_magnification=pso_compute_magnification, compute_mags=False,
-                                    verbose=verbose)
+                                    verbose=verbose, chi2_mode=chi2_mode, tol_image = tol_image, solver = self.solver)
 
     def optimize(self, n_particles=50, n_iterations=250, restart=1):
 
@@ -183,6 +187,11 @@ class Optimizer(object):
             # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
             print('Warning: possibly a bad fit.')
             x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort=False)
+            #if len(x_image) != len(self.x_pos) or len(y_image) != len(self.y_pos):
+            #    x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,
+            #                                                   arrival_time_sort=False,
+            #                                                   precision_limit=10**(-11), num_iter_max=15)
+
             #x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
         if self._verbose:
             print('optimization done.')

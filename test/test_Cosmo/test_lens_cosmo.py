@@ -81,6 +81,13 @@ class TestLensCosmo(object):
         theta_E_out = self.lensCosmo.sis_sigma_v2theta_E(sigma_v)
         npt.assert_almost_equal(theta_E_out, theta_E, decimal=5)
 
+    def test_fermat2delays(self):
+
+        fermat_pot = 0.5
+        dt_days = self.lensCosmo.time_delay_units(fermat_pot)
+        fermat_pot_out = self.lensCosmo.time_delay2fermat_pot(dt_days)
+        npt.assert_almost_equal(fermat_pot, fermat_pot_out, decimal=10)
+
 
 class TestFlatLCDM(object):
     def setup(self):

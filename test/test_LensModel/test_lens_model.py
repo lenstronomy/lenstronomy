@@ -16,15 +16,19 @@ class TestLensModel(object):
         self.kwargs = [{'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}]
 
     def test_init(self):
-        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
+        lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE_KAPPA',
+                           'SERSIC_ELLIPSE_GAUSS_DEC',
+                           'SERSIC_ELLIPSE_POTENTIAL',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
-                            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON', 'DOUBLE_CHAMELEON']
+                           'SHAPELETS_POLAR', 'DIPOLE',
+                           'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL',
+                           'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON',
+                           'DOUBLE_CHAMELEON']
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 
         lens_model_list = ['NFW']
-        lensModel = LensModel(lens_model_list, interpol = True, lookup=True)
+        lensModel = LensModel(lens_model_list)
         x,y = 0.2,1
         kwargs = [{'theta_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
         value = lensModel.potential(x,y,kwargs)
@@ -83,7 +87,7 @@ class TestLensModel(object):
         z_lens = 0.5
         z_source = 1.5
         x_image, y_image = 1., 0
-        lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, redshift_list=[z_lens], z_source=z_source)
+        lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, lens_redshift_list=[z_lens], z_source=z_source)
         kwargs = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         arrival_time_mp = lensModel.arrival_time(x_image, y_image, kwargs)
         lensModel_sp = LensModel(lens_model_list=['SIS'], z_source=z_source, z_lens=z_lens)

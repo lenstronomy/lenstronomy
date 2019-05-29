@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = 'dgilman'
 
 
 from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert

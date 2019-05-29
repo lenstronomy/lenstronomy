@@ -1,0 +1,294 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Workflow.update_manager &#8212; lenstronomy 0.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Workflow.update_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.parameters</span> <span class="k">import</span> <span class="n">Param</span>
+
+
+<div class="viewcode-block" id="UpdateManager"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager">[docs]</a><span class="k">class</span> <span class="nc">UpdateManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this class manages the parameter constraints as they may evolve through the steps of the modeling.</span>
+<span class="sd">    This includes: keeping certain parameters fixed during one modelling step</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_likelihood</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_model:</span>
+<span class="sd">        :param kwargs_constraints:</span>
+<span class="sd">        :param kwargs_likelihood:</span>
+<span class="sd">        :param kwargs_params:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span> <span class="o">=</span> <span class="n">kwargs_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span> <span class="o">=</span> <span class="n">kwargs_constraints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="n">kwargs_likelihood</span>
+
+        <span class="k">if</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="p">[</span>
+                <span class="s1">&#39;lens_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_light_model_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_source_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> \
+            <span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;source_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_source_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_light_model_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_upper</span> <span class="o">=</span> \
+            <span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;lens_light_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_upper</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_source_model_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ps_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_upper</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="p">[</span>
+                <span class="s1">&#39;point_source_model&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ps_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_upper</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;cosmography&#39;</span> <span class="ow">in</span> <span class="n">kwargs_params</span><span class="p">:</span>
+            <span class="c1"># if self.kwargs_likelihood.get(&#39;time_delay_likelihood&#39;, False) is True or self.kwargs_constraints.get(&#39;mass_scaling&#39;, False) is True:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_upper</span> <span class="o">=</span> \
+            <span class="n">kwargs_params</span><span class="p">[</span><span class="s1">&#39;cosmography&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_upper</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">init_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_init</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_init</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sigma_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_sigma</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lower_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_lower</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">upper_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_upper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_upper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_upper</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fixed_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fixed</span>
+
+<div class="viewcode-block" id="UpdateManager.param_class"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.param_class">[docs]</a>    <span class="k">def</span> <span class="nf">param_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: instance of the Param class with the recent options and bounds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_kwargs</span>
+        <span class="n">kwargs_lower_lens</span><span class="p">,</span> <span class="n">kwargs_lower_source</span><span class="p">,</span> <span class="n">kwargs_lower_lens_light</span><span class="p">,</span> <span class="n">kwargs_lower_ps</span><span class="p">,</span> <span class="n">kwargs_lower_cosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_kwargs</span>
+        <span class="n">kwargs_upper_lens</span><span class="p">,</span> <span class="n">kwargs_upper_source</span><span class="p">,</span> <span class="n">kwargs_upper_lens_light</span><span class="p">,</span> <span class="n">kwargs_upper_ps</span><span class="p">,</span> <span class="n">kwargs_upper_cosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_kwargs</span>
+        <span class="n">kwargs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span>
+        <span class="n">kwargs_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span>
+
+        <span class="n">param_class</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_fixed_source</span><span class="p">,</span>
+                            <span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="n">kwargs_fixed_ps</span><span class="p">,</span> <span class="n">kwargs_fixed_cosmo</span><span class="p">,</span>
+                            <span class="n">kwargs_lower_lens</span><span class="p">,</span> <span class="n">kwargs_lower_source</span><span class="p">,</span> <span class="n">kwargs_lower_lens_light</span><span class="p">,</span> <span class="n">kwargs_lower_ps</span><span class="p">,</span>
+                            <span class="n">kwargs_lower_cosmo</span><span class="p">,</span>
+                            <span class="n">kwargs_upper_lens</span><span class="p">,</span> <span class="n">kwargs_upper_source</span><span class="p">,</span> <span class="n">kwargs_upper_lens_light</span><span class="p">,</span> <span class="n">kwargs_upper_ps</span><span class="p">,</span>
+                            <span class="n">kwargs_upper_cosmo</span><span class="p">,</span>
+                            <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_constraints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">param_class</span></div>
+
+<div class="viewcode-block" id="UpdateManager.update_options"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_options">[docs]</a>    <span class="k">def</span> <span class="nf">update_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_likelihood</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates the options by overwriting the kwargs with the new ones being added/changed</span>
+<span class="sd">        WARNING: some updates may not be valid depending on the model options. Use carefully!</span>
+
+<span class="sd">        :param kwargs_model:</span>
+<span class="sd">        :param kwargs_constraints:</span>
+<span class="sd">        :param kwargs_likelihood:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_model_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">)</span>
+        <span class="n">kwargs_constraints_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_constraints</span><span class="p">)</span>
+        <span class="n">kwargs_likelihood_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_likelihood</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_model_updated</span><span class="p">,</span> <span class="n">kwargs_constraints_updated</span><span class="p">,</span> <span class="n">kwargs_likelihood_updated</span></div>
+
+<div class="viewcode-block" id="UpdateManager.update_limits"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_limits">[docs]</a>    <span class="k">def</span> <span class="nf">update_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_source_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates the limits (lower and upper) of the update manager instance</span>
+
+<span class="sd">        :param change_source_lower_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
+<span class="sd">        :return: updates internal state of lower and upper limits accessible from outside</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_lower_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_upper_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_limit</span><span class="p">,</span> <span class="n">kwargs_limit_previous</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param change_limit: imput format of def update_limits</span>
+<span class="sd">        :param kwargs_limit_previous: all limits of a model type</span>
+<span class="sd">        :return: update limits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_limit_updated</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_limit_previous</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">change_limit</span><span class="p">)):</span>
+            <span class="n">i_model</span> <span class="o">=</span> <span class="n">change_limit</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">change_names</span> <span class="o">=</span> <span class="n">change_limit</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">change_limit</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">change_names</span><span class="p">):</span>
+                <span class="n">kwargs_limit_updated</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kwargs_limit_updated</span>
+
+<div class="viewcode-block" id="UpdateManager.update_fixed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">update_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">lens_add_fixed</span><span class="o">=</span><span class="p">[],</span>
+                     <span class="n">source_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
+                     <span class="n">source_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_remove_fixed</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds the values of the keyword arguments that are stated in the _add_fixed to the existing fixed arguments.</span>
+
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_source:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_ps:</span>
+<span class="sd">        :param kwargs_cosmo:</span>
+<span class="sd">        :param lens_add_fixed:</span>
+<span class="sd">        :param source_add_fixed:</span>
+<span class="sd">        :param lens_light_add_fixed:</span>
+<span class="sd">        :param ps_add_fixed:</span>
+<span class="sd">        :param cosmo_add_fixed:</span>
+<span class="sd">        :return: updated kwargs fixed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lens_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="n">lens_add_fixed</span><span class="p">)</span>
+        <span class="n">lens_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_fixed</span><span class="p">(</span><span class="n">lens_fixed</span><span class="p">,</span> <span class="n">lens_remove_fixed</span><span class="p">)</span>
+        <span class="n">source_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_fixed</span><span class="p">,</span> <span class="n">source_add_fixed</span><span class="p">)</span>
+        <span class="n">source_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_fixed</span><span class="p">(</span><span class="n">source_fixed</span><span class="p">,</span> <span class="n">source_remove_fixed</span><span class="p">)</span>
+        <span class="n">lens_light_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_fixed</span><span class="p">,</span> <span class="n">lens_light_add_fixed</span><span class="p">)</span>
+        <span class="n">lens_light_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_fixed</span><span class="p">(</span><span class="n">lens_light_fixed</span><span class="p">,</span> <span class="n">lens_light_remove_fixed</span><span class="p">)</span>
+        <span class="n">ps_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_fixed</span><span class="p">,</span> <span class="n">ps_add_fixed</span><span class="p">)</span>
+        <span class="n">ps_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_fixed</span><span class="p">(</span><span class="n">ps_fixed</span><span class="p">,</span> <span class="n">ps_remove_fixed</span><span class="p">)</span>
+        <span class="n">cosmo_fixed</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fixed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">cosmo_add_fixed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">cosmo_fixed</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cosmo_fixed</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_cosmo</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">cosmo_remove_fixed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">cosmo_fixed</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">cosmo_fixed</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_fixed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fixed</span> <span class="o">=</span> <span class="n">lens_fixed</span><span class="p">,</span> <span class="n">source_fixed</span><span class="p">,</span> <span class="n">lens_light_fixed</span><span class="p">,</span> <span class="n">ps_fixed</span><span class="p">,</span> <span class="n">cosmo_fixed</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_fixed</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">add_fixed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_model: model parameters</span>
+<span class="sd">        :param kwargs_fixed: parameters that are held fixed (even before)</span>
+<span class="sd">        :param add_fixed: additional fixed parameters [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...], [value1, value2, ... (optional)], [], ...]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#fixed_kwargs = copy.deepcopy(kwargs_fixed)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">add_fixed</span><span class="p">)):</span>
+            <span class="n">i_model</span> <span class="o">=</span> <span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fix_names</span> <span class="o">=</span> <span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fix_names</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fix_names</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_model</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span>  <span class="c1"># add fixed list</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kwargs_fixed</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_remove_fixed</span><span class="p">(</span><span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">remove_fixed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_fixed: fixed parameters (before)</span>
+<span class="sd">        :param remove_fixed: list of parameters to be removed from the fixed list and initialized by the valuye of kwargs_model [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [], ...]</span>
+<span class="sd">        :return: updated kwargs fixed parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">remove_fixed</span><span class="p">)):</span>
+            <span class="n">i_model</span> <span class="o">=</span> <span class="n">remove_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fix_names</span> <span class="o">=</span> <span class="n">remove_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">fix_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">i_model</span><span class="p">]:</span>  <span class="c1"># if the parameter already is in the fixed list, do not change it</span>
+                    <span class="k">del</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kwargs_fixed</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

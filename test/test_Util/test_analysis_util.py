@@ -6,6 +6,8 @@ import lenstronomy.Util.util as util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian, GaussianEllipse
 import pytest
 import numpy.testing as npt
+import numpy as np
+
 
 class TestCorrelation(object):
 
@@ -37,6 +39,11 @@ class TestCorrelation(object):
         npt.assert_almost_equal(e1_out, e1, decimal=3)
         npt.assert_almost_equal(e2_out, e2, decimal=3)
 
+    def test_half_light_radius(self):
+        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
+        lens_light = np.zeros_like(x_grid)
+        r_half = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0)
+        assert r_half == -1
 
 
 if __name__ == '__main__':

@@ -32,11 +32,6 @@ class LensParam(object):
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
 
-        #if self._solver_type == "PROFILE_SHEAR":
-        #    if 'e1' in kwargs_lower[1]:
-        #        kwargs_lower[1]['e1'] = 0
-        #    if 'e2' in kwargs_lower[1]:
-        #        kwargs_lower[1]['e2'] = 0
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 

@@ -1,11 +1,12 @@
 import numpy as np
+import copy
 from lenstronomy.PointSource.point_source_types import PointSourceCached
 
 
 class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
-                 save_cache=False, min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
+                 save_cache=False, min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
                  x_center=0, y_center=0):
         """
 
@@ -32,7 +33,7 @@ class PointSource(object):
 
         """
         self._lensModel = lensModel
-        self._point_source_type_list = point_source_type_list
+        self.point_source_type_list = point_source_type_list
         self._point_source_list = []
         if fixed_magnification_list is None:
             fixed_magnification_list = [False] * len(point_source_type_list)
@@ -56,15 +57,18 @@ class PointSource(object):
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center
 
-    def update_search_window(self, search_window, x_center, y_center):
+    def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
         update the search area for the lens equation solver
 
         :param search_window: search_window: window size of the image position search with the lens equation solver.
         :param x_center: center of search window
         :param y_center: center of search window
+        :param min_distance: minimum search distance
         :return: updated self instances
         """
+        if min_distance is not None:
+            self._min_distance = min_distance
         self._search_window, self._x_center, self._y_center = search_window, x_center, y_center
 
     def update_lens_model(self, lens_model_class):
@@ -73,12 +77,12 @@ class PointSource(object):
         :param lens_model_class: instance of LensModel class
         :return: update instance of lens model class
         """
-        self.delete_lens_model_cach()
+        self.delete_lens_model_cache()
         self._lensModel = lens_model_class
         for model in self._point_source_list:
             model.update_lens_model(lens_model_class=lens_model_class)
 
-    def delete_lens_model_cach(self):
+    def delete_lens_model_cache(self):
         """
         deletes the variables saved for a specific lens model
 
@@ -157,14 +161,14 @@ class PointSource(object):
     def num_basis(self, kwargs_ps, kwargs_lens):
         n = 0
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
-        for i, model in enumerate(self._point_source_type_list):
+        for i, model in enumerate(self.point_source_type_list):
             if self._fixed_magnification_list[i]:
                 n += 1
             else:
                 n += len(ra_pos_list[i])
         return n
 
-    def image_amplitude(self, kwargs_ps, kwargs_lens):
+    def image_amplitude(self, kwargs_ps, kwargs_lens, k=None):
         """
         returns the image amplitudes
 
@@ -174,7 +178,12 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+            if k is None or k == i:
+                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
+                                                        search_window=self._search_window,
+                                                        precision_limit=self._precision_limit,
+                                                        num_iter_max=self._num_iter_max, x_center=self._x_center,
+                                                        y_center=self._y_center))
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -201,6 +210,7 @@ class PointSource(object):
         dec_pos = []
         amp = []
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
+
         for i, model in enumerate(self._point_source_list):
                 if i == k or k is None:
                     x_pos = x_image_list[i]
@@ -209,14 +219,14 @@ class PointSource(object):
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
                         if with_amp:
-                            mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
+                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
                             mag = np.abs(mag)
                         amp.append(list(mag))
                     else:
                         if with_amp:
-                            mag = model.image_amplitude(kwargs_ps[i], kwargs_lens)
+                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = np.ones_like(x_pos)
                         for j in range(len(x_pos)):
@@ -277,12 +287,32 @@ class PointSource(object):
         :param norm_factor:
         :return:
         """
-        for i, model in enumerate(self._point_source_type_list):
+        for i, model in enumerate(self.point_source_type_list):
             if model == 'UNLENSED':
                 kwargs_ps[i]['point_amp'] *= norm_factor
             elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification_list:
+                if self._fixed_magnification_list[i] is True:
                     kwargs_ps[i]['source_amp'] *= norm_factor
                 else:
                     kwargs_ps[i]['point_amp'] *= norm_factor
         return kwargs_ps
+
+    def set_amplitudes(self, amp_list, kwargs_ps):
+        """
+
+        :param amp_list: list of model amplitudes for each point source model
+        :param kwargs_ps: list of point source keywords
+        :return: overwrites kwargs_ps with new amplitudes
+        """
+        kwargs_list = copy.deepcopy(kwargs_ps)
+        for i, model in enumerate(self.point_source_type_list):
+            amp = amp_list[i]
+            if model == 'UNLENSED':
+                kwargs_list[i]['point_amp'] = amp
+            elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+                if self._fixed_magnification_list[i] is True:
+                    kwargs_list[i]['source_amp'] = amp
+                else:
+                    kwargs_list[i]['point_amp'] = amp
+        return kwargs_list
+

@@ -2,6 +2,7 @@ import lenstronomy.Util.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 from lenstronomy.LightModel.Profiles.shapelets_polar import ShapeletsPolar, ShapeletSetPolar, ShapeletsPolarExp
 
 
@@ -310,6 +311,14 @@ class TestShapeletSetPolarExp(object):
         assert n == 0
         assert m == 0
         assert complex_bool is False
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            shapelets = ShapeletsPolar()
+            shapelets.poly2index(n=2, m=1, complex_bool=True)
 
 
 if __name__ == '__main__':

@@ -20,6 +20,11 @@ class TestParam(object):
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
+        param_fixed = CosmoParam(Ddt_sampling=True, kwargs_fixed=self.kwargs, point_source_offset=True, num_images=2,
+                                source_size=True)
+        kwargs_new, i = param_fixed.getParams(args=[], i=0)
+        kwargs_new['D_dt'] = self.kwargs['D_dt']
+
     def test_num_params(self):
         num, list = self.param.num_param()
         assert num == 6

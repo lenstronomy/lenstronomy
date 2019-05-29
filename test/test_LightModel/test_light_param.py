@@ -67,7 +67,6 @@ class TestParam(object):
 
     def test_get_setParams(self):
         args = self.param.setParams(self.kwargs)
-        print(self.param.kwargs_fixed, 'test')
         kwargs_new, _ = self.param.getParams(args, i=0)
         args_new = self.param.setParams(kwargs_new)
         for k in range(len(args)):
@@ -115,6 +114,12 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
             lighModel.num_param()
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
+            lighModel.getParams(args=[], i=0)
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['MULTI_GAUSSIAN'], kwargs_fixed=[{}], linear_solver=False)
+            lighModel.getParams(args=[1, 1, 1, 1], i=0)
 
 
 if __name__ == '__main__':

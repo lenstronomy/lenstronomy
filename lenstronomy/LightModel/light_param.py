@@ -49,7 +49,7 @@ class LightParam(object):
                         if 'n_max' in kwargs_fixed:
                             n_max = kwargs_fixed['n_max']
                         else:
-                            n_max = kwargs['n_max']
+                            raise ValueError('n_max needs to be fixed in %s.' % model)
                         if model in ['SHAPELETS_POLAR_EXP']:
                             num_param = int((n_max + 1) ** 2)
                         else:
@@ -60,7 +60,7 @@ class LightParam(object):
                         if 'sigma' in kwargs_fixed:
                             num_param = len(kwargs_fixed['sigma'])
                         else:
-                            num_param = len(kwargs['sigma'])
+                            raise ValueError('sigma needs to be fixed in %s.' % model)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     else:
@@ -118,7 +118,6 @@ class LightParam(object):
             for name in param_names:
                 if not name in kwargs_fixed:
                     if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
-
                         if 'n_max' not in kwargs_fixed:
                             raise ValueError("n_max needs to be fixed in this configuration!")
                         n_max = kwargs_fixed['n_max']

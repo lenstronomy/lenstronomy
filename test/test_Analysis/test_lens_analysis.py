@@ -40,7 +40,7 @@ class TestLensAnalysis(object):
         kwargs_options = {'lens_model_list': [], 'lens_light_model_list': ['HERNQUIST']}
         lensAnalysis = LensAnalysis(kwargs_options)
         r_eff_true = Rs / 0.551
-        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=2000, deltaPix=0.05)
+        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, numPix=500, deltaPix=0.2)
         #r_eff_new = lensAnalysis.half_light_radius(kwargs_profile, numPix=1000, deltaPix=0.01)
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
 
@@ -141,7 +141,7 @@ class TestLensAnalysis(object):
                              {'R_sersic': 1.5, 'n_sersic': 1, 'amp': 2}]
         lensAnalysis = LensAnalysis(kwargs_options)
         kwargs_interpol = lensAnalysis.light2mass_interpol(lens_light_model_list=['SERSIC_ELLIPSE', 'SERSIC'],
-                                                                                          kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix, subgrid_res=5)
+                                                                                          kwargs_lens_light=kwargs_lens_light, numPix=numPix, deltaPix=deltaPix, subgrid_res=1)
         from lenstronomy.LensModel.lens_model import LensModel
         lensModel = LensModel(lens_model_list=['INTERPOL_SCALED'])
         kwargs_lens = [kwargs_interpol]
@@ -159,7 +159,7 @@ class TestLensAnalysis(object):
         #plt.show()
         delta_kappa = (kappa - flux)/flux
         max_delta = np.max(np.abs(delta_kappa))
-        assert max_delta < 0.1
+        assert max_delta < 1
         #assert max_diff < 0.01
         npt.assert_almost_equal(flux[0, 0], kappa[0, 0], decimal=2)
 

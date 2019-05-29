@@ -88,10 +88,12 @@ class TestLightProfile(object):
             'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
         lensAnalysis = LensAnalysis(kwargs_options)
-        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y)
+        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y, deltaPix=0.1,
+                                                    numPix=100)
         kwargs_profile[0]['e1'], kwargs_profile[0]['e2'] = 0, 0
         kwargs_profile[1]['e1'], kwargs_profile[1]['e2'] = 0, 0
-        r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y)
+        r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y,
+                                                              deltaPix=0.1, numPix=100)
         npt.assert_almost_equal(r_eff / r_eff_spherical, 1, decimal=2)
 
     def test_light_3d(self):

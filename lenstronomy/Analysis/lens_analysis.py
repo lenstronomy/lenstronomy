@@ -39,8 +39,7 @@ class LensAnalysis(object):
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
         return fermat_pot
 
-    def ellipticity_lens_light(self, kwargs_lens_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=None,
-                               numPix=None):
+    def ellipticity_lens_light(self, kwargs_lens_light, deltaPix, numPix, center_x=0, center_y=0, model_bool_list=None):
         """
         make sure that the window covers all the light, otherwise the moments may give to low answers.
 
@@ -54,10 +53,6 @@ class LensAnalysis(object):
         """
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_lens_light)
-        if numPix is None:
-            numPix = 100
-        if deltaPix is None:
-            deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
@@ -65,7 +60,7 @@ class LensAnalysis(object):
         e1, e2 = analysis_util.ellipticities(I_xy, x_grid, y_grid)
         return e1, e2
 
-    def half_light_radius_lens(self, kwargs_lens_light, center_x=0, center_y=0, model_bool_list=None, deltaPix=None, numPix=None):
+    def half_light_radius_lens(self, kwargs_lens_light, deltaPix, numPix, center_x=0, center_y=0, model_bool_list=None):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
 
@@ -74,10 +69,6 @@ class LensAnalysis(object):
         """
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_lens_light)
-        if numPix is None:
-            numPix = 1000
-        if deltaPix is None:
-            deltaPix = 0.05
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
@@ -85,17 +76,13 @@ class LensAnalysis(object):
         R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x, center_y)
         return R_h
 
-    def half_light_radius_source(self, kwargs_source, center_x=0, center_y=0, deltaPix=None, numPix=None):
+    def half_light_radius_source(self, kwargs_source, center_x=0, center_y=0, deltaPix=200, numPix=0.01):
         """
         computes numerically the half-light-radius of the deflector light and the total photon flux
 
         :param kwargs_source:
         :return:
         """
-        if numPix is None:
-            numPix = 1000
-        if deltaPix is None:
-            deltaPix = 0.005
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
@@ -121,7 +108,8 @@ class LensAnalysis(object):
                 lens_light += lens_light_i
         return lens_light
 
-    def multi_gaussian_lens_light(self, kwargs_lens_light, model_bool_list=None, e1=0, e2=0, n_comp=20, deltaPix=None, numPix=None):
+    def multi_gaussian_lens_light(self, kwargs_lens_light, deltaPix=0.01, numPix=100, model_bool_list=None, e1=0, e2=0,
+                                  n_comp=20):
         """
         multi-gaussian decomposition of the lens light profile (in 1-dimension)
 
@@ -232,16 +220,19 @@ class LensAnalysis(object):
         else:
             center_x, center_y = 0, 0
         # estimate half-light radius
-        r_h = self.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y,
-                                          model_bool_list=model_bool_list, numPix=numPix, deltaPix=deltaPix)
+        #r_h = self.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y,
+        #                                  model_bool_list=model_bool_list, numPix=numPix, deltaPix=deltaPix)
         # estimate ellipticity at half-light radius
         if elliptical is True:
-            e1, e2 = self.ellipticity_lens_light(kwargs_lens_light, center_x=center_x, center_y=center_y, model_bool_list=model_bool_list, deltaPix=deltaPix*2,
-                               numPix=numPix)
+            e1, e2 = self.ellipticity_lens_light(kwargs_lens_light, center_x=center_x, center_y=center_y,
+                                                 model_bool_list=model_bool_list, deltaPix=deltaPix*2, numPix=numPix)
         else:
             e1, e2 = 0, 0
         # MGE around major axis
-        amplitudes, sigmas, center_x, center_y = self.multi_gaussian_lens_light(kwargs_lens_light, model_bool_list=model_bool_list, e1=e1, e2=e2, n_comp=20)
+        amplitudes, sigmas, center_x, center_y = self.multi_gaussian_lens_light(kwargs_lens_light,
+                                                                                model_bool_list=model_bool_list, e1=e1,
+                                                                                e2=e2, n_comp=20, deltaPix=deltaPix,
+                                                                                numPix=numPix)
         kwargs_mge = {'amp': amplitudes, 'sigma': sigmas, 'center_x': center_x, 'center_y': center_y}
         if elliptical:
             kwargs_mge['e1'] = e1
@@ -250,7 +241,8 @@ class LensAnalysis(object):
         return kwargs_mge
 
     @staticmethod
-    def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5, center_x=0, center_y=0):
+    def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5,
+                            center_x=0, center_y=0):
         """
         takes a lens light model and turns it numerically in a lens model
         (with all lensmodel quantities computed on a grid). Then provides an interpolated grid for the quantities.

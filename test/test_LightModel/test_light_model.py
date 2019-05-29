@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 
@@ -97,6 +98,16 @@ class TestLightModel(object):
         assert total_flux_list[4] == 1
         assert total_flux_list[5] == 2
         assert total_flux_list[6] == 2
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            lighModel = LightModel(light_model_list=['WRONG'])
+        with self.assertRaises(ValueError):
+            lighModel = LightModel(light_model_list=['UNIFORM'])
+            lighModel.light_3d(r=1, kwargs_list=[{'amp': 1}])
 
 
 if __name__ == '__main__':

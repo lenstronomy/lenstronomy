@@ -319,6 +319,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             shapelets = ShapeletsPolar()
             shapelets.poly2index(n=2, m=1, complex_bool=True)
+        with self.assertRaises(ValueError):
+            shapelets = ShapeletsPolar()
+            shapelets.poly2index(n=2, m=0, complex_bool=True)
 
 
 if __name__ == '__main__':

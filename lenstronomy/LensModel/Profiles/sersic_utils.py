@@ -144,3 +144,42 @@ class SersicUtil(object):
         :return:
         """
         return self._total_flux(r_eff=R_sersic, I_eff=amp, n_sersic=n_sersic)
+
+    def _R_stable(self, R):
+        """
+
+        :param R: radius
+        :return: smoothed and stabilized radius
+        """
+
+        if isinstance(R, int) or isinstance(R, float):
+            R = max(self._smoothing, R)
+        else:
+            R[R < self._smoothing] = self._smoothing
+        return R
+
+    def _r_sersic(self, R, R_sersic, n_sersic):
+        """
+
+        :param R: radius (array or float)
+        :param R_sersic: Sersic radius (half-light radius)
+        :param n_sersic: Sersic index (float)
+        :return: Sersic surface brightness at R
+        """
+
+        R_ = self._R_stable(R)
+        k, bn = self.k_bn(n_sersic, R_sersic)
+        R_frac = R_ / R_sersic
+        #R_frac = R_frac.astype(np.float32)
+        if isinstance(R_, int) or isinstance(R_, float):
+            if R_frac > 100:
+                result = 0
+            else:
+                exponent = -bn * (R_frac ** (1. / n_sersic) - 1.)
+                result = np.exp(exponent)
+        else:
+            R_frac_real = R_frac[R_frac <= 100]
+            exponent = -bn * (R_frac_real ** (1. / n_sersic) - 1.)
+            result = np.zeros_like(R_)
+            result[R_frac <= 100] = np.exp(exponent)
+        return np.nan_to_num(result)

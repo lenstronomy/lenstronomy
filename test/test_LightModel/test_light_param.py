@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
+import unittest
 from lenstronomy.LightModel.light_param import LightParam
 
 
@@ -10,7 +11,8 @@ class TestParam(object):
     def setup(self):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
-                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM'
+                                 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM',
+                                 'SHAPELETS', 'SHAPELETS_POLAR_EXP'
                                  ]
         self.kwargs = [
             {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
@@ -25,6 +27,9 @@ class TestParam(object):
             {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0},  # 'PJAFFE'
             {'amp': 1, 'Ra': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1},  # 'PJAFFE_ELLIPSE'
             {'amp': 1},  # 'UNIFORM'
+            {'amp': [1], 'beta': 1, 'n_max': 0, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS'
+            {'amp': [1], 'beta': 1, 'n_max': 0, 'center_x': 0, 'center_y': 0},  # 'SHAPELETS_POLAR_EXP'
+
 
         ]
         self.kwargs_sigma = [
@@ -45,13 +50,13 @@ class TestParam(object):
             {'amp_sigma': 0.1},  # 'UNIFORM'
 
         ]
-        self.kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}
+        self.kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}, {'n_max': 0}, {'n_max': 0}
                              ]
-        self.kwargs_fixed_linear = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}]
+        self.kwargs_fixed_linear = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}, {}, {}]
         self.kwargs_mean = []
         for i in range(len(self.light_model_list)):
             kwargs_mean_k = self.kwargs[i].copy()
-            kwargs_mean_k.update(self.kwargs_sigma[i])
+            #kwargs_mean_k.update(self.kwargs_sigma[i])
             self.kwargs_mean.append(kwargs_mean_k)
         self.param = LightParam(light_model_list=self.light_model_list,
                                kwargs_fixed=self.kwargs_fixed, type='source_light', linear_solver=False)
@@ -82,17 +87,34 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 59
+        assert num == 67
+
+    def test_param_name_list(self):
+        param_name_list = self.param.param_name_list
+        assert param_name_list[0][0] == 'amp'
 
     def test_num_param_linear(self):
 
         kwargs_fixed = [{}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {},
-                             {}, {}, {}]
+                             {}, {}, {}, {'n_max': 0}, {'n_max': 0}]
         param = LightParam(light_model_list=self.light_model_list,
                                 kwargs_fixed=kwargs_fixed, type='source_light', linear_solver=True)
 
         num = param.num_param_linear()
-        assert num == 14
+        assert num == 16
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['WRONG'], kwargs_fixed=[{}])
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['MULTI_GAUSSIAN'], kwargs_fixed=[{}])
+            lighModel.setParams(kwargs_list=[{'amp': 1, 'sigma': 1}])
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
+            lighModel.num_param()
 
 
 if __name__ == '__main__':

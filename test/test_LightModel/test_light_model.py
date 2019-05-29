@@ -67,6 +67,10 @@ class TestLightModel(object):
         param_name_list = self.LightModel.param_name_list()
         assert len(self.light_model_list) == len(param_name_list)
 
+    def test_num_param_linear(self):
+        num = self.LightModel.num_param_linear(self.kwargs)
+        assert num == 18
+
     def test_update_linear(self):
         response, n = self.LightModel.functions_split(1, 1, self.kwargs)
         param = np.ones(n) * 2

@@ -220,7 +220,10 @@ class LightModel(object):
                 i += num_param
             elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
                 n_max = kwargs_list[k]['n_max']
-                num_param = int((n_max + 1) * (n_max + 2) / 2)
+                if model in ['SHAPELETS_POLAR_EXP']:
+                    num_param = int((n_max+1)**2)
+                else:
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
             else:

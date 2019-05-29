@@ -238,7 +238,6 @@ class TestLensAnalysis(object):
         assert error_map[0] == 2
 
 
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

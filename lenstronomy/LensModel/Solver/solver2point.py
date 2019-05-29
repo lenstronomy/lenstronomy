@@ -27,11 +27,11 @@ class Solver2Point(object):
         """
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if not solver_type in ['CENTER', 'ELLIPSE', 'SHAPELETS', 'THETA_E_PHI']:
+        if not solver_type in ['CENTER', 'ELLIPSE', 'SHAPELETS', 'THETA_E_PHI', 'THETA_E_ELLIPSE']:
             raise ValueError("solver_type %s is not a valid option!")
         if solver_type == 'SHAPELETS':
             if not self._lens_mode_list[0] in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
-                raise ValueError("solver_type %s needs the first lens model to be in ['SHAPELETS_CART', ''SHAPELETS_POLAR']" % solver_type)
+                raise ValueError("solver_type %s needs the first lens model to be in ['SHAPELETS_CART', 'SHAPELETS_POLAR']" % solver_type)
         if solver_type == 'THETA_E_PHI':
             if not self._lens_mode_list[1] == 'SHEAR':
                 raise ValueError("solver_type %s needs the second lens model to be 'SHEAR" % solver_type)
@@ -123,6 +123,13 @@ class Solver2Point(object):
             e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
             kwargs_list[1]['e1'] = e1
             kwargs_list[1]['e2'] = e2
+        elif self._solver_type == 'THETA_E_ELLIPSE':
+            [theta_E, phi_G] = x
+            kwargs_list[0]['theta_E'] = theta_E
+            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[0]['e1'], kwargs_list[0]['e2'])
+            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            kwargs_list[0]['e1'] = e1
+            kwargs_list[0]['e2'] = e2
         else:
             raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return kwargs_list
@@ -152,6 +159,12 @@ class Solver2Point(object):
             e2 = kwargs_list[1]['e2']
             phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
             x = [theta_E, phi_ext]
+        elif self._solver_type == 'THETA_E_ELLIPSE':
+            theta_E = kwargs_list[0]['theta_E']
+            e1 = kwargs_list[0]['e1']
+            e2 = kwargs_list[0]['e2']
+            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            x = [theta_E, phi_ext]
         else:
             raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return x
@@ -176,6 +189,9 @@ class Solver2Point(object):
         elif self._solver_type == 'THETA_E_PHI':
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed_lens_list[1]['e2'] = 0
+        elif self._solver_type == 'THETA_E_ELLIPSE':
+            kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
+            kwargs_fixed_lens_list[0]['e2'] = 0
         else:
             raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return kwargs_fixed_lens_list

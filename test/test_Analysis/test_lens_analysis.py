@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian, MultiGaussianEllipse
@@ -63,10 +64,10 @@ class TestLensAnalysis(object):
         npt.assert_almost_equal(r_eff/r_eff_true, 1, 2)
 
     def test_multi_gaussian_lens_light(self):
-        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': 0, 'e2': 0, 'center_x': -0.019983826426838536,
-            'center_y': 0.90000011282957304,  'amp': 1.3168943578511678},
-            {'Rs': 0.29187068596715743, 'e1': 0, 'e2': 0, 'center_x': -0.019983826426838536,
-            'center_y': 0.90000011282957304, 'Ra': 0.020000382843298824,
+        kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': 0, 'e2': 0, 'center_x': 0,
+            'center_y': 0,  'amp': 1.3168943578511678},
+            {'Rs': 0.29187068596715743, 'e1': 0, 'e2': 0, 'center_x': 0,
+            'center_y': 0, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
@@ -75,6 +76,10 @@ class TestLensAnalysis(object):
         flux = mge.function(1., 1, amp=amplitudes, sigma=sigma, center_x=center_x, center_y=center_y)
         flux_true = lensAnalysis.LensLightModel.surface_brightness(1, 1, kwargs_profile)
         npt.assert_almost_equal(flux/flux_true, 1, decimal=2)
+        del kwargs_profile[0]['center_x']
+        del kwargs_profile[0]['center_y']
+        amplitudes_new, sigma, center_x, center_y = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20)
+        npt.assert_almost_equal(amplitudes_new, amplitudes, decimal=2)
 
     def test_mge_lens_light_elliptical(self):
         e1, e2 = 0.3, 0.
@@ -126,9 +131,9 @@ class TestLensAnalysis(object):
         npt.assert_almost_equal(flux_list[1], 3.0565768930826662, decimal=8)
 
         kwargs_profile = [{'amp': 1.}]
-        kwargs_options = {'lens_light_model_list': ['UNIFORM'], 'lens_model_list': []}
+        kwargs_options = {'source_light_model_list': ['UNIFORM'], 'lens_model_list': []}
         lensAnalysis = LensAnalysis(kwargs_options)
-        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="lens")
+        flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="source")
         assert len(flux_list) == 1
         npt.assert_almost_equal(flux_list[0], 16, decimal=8)
 
@@ -172,6 +177,12 @@ class TestLensAnalysis(object):
         lensAnalysis = LensAnalysis(kwargs_model={'lens_light_model_list': light_model_list})
         kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, numPix=100, deltaPix=0.05, elliptical=True)
         npt.assert_almost_equal(kwargs_mge['e1'], kwargs_light[0]['e1'], decimal=2)
+
+        del kwargs_light[0]['center_x']
+        del kwargs_light[0]['center_y']
+        kwargs_mge = lensAnalysis.light2mass_mge(kwargs_lens_light=kwargs_light, numPix=100, deltaPix=0.05,
+                                                 elliptical=False)
+        npt.assert_almost_equal(kwargs_mge['center_x'], 0, decimal=2)
 
     def test_light2mass_mge_elliptical_sersic(self):
         # same test as above but with Sersic ellipticity definition
@@ -219,6 +230,24 @@ class TestLensAnalysis(object):
         lensAnalysis = LensAnalysis(kwargs_model={'lens_model_list': ['SIS']})
         kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, numPix=100)
         npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
+
+    def test_error_map_source(self):
+        analysis = LensAnalysis(kwargs_model={'source_light_model_list': ['UNIFORM', 'UNIFORM']})
+        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
+        error_map = analysis.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
+        assert error_map[0] == 2
+
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            analysis = LensAnalysis(kwargs_model={'lens_model_list': ['SIS']})
+            analysis.multi_gaussian_lens(kwargs_lens=[{'theta_E'}])
+        with self.assertRaises(ValueError):
+            analysis = LensAnalysis(kwargs_model={'lens_liht_model_list': ['GAUSSIAN']})
+            analysis.flux_components(kwargs_light=[{}], n_grid=400, delta_grid=0.01, deltaPix=1., type="wrong")
 
 
 if __name__ == '__main__':

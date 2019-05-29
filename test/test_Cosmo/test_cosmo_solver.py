@@ -57,15 +57,20 @@ class TestCompare(object):
 
 class TestInvertCosmo(object):
     def setup(self):
-        self.invertCosmo = InvertCosmo(z_d=0.295, z_s=0.658)
+        self.invertCosmo = InvertCosmo(z_d=0.295, z_s=0.658, H0_range=np.linspace(10, 100, 20),
+                                       omega_m_range=np.linspace(0.05, 1, 20))
 
     def test_get_cosmo(self):
         H0 = 80
         omega_m = 0.4
         Dd, Ds_Dds = self.invertCosmo.cosmo2Dd_Ds_Dds(H0, omega_m)
         H0_new, omega_m_new = self.invertCosmo.get_cosmo(Dd, Ds_Dds)
-        npt.assert_almost_equal(H0_new, H0, decimal=2)
+        npt.assert_almost_equal(H0_new, H0, decimal=1)
         npt.assert_almost_equal(omega_m_new, omega_m, decimal=3)
+
+        H0_new, omega_m_new = self.invertCosmo.get_cosmo(Dd=1, Ds_Dds=1)
+        assert H0_new == -1
+
 
 
 if __name__ == '__main__':

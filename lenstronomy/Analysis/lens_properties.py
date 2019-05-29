@@ -142,8 +142,9 @@ class LensProp(object):
             if light_model_kinematics_bool[i]:
                 light_profile_list.append(light_model)
                 kwargs_lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
-                if 'q' in kwargs_lens_light_i:
-                    kwargs_lens_light_i['q'] = 1
+                if 'e1' in kwargs_lens_light_i:
+                    kwargs_lens_light_i['e1'] = 0
+                    kwargs_lens_light_i['e2'] = 0
                 kwargs_light.append(kwargs_lens_light_i)
         if Hernquist_approx is True:
             light_profile_list = ['HERNQUIST']

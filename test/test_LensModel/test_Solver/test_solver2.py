@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -230,6 +231,51 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
         npt.assert_almost_equal(kwargs_out[0]['e1'], kwargs_lens[0]['e1'], decimal=2)
         npt.assert_almost_equal(kwargs_out[0]['e2'], kwargs_lens[0]['e2'], decimal=2)
+
+    def test_add_fixed_lens(self):
+        lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+        kwargs_lens_init = [{'theta_E': 1, 'e2': 0}, {'e2': 0}]
+        solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert kwargs_fixed_added[1]['e2'] == 0
+
+        solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_ELLIPSE', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert kwargs_fixed_added[0]['e2'] == 0
+
+        lensModel = LensModel(lens_model_list=['SHAPELETS_CART'])
+        solver = Solver2Point(lensModel=lensModel, solver_type='SHAPELETS', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert len(kwargs_fixed_added) == len(kwargs_lens_init)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP'])
+            Solver2Point(lensModel=lensModel, solver_type='WRONG', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP'])
+            Solver2Point(lensModel=lensModel, solver_type='SHAPELETS', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SIS'])
+            Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver._update_kwargs(x=None, kwargs_list=None)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver._extract_array(kwargs_list=None)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver.add_fixed_lens(kwargs_fixed_lens_list=[None], kwargs_lens_init=[None])
 
 
 if __name__ == '__main__':

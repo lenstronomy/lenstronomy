@@ -25,7 +25,7 @@ class Flexionfg(object):
         :param dec_0: center y-coordinate
         :return: lensing potential
         """
-        _g1, _g2, _g3, _g4 = self._transform_fg(F1, F2, G1, G2)
+        _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.function(x,y,_g1, _g2, _g3, _g4, ra_0, dec_0)
 
     def derivatives(self, x, y, F1, F2, G1, G2, ra_0=0, dec_0=0):
@@ -41,7 +41,7 @@ class Flexionfg(object):
         :param dec_0: center x-coordinate
         :return: deflection angle
         """
-        _g1, _g2, _g3, _g4 = self._transform_fg(F1, F2, G1, G2)
+        _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.derivatives(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 
     def hessian(self, x, y, F1, F2, G1, G2, ra_0=0, dec_0=0):
@@ -57,10 +57,10 @@ class Flexionfg(object):
         :param dec_0: center y-coordinate
         :return: second order derivatives f_xx, f_yy, f_xy
         """
-        _g1, _g2, _g3, _g4 = self._transform_fg(F1, F2, G1, G2)
+        _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.hessian(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 
-    def _transform_fg(self, F1, F2, G1, G2):
+    def transform_fg(self, F1, F2, G1, G2):
         """
         basis transform from (F1,F2,G1,G2) to (g1,g2,g3,g4)
         :param f1: F1 flexion, derivative of kappa in x direction

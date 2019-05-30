@@ -462,7 +462,7 @@ class LensModelPlot(object):
         :param with_caustics:
         :param caustic_color:
         :param fsize:
-        :param plot_scale: string, 'log' or 'linear', scale of surface brightness plot
+        :param plot_scale: string, log or linear, scale of surface brightness plot
         :param kwargs:
         :return:
         """

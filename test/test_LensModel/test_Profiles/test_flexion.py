@@ -8,6 +8,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestExternalShear(object):
     """
     tests the Gaussian methods
@@ -81,6 +82,7 @@ class TestExternalShear(object):
         kwargs = {'g1': g1, 'g2': g2, 'g3': g3, 'g4': g4, 'ra_0': ra_0, 'dec_0': dec_0}
         mag = flex.magnification(ra_0, dec_0, [kwargs])
         npt.assert_almost_equal(mag, 1, decimal=8)
+
 
 if __name__ == '__main__':
     pytest.main()

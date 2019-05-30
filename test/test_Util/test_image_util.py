@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import lenstronomy.Util.util as util
 import pytest
+import unittest
 import numpy as np
 import numpy.testing as npt
 import lenstronomy.Util.image_util as image_util
@@ -48,6 +49,20 @@ def test_add_layer2image_odd_odd():
     added = image_util.add_layer2image(grid2d, x_pos, y_pos, kernel, order=1)
     assert added[100, 20] == 0.5
     assert added[100, 21] == 0.5
+
+
+def test_add_layer2image_int():
+    grid2d = np.zeros((7, 7))
+    x_pos, y_pos = 4, 1
+    kernel = np.ones((3, 3))
+    added = image_util.add_layer2image_int(grid2d, x_pos, y_pos, kernel)
+    print(added)
+    assert added[0, 0] == 0
+    assert added[0, 3] == 1
+
+    added = image_util.add_layer2image_int(grid2d, x_pos + 10, y_pos, kernel)
+    print(added)
+    npt.assert_almost_equal(grid2d, added, decimal=9)
 
 
 def test_add_background():
@@ -234,6 +249,82 @@ def test_rebin_image():
     assert wht_map_resized[0, 0] == wht_map[0, 0]
     assert sigma_bkg_resized == 0.2
     assert ra_coords_resized[0, 0] == -0.2
+
+    numPix = 11
+    bin_size = 2
+    image = np.ones((numPix, numPix))
+    wht_map = np.ones((numPix, numPix)) * 10
+    idex_mask = np.ones((numPix, numPix))
+    sigma_bkg = 0.1
+    ra_coords, dec_coords = util.make_grid(numPix, deltapix=0.05)
+    ra_coords = util.array2image(ra_coords)
+    dec_coords = util.array2image(dec_coords)
+    image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized = image_util.rebin_image(
+        bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask)
+    assert image_resized[0, 0] == 4
+    assert wht_map_resized[0, 0] == wht_map[0, 0]
+    assert sigma_bkg_resized == 0.2
+    npt.assert_almost_equal(ra_coords_resized[0, 0], -0.225, decimal=8)
+
+
+def test_radial_profile():
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gauss = Gaussian()
+    x, y = util.make_grid(11, 1)
+    flux = gauss.function(x, y, sigma_x=10, sigma_y=10, amp=1)
+    data = util.array2image(flux)
+    profile_r = image_util.radial_profile(data, center=[5, 5])
+    profile_r_true = gauss.function(np.linspace(0, stop=7, num=8), 0, sigma_x=10, sigma_y=10, amp=1)
+    npt.assert_almost_equal(profile_r, profile_r_true, decimal=3)
+
+
+def cut_edges():
+    image = np.zeros((5, 5))
+    image[2, 2] = 1
+    numPix = 3
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image_cut[1, 1] == 1
+
+    image = np.zeros((6, 6))
+    image[3, 2] = 1
+    numPix = 4
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image[2, 1] == 1
+
+    image = np.zeros((6, 8))
+    image[3, 2] = 1
+    numPix = 4
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image[2, 0] == 1
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+
+        with self.assertRaises(ValueError):
+            grid2d = np.zeros((7, 7))
+            x_pos, y_pos = 4, 1
+            kernel = np.ones((2, 2))
+            added = image_util.add_layer2image_int(grid2d, x_pos, y_pos, kernel)
+        with self.assertRaises(ValueError):
+            image = np.ones((5, 5))
+            image_util.re_size(image, factor=2)
+        with self.assertRaises(ValueError):
+            image = np.ones((5, 5))
+            image_util.re_size(image, factor=0.5)
+        with self.assertRaises(ValueError):
+            image = np.ones((5, 5))
+            image_util.cut_edges(image, numPix=7)
+        with self.assertRaises(ValueError):
+            image = np.ones((5, 6))
+            image_util.cut_edges(image, numPix=3)
+        with self.assertRaises(ValueError):
+            image = np.ones((5, 5))
+            image_util.cut_edges(image, numPix=2)
 
 
 if __name__ == '__main__':

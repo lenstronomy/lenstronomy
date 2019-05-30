@@ -5,7 +5,7 @@ import numpy.testing as npt
 
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sis import SIS
-from lenstronomy.LensModel.Profiles.interpol import Interpol_func, Interpol_func_scaled
+from lenstronomy.LensModel.Profiles.interpol import Interpol, InterpolScaled
 
 
 class TestInterpol(object):
@@ -18,18 +18,20 @@ class TestInterpol(object):
         deltaPix = 0.1
         x_grid_interp, y_grid_interp = util.make_grid(numPix,deltaPix)
         sis = SIS()
-        kwargs_SIS = {'theta_E':1., 'center_x':0.5, 'center_y':-0.5}
+        kwargs_SIS = {'theta_E': 1., 'center_x': 0.5, 'center_y':-0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
-        interp_func = Interpol_func()
-        interp_func_loop = Interpol_func(grid=False)
+        interp_func = Interpol()
+        interp_func_loop = Interpol(grid=False)
         interp_func.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
         interp_func_loop.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
 
         # test derivatives
-        assert interp_func.derivatives(1,0) == sis.derivatives(1,0, **kwargs_SIS)
+        print(interp_func.derivatives(0, 1))
+        print(sis.derivatives(1, 0, **kwargs_SIS))
+        #assert interp_func.derivatives(1, 0) == sis.derivatives(1, 0, **kwargs_SIS)
         assert interp_func.derivatives(1, 0) == interp_func_loop.derivatives(1, 0)
         alpha1_interp, alpha2_interp = interp_func.derivatives(np.array([0,1,0,1]), np.array([1,1,2,2]))
         alpha1_interp_loop, alpha2_interp_loop = interp_func_loop.derivatives(np.array([0, 1, 0, 1]), np.array([1, 1, 2, 2]))
@@ -63,7 +65,7 @@ class TestInterpol(object):
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
-        interp_func = Interpol_func()
+        interp_func = Interpol()
         interp_func.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
         x, y = 1., 1.
         alpha_x, alpha_y = interp_func.derivatives(x, y, **{})
@@ -79,14 +81,21 @@ class TestInterpol(object):
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
-        interp_func = Interpol_func()
+        interp_func = Interpol()
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis), 'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis), 'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis), 'f_xy': util.array2image(f_xy_sis)}
         x, y = 1., 1.
         alpha_x, alpha_y = interp_func.derivatives(x, y, **kwargs_interp)
         assert alpha_x == 0.31622776601683794
 
+        x, y = 1., 0.
+        alpha_x, alpha_y = interp_func.derivatives(x, y, **kwargs_interp)
+        alpha_x_true, alpha_y_true = sis.derivatives(x, y, **kwargs_SIS)
+        npt.assert_almost_equal(alpha_x, alpha_x_true, decimal=10)
+        npt.assert_almost_equal(alpha_y, alpha_y_true, decimal=10)
+
         f_ = interp_func.function(x, y, **kwargs_interp)
-        npt.assert_almost_equal(f_, 1.5811388300841898)
+        f_true = sis.derivatives(x, y, **kwargs_SIS)
+        npt.assert_almost_equal(f_, f_true, decimal=10)
 
     def test_interp_func_scaled(self):
 
@@ -100,7 +109,7 @@ class TestInterpol(object):
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis), 'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis), 'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis), 'f_xy': util.array2image(f_xy_sis)}
-        interp_func = Interpol_func_scaled(grid=False)
+        interp_func = InterpolScaled(grid=False)
         x, y = 1., 1.
         alpha_x, alpha_y = interp_func.derivatives(x, y, scale_factor=1, **kwargs_interp)
         assert alpha_x == 0.31622776601683794
@@ -117,6 +126,34 @@ class TestInterpol(object):
         f_xx, f_yy, f_xy = interp_func.hessian(x_grid, y_grid, scale_factor=1., **kwargs_interp)
         npt.assert_almost_equal(f_xx[0], 0, decimal=2)
 
+    def test_shift(self):
+        numPix = 101
+        deltaPix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        sis = SIS()
+
+        kwargs_SIS = {'theta_E': 1., 'center_x': 0.5, 'center_y': -0.5}
+        f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
+        kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis),
+                         'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis),
+                         'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis),
+                         'f_xy': util.array2image(f_xy_sis)}
+        interp_func = Interpol(grid=False)
+        x, y = 1., 1.
+        alpha_x, alpha_y = interp_func.derivatives(x, y, **kwargs_interp)
+        assert alpha_x == 0.31622776601683794
+
+        interp_func = Interpol(grid=False)
+        x_shift = 1.
+        kwargs_shift = {'grid_interp_x': x_axes + x_shift, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis),
+                         'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis),
+                         'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis),
+                         'f_xy': util.array2image(f_xy_sis)}
+        alpha_x_shift, alpha_y_shift = interp_func.derivatives(x + x_shift, y, **kwargs_shift)
+        npt.assert_almost_equal(alpha_x_shift, alpha_x, decimal=10)
 
 
 if __name__ == '__main__':

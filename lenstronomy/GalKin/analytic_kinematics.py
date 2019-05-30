@@ -26,12 +26,14 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
+    def __init__(self, D_d=1000, D_s=2000, D_ds=500):
         """
 
-        :param kwargs_cosmo: keyword arguments of the angular diameter distances (in Mpc)
+        :param D_d: angular diameter to the deflector [MPC]
+        :param D_s: angular diameter to the source [MPC]
+        :param D_ds: angular diameter from the deflector to the source [MPC]
         """
-        self._cosmo = Cosmo(kwargs_cosmo)
+        self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, FWHM, rendering_number=1000):
         """

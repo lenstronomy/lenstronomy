@@ -7,6 +7,17 @@ class MamonLokasAnisotropy(object):
     class that implements the Mamon & Lokas 2005 anisotropy description
     """
     def __init__(self, anisotropy_model='const'):
+        """
+
+        :param anisotropy_model: string,m specifies anisotropy model. Supported types are:
+            - 'beta': constant anisotropy
+            - 'const:
+            - 'isotropic':
+            - 'radial':
+            - 'OsipkovMerritt':
+            - 'Colin'
+            See Mamon & Lokas 2005 for details
+        """
         self._type = anisotropy_model
 
     def K(self, r, R, kwargs):

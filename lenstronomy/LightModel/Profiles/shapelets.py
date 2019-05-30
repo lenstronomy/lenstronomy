@@ -15,13 +15,15 @@ class Shapelets(object):
     lower_limit_default = {'amp': 0, 'beta': 0, 'n1': 0, 'n2': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'beta': 100, 'n1': 150, 'n2': 150, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, interpolation=False, precalc=False):
+    def __init__(self, interpolation=False, precalc=False, stable_cut=True, cut_scale=5):
         """
-        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 50
+        load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
         :return:
         """
-        self.interpolation = interpolation
-        self.precalc = precalc
+        self._interpolation = interpolation
+        self._precalc = precalc
+        self._stable_cut = stable_cut
+        self._cut_scale = cut_scale
         if interpolation:
             n_order = 50
             self.H_interp = [[] for i in range(0, n_order)]
@@ -29,8 +31,34 @@ class Shapelets(object):
             for k in range(0, n_order):
                 n_array = np.zeros(k+1)
                 n_array[k] = 1
-                values = hermite.hermval(self.x_grid, n_array)
+                values = self.hermval(self.x_grid, n_array)
                 self.H_interp[k] = values
+
+    def hermval(self, x, n_array, tensor=True):
+        """
+        computes the Hermit polynomial as numpy.polynomial.hermite.hermval
+        difference: for values more than sqrt(n_max + 1) * cut_scale, the value is set to zero
+        this should be faster and numerically stable
+
+        :param x: array of values
+        :param n_array: list of coeffs in H_n
+        :param cut_scale: scale where the polynomial will be set to zero
+        :return: see numpy.polynomial.hermite.hermval
+        """
+        if not self._stable_cut:
+            return hermite.hermval(x, n_array, tensor=tensor)
+        else:
+            n_max = len(n_array)
+            x_cut = np.sqrt(n_max + 1) * self._cut_scale
+            if isinstance(x, int) or isinstance(x, float):
+                if x >= x_cut:
+                    return 0
+                else:
+                    return hermite.hermval(x, n_array)
+            else:
+                out = np.zeros_like(x)
+                out[x < x_cut] = hermite.hermval(x[x < x_cut], n_array, tensor=tensor)
+                return out
 
     def function(self, x, y, amp, beta, n1, n2, center_x, center_y):
         """
@@ -44,11 +72,11 @@ class Shapelets(object):
         :return:
         """
 
-        if self.precalc:
+        if self._precalc:
             return amp * x[n1] * y[n2]# / beta
         x_ = x - center_x
         y_ = y - center_y
-        return amp * self.phi_n(n1, x_/beta) * self.phi_n(n2, y_/beta)#/beta
+        return np.nan_to_num(amp * self.phi_n(n1, x_/beta) * self.phi_n(n2, y_/beta))#/beta
 
     def H_n(self, n, x):
         """
@@ -61,13 +89,12 @@ class Shapelets(object):
         :returns:  array-- H_n(x).
         :raises: AttributeError, KeyError
         """
-        if not self.interpolation:
+        if not self._interpolation:
             n_array = np.zeros(n+1)
             n_array[n] = 1
-            return hermite.hermval(x, n_array, tensor=False) #attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
+            return self.hermval(x, n_array, tensor=False)  # attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)
         else:
             return np.interp(x, self.x_grid, self.H_interp[n])
-            #return self.H_interp[n](x)
 
     def phi_n(self, n, x):
         """
@@ -107,8 +134,8 @@ class Shapelets(object):
             prefactor = 1./np.sqrt(2**n*np.sqrt(np.pi)*math.factorial(n))
             n_array = np.zeros(n+1)
             n_array[n] = 1
-            H_x[n] = hermite.hermval(x_/beta, n_array) * prefactor * np.exp(-(x_/beta)**2/2.)
-            H_y[n] = hermite.hermval(y_/beta, n_array) * prefactor * np.exp(-(y_/beta)**2/2.)
+            H_x[n] = self.hermval(x_/beta, n_array, tensor=False) * prefactor * np.exp(-(x_/beta)**2/2.)
+            H_y[n] = self.hermval(y_/beta, n_array, tensor=False) * prefactor * np.exp(-(y_/beta)**2/2.)
         return H_x, H_y
 
 
@@ -153,7 +180,7 @@ class ShapeletSet(object):
         except: f_ = f_[0]
         #if isinstance(x, int) or isinstance(x, float):
         #    f_ = f_[0]
-        return f_
+        return np.nan_to_num(f_)
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):
         num_param = int((n_max+1)*(n_max+2)/2)

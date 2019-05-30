@@ -46,7 +46,7 @@ class LensModelExtensions(object):
             raise ValueError("shape %s not valid for finite magnification computation!" % shape)
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
 
-        if polar_grid:
+        if polar_grid is True:
             a = window_size*0.5
             b = window_size*0.5*aspect_ratio
             ellipse_inds = (x_grid*a**-1) **2 + (y_grid*b**-1) **2 <= 1
@@ -57,7 +57,7 @@ class LensModelExtensions(object):
 
             center_x, center_y = self._lensModel.ray_shooting(ra, dec, kwargs_lens)
 
-            if polar_grid:
+            if polar_grid is True:
                 theta = np.arctan2(dec,ra)
                 xcoord, ycoord = util.rotate(x_grid, y_grid, theta)
             else:
@@ -67,8 +67,36 @@ class LensModelExtensions(object):
 
             I_image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2
-
         return mag_finite
+
+    def zoom_source(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
+                             shape="GAUSSIAN"):
+        """
+        computes the surface brightness on an image with a zoomed window
+
+        :param x_pos: angular coordinate of center of image
+        :param y_pos: angular coordinate of center of image
+        :param kwargs_lens: lens model parameter list
+        :param source_sigma: source size (in angular units)
+        :param window_size: window size in angular units
+        :param grid_number: number of grid points per axis
+        :param shape: string, shape of source, supports 'GAUSSIAN' and 'TORUS
+        :return: 2d numpy array
+        """
+        deltaPix = float(window_size) / grid_number
+        if shape == 'GAUSSIAN':
+            from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+            quasar = Gaussian()
+        elif shape == 'TORUS':
+            import lenstronomy.LightModel.Profiles.torus as quasar
+        else:
+            raise ValueError("shape %s not valid for finite magnification computation!" % shape)
+        x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
+        center_x, center_y = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
+        betax, betay = self._lensModel.ray_shooting(x_grid + x_pos, y_grid + y_pos, kwargs_lens)
+        image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
+        return util.array2image(image)
+
 
     def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
         """

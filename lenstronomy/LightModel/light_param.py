@@ -8,8 +8,8 @@ class LightParam(object):
 
     def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, type='light',
                  linear_solver=True):
-        lightModel = LightModel(light_model_list=light_model_list)
-        self._param_name_list = lightModel.param_name_list()
+        self._lightModel = LightModel(light_model_list=light_model_list)
+        self._param_name_list = self._lightModel.param_name_list()
         self._type = type
         self.model_list = light_model_list
         self.kwargs_fixed = kwargs_fixed
@@ -18,11 +18,11 @@ class LightParam(object):
         self._linear_solve = linear_solver
         if kwargs_lower is None:
             kwargs_lower = []
-            for func in lightModel.func_list:
+            for func in self._lightModel.func_list:
                 kwargs_lower.append(func.lower_limit_default)
         if kwargs_upper is None:
             kwargs_upper = []
-            for func in lightModel.func_list:
+            for func in self._lightModel.func_list:
                 kwargs_upper.append(func.upper_limit_default)
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
@@ -45,19 +45,22 @@ class LightParam(object):
             param_names = self._param_name_list[k]
             for name in param_names:
                 if not name in kwargs_fixed:
-                    if model == 'SHAPELETS' and name == 'amp':
+                    if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         if 'n_max' in kwargs_fixed:
                             n_max = kwargs_fixed['n_max']
                         else:
-                            n_max = kwargs['n_max']
-                        num_param = int((n_max + 1) * (n_max + 2) / 2)
+                            raise ValueError('n_max needs to be fixed in %s.' % model)
+                        if model in ['SHAPELETS_POLAR_EXP']:
+                            num_param = int((n_max + 1) ** 2)
+                        else:
+                            num_param = int((n_max + 1) * (n_max + 2) / 2)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         if 'sigma' in kwargs_fixed:
                             num_param = len(kwargs_fixed['sigma'])
                         else:
-                            num_param = len(kwargs['sigma'])
+                            raise ValueError('sigma needs to be fixed in %s.' % model)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     else:
@@ -84,9 +87,12 @@ class LightParam(object):
             param_names = self._param_name_list[k]
             for name in param_names:
                 if not name in kwargs_fixed:
-                    if model == 'SHAPELETS' and name == 'amp':
+                    if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
-                        num_param = int((n_max + 1) * (n_max + 2) / 2)
+                        if model in ['SHAPELETS_POLAR_EXP']:
+                            num_param = int((n_max + 1) ** 2)
+                        else:
+                            num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             args.append(kwargs[name][i])
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
@@ -111,11 +117,14 @@ class LightParam(object):
             param_names = self._param_name_list[k]
             for name in param_names:
                 if not name in kwargs_fixed:
-                    if model == 'SHAPELETS' and name == 'amp':
+                    if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         if 'n_max' not in kwargs_fixed:
                             raise ValueError("n_max needs to be fixed in this configuration!")
                         n_max = kwargs_fixed['n_max']
-                        num_param = int((n_max + 1) * (n_max + 2) / 2)
+                        if model in ['SHAPELETS_POLAR_EXP']:
+                            num_param = int((n_max + 1) ** 2)
+                        else:
+                            num_param = int((n_max + 1) * (n_max + 2) / 2)
                         num += num_param
                         for i in range(num_param):
                             list.append(str(name + '_' + self._type))
@@ -132,9 +141,8 @@ class LightParam(object):
     def add_fixed_linear(self, kwargs_fixed_list):
         """
 
-        :param kwargs_light:
-        :param type:
-        :return:
+        :param kwargs_fixed_list: list of fixed keyword arguments
+        :return: updated kwargs_fixed_list with additional linear parameters being fixed.
         """
         for k, model in enumerate(self.model_list):
             kwargs_fixed = kwargs_fixed_list[k]
@@ -149,17 +157,16 @@ class LightParam(object):
 
         :return: number of linear basis set coefficients
         """
-        num = 0
+        return self._lightModel.num_param_linear(kwargs_list=self.kwargs_fixed)
+
+    def check_positive_flux_profile(self, kwargs_list):
+        pos_bool = True
         for k, model in enumerate(self.model_list):
-            kwargs_fixed = self.kwargs_fixed[k]
-            param_names = self._param_name_list[k]
-            if 'amp' in param_names:
-                if self._linear_solve is True:
-                    if model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
-                        num += len(kwargs_fixed['sigma'])
-                    elif model in ['SHAPELETS']:
-                        n_max = kwargs_fixed['n_max']
-                        num += int((n_max + 1) * (n_max + 2) / 2)
-                    else:
-                        num += 1
-        return num
+            if 'amp' in kwargs_list[k]:
+                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                         'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                         'DOUBLE_CHAMELEON']:
+                    if kwargs_list[k]['amp'] < 0:
+                        pos_bool = False
+                        break
+        return pos_bool

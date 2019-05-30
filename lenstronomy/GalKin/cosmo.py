@@ -6,10 +6,10 @@ class Cosmo(object):
     """
     cosmological quantities
     """
-    def __init__(self, kwargs_cosmo):
-        self.D_d = float(kwargs_cosmo['D_d'])  # angular diamter distance from observer to deflector in physical Mpc
-        self.D_s = float(kwargs_cosmo['D_s'])  # angular diamter distance from observer to source in physical Mpc
-        self.D_ds = float(kwargs_cosmo['D_ds'])  # angular diamter distance from deflector to source in physical Mpc
+    def __init__(self, D_d, D_s, D_ds):
+        self.D_d = float(D_d)  # angular diameter distance from observer to deflector in physical Mpc
+        self.D_s = float(D_s)  # angular diameter distance from observer to source in physical Mpc
+        self.D_ds = float(D_ds)  # angular diameter distance from deflector to source in physical Mpc
 
     def arcsec2phys_lens(self, theta):
         """

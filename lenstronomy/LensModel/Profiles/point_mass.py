@@ -13,7 +13,7 @@ class PointMass(object):
     upper_limit_default = {'theta_E': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self.r_min = 10**(-20)
+        self.r_min = 10**(-25)
         # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)
 
     def function(self, x, y, theta_E, center_x=0, center_y=0):
@@ -69,11 +69,11 @@ class PointMass(object):
         C = theta_E
         a = x_**2 + y_**2
         if isinstance(a, int) or isinstance(a, float):
-            r2 = max(self.r_min, a)
+            r2 = max(self.r_min**2, a)
         else:
             r2 = np.empty_like(a)
-            r2[a > self.r_min] = a[a > self.r_min]  #in the SIS regime
-            r2[a <= self.r_min] = self.r_min
+            r2[a > self.r_min**2] = a[a > self.r_min**2]  #in the SIS regime
+            r2[a <= self.r_min**2] = self.r_min**2
         f_xx = C * (y_**2-x_**2)/r2**2
         f_yy = C * (x_**2-y_**2)/r2**2
         f_xy = -C * 2*x_*y_/r2**2

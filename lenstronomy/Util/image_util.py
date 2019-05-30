@@ -18,12 +18,31 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     :return: image with added layer, cut to original size
     """
 
-    num_x, num_y = np.shape(grid2d)
     x_int = int(round(x_pos))
     y_int = int(round(y_pos))
     shift_x = x_int - x_pos
     shift_y = y_int - y_pos
     kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=order)
+    return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
+
+
+def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
+    """
+    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
+    :param grid2d: 2d pixel grid (i.e. image)
+    :param x_pos: x-position center (pixel coordinate) of the layer to be added
+    :param y_pos: y-position center (pixel coordinate) of the layer to be added
+    :param kernel: the layer to be added to the image
+    :return: image with added layer
+    """
+    nx, ny = np.shape(kernel)
+    if nx % 2 == 0:
+        raise ValueError("kernel needs odd numbers of pixels")
+
+    num_x, num_y = np.shape(grid2d)
+    x_int = int(round(x_pos))
+    y_int = int(round(y_pos))
+
     k_x, k_y = np.shape(kernel)
     k_l2_x = int((k_x - 1) / 2)
     k_l2_y = int((k_y - 1) / 2)
@@ -39,9 +58,8 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     max_yk = np.minimum(k_y, -y_int + k_l2_y + num_y)
     if min_x >= max_x or min_y >= max_y or min_xk >= max_xk or min_yk >= max_yk or (max_x-min_x != max_xk-min_xk) or (max_y-min_y != max_yk-min_yk):
         return grid2d
-    kernel_re_sized = kernel_shifted[min_yk:max_yk, min_xk:max_xk]
+    kernel_re_sized = kernel[min_yk:max_yk, min_xk:max_xk]
     new = grid2d.copy()
-
     new[min_y:max_y, min_x:max_x] += kernel_re_sized
     return new
 
@@ -53,8 +71,6 @@ def add_background(image, sigma_bkd):
     :param sigma_bkd: background noise (sigma)
     :return: a realisation of Gaussian noise of the same size as image
     """
-    if sigma_bkd < 0:
-        raise ValueError("Sigma background is smaller than zero! Please use positive values.")
     nx, ny = np.shape(image)
     background = np.random.randn(nx, ny) * sigma_bkd
     return background
@@ -70,12 +86,7 @@ def add_poisson(image, exp_time):
     """
     adds a poison (or Gaussian) distributed noise with mean given by surface brightness
     """
-    if isinstance(exp_time, int) or isinstance(exp_time, float):
-        if exp_time <= 0:
-            exp_time = 1
-    else:
-        mean_exp_time = np.mean(exp_time)
-        exp_time[exp_time < mean_exp_time/10] = mean_exp_time/10
+
     sigma = np.sqrt(np.abs(image)/exp_time) # Gaussian approximation for Poisson distribution, normalized to exposure time
     nx, ny = np.shape(image)
     poisson = np.random.randn(nx, ny) * sigma
@@ -166,7 +177,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
 
 def re_size(image, factor=1):
     """
-    resizes image with nx x ny to nx/factor x ny/factor
+    re-sizes image with nx x ny to nx/factor x ny/factor
     :param image: 2d image with shape (nx,ny)
     :param factor: integer >=1
     :return:
@@ -189,16 +200,19 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     :return:
     """
     numPix = int(len(image)/bin_size)
-    factor = len(image)/numPix
-    if not numPix == len(image)/bin_size:
-        raise ValueError("image with size %s can not be rebinned with factor %s" % (len(image), bin_size))
-    image_resized = re_size(image, factor)
+    numPix_precut = numPix * bin_size
+    factor = int(len(image)/numPix)
+    if not numPix * bin_size == len(image):
+        image_precut = image[0:numPix_precut, 0:numPix_precut]
+    else:
+        image_precut = image
+    image_resized = re_size(image_precut, factor)
     image_resized *= bin_size**2
-    wht_map_resized = re_size(wht_map, factor)
+    wht_map_resized = re_size(wht_map[0:numPix_precut, 0:numPix_precut], factor)
     sigma_bkg_resized = bin_size*sigma_bkg
-    ra_coords_resized = re_size(ra_coords, factor)
-    dec_coords_resized = re_size(dec_coords, factor)
-    idex_mask_resized = re_size(idex_mask, factor)
+    ra_coords_resized = re_size(ra_coords[0:numPix_precut, 0:numPix_precut], factor)
+    dec_coords_resized = re_size(dec_coords[0:numPix_precut, 0:numPix_precut], factor)
+    idex_mask_resized = re_size(idex_mask[0:numPix_precut, 0:numPix_precut], factor)
     idex_mask_resized[idex_mask_resized > 0] = 1
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
 
@@ -253,18 +267,34 @@ def cut_edges(image, numPix):
     """
     nx, ny = image.shape
     if nx < numPix or ny < numPix:
-        print('WARNING: image can not be resized.')
-        return image
-    if nx % 2 == 0 or ny % 2 == 0 or numPix % 2 == 0:
-        #pass
-        print("WARNING: image or cutout side are even number. This routine only works for odd numbers %s %s %s"
-                         % (nx, ny, numPix))
-    cx = int((nx-1)/2)
-    cy = int((ny-1)/2)
-    d = int((numPix-1)/2)
-    if nx % 2 == 0:
-        cx += 1
-    if ny % 2 == 0:
-        cy += 1
-    resized = image[cx-d:cx+d+1, cy-d:cy+d+1]
+        raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
+                         'and desired new shape (%s %s)' % (nx, ny, numPix, numPix))
+    if (nx % 2 == 0 and ny % 2 == 1) or (nx % 2 == 1 and ny % 2 == 0):
+        raise ValueError('image with odd and even axis (%s %s) not supported for re-sizeing' % (nx, ny))
+    if (nx % 2 == 0 and numPix % 2 == 1) or (nx % 2 == 1 and numPix % 2 == 0):
+        raise ValueError('image can only be re-sized from even to even or odd to odd number.')
+
+    x_min = int((nx - numPix) / 2)
+    y_min = int((ny - numPix) / 2)
+    x_max = nx - x_min
+    y_max = ny - y_min
+    resized = image[x_min:x_max, y_min:y_max]
     return copy.deepcopy(resized)
+
+
+def radial_profile(data, center=[0, 0]):
+    """
+    computes radial profile
+
+    :param data: 2d numpy array
+    :param center: center [x, y] from where to compute the radial profile
+    :return: radial profile (in units pixel)
+    """
+    y, x = np.indices((data.shape))
+    r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    r = r.astype(np.int)
+
+    tbin = np.bincount(r.ravel(), data.ravel())
+    nr = np.bincount(r.ravel())
+    radialprofile = tbin / nr
+    return radialprofile

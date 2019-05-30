@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin package &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.GalKin package &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-galkin-analytic-kinematics-module"></span><h2>lenstronomy.GalKin.analytic_kinematics module<a class="headerlink" href="#module-lenstronomy.GalKin.analytic_kinematics" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.analytic_kinematics.</code><code class="descname">AnalyticKinematics</code><span class="sig-paren">(</span><em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/analytic_kinematics.html#AnalyticKinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.analytic_kinematics.</code><code class="descname">AnalyticKinematics</code><span class="sig-paren">(</span><em>D_d=1000</em>, <em>D_s=2000</em>, <em>D_ds=500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/analytic_kinematics.html#AnalyticKinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
 light profile distribution and displacing them with a Gaussian seeing convolution</p>
@@ -404,7 +404,7 @@ slit of the observations</li>
 <span id="lenstronomy-galkin-cosmo-module"></span><h2>lenstronomy.GalKin.cosmo module<a class="headerlink" href="#module-lenstronomy.GalKin.cosmo" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.GalKin.cosmo.Cosmo">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.cosmo.</code><code class="descname">Cosmo</code><span class="sig-paren">(</span><em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/cosmo.html#Cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.cosmo.Cosmo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.cosmo.</code><code class="descname">Cosmo</code><span class="sig-paren">(</span><em>D_d</em>, <em>D_s</em>, <em>D_ds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/cosmo.html#Cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.cosmo.Cosmo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>cosmological quantities</p>
 <dl class="method">
@@ -428,7 +428,7 @@ slit of the observations</li>
 <span id="lenstronomy-galkin-galkin-module"></span><h2>lenstronomy.GalKin.galkin module<a class="headerlink" href="#module-lenstronomy.GalKin.galkin" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.GalKin.galkin.Galkin">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.galkin.</code><code class="descname">Galkin</code><span class="sig-paren">(</span><em>mass_profile_list</em>, <em>light_profile_list</em>, <em>aperture_type='slit'</em>, <em>anisotropy_model='isotropic'</em>, <em>fwhm=0.7</em>, <em>kwargs_numerics={}</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin.html#Galkin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin.Galkin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.galkin.</code><code class="descname">Galkin</code><span class="sig-paren">(</span><em>mass_profile_list</em>, <em>light_profile_list</em>, <em>aperture_type='slit'</em>, <em>anisotropy_model='isotropic'</em>, <em>fwhm=0.7</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em>, <em>sampling_number=1000</em>, <em>interpol_grid_num=500</em>, <em>log_integration=False</em>, <em>max_integrate=10</em>, <em>min_integrate=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin.html#Galkin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin.Galkin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Major class to compute velocity dispersion measurements given light and mass models</p>
 <p>The class supports any mass and light distribution (and superposition thereof) that has a 3d correspondance in their
@@ -566,21 +566,21 @@ We refer to the Aperture() class for details on the parameters.</li>
 <div class="section" id="module-lenstronomy.GalKin.galkin_old">
 <span id="lenstronomy-galkin-galkin-old-module"></span><h2>lenstronomy.GalKin.galkin_old module<a class="headerlink" href="#module-lenstronomy.GalKin.galkin_old" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.GalKin.galkin_old.GalKin_analytic">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.galkin_old.</code><code class="descname">GalKin_analytic</code><span class="sig-paren">(</span><em>aperture='slit'</em>, <em>mass_profile='power_law'</em>, <em>light_profile='Hernquist'</em>, <em>anisotropy_type='r_ani'</em>, <em>psf_fwhm=0.7</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKin_analytic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKin_analytic" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.galkin_old.GalKinAnalytic">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.galkin_old.</code><code class="descname">GalKinAnalytic</code><span class="sig-paren">(</span><em>aperture='slit'</em>, <em>mass_profile='power_law'</em>, <em>light_profile='Hernquist'</em>, <em>anisotropy_type='r_ani'</em>, <em>psf_fwhm=0.7</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKinAnalytic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKinAnalytic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>master class for all computations</p>
 <dl class="method">
-<dt id="lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_r2">
-<code class="descname">sigma_r2</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKin_analytic.sigma_r2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_r2" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.galkin_old.GalKinAnalytic.sigma_r2">
+<code class="descname">sigma_r2</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKinAnalytic.sigma_r2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKinAnalytic.sigma_r2" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes radial velocity dispersion at radius r (solving the Jeans equation
 :param r:
 :return:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_s2">
-<code class="descname">sigma_s2</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKin_analytic.sigma_s2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKin_analytic.sigma_s2" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.galkin_old.GalKinAnalytic.sigma_s2">
+<code class="descname">sigma_s2</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKinAnalytic.sigma_s2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKinAnalytic.sigma_s2" title="Permalink to this definition">¶</a></dt>
 <dd><p>projected velocity dispersion
 :param r:
 :param R:
@@ -592,8 +592,8 @@ We refer to the Aperture() class for details on the parameters.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.GalKin.galkin_old.GalKin_analytic.vel_disp">
-<code class="descname">vel_disp</code><span class="sig-paren">(</span><em>kwargs_profile</em>, <em>kwargs_aperture</em>, <em>kwargs_light</em>, <em>kwargs_anisotropy</em>, <em>num=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKin_analytic.vel_disp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKin_analytic.vel_disp" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.galkin_old.GalKinAnalytic.vel_disp">
+<code class="descname">vel_disp</code><span class="sig-paren">(</span><em>kwargs_profile</em>, <em>kwargs_aperture</em>, <em>kwargs_light</em>, <em>kwargs_anisotropy</em>, <em>num=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/galkin_old.html#GalKinAnalytic.vel_disp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.galkin_old.GalKinAnalytic.vel_disp" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the averaged LOS velocity dispersion in the slit (convolved)
 :param gamma:
 :param phi_E:
@@ -610,21 +610,21 @@ We refer to the Aperture() class for details on the parameters.</li>
 <div class="section" id="module-lenstronomy.GalKin.jeans_equation">
 <span id="lenstronomy-galkin-jeans-equation-module"></span><h2>lenstronomy.GalKin.jeans_equation module<a class="headerlink" href="#module-lenstronomy.GalKin.jeans_equation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.GalKin.jeans_equation.Jeans_solver">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.jeans_equation.</code><code class="descname">Jeans_solver</code><span class="sig-paren">(</span><em>kwargs_cosmo</em>, <em>mass_profile</em>, <em>light_profile</em>, <em>anisotropy_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#Jeans_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.Jeans_solver" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.jeans_equation.JeansSolver">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.jeans_equation.</code><code class="descname">JeansSolver</code><span class="sig-paren">(</span><em>kwargs_cosmo</em>, <em>mass_profile</em>, <em>light_profile</em>, <em>anisotropy_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#JeansSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.JeansSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to solve radial Jeans equation for different configuration</p>
 <dl class="method">
-<dt id="lenstronomy.GalKin.jeans_equation.Jeans_solver.power_law_anisotropy">
-<code class="descname">power_law_anisotropy</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#Jeans_solver.power_law_anisotropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.Jeans_solver.power_law_anisotropy" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.jeans_equation.JeansSolver.power_law_anisotropy">
+<code class="descname">power_law_anisotropy</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#JeansSolver.power_law_anisotropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.JeansSolver.power_law_anisotropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>equation (19) in Suyu+ 2010
 :param r:
 :return:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.GalKin.jeans_equation.Jeans_solver.sigma_r2">
-<code class="descname">sigma_r2</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#Jeans_solver.sigma_r2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.Jeans_solver.sigma_r2" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.jeans_equation.JeansSolver.sigma_r2">
+<code class="descname">sigma_r2</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>kwargs_anisotropy</em>, <em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/jeans_equation.html#JeansSolver.sigma_r2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.jeans_equation.JeansSolver.sigma_r2" title="Permalink to this definition">¶</a></dt>
 <dd><p>solves radial Jeans equation</p>
 </dd></dl>
 
@@ -635,7 +635,7 @@ We refer to the Aperture() class for details on the parameters.</li>
 <span id="lenstronomy-galkin-light-profile-module"></span><h2>lenstronomy.GalKin.light_profile module<a class="headerlink" href="#module-lenstronomy.GalKin.light_profile" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.GalKin.light_profile.LightProfile">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.light_profile.</code><code class="descname">LightProfile</code><span class="sig-paren">(</span><em>profile_list=['HERNQUIST'], kwargs_numerics={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.light_profile.</code><code class="descname">LightProfile</code><span class="sig-paren">(</span><em>profile_list</em>, <em>interpol_grid_num=1000</em>, <em>max_interpolate=100</em>, <em>min_interpolate=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to deal with the light distribution</p>
 <dl class="method">
@@ -707,13 +707,13 @@ We refer to the Aperture() class for details on the parameters.</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.GalKin.light_profile.LightProfile_old">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.light_profile.</code><code class="descname">LightProfile_old</code><span class="sig-paren">(</span><em>profile_type='Hernquist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfile_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfile_old" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.light_profile.LightProfileOld">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.light_profile.</code><code class="descname">LightProfileOld</code><span class="sig-paren">(</span><em>profile_type='Hernquist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfileOld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfileOld" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to deal with the light distribution</p>
 <dl class="method">
-<dt id="lenstronomy.GalKin.light_profile.LightProfile_old.P_r_hernquist">
-<code class="descname">P_r_hernquist</code><span class="sig-paren">(</span><em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfile_old.P_r_hernquist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfile_old.P_r_hernquist" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.light_profile.LightProfileOld.P_r_hernquist">
+<code class="descname">P_r_hernquist</code><span class="sig-paren">(</span><em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfileOld.P_r_hernquist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfileOld.P_r_hernquist" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -727,8 +727,8 @@ We refer to the Aperture() class for details on the parameters.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.GalKin.light_profile.LightProfile_old.draw_light">
-<code class="descname">draw_light</code><span class="sig-paren">(</span><em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfile_old.draw_light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfile_old.draw_light" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.light_profile.LightProfileOld.draw_light">
+<code class="descname">draw_light</code><span class="sig-paren">(</span><em>kwargs_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/light_profile.html#LightProfileOld.draw_light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.light_profile.LightProfileOld.draw_light" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -748,7 +748,7 @@ We refer to the Aperture() class for details on the parameters.</li>
 <span id="lenstronomy-galkin-mass-profile-module"></span><h2>lenstronomy.GalKin.mass_profile module<a class="headerlink" href="#module-lenstronomy.GalKin.mass_profile" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.GalKin.mass_profile.MassProfile">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.mass_profile.</code><code class="descname">MassProfile</code><span class="sig-paren">(</span><em>profile_list</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em>, <em>kwargs_numerics={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/mass_profile.html#MassProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.mass_profile.MassProfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.mass_profile.</code><code class="descname">MassProfile</code><span class="sig-paren">(</span><em>profile_list</em>, <em>kwargs_cosmo={'D_d': 1000</em>, <em>'D_ds': 500</em>, <em>'D_s': 2000}</em>, <em>interpol_grid_num=1000</em>, <em>max_interpolate=100</em>, <em>min_interpolate=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/mass_profile.html#MassProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.mass_profile.MassProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>mass profile class</p>
 <dl class="method">
@@ -921,7 +921,7 @@ We refer to the Aperture() class for details on the parameters.</li>
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

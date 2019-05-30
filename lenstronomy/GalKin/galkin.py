@@ -51,7 +51,8 @@ class Galkin(object):
 
     """
     def __init__(self, mass_profile_list, light_profile_list, aperture_type='slit', anisotropy_model='isotropic',
-                 fwhm=0.7, kwargs_numerics={}, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
+                 fwhm=0.7, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, sampling_number=1000,
+                 interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
         :param mass_profile_list: list of lens (mass) model profiles
@@ -62,17 +63,19 @@ class Galkin(object):
         :param kwargs_numerics: keyword arguments that control the numerical computation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
-        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, kwargs_numerics=kwargs_numerics)
-        self.lightProfile = LightProfile(light_profile_list, kwargs_numerics=kwargs_numerics)
+        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, interpol_grid_num=interpol_grid_num,
+                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
+        self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
+                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
         self.aperture = Aperture(aperture_type)
         self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
         self._fwhm = fwhm
-        self.cosmo = Cosmo(kwargs_cosmo)
-        self._num_sampling = kwargs_numerics.get('sampling_number', 1000)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 500)
-        self._log_int = kwargs_numerics.get('log_integration', False)
-        self._max_integrate = kwargs_numerics.get('max_integrate', 10)  # maximal integration (and interpolation) in units of arcsecs
-        self._min_integrate = kwargs_numerics.get('min_integrate', 0.001)  # min integration (and interpolation) in units of arcsecs
+        self.cosmo = Cosmo(**kwargs_cosmo)
+        self._num_sampling = sampling_number
+        self._interp_grid_num = interpol_grid_num
+        self._log_int = log_integration
+        self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
+        self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur):
         """

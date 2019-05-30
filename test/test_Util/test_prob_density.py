@@ -10,6 +10,7 @@ import lenstronomy.Util.prob_density as prob_density
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
 
 
 class TestSkewGaussian(object):
@@ -27,12 +28,12 @@ class TestSkewGaussian(object):
         assert y[0] == 0.3989422804014327
         assert y[1] == 0.24197072451914337
 
-    def test_pdf_new(self):
+    def test_pdf_skew(self):
         x = 1
-        y = self.skewGassian.pdf_new(x, mu=1, sigma=1, skw=0.5)
+        y = self.skewGassian.pdf_skew(x, mu=1, sigma=1, skw=0.5)
         assert y == 0.39834240320473779
 
-        y = self.skewGassian.pdf_new(x, mu=1, sigma=1, skw=-0.5)
+        y = self.skewGassian.pdf_skew(x, mu=1, sigma=1, skw=-0.5)
         assert y == 0.39834240320473779
 
 
@@ -61,6 +62,12 @@ class TestProbDensity(object):
         pdf_array = self.gauss(x_array, simga=sigma)
         approx = Approx(x_array, pdf_array)
         sample = approx.draw(n=20000)
+        mean_0, _ = prob_density.compute_lower_upper_errors(
+            sample, num_sigma=0)
+        mean, [[lower_sigma1, upper_sigma1]] = prob_density.compute_lower_upper_errors(
+            sample, num_sigma=1)
+        npt.assert_almost_equal(mean, mean_0, decimal=8)
+        mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2]] = prob_density.compute_lower_upper_errors(sample, num_sigma=2)
         mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2], [lower_sigma3, upper_sigma3]] = prob_density.compute_lower_upper_errors(sample, num_sigma=3)
         npt.assert_almost_equal(mean, 0, decimal=2)
         print(lower_sigma1, lower_sigma2, lower_sigma3)
@@ -68,6 +75,19 @@ class TestProbDensity(object):
         npt.assert_almost_equal(lower_sigma1, sigma, decimal=1)
         npt.assert_almost_equal(lower_sigma2, 2*sigma, decimal=1)
         npt.assert_almost_equal(lower_sigma3, 3 * sigma, decimal=1)
+
+        draw = approx.draw_one
+        assert len(draw) == 1
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            skewGassian = SkewGaussian()
+            skewGassian.pdf_skew(x=1, mu=1, sigma=1, skw=-1)
+        with self.assertRaises(ValueError):
+            prob_density.compute_lower_upper_errors(sample=None, num_sigma=4)
 
 
 if __name__ == '__main__':

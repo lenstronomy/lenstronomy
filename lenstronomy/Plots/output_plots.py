@@ -451,12 +451,19 @@ class LensModelPlot(object):
 
     def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
-                    fsize=15, **kwargs):
+                    fsize=15, plot_scale='log', **kwargs):
         """
 
         :param ax:
-        :param coords_source:
-        :param source:
+        :param numPix:
+        :param deltaPix_source:
+        :param v_min:
+        :param v_max:
+        :param with_caustics:
+        :param caustic_color:
+        :param fsize:
+        :param plot_scale: string, 'log' or 'linear', scale of surface brightness plot
+        :param kwargs:
         :return:
         """
         if v_min is None:
@@ -477,7 +484,13 @@ class LensModelPlot(object):
         source = self._imageModel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source)
         source = util.array2image(source) * deltaPix_source**2
 
-        im = ax.matshow(np.log10(source), origin='lower', extent=[0, d_s, 0, d_s],
+        if plot_scale == 'log':
+            source_scale = np.log10(source)
+        elif plot_scale == 'linear':
+            source_scale = source
+        else:
+            raise ValueError('variable plot_scale needs to be "log" or "linear", not %s.' % plot_scale)
+        im = ax.matshow(source_scale, origin='lower', extent=[0, d_s, 0, d_s],
                         cmap=self._cmap, vmin=v_min, vmax=v_max)  # source
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)

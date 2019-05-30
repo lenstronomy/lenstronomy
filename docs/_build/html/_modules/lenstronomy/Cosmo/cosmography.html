@@ -1,0 +1,400 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Cosmo.cosmography &#8212; lenstronomy 0.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Cosmo.cosmography</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">emcee</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">from</span> <span class="nn">cosmoHammer.util.InMemoryStorageUtil</span> <span class="k">import</span> <span class="n">InMemoryStorageUtil</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">LikelihoodComputationChain</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">CosmoHammerSampler</span>
+<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">MpiCosmoHammerSampler</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.lens_cosmo</span> <span class="k">import</span> <span class="n">LCDM</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.kde_likelihood</span> <span class="k">import</span> <span class="n">KDELikelihood</span>
+
+
+<div class="viewcode-block" id="CosmoLikelihood"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood">[docs]</a><span class="k">class</span> <span class="nc">CosmoLikelihood</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    this class contains the likelihood function of the Strong lensing analysis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">,</span> <span class="n">D_d_sample</span><span class="p">,</span> <span class="n">D_delta_t_sample</span><span class="p">,</span> <span class="n">sampling_option</span><span class="o">=</span><span class="s2">&quot;H0_only&quot;</span><span class="p">,</span> <span class="n">omega_m_fixed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                 <span class="n">omega_lambda_fixed</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">omega_mh2_fixed</span><span class="o">=</span><span class="mf">0.14157</span><span class="p">,</span> <span class="n">kde_type</span><span class="o">=</span><span class="s1">&#39;scipy_gaussian&#39;</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initializes all the classes needed for the chain (i.e. redshifts of lens and source)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span> <span class="o">=</span> <span class="n">z_d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span> <span class="o">=</span> <span class="n">z_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmoProp</span> <span class="o">=</span> <span class="n">LCDM</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="n">z_d</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_s</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="n">flat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kde_likelihood</span> <span class="o">=</span> <span class="n">KDELikelihood</span><span class="p">(</span><span class="n">D_d_sample</span><span class="p">,</span> <span class="n">D_delta_t_sample</span><span class="p">,</span> <span class="n">kde_type</span><span class="o">=</span><span class="n">kde_type</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">bandwidth</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">=</span> <span class="n">sampling_option</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_m_fixed</span> <span class="o">=</span> <span class="n">omega_m_fixed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">omega_mh2_fixed</span> <span class="o">=</span> <span class="n">omega_mh2_fixed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_omega_lambda_fixed</span> <span class="o">=</span> <span class="n">omega_lambda_fixed</span>
+
+<div class="viewcode-block" id="CosmoLikelihood.X2_chain_H0"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_H0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X2 given variable parameters for a MCMC/PSO chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#extract parameters</span>
+        <span class="n">H0</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_m_fixed</span>
+        <span class="n">Ode0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_omega_lambda_fixed</span>
+        <span class="n">logL</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_H0</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LCDM_lensLikelihood</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.X2_chain_omega_mh2"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_omega_mh2">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_omega_mh2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute the log likelihood given a omega_m h**2 prior fixed</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H0</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">H0</span><span class="o">/</span><span class="mf">100.</span>
+        <span class="n">omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_mh2_fixed</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">Ode0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_omega_lambda_fixed</span>
+        <span class="n">logL</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_omega_mh2</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LCDM_lensLikelihood</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.X2_chain_H0_omgega_m"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0_omgega_m">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_H0_omgega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X^2</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#extract parameters</span>
+        <span class="p">[</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="n">Ode0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_omega_lambda_fixed</span>
+        <span class="n">logL_H0</span><span class="p">,</span> <span class="n">bool_H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_H0</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span>
+        <span class="n">logL_omega_m</span><span class="p">,</span> <span class="n">bool_omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_omega_m</span><span class="p">(</span><span class="n">omega_m</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="n">logL_H0</span> <span class="o">+</span> <span class="n">logL_omega_m</span>
+        <span class="k">if</span> <span class="n">bool_H0</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">bool_omega_m</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LCDM_lensLikelihood</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span> <span class="o">+</span> <span class="n">logL_H0</span> <span class="o">+</span> <span class="n">logL_omega_m</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.X2_chain_H0_omgega_m_omega_de"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.X2_chain_H0_omgega_m_omega_de">[docs]</a>    <span class="k">def</span> <span class="nf">X2_chain_H0_omgega_m_omega_de</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        routine to compute X^2</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#extract parameters</span>
+        <span class="p">[</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="n">logL_H0</span><span class="p">,</span> <span class="n">bool_H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_H0</span><span class="p">(</span><span class="n">H0</span><span class="p">)</span>
+        <span class="n">logL_omega_m</span><span class="p">,</span> <span class="n">bool_omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_omega_m</span><span class="p">(</span><span class="n">omega_m</span><span class="p">)</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="n">logL_H0</span> <span class="o">+</span> <span class="n">logL_omega_m</span>
+        <span class="k">if</span> <span class="n">bool_H0</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">bool_omega_m</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">logL</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LCDM_lensLikelihood</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span> <span class="o">+</span> <span class="n">logL_H0</span> <span class="o">+</span> <span class="n">logL_omega_m</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.LCDM_lensLikelihood"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.LCDM_lensLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">LCDM_lensLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmoProp</span><span class="o">.</span><span class="n">D_d</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="n">Ddt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmoProp</span><span class="o">.</span><span class="n">D_dt</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">Ode0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLikelihood</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ddt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.lensLikelihood"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.lensLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">lensLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ddt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param alpha:</span>
+<span class="sd">        :param beta:</span>
+<span class="sd">        :param sigma_D:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kde_likelihood</span><span class="o">.</span><span class="n">logLikelihood</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ddt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logL</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.prior_H0"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0">[docs]</a>    <span class="k">def</span> <span class="nf">prior_H0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H0</span><span class="p">,</span> <span class="n">H0_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">H0_max</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether the parameter vector has left its bound, if so, adds a big number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">H0</span> <span class="o">&lt;</span> <span class="n">H0_min</span> <span class="ow">or</span> <span class="n">H0</span> <span class="o">&gt;</span> <span class="n">H0_max</span><span class="p">:</span>
+            <span class="n">penalty</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+            <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.prior_omega_m"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">prior_omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">omega_m_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega_m_max</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether the parameter omega_m is within the given bounds</span>
+<span class="sd">        :param omega_m:</span>
+<span class="sd">        :param omega_m_min:</span>
+<span class="sd">        :param omega_m_max:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">omega_m</span> <span class="o">&lt;</span> <span class="n">omega_m_min</span> <span class="ow">or</span> <span class="n">omega_m</span> <span class="o">&gt;</span> <span class="n">omega_m_max</span><span class="p">:</span>
+            <span class="n">penalty</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+            <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.prior_omega_mh2"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_mh2">[docs]</a>    <span class="k">def</span> <span class="nf">prior_omega_mh2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">h_max</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">omega_m</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="n">h_max</span><span class="p">:</span>
+            <span class="n">penalty</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+            <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_mh2_fixed</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">h</span><span class="o">**</span><span class="mi">6</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">prior</span><span class="p">,</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_only&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;fix_omega_mh2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_omega_mh2</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m_omega_de&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m_omega_de</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sampling method </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CosmoLikelihood.likelihood"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_only&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;fix_omega_mh2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_omega_mh2</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m_omega_de&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m_omega_de</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sampling method </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.computeLikelihood"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.computeLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">computeLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_only&#39;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m&#39;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;fix_omega_mh2&quot;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_omega_mh2</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m_omega_de&#39;</span><span class="p">:</span>
+            <span class="n">likelihood</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X2_chain_H0_omgega_m_omega_de</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">getParams</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;wrong sampling option specified&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">likelihood</span></div>
+
+<div class="viewcode-block" id="CosmoLikelihood.setup"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoLikelihood.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="CosmoParam"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.CosmoParam">[docs]</a><span class="k">class</span> <span class="nc">CosmoParam</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class for managing the parameters involved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampling_option</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">upper_limit</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param sampling_option: string, sampling option</span>
+<span class="sd">        :param lower_limit: lower limit, array [H0, Omega_m, Omega_dm]</span>
+<span class="sd">        :param upper_limit: upper limit, array [H0, Omega_m, Omega_dm]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">=</span> <span class="n">sampling_option</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span> <span class="o">=</span> <span class="n">lower_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span> <span class="o">=</span> <span class="n">upper_limit</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">numParam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;H0_only&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;fix_omega_mh2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;H0_omega_m&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m_omega_de&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;wrong sampling option specified&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">param_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;H0_only&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;fix_omega_mh2&quot;</span><span class="p">:</span>
+            <span class="n">lowerlimit</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">upperlimit</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s2">&quot;H0_omega_m&quot;</span><span class="p">:</span>
+            <span class="n">lowerlimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># H0, omega_m</span>
+            <span class="n">upperlimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_option</span> <span class="o">==</span> <span class="s1">&#39;H0_omega_m_omega_de&#39;</span><span class="p">:</span>
+            <span class="n">lowerlimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">upperlimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;wrong sampling option specified&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lowerlimit</span><span class="p">,</span> <span class="n">upperlimit</span></div>
+
+
+<div class="viewcode-block" id="MCMCSampler"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.MCMCSampler">[docs]</a><span class="k">class</span> <span class="nc">MCMCSampler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class which executes the different sampling  methods</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">,</span> <span class="n">D_d_sample</span><span class="p">,</span> <span class="n">D_dt_sample</span><span class="p">,</span> <span class="n">sampling_option</span><span class="o">=</span><span class="s2">&quot;H0_only&quot;</span><span class="p">,</span> <span class="n">omega_m_fixed</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                 <span class="n">omega_mh2_fixed</span><span class="o">=</span><span class="mf">0.14157</span><span class="p">,</span> <span class="n">kde_type</span><span class="o">=</span><span class="s1">&#39;scipy_gaussian&#39;</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                 <span class="n">upper_limit</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialise the classes of the chain and for parameter options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">CosmoLikelihood</span><span class="p">(</span><span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">,</span> <span class="n">D_d_sample</span><span class="p">,</span> <span class="n">D_dt_sample</span><span class="p">,</span> <span class="n">sampling_option</span><span class="o">=</span><span class="n">sampling_option</span><span class="p">,</span>
+                                     <span class="n">omega_m_fixed</span><span class="o">=</span><span class="n">omega_m_fixed</span><span class="p">,</span> <span class="n">omega_mh2_fixed</span><span class="o">=</span><span class="n">omega_mh2_fixed</span><span class="p">,</span>
+                                     <span class="n">kde_type</span><span class="o">=</span><span class="n">kde_type</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">bandwidth</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="n">flat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmoParam</span> <span class="o">=</span> <span class="n">CosmoParam</span><span class="p">(</span><span class="n">sampling_option</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="n">lower_limit</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="n">upper_limit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MCMCSampler.mcmc_emcee"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.MCMCSampler.mcmc_emcee">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_emcee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the mcmc analysis of the parameter space</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmoParam</span><span class="o">.</span><span class="n">numParam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">)</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">)</span>
+        <span class="n">new_pos</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStorageUtil</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">new_pos</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">):</span>
+            <span class="n">store</span><span class="o">.</span><span class="n">persistSamplingValues</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">samples</span></div>
+
+<div class="viewcode-block" id="MCMCSampler.mcmc_CH"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmography.MCMCSampler.mcmc_CH">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_CH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">walkerRatio</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mpi_monch</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler</span>
+<span class="sd">        returns the chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmoParam</span><span class="o">.</span><span class="n">param_bounds</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">LikelihoodComputationChain</span><span class="p">(</span>
+            <span class="nb">min</span><span class="o">=</span><span class="n">lowerLimit</span><span class="p">,</span>
+            <span class="nb">max</span><span class="o">=</span><span class="n">upperLimit</span><span class="p">)</span>
+
+        <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="s2">&quot;Hammer&quot;</span><span class="p">)</span>
+        <span class="n">file_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+
+        <span class="c1"># chain.addCoreModule(CambCoreModule())</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">addLikelihoodModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">)</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+        <span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStorageUtil</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mpi_monch</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">MpiCosmoHammerSampler</span><span class="p">(</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">likelihoodComputationChain</span><span class="o">=</span><span class="n">chain</span><span class="p">,</span>
+            <span class="n">filePrefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+            <span class="n">walkersRatio</span><span class="o">=</span><span class="n">walkerRatio</span><span class="p">,</span>
+            <span class="n">burninIterations</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span>
+            <span class="n">sampleIterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">,</span>
+            <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">initPositionGenerator</span><span class="o">=</span><span class="n">init_pos</span><span class="p">,</span>
+            <span class="n">storageUtil</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">CosmoHammerSampler</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">likelihoodComputationChain</span><span class="o">=</span><span class="n">chain</span><span class="p">,</span>
+                <span class="n">filePrefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+                <span class="n">walkersRatio</span><span class="o">=</span><span class="n">walkerRatio</span><span class="p">,</span>
+                <span class="n">burninIterations</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span>
+                <span class="n">sampleIterations</span><span class="o">=</span><span class="n">n_run</span><span class="p">,</span>
+                <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span>
+                <span class="n">initPositionGenerator</span><span class="o">=</span><span class="n">init_pos</span><span class="p">,</span>
+                <span class="n">storageUtil</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sampler</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the MCMC...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of walkers = &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span><span class="o">*</span><span class="n">walkerRatio</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Burn-in itterations: &#39;</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sampling itterations:&#39;</span><span class="p">,</span> <span class="n">n_run</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">startSampling</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sampler</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+            <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time taken for MCMC sampling&#39;</span><span class="p">)</span>
+        <span class="c1"># if sampler._sampler.pool is not None:</span>
+        <span class="c1">#     sampler._sampler.pool.close()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">samples</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

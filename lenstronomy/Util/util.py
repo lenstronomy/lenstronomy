@@ -8,6 +8,18 @@ import numpy as np
 import mpmath
 import itertools
 
+
+def merge_dicts(*dict_args):
+    """
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    """
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
+
+
 def approx_theta_E(ximg,yimg):
 
     dis = []
@@ -69,8 +81,7 @@ def rotate(xcoords, ycoords, angle):
     :param angle: angle in radians
     :return: x points and y points rotated ccw by angle theta
     """
-    return xcoords*np.cos(angle)+ycoords*np.sin(angle),\
-           -xcoords*np.sin(angle)+ycoords*np.cos(angle)
+    return xcoords*np.cos(angle)+ycoords*np.sin(angle), -xcoords*np.sin(angle)+ycoords*np.cos(angle)
 
 
 def map_coord2pix(ra, dec, x_0, y_0, M):
@@ -139,7 +150,6 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         shift = -1. / 2 + 1. / (2 * subgrid_res)
     else:
         shift = np.sum(x_grid) / numPix_eff**2
-
     return x_grid - shift, y_grid - shift
 
 
@@ -192,19 +202,21 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=Fa
     return x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
 
 
-def grid_from_coordinate_transform(numPix, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
+def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     """
     return a grid in x and y coordinates that satisfy the coordinate system
 
 
-    :param numPix:
-    :param Mpix2coord:
-    :param ra_at_xy_0:
-    :param dec_at_xy_0:
-    :return:
+    :param nx: number of pixels in x-axis
+    :param ny: number of pixels in y-axis
+    :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate displacements
+    :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
+    :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
+    :return: RA coordinate grid, DEC coordinate grid
     """
-    a = np.arange(numPix)
-    matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
+    a = np.arange(nx)
+    b = np.arange(ny)
+    matrix = np.dstack(np.meshgrid(a, b)).reshape(-1, 2)
     x_grid = matrix[:, 0]
     y_grid = matrix[:, 1]
     ra_grid = x_grid * Mpix2coord[0, 0] + y_grid * Mpix2coord[0, 1] + ra_at_xy_0

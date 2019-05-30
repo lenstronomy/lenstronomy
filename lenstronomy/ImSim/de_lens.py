@@ -14,9 +14,8 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     :return: 1-d array of parameter values
     """
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
-
     if inv_bool:
-        if np.linalg.cond(M) < 10/sys.float_info.epsilon:
+        if np.linalg.cond(M) < 5/sys.float_info.epsilon:
             try:
                 M_inv = np.linalg.inv(M)
             except:
@@ -26,7 +25,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
         R = A.T.dot(np.multiply(C_D_inv, d))
         B = M_inv.dot(R)
     else:
-        if np.linalg.cond(M) < 10/sys.float_info.epsilon:
+        if np.linalg.cond(M) < 5/sys.float_info.epsilon:
             R = A.T.dot(np.multiply(C_D_inv, d))
             try:
                 B = np.linalg.solve(M, R).T

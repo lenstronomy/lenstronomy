@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.shapelets &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.shapelets &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,13 +56,15 @@
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">precalc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">precalc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stable_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cut_scale</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        load interpolation of the Hermite polynomials in a range [-30,30] in order n&lt;= 50</span>
+<span class="sd">        load interpolation of the Hermite polynomials in a range [-30,30] in order n&lt;= 150</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">precalc</span> <span class="o">=</span> <span class="n">precalc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_precalc</span> <span class="o">=</span> <span class="n">precalc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stable_cut</span> <span class="o">=</span> <span class="n">stable_cut</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cut_scale</span> <span class="o">=</span> <span class="n">cut_scale</span>
         <span class="k">if</span> <span class="n">interpolation</span><span class="p">:</span>
             <span class="n">n_order</span> <span class="o">=</span> <span class="mi">50</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">H_interp</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="p">)]</span>
@@ -70,8 +72,34 @@
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="p">):</span>
                 <span class="n">n_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">n_array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">H_interp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+<div class="viewcode-block" id="Shapelets.hermval"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.hermval">[docs]</a>    <span class="k">def</span> <span class="nf">hermval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the Hermit polynomial as numpy.polynomial.hermite.hermval</span>
+<span class="sd">        difference: for values more than sqrt(n_max + 1) * cut_scale, the value is set to zero</span>
+<span class="sd">        this should be faster and numerically stable</span>
+
+<span class="sd">        :param x: array of values</span>
+<span class="sd">        :param n_array: list of coeffs in H_n</span>
+<span class="sd">        :param cut_scale: scale where the polynomial will be set to zero</span>
+<span class="sd">        :return: see numpy.polynomial.hermite.hermval</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stable_cut</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_array</span><span class="p">)</span>
+            <span class="n">x_cut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cut_scale</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">x_cut</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x_cut</span><span class="p">]</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x_cut</span><span class="p">],</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">tensor</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">out</span></div>
 
 <div class="viewcode-block" id="Shapelets.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -85,11 +113,11 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precalc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precalc</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">n2</span><span class="p">]</span><span class="c1"># / beta</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="c1">#/beta</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">amp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">))</span><span class="c1">#/beta</span></div>
 
 <div class="viewcode-block" id="Shapelets.H_n"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.H_n">[docs]</a>    <span class="k">def</span> <span class="nf">H_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -102,13 +130,12 @@
 <span class="sd">        :returns:  array-- H_n(x).</span>
 <span class="sd">        :raises: AttributeError, KeyError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation</span><span class="p">:</span>
             <span class="n">n_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">n_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># attention, this routine calculates every single hermite polynomial and multiplies it with zero (exept the right one)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_interp</span><span class="p">[</span><span class="n">n</span><span class="p">])</span></div>
-            <span class="c1">#return self.H_interp[n](x)</span>
 
 <div class="viewcode-block" id="Shapelets.phi_n"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.phi_n">[docs]</a>    <span class="k">def</span> <span class="nf">phi_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -148,8 +175,8 @@
             <span class="n">prefactor</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
             <span class="n">n_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">n_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">H_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
-            <span class="n">H_y</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">hermite</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">H_x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">H_y</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hermval</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_array</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">*</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">H_x</span><span class="p">,</span> <span class="n">H_y</span></div></div>
 
 
@@ -194,7 +221,7 @@
         <span class="k">except</span><span class="p">:</span> <span class="n">f_</span> <span class="o">=</span> <span class="n">f_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1">#if isinstance(x, int) or isinstance(x, float):</span>
         <span class="c1">#    f_ = f_[0]</span>
-        <span class="k">return</span> <span class="n">f_</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">f_</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ShapeletSet.function_split"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split">[docs]</a>    <span class="k">def</span> <span class="nf">function_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">n_max</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
@@ -302,7 +329,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

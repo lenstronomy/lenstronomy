@@ -18,7 +18,6 @@ class PointSourceParam(object):
         :param fixed_magnification_list: list of booleans, if entry is True, keeps one overall scaling among the
         point sources in this class
         """
-
         self.model_list = model_list
         if num_point_source_list is None:
             num_point_source_list = [0] * len(model_list)
@@ -191,3 +190,19 @@ class PointSourceParam(object):
                     num += self._num_point_sources_list[k]
         return num
 
+    @classmethod
+    def check_positive_flux(cls, kwargs_ps):
+        """
+        check whether inferred linear parameters are positive
+
+        :param kwargs_ps:
+        :return: bool
+        """
+        pos_bool = True
+        for kwargs in kwargs_ps:
+            point_amp = kwargs['point_amp']
+            for amp in point_amp:
+                if amp < 0:
+                    pos_bool = False
+                    break
+        return pos_bool

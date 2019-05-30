@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.mass_sheet import MassSheet
+from lenstronomy.LensModel.Profiles.convergence import Convergence
 
 import numpy as np
 import numpy.testing as npt
@@ -13,7 +13,7 @@ class TestMassSheet(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.profile = MassSheet()
+        self.profile = Convergence()
         self.kwargs_lens = {'kappa_ext': 0.1}
 
     def test_function(self):

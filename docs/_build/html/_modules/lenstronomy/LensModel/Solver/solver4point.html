@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.LensModel.Solver.solver4point &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -226,7 +226,8 @@
         <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed_lens_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="n">kwargs_lens_init</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;PROFILE_SHEAR&#39;</span><span class="p">:</span>
-            <span class="n">kwargs_fixed_lens_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">pass</span>
+            <span class="c1">#kwargs_fixed_lens_list[1][&#39;e2&#39;] = 0</span>
         <span class="k">if</span> <span class="n">lens_model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">]:</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
@@ -243,7 +244,7 @@
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid option. Choose from &#39;PROFILE&#39;, &#39;COMPOSITE&#39;, &#39;NFW_PROFILE&#39;, &#39;SHAPELETS&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span><span class="p">)</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid option. Choose from &#39;PROFILE&#39;, &#39;PROFILE_SHEAR&#39;, &#39;SHAPELETS&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kwargs_fixed_lens_list</span></div></div>
 
 
@@ -280,7 +281,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

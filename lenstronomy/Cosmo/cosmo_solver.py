@@ -52,7 +52,7 @@ class SolverFlatCosmo(SolverUtil):
 
     def solve(self, init, Dd, Ds_Dds):
         x = scipy.optimize.fsolve(self.F, init, args=(Dd, Ds_Dds), xtol=1.49012e-08, factor=0.1)
-        x[1] = abs(x[1])%1
+        x[1] = abs(x[1]) % 1
         y = self.F(x, Dd, Ds_Dds)
         if abs(y[0]) >= 0.1 or abs(y[1]) > 0.1:
             x = np.array([-1, -1])
@@ -63,14 +63,17 @@ class InvertCosmo(SolverUtil):
     """
     class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m
     """
+    def __init__(self, z_d, z_s, H0_range=np.linspace(10, 100, 90), omega_m_range=np.linspace(0.05, 1, 95)):
+        super(InvertCosmo, self).__init__(z_d=z_d, z_s=z_s)
+        self._H0_range = H0_range
+        self._omega_m_range = omega_m_range
+
     def _make_interpolation(self):
         """
         creates an interpolation grid in H_0, omega_m and computes quantities in Dd and Ds_Dds
         :return:
         """
-        H0_range = np.linspace(10, 100, 90)
-        omega_m_range = np.linspace(0.05, 1, 95)
-        grid2d = np.dstack(np.meshgrid(H0_range, omega_m_range)).reshape(-1, 2)
+        grid2d = np.dstack(np.meshgrid(self._H0_range, self._omega_m_range)).reshape(-1, 2)
         H0_grid = grid2d[:, 0]
         omega_m_grid = grid2d[:, 1]
         Dd_grid = np.zeros_like(H0_grid)
@@ -81,7 +84,7 @@ class InvertCosmo(SolverUtil):
             Ds_Dds_grid[i] = Ds_Dds
         self._f_H0 = interpolate.interp2d(Dd_grid, Ds_Dds_grid, H0_grid, kind='linear', copy=False, bounds_error=False, fill_value=-1)
         print("H0 interpolation done")
-        self._f_omega_m = interpolate.interp2d(Dd_grid, Ds_Dds_grid, omega_m_grid, kind='linear', copy=False, bounds_error=False, fill_value=-1)
+        self._f_omega_m = interpolate.interp2d(Dd_grid, Ds_Dds_grid, omega_m_grid, kind='linear', copy=False, bounds_error=False, fill_value=0)
         print("omega_m interpolation done")
 
     def get_cosmo(self, Dd, Ds_Dds):
@@ -98,6 +101,6 @@ class InvertCosmo(SolverUtil):
         omega_m = self._f_omega_m(Dd, Ds_Dds)
         Dd_new, Ds_Dds_new = self.cosmo2Dd_Ds_Dds(H0[0], omega_m[0])
         if abs(Dd - Dd_new)/Dd > 0.01 or abs(Ds_Dds - Ds_Dds_new)/Ds_Dds > 0.01:
-            return [-1], [-1]
+            return -1, -1
         else:
             return H0[0], omega_m[0]

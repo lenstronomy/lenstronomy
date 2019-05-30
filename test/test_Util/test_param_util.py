@@ -54,30 +54,6 @@ def test_phi_q2_elliptisity():
     assert e2 == 0
 
 
-def test_phi_q2_elliptisity_bounds():
-    bounds = 'lower'
-    phi, q = 0, 1
-    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
-    assert e1 == 0
-    assert e2 == 0
-
-    phi, q = 1, 1
-    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
-    assert e1 == 0
-    assert e2 == 0
-
-    phi, q = 2., 0.95
-    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
-    assert e1 == -0.019405192187382792
-    assert e2 == -0.019405192187382792
-
-    bounds = 'upper'
-    phi, q = 2., 0.95
-    e1, e2 = param_util.phi_q2_ellipticity_bounds(phi, q, bounds)
-    assert e1 == 0.019405192187382792
-    assert e2 == 0.019405192187382792
-
-
 def test_elliptisity2phi_q():
     e1, e2 = 0.3,0
     phi,q = param_util.ellipticity2phi_q(e1, e2)
@@ -136,6 +112,15 @@ def test_phi_gamma_ellipticity():
     phi_out, gamma_out = param_util.ellipticity2phi_gamma(e1, e2)
     assert phi == phi_out
     assert gamma == gamma_out
+
+
+def test_phi_gamma_ellipticity_2():
+    e1, e2 = -0.04, -0.01
+    phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)
+
+    e1_out, e2_out = param_util.phi_gamma_ellipticity(phi, gamma)
+    npt.assert_almost_equal(e1, e1_out, decimal=10)
+    npt.assert_almost_equal(e2, e2_out, decimal=10)
 
 
 if __name__ == '__main__':

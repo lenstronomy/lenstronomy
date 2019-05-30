@@ -10,30 +10,35 @@ class LensModel(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, redshift_list=None, cosmo=None,
-                 multi_plane=False, **lensmodel_kwargs):
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
+                 multi_plane=False, numerical_alpha_class=None):
         """
 
         :param lens_model_list: list of strings with lens model names
         :param z_lens: redshift of the deflector (only considered when operating in single plane mode).
         Is only needed for specific functions that require a cosmology.
-        :param z_source: redshift of the source: Needed in multi_plane option,
+        :param z_source: redshift of the source: Needed in multi_plane option only,
         not required for the core functionalities in the single plane mode.
-        :param redshift_list: list of deflector redshift (corresponding to the lens model list),
+        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),
         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
+        (see documentation in Profiles/numerical_alpha)
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
         self.z_source = z_source
-        self.redshift_list = redshift_list
+        self.redshift_list = lens_redshift_list
         self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
-            self.lens_model = MultiPlane(z_source, lens_model_list, redshift_list, cosmo=cosmo, **lensmodel_kwargs)
+            if z_source is None:
+                raise ValueError('z_source needs to be set for multi-plane lens modelling.')
+            self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
+                                         numerical_alpha_class = numerical_alpha_class)
         else:
-            self.lens_model = SinglePlane(lens_model_list, **lensmodel_kwargs)
+            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
 
@@ -182,3 +187,26 @@ class LensModel(object):
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
+
+    def flexion(self, x, y, kwargs, diff=0.000001):
+        """
+        third derivatives (flexion)
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param diff: numerical differential length of Hessian
+        :return: f_xxx, f_xxy, f_xyy, f_yyy
+        """
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs)
+
+        f_xx_dx, f_xy_dx, f_yx_dx, f_yy_dx = self.hessian(x + diff, y, kwargs)
+        f_xx_dy, f_xy_dy, f_yx_dy, f_yy_dy = self.hessian(x, y + diff, kwargs)
+
+        f_xxx = (f_xx_dx - f_xx) / diff
+        f_xxy = (f_xx_dy - f_xx) / diff
+        f_xyy = (f_xy_dy - f_xy) / diff
+        f_yyy = (f_yy_dy - f_yy) / diff
+        return f_xxx, f_xxy, f_xyy, f_yyy

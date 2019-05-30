@@ -1,0 +1,277 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Optimizer.particle_swarm &#8212; lenstronomy 0.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Optimizer.particle_swarm</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This class is adapted from the CosmoHammer Particle Swarm Optimizer routine.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ParticleSwarmOptimizer"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.ParticleSwarmOptimizer">[docs]</a><span class="k">class</span> <span class="nc">ParticleSwarmOptimizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Optimizer using a swarm of particles; adapted from CosmoHammer Particle Swarm Optimizer (different convergence criteria)</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">particleCount</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_low</span> <span class="o">=</span> <span class="n">low</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_high</span> <span class="o">=</span> <span class="n">high</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_particleCount</span> <span class="o">=</span> <span class="n">particleCount</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_low</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gbest</span> <span class="o">=</span> <span class="n">Particle</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swarm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initSwarm</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_initSwarm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">swarm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_particleCount</span><span class="p">):</span>
+            <span class="n">swarm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Particle</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_high</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">swarm</span>
+
+    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="mf">1.193</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="mf">1.193</span><span class="p">,</span> <span class="n">lookback</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">standard_dev</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launches the PSO. Yields the complete swarm per iteration</span>
+
+<span class="sd">        :param maxIter: maximum iterations</span>
+<span class="sd">        :param c1: cognitive weight</span>
+<span class="sd">        :param c2: social weight</span>
+<span class="sd">        :param lookback: percentange of particles to use when determining convergence</span>
+<span class="sd">        :param standard_dev: standard deviation of the last lookback particles for convergence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_fitness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_gbest</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span><span class="o">&lt;</span><span class="n">particle</span><span class="o">.</span><span class="n">fitness</span><span class="p">):</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_gbest</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">fitness</span> <span class="o">&gt;</span> <span class="n">particle</span><span class="o">.</span><span class="n">pbest</span><span class="o">.</span><span class="n">fitness</span><span class="p">):</span>
+                    <span class="n">particle</span><span class="o">.</span><span class="n">updatePBest</span><span class="p">()</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="n">maxIter</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max iteration reached! stoping&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="o">.</span><span class="n">is_converged</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_converged_likelihood</span><span class="p">(</span><span class="n">maxIter</span><span class="o">*</span><span class="n">lookback</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particleCount</span><span class="p">,</span> <span class="n">standard_dev</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">:</span>
+
+                <span class="n">w</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="c1">#w=0.72</span>
+                <span class="n">part_vel</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">particle</span><span class="o">.</span><span class="n">velocity</span>
+                <span class="n">cog_vel</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">pbest</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                <span class="n">soc_vel</span> <span class="o">=</span> <span class="n">c2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_paramCount</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gbest</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">particle</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">part_vel</span> <span class="o">+</span> <span class="n">cog_vel</span> <span class="o">+</span> <span class="n">soc_vel</span>
+                <span class="n">particle</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">particle</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">particle</span><span class="o">.</span><span class="n">velocity</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_fitness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">)</span>
+
+            <span class="n">swarm</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">:</span>
+                <span class="n">swarm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">yield</span> <span class="n">swarm</span>
+
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">_optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="mf">1.193</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="mf">1.193</span><span class="p">,</span> <span class="n">lookback</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">standard_dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        :param maxIter: maximum number of swarm iterations</span>
+<span class="sd">        :param c1: social weight</span>
+<span class="sd">        :param c2: personal weight</span>
+<span class="sd">        :param lookback: how many particles to assess when considering convergence</span>
+<span class="sd">        :param standard_dev: the standard deviation of the last lookback # of particles used to determine convergence</span>
+<span class="sd">        :return: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">gBests</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">swarm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">maxIter</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">lookback</span><span class="p">,</span> <span class="n">standard_dev</span><span class="p">):</span>
+
+            <span class="c1">#swarms.append(swarm)</span>
+            <span class="n">gBests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gbest</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">gBests</span>
+
+    <span class="k">def</span> <span class="nf">_get_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">swarm</span><span class="p">):</span>
+
+        <span class="n">mapFunction</span> <span class="o">=</span> <span class="nb">map</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">part</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">swarm</span><span class="p">])</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">mapFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+        <span class="n">lnprob</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">results</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">particle</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">swarm</span><span class="p">):</span>
+            <span class="n">particle</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">lnprob</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_converged_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">min_i</span><span class="p">,</span><span class="n">look_back</span><span class="p">,</span><span class="n">standard_dev</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param min_i: minimum number of iterations for convergence</span>
+<span class="sd">        :param look_back: how many particles included in the convergence criterion</span>
+<span class="sd">        :param standard_dev: the critical standard deviation of log-likelihood for convergence</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># don&#39;t return unless a certain number of iterations have happened</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">min_i</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># compute the likelihood for the particles</span>
+        <span class="n">likelihood</span> <span class="o">=</span> <span class="p">[</span><span class="n">particle</span><span class="o">.</span><span class="n">fitness</span> <span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">swarm</span><span class="p">]</span>
+
+        <span class="c1"># compute the standard deviation of the last number (look_back) of particles</span>
+
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">likelihood</span><span class="p">[</span><span class="o">-</span><span class="n">look_back</span><span class="p">:])</span> <span class="o">&lt;</span> <span class="n">standard_dev</span></div>
+
+
+<div class="viewcode-block" id="Particle"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle">[docs]</a><span class="k">class</span> <span class="nc">Particle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of a single particle</span>
+
+<span class="sd">    :param position: the position of the particle in the parameter space</span>
+<span class="sd">    :param velocity: the velocity of the particle</span>
+<span class="sd">    :param fitness: the current fitness of the particle</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">fitness</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">fitness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramCount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbest</span> <span class="o">=</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="Particle.create"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle.create">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">paramCount</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new particle without position, velocity and -inf as fitness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Particle</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[]]</span><span class="o">*</span><span class="n">paramCount</span><span class="p">),</span>
+                 <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[]]</span><span class="o">*</span><span class="n">paramCount</span><span class="p">),</span>
+                 <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Particle.updatePBest"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle.updatePBest">[docs]</a>    <span class="k">def</span> <span class="nf">updatePBest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the current particle representation as personal best</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Particle.copy"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a copy of itself</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Particle</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">),</span>
+                        <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%f</span><span class="s2">, pos: </span><span class="si">%s</span><span class="s2"> velo: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

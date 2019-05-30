@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 0.4.0 documentation</title>
+    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,30 +51,35 @@
 <span class="sd">    class to handle an arbitrary list of lens models</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
 <span class="sd">        :param z_lens: redshift of the deflector (only considered when operating in single plane mode).</span>
 <span class="sd">        Is only needed for specific functions that require a cosmology.</span>
-<span class="sd">        :param z_source: redshift of the source: Needed in multi_plane option,</span>
+<span class="sd">        :param z_source: redshift of the source: Needed in multi_plane option only,</span>
 <span class="sd">        not required for the core functionalities in the single plane mode.</span>
-<span class="sd">        :param redshift_list: list of deflector redshift (corresponding to the lens model list),</span>
+<span class="sd">        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),</span>
 <span class="sd">        only applicable in multi_plane mode.</span>
 <span class="sd">        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.</span>
 <span class="sd">        :param multi_plane: bool, if True, uses multi-plane mode. Default is False.</span>
+<span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
+<span class="sd">        (see documentation in Profiles/numerical_alpha)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">redshift_list</span> <span class="o">=</span> <span class="n">redshift_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redshift_list</span> <span class="o">=</span> <span class="n">lens_redshift_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source needs to be set for multi-plane lens modelling.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                         <span class="n">numerical_alpha_class</span> <span class="o">=</span> <span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="o">**</span><span class="n">lensmodel_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">z_lens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">)</span>
 
@@ -222,7 +227,30 @@
 
         <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
         <span class="n">det_A</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">)</span> <span class="o">-</span> <span class="n">f_xy</span><span class="o">*</span><span class="n">f_yx</span>
-        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">det_A</span>  <span class="c1"># attention, if dividing by zero</span></div></div>
+        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">det_A</span>  <span class="c1"># attention, if dividing by zero</span></div>
+
+<div class="viewcode-block" id="LensModel.flexion"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.flexion">[docs]</a>    <span class="k">def</span> <span class="nf">flexion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        third derivatives (flexion)</span>
+
+<span class="sd">        :param x: x-position (preferentially arcsec)</span>
+<span class="sd">        :type x: numpy array</span>
+<span class="sd">        :param y: y-position (preferentially arcsec)</span>
+<span class="sd">        :type y: numpy array</span>
+<span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
+<span class="sd">        :param diff: numerical differential length of Hessian</span>
+<span class="sd">        :return: f_xxx, f_xxy, f_xyy, f_yyy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">f_xx_dx</span><span class="p">,</span> <span class="n">f_xy_dx</span><span class="p">,</span> <span class="n">f_yx_dx</span><span class="p">,</span> <span class="n">f_yy_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">f_xx_dy</span><span class="p">,</span> <span class="n">f_xy_dy</span><span class="p">,</span> <span class="n">f_yx_dy</span><span class="p">,</span> <span class="n">f_yy_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">f_xxx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xx_dx</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_xxy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xx_dy</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_xyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xy_dy</span> <span class="o">-</span> <span class="n">f_xy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_yyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_yy_dy</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="k">return</span> <span class="n">f_xxx</span><span class="p">,</span> <span class="n">f_xxy</span><span class="p">,</span> <span class="n">f_xyy</span><span class="p">,</span> <span class="n">f_yyy</span></div></div>
 </pre></div>
 
           </div>
@@ -255,7 +283,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

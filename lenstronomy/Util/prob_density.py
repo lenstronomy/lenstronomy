@@ -22,7 +22,7 @@ class SkewGaussian(object):
         t = (x-e) / w
         return 2. / w * stats.norm.pdf(t) * stats.norm.cdf(a*t)
 
-    def pdf_new(self, x, mu, sigma, skw):
+    def pdf_skew(self, x, mu, sigma, skw):
         """
         function with different parameterisation
         :param x:
@@ -31,9 +31,8 @@ class SkewGaussian(object):
         :param skw: skewness
         :return:
         """
-        if skw > 1 or skw < -1:
-            print("skewness %s out of range" % skw)
-            skw = 1.
+        if skw >= 1 or skw <= -1:
+            raise ValueError("skewness %s out of range" % skw)
         e, w, a = self.map_mu_sigma_skw(mu, sigma, skw)
         pdf = self.pdf(x, e, w, a)
         return pdf

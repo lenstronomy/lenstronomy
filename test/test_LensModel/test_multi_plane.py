@@ -19,7 +19,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         alpha_x_simple, alpha_y_simple = lensModel.alpha(1, 0, kwargs_lens)
@@ -34,7 +34,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         beta_x_simple, beta_y_simple = lensModel.ray_shooting(1, 0, kwargs_lens)
@@ -48,7 +48,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         f_xx_simple, f_xy_simple, f_yx_simple, f_yy_simple = lensModel.hessian(1, 0, kwargs_lens)
@@ -62,7 +62,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = []
         redshift_list = []
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         kwargs_lens = []
         f_xx_multi, f_xy_multi, f_yx_multi, f_yy_multi = lensModelMutli.hessian(1, 0, kwargs_lens, diff=0.000001)
         npt.assert_almost_equal(0, f_xx_multi, decimal=5)
@@ -74,7 +74,7 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = LensModel(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list, multi_plane=True)
+        lensModelMutli = LensModel(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list, multi_plane=True)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         kappa_simple = lensModel.kappa(1, 0, kwargs_lens)
@@ -95,7 +95,7 @@ class TestMultiPlane(object):
         z_lens = 0.5
         lens_model_list = ['SIS']
         redshift_list = [z_lens]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
@@ -110,7 +110,7 @@ class TestMultiPlane(object):
         z_lens = 0.5
         lens_model_list = ['SIS', 'SIS']
         redshift_list = [z_lens, 0.2]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}, {'theta_E': 0., 'center_x': 0, 'center_y': 0}]
         dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
@@ -125,7 +125,7 @@ class TestMultiPlane(object):
         z_lens = 0.5
         lens_model_list = ['SIS']
         redshift_list = [z_lens]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         lensModel = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         beta_x, beta_y = lensModelMutli.ray_shooting(1., 0., kwargs_lens)
@@ -149,12 +149,12 @@ class TestMultiPlane(object):
         z3 = 0.7
         redshift_list = [z1, z2, z3]
         kwargs_lens = [sis1, sis2, sis3]
-        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         beta_x_1, beta_y_1 = lensModel.ray_shooting(1., 0., kwargs_lens)
 
         redshift_list = [z3, z2, z1]
         kwargs_lens = [sis3, sis2, sis1]
-        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         beta_x_2, beta_y_2 = lensModel.ray_shooting(1., 0., kwargs_lens)
         npt.assert_almost_equal(beta_x_1, beta_x_2, decimal=8)
         npt.assert_almost_equal(beta_y_1, beta_y_2, decimal=8)
@@ -170,7 +170,7 @@ class TestMultiPlane(object):
         z3 = 0.7
         redshift_list = [z1, z2, z3]
         kwargs_lens = [sis1, sis2, sis3]
-        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         intermediate_index = 1
         theta_x, theta_y = 1., 1.
 
@@ -210,6 +210,24 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
 
+    def test_pseudo_multiplane(self):
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS']
+        sis1 = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        sis2 = {'theta_E': .2, 'center_x': 0.5, 'center_y': 0}
+        z1 = 0.5
+        z2 = 0.5
+
+        redshift_list = [z1, z2]
+        kwargs_lens = [sis1, sis2]
+        lensModelMulti = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
+        lensModelSingle = LensModel(lens_model_list=lens_model_list)
+
+        beta_x, beta_y = lensModelMulti.ray_shooting(1, 1, kwargs_lens)
+        beta_x_single, beta_y_single = lensModelSingle.ray_shooting(1, 1, kwargs_lens)
+        npt.assert_almost_equal(beta_x, beta_x_single, decimal=10)
+        npt.assert_almost_equal(beta_y, beta_y_single, decimal=10)
+
 
 class TestForegroundShear(object):
 
@@ -237,7 +255,7 @@ class TestForegroundShear(object):
         e1, e2 = 0.01, 0.01 # shear terms caused by z_shear on z_source
         lens_model_list = ['SIS', 'SHEAR']
         redshift_list = [z_lens, z_shear]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, redshift_list=redshift_list)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
         kwargs_lens_multi = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'e1': e1, 'e2': e2}]
         alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(x, y, kwargs_lens_multi)
         t_multi = lensModelMutli.arrival_time(x, y, kwargs_lens_multi)
@@ -267,6 +285,7 @@ class TestForegroundShear(object):
         dt_simple = t_simple[0] - t_simple[1]
         print(t_simple, t_multi)
         npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

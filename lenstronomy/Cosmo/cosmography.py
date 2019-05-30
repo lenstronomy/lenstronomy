@@ -109,7 +109,8 @@ class CosmoLikelihood(object):
         logL = self._kde_likelihood.logLikelihood(Dd, Ddt)
         return logL
 
-    def prior_H0(self, H0, H0_min=0, H0_max=200):
+    @staticmethod
+    def prior_H0(H0, H0_min=0, H0_max=200):
         """
         checks whether the parameter vector has left its bound, if so, adds a big number
         """
@@ -119,7 +120,8 @@ class CosmoLikelihood(object):
         else:
             return 0, True
 
-    def prior_omega_m(self, omega_m, omega_m_min=0, omega_m_max=1):
+    @staticmethod
+    def prior_omega_m(omega_m, omega_m_min=0, omega_m_max=1):
         """
         checks whether the parameter omega_m is within the given bounds
         :param omega_m:

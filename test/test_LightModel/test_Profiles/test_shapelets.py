@@ -2,6 +2,7 @@ import lenstronomy.Util.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 from lenstronomy.LightModel.Profiles.shapelets import Shapelets, ShapeletSet
 
 
@@ -37,6 +38,12 @@ class TestShapeletSet(object):
         amp = [1, 0, 0, 0, 0, 0]
         output = self.shapeletSet.function(np.array(1), np.array(1), amp, n_max, beta, center_x=0, center_y=0)
         assert output == 0
+
+        beta = 1.
+        amp = 1
+        shapelets = Shapelets(precalc=False, stable_cut=False)
+        output = shapelets.function(np.array(1), np.array(1), amp, beta, 0, 0, center_x=0, center_y=0)
+        npt.assert_almost_equal(0.2075537487102974 , output, decimal=8)
 
     def test_shapelet_basis(self):
         num_order = 5
@@ -79,6 +86,38 @@ class TestShapeletSet(object):
         flux_full = self.shapelets.function(x, y, amp=1., n1=0, n2=0, beta=beta, center_x=0, center_y=0)
         flux_interp = shapeletsInterp.function(x, y, amp=1., n1=0, n2=0, beta=beta, center_x=0, center_y=0)
         npt.assert_almost_equal(flux_interp, flux_full, decimal=10)
+
+    def test_hermval(self):
+        x = np.linspace(0, 2000, 2001)
+        n_array = [1, 2, 3, 0, 1]
+        import numpy.polynomial.hermite as hermite
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        shape_true = out_true * np.exp(-x ** 2 / 2.)
+        shape_approx = out_approx * np.exp(-x ** 2 / 2.)
+        npt.assert_almost_equal(shape_approx, shape_true, decimal=6)
+
+        x = 2
+        n_array = [1, 2, 3, 0, 1]
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        npt.assert_almost_equal(out_approx, out_true, decimal=6)
+
+        x = 2001
+        n_array = [1, 2, 3, 0, 1]
+        out_true = hermite.hermval(x, n_array)
+        out_approx = self.shapelets.hermval(x, n_array)
+        shape_true = out_true * np.exp(-x**2/2.)
+        shape_approx = out_approx * np.exp(-x ** 2 / 2.)
+        npt.assert_almost_equal(shape_approx, shape_true, decimal=6)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            shapelets = Shapelets()
+            shapelets.pre_calc(1, 1, beta=1, n_order=200, center_x=0, center_y=0)
 
 
 if __name__ == '__main__':

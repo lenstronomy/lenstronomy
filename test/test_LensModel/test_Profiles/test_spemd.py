@@ -201,6 +201,12 @@ class TestSPEMD(object):
             if fastell4py_bool:
                 npt.assert_almost_equal(f_x[0], f_x_spep[0], decimal=4)
 
+        def test_bounds(self):
+            from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
+            profile = SPEMD_SMOOTH()
+            theta_E, gamma, q, phi_G, s_scale = profile._parameter_constraints(theta_E=-1, s_scale=0, gamma=3, q=2, phi_G=0)
+            assert theta_E == 0
+
 
 if __name__ == '__main__':
     pytest.main()

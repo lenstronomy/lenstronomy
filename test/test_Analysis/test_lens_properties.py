@@ -49,11 +49,19 @@ class TestLensProp(object):
         v_sigma_mge_lens = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
                                                                   psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
                                                                   r_eff=r_eff, lens_model_kinematics_bool=kwargs_options['lens_model_deflector_bool'])
-        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
+        v_sigma_hernquist = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                                  kwargs_aperture,
+                                                                  psf_fwhm, aperture_type, anisotropy_model,
+                                                                  MGE_light=False, MGE_mass=False,
+                                                                  r_eff=r_eff, Hernquist_approx=True,
+                                                                  lens_model_kinematics_bool=kwargs_options[
+                                                                      'lens_model_deflector_bool'])
+        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
+        npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
     def test_time_delays(self):
         z_lens = 0.5
@@ -62,12 +70,13 @@ class TestLensProp(object):
         e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
         kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2}]
         kwargs_else = [{'ra_image': [-1, 0, 1], 'dec_image': [0, 0, 0]}]
-
-        lensProp = LensProp(z_lens, z_source, kwargs_options)
+        from astropy.cosmology import FlatLambdaCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        lensProp = LensProp(z_lens, z_source, kwargs_options, cosmo=cosmo)
         delays = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=0)
-        npt.assert_almost_equal(delays[0], -31.710641699405745, decimal=8)
+        npt.assert_almost_equal(delays[0], -31.387590264501007, decimal=8)
         npt.assert_almost_equal(delays[1], 0, decimal=8)
-        npt.assert_almost_equal(delays[2], -31.710641699405745, decimal=8)
+        npt.assert_almost_equal(delays[2], -31.387590264501007, decimal=8)
 
     def test_angular_diameter_relations(self):
         z_lens = 0.5

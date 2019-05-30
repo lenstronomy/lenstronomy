@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.interpolate import interp1d
-from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 from lenstronomy.GalKin.cosmo import Cosmo
@@ -10,17 +9,17 @@ class MassProfile(object):
     """
     mass profile class
     """
-    def __init__(self, profile_list, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, kwargs_numerics={}):
+    def __init__(self, profile_list, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, interpol_grid_num=1000,
+                 max_interpolate=100, min_interpolate=0.001):
         """
 
         :param profile_list:
         """
-        kwargs_options = {'lens_model_list': profile_list}
         self.model = SinglePlane(profile_list)
-        self.cosmo = Cosmo(kwargs_cosmo)
-        self._interp_grid_num = kwargs_numerics.get('interpol_grid_num', 1000)
-        self._max_interpolate = kwargs_numerics.get('max_integrate', 100)
-        self._min_interpolate = kwargs_numerics.get('min_integrate', 0.0001)
+        self.cosmo = Cosmo(**kwargs_cosmo)
+        self._interp_grid_num = interpol_grid_num
+        self._max_interpolate = max_interpolate
+        self._min_interpolate = min_interpolate
 
     def mass_3d_interp(self, r, kwargs, new_compute=False):
         """

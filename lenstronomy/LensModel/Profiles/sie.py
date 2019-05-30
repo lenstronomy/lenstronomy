@@ -1,6 +1,5 @@
 
 
-
 class SIE(object):
     """
     class for singular isothermal ellipsoid (SIS with ellipticity)

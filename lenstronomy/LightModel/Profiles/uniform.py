@@ -25,4 +25,3 @@ class Uniform(object):
         :return:
         """
         return np.ones_like(x) * amp
-

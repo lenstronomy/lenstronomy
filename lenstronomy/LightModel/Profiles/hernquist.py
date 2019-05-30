@@ -42,7 +42,7 @@ class Hernquist(object):
         return self.lens.density(r, rho0, Rs)
 
 
-class Hernquist_Ellipse(object):
+class HernquistEllipse(object):
     """
     class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
     """

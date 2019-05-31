@@ -41,8 +41,6 @@
   <h1>Source code for lenstronomy.SimulationAPI.data_api</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.SimulationAPI.observation_api</span> <span class="k">import</span> <span class="n">SingleBand</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Data.imaging_data</span> <span class="k">import</span> <span class="n">ImageData</span>
-<span class="c1">#from lenstronomy.Data.pixel_grid import PixelGrid</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="k">import</span> <span class="n">PSF</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -78,29 +76,7 @@
                        <span class="s1">&#39;background_rms&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_noise</span><span class="p">,</span>
                        <span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled_exposure_time</span><span class="p">}</span>
         <span class="n">data_class</span> <span class="o">=</span> <span class="n">ImageData</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data_class</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">psf_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        creates instance of PSF() class based on knowledge of the observations</span>
-<span class="sd">        For the full possibility of how to create such an instance, see the PSF() class documentation</span>
-
-<span class="sd">        :return: instance of PSF() class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="n">psf_type</span> <span class="o">=</span> <span class="s2">&quot;GAUSSIAN&quot;</span>
-            <span class="n">fwhm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seeing</span>
-            <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="n">psf_type</span><span class="p">,</span> <span class="s1">&#39;fwhm&#39;</span><span class="p">:</span> <span class="n">fwhm</span><span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s2">&quot;PIXEL&quot;</span><span class="p">,</span> <span class="s1">&#39;kernel_point_source&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_model</span><span class="p">}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need to create the class instance with a psf_model!&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psf_type </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_type</span><span class="p">)</span>
-        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">psf_class</span></div>
+        <span class="k">return</span> <span class="n">data_class</span></div>
 </pre></div>
 
           </div>

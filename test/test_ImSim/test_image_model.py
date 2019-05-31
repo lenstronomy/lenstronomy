@@ -14,6 +14,7 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Util import util
 
 
 class TestImageModel(object):
@@ -98,7 +99,7 @@ class TestImageModel(object):
 
     def test_image_with_params(self):
         model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
-        error_map = self.imageModel._error_map(self.kwargs_lens, self.kwargs_ps)
+        error_map = self.imageModel._error_map_psf(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
@@ -186,6 +187,23 @@ class TestImageModel(object):
                                 point_source_class=pointSource)
         image = imageModel.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
         assert np.sum(image) > 0
+
+    def test_error_map_source(self):
+        sourceModel = LightModel(light_model_list=['UNIFORM', 'UNIFORM'])
+
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+
+        psf_type = "GAUSSIAN"
+        fwhm = 0.9
+        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
+        psf_class = PSF(**kwargs_psf)
+        imageModel = ImageLinearFit(data_class=data_class, psf_class=psf_class, lens_model_class=None,
+                                point_source_class=None, source_model_class=sourceModel)
+
+        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
+        error_map = imageModel.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
+        assert error_map[0] == 2
 
 
 if __name__ == '__main__':

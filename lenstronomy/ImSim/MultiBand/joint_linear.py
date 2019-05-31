@@ -12,13 +12,12 @@ class JointLinear(MultiLinear):
 
     """
     def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None):
-
+        #TODO make this raise statement valid
         #if kwargs_model.get('index_source_light_model_list', None) is not None or \
         #        kwargs_model.get('index_lens_light_model_list', None) is not None or \
         #        kwargs_model.get('index_point_source_model_list', None) is not None:
         #    raise ValueError('You are not allowed to set partial surface brightness models to individual bands in the '
         #                     'joint-linear mode. Your settings are: ', kwargs_model)
-
         super(JointLinear, self).__init__(multi_band_list, kwargs_model=kwargs_model, compute_bool=compute_bool,
                                           likelihood_mask_list=likelihood_mask_list)
         self.type = 'joint-linear'
@@ -38,7 +37,7 @@ class JointLinear(MultiLinear):
         C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        _, _, _, _ = self._imageModel_list[0]._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        _, _, _, _ = self._imageModel_list[0].update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         wls_list = self._array2image_list(wls_model)
         return wls_list, model_error_list, cov_param, param
 

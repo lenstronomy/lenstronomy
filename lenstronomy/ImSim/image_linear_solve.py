@@ -71,7 +71,7 @@ class ImageLinearFit(ImageModel):
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        _, _, _, _ = self._update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         model = self.array_masked2image(wls_model)
         return model, model_error, cov_param, param
 
@@ -112,9 +112,9 @@ class ImageLinearFit(ImageModel):
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        model_error = self._error_map(kwargs_lens, kwargs_ps)
-        C_D_response = self.image2array_masked(self.Data.C_D + model_error)
-        return C_D_response, model_error
+        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps)
+        C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
+        return C_D_response, psf_model_error
 
     def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
         """
@@ -215,7 +215,7 @@ class ImageLinearFit(ImageModel):
             n += 1
         return np.nan_to_num(A)
 
-    def _update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
         links linear parameters to kwargs arguments
@@ -287,7 +287,7 @@ class ImageLinearFit(ImageModel):
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
 
-    def _error_map(self, kwargs_lens, kwargs_ps):
+    def _error_map_psf(self, kwargs_lens, kwargs_ps):
         """
 
         :param kwargs_lens:
@@ -302,4 +302,40 @@ class ImageLinearFit(ImageModel):
                     for i in range(0, n_points):
                         error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
                         error_map += error_map_add
+        return error_map
+
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+        """
+        variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+        of the basis set.
+
+        :param kwargs_source: keyword arguments of source model
+        :param x_grid: x-axis of positions to compute error map
+        :param y_grid: y-axis of positions to compute error map
+        :param cov_param: covariance matrix of liner inversion parameters
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
+        """
+        return self._error_map_source(kwargs_source, x_grid, y_grid, cov_param)
+
+    def _error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+        """
+        variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+        of the basis set.
+
+        :param kwargs_source: keyword arguments of source model
+        :param x_grid: x-axis of positions to compute error map
+        :param y_grid: y-axis of positions to compute error map
+        :param cov_param: covariance matrix of liner inversion parameters
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
+        """
+
+        error_map = np.zeros_like(x_grid)
+        basis_functions, n_source = self.SourceModel.functions_split(x_grid, y_grid, kwargs_source)
+        basis_functions = np.array(basis_functions)
+
+        if cov_param is not None:
+            for i in range(len(error_map)):
+                error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return error_map

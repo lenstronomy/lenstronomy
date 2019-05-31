@@ -53,10 +53,10 @@ class SingleBandMultiModel(ImageLinearFit):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
 
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self._select_kwargs(kwargs_lens,
-                                                                                               kwargs_source,
-                                                                                               kwargs_lens_light,
-                                                                                               kwargs_ps)
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self.select_kwargs(kwargs_lens,
+                                                                                              kwargs_source,
+                                                                                              kwargs_lens_light,
+                                                                                              kwargs_ps)
         wls_model, error_map, cov_param, param = self._image_linear_solve(kwargs_lens_i, kwargs_source_i,
                                                                                      kwargs_lens_light_i, kwargs_ps_i,
                                                                                      inv_bool=inv_bool)
@@ -73,10 +73,10 @@ class SingleBandMultiModel(ImageLinearFit):
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         # generate image
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self._select_kwargs(kwargs_lens,
-                                                                                               kwargs_source,
-                                                                                               kwargs_lens_light,
-                                                                                               kwargs_ps)
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self.select_kwargs(kwargs_lens,
+                                                                                              kwargs_source,
+                                                                                              kwargs_lens_light,
+                                                                                              kwargs_ps)
         logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i,
                                                             kwargs_lens_light_i, kwargs_ps_i,
                                                             source_marg=source_marg)
@@ -88,7 +88,7 @@ class SingleBandMultiModel(ImageLinearFit):
         :param compute_bool:
         :return: number of linear coefficients to be solved for in the linear inversion
         """
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self._select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self.select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         num = self._num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return num
 
@@ -102,14 +102,32 @@ class SingleBandMultiModel(ImageLinearFit):
         :param kwargs_ps:
         :return:
         """
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self._select_kwargs(kwargs_lens,
-                                                                                               kwargs_source,
-                                                                                               kwargs_lens_light,
-                                                                                               kwargs_ps)
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self.select_kwargs(kwargs_lens,
+                                                                                              kwargs_source,
+                                                                                              kwargs_lens_light,
+                                                                                              kwargs_ps)
         A = self._linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return A
 
-    def _select_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+        """
+        variance of the linear source reconstruction in the source plane coordinates,
+        computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+        of the basis set.
+
+        :param kwargs_source: keyword arguments of source model
+        :param x_grid: x-axis of positions to compute error map
+        :param y_grid: y-axis of positions to compute error map
+        :param cov_param: covariance matrix of liner inversion parameters
+        :return: diagonal covariance errors at the positions (x_grid, y_grid)
+        """
+        if self._index_source is None:
+            kwargs_source_i = kwargs_source
+        else:
+            kwargs_source_i = [kwargs_source[k] for k in self._index_source]
+        return self._error_map_source(kwargs_source_i, x_grid, y_grid, cov_param)
+
+    def select_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
         select subset of kwargs lists referenced to this imaging band
 

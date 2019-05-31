@@ -492,12 +492,19 @@
 
 <div class="viewcode-block" id="LensModelPlot.source_plot"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.output_plots.LensModelPlot.source_plot">[docs]</a>    <span class="k">def</span> <span class="nf">source_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltaPix_source</span><span class="p">,</span> <span class="n">v_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">v_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_caustics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">caustic_color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span>
-                    <span class="n">fsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="n">fsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">plot_scale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param ax:</span>
-<span class="sd">        :param coords_source:</span>
-<span class="sd">        :param source:</span>
+<span class="sd">        :param numPix:</span>
+<span class="sd">        :param deltaPix_source:</span>
+<span class="sd">        :param v_min:</span>
+<span class="sd">        :param v_max:</span>
+<span class="sd">        :param with_caustics:</span>
+<span class="sd">        :param caustic_color:</span>
+<span class="sd">        :param fsize:</span>
+<span class="sd">        :param plot_scale: string, log or linear, scale of surface brightness plot</span>
+<span class="sd">        :param kwargs:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">v_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -518,7 +525,13 @@
         <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel</span><span class="o">.</span><span class="n">SourceModel</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">x_grid_source</span><span class="p">,</span> <span class="n">y_grid_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_source</span><span class="p">)</span>
         <span class="n">source</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaPix_source</span><span class="o">**</span><span class="mi">2</span>
 
-        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">source</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">d_s</span><span class="p">],</span>
+        <span class="k">if</span> <span class="n">plot_scale</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+            <span class="n">source_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">plot_scale</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
+            <span class="n">source_scale</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;variable plot_scale needs to be &quot;log&quot; or &quot;linear&quot;, not </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">plot_scale</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">source_scale</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">d_s</span><span class="p">],</span>
                         <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">v_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">v_max</span><span class="p">)</span>  <span class="c1"># source</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -900,11 +913,10 @@
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;vmin&#39;</span><span class="p">]</span>
-        <span class="k">del</span> <span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;vmax&#39;</span><span class="p">]</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
+
+    <span class="k">del</span> <span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;vmin&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;vmax&#39;</span><span class="p">]</span>
+
     <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">psf_out</span><span class="o">-</span><span class="n">psf_in</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
     <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
     <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;5%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>

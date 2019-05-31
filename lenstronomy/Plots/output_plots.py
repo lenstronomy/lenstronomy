@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from lenstronomy.LensModel.Profiles.shear import Shear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import lenstronomy.Util.class_creator as class_creator
-from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Data.imaging_data import ImageData
 
@@ -231,12 +230,14 @@ def source_position_plot(ax, coords, kwargs_source):
     return ax
 
 
-class LensModelPlot(object):
+class ModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source,
+                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
+                 bands_compute=None,
+                 multi_band_type='single-band'):
         """
 
         :param kwargs_options:
@@ -244,7 +245,243 @@ class LensModelPlot(object):
         :param arrow_size:
         :param cmap_string:
         """
-        self._kwargs_data = kwargs_data
+        if bands_compute is None:
+            bands_compute = [True] * len(multi_band_list)
+        if multi_band_type == 'single-band':
+            multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
+        self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
+                                                       bands_compute=bands_compute, likelihood_mask_list=None,
+                                                       band_index=0)
+
+        model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
+                                                                                 kwargs_lens_light, kwargs_ps, inv_bool=True)
+
+        self._kwargs_lens = kwargs_lens
+        self._kwargs_source = kwargs_source
+        self._kwargs_lens_light = kwargs_lens_light
+        self._kwargs_else = kwargs_ps
+        self._band_plot_list = []
+        self._index_list = []
+        index = 0
+        for i in range(len(multi_band_list)):
+            if bands_compute[i] is True:
+                if multi_band_type == 'joint-linear':
+                    param_i = param
+                    cov_param_i = cov_param
+                else:
+                    param_i = param[index]
+                    cov_param_i = cov_param[index]
+                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i, param_i, kwargs_lens,
+                                 kwargs_source, kwargs_lens_light, kwargs_ps, likelihood_mask_list=likelihood_mask_list,
+                                     band_index=i, arrow_size=arrow_size, cmap_string=cmap_string)
+                self._band_plot_list.append(bandplot)
+                self._index_list.append(index)
+                index += 1
+            else:
+                self._index_list.append(-1)
+
+    def _select_band(self, band_index):
+        """
+
+        :param band_index: index of imaging band to be plotted
+        :return: bandplot() instance of selected band, raises when band is not computed
+        """
+        i = self._index_list[band_index]
+        if i == -1:
+            raise ValueError("band %s is not computed or out of range." % band_index)
+        i = int(i)
+        return self._band_plot_list[i]
+
+    def data_plot(self, band_index=0, **kwargs):
+        """
+        illustrates data
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.data_plot(**kwargs)
+
+    def model_plot(self, band_index=0, **kwargs):
+        """
+        illustrates model
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.model_plot(**kwargs)
+
+    def convergence_plot(self, band_index=0, **kwargs):
+        """
+        illustrates lensing convergence in data frame
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.convergence_plot(**kwargs)
+
+    def normalized_residual_plot(self, band_index=0, **kwargs):
+        """
+        illustrates normalized residuals between data and model fit
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.normalized_residual_plot(**kwargs)
+
+    def absolute_residual_plot(self, band_index=0, **kwargs):
+        """
+        illustrates absolute residuals between data and model fit
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.absolute_residual_plot(**kwargs)
+
+    def source_plot(self, band_index=0, **kwargs):
+        """
+        illustrates reconstructed source (de-lensed de-convolved)
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.source_plot(**kwargs)
+
+    def error_map_source_plot(self, band_index=0, **kwargs):
+        """
+        illustrates surface brightness variance in the reconstruction in the source plane
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.error_map_source_plot(**kwargs)
+
+    def magnification_plot(self, band_index=0, **kwargs):
+        """
+        illustrates lensing magnification in the field of view of the data frame
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.magnification_plot(**kwargs)
+
+    def deflection_plot(self, band_index=0, **kwargs):
+        """
+        illustrates lensing deflections on the field of view of the data frame
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.deflection_plot(**kwargs)
+
+    def decomposition_plot(self, band_index=0, **kwargs):
+        """
+        illustrates decomposition of model components
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.decomposition_plot(**kwargs)
+
+    def subtract_from_data_plot(self, band_index=0, **kwargs):
+        """
+        subtracts individual model components from the data
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.subtract_from_data_plot(**kwargs)
+
+    def plot_main(self, band_index=0, **kwargs):
+        """
+        plot a set of 'main' modelling diagnostics
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.plot_main(**kwargs)
+
+    def plot_separate(self, band_index=0):
+        """
+        plot a set of 'main' modelling diagnostics
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.plot_separate()
+
+    def plot_subtract_from_data_all(self, band_index=0):
+        """
+        plot a set of 'main' modelling diagnostics
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.plot_subtract_from_data_all()
+
+
+class ModelBandPlot(object):
+    """
+    class to plot a single band given the modeling results
+
+    """
+    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_lens, kwargs_source,
+                 kwargs_lens_light, kwargs_ps, likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+
+        self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
+                                                  likelihood_mask_list=likelihood_mask_list, band_index=band_index)
+        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial = self.bandmodel.select_kwargs(kwargs_lens, kwargs_source,
+                 kwargs_lens_light, kwargs_ps)
+        self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
+        self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
+        self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)
+        print("reduced chi^2 = ", self._reduced_x2)
+
+        self._model = model
+        self._cov_param = cov_param
+        self._param = param
+
+        self._lensModel = self.bandmodel.LensModel
+        self._lensModelExt = LensModelExtensions(self._lensModel)
+        log_model = np.log10(model)
+        log_model[np.isnan(log_model)] = -5
+        self._v_min_default = max(np.min(log_model), -5)
+        self._v_max_default = min(np.max(log_model), 10)
+        self._coords = self.bandmodel.Data
+        self._data = self._coords.data
+        self._deltaPix = self._coords.pixel_width
+        self._frame_size = np.max(self._coords.width)
+        x_grid, y_grid = self._coords.pixel_coordinates
+        self._x_grid = util.image2array(x_grid)
+        self._y_grid = util.image2array(y_grid)
+
         if isinstance(cmap_string, str):
             cmap = plt.get_cmap(cmap_string)
         else:
@@ -253,47 +490,10 @@ class LensModelPlot(object):
         cmap.set_under('k')
         self._cmap = cmap
         self._arrow_size = arrow_size
-        data = ImageData(**kwargs_data)
-        self._coords = data
-        nx, ny = np.shape(kwargs_data['image_data'])
-        Mpix2coord = kwargs_data['transform_pix2angle']
-        self._Mpix2coord = Mpix2coord
-
-        self._deltaPix = self._coords.pixel_width
-        self._frame_size = self._deltaPix * nx
-
-        x_grid, y_grid = data.pixel_coordinates
-        self._x_grid = util.image2array(x_grid)
-        self._y_grid = util.image2array(y_grid)
-
-        self._imageModel = class_creator.create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model,
-                                                            likelihood_mask=likelihood_mask)
-        self._analysis = LensAnalysis(kwargs_model)
-        self._lensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-                                    z_source=kwargs_model.get('z_source', None),
-                                    lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-                                    multi_plane=kwargs_model.get('multi_plane', False))
-        self._lensModelExt = LensModelExtensions(self._lensModel)
-        model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                 kwargs_lens_light, kwargs_ps, inv_bool=True)
-        self._kwargs_lens = kwargs_lens
-        self._kwargs_source = kwargs_source
-        self._kwargs_lens_light = kwargs_lens_light
-        self._kwargs_else = kwargs_ps
-        self._model = model
-        self._data = kwargs_data['image_data']
-        self._cov_param = cov_param
-        self._norm_residuals = self._imageModel.reduced_residuals(model, error_map=error_map)
-        self._reduced_x2 = self._imageModel.reduced_chi2(model, error_map=error_map)
-        log_model = np.log10(model)
-        log_model[np.isnan(log_model)] = -5
-        self._v_min_default = max(np.min(log_model), -5)
-        self._v_max_default = min(np.max(log_model), 10)
-        print("reduced chi^2 = ", self._reduced_x2)
 
     def _critical_curves(self):
         if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
-            self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens,
+            self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens_partial,
                                                                                         compute_window=self._frame_size,
                                                                                         start_scale=self._deltaPix / 5.,
                                                                                         max_order=10)
@@ -303,7 +503,7 @@ class LensModelPlot(object):
         if not hasattr(self, '_ra_caustic_list') or not hasattr(self, '_dec_caustic_list'):
             ra_crit_list, dec_crit_list = self._critical_curves()
             self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list,
-                                                                                     dec_crit_list, self._kwargs_lens)
+                                                                                     dec_crit_list, self._kwargs_lens_partial)
         return self._ra_caustic_list, self._dec_caustic_list
 
     def data_plot(self, ax, v_min=None, v_max=None, text='Observed',
@@ -367,7 +567,7 @@ class LensModelPlot(object):
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
-            ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
+            ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
             image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
@@ -383,7 +583,7 @@ class LensModelPlot(object):
         if not 'cmap' in kwargs:
             kwargs['cmap'] = self._cmap
 
-        kappa_result = util.array2image(self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens))
+        kappa_result = util.array2image(self._lensModel.kappa(self._x_grid, self._y_grid, self._kwargs_lens_partial))
         im = ax.matshow(np.log10(kappa_result), origin='lower',
                         extent=[0, self._frame_size, 0, self._frame_size],
                         cmap=kwargs['cmap'], vmin=v_min, vmax=v_max)
@@ -472,16 +672,16 @@ class LensModelPlot(object):
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
-                                                                  self._Mpix2coord * deltaPix_source / self._deltaPix)
-        if len(self._kwargs_source) > 0:
-            x_center = self._kwargs_source[0]['center_x']
-            y_center = self._kwargs_source[0]['center_y']
+                                                                  self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
+        if len(self._kwargs_source_partial) > 0:
+            x_center = self._kwargs_source_partial[0]['center_x']
+            y_center = self._kwargs_source_partial[0]['center_y']
             x_grid_source += x_center
             y_grid_source += y_center
-        coords_source = Coordinates(self._Mpix2coord * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
+        coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
 
-        source = self._imageModel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source)
+        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source_partial)
         source = util.array2image(source) * deltaPix_source**2
 
         if plot_scale == 'log':
@@ -507,19 +707,19 @@ class LensModelPlot(object):
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
             coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
         text_description(ax, d_s, text="Reconstructed source", color="w", backgroundcolor='k', flipped=False)
-        source_position_plot(ax, coords_source, self._kwargs_source)
+        source_position_plot(ax, coords_source, self._kwargs_source_partial)
         return ax
 
     def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
-                                                                  self._Mpix2coord * deltaPix_source / self._deltaPix)
-        x_center = self._kwargs_source[0]['center_x']
-        y_center = self._kwargs_source[0]['center_y']
+                                                                  self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
+        x_center = self._kwargs_source_partial[0]['center_x']
+        y_center = self._kwargs_source_partial[0]['center_y']
         x_grid_source += x_center
         y_grid_source += y_center
-        coords_source = Coordinates(self._Mpix2coord * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
+        coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
-        error_map_source = self._analysis.error_map_source(self._kwargs_source, x_grid_source, y_grid_source, self._cov_param)
+        error_map_source = self.bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source, self._cov_param)
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
         im = ax.matshow(error_map_source, origin='lower', extent=[0, d_s, 0, d_s],
@@ -537,7 +737,7 @@ class LensModelPlot(object):
         scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
         coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
         text_description(ax, d_s, text="Error map in source", color="w", backgroundcolor='k', flipped=False)
-        source_position_plot(ax, coords_source, self._kwargs_source)
+        source_position_plot(ax, coords_source, self._kwargs_source_partial)
         return ax
 
     def magnification_plot(self, ax, v_min=-10, v_max=10,
@@ -556,7 +756,7 @@ class LensModelPlot(object):
             kwargs['cmap'] = self._cmap
         if not 'alpha' in kwargs:
             kwargs['alpha'] = 0.5
-        mag_result = util.array2image(self._lensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens))
+        mag_result = util.array2image(self._lensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens_partial))
         im = ax.matshow(mag_result, origin='lower', extent=[0, self._frame_size, 0, self._frame_size],
                         vmin=v_min, vmax=v_max, **kwargs)
         ax.get_xaxis().set_visible(False)
@@ -570,9 +770,9 @@ class LensModelPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(r'det(A$^{-1}$)', fontsize=15)
-        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
+        ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
-        source_position_plot(ax, self._coords, self._kwargs_source)
+        source_position_plot(ax, self._coords, self._kwargs_source_partial)
         return ax
 
     def deflection_plot(self, ax, v_min=None, v_max=None, axis=0, with_caustics=False, image_name_list=None):
@@ -583,7 +783,7 @@ class LensModelPlot(object):
         :return:
         """
 
-        alpha1, alpha2 = self._lensModel.alpha(self._x_grid, self._y_grid, self._kwargs_lens)
+        alpha1, alpha2 = self._lensModel.alpha(self._x_grid, self._y_grid, self._kwargs_lens_partial)
         alpha1 = util.array2image(alpha1)
         alpha2 = util.array2image(alpha2)
         if axis == 0:
@@ -607,9 +807,9 @@ class LensModelPlot(object):
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
-        ra_image, dec_image = self._imageModel.PointSource.image_position(self._kwargs_else, self._kwargs_lens)
+        ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
-        source_position_plot(ax, self._coords, self._kwargs_source)
+        source_position_plot(ax, self._coords, self._kwargs_source_partial)
         return ax
 
     def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False, **kwargs):
@@ -626,8 +826,8 @@ class LensModelPlot(object):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
-                                          self._kwargs_else, unconvolved=unconvolved, source_add=source_add,
+        model = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+                                          self._kwargs_ps_partial, unconvolved=unconvolved, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default
@@ -650,8 +850,8 @@ class LensModelPlot(object):
         return ax
 
     def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None, v_max=None, point_source_add=False, source_add=False, lens_light_add=False):
-        model = self._imageModel.image(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light,
-                                          self._kwargs_else, unconvolved=False, source_add=source_add,
+        model = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+                                          self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default

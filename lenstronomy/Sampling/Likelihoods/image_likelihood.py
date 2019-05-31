@@ -1,7 +1,5 @@
 import numpy as np
-from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
-from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
+from lenstronomy.Util import class_creator
 
 
 class ImageLikelihood(object):
@@ -24,7 +22,7 @@ class ImageLikelihood(object):
         :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         """
 
-        self.imSim = create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
+        self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
                                    likelihood_mask_list=likelihood_mask_list, band_index=0)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
@@ -82,27 +80,3 @@ class ImageLikelihood(object):
         """
         self.imSim.reset_point_source_cache(bool=bool)
 
-
-def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None, band_index=0):
-    """
-
-
-    :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
-
-    - 'multi-band': linear amplitudes are inferred on single data set
-    - 'multi-exposure': linear amplitudes ae jointly inferred
-    - 'multi-frame': multiple frames (as single exposures with disjoint lens model
-
-    :return: MultiBand class instance
-    """
-
-    if multi_band_type == 'multi-linear':
-        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
-    elif multi_band_type == 'joint-linear':
-        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
-    elif multi_band_type == 'single-band':
-        multiband = SingleBandMultiModel([multi_band_list], kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                         band_index=band_index)
-    else:
-        raise ValueError("type %s is not supported!" % multi_band_type)
-    return multiband

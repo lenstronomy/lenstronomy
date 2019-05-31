@@ -49,5 +49,29 @@ class TestClassCreator(object):
         assert imageModel.LensModel.lens_model_list == []
 
 
+
+    def test_create_im_sim(self):
+        kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
+                             'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
+        kwargs_psf = {'psf_type': 'NONE'}
+        kwargs_data = {'image_data': np.ones((10, 10))}
+
+        multi_band_list = [[kwargs_data, kwargs_psf, {}]]
+        multi_band_type = 'multi-linear'
+
+        multi_band = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
+        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
+        multi_band_type = 'joint-linear'
+        multi_band = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
+        assert multi_band._imageModel_list[0].LensModel.lens_model_list[0] == 'SIS'
+        multi_band_type = 'single-band'
+        multi_band = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None,
+                                                  likelihood_mask_list=None, band_index=0)
+        assert multi_band.LensModel.lens_model_list[0] == 'SIS'
+
+
+
 if __name__ == '__main__':
     pytest.main()

@@ -231,12 +231,6 @@ class TestLensAnalysis(object):
         kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, numPix=100)
         npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
 
-    def test_error_map_source(self):
-        analysis = LensAnalysis(kwargs_model={'source_light_model_list': ['UNIFORM', 'UNIFORM']})
-        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
-        error_map = analysis.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
-        assert error_map[0] == 2
-
 
 class TestRaise(unittest.TestCase):
 

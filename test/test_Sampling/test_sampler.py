@@ -60,7 +60,7 @@ class TestFittingSequence(object):
 
         data_class.update_data(image_sim)
         kwargs_data['image_data'] = image_sim
-        kwargs_data_joint = {'multi_band_list': [kwargs_data, kwargs_psf, kwargs_numerics], 'multi_band_type': 'single-band'}
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band'}
         self.data_class = data_class
         self.psf_class = psf_class
 

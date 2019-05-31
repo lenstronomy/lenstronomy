@@ -58,10 +58,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_response_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">imageModel</span> <span class="ow">in</span> <span class="n">imageModel_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imageModel</span><span class="o">.</span><span class="n">num_data_evaluate</span><span class="p">)</span>
-        <span class="c1">#self.LensModel = self._imageModel_list[0].LensModel</span>
-        <span class="c1">#self.SourceModel = self._imageModel_list[0].SourceModel</span>
-        <span class="c1">#self.LensLightModel = self._imageModel_list[0].LensLightModel</span>
-        <span class="c1">#self.PointSource = self._imageModel_list[0].PointSource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">LensModel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">SourceModel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">LensLightModel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">PointSource</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -119,6 +119,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_bands</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bool</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">residual_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_imageModel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reduced_residuals</span><span class="p">(</span><span class="n">model_list</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">error_map</span><span class="o">=</span><span class="n">error_map_list</span><span class="p">[</span><span class="n">index</span><span class="p">]))</span>
+                <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">residual_list</span></div></div>
 </pre></div>
 

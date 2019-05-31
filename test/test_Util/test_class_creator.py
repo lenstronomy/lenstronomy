@@ -4,6 +4,7 @@ __author__ = 'sibirrer'
 import lenstronomy.Util.class_creator as class_creator
 import pytest
 import numpy as np
+import unittest
 
 
 class TestClassCreator(object):
@@ -49,7 +50,6 @@ class TestClassCreator(object):
         assert imageModel.LensModel.lens_model_list == []
 
 
-
     def test_create_im_sim(self):
         kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
                              'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
@@ -71,6 +71,13 @@ class TestClassCreator(object):
                                                   likelihood_mask_list=None, band_index=0)
         assert multi_band.LensModel.lens_model_list[0] == 'SIS'
 
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            class_creator.create_im_sim(multi_band_list=None, multi_band_type='WRONG', kwargs_model=None,
+                                        bands_compute=None, likelihood_mask_list=None, band_index=0)
 
 
 if __name__ == '__main__':

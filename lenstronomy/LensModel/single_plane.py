@@ -230,6 +230,9 @@ class SinglePlane(object):
         elif lens_type == 'FLEXION':
             from lenstronomy.LensModel.Profiles.flexion import Flexion
             return Flexion()
+        elif lens_type == 'FLEXIONFG':
+            from lenstronomy.LensModel.Profiles.flexionfg import Flexionfg
+            return Flexionfg()
         elif lens_type == 'POINT_MASS':
             from lenstronomy.LensModel.Profiles.point_mass import PointMass
             return PointMass()

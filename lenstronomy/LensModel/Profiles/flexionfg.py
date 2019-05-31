@@ -2,7 +2,8 @@ from lenstronomy.LensModel.Profiles.flexion import Flexion
 
 class Flexionfg(object):
     """
-    Flexion consist of basis F1,F2,G1,G2
+    Flexion consist of basis F flexion and G flexion (F1,F2,G1,G2),
+    see formulas 2.54, 2.55 in Massimo Meneghetti 2017 - "Introduction to Gravitational Lensing".
     """
     param_names = ['F1', 'F2', 'G1', 'G2', 'ra_0', 'dec_0']
     lower_limit_default = {'F1': -0.1, 'F2': -0.1, 'G1': -0.1, 'G2': -0.1, 'ra_0': -100, 'dec_0': -100}

@@ -3,6 +3,7 @@ from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 
+from copy import deepcopy
 
 class MultiPlane(object):
     """
@@ -389,7 +390,34 @@ class MultiPlane(object):
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, idex)
-        alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[idex])
+        print(kwargs_lens)
+        # specify what convention to use explicitly with the key word arguments
+        if 'center_x_lensed' in kwargs_lens.keys():
+            assert 'center_y_lensed' in kwargs_lens.keys()
+
+            # build a new keyword dictionary
+            new_kwargs = deepcopy(kwargs_lens)
+
+            # ray trace to find the physical position
+            zstart = 0
+            zstop = self._redshift_list[self._sorted_redshift_index[idex]]
+            _, _, true_thetax, true_thetay = self.ray_shooting_partial(0, 0,
+                               kwargs_lens['center_x_lensed'], kwargs_lens['center_y_lensed'],
+                                                        zstart, zstop, kwargs_lens)
+
+            # update the position and delete the unused key words
+            new_kwargs.update({'center_x': true_thetax, 'center_y': true_thetay})
+            del new_kwargs['center_x_lensed']
+            del new_kwargs['center_y_lensed']
+
+            # compute the deflections using the convention of physical position
+            alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, new_kwargs,
+                                                              k=self._sorted_redshift_index[idex])
+
+        else:
+            alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens,
+                                                              k=self._sorted_redshift_index[idex])
+
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, idex)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, idex)
         alpha_x_new = alpha_x - alpha_x_phys

@@ -6,6 +6,7 @@ import lenstronomy.Util.constants as const
 from copy import deepcopy
 
 class MultiPlane(object):
+
     """
     Multi-plane lensing class
 
@@ -13,7 +14,8 @@ class MultiPlane(object):
     sourde redshift of the class instance.
     """
 
-    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None):
+    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
+                 position_convention = False):
         """
 
         :param cosmo: instance of astropy.cosmology
@@ -53,6 +55,11 @@ class MultiPlane(object):
         if np.abs(sum_partial - self._T_z_source) > 0.1:
             print("Numerics in multi-plane compromised by too narrow spacing of too many redshift bins")
 
+        self._position_convention = position_convention
+
+        if isinstance(position_convention, list):
+            assert len(position_convention) == len(lens_model_list)
+
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
         """
         ray-tracing (backwards light cone)
@@ -67,6 +74,7 @@ class MultiPlane(object):
         alpha_x = theta_x
         alpha_y = theta_y
         i = -1
+
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
             if delta_T > 0:

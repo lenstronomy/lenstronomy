@@ -70,6 +70,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
@@ -95,6 +97,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
@@ -121,6 +125,9 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
+            return f_xx, f_xy, f_xy, f_yy
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)

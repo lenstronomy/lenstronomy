@@ -7,8 +7,8 @@ class ImageLikelihood(object):
     manages imaging data likelihoods
     """
 
-    def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None, source_marg=False,
-                 force_minimum_source_surface_brightness=False, flux_min=0):
+    def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
+                 source_marg=False, force_minimum_source_surface_brightness=False, flux_min=0):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as

@@ -254,7 +254,8 @@ class ModelPlot(object):
                                                        band_index=0)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                 kwargs_lens_light, kwargs_ps, inv_bool=True)
+                                                                                 kwargs_lens_light, kwargs_ps,
+                                                                                 inv_bool=True)
 
         self._kwargs_lens = kwargs_lens
         self._kwargs_source = kwargs_source

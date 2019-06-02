@@ -256,7 +256,6 @@ class ModelPlot(object):
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps,
                                                                                  inv_bool=True)
-
         self._kwargs_lens = kwargs_lens
         self._kwargs_source = kwargs_source
         self._kwargs_lens_light = kwargs_lens_light
@@ -272,14 +271,18 @@ class ModelPlot(object):
                 else:
                     param_i = param[index]
                     cov_param_i = cov_param[index]
-                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i, param_i, kwargs_lens,
-                                 kwargs_source, kwargs_lens_light, kwargs_ps, likelihood_mask_list=likelihood_mask_list,
-                                     band_index=i, arrow_size=arrow_size, cmap_string=cmap_string)
+
+                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i, param_i,
+                                         copy.deepcopy(kwargs_lens), copy.deepcopy(kwargs_source),
+                                         copy.deepcopy(kwargs_lens_light), copy.deepcopy(kwargs_ps),
+                                         likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
+                                         cmap_string=cmap_string)
                 self._band_plot_list.append(bandplot)
                 self._index_list.append(index)
                 index += 1
             else:
                 self._index_list.append(-1)
+
 
     def _select_band(self, band_index):
         """

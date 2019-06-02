@@ -32,10 +32,10 @@ class MultiLinear(MultiDataBase):
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
-                                                                                                 kwargs_source,
-                                                                                                 kwargs_lens_light,
-                                                                                                 kwargs_else,
-                                                                                                 inv_bool=inv_bool)
+                                                                                                     kwargs_source,
+                                                                                                     kwargs_lens_light,
+                                                                                                     kwargs_else,
+                                                                                                     inv_bool=inv_bool)
                 wls_list.append(wls_model)
                 error_map_list.append(error_map)
                 cov_param_list.append(cov_param)

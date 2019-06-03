@@ -84,9 +84,6 @@ class MultiPlane(object):
         alpha_y = theta_y
         i = -1
 
-        if check_convention:
-            kwargs_lens = self._convention(kwargs_lens)
-
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
             if delta_T > 0:
@@ -287,8 +284,6 @@ class MultiPlane(object):
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-
-        kwargs_lens = self._convention(kwargs_lens)
 
         alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention = False)
 

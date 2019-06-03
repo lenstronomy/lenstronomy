@@ -4,8 +4,6 @@ from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 from lenstronomy.LensModel.image_position_convention import LensedLocation, PhysicalLocation
 
-from copy import deepcopy
-
 class MultiPlane(object):
 
     """
@@ -20,6 +18,11 @@ class MultiPlane(object):
         """
 
         :param cosmo: instance of astropy.cosmology
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
+        (see documentation in Profiles/numerical_alpha)
+        :param observed_convention_index: a list of indicies where the 'center_x' and 'center_y' kwargs correspond
+        to observed (lensed) positions, not physical positions. The code will compute the physical locations when
+        performing computations
         :return: Background class with instance of astropy.cosmology
         """
         self._cosmo_bkg = Background(cosmo)
@@ -64,13 +67,14 @@ class MultiPlane(object):
             self._inds = observed_convention_index
             self._convention = LensedLocation(self, observed_convention_index)
 
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None, check_convention = True):
+    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
         """
         ray-tracing (backwards light cone)
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens:
+        :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
         """
 
@@ -94,7 +98,7 @@ class MultiPlane(object):
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False,
-                             include_z_start=False, check_convention = True):
+                             include_z_start=False, check_convention=True):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshfit z_stop
@@ -107,6 +111,7 @@ class MultiPlane(object):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
+        :param check_convention: flag to check the image position convention (leave this alone)
         :return: co-moving position and angles at redshift z_stop
         """
         z_lens_last = z_start
@@ -144,7 +149,7 @@ class MultiPlane(object):
         return x, y, alpha_x, alpha_y
 
     def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False, check_convention = True):
+                             include_z_start=False, check_convention=True):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshfit z_stop.
@@ -160,6 +165,7 @@ class MultiPlane(object):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
+        :param check_convention: flag to check the image position convention (leave this alone)
         :return: co-moving position and angles at redshift z_stop
         """
         z_lens_last = z_start
@@ -260,6 +266,7 @@ class MultiPlane(object):
         :param theta_x: angle in x-direction
         :param theta_y: angle in y-direction
         :param kwargs_lens: lens model kwargs
+        :param check_convention: flag to check the image position convention (leave this alone)
         :return:
         """
         beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens,

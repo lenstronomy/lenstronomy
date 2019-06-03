@@ -50,19 +50,10 @@ class MultiPlaneLensing(object):
 
         self._halo_lensmodel = halo_lensmodel
 
-    def set_kwargs(self, kwargs_lens_full):
-
-        if self._observed_convention_index is False:
-            return kwargs_lens_full
-
-        kwargs_physical = self._full_lensmodel.lens_model._convention(kwargs_lens_full)
-
-        return kwargs_physical
-
     def ray_shooting(self, x, y, kwargs_lens, check_convention = True):
 
         if check_convention:
-            kwargs_lens = self.set_kwargs(kwargs_lens)
+            kwargs_lens = self._set_kwargs(kwargs_lens)
 
         macromodel_args = []
 
@@ -83,7 +74,7 @@ class MultiPlaneLensing(object):
 
     def hessian(self, x, y, kwargs_lens, diff=0.00000001):
 
-        kwargs_lens = self.set_kwargs(kwargs_lens)
+        kwargs_lens = self._set_kwargs(kwargs_lens)
 
         alpha_ra, alpha_dec = self._alpha(x, y, kwargs_lens, check_convention=False)
 
@@ -115,7 +106,7 @@ class MultiPlaneLensing(object):
 
         # get the deflection angles from foreground and main lens plane subhalos (once)
 
-        kwargs_lens = self.set_kwargs(macromodel_args + self._halo_args)
+        kwargs_lens = self._set_kwargs(macromodel_args + self._halo_args)
 
         x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, macromodel_args, offset_index, thetax, thetay,
                                                              force_compute=force_compute)
@@ -180,6 +171,15 @@ class MultiPlaneLensing(object):
         alpha_y = np.array(y_pos - beta_y)
 
         return alpha_x, alpha_y
+
+    def _set_kwargs(self, kwargs_lens_full):
+
+        if self._observed_convention_index is False:
+            return kwargs_lens_full
+
+        kwargs_physical = self._full_lensmodel.lens_model._convention(kwargs_lens_full)
+
+        return kwargs_physical
 
     def _split_lensmodel(self, lensmodel, lensmodel_args, macro_indicies, numerical_alpha_class,
                          observed_convention_inds):

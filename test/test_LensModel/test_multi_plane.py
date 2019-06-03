@@ -160,6 +160,65 @@ class TestMultiPlane(object):
         npt.assert_almost_equal(beta_x_1, beta_x_2, decimal=8)
         npt.assert_almost_equal(beta_y_1, beta_y_2, decimal=8)
 
+    def test_ray_shooting_partial_2(self):
+
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS', 'SIS', 'SIS']
+        sis1 = {'theta_E': 0.4, 'center_x': 0, 'center_y': 0}
+        sis2 = {'theta_E': .2, 'center_x': 0.5, 'center_y': 0}
+        sis3 = {'theta_E': .1, 'center_x': 0, 'center_y': 0.5}
+        sis4 = {'theta_E': 0.5, 'center_x': 0.1, 'center_y': 0.3}
+
+        lens_model_list_macro = ['SIS']
+        kwargs_macro = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+
+        zmacro = 0.5
+
+        z1 = 0.1
+        z2 = 0.5
+        z3 = 0.5
+        z4 = 0.7
+        redshift_list = [z1, z2, z3, z4]
+        kwargs_lens = [sis1, sis2, sis3, sis4]
+        kwargs_lens_full = kwargs_macro + kwargs_lens
+        lensModel_full = MultiPlane(z_source=z_source, lens_model_list=lens_model_list_macro+lens_model_list,
+                                    lens_redshift_list=[zmacro]+redshift_list)
+        lensModel_macro = MultiPlane(z_source=z_source, lens_model_list=lens_model_list_macro,lens_redshift_list=[zmacro])
+        lensModel = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
+
+        theta_x, theta_y = 1., 1.
+
+        x_subs, y_subs, alpha_x_subs, alpha_y_subs = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
+                                                                                alpha_y=theta_y, z_start=0,
+                                                                                z_stop=zmacro,
+                                                                                kwargs_lens=kwargs_lens)
+
+        x_out, y_out, alpha_x_out, alpha_y_out = lensModel_macro.ray_shooting_partial(x_subs, y_subs, alpha_x_subs, alpha_y_subs,
+                                                                                zmacro, zmacro, kwargs_macro,
+                                                                                include_z_start=True)
+        npt.assert_almost_equal(x_subs, x_out)
+        npt.assert_almost_equal(y_subs, y_out)
+
+        x_full, y_full, alpha_x_full, alpha_y_full = lensModel_full.ray_shooting_partial(0, 0, theta_x, theta_y, 0, zmacro,
+                                                                                         kwargs_lens_full)
+        npt.assert_almost_equal(x_full, x_out)
+        npt.assert_almost_equal(y_full, y_out)
+        npt.assert_almost_equal(alpha_x_full, alpha_x_out)
+        npt.assert_almost_equal(alpha_y_full, alpha_y_out)
+
+        x_src, y_src, _, _ = lensModel_full.ray_shooting_partial(x=x_out, y=y_out, alpha_x=alpha_x_out,
+                                                                                alpha_y=alpha_y_out,
+                                                                                z_start=zmacro,
+                                                                                z_stop=z_source,
+                                                                                kwargs_lens=kwargs_lens_full)
+
+
+        beta_x, beta_y = lensModel._co_moving2angle_source(x_src, y_src)
+        beta_x_true, beta_y_true = lensModel_full.ray_shooting(theta_x, theta_y, kwargs_lens_full)
+
+        npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
+        npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+
     def test_ray_shooting_partial(self):
         z_source = 1.5
         lens_model_list = ['SIS', 'SIS', 'SIS']
@@ -231,26 +290,26 @@ class TestMultiPlane(object):
 
     def test_position_convention(self):
 
-        z_source = 1.5
         lens_model_list = ['SIS', 'SIS','SIS', 'SIS']
-        redshift_list = [0.5, 0.5, 0.8, 0.7]
+        redshift_list = [0.5, 0.5, 0.9, 0.6]
 
         kwargs_lens = [{'theta_E': 1, 'center_x':0, 'center_y': 0},
                        {'theta_E': 0.4, 'center_x': 0, 'center_y': 0.2},
                        {'theta_E': 1, 'center_x': 1.8, 'center_y': -0.4},
-                       {'theta_E': 0.31, 'center_x': 1., 'center_y': 0.7}]
+                       {'theta_E': 0.41, 'center_x': 1., 'center_y': 0.7}]
 
-        index_list = [[1], [1,2]]
+        index_list = [[2,3], [3,2]]
 
         # compute the physical position given lensed position, and check that lensing computations
         # using the two different conventions and sets of kwargs agree
+
         for index in index_list:
 
             lensModel_observed = LensModel(lens_model_list=lens_model_list, multi_plane=True,
-                                           observed_convention_index=index, z_source=z_source,
+                                           observed_convention_index=index, z_source=1.5,
                                            lens_redshift_list=redshift_list)
             lensModel_physical = LensModel(lens_model_list=lens_model_list, multi_plane=True,
-                                           z_source=z_source, lens_redshift_list=redshift_list)
+                                           z_source=1.5, lens_redshift_list=redshift_list)
 
             multi = lensModel_observed.lens_model
             lensed, phys = LensedLocation(multi, index), PhysicalLocation()
@@ -274,11 +333,6 @@ class TestMultiPlane(object):
             betax2, betay2 = lensModel_physical.ray_shooting(0.5, 0.5, kwargs_lens_physical)
             npt.assert_almost_equal(betax1, betax2)
             npt.assert_almost_equal(betay1, betay2)
-
-            if len(index) == 1:
-                assert kwargs_lens_physical[index[0]]['center_x'] == kwargs_lens[index[0]]['center_x']
-                assert kwargs_lens_physical[index[0]]['center_y'] == kwargs_lens[index[0]]['center_y']
-
 
 class TestForegroundShear(object):
 

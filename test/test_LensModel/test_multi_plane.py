@@ -6,6 +6,7 @@ import pytest
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.constants as const
+from lenstronomy.LensModel.lensed_image_positions import LensedLocation, PhysicalLocation
 
 
 class TestMultiPlane(object):
@@ -227,6 +228,47 @@ class TestMultiPlane(object):
         beta_x_single, beta_y_single = lensModelSingle.ray_shooting(1, 1, kwargs_lens)
         npt.assert_almost_equal(beta_x, beta_x_single, decimal=10)
         npt.assert_almost_equal(beta_y, beta_y_single, decimal=10)
+
+    def test_position_convention(self):
+
+        z_source = 1.5
+        lens_model_list = ['SIS', 'SIS','SIS', 'SIS']
+        redshift_list = [0.5, 0.5, 0.71, 0.8]
+
+        kwargs_lens = [{'theta_E': 1, 'center_x':0, 'center_y': 0},
+                       {'theta_E': 0.4, 'center_x': 0, 'center_y': 0.2},
+                       {'theta_E': 1, 'center_x': 1.8, 'center_y': -0.4},
+                       {'theta_E': 0.31, 'center_x': 1., 'center_y': 0.7}]
+
+        index_list = [[1], [1,2]]
+
+        # compute the physical position given lensed position, and check that lensing computations
+        # using the two different conventions and sets of kwargs agree
+        for index in index_list:
+
+            lensModel_observed = LensModel(lens_model_list=lens_model_list, multi_plane=True,
+                                           observed_convention_index=index, z_source=z_source,
+                                           lens_redshift_list=redshift_list)
+            lensModel_physical = LensModel(lens_model_list=lens_model_list, multi_plane=True,
+                                           z_source=z_source, lens_redshift_list=redshift_list)
+
+            kwargs_lens_physical = lensModel_observed.lens_model._convention(kwargs_lens)
+
+            fxx, fyy, fxy, fyx = lensModel_observed.hessian(0.5, 0.5, kwargs_lens)
+            fxx2, fyy2, fxy2, fyx2 = lensModel_physical.hessian(0.5, 0.5, kwargs_lens_physical)
+            npt.assert_almost_equal(fxx, fxx2)
+            npt.assert_almost_equal(fxy, fxy2)
+
+            betax1, betay1 = lensModel_observed.ray_shooting(0.5, 0.5, kwargs_lens)
+            betax2, betay2 = lensModel_physical.ray_shooting(0.5, 0.5, kwargs_lens_physical)
+            npt.assert_almost_equal(betax1, betax2)
+            npt.assert_almost_equal(betay1, betay2)
+
+            if len(index) == 1:
+                assert kwargs_lens_physical[index[0]]['center_x'] == kwargs_lens[index[0]]['center_x']
+                assert kwargs_lens_physical[index[0]]['center_y'] == kwargs_lens[index[0]]['center_y']
+
+
 
 
 class TestForegroundShear(object):

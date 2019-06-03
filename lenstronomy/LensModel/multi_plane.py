@@ -2,6 +2,7 @@ import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
+from lenstronomy.LensModel.lensed_image_positions import LensedLocation, PhysicalLocation
 
 from copy import deepcopy
 
@@ -15,7 +16,7 @@ class MultiPlane(object):
     """
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
-                 position_convention = False):
+                 observed_convention_index = False):
         """
 
         :param cosmo: instance of astropy.cosmology
@@ -55,12 +56,15 @@ class MultiPlane(object):
         if np.abs(sum_partial - self._T_z_source) > 0.1:
             print("Numerics in multi-plane compromised by too narrow spacing of too many redshift bins")
 
-        self._position_convention = position_convention
+        if observed_convention_index is False:
+            self._inds = None
+            self._convention = PhysicalLocation()
+        else:
+            assert isinstance(observed_convention_index, list)
+            self._inds = observed_convention_index
+            self._convention = LensedLocation(self, observed_convention_index)
 
-        if isinstance(position_convention, list):
-            assert len(position_convention) == len(lens_model_list)
-
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
+    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None, check_convention = True):
         """
         ray-tracing (backwards light cone)
 
@@ -69,24 +73,28 @@ class MultiPlane(object):
         :param kwargs_lens:
         :return: angles in the source plane
         """
+
         x = np.zeros_like(theta_x)
         y = np.zeros_like(theta_y)
         alpha_x = theta_x
         alpha_y = theta_y
         i = -1
 
+        if check_convention:
+            kwargs_lens = self._convention(kwargs_lens)
+
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
             if delta_T > 0:
                 x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
             alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-        delta_T = self._T_ij_list[i+1]
+        delta_T = self._T_ij_list[i + 1]
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False,
-                             include_z_start=False):
+                             include_z_start=False, check_convention = True):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshfit z_stop
@@ -103,8 +111,13 @@ class MultiPlane(object):
         """
         z_lens_last = z_start
         first_deflector = True
+
+        if check_convention:
+            kwargs_lens = self._convention(kwargs_lens)
+
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
+
             if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
             #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
@@ -119,6 +132,7 @@ class MultiPlane(object):
                     delta_T = self._T_ij_list[i]
                 x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+
                 z_lens_last = z_lens
         if keep_range is True:
             if not hasattr(self, '_cosmo_bkg_T_stop'):
@@ -130,7 +144,7 @@ class MultiPlane(object):
         return x, y, alpha_x, alpha_y
 
     def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False):
+                             include_z_start=False, check_convention = True):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshfit z_stop.
@@ -158,6 +172,9 @@ class MultiPlane(object):
         Tz_list.append(self._cosmo_bkg.T_xy(0, z_start))
 
         current_z = z_lens_last
+
+        if check_convention:
+            kwargs_lens = self._convention(kwargs_lens)
 
         for i, idex in enumerate(self._sorted_redshift_index):
 
@@ -217,6 +234,9 @@ class MultiPlane(object):
         alpha_x = theta_x
         alpha_y = theta_y
         i = 0
+
+        kwargs_lens = self._convention(kwargs_lens)
+
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._redshift_list[idex]
             delta_T = self._T_ij_list[i]
@@ -233,7 +253,7 @@ class MultiPlane(object):
         dt_geo -= self._geometrical_delay(beta_x, beta_y, self._T_z_source)
         return dt_grav + dt_geo
 
-    def alpha(self, theta_x, theta_y, kwargs_lens, k=None):
+    def alpha(self, theta_x, theta_y, kwargs_lens, k=None, check_convention = True):
         """
         reduced deflection angle
 
@@ -242,7 +262,8 @@ class MultiPlane(object):
         :param kwargs_lens: lens model kwargs
         :return:
         """
-        beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens)
+        beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens,
+                                           check_convention=check_convention)
         alpha_x = theta_x - beta_x
         alpha_y = theta_y - beta_y
         return alpha_x, alpha_y
@@ -260,10 +281,12 @@ class MultiPlane(object):
         :return: f_xx, f_xy, f_yx, f_yy
         """
 
-        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens)
+        kwargs_lens = self._convention(kwargs_lens)
 
-        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens)
+        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention = False)
+
+        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens, check_convention = False)
+        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens, check_convention = False)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
         dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
@@ -398,34 +421,7 @@ class MultiPlane(object):
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, idex)
-        print(kwargs_lens)
-        # specify what convention to use explicitly with the key word arguments
-        if 'center_x_lensed' in kwargs_lens.keys():
-            assert 'center_y_lensed' in kwargs_lens.keys()
-
-            # build a new keyword dictionary
-            new_kwargs = deepcopy(kwargs_lens)
-
-            # ray trace to find the physical position
-            zstart = 0
-            zstop = self._redshift_list[self._sorted_redshift_index[idex]]
-            _, _, true_thetax, true_thetay = self.ray_shooting_partial(0, 0,
-                               kwargs_lens['center_x_lensed'], kwargs_lens['center_y_lensed'],
-                                                        zstart, zstop, kwargs_lens)
-
-            # update the position and delete the unused key words
-            new_kwargs.update({'center_x': true_thetax, 'center_y': true_thetay})
-            del new_kwargs['center_x_lensed']
-            del new_kwargs['center_y_lensed']
-
-            # compute the deflections using the convention of physical position
-            alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, new_kwargs,
-                                                              k=self._sorted_redshift_index[idex])
-
-        else:
-            alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens,
-                                                              k=self._sorted_redshift_index[idex])
-
+        alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens,k=self._sorted_redshift_index[idex])
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, idex)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, idex)
         alpha_x_new = alpha_x - alpha_x_phys

@@ -78,6 +78,9 @@ class MultiPlane(object):
         :return: angles in the source plane
         """
 
+        if check_convention:
+            kwargs_lens = self._convention(kwargs_lens)
+
         x = np.zeros_like(theta_x)
         y = np.zeros_like(theta_y)
         alpha_x = theta_x
@@ -284,6 +287,8 @@ class MultiPlane(object):
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
+
+        kwargs_lens = self._convention(kwargs_lens)
 
         alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention = False)
 

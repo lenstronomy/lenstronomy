@@ -7,6 +7,8 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 import numpy as np
 
+from TDLMCpipeline.Pipeline.fitting_sampling import multinest_sampling
+
 
 class FittingSequence(object):
     """
@@ -74,6 +76,11 @@ class FittingSequence(object):
                     kwargs['init_samples'] = self._mcmc_init_samples
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
                 self._mcmc_init_samples = samples_mcmc
+            elif fitting_type == 'MultiNest':
+                samples, _, logZ, logZ_err, param_names = self.multinest_sampling(**kwargs)
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logZ  # TODO : really  ???
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)

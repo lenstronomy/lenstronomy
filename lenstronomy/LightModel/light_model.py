@@ -10,10 +10,6 @@ class LightModel(object):
     """
     class to handle source and lens light models
     """
-<<<<<<< HEAD
-    def __init__(self, light_model_list, smoothing=0.0000001, 
-                 file_path=None, data_class=None):
-=======
     def __init__(self, light_model_list, deflection_scaling_list=None, source_redshift_list=None, smoothing=0.0000001):
         """
 
@@ -23,7 +19,6 @@ class LightModel(object):
         :param source_redshift_list: list of redshifts of the model components
         :param smoothing: smoothing factor for certain models (deprecated)
         """
->>>>>>> upstream/master
         self.profile_type_list = light_model_list
         self.deflection_scaling_list = deflection_scaling_list
         self.redshift_list = source_redshift_list

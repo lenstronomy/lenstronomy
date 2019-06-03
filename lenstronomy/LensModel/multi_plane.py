@@ -2,7 +2,7 @@ import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
-from lenstronomy.LensModel.lensed_image_positions import LensedLocation, PhysicalLocation
+from lenstronomy.LensModel.image_position_convention import LensedLocation, PhysicalLocation
 
 from copy import deepcopy
 

@@ -33,11 +33,12 @@ class MultiPlaneLensing(object):
 
         self._T_z_source = full_lensmodel.lens_model._T_z_source
 
-        macromodel_lensmodel, macro_args, halo_lensmodel, halo_args = \
-            self._split_lensmodel(full_lensmodel,lensmodel_params,macro_indicies,numerical_alpha_class)
-        self._macro_indicies = macro_indicies
-
         self._observed_convention_index = observed_convention_index
+
+        macromodel_lensmodel, macro_args, halo_lensmodel, halo_args = \
+            self._split_lensmodel(full_lensmodel,lensmodel_params,macro_indicies,numerical_alpha_class,
+                                  observed_convention_index)
+        self._macro_indicies = macro_indicies
 
         if 'precomputed_rays' in optimizer_kwargs:
             self._foreground = Foreground(halo_lensmodel, macromodel_lensmodel, self._z_macro, x_pos, y_pos,
@@ -74,7 +75,7 @@ class MultiPlaneLensing(object):
                                                              force_compute=True)
 
         x_source, y_source, _, _ = self._full_lensmodel.lens_model.\
-            ray_shooting_partial(x, y, alphax, alphay, self._z_macro, self._z_source, kwargs_lens)
+            ray_shooting_partial(x, y, alphax, alphay, self._z_macro, self._z_source, kwargs_lens, check_convention=False)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
@@ -114,12 +115,13 @@ class MultiPlaneLensing(object):
 
         # get the deflection angles from foreground and main lens plane subhalos (once)
 
+        kwargs_lens = self.set_kwargs(macromodel_args + self._halo_args)
+
         x, y, alphax, alphay = self._foreground.ray_shooting(self._halo_args, macromodel_args, offset_index, thetax, thetay,
                                                              force_compute=force_compute)
 
-        kwargs_lens = macromodel_args + self._halo_args
         x_source, y_source, _, _ = self._full_lensmodel.lens_model.ray_shooting_partial(x, y, alphax, alphay,
-                                              self._z_macro, self._z_source, kwargs_lens)
+                                              self._z_macro, self._z_source, kwargs_lens, check_convention=False)
 
         betax, betay = x_source * self._T_z_source ** -1, y_source * self._T_z_source ** -1
 
@@ -127,14 +129,6 @@ class MultiPlaneLensing(object):
             self._beta_x_last, self._beta_y_last = betax, betay
 
         return betax, betay
-
-    def _ray_shooting_steps(self, kwargs_lens):
-
-        x, y, redshifts, Tz = self._full_lensmodel.lens_model.\
-            ray_shooting_partial_steps(np.zeros_like(self._x_pos), np.zeros_like(self._y_pos), self._x_pos,
-                                       self._y_pos, 0, self._z_source, kwargs_lens)
-
-        return x, y, redshifts, Tz
 
     def _magnification_fast(self, macromodel_args):
 
@@ -187,7 +181,8 @@ class MultiPlaneLensing(object):
 
         return alpha_x, alpha_y
 
-    def _split_lensmodel(self, lensmodel, lensmodel_args, macro_indicies, numerical_alpha_class):
+    def _split_lensmodel(self, lensmodel, lensmodel_args, macro_indicies, numerical_alpha_class,
+                         observed_convention_inds):
 
         """
 
@@ -202,6 +197,13 @@ class MultiPlaneLensing(object):
 
         halo_names, halo_redshifts, halo_args = [], [], []
 
+        if observed_convention_inds is not False:
+            convention_inds = []
+        else:
+            convention_inds = False
+
+        count = 0
+
         for i in range(0, len(lensmodel.lens_model_list)):
 
             z = lensmodel.redshift_list[i]
@@ -211,6 +213,9 @@ class MultiPlaneLensing(object):
                 halo_names.append(lensmodel.lens_model_list[i])
                 halo_redshifts.append(z)
                 halo_args.append(lensmodel_args[i])
+                if observed_convention_inds is not False:
+                    if i in observed_convention_inds: convention_inds.append(count)
+                count += 1
 
             else:
 
@@ -224,7 +229,7 @@ class MultiPlaneLensing(object):
 
         halo_lensmodel = LensModel(lens_model_list=halo_names, lens_redshift_list=halo_redshifts,
                                    cosmo=self._astropy_instance, multi_plane=True, z_source=self._z_source,
-                                   numerical_alpha_class = numerical_alpha_class)
+                                   numerical_alpha_class = numerical_alpha_class, observed_convention_index=convention_inds)
 
         return macromodel, macro_args, halo_lensmodel, halo_args
 

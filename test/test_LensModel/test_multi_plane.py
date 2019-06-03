@@ -6,7 +6,7 @@ import pytest
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.constants as const
-from lenstronomy.LensModel.lensed_image_positions import LensedLocation, PhysicalLocation
+from lenstronomy.LensModel.image_position_convention import LensedLocation, PhysicalLocation
 
 
 class TestMultiPlane(object):
@@ -233,7 +233,7 @@ class TestMultiPlane(object):
 
         z_source = 1.5
         lens_model_list = ['SIS', 'SIS','SIS', 'SIS']
-        redshift_list = [0.5, 0.5, 0.71, 0.8]
+        redshift_list = [0.5, 0.5, 0.8, 0.7]
 
         kwargs_lens = [{'theta_E': 1, 'center_x':0, 'center_y': 0},
                        {'theta_E': 0.4, 'center_x': 0, 'center_y': 0.2},
@@ -252,7 +252,18 @@ class TestMultiPlane(object):
             lensModel_physical = LensModel(lens_model_list=lens_model_list, multi_plane=True,
                                            z_source=z_source, lens_redshift_list=redshift_list)
 
+            multi = lensModel_observed.lens_model
+            lensed, phys = LensedLocation(multi, index), PhysicalLocation()
+
             kwargs_lens_physical = lensModel_observed.lens_model._convention(kwargs_lens)
+
+            kwargs_phys, kwargs_lensed = phys(kwargs_lens), lensed(kwargs_lens)
+
+            for j, lensed_kwargs in enumerate(kwargs_lensed):
+
+                for ki in lensed_kwargs.keys():
+                    assert lensed_kwargs[ki] == kwargs_lens_physical[j][ki]
+                    assert kwargs_phys[j][ki] == kwargs_lens[j][ki]
 
             fxx, fyy, fxy, fyx = lensModel_observed.hessian(0.5, 0.5, kwargs_lens)
             fxx2, fyy2, fxy2, fyx2 = lensModel_physical.hessian(0.5, 0.5, kwargs_lens_physical)
@@ -267,8 +278,6 @@ class TestMultiPlane(object):
             if len(index) == 1:
                 assert kwargs_lens_physical[index[0]]['center_x'] == kwargs_lens[index[0]]['center_x']
                 assert kwargs_lens_physical[index[0]]['center_y'] == kwargs_lens[index[0]]['center_y']
-
-
 
 
 class TestForegroundShear(object):
@@ -327,7 +336,6 @@ class TestForegroundShear(object):
         dt_simple = t_simple[0] - t_simple[1]
         print(t_simple, t_multi)
         npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -170,7 +170,7 @@ class TestMultiPlaneOptimizer(object):
                                   1.5,0.5,self.cosmo,[0,1], {}, None)
 
         macromodel_lensmodel, macro_args, halos_lensmodel, halos_args = \
-            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, [0, 1], None)
+            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, [0, 1], None, self.convention_idx)
 
         assert macro_args == self.kwargs_lens_simple
 
@@ -325,8 +325,7 @@ class TestMultiPlaneOptimizer(object):
         betax, betay = lensModel_opt._ray_shooting_fast(self.kwargs_lens_full[0:2], offset_index=0,
                                                         thetax=self.x_pos_simple[0], thetay=self.y_pos_simple[0], force_compute=True)
 
-        npt.assert_almost_equal(betax, betaxtrue, 4)
-        npt.assert_almost_equal(betay, betaytrue, 4)
-
+        npt.assert_almost_equal(betax, betaxtrue, 5)
+        npt.assert_almost_equal(betay, betaytrue, 5)
 if __name__ == '__main__':
     pytest.main()

@@ -1,5 +1,6 @@
 __author__ = 'dgilman'
 
+import numpy as np
 from copy import deepcopy
 
 class PhysicalLocation(object):
@@ -14,7 +15,18 @@ class LensedLocation(object):
 
         self._multiplane = multiplane_instance
 
-        self._inds = index
+        if len(index) == 1:
+            self._inds = index
+        else:
+            inds = np.array(index)
+            z = []
+
+            for ind in inds:
+                z.append(multiplane_instance._redshift_list[ind])
+
+            sort = np.argsort(z)
+
+            self._inds = inds[sort]
 
     def __call__(self, kwargs_lens):
 

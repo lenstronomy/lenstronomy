@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import copy
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
@@ -45,19 +47,21 @@ class Param(object):
     4. Lens model solver is applied
     5. Joint source and point source is applied
 
-    'fix_foreground_shear': bool, if True, fixes by default the foreground shear values
-    'fix_gamma': bool, if True, fixes by default the power-law slop of lens profiles
-    'fix_shapelet_beta': bool, if True, fixes the shapelet scale beta
+
     """
 
-    def __init__(self, kwargs_model, kwargs_constraints,
+    def __init__(self, kwargs_model,
                  kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
                  kwargs_fixed_cosmo=None,
                  kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,
                  kwargs_lower_cosmo=None,
                  kwargs_upper_lens=None, kwargs_upper_source=None, kwargs_upper_lens_light=None, kwargs_upper_ps=None,
                  kwargs_upper_cosmo=None,
-                 kwargs_lens_init=None, linear_solver=True):
+                 kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
+                 joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
+                 joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
+                 num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
+                 source_size=False):
         """
 
         :return:
@@ -67,9 +71,13 @@ class Param(object):
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
-        self._lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
-                                    redshift_list=kwargs_model.get('redshift_list', None),
-                                    multi_plane=kwargs_model.get('multi_plane', False))
+        lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
+                              lens_redshift_list=kwargs_model.get('redshift_list', None),
+                              multi_plane=kwargs_model.get('multi_plane', False))
+        sourceModel = LightModel(light_model_list=self._source_light_model_list,
+                                 deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
+                                 source_redshift_list=kwargs_model.get('source_redshift_list', None))
+        self._image2SourceMapping = Image2SourceMapping(lensModel=lensModel, sourceModel=sourceModel)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
@@ -82,45 +90,47 @@ class Param(object):
         if kwargs_fixed_cosmo is None:
             kwargs_fixed_cosmo = {}
 
+        self._joint_lens_with_lens = joint_lens_with_lens
+        self._joint_lens_light_with_lens_light = joint_lens_light_with_lens_light
+        self._joint_source_with_source = joint_source_with_source
 
-
-        self._point_source_offset = kwargs_constraints.get('point_source_offset', False)
-        self._joint_lens_with_lens = kwargs_constraints.get('joint_lens_with_lens', [])
-        self._joint_lens_light_with_lens_light = kwargs_constraints.get('joint_lens_light_with_lens_light', [])
-        self._joint_source_with_source = kwargs_constraints.get('joint_source_with_source', [])
-
-        self._joint_lens_with_light = kwargs_constraints.get('joint_lens_with_light', [])
-        self._joint_source_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_source_with_point_source', []))
+        self._joint_lens_with_light = joint_lens_with_light
+        self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
         for param_list in self._joint_source_with_point_source:
             if len(param_list) == 2:
                 param_list.append(['center_x', 'center_y'])
-        self._joint_lens_light_with_point_source = copy.deepcopy(kwargs_constraints.get('joint_lens_light_with_point_source', []))
+        self._joint_lens_light_with_point_source = copy.deepcopy(joint_lens_light_with_point_source)
         for param_list in self._joint_lens_light_with_point_source:
             if len(param_list) == 2:
                 param_list.append(['center_x', 'center_y'])
-        self._fix_foreground_shear = kwargs_constraints.get('fix_foreground_shear', False)
-        self._fix_gamma = kwargs_constraints.get('fix_gamma', False)
-        self._mass_scaling = kwargs_constraints.get('mass_scaling', False)
-        self._mass_scaling_list = kwargs_constraints.get('mass_scaling_list', [False] * len(self._lens_model_list))
-        if self._mass_scaling is True:
-            self._num_scale_factor = np.max(self._mass_scaling_list) + 1
+        if mass_scaling_list is None:
+            mass_scaling_list = [False] * len(self._lens_model_list)
+        self._mass_scaling_list = mass_scaling_list
+        if 1 in self._mass_scaling_list:
+            self._num_scale_factor = np.max(self._mass_scaling_list)
+            self._mass_scaling = True
         else:
             self._num_scale_factor = 0
-        num_point_source_list = kwargs_constraints.get('num_point_source_list', [1] * len(self._point_source_model_list))
+            self._mass_scaling = False
+        self._point_source_offset = point_source_offset
+        if num_point_source_list is None:
+            num_point_source_list = [1] * len(self._point_source_model_list)
 
         # Attention: if joint coordinates with other source profiles, only indicate one as bool
-        self._image_plane_source_list = kwargs_constraints.get('image_plane_source_list', [False] * len(self._source_light_model_list))
+        if image_plane_source_list is None:
+            image_plane_source_list = [False] * len(self._source_light_model_list)
+        self._image_plane_source_list = image_plane_source_list
 
         try:
             self._num_images = num_point_source_list[0]
         except:
             self._num_images = 0
-        self._solver_type = kwargs_constraints.get('solver_type', 'NONE')
+        self._solver_type = solver_type
         if self._solver_type == 'NONE':
             self._solver = False
         else:
             self._solver = True
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lensModel,
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=lensModel,
                                          num_images=self._num_images)
 
         # fix parameters joint within the same model types
@@ -147,10 +157,11 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.cosmoParams = CosmoParam(kwargs_model.get('cosmo_type', None), mass_scaling=self._mass_scaling,
+        self.cosmoParams = CosmoParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
                                       kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
                                       kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
-                                      point_source_offset=self._point_source_offset, num_images=self._num_images)
+                                      point_source_offset=self._point_source_offset, num_images=self._num_images,
+                                      source_size=source_size)
 
     @property
     def num_point_source_images(self):
@@ -268,7 +279,8 @@ class Param(object):
         for i, kwargs in enumerate(kwargs_source_copy):
             if self._image_plane_source_list[i] is True and not image_plane:
                 if 'center_x' in kwargs:
-                    x_mapped, y_mapped = self._lensModel.ray_shooting(kwargs['center_x'], kwargs['center_y'], kwargs_lens)
+                    x_mapped, y_mapped = self._image2SourceMapping.image2source(kwargs['center_x'], kwargs['center_y'],
+                                                                                kwargs_lens, idex_source=i)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
         return kwargs_source_copy
@@ -284,7 +296,8 @@ class Param(object):
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
                 x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
-                x_mapped, y_mapped = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens_list)
+                x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
+                                                                            idex_source=k_source)
             for param_name in param_list:
                 if param_name == 'center_x':
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)
@@ -358,8 +371,7 @@ class Param(object):
             scale_factor_list = 1. / np.array(kwargs_cosmo['scale_factor'])
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
-                scale_factor = scale_factor_list[self._mass_scaling_list[i]]
-                print(scale_factor, 'test')
+                scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor
                 elif 'theta_Rs' in kwargs:
@@ -376,17 +388,6 @@ class Param(object):
             if kwargs_init is None:
                 raise ValueError("kwargs_lens_init must be specified when the point source solver is enabled!")
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
-        if self._fix_foreground_shear is True:
-            for i, model in enumerate(self._lensModel.lens_model_list):
-                if model == 'FOREGROUND_SHEAR':
-                    if 'e1' not in kwargs_fixed_update[i]:
-                        kwargs_fixed_update[i]['e1'] = kwargs_init[i]['e1']
-                    if 'e2' not in kwargs_fixed_update[i]:
-                        kwargs_fixed_update[i]['e2'] = kwargs_init[i]['e2']
-        if self._fix_gamma is True:
-            for i, model in enumerate(self._lensModel.lens_model_list):
-                if 'gamma' in kwargs_init[i] and 'gamma' not in kwargs_fixed[i]:
-                    kwargs_fixed_update[i]['gamma'] = kwargs_init[i]['gamma']
         return kwargs_fixed_update
 
     def check_solver(self, kwargs_lens, kwargs_ps, kwargs_cosmo={}):
@@ -432,7 +433,7 @@ class Param(object):
 
         :return:
         """
-        num, list = self.num_param()
+        num, param_list = self.num_param()
         num_linear = self.num_param_linear()
 
         print("The following model options are chosen:")
@@ -455,5 +456,5 @@ class Param(object):
         print("Joint source with point source:", self._joint_source_with_point_source)
         print("===================")
         print("Number of non-linear parameters being sampled: ", num)
-        print("Parameters being sampled: ", list)
+        print("Parameters being sampled: ", param_list)
         print("Number of linear parameters being solved for: ", num_linear)

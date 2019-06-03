@@ -46,7 +46,6 @@ class TestNumerics(object):
         npt.assert_almost_equal(f_yx_num, f_yx, decimal=5)
         npt.assert_almost_equal(f_yy_num, f_yy, decimal=5)
 
-
 class TestNumericsProfile(object):
     """
     tests the second derivatives of various lens models
@@ -59,7 +58,7 @@ class TestNumericsProfile(object):
         lensModelNum.diff = 0.000001
         #x, y = 1., 2.
         x = np.linspace(start=0.1, stop=8, num=10)
-        y = 0
+        y = np.zeros_like(x)
         lensModel = LensModel(lens_model)
         f_x, f_y = lensModel.lens_model.alpha(x, y, [kwargs])
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
@@ -103,9 +102,15 @@ class TestNumericsProfile(object):
         lens_model = ['GAUSSIAN_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_gausian_kappa_ellipse(self):
+    def test_gausian_ellipse_kappa(self):
+        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x':
+            0., 'center_y': 0.}
+        lens_model = ['GAUSSIAN_ELLIPSE_KAPPA']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_gausian_ellipse_potential(self):
         kwargs = {'amp': 1., 'sigma': 2., 'e1': .1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
-        lens_model = ['GAUSSIAN_KAPPA_ELLIPSE']
+        lens_model = ['GAUSSIAN_ELLIPSE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
 
     def test_external_shear(self):
@@ -153,9 +158,15 @@ class TestNumericsProfile(object):
         lens_model = ['SERSIC']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_sersic_ellipse(self):
+    def test_sersic_ellipse_gauss_dec(self):
+        kwargs = {'n_sersic': 1., 'R_sersic': 2., 'k_eff': 1., 'e1': 0.04,
+                  'e2': 0.}
+        lens_model = ['SERSIC_ELLIPSE_GAUSS_DEC']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_sersic_ellipse_pot(self):
         kwargs = {'n_sersic': 2., 'R_sersic': 0.5, 'k_eff': 0.3, 'e1': 0.04, 'e2': -0.0}
-        lens_model = ['SERSIC_ELLIPSE']
+        lens_model = ['SERSIC_ELLIPSE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
 
     def test_shapelets_pot_2(self):
@@ -214,6 +225,17 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
         kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core':5}
         self.assert_differentials(lens_model, kwargs)
+
+    def test_cnfw(self):
+        kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.3}
+        lens_model = ['CNFW']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_tnfw(self):
+        kwargs={'Rs':2, 'theta_Rs': 1, 'r_trunc':7}
+        lens_model = ['TNFW']
+        self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

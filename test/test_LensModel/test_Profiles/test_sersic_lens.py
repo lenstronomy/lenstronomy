@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 import lenstronomy.Util.derivative_util as calc_util
 from lenstronomy.LensModel.Profiles.sersic import Sersic
 from lenstronomy.LightModel.Profiles.sersic import Sersic as Sersic_light
+from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
+from lenstronomy.Util.param_util import ellipticity2phi_q
 
 import numpy as np
 import pytest
@@ -14,10 +16,13 @@ class TestSersic(object):
     tests the Gaussian methods
     """
     def setup(self):
+
+        self.sersic_2 = SersicEllipseKappa()
         self.sersic = Sersic()
         self.sersic_light = Sersic_light()
 
     def test_function(self):
+
         x = 1
         y = 2
         n_sersic = 2.
@@ -34,6 +39,7 @@ class TestSersic(object):
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.sersic.function(x, y, n_sersic, R_sersic, k_eff)
+
         npt.assert_almost_equal(values[0], 1.0272982586319199, decimal=10)
         npt.assert_almost_equal(values[1], 1.3318743892966658, decimal=10)
         npt.assert_almost_equal(values[2], 1.584299393114988, decimal=10)
@@ -45,21 +51,39 @@ class TestSersic(object):
         R_sersic = 1.
         k_eff = 0.2
         f_x, f_y = self.sersic.derivatives(x, y, n_sersic, R_sersic, k_eff)
+        f_x2, f_y2 = self.sersic_2.derivatives(x, y, n_sersic, R_sersic, k_eff, 0, 0.00000001)
+
         assert f_x[0] == 0.16556078301997193
         assert f_y[0] == 0.33112156603994386
+        npt.assert_almost_equal(f_x2[0], f_x[0])
+        npt.assert_almost_equal(f_y2[0], f_y[0])
+
         x = np.array([0])
         y = np.array([0])
         f_x, f_y = self.sersic.derivatives(x, y, n_sersic, R_sersic, k_eff)
+        f_x2, f_y2 = self.sersic_2.derivatives(x, y, n_sersic, R_sersic, k_eff, 0, 0.00000001)
         assert f_x[0] == 0
         assert f_y[0] == 0
+        npt.assert_almost_equal(f_x2[0], f_x[0])
+        npt.assert_almost_equal(f_y2[0], f_y[0])
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.sersic.derivatives(x, y, n_sersic, R_sersic, k_eff)
+        values2 = self.sersic_2.derivatives(x, y, n_sersic, R_sersic, k_eff, 0, 0.00000001)
         assert values[0][0] == 0.16556078301997193
         assert values[1][0] == 0.33112156603994386
         assert values[0][1] == 0.2772992378623737
         assert values[1][1] == 0.092433079287457892
+        npt.assert_almost_equal(values2[0][0], values[0][0])
+        npt.assert_almost_equal(values2[1][0], values[1][0])
+        npt.assert_almost_equal(values2[0][1], values[0][1])
+        npt.assert_almost_equal(values2[1][1], values[1][1])
+
+        values2 = self.sersic_2.derivatives(0.3, -0.2, n_sersic, R_sersic, k_eff, 0, 0.00000001)
+        values = self.sersic.derivatives(0.3, -0.2, n_sersic, R_sersic, k_eff, 0, 0.00000001)
+        npt.assert_almost_equal(values2[0], values[0])
+        npt.assert_almost_equal(values2[1], values[1])
 
     def test_differentails(self):
         x_, y_ = 1., 1
@@ -67,6 +91,7 @@ class TestSersic(object):
         R_sersic = 1.
         k_eff = 0.2
         r = np.sqrt(x_**2 + y_**2)
+
         d_alpha_dr = self.sersic.d_alpha_dr(x_, y_, n_sersic, R_sersic, k_eff)
         alpha = self.sersic.alpha_abs(x_, y_, n_sersic, R_sersic, k_eff)
 
@@ -100,6 +125,11 @@ class TestSersic(object):
         npt.assert_almost_equal(values[0][1], -0.053273787681591328, decimal=10)
         npt.assert_almost_equal(values[1][1], 0.076243427402007985, decimal=10)
         npt.assert_almost_equal(values[2][1], -0.048568955656349749, decimal=10)
+
+        f_xx2, f_yy2, f_xy2 = self.sersic_2.hessian(x, y, n_sersic, R_sersic, k_eff, 0.0000001, 0)
+        npt.assert_almost_equal(f_xx2, values[0])
+        npt.assert_almost_equal(f_yy2, values[1], decimal=6)
+        npt.assert_almost_equal(f_xy2, values[2], decimal=6)
 
     def test_alpha_abs(self):
         x = 1.
@@ -168,13 +198,21 @@ class TestSersic(object):
         kappa /= kappa[0]
         npt.assert_almost_equal(flux[1], kappa[1], decimal=5)
 
+        xvalues = np.linspace(0.5, 3., 100)
+
+        e1, e2 = 0.4, 0.
+        q = ellipticity2phi_q(e1, e2)[1]
+        kappa_ellipse = self.sersic_2.projected_mass(xvalues, 0, q, n_sersic, R_sersic, k_eff)
+        fxx, fyy, _ = self.sersic_2.hessian(xvalues, 0, n_sersic, R_sersic, k_eff, e1, e2)
+
+        npt.assert_almost_equal(kappa_ellipse, 0.5*(fxx + fyy), decimal=5)
+
     def test_sersic_util(self):
         n = 1.
         Re = 2.
         k, bn = self.sersic.k_bn(n, Re)
         Re_new = self.sersic.k_Re(n, k)
         assert Re == Re_new
-
 
 if __name__ == '__main__':
     pytest.main()

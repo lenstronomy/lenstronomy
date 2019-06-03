@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.4.3 documentation</title>
+    <title>lenstronomy.LightModel.light_model &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,20 +41,30 @@
   <h1>Source code for lenstronomy.LightModel.light_model</h1><div class="highlight"><pre>
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 
-<span class="c1">#this file contains a class which describes the surface brightness of the lens light</span>
+<span class="c1">#this file contains a class which describes the surface brightness of the light models</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 
 <div class="viewcode-block" id="LightModel"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel">[docs]</a><span class="k">class</span> <span class="nc">LightModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle source and lens light models</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">light_model_list</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">light_model_list</span><span class="p">,</span> <span class="n">deflection_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param light_model_list: list of light models</span>
+<span class="sd">        :param deflection_scaling_list: list of floats, rescales the original reduced deflection angles from the lens model</span>
+<span class="sd">        to enable different models to be placed at different optical (redshift) distances. None means they are all</span>
+<span class="sd">        :param source_redshift_list: list of redshifts of the model components</span>
+<span class="sd">        :param smoothing: smoothing factor for certain models (deprecated)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span> <span class="o">=</span> <span class="n">light_model_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deflection_scaling_list</span> <span class="o">=</span> <span class="n">deflection_scaling_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redshift_list</span> <span class="o">=</span> <span class="n">source_redshift_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">profile_type</span> <span class="ow">in</span> <span class="n">light_model_list</span><span class="p">:</span>
-            <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">if</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Gaussian</span><span class="p">())</span>
@@ -71,20 +81,26 @@
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">Sersic</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sersic</span><span class="p">(</span><span class="n">smoothing</span><span class="o">=</span><span class="n">smoothing</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">Sersic_elliptic</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sersic_elliptic</span><span class="p">(</span><span class="n">smoothing</span><span class="o">=</span><span class="n">smoothing</span><span class="p">))</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">SersicElliptic</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SersicElliptic</span><span class="p">(</span><span class="n">smoothing</span><span class="o">=</span><span class="n">smoothing</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">CoreSersic</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoreSersic</span><span class="p">(</span><span class="n">smoothing</span><span class="o">=</span><span class="n">smoothing</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.shapelets</span> <span class="k">import</span> <span class="n">ShapeletSet</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ShapeletSet</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.shapelets_polar</span> <span class="k">import</span> <span class="n">ShapeletSetPolar</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ShapeletSetPolar</span><span class="p">(</span><span class="n">exponential</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.shapelets_polar</span> <span class="k">import</span> <span class="n">ShapeletSetPolar</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ShapeletSetPolar</span><span class="p">(</span><span class="n">exponential</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.hernquist</span> <span class="k">import</span> <span class="n">Hernquist</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hernquist</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.hernquist</span> <span class="k">import</span> <span class="n">Hernquist_Ellipse</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Hernquist_Ellipse</span><span class="p">())</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.hernquist</span> <span class="k">import</span> <span class="n">HernquistEllipse</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HernquistEllipse</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.p_jaffe</span> <span class="k">import</span> <span class="n">PJaffe</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PJaffe</span><span class="p">())</span>
@@ -106,6 +122,9 @@
             <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">DoubleChameleon</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DoubleChameleon</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.interpolation</span> <span class="k">import</span> <span class="n">Interpol</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Interpol</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Warning! No light model of type&#39;</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">,</span> <span class="s1">&#39; found!&#39;</span><span class="p">)</span>
 
@@ -154,7 +173,7 @@
                                          <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">flux</span></div>
 
-<div class="viewcode-block" id="LightModel.functions_split"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.functions_split">[docs]</a>    <span class="k">def</span> <span class="nf">functions_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+<div class="viewcode-block" id="LightModel.functions_split"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.functions_split">[docs]</a>    <span class="k">def</span> <span class="nf">functions_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
@@ -164,33 +183,63 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">]:</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+                    <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                    <span class="n">response</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)]</span>
+                    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">])</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num</span><span class="p">)}</span>
+                    <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                    <span class="n">response</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">function_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
+                    <span class="n">n</span> <span class="o">+=</span> <span class="n">num</span>
+                <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">n_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_max&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
+                        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_param</span><span class="p">)}</span>
+                    <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                    <span class="n">response</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">function_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
+                    <span class="n">n</span> <span class="o">+=</span> <span class="n">num_param</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;model type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="n">n</span></div>
+
+<div class="viewcode-block" id="LightModel.num_param_linear"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.num_param_linear">[docs]</a>    <span class="k">def</span> <span class="nf">num_param_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: number of linear basis set coefficients</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
-                <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-                <span class="n">response</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)]</span>
+                             <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">]:</span>
                 <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
-                <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">])</span>
-                <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num</span><span class="p">)}</span>
-                <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-                <span class="n">response</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
                 <span class="n">n</span> <span class="o">+=</span> <span class="n">num</span>
-            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS&#39;</span><span class="p">]:</span>
-                <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-                <span class="n">n_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_max&#39;</span><span class="p">]</span>
-                <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_param</span><span class="p">)}</span>
-                <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-                <span class="n">response</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
+                <span class="n">n_max</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;n_max&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
+                    <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="n">n</span> <span class="o">+=</span> <span class="n">num_param</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;model type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="n">n</span></div>
+        <span class="k">return</span> <span class="n">n</span></div>
 
 <div class="viewcode-block" id="LightModel.update_linear"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.update_linear">[docs]</a>    <span class="k">def</span> <span class="nf">update_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -203,16 +252,19 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CORE_SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;POWER_LAW&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">]:</span>
+                         <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;UNIFORM&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">]:</span>
                 <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
                 <span class="n">num_param</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;sigma&#39;</span><span class="p">])</span>
                 <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">num_param</span><span class="p">]</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="n">num_param</span>
-            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS&#39;</span><span class="p">]:</span>
+            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
                 <span class="n">n_max</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;n_max&#39;</span><span class="p">]</span>
-                <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR_EXP&#39;</span><span class="p">]:</span>
+                    <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">num_param</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_max</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">num_param</span><span class="p">]</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="n">num_param</span>
             <span class="k">else</span><span class="p">:</span>
@@ -222,16 +274,48 @@
 <div class="viewcode-block" id="LightModel.re_normalize_flux"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.re_normalize_flux">[docs]</a>    <span class="k">def</span> <span class="nf">re_normalize_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">norm_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kwargs_list: list of keyword arguments</span>
+<span class="sd">        :param norm_factor: float, multiplicative factor to rescale the amplitude parameters</span>
+<span class="sd">        :return: new updated kwargs_list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_list_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">)</span>
         <span class="n">kwargs_list_new</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
-            <span class="n">kwargs_list_k</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">kwargs_list_k</span> <span class="o">=</span> <span class="n">kwargs_list_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">if</span> <span class="s1">&#39;amp&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list_k</span><span class="p">:</span>
                 <span class="n">kwargs_list_k</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
             <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs_list_k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_list_new</span></div></div>
+        <span class="k">return</span> <span class="n">kwargs_list_new</span></div>
+
+<div class="viewcode-block" id="LightModel.total_flux"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.total_flux">[docs]</a>    <span class="k">def</span> <span class="nf">total_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the total flux of each individual light profile. This allows to estimate the total flux as</span>
+<span class="sd">        well as lenstronomy amp to magnitude conversions. Not all models are supported</span>
+
+<span class="sd">        :param kwargs_list: list of keyword arguments corresponding to the light profiles. The &#39;amp&#39; parameter can be missing.</span>
+<span class="sd">        :param norm: bool, if True, computes the flux for amp=1</span>
+<span class="sd">        :param k: int, if set, only evaluates the specific light model</span>
+<span class="sd">        :return: list of (total) flux values attributed to each profile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">norm_flux_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_type_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
+                    <span class="n">kwargs_new</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">norm</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MULTI_GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_ELLIPSE&#39;</span><span class="p">]:</span>
+                            <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">kwargs_new</span><span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]}</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+                        <span class="n">kwargs_new</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                    <span class="n">norm_flux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">total_flux</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_new</span><span class="p">)</span>
+                    <span class="n">norm_flux_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm_flux</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;profile </span><span class="si">%s</span><span class="s2"> does not support flux normlization.&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
+                <span class="c1">#  TODO implement total flux for e.g. &#39;HERNQUIST&#39;, &#39;HERNQUIST_ELLIPSE&#39;, &#39;PJAFFE&#39;, &#39;PJAFFE_ELLIPSE&#39;,</span>
+                    <span class="c1"># &#39;GAUSSIAN&#39;, &#39;GAUSSIAN_ELLIPSE&#39;, &#39;POWER_LAW&#39;, &#39;NIE&#39;, &#39;CHAMELEON&#39;, &#39;DOUBLE_CHAMELEON&#39;, &#39;UNIFORM&#39;</span>
+        <span class="k">return</span> <span class="n">norm_flux_list</span></div></div>
 </pre></div>
 
           </div>
@@ -264,7 +348,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

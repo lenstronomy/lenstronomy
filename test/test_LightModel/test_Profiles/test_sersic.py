@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LightModel.Profiles.sersic import Sersic, Sersic_elliptic, CoreSersic
+from lenstronomy.LightModel.Profiles.sersic import Sersic, SersicElliptic, CoreSersic
 import lenstronomy.Util.param_util as param_util
 import numpy as np
 import pytest
@@ -14,7 +14,7 @@ class TestSersic(object):
     """
     def setup(self):
         self.sersic = Sersic(smoothing=0.02)
-        self.sersic_elliptic = Sersic_elliptic(smoothing=0.02)
+        self.sersic_elliptic = SersicElliptic(smoothing=0.02)
         self.core_sersic = CoreSersic(smoothing=0.02)
 
     def test_sersic(self):
@@ -38,6 +38,10 @@ class TestSersic(object):
         npt.assert_almost_equal(values[0], 0.12658651833626802, decimal=6)
         npt.assert_almost_equal(values[1], 0.026902273598180083, decimal=6)
         npt.assert_almost_equal(values[2], 0.0053957432862338055, decimal=6)
+
+        value = self.sersic.function(1000, 0, I0_sersic, R_sersic, n_sersic, center_x, center_y)
+        npt.assert_almost_equal(value, 0 , decimal=8)
+
 
     def test_symmetry_r_sersic(self):
         x = np.array([2,3,4])
@@ -116,6 +120,13 @@ class TestSersic(object):
         npt.assert_almost_equal(values[0], 0.79749529635325933, decimal=6)
         npt.assert_almost_equal(values[1], 0.33653478121594838, decimal=6)
         npt.assert_almost_equal(values[2], 0.14050402887681532, decimal=6)
+
+    def test_total_flux(self):
+        r_eff = 0.2
+        I_eff = 1.
+        n_sersic = 4
+        flux = self.sersic._total_flux(r_eff, I_eff, n_sersic)
+        npt.assert_almost_equal(flux, 0.9065917451904356, decimal=5)
 
 
 if __name__ == '__main__':

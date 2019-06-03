@@ -10,132 +10,22 @@ class SinglePlane(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, **kwargs):
+    def __init__(self, lens_model_list, numerical_alpha_class=None):
         """
 
         :param lens_model_list: list of strings with lens model names
-        :param foreground_shear: bool, when True, models a foreground non-linear shear distortion
+        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
+        deflection angles as a lensmodel. See the documentation in Profiles.numerical_deflections
         """
-        self.func_list = []
-        self._foreground_shear = False
-        for i, lens_type in enumerate(lens_model_list):
-            if lens_type == 'SHIFT':
-                from lenstronomy.LensModel.Profiles.alpha_shift import Shift
-                self.func_list.append(Shift())
-            elif lens_type == 'SHEAR':
-                from lenstronomy.LensModel.Profiles.shear import Shear
-                self.func_list.append(Shear())
-            elif lens_type == 'CONVERGENCE':
-                from lenstronomy.LensModel.Profiles.convergence import Convergence
-                self.func_list.append(Convergence())
-            elif lens_type == 'FLEXION':
-                from lenstronomy.LensModel.Profiles.flexion import Flexion
-                self.func_list.append(Flexion())
-            elif lens_type == 'POINT_MASS':
-                from lenstronomy.LensModel.Profiles.point_mass import PointMass
-                self.func_list.append(PointMass())
-            elif lens_type == 'SIS':
-                from lenstronomy.LensModel.Profiles.sis import SIS
-                self.func_list.append(SIS())
-            elif lens_type == 'SIS_TRUNCATED':
-                from lenstronomy.LensModel.Profiles.sis_truncate import SIS_truncate
-                self.func_list.append(SIS_truncate())
-            elif lens_type == 'SIE':
-                from lenstronomy.LensModel.Profiles.sie import SIE
-                self.func_list.append(SIE())
-            elif lens_type == 'SPP':
-                from lenstronomy.LensModel.Profiles.spp import SPP
-                self.func_list.append(SPP())
-            elif lens_type == 'NIE':
-                from lenstronomy.LensModel.Profiles.nie import NIE
-                self.func_list.append(NIE())
-            elif lens_type == 'NIE_SIMPLE':
-                from lenstronomy.LensModel.Profiles.nie import NIE_simple
-                self.func_list.append(NIE_simple())
-            elif lens_type == 'CHAMELEON':
-                from lenstronomy.LensModel.Profiles.chameleon import Chameleon
-                self.func_list.append(Chameleon())
-            elif lens_type == 'DOUBLE_CHAMELEON':
-                from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
-                self.func_list.append(DoubleChameleon())
-            elif lens_type == 'SPEP':
-                from lenstronomy.LensModel.Profiles.spep import SPEP
-                self.func_list.append(SPEP())
-            elif lens_type == 'SPEMD':
-                from lenstronomy.LensModel.Profiles.spemd import SPEMD
-                self.func_list.append(SPEMD())
-            elif lens_type == 'SPEMD_SMOOTH':
-                from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
-                self.func_list.append(SPEMD_SMOOTH())
-            elif lens_type == 'NFW':
-                from lenstronomy.LensModel.Profiles.nfw import NFW
-                self.func_list.append(NFW(**kwargs))
-            elif lens_type == 'NFW_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
-                self.func_list.append(NFW_ELLIPSE(interpol=False, num_interp_X=1000, max_interp_X=100))
-            elif lens_type == 'TNFW':
-                from lenstronomy.LensModel.Profiles.tnfw import TNFW
-                self.func_list.append(TNFW())
-            elif lens_type == 'SERSIC':
-                from lenstronomy.LensModel.Profiles.sersic import Sersic
-                self.func_list.append(Sersic())
-            elif lens_type == 'SERSIC_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.sersic_ellipse import SersicEllipse
-                self.func_list.append(SersicEllipse())
-            elif lens_type == 'PJAFFE':
-                from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
-                self.func_list.append(PJaffe())
-            elif lens_type == 'PJAFFE_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
-                self.func_list.append(PJaffe_Ellipse())
-            elif lens_type == 'HERNQUIST':
-                from lenstronomy.LensModel.Profiles.hernquist import Hernquist
-                self.func_list.append(Hernquist())
-            elif lens_type == 'HERNQUIST_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
-                self.func_list.append(Hernquist_Ellipse())
-            elif lens_type == 'GAUSSIAN':
-                from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
-                self.func_list.append(Gaussian())
-            elif lens_type == 'GAUSSIAN_KAPPA':
-                from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
-                self.func_list.append(GaussianKappa())
-            elif lens_type == 'GAUSSIAN_KAPPA_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
-                self.func_list.append(GaussianKappaEllipse())
-            elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
-                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
-                self.func_list.append(MultiGaussianKappa())
-            elif lens_type == 'MULTI_GAUSSIAN_KAPPA_ELLIPSE':
-                from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappaEllipse
-                self.func_list.append(MultiGaussianKappaEllipse())
-            elif lens_type == 'INTERPOL':
-                from lenstronomy.LensModel.Profiles.interpol import Interpol
-                self.func_list.append(Interpol(grid=False, min_grid_number=100))
-            elif lens_type == 'INTERPOL_SCALED':
-                from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
-                self.func_list.append(InterpolScaled(grid=False, min_grid_number=100))
-            elif lens_type == 'SHAPELETS_POLAR':
-                from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
-                self.func_list.append(PolarShapelets())
-            elif lens_type == 'SHAPELETS_CART':
-                from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import CartShapelets
-                self.func_list.append(CartShapelets())
-            elif lens_type == 'DIPOLE':
-                from lenstronomy.LensModel.Profiles.dipole import Dipole
-                self.func_list.append(Dipole())
-            elif lens_type == 'FOREGROUND_SHEAR':
-                from lenstronomy.LensModel.Profiles.shear import Shear
-                self.func_list.append(Shear())
-                self._foreground_shear = True
-                self._foreground_shear_idex = i
-            elif lens_type == 'coreBURKERT':
-                from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
-                self.func_list.append(coreBurkert())
-            else:
-                raise ValueError('%s is not a valid lens model' % lens_type)
 
+        self.func_list = []
+        self._imported_classes = {}
+        self._foreground_shear = False
         self._model_list = lens_model_list
+
+        for i, lens_type in enumerate(lens_model_list):
+            lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class)
+            self.func_list.append(lensing_function)
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """
@@ -180,6 +70,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
@@ -192,6 +84,7 @@ class SinglePlane(object):
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
+
         """
         deflection angles
         :param x: x-position (preferentially arcsec)
@@ -204,6 +97,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
@@ -230,6 +125,9 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
+            return f_xx, f_xy, f_xy, f_yy
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
@@ -316,6 +214,154 @@ class SinglePlane(object):
                 #except:
                 #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
+
+    def _load_lensmodel(self, lens_type, index, custom_class):
+
+        if lens_type not in self._imported_classes.keys():
+            lensmodel_class = self._import_class(lens_type, index, custom_class)
+            self._imported_classes.update({lens_type: lensmodel_class})
+
+        return self._imported_classes[lens_type]
+
+    def _import_class(self, lens_type, i, custom_class):
+
+        if lens_type == 'SHIFT':
+            from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+            return Shift()
+        elif lens_type == 'SHEAR':
+            from lenstronomy.LensModel.Profiles.shear import Shear
+            return Shear()
+        elif lens_type == 'CONVERGENCE':
+            from lenstronomy.LensModel.Profiles.convergence import Convergence
+            return Convergence()
+        elif lens_type == 'FLEXION':
+            from lenstronomy.LensModel.Profiles.flexion import Flexion
+            return Flexion()
+        elif lens_type == 'FLEXIONFG':
+            from lenstronomy.LensModel.Profiles.flexionfg import Flexionfg
+            return Flexionfg()
+        elif lens_type == 'POINT_MASS':
+            from lenstronomy.LensModel.Profiles.point_mass import PointMass
+            return PointMass()
+        elif lens_type == 'SIS':
+            from lenstronomy.LensModel.Profiles.sis import SIS
+            return SIS()
+        elif lens_type == 'SIS_TRUNCATED':
+            from lenstronomy.LensModel.Profiles.sis_truncate import SIS_truncate
+            return SIS_truncate()
+        elif lens_type == 'SIE':
+            from lenstronomy.LensModel.Profiles.sie import SIE
+            return SIE()
+        elif lens_type == 'SPP':
+            from lenstronomy.LensModel.Profiles.spp import SPP
+            return SPP()
+        elif lens_type == 'NIE':
+            from lenstronomy.LensModel.Profiles.nie import NIE
+            return NIE()
+        elif lens_type == 'NIE_SIMPLE':
+            from lenstronomy.LensModel.Profiles.nie import NIE_simple
+            return NIE_simple()
+        elif lens_type == 'CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import Chameleon
+            return Chameleon()
+        elif lens_type == 'DOUBLE_CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
+            return DoubleChameleon()
+        elif lens_type == 'SPEP':
+            from lenstronomy.LensModel.Profiles.spep import SPEP
+            return SPEP()
+        elif lens_type == 'SPEMD':
+            from lenstronomy.LensModel.Profiles.spemd import SPEMD
+            return SPEMD()
+        elif lens_type == 'SPEMD_SMOOTH':
+            from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
+            return SPEMD_SMOOTH()
+        elif lens_type == 'NFW':
+            from lenstronomy.LensModel.Profiles.nfw import NFW
+            return NFW()
+        elif lens_type == 'NFW_ELLIPSE':
+            from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
+            return NFW_ELLIPSE()
+        elif lens_type == 'TNFW':
+            from lenstronomy.LensModel.Profiles.tnfw import TNFW
+            return TNFW()
+        elif lens_type == 'CNFW':
+            from lenstronomy.LensModel.Profiles.cnfw import CNFW
+            return CNFW()
+        elif lens_type == 'SERSIC':
+            from lenstronomy.LensModel.Profiles.sersic import Sersic
+            return Sersic()
+        elif lens_type == 'SERSIC_ELLIPSE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_potential import SersicEllipse
+            return SersicEllipse()
+        elif lens_type == 'SERSIC_ELLIPSE_KAPPA':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
+            return SersicEllipseKappa()
+        elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec \
+                import SersicEllipseGaussDec
+            return SersicEllipseGaussDec()
+        elif lens_type == 'COMPOSITE_DISK':
+            from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
+            return CompDisk()
+        elif lens_type == 'PJAFFE':
+            from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
+            return PJaffe()
+        elif lens_type == 'PJAFFE_ELLIPSE':
+            from lenstronomy.LensModel.Profiles.p_jaffe_ellipse import PJaffe_Ellipse
+            return PJaffe_Ellipse()
+        elif lens_type == 'HERNQUIST':
+            from lenstronomy.LensModel.Profiles.hernquist import Hernquist
+            return Hernquist()
+        elif lens_type == 'HERNQUIST_ELLIPSE':
+            from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
+            return Hernquist_Ellipse()
+        elif lens_type == 'GAUSSIAN':
+            from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
+            return Gaussian()
+        elif lens_type == 'GAUSSIAN_KAPPA':
+            from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
+            return GaussianKappa()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_KAPPA':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
+            return GaussianEllipseKappa()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
+            return GaussianEllipsePotential()
+        elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
+            from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
+            return MultiGaussianKappa()
+        elif lens_type == 'MULTI_GAUSSIAN_KAPPA_ELLIPSE':
+            from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappaEllipse
+            return MultiGaussianKappaEllipse()
+        elif lens_type == 'INTERPOL':
+            from lenstronomy.LensModel.Profiles.interpol import Interpol
+            return Interpol(grid=False, min_grid_number=100)
+        elif lens_type == 'INTERPOL_SCALED':
+            from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
+            return InterpolScaled()
+        elif lens_type == 'SHAPELETS_POLAR':
+            from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
+            return PolarShapelets()
+        elif lens_type == 'SHAPELETS_CART':
+            from lenstronomy.LensModel.Profiles.shapelet_pot_cartesian import CartShapelets
+            return CartShapelets()
+        elif lens_type == 'DIPOLE':
+            from lenstronomy.LensModel.Profiles.dipole import Dipole
+            return Dipole()
+        elif lens_type == 'FOREGROUND_SHEAR':
+            from lenstronomy.LensModel.Profiles.shear import Shear
+            self._foreground_shear = True
+            self._foreground_shear_idex = i
+            return Shear()
+        elif lens_type == 'coreBURKERT':
+            from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
+            return coreBurkert()
+        elif lens_type == 'NumericalAlpha':
+            from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
+            return NumericalAlpha(custom_class)
+        else:
+            raise ValueError('%s is not a valid lens model' % lens_type)
 
     def _bool_list(self, k=None):
         """

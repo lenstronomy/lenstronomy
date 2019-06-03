@@ -49,11 +49,19 @@ class TestLensProp(object):
         v_sigma_mge_lens = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
                                                                   psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
                                                                   r_eff=r_eff, lens_model_kinematics_bool=kwargs_options['lens_model_deflector_bool'])
-        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, kwargs_lens_light, aniso_param=r_ani, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
+        v_sigma_hernquist = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                                  kwargs_aperture,
+                                                                  psf_fwhm, aperture_type, anisotropy_model,
+                                                                  MGE_light=False, MGE_mass=False,
+                                                                  r_eff=r_eff, Hernquist_approx=True,
+                                                                  lens_model_kinematics_bool=kwargs_options[
+                                                                      'lens_model_deflector_bool'])
+        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
+        npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
     def test_time_delays(self):
         z_lens = 0.5

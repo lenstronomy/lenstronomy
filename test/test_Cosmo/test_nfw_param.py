@@ -23,6 +23,15 @@ class TestLensCosmo(object):
         c_out = self.nfwParam.c_rho0(rho0)
         npt.assert_almost_equal(c_out, c, decimal=3)
 
+    def test_rhoc_z(self):
+        z = 1
+        rho0_z = self.nfwParam.rhoc_z(z=z)
+        npt.assert_almost_equal(self.nfwParam.rhoc *(1+z)**3, rho0_z)
+
+    def test_M200(self):
+        M200 = self.nfwParam.M200(Rs=1, rho0=1, c=1)
+        npt.assert_almost_equal(M200, 2.4271590540348216, decimal=5)
+
     def test_profileMain(self):
         M = 10**(13.5)
         z = 0.5

@@ -32,6 +32,13 @@ class TestMGE(object):
             #print(rs[i])
             npt.assert_almost_equal((ss_mge[i]-ss[i])/ss[i], 0, decimal=1)
 
+        amplitudes, sigmas, norm = mge.mge_1d(rs, np.zeros_like(rs), N=n_comp)
+        assert amplitudes[0] == 0
+
+        amplitudes, sigmas, norm = mge.mge_1d(rs, np.zeros_like(rs), N=0)
+        assert amplitudes[0] == 0
+
+
     def test_mge_sersic_radius(self):
         n_comp = 30
         r_sersic = .5

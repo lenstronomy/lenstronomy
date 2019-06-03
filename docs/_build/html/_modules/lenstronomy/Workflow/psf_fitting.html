@@ -1,0 +1,396 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Workflow.psf_fitting &#8212; lenstronomy 0.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Workflow.psf_fitting</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="k">import</span> <span class="n">PSF</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.mask</span> <span class="k">as</span> <span class="nn">mask_util</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage.interpolation</span> <span class="k">as</span> <span class="nn">interp</span>
+
+
+<div class="viewcode-block" id="PsfFitting"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting">[docs]</a><span class="k">class</span> <span class="nc">PsfFitting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to find subsequently a better psf</span>
+<span class="sd">    The method make use of a model and subtracts all the non-point source components of the model from the data.</span>
+<span class="sd">    If the model is sufficient, then the data will be a (better) representation of the actual PSF. The method cuts out</span>
+<span class="sd">    those point sources and combines them to update the estimate of the PSF. This is done in an iterative procedure as</span>
+<span class="sd">    the model components of the extended features is PSF-dependent (hopefully not too much).</span>
+
+<span class="sd">    Various options can be chosen. There is no quarante that the method works for specific data and models.</span>
+
+<span class="sd">    &#39;stacking_method&#39;: &#39;median&#39;, &#39;mean&#39;; the different estimates of the PSF are stacked and combined together. The choices are:</span>
+<span class="sd">        &#39;mean&#39;: mean of pixel values as the estimator (not robust to outliers)</span>
+<span class="sd">        &#39;median&#39;: median of pixel values as the estimator (outlier rejection robust but needs &gt;2 point sources in the data</span>
+
+<span class="sd">    &#39;block_center_neighbour&#39;: angle, radius of neighbouring point sources around their centers the estimates is ignored.</span>
+<span class="sd">        Default is zero, meaning a not optimal subtraction of the neighbouring point sources might contaminate the estimate.</span>
+
+<span class="sd">    &#39;keep_error_map&#39;: bool, if True, does not replace the error term associated with the PSF estimate.</span>
+<span class="sd">        If false, re-estimates the variance between the PSF estimates.</span>
+
+<span class="sd">    &#39;psf_symmetry&#39;: number of rotational invariant symmetries in the estimated PSF.</span>
+<span class="sd">        =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to</span>
+<span class="sd">        the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are</span>
+<span class="sd">        limited constraints/number of point sources in the image.</span>
+
+
+<span class="sd">    The procedure only requires and changes the &#39;point_source_kernel&#39; in the PSF() class and the &#39;psf_error_map&#39;.</span>
+<span class="sd">    Any previously set subgrid kernels or pixel_kernels are removed and constructed from the &#39;point_source_kernel&#39;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span> <span class="o">=</span> <span class="n">image_model_class</span>
+
+<div class="viewcode-block" id="PsfFitting.update_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">[docs]</a>    <span class="k">def</span> <span class="nf">update_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">stacking_method</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span>
+                 <span class="n">psf_symmetry</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_iter_factor</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_data:</span>
+<span class="sd">        :param kwargs_psf:</span>
+<span class="sd">        :param kwargs_options:</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_source:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_ps:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">psf_class</span><span class="p">)</span>
+
+        <span class="n">kernel_old</span> <span class="o">=</span> <span class="n">psf_class</span><span class="o">.</span><span class="n">kernel_point_source</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_old</span><span class="p">)</span>
+        <span class="c1">#kwargs_numerics_psf[&#39;psf_error_map&#39;] = False</span>
+        <span class="n">kwargs_psf_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="n">kwargs_psf_new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">,</span> <span class="s1">&#39;kernel_point_source&#39;</span><span class="p">:</span> <span class="n">kwargs_psf_copy</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf_copy</span><span class="p">:</span>
+            <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_psf_copy</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
+        <span class="n">image_single_point_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_single_point_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
+        <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">amp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_list</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">)</span>
+
+        <span class="n">point_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">image_single_point_source_list</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">)</span>
+
+        <span class="n">kernel_new</span><span class="p">,</span> <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">combine_psf</span><span class="p">(</span><span class="n">point_source_list</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span>
+                                                 <span class="n">sigma_bkg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">background_rms</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">psf_iter_factor</span><span class="p">,</span>
+                                                 <span class="n">stacking_option</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">psf_symmetry</span><span class="p">)</span>
+        <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+
+        <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_new</span>
+        <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;point_source_supersampling_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf_new</span><span class="p">:</span>
+            <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
+        <span class="n">logL_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
+                                                               <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">logL_after</span><span class="p">,</span> <span class="n">error_map</span></div>
+
+<div class="viewcode-block" id="PsfFitting.update_iterative"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative">[docs]</a>    <span class="k">def</span> <span class="nf">update_iterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                         <span class="n">no_break</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stacking_method</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keep_psf_error_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">psf_symmetry</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_iter_factor</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_data:</span>
+<span class="sd">        :param kwargs_psf:</span>
+<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_source:</span>
+<span class="sd">        :param kwargs_lens_light:</span>
+<span class="sd">        :param kwargs_ps:</span>
+<span class="sd">        :param factor:</span>
+<span class="sd">        :param num_iter:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;kernel_point_source_init&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
+            <span class="n">kernel_point_source_init</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kernel_point_source_init</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_point_source_init&#39;</span><span class="p">]</span>
+        <span class="n">kwargs_psf_new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="n">kwargs_psf_final</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
+            <span class="n">error_map_final</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">error_map_final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">kernel_point_source_init</span><span class="p">)</span>
+        <span class="n">error_map_init</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">error_map_final</span><span class="p">)</span>
+        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">psf_class</span><span class="p">)</span>
+        <span class="n">logL_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
+                                                                          <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
+        <span class="n">logL_best</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">logL_before</span><span class="p">)</span>
+        <span class="n">i_best</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
+            <span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">logL_after</span><span class="p">,</span> <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
+                                                                    <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span>
+                                                                    <span class="n">stacking_method</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span>
+                                                                    <span class="n">psf_symmetry</span><span class="o">=</span><span class="n">psf_symmetry</span><span class="p">,</span>
+                                                                    <span class="n">psf_iter_factor</span><span class="o">=</span><span class="n">psf_iter_factor</span><span class="p">,</span>
+                                                                    <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logL_after</span> <span class="o">&gt;</span> <span class="n">logL_best</span><span class="p">:</span>
+                <span class="n">kwargs_psf_final</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf_new</span><span class="p">)</span>
+                <span class="n">error_map_final</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">error_map</span><span class="p">)</span>
+                <span class="n">logL_best</span> <span class="o">=</span> <span class="n">logL_after</span>
+                <span class="n">i_best</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">no_break</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iterative PSF reconstruction makes reconstruction worse in step </span><span class="si">%s</span><span class="s2"> - aborted&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iteration of step </span><span class="si">%s</span><span class="s2"> gave best reconstruction.&quot;</span> <span class="o">%</span> <span class="n">i_best</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;log likelihood before: </span><span class="si">%s</span><span class="s2"> and log likelihood after: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">logL_before</span><span class="p">,</span> <span class="n">logL_best</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">keep_psf_error_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">kwargs_psf_final</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_map_init</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs_psf_final</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_map_final</span>
+        <span class="n">kwargs_psf_final</span><span class="p">[</span><span class="s1">&#39;kernel_point_source_init&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_point_source_init</span>
+        <span class="k">return</span> <span class="n">kwargs_psf_final</span></div>
+
+<div class="viewcode-block" id="PsfFitting.image_single_point_source"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source">[docs]</a>    <span class="k">def</span> <span class="nf">image_single_point_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span>
+                                  <span class="n">kwargs_ps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return model without including the point source contributions as a list (for each point source individually)</span>
+<span class="sd">        :param image_model_class: ImageModel class instance</span>
+<span class="sd">        :param kwargs_lens: lens model kwargs list</span>
+<span class="sd">        :param kwargs_source: source model kwargs list</span>
+<span class="sd">        :param kwargs_lens_light: lens light model kwargs list</span>
+<span class="sd">        :param kwargs_ps: point source model kwargs list</span>
+<span class="sd">        :return: list of images with point source isolated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># reconstructed model with given psf</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">error_map</span><span class="p">,</span> <span class="n">cov_param</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="n">image_model_class</span><span class="o">.</span><span class="n">image_linear_solve</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span>
+                                                                              <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
+        <span class="c1">#model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">image_model_class</span><span class="o">.</span><span class="n">likelihood_mask</span>
+        <span class="n">point_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_sources_list</span><span class="p">(</span><span class="n">image_model_class</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">point_source_list</span><span class="p">)</span>
+        <span class="n">model_single_source_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">model_single_source</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">model</span> <span class="o">+</span> <span class="n">point_source_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">mask</span>
+            <span class="n">model_single_source_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_single_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model_single_source_list</span></div>
+
+    <span class="k">def</span> <span class="nf">_point_sources_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_ps:</span>
+<span class="sd">        :return: list of images containing only single point sources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ra_array</span><span class="p">,</span> <span class="n">dec_array</span><span class="p">,</span> <span class="n">amp_array</span> <span class="o">=</span> <span class="n">image_model_class</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_list</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra_array</span><span class="p">)):</span>
+            <span class="n">point_source</span> <span class="o">=</span> <span class="n">image_model_class</span><span class="o">.</span><span class="n">ImageNumerics</span><span class="o">.</span><span class="n">point_source_rendering</span><span class="p">([</span><span class="n">ra_array</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="p">[</span><span class="n">dec_array</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="p">[</span><span class="n">amp_array</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">point_list</span>
+
+<div class="viewcode-block" id="PsfFitting.cutout_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf">[docs]</a>    <span class="k">def</span> <span class="nf">cutout_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image_list</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_:</span>
+<span class="sd">        :param y_:</span>
+<span class="sd">        :param image_list: list of images (i.e. data - all models subtracted, except a single point source)</span>
+<span class="sd">        :param kernelsize:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_mask</span>
+        <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_coordinates</span>
+        <span class="n">ra_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">ra_grid</span><span class="p">)</span>
+        <span class="n">dec_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">dec_grid</span><span class="p">)</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">block_center_neighbour</span>
+
+        <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+            <span class="n">mask_point_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_point_source</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">l</span><span class="p">)</span>
+            <span class="n">mask_i</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">mask_point_source</span>
+            <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf_single</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">image_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">mask_i</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">)</span>
+            <span class="n">kernel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kernel_list</span></div>
+
+<div class="viewcode-block" id="PsfFitting.cutout_psf_single"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single">[docs]</a>    <span class="k">def</span> <span class="nf">cutout_psf_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate of point soure</span>
+<span class="sd">        :param y: y-coordinate of point source</span>
+<span class="sd">        :param image: image (i.e. data - all models subtracted, except a single point source)</span>
+<span class="sd">        :param mask: mask of pixels in the image not to be considered in the PSF estimate (being replaced by kernel_init)</span>
+<span class="sd">        :param kernelsize: width in pixel of the kernel</span>
+<span class="sd">        :param kernel_init: initial guess of kernel (pixels that are masked are replaced by those values)</span>
+<span class="sd">        :return: estimate of the PSF based on the image and position of the point source</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># cutout the star</span>
+        <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">star_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># cutout the mask</span>
+        <span class="n">mask_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernelsize</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># enlarge the initial PSF kernel to the new cutout size</span>
+        <span class="n">kernel_enlarged</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernelsize</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">kernelsize</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">kernel_enlarged</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_init</span>
+        <span class="c1"># shift the initial kernel to the shift of the star</span>
+        <span class="n">shift_x</span> <span class="o">=</span> <span class="n">x_int</span> <span class="o">-</span> <span class="n">x</span>
+        <span class="n">shift_y</span> <span class="o">=</span> <span class="n">y_int</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="n">kernel_shifted</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel_enlarged</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">shift_y</span><span class="p">,</span> <span class="o">-</span><span class="n">shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># compute normalization of masked and unmasked region of the shifted kernel</span>
+        <span class="c1"># norm_masked = np.sum(kernel_shifted[mask_i == 0])</span>
+        <span class="n">norm_unmasked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel_shifted</span><span class="p">[</span><span class="n">mask_cutout</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># normalize star within the unmasked region to the norm of the initial kernel of the same region</span>
+        <span class="n">star_cutout</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">star_cutout</span><span class="p">[</span><span class="n">mask_cutout</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">norm_unmasked</span>
+        <span class="c1"># replace mask with shifted initial kernel (+2 size)</span>
+        <span class="n">star_cutout</span><span class="p">[</span><span class="n">mask_cutout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_shifted</span><span class="p">[</span><span class="n">mask_cutout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">star_cutout</span><span class="p">[</span><span class="n">star_cutout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># de-shift kernel</span>
+        <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">de_shift_kernel</span><span class="p">(</span><span class="n">star_cutout</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">)</span>
+        <span class="c1"># re-size kernel</span>
+        <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">cut_edges</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">)</span>
+        <span class="c1"># re-normalize kernel again</span>
+        <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kernel_deshifted</span></div>
+
+<div class="viewcode-block" id="PsfFitting.combine_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.combine_psf">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">combine_psf</span><span class="p">(</span><span class="n">kernel_list_new</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span> <span class="n">sigma_bkg</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">stacking_option</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        updates psf estimate based on old kernel and several new estimates</span>
+<span class="sd">        :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image</span>
+<span class="sd">        :param kernel_old: old PSF kernel</span>
+<span class="sd">        :param sigma_bkg: estimated background noise in the image</span>
+<span class="sd">        :param factor: weight of updated estimate based on new and old estimate, factor=1 means new estimate,</span>
+<span class="sd">        factor=0 means old estimate</span>
+<span class="sd">        :param stacking_option: option of stacking, mean or median</span>
+<span class="sd">        :param symmetry: imposed symmetry of PSF estimate</span>
+<span class="sd">        :return: updated PSF estimate and error_map associated with it</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kernel_list_new</span><span class="p">)</span> <span class="o">*</span> <span class="n">symmetry</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">/</span> <span class="n">symmetry</span>
+        <span class="n">kernelsize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_old</span><span class="p">)</span>
+        <span class="n">kernel_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">kernel_new</span> <span class="ow">in</span> <span class="n">kernel_list_new</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">symmetry</span><span class="p">):</span>
+                <span class="n">kernel_rotated</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">rotateImage</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">angle</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">kernel_norm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_rotated</span><span class="p">)</span>
+                <span class="n">kernel_list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">kernel_norm</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">kernel_old_rotated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">symmetry</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">symmetry</span><span class="p">):</span>
+            <span class="n">kernel_old_rotated</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">kernel_old</span>
+
+        <span class="n">kernel_list_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel_list</span><span class="p">,</span> <span class="n">kernel_old_rotated</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stacking_option</span> <span class="o">==</span> <span class="s1">&#39;median&#39;</span><span class="p">:</span>
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">kernel_list_new</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stacking_option</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">kernel_list_new</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; stack_option must be &#39;median&#39; or &#39;mean&#39;, </span><span class="si">%s</span><span class="s2"> is not supported.&quot;</span> <span class="o">%</span> <span class="n">stacking_option</span><span class="p">)</span>
+        <span class="n">kernel_new</span><span class="p">[</span><span class="n">kernel_new</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span>
+        <span class="n">kernel_return</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">kernel_new</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">factor</span><span class="p">)</span><span class="o">*</span> <span class="n">kernel_old</span>
+
+        <span class="n">kernel_bkg</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kernel_return</span><span class="p">)</span>
+        <span class="n">kernel_bkg</span><span class="p">[</span><span class="n">kernel_bkg</span> <span class="o">&lt;</span> <span class="n">sigma_bkg</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma_bkg</span>
+        <span class="n">error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">kernel_list_new</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">kernel_bkg</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="k">return</span> <span class="n">kernel_return</span><span class="p">,</span> <span class="n">error_map</span></div>
+
+<div class="viewcode-block" id="PsfFitting.mask_point_source"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.mask_point_source">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mask_point_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_pos: x-position of list of point sources</span>
+<span class="sd">        :param y_pos: y-position of list of point sources</span>
+<span class="sd">        :param x_grid: x-coordinates of grid</span>
+<span class="sd">        :param y_grid: y-coordinates of grid</span>
+<span class="sd">        :param i: index of point source not to mask out</span>
+<span class="sd">        :param radius: radius to mask out other point sources</span>
+<span class="sd">        :return: a mask of the size of the image with cutouts around the position</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">mask_point</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mask_util</span><span class="o">.</span><span class="n">mask_sphere</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">y_pos</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">radius</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">*=</span> <span class="n">mask_point</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

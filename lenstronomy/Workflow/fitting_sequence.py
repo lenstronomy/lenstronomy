@@ -15,7 +15,7 @@ class FittingSequence(object):
     The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
-                 verbose=True):
+                 verbose=True, update_manager_class=None):
         """
 
         :param multi_band_list:
@@ -30,7 +30,9 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
-        self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
+        if update_manager_class is None:
+            update_manager_class = UpdateManager
+        self._updateManager = update_manager_class(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
@@ -142,7 +144,6 @@ class FittingSequence(object):
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
         :return: MCMC samples, parameter names, logL distances of all samples
         """
-
         param_class = self._param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)

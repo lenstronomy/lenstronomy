@@ -7,6 +7,9 @@ from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 import numpy as np
 
+from TDLMCpipeline.Sampling.multinest_sampler import MultiNestSampler
+from TDLMCpipeline.Sampling.polychord_sampler import DyPolyChordSampler
+
 
 class FittingSequence(object):
     """
@@ -76,6 +79,39 @@ class FittingSequence(object):
                     kwargs['init_samples'] = self._mcmc_init_samples
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
                 self._mcmc_init_samples = samples_mcmc
+
+            elif fitting_type == 'MultiNest':
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.multinest_sampling(**kwargs)
+
+                lens_result, source_result, lens_light_result, ps_result, cosmo_result \
+                    = self._param_class.args2kwargs(result, bijective=True)
+
+                self._lens_temp, self._source_temp, self._lens_light_temp, \
+                    self._ps_temp, self._cosmo_temp = \
+                    lens_result, source_result, lens_light_result, \
+                    ps_result, cosmo_result
+
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logL
+
+            elif fitting_type == 'DyPolyChord':
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.dypolychord_sampling(**kwargs)
+
+                lens_result, source_result, lens_light_result, ps_result, cosmo_result \
+                    = self._param_class.args2kwargs(result, bijective=True)
+
+                self._lens_temp, self._source_temp, self._lens_light_temp, \
+                    self._ps_temp, self._cosmo_temp = \
+                    lens_result, source_result, lens_light_result, \
+                    ps_result, cosmo_result
+
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logL
+
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
@@ -314,3 +350,82 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+
+    def multinest_sampling(self, n_live_points=400, evidence_tolerance=0.5,
+                           sampling_efficiency=0.8, const_efficiency_mode=False, 
+                           multimodal=True, importance_nested_sampling=True, 
+                           sigma_scale=1, 
+                           remove_output_dir=False, output_basename=''):
+        """
+        Sample parameter space using PyMultiNest
+        """
+        output_basename += 'c-'
+        output_dir = 'multinest_chains'
+
+        mean_start = self._param_class.kwargs2args(self._lens_temp, 
+                                                 self._source_temp, 
+                                                 self._lens_light_temp, 
+                                                 self._ps_temp,
+                                                 self._cosmo_temp)
+        mean_start = np.array(mean_start)
+
+        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
+            = self._updateManager.sigma_kwargs
+        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
+                                                  lens_light_sigma, ps_sigma, 
+                                                  cosmo_sigma)
+        sigma_start = np.array(sigma_start) * sigma_scale
+
+        sampler = MultiNestSampler(self.likelihoodModule, 
+                                   mean_start, sigma_start, 
+                                   output_dir=output_dir,
+                                   output_basename=output_basename,
+                                   remove_output_dir=remove_output_dir,
+                                   use_mpi=False)
+        
+        samples, means, logZ, logZ_err, logL = sampler.run(n_live_points=n_live_points, 
+                    evidence_tolerance=evidence_tolerance,
+                    sampling_efficiency=sampling_efficiency, 
+                    const_efficiency_mode=const_efficiency_mode,
+                    multimodal=multimodal,
+                    importance_nested_sampling=importance_nested_sampling)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def dypolychord_sampling(self, dynamic_goal=1., ninit=100, nlive_const=500,
+                             sigma_scale=1, output_basename='', 
+                             remove_output_dir=False):
+        """
+        Sample parameter space using DyPolyChord
+        """
+        output_basename += 'c-'
+        output_dir = 'dypolychord_chains'
+
+        mean_start = self._param_class.kwargs2args(self._lens_temp, 
+                                                 self._source_temp, 
+                                                 self._lens_light_temp, 
+                                                 self._ps_temp,
+                                                 self._cosmo_temp)
+        mean_start = np.array(mean_start)
+
+        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
+            = self._updateManager.sigma_kwargs
+        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
+                                                  lens_light_sigma, ps_sigma, 
+                                                  cosmo_sigma)
+        sigma_start = np.array(sigma_start) * sigma_scale
+
+        sampler = DyPolyChordSampler(self.likelihoodModule, 
+                                     mean_start, sigma_start,
+                                     output_dir=output_dir,
+                                     output_basename=output_basename,
+                                     remove_output_dir=remove_output_dir, 
+                                     use_mpi=False, num_mpi_procs=1)
+        
+        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal=dynamic_goal, 
+                                          ninit=ninit, 
+                                          nlive_const=nlive_const)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names

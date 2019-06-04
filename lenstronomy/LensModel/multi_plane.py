@@ -17,7 +17,8 @@ class MultiPlane(object):
                  observed_convention_index=False):
         """
 
-        :param z_source: source redshift, this scale is used to translate the input reduced deflection units into physical units
+        :param z_source: source redshift, this scale is used to translate the input reduced deflection units into
+        physical units
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
@@ -262,7 +263,7 @@ class MultiPlane(object):
         dt_geo -= self._geometrical_delay(beta_x, beta_y, self._T_z_source)
         return dt_grav + dt_geo
 
-    def alpha(self, theta_x, theta_y, kwargs_lens, k=None, check_convention = True):
+    def alpha(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
         """
         reduced deflection angle
 
@@ -293,10 +294,10 @@ class MultiPlane(object):
 
         kwargs_lens = self._convention(kwargs_lens)
 
-        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention = False)
+        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens, check_convention=False)
 
-        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens, check_convention = False)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens, check_convention = False)
+        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens, check_convention=False)
+        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens, check_convention=False)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
         dalpha_radec = (alpha_ra_dy - alpha_ra)/diff

@@ -260,7 +260,7 @@ class TestMultiPlaneOptimizer(object):
         mag_true = self.lens_model_full.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
         mag_true_split = split.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
 
-        npt.assert_almost_equal(mag_true,mag_true_split)
+        npt.assert_almost_equal(mag_true, mag_true_split, decimal=4)
 
     def test_multi_plane_simple(self):
 

@@ -14,9 +14,12 @@ class MultiPlane(object):
     """
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
-                 observed_convention_index = False):
+                 observed_convention_index=False):
         """
 
+        :param z_source: source redshift, this scale is used to translate the input reduced deflection units into physical units
+        :param lens_model_list: list of lens model strings
+        :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)

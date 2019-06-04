@@ -3,14 +3,15 @@ __author__ = 'dgilman'
 import numpy as np
 from copy import deepcopy
 
+
 class PhysicalLocation(object):
 
     """
     center_x and center_y kwargs correspond to physical locations of deflectors
     """
     def __call__(self, kwargs_lens):
-
         return kwargs_lens
+
 
 class LensedLocation(object):
 
@@ -52,5 +53,4 @@ class LensedLocation(object):
             D = self._multiplane._T_z_list[ind]
             new_kwargs[ind]['center_x'] = x / D
             new_kwargs[ind]['center_y'] = y / D
-
         return new_kwargs

@@ -7,10 +7,10 @@ from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 
 
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
-                           multi_plane=False, source_light_model_list=[], lens_light_model_list=[],
-                           point_source_model_list=[], fixed_magnification_list=None, additional_images_list=None,
-                           min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100,
-                           source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
+                           multi_plane=False, observed_convention_index=False, source_light_model_list=[],
+                           lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
+                           additional_images_list=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
+                           num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None, band_index=0):
     """
@@ -20,6 +20,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param z_source:
     :param lens_redshift_list:
     :param multi_plane:
+    :param observed_convention_index:
     :param source_light_model_list:
     :param lens_light_model_list:
     :param point_source_model_list:
@@ -41,15 +42,26 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     if index_lens_model_list is None:
         lens_model_list_i = lens_model_list
         lens_redshift_list_i = lens_redshift_list
+        observed_convention_index_i = observed_convention_index
     else:
         lens_model_list_i = [lens_model_list[k] for k in index_lens_model_list[band_index]]
         if lens_redshift_list is not None:
             lens_redshift_list_i = [lens_redshift_list[k] for k in index_lens_model_list[band_index]]
         else:
             lens_redshift_list_i = lens_redshift_list
+        if observed_convention_index is not False:
+            counter = 0
+            observed_convention_index_i = []
+            for k in index_lens_model_list[band_index]:
+                if k in observed_convention_index:
+                    observed_convention_index_i.append(counter)
+                counter += 1
+        else:
+            observed_convention_index_i = observed_convention_index
     lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
                                  lens_redshift_list=lens_redshift_list_i,
-                                 multi_plane=multi_plane, cosmo=cosmo)
+                                 multi_plane=multi_plane, cosmo=cosmo,
+                                 observed_convention_index=observed_convention_index_i)
 
     if index_source_light_model_list is None:
         source_light_model_list_i = source_light_model_list

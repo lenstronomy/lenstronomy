@@ -298,7 +298,7 @@ class SinglePlane(object):
             from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
             return SersicEllipseKappa()
         elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
-            from lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec \
+            from lenstronomy.LensModel.Profiles.gauss_decomposition \
                 import SersicEllipseGaussDec
             return SersicEllipseGaussDec()
         elif lens_type == 'COMPOSITE_DISK':

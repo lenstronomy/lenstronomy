@@ -24,7 +24,7 @@ class TestSersicEllipseGaussDec(object):
         Test the potential function of Gauss-decomposed elliptical Sersic by
         asserting that the numerical derivative of the computed potential
         matches with the analytical derivative values.
-        the computed der
+
         :return:
         :rtype:
         """
@@ -85,6 +85,7 @@ class TestSersicEllipseGaussDec(object):
         """
         Test the derivative function of Gauss-decomposed elliptical Sersic by
         matching with the spherical case.
+
         :return:
         :rtype:
         """
@@ -126,6 +127,7 @@ class TestSersicEllipseGaussDec(object):
         """
         Test the Hessian function of Gauss-decomposed elliptical Sersic by
         matching with the spherical case.
+
         :return:
         :rtype:
         """
@@ -164,6 +166,7 @@ class TestSersicEllipseGaussDec(object):
         """
         Test the density function of Gauss-decomposed elliptical Sersic by
         checking with the spherical case.
+
         :return:
         :rtype:
         """
@@ -203,6 +206,7 @@ class TestSersicEllipseGaussDec(object):
         """
         Test that `gauss_decompose_sersic()` decomposes the Sersic profile within 1%
         Poission noise at R_sersic.
+
         :return:
         :rtype:
         """

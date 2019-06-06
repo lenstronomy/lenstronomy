@@ -49,8 +49,8 @@ class FittingSequence(object):
         :return: fitting results
         """
         chain_list = []
-        param_list = []
-        samples_mcmc, param_mcmc, dist_mcmc = [], [], []
+        #param_list = []
+        #samples_mcmc, param_mcmc, dist_mcmc = [], [], []
         for i, fitting in enumerate(fitting_list):
             fitting_type = fitting[0]
             kwargs = fitting[1]
@@ -65,19 +65,19 @@ class FittingSequence(object):
             elif fitting_type == 'PSO':
                 lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
-                chain_list.append(chain)
-                param_list.append(param)
+                chain_list.append([chain, param])
+                #param_list.append(param)
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
-                self._mcmc_init_samples = samples_mcmc
+                mcmc_output = self.mcmc(**kwargs)
+                chain_list.append(mcmc_output)
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
-        return chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
+        return chain_list
 
     def best_fit(self, bijective=False):
         """
@@ -140,7 +140,8 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
-        :return: MCMC samples, parameter names, logL distances of all samples
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
+        by the specific sampler used
         """
 
         param_class = self._param_class
@@ -168,13 +169,16 @@ class FittingSequence(object):
             samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
                                            threadCount=threadCount,
                                            mpi=self._mpi, init_pos=initpos)
+            output = [samples, param_list, dist]
         elif sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
             dist = None
+            output = [samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
-        return samples, param_list, dist
+        self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
+        return output
 
     def pso(self, n_particles, n_iterations, sigma_scale=1, print_key='PSO', threadCount=1):
         """
@@ -205,8 +209,8 @@ class FittingSequence(object):
                                                                                                          bijective=True)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
-    def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
-                 psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
+    def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
+                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
         """
         iterative PSF reconstruction
 

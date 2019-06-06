@@ -35,7 +35,7 @@ class TestFittingSequence(object):
         psf_gaussian = PSF(**kwargs_psf_gaussian)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
         psf_class = PSF(**self.kwargs_psf)
-        # 'EXERNAL_SHEAR': external shear
+        # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
@@ -147,7 +147,6 @@ class TestFittingSequence(object):
         n_i = 2
         fitting_list = []
 
-
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
@@ -171,7 +170,7 @@ class TestFittingSequence(object):
         #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
-        chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_list)
+        chain_list = fittingSequence.fit_sequence(fitting_list)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)

@@ -160,7 +160,7 @@ class GaussianEllipseKappaSet(object):
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         Compute the density of a set of concentric elliptical Gaussian
-        convergence profiles :math:`\sum A/(2\pi \sigma^2) * \exp(-(
+        convergence profiles :math:`\sum A/(2\pi \sigma^2) \exp(-(
         x^2+y^2/q^2)/2\sigma^2)`.
 
         :param x: x coordinate

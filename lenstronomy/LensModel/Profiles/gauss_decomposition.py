@@ -295,7 +295,7 @@ class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
     @abc.abstractmethod
     def get_kappa_y(self, y, **kwargs):
         r"""
-        Abstract method to compute the spherical Sersic profile at ``y``.
+        Abstract method to compute the spherical Sersic profile at y.
         The concrete method has to defined by the child class.
 
         :param y: y coordinate

@@ -309,7 +309,6 @@ class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
         :return: Scale size
         :rtype: ``float``
         """
-        pass
 
     @abc.abstractmethod
     def get_kappa_y(self, y, **kwargs):
@@ -323,7 +322,6 @@ class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
         class that are particular for the convergence profile in the child
         class.
         """
-        pass
 
     def function(self, x, y, e1, e2, center_x=0.,
                  center_y=0., **kwargs):

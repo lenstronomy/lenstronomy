@@ -35,8 +35,7 @@ class GaussianEllipseKappa(object):
 
         :param use_scipy_wofz: If ``True``, use ``scipy.special.wofz``.
         :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: Minimum allowed ellipticity. For ``q > 1 -
-        min_ellipticity``, values for spherical case will be returned.
+        :param min_ellipticity: Minimum allowed ellipticity. For ``q > 1 - min_ellipticity``, values for spherical case will be returned.
         :type min_ellipticity: ``float``
         """
         if use_scipy_wofz:
@@ -55,8 +54,7 @@ class GaussianEllipseKappa(object):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi
-        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -125,8 +123,7 @@ class GaussianEllipseKappa(object):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi
-        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -190,8 +187,7 @@ class GaussianEllipseKappa(object):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi
-        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -262,8 +258,7 @@ class GaussianEllipseKappa(object):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate.
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi
-        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian.
         :type sigma: ``float``
@@ -291,7 +286,7 @@ class GaussianEllipseKappa(object):
 
         :param z: Complex variable :math:`z = x + \mathrm{i}y`
         :type z: ``complex``
-        :return: Sign of z, :math:`\mathrm{sgn}(z)`
+        :return: :math:`\mathrm{sgn}(z)`
         :rtype: ``float``
         """
         return 1.
@@ -304,18 +299,17 @@ class GaussianEllipseKappa(object):
         #return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))
 
     def sigma_function(self, x, y, q):
-        """
-        Compute the function :math:`\varsigma(z; q)` from equation (4.12) of Shajib (2019).
+        r"""
+        Compute the function :math:`\varsigma (z; q)` from equation (4.12)
+        of Shajib (2019).
 
-        :param x: Real part of complex variable,:math:`x = \mathrm{Re}(z)`
+        :param x: Real part of complex variable, :math:`x = \mathrm{Re}(z)`
         :type x: ``float`` or ``numpy.array``
-        :param y: Imaginary part of complex variable, :math:`y = \mathrm{
-        Im}(z)`
+        :param y: Imaginary part of complex variable, :math:`y = \mathrm{Im}(z)`
         :type y: ``float`` or ``numpy.array``
         :param q: Axis ratio
         :type q: ``float``
-        :return: value of :math:`\varsigma` function, equation (4.12) from
-        Shajib (2019)
+        :return: real and imaginary part of :math:`\varsigma(z; q)` function
         :rtype: tuple ``(type(x), type(x))``
         """
         y_sign = np.sign(y)

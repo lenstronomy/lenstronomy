@@ -442,7 +442,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
 
     def get_kappa_y(self, y, **kwargs):
         r"""
-        Compute the spherical Sersic profile at ``y``.
+        Compute the spherical Sersic profile at y.
 
         :param y: y coordinate
         :type y: ``float``
@@ -456,7 +456,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
             * **k_eff** (``float``) --
               Sersic convergence at R_sersic
 
-        :return: Sersic function at ``y``
+        :return: Sersic function at y
         :rtype: ``type(y)``
         """
         n_sersic = kwargs['n_sersic']

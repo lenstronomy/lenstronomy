@@ -135,10 +135,8 @@ class GaussianEllipseKappa(object):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Deflection angle :math:`\partial f/\partial x`,
-        :math:`\partial f/\partial y` for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with
-        each ``numpy.array``'s shape equal to ``x.shape``.
+        :return: Deflection angle :math:`\partial f/\partial x`, :math:`\partial f/\partial y` for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -199,10 +197,8 @@ class GaussianEllipseKappa(object):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Hessian :math:`A/(2 \pi \sigma^2) \exp(-(
-        x^2+y^2/q^2)/2\sigma^2)` for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array,
-        numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
+        :return: Hessian :math:`A/(2 \pi \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)` for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -270,8 +266,7 @@ class GaussianEllipseKappa(object):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid.
         :type center_y: ``float``
-        :return: Density :math:`\kappa` for elliptical
-        Gaussian convergence.
+        :return: Density :math:`\kappa` for elliptical Gaussian convergence.
         :rtype: ``float``, or ``numpy.array`` with shape = ``x.shape``.
         """
         f_xx, f_yy, f_xy = self.hessian(x, y, amp, sigma, e1, e2, center_x,

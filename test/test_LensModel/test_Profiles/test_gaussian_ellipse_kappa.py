@@ -25,6 +25,7 @@ class TestGaussianEllipseKappa(object):
     def test_function(self):
         """
         Test the `function()` method at the spherical limit.
+
         :return:
         :rtype:
         """
@@ -54,6 +55,7 @@ class TestGaussianEllipseKappa(object):
     def test_derivatives(self):
         """
         Test the `derivatives()` method at the spherical limit.
+
         :return:
         :rtype:
         """
@@ -82,6 +84,7 @@ class TestGaussianEllipseKappa(object):
     def test_hessian(self):
         """
         Test the `hessian()` method at the spherical limit.
+
         :return:
         :rtype:
         """
@@ -112,6 +115,7 @@ class TestGaussianEllipseKappa(object):
     def test_density_2d(self):
         """
         Test the `density_2d()` method at the spherical limit.
+
         :return:
         :rtype:
         """
@@ -129,6 +133,7 @@ class TestGaussianEllipseKappa(object):
         """
         Test the `w_f_approx()` method with values computed using
         `scipy.special.wofz()`.
+
         :return:
         :rtype:
         """

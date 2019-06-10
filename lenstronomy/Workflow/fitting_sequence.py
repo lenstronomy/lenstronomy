@@ -65,8 +65,7 @@ class FittingSequence(object):
             elif fitting_type == 'PSO':
                 lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
-                chain_list.append([chain, param])
-                #param_list.append(param)
+                chain_list.append([fitting_type, chain, param])
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -169,12 +168,11 @@ class FittingSequence(object):
             samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
                                            threadCount=threadCount,
                                            mpi=self._mpi, init_pos=initpos)
-            output = [samples, param_list, dist]
+            output = [sampler_type, samples, param_list, dist]
         elif sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
-            dist = None
-            output = [samples, param_list, dist]
+            output = [sampler_type, samples, param_list]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run

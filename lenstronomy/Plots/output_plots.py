@@ -934,6 +934,33 @@ class ModelBandPlot(object):
         return f, axes
 
 
+def plot_chain_list(chain_list, index=0):
+    """
+    plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
+    This routine is an example and more tests might be appropriate to analyse a specific chain.
+
+    :param chain_list: list of chains with arguments [type string, samples etc...]
+    :param index of chain to be plotted
+    :return: plotting instance
+    """
+    chain_i = chain_list[index]
+    chain_type = chain_i[0]
+    if chain_type == 'PSO':
+        chain, param = chain_i[1:]
+        f, axes = plot_chain(chain, param)
+    elif chain_type == 'COSMOHAMMER':
+        samples, param, dist = chain_i[1:]
+        f, ax = plt.subplots(1, 1, figsize=(6, 6))
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
+    elif chain_type == 'EMCEE':
+        samples, param = chain_i[1:]
+        f, ax = plt.subplots(1, 1, figsize=(6, 6))
+        axes = plot_mcmc_behaviour(ax, samples, param, num_average=100)
+    else:
+        raise ValueError('chain_type %s not supported for plotting' % chain_type)
+    return f, axes
+
+
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list, _ = chain
 
@@ -960,7 +987,7 @@ def plot_chain(chain, param_list):
     return f, axes
 
 
-def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=100):
+def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """
     plots the MCMC behaviour and looks for convergence of the chain
     :param samples_mcmc: parameters sampled 2d numpy array
@@ -979,9 +1006,10 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=100
         samples_renormed = (samples_averaged - end_point) / np.std(samples_averaged)
         ax.plot(samples_renormed, label=param_name)
 
-    dist_averaged = -np.max(dist_mcmc[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
-    dist_normed = (dist_averaged - np.max(dist_averaged)) / (np.max(dist_averaged) - np.min(dist_averaged))
-    ax.plot(dist_normed, label="logL", color='k', linewidth=2)
+    if dist_mcmc is not None:
+        dist_averaged = -np.max(dist_mcmc[:int(n_points * num_average)].reshape(n_points, num_average), axis=1)
+        dist_normed = (dist_averaged - np.max(dist_averaged)) / (np.max(dist_averaged) - np.min(dist_averaged))
+        ax.plot(dist_normed, label="logL", color='k', linewidth=2)
     ax.legend()
     return ax
 

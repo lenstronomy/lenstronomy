@@ -139,7 +139,7 @@ class TestParam(object):
         kwargs_model = {'lens_model_list': ['CHAMELEON'], 'lens_light_model_list': ['CHAMELEON']}
         i_light, k_lens = 0, 0
         kwargs_constraints = {'joint_lens_with_light': [[i_light, k_lens, ['w_t', 'w_c', 'center_x', 'center_y', 'e1', 'e2']]]}
-        kwargs_lens = [{'theta_E': 10}]
+        kwargs_lens = [{'theta_1': 10}]
         kwargs_lens_light = [{'amp': 1, 'w_t': 0.5, 'w_c': 0.1, 'center_x': 0, 'center_y': 0.3, 'e1': 0.1, 'e2': -0.2}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)

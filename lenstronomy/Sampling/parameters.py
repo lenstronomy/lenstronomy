@@ -374,8 +374,10 @@ class Param(object):
                 scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
                 if 'theta_E' in kwargs:
                     kwargs['theta_E'] *= scale_factor
-                elif 'theta_Rs' in kwargs:
-                    kwargs['theta_Rs'] *= scale_factor
+                elif 'alpha_Rs' in kwargs:
+                    kwargs['alpha_Rs'] *= scale_factor
+                elif 'alpha_1' in kwargs:
+                    kwargs['alpha_1'] *= scale_factor
                 elif 'sigma0' in kwargs:
                     kwargs['sigma0'] *= scale_factor
                 elif 'k_eff' in kwargs:

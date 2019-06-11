@@ -134,17 +134,21 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw(self):
-        kwargs = {'theta_Rs': .1, 'Rs': 5.}
+        kwargs = {'alpha_Rs': .1, 'Rs': 5.}
         lens_model = ['NFW']
         self.assert_differentials(lens_model, kwargs)
 
     def test_tnfw(self):
-        kwargs = {'theta_Rs': .1, 'Rs': 5., 'r_trunc': 7}
+        kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_trunc': 7}
+        lens_model = ['TNFW']
+        self.assert_differentials(lens_model, kwargs)
+
+        kwargs = {'Rs': 2, 'alpha_Rs': 1, 'r_trunc': 7}
         lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw_ellipse(self):
-        kwargs = {'theta_Rs': .1, 'Rs': 5., 'e1': 0.04, 'e2': -0.04}
+        kwargs = {'alpha_Rs': .1, 'Rs': 5., 'e1': 0.04, 'e2': -0.04}
         lens_model = ['NFW_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
@@ -220,20 +224,15 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_coreBurk(self):
-        kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.4}
+        kwargs={'Rs':2, 'alpha_Rs': 1, 'r_core':0.4}
         lens_model = ['coreBURKERT']
         self.assert_differentials(lens_model, kwargs)
-        kwargs = {'Rs': 2, 'theta_Rs': 1, 'r_core':5}
+        kwargs = {'Rs': 2, 'alpha_Rs': 1, 'r_core':5}
         self.assert_differentials(lens_model, kwargs)
 
     def test_cnfw(self):
-        kwargs={'Rs':2, 'theta_Rs': 1, 'r_core':0.3}
+        kwargs={'Rs':2, 'alpha_Rs': 1, 'r_core':0.3}
         lens_model = ['CNFW']
-        self.assert_differentials(lens_model, kwargs)
-
-    def test_tnfw(self):
-        kwargs={'Rs':2, 'theta_Rs': 1, 'r_trunc':7}
-        lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
 

@@ -27,31 +27,31 @@ class TestMultiPlaneOptimizer(object):
 
         front_halos = ['NFW', 'SIS', 'NFW', 'NFW', 'NFW', 'NFW']
         front_redshifts = [0.4, 0.4, 0.4, 0.44, 0.44, 0.44]
-        self.front_args = [{'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 1.2, 'Rs': 0.13},
+        self.front_args = [{'alpha_Rs': 0.001, 'center_y': 0.2, 'center_x': 1.2, 'Rs': 0.13},
                            {'theta_E': 0.4, 'center_y': -0.2, 'center_x': 0.7},
-                           {'theta_Rs': 0.004, 'center_y': 0.12, 'center_x': -1.2, 'Rs': 0.13},
-                           {'theta_Rs': 0.0001, 'center_y': 0.32, 'center_x': -0.2, 'Rs': 0.13},
-                           {'theta_Rs': 0.003, 'center_y': 0.82, 'center_x': 0.78, 'Rs': 0.13},
-                           {'theta_Rs': 0.008, 'center_y': 1, 'center_x': 0.75, 'Rs': 0.16}]
+                           {'alpha_Rs': 0.004, 'center_y': 0.12, 'center_x': -1.2, 'Rs': 0.13},
+                           {'alpha_Rs': 0.0001, 'center_y': 0.32, 'center_x': -0.2, 'Rs': 0.13},
+                           {'alpha_Rs': 0.003, 'center_y': 0.82, 'center_x': 0.78, 'Rs': 0.13},
+                           {'alpha_Rs': 0.008, 'center_y': 1, 'center_x': 0.75, 'Rs': 0.16}]
 
         main_halos = ['NFW', 'NFW', 'NFW', 'SIS', 'NFW', 'NFW']
         main_redshifts = [0.5] * 6
-        self.main_args = [{'theta_Rs': 0.001, 'center_y': 1.2, 'center_x': 0.2, 'Rs': 0.13},
-                          {'theta_Rs': 0.002, 'center_y': -0.1, 'center_x': 0.91, 'Rs': 0.11},
-                          {'theta_Rs': 0.009, 'center_y': 0.18, 'center_x': -0.42, 'Rs': 0.13},
+        self.main_args = [{'alpha_Rs': 0.001, 'center_y': 1.2, 'center_x': 0.2, 'Rs': 0.13},
+                          {'alpha_Rs': 0.002, 'center_y': -0.1, 'center_x': 0.91, 'Rs': 0.11},
+                          {'alpha_Rs': 0.009, 'center_y': 0.18, 'center_x': -0.42, 'Rs': 0.13},
                           {'theta_E': 0.3, 'center_y': 0.42, 'center_x': -0.92},
-                          {'theta_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
-                          {'theta_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16}]
+                          {'alpha_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
+                          {'alpha_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16}]
 
 
         back_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'SIS', 'NFW']
         back_redshifts = [0.55, 0.6, 0.6, 0.74, 0.74, 0.8]
-        self.back_args = [{'theta_Rs': 0.004, 'center_y': 0.1, 'center_x': 1, 'Rs': 0.13},
-                          {'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 0.7, 'Rs': 0.11},
-                          {'theta_Rs': 0.003, 'center_y': -0.1, 'center_x': -1, 'Rs': 0.13},
-                          {'theta_Rs': 0.0008, 'center_y': 0.42, 'center_x': 0.1, 'Rs': 0.13},
+        self.back_args = [{'alpha_Rs': 0.004, 'center_y': 0.1, 'center_x': 1, 'Rs': 0.13},
+                          {'alpha_Rs': 0.001, 'center_y': 0.2, 'center_x': 0.7, 'Rs': 0.11},
+                          {'alpha_Rs': 0.003, 'center_y': -0.1, 'center_x': -1, 'Rs': 0.13},
+                          {'alpha_Rs': 0.0008, 'center_y': 0.42, 'center_x': 0.1, 'Rs': 0.13},
                           {'theta_E': 0.3, 'center_y': 0.7, 'center_x': 1.08},
-                          {'theta_Rs': 0.006, 'center_y': 0.5, 'center_x': 0.75, 'Rs': 0.16}]
+                          {'alpha_Rs': 0.006, 'center_y': 0.5, 'center_x': 0.75, 'Rs': 0.16}]
 
         self.convention_idx = [14,18]
         #self.convention_idx = False

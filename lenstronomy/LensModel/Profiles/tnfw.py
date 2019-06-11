@@ -15,9 +15,9 @@ class TNFW(object):
     relation are: R_200 = c * Rs
 
     """
-    param_names = ['Rs', 'theta_Rs', 'r_trunc', 'center_x', 'center_y']
-    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'r_trunc': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'r_trunc': 100, 'center_x': 100, 'center_y': 100}
+    param_names = ['Rs', 'alpha_Rs', 'r_trunc', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'r_trunc': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'alpha_Rs': 10, 'r_trunc': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         """
@@ -26,18 +26,18 @@ class TNFW(object):
         """
         pass
 
-    def function(self, x, y, Rs, theta_Rs, r_trunc, center_x=0, center_y=0):
+    def function(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
         """
 
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param theta_Rs: deflection at Rs
+        :param alpha_Rs: deflection at Rs
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -79,9 +79,9 @@ class TNFW(object):
             else:
                 return (x ** 2 - 1) ** -.5 * np.arctan((x ** 2 - 1) ** .5)
 
-    def derivatives(self, x, y, Rs=None, theta_Rs=None, r_trunc=None, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs=None, alpha_Rs=None, r_trunc=None, center_x=0, center_y=0):
 
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -90,14 +90,14 @@ class TNFW(object):
         f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, r_trunc, x_, y_)
         return f_x, f_y
 
-    def hessian(self, x, y, Rs, theta_Rs, r_trunc, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
 
         #raise Exception('Hessian for truncated nfw profile not yet implemented.')
 
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -245,7 +245,7 @@ class TNFW(object):
 
         return a * (ax_y ** 2 - ax_x ** 2) / R ** 2, -a * 2 * (ax_x * ax_y) / R ** 2
 
-    def mass_2d(self,R,Rs,rho0,r_trunc):
+    def mass_2d(self, R, Rs, rho0, r_trunc):
 
         """
         analytic solution of the projection integral
@@ -395,11 +395,11 @@ class TNFW(object):
 
             return values
 
-    def _alpha2rho0(self, theta_Rs, Rs):
+    def _alpha2rho0(self, alpha_Rs, Rs):
         """
         convert angle at Rs into rho0; neglects the truncation
         """
-        rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
+        rho0 = alpha_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
         return rho0
 
     def _rho02alpha(self, rho0, Rs):
@@ -411,5 +411,5 @@ class TNFW(object):
         :param Rs:
         :return:
         """
-        theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return theta_Rs
+        alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        return alpha_Rs

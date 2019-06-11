@@ -355,8 +355,8 @@ class SinglePlane(object):
             self._foreground_shear_idex = i
             return Shear()
         elif lens_type == 'coreBURKERT':
-            from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
-            return coreBurkert()
+            from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
+            return CoreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

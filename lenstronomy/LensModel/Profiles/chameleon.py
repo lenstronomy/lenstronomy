@@ -9,19 +9,19 @@ class Chameleon(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
-    param_names = ['theta_1', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
+    param_names = ['alpha_1', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'theta_E': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.nie = NIE()
 
-    def function(self, x, y, theta_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
+    def function(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
         :param e1: ellipticity parameter
@@ -31,7 +31,7 @@ class Chameleon(object):
         :return: lensing potential
         """
 
-        theta_E_conv, w_c, w_t = self._theta_convert(theta_1, w_c, w_t)
+        theta_E_conv, w_c, w_t = self._theta_convert(alpha_1, w_c, w_t)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
@@ -40,12 +40,12 @@ class Chameleon(object):
         f_ = f_1 - f_2
         return f_
 
-    def derivatives(self, x, y, theta_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
+    def derivatives(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
         :param e1: ellipticity parameter
@@ -54,7 +54,7 @@ class Chameleon(object):
         :param center_y: dec center
         :return: deflection angles (RA, DEC)
         """
-        theta_E_conv, w_c, w_t = self._theta_convert(theta_1, w_c, w_t)
+        theta_E_conv, w_c, w_t = self._theta_convert(alpha_1, w_c, w_t)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
@@ -64,12 +64,12 @@ class Chameleon(object):
         f_y = f_y_1 - f_y_2
         return f_x, f_y
 
-    def hessian(self, x, y, theta_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
+    def hessian(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
         :param e1: ellipticity parameter
@@ -78,7 +78,7 @@ class Chameleon(object):
         :param center_y: dec center
         :return: second derivatives of the lensing potential (Hessian: f_xx, f_yy, f_xy)
         """
-        theta_E_conv, w_c, w_t = self._theta_convert(theta_1, w_c, w_t)
+        theta_E_conv, w_c, w_t = self._theta_convert(alpha_1, w_c, w_t)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
@@ -89,12 +89,12 @@ class Chameleon(object):
         f_xy = f_xy_1 - f_xy_2
         return f_xx, f_yy, f_xy
 
-    def _theta_convert(self, theta_1, w_c, w_t):
+    def _theta_convert(self, alpha_1, w_c, w_t):
         """
-        convert the parameter theta_1 (deflection angle one arcsecond from the center) into the
+        convert the parameter alpha_1 (deflection angle one arcsecond from the center) into the
         "Einstein radius" scale parameter of the two NIE profiles
 
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
         :return:
@@ -106,7 +106,7 @@ class Chameleon(object):
         f_x_1, f_y_1 = self.nie.derivatives(1, 0, theta_E=1, e1=0, e2=0, s_scale=s_scale_1)
         f_x_2, f_y_2 = self.nie.derivatives(1, 0, theta_E=1, e1=0, e2=0, s_scale=s_scale_2)
         f_x = f_x_1 - f_x_2
-        theta_E_convert = theta_1 / f_x
+        theta_E_convert = alpha_1 / f_x
         return theta_E_convert, w_c, w_t
 
 
@@ -115,7 +115,7 @@ class DoubleChameleon(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
-    param_names = ['theta_1', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
+    param_names = ['alpha_1', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
                            'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
                            'center_x': -100, 'center_y': -100}
@@ -126,11 +126,11 @@ class DoubleChameleon(object):
     def __init__(self):
         self.chameleon = Chameleon()
 
-    def function(self, x, y, theta_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+    def function(self, x, y, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         """
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile
@@ -145,15 +145,15 @@ class DoubleChameleon(object):
         :return: lensing potential
         """
 
-        f_1 = self.chameleon.function(x, y, theta_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
-        f_2 = self.chameleon.function(x, y, theta_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        f_1 = self.chameleon.function(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_1 + f_2
 
-    def derivatives(self, x, y, theta_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+    def derivatives(self, x, y, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         """
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile
@@ -167,15 +167,15 @@ class DoubleChameleon(object):
         :param center_y: dec center
         :return: deflection angles (RA, DEC)
         """
-        f_x1, f_y1 = self.chameleon.derivatives(x, y, theta_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
-        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        f_x1, f_y1 = self.chameleon.derivatives(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_x1 + f_x2, f_y1 + f_y2
 
-    def hessian(self, x, y, theta_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+    def hessian(self, x, y, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         """
         :param x: ra-coordinate
         :param y: dec-coordinate
-        :param theta_1: deflection angle at 1 (arcseconds) from the center
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
         :param w_c1: Suyu+2014 for first profile
         :param w_t1: Suyu+2014 for first profile
@@ -189,8 +189,8 @@ class DoubleChameleon(object):
         :param center_y: dec center
         :return: second derivatives of the lensing potential (Hessian: f_xx, f_yy, f_xy)
         """
-        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, theta_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
 
 
@@ -199,20 +199,20 @@ class DoubleChameleonPointMass(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
-    param_names = ['theta_1', 'ratio_chameleon', 'ratio_pointmass', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2',
+    param_names = ['alpha_1', 'ratio_chameleon', 'ratio_pointmass', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2',
                    'e12', 'e22', 'center_x', 'center_y']
 
     def __init__(self):
         self.chameleon = DoubleChameleon()
         self.pointMass = PointMass()
 
-    def function(self, x, y, theta_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+    def function(self, x, y, alpha_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
                  center_x=0, center_y=0):
         """
         #TODO chose better parameterization for combining point mass and Chameleon profiles
-        :param x:
-        :param y:
-        :param theta_1:
+        :param x: ra-coordinate
+        :param y: dec-coordinate
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
         :param w_c1: Suyu+2014 for first profile
@@ -227,18 +227,18 @@ class DoubleChameleonPointMass(object):
         :param center_y: dec center
         :return:
         """
-        f_1 = self.pointMass.function(x, y, theta_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
-        f_2 = self.chameleon.function(x, y, theta_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1, e11, e21,
+        f_1 = self.pointMass.function(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
+        f_2 = self.chameleon.function(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1, e11, e21,
                                       w_c2, w_t2, e12, e22, center_x, center_y)
         return f_1 + f_2
 
-    def derivatives(self, x, y, theta_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+    def derivatives(self, x, y, alpha_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
                     center_x=0, center_y=0):
         """
 
         :param x:
         :param y:
-        :param theta_1:
+        :param alpha_1:
         :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
         :param w_c1: Suyu+2014 for first profile
@@ -253,18 +253,18 @@ class DoubleChameleonPointMass(object):
         :param center_y: dec center
         :return:
         """
-        f_x1, f_y1 = self.pointMass.derivatives(x, y, theta_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
-        f_x2, f_y2 = self.chameleon.derivatives(x, y, theta_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
+        f_x1, f_y1 = self.pointMass.derivatives(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
                                                 e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
         return f_x1 + f_x2, f_y1 + f_y2
 
-    def hessian(self, x, y, theta_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
+    def hessian(self, x, y, alpha_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
                 center_x=0, center_y=0):
         """
 
         :param x:
         :param y:
-        :param theta_1:
+        :param alpha_1:
         :param ratio_pointmass: ratio of point source Einstein radius to combined Chameleon deflection angle at r=1
         :param ratio_chameleon: ratio in deflection angles at r=1 for the two Chameleon profiles
         :param w_c1: Suyu+2014 for first profile
@@ -279,7 +279,7 @@ class DoubleChameleonPointMass(object):
         :param center_y: dec center
         :return:
         """
-        f_xx1, f_yy1, f_xy1 = self.pointMass.hessian(x, y, theta_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, theta_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
+        f_xx1, f_yy1, f_xy1 = self.pointMass.hessian(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
                                                      e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2

@@ -18,7 +18,7 @@ class TestChameleon(object):
 
     def test_theta_E_convert(self):
         w_c, w_t = 2, 1
-        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(theta_1=1, w_c=w_c, w_t=w_t)
+        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(alpha_1=1, w_c=w_c, w_t=w_t)
         assert w_c == 1
         assert w_t == 2
 
@@ -31,8 +31,8 @@ class TestChameleon(object):
         w_c, w_t = 0.5, 1.
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(theta_1=1, w_c=0.5, w_t=1.)
+        kwargs_light = {'alpha_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(alpha_1=1, w_c=0.5, w_t=1.)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         kwargs_1 = {'theta_E': theta_E_convert, 's_scale': s_scale_1, 'e1': e1, 'e2': e2}
@@ -51,8 +51,8 @@ class TestChameleon(object):
         w_c, w_t = 0.5, 1.
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(theta_1=1, w_c=0.5, w_t=1.)
+        kwargs_light = {'alpha_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(alpha_1=1, w_c=0.5, w_t=1.)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         kwargs_1 = {'theta_E': theta_E_convert, 's_scale': s_scale_1, 'e1': e1, 'e2': e2}
@@ -74,8 +74,8 @@ class TestChameleon(object):
         w_c, w_t = 0.5, 1.
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(theta_1=1, w_c=0.5, w_t=1.)
+        kwargs_light = {'alpha_1': 1., 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        theta_E_convert, w_c, w_t = self.chameleon._theta_convert(alpha_1=1, w_c=0.5, w_t=1.)
         s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
         s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         kwargs_1 = {'theta_E': theta_E_convert, 's_scale': s_scale_1, 'e1': e1, 'e2': e2}
@@ -98,7 +98,7 @@ class TestDoubleChameleon(object):
     def test_param_name(self):
         chameleon = DoubleChameleon()
         names = chameleon.param_names
-        assert names[0] == 'theta_1'
+        assert names[0] == 'alpha_1'
 
     def test_function(self):
         """
@@ -113,10 +113,10 @@ class TestDoubleChameleon(object):
         theta_E = 1.
         ratio = 2.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
+        kwargs_light = {'alpha_1': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
 
-        kwargs_1 = {'theta_1': theta_E / (1 + 1. / ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        kwargs_2 = {'theta_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
+        kwargs_1 = {'alpha_1': theta_E / (1 + 1. / ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        kwargs_2 = {'alpha_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
         flux = doublechameleon.function(x=x, y=1., **kwargs_light)
         flux1 = chameleon.function(x=x, y=1., **kwargs_1)
         flux2 = chameleon.function(x=x, y=1., **kwargs_2)
@@ -135,10 +135,10 @@ class TestDoubleChameleon(object):
         theta_E = 1.
         ratio = 2.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
+        kwargs_light = {'alpha_1': 1., 'ratio': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
 
-        kwargs_1 = {'theta_1': theta_E / (1 + 1. / ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        kwargs_2 = {'theta_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
+        kwargs_1 = {'alpha_1': theta_E / (1 + 1. / ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        kwargs_2 = {'alpha_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
         f_x, f_y = doublechameleon.derivatives(x=x, y=1., **kwargs_light)
         f_x1, f_y1 = chameleon.derivatives(x=x, y=1., **kwargs_1)
         f_x2, f_y2 = chameleon.derivatives(x=x, y=1., **kwargs_2)
@@ -158,11 +158,11 @@ class TestDoubleChameleon(object):
         theta_E = 1.
         ratio = 2.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens = {'theta_1': theta_E, 'ratio': ratio, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
+        kwargs_lens = {'alpha_1': theta_E, 'ratio': ratio, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         kwargs_light = {'amp': theta_E, 'ratio': ratio, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
 
-        kwargs_1 = {'theta_1': theta_E / (1 + 1./ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
-        kwargs_2 = {'theta_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
+        kwargs_1 = {'alpha_1': theta_E / (1 + 1./ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
+        kwargs_2 = {'alpha_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
         f_xx, f_yy, f_xy = doublechameleon.hessian(x=x, y=1., **kwargs_lens)
         f_xx1, f_yy1, f_xy1 = chameleon.hessian(x=x, y=1., **kwargs_1)
         f_xx2, f_yy2, f_xy2 = chameleon.hessian(x=x, y=1., **kwargs_2)
@@ -188,7 +188,7 @@ class TestDoubleChameleonPointMass(object):
     def test_param_name(self):
         chameleon = DoubleChameleonPointMass()
         names = chameleon.param_names
-        assert names[0] == 'theta_1'
+        assert names[0] == 'alpha_1'
 
     def test_function(self):
         """
@@ -199,7 +199,7 @@ class TestDoubleChameleonPointMass(object):
 
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
+        kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         flux = doublechameleon.function(x=1, y=1., **kwargs_light)
         npt.assert_almost_equal(flux, 1.2324939073557235, decimal=4)
 
@@ -212,7 +212,7 @@ class TestDoubleChameleonPointMass(object):
 
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
+        kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_x, f_y = doublechameleon.derivatives(x=1, y=1., **kwargs_light)
         npt.assert_almost_equal(f_x, 0.445004064611891, decimal=4)
@@ -227,7 +227,7 @@ class TestDoubleChameleonPointMass(object):
 
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_light = {'theta_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
+        kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_xx, f_yy, f_xy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
         npt.assert_almost_equal(f_xx, 0.06174422835961879, decimal=4)

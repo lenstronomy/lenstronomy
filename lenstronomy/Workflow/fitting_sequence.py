@@ -9,6 +9,7 @@ import numpy as np
 
 from TDLMCpipeline.Sampling.multinest_sampler import MultiNestSampler
 from TDLMCpipeline.Sampling.polychord_sampler import DyPolyChordSampler
+from TDLMCpipeline.Sampling.dynesty_sampler import DynestySampler
 
 
 class FittingSequence(object):
@@ -99,6 +100,22 @@ class FittingSequence(object):
             elif fitting_type == 'DyPolyChord':
                 samples, result, logL, logZ, logZ_err, param_names \
                     = self.dypolychord_sampling(**kwargs)
+
+                lens_result, source_result, lens_light_result, ps_result, cosmo_result \
+                    = self._param_class.args2kwargs(result, bijective=True)
+
+                self._lens_temp, self._source_temp, self._lens_light_temp, \
+                    self._ps_temp, self._cosmo_temp = \
+                    lens_result, source_result, lens_light_result, \
+                    ps_result, cosmo_result
+
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logL
+
+            elif fitting_type == 'Dynesty':
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.dynesty_sampling(**kwargs)
 
                 lens_result, source_result, lens_light_result, ps_result, cosmo_result \
                     = self._param_class.args2kwargs(result, bijective=True)
@@ -355,7 +372,7 @@ class FittingSequence(object):
     def multinest_sampling(self, n_live_points=400, evidence_tolerance=0.5,
                            sampling_efficiency=0.8, const_efficiency_mode=False, 
                            multimodal=True, importance_nested_sampling=True, 
-                           sigma_scale=1, 
+                           sampling_type='uniform', sigma_scale=1, 
                            remove_output_dir=False, output_basename=''):
         """
         Sample parameter space using PyMultiNest
@@ -363,22 +380,12 @@ class FittingSequence(object):
         output_basename += 'c-'
         output_dir = 'multinest_chains'
 
-        mean_start = self._param_class.kwargs2args(self._lens_temp, 
-                                                 self._source_temp, 
-                                                 self._lens_light_temp, 
-                                                 self._ps_temp,
-                                                 self._cosmo_temp)
-        mean_start = np.array(mean_start)
-
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
-            = self._updateManager.sigma_kwargs
-        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
-                                                  lens_light_sigma, ps_sigma, 
-                                                  cosmo_sigma)
-        sigma_start = np.array(sigma_start) * sigma_scale
+        mean_start, sigma_start = self._prepare_sampling(sampling_type)
 
         sampler = MultiNestSampler(self.likelihoodModule, 
-                                   mean_start, sigma_start, 
+                                   sampling_type=sampling_type,
+                                   gaussian_means=mean_start, 
+                                   gaussian_sigmas=sigma_start, 
                                    output_dir=output_dir,
                                    output_basename=output_basename,
                                    remove_output_dir=remove_output_dir,
@@ -395,7 +402,7 @@ class FittingSequence(object):
 
 
     def dypolychord_sampling(self, dynamic_goal=1., ninit=100, nlive_const=500,
-                             sigma_scale=1, output_basename='', 
+                             sampling_type='uniform', sigma_scale=1, output_basename='', 
                              remove_output_dir=False):
         """
         Sample parameter space using DyPolyChord
@@ -418,7 +425,9 @@ class FittingSequence(object):
         sigma_start = np.array(sigma_start) * sigma_scale
 
         sampler = DyPolyChordSampler(self.likelihoodModule, 
-                                     mean_start, sigma_start,
+                                     sampling_type=sampling_type,
+                                     gaussian_means=mean_start, 
+                                     gaussian_sigmas=sigma_start, 
                                      output_dir=output_dir,
                                      output_basename=output_basename,
                                      remove_output_dir=remove_output_dir, 
@@ -429,3 +438,58 @@ class FittingSequence(object):
                                           nlive_const=nlive_const)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def dynesty_sampling(self, dlogz_init=0.05, nlive_init=500, nlive_batch=100,
+                         maxiter_init=10000, maxiter_batch=1000, maxbatch=10,
+                         sampling_type='uniform', sigma_scale=1):
+        mean_start = self._param_class.kwargs2args(self._lens_temp, 
+                                                 self._source_temp, 
+                                                 self._lens_light_temp, 
+                                                 self._ps_temp,
+                                                 self._cosmo_temp)
+        mean_start = np.array(mean_start)
+
+        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
+            = self._updateManager.sigma_kwargs
+        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
+                                                  lens_light_sigma, ps_sigma, 
+                                                  cosmo_sigma)
+        sigma_start = np.array(sigma_start) * sigma_scale
+
+        sampler = DynestySampler(self.likelihoodModule, 
+                                 sampling_type=sampling_type,
+                                 gaussian_means=mean_start, 
+                                 gaussian_sigmas=sigma_start)
+
+        samples, means, logZ, logZ_err, logL = sampler.run(dlogz_init=dlogz_init, 
+                                       nlive_init=nlive_init, 
+                                       nlive_batch=nlive_batch,
+                                       maxiter_init=maxiter_init, 
+                                       maxiter_batch=maxiter_batch, 
+                                       maxbatch=maxbatch)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def _prepare_sampling(self, sampling_type):
+        if sampling_type == 'gaussian':
+            mean_start = self._param_class.kwargs2args(self._lens_temp, 
+                                                 self._source_temp, 
+                                                 self._lens_light_temp, 
+                                                 self._ps_temp,
+                                                 self._cosmo_temp)
+            mean_start = np.array(mean_start)
+
+            lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
+                = self._updateManager.sigma_kwargs
+            sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
+                                                      lens_light_sigma, ps_sigma, 
+                                                      cosmo_sigma)
+            sigma_start = np.array(sigma_start) * sigma_scale
+
+        else:
+            mean_start, sigma_start = None, None
+
+        return mean_start, sigma_start
+

@@ -74,6 +74,7 @@ class TestFittingSequence(object):
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
+                             'index_lens_model_list': [[0, 1]],
                              }
         self.kwargs_numerics = kwargs_numerics
 
@@ -160,6 +161,7 @@ class TestFittingSequence(object):
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])
+        fitting_list.append(['fix_not_computed', {'compute_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
                          'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]

@@ -2,7 +2,7 @@ from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-from lenstronomy.Workflow.update_manager import UpdateManager
+from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
 from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 import numpy as np
@@ -18,7 +18,7 @@ class FittingSequence(object):
                  verbose=True):
         """
 
-        :param multi_band_list:
+        :param kwargs_data_joint:
         :param kwargs_model:
         :param kwargs_constraints:
         :param kwargs_likelihood:
@@ -30,8 +30,9 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
-        self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
-        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+        self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
+                                                     num_bands=len(self.multi_band_list))
+        #self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
     def kwargs_fixed(self):
@@ -55,16 +56,18 @@ class FittingSequence(object):
             fitting_type = fitting[0]
             kwargs = fitting[1]
             if fitting_type == 'restart':
-                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+                self._updateManager.set_init_state()
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
+            elif fitting_type == 'fix_not_computed':
+                self.fix_not_computed(**kwargs)
             elif fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
             elif fitting_type == 'align_images':
                 self.align_images(**kwargs)
             elif fitting_type == 'PSO':
                 lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
-                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
+                self._updateManager.update_param_state(lens_result, source_result, lens_light_result, ps_result, cosmo_result)
                 chain_list.append([fitting_type, chain, param])
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
@@ -84,13 +87,12 @@ class FittingSequence(object):
         :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
-        param_class = self._updateManager.param_class(self._lens_temp)
+        param_class = self._updateManager.param_class
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         if bijective is False:
-            lens_temp = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
-            source_temp = param_class.image2source_plane(self._source_temp, lens_temp)
-        else:
-            lens_temp, source_temp = self._lens_temp, self._source_temp
-        return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp
+            lens_temp = param_class.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
+            source_temp = param_class.image2source_plane(source_temp, lens_temp)
+        return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp
 
     @property
     def best_fit_likelihood(self):
@@ -102,8 +104,8 @@ class FittingSequence(object):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
         param_class = self._param_class
         likelihoodModule = self.likelihoodModule
-        logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                             kwargs_cosmo))
+        logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light,
+                                                                kwargs_ps, kwargs_cosmo))
         return logL
 
     @property
@@ -112,7 +114,7 @@ class FittingSequence(object):
 
         :return: Param() class instance reflecting the current state of Fittingsequence
         """
-        return self._updateManager.param_class(self._lens_temp)
+        return self._updateManager.param_class
 
     @property
     def likelihoodModule(self):
@@ -122,7 +124,7 @@ class FittingSequence(object):
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._updateManager.param_class(self._lens_temp)
+        param_class = self._param_class
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
         return likelihoodModule
 
@@ -146,8 +148,8 @@ class FittingSequence(object):
         param_class = self._param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
-        mean_start = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                           self._cosmo_temp)
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        mean_start = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
         sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
         num_param, param_list = param_class.num_param()
@@ -191,8 +193,8 @@ class FittingSequence(object):
         """
 
         param_class = self._param_class
-        init_pos = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                           self._cosmo_temp)
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        init_pos = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
         sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
         lowerLimit = np.array(init_pos) - np.array(sigma_start) * sigma_scale
@@ -227,8 +229,9 @@ class FittingSequence(object):
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
         param_class = self._param_class
-        lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
-        source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
+        source_updated = param_class.image2source_plane(source_temp, lens_updated)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
@@ -239,7 +242,7 @@ class FittingSequence(object):
                                                    likelihood_mask_list=likelihood_mask_list, band_index=band_index)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
-                                                       self._lens_light_temp, self._ps_temp, num_iter=num_iter,
+                                                       lens_light_temp, ps_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map,
@@ -264,9 +267,10 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._updateManager.param_class(self._lens_temp)
-        lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
-        source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
+        param_class = self._param_class
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
+        source_updated = param_class.image2source_plane(source_temp, lens_updated)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
@@ -274,7 +278,7 @@ class FittingSequence(object):
             if compute_bands[i] is True:
 
                 alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, lens_updated, source_updated,
-                                                        self._lens_light_temp, self._ps_temp, band_index=i,
+                                                        lens_light_temp, ps_temp, band_index=i,
                                                     likelihood_mask_list=likelihood_mask_list)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
@@ -309,9 +313,20 @@ class FittingSequence(object):
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
-        self._updateManager.update_fixed(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                         self._cosmo_temp, lens_add_fixed, source_add_fixed, lens_light_add_fixed,
+        self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+    def fix_not_computed(self, compute_bands):
+        """
+        fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
+        lens models to the initial kwargs_fixed options
+
+        :param compute_bands: bool list of length of imaging bands in order of imaging bands,
+        if False: set fixed lens model
+        :return:
+        """
+        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        self._updateManager.fix_not_computed(compute_bands=compute_bands)

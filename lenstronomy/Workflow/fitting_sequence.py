@@ -369,11 +369,9 @@ class FittingSequence(object):
         return 0
 
 
-    def multinest_sampling(self, n_live_points=400, evidence_tolerance=0.5,
-                           sampling_efficiency=0.8, const_efficiency_mode=False, 
-                           multimodal=True, importance_nested_sampling=True, 
-                           sampling_type='uniform', sigma_scale=1, 
-                           remove_output_dir=False, output_basename=''):
+    def multinest_sampling(self, kwargs_run={},
+                           output_basename='', remove_output_dir=False,
+                           sampling_type='uniform', sigma_scale=1):
         """
         Sample parameter space using PyMultiNest
         """
@@ -391,38 +389,21 @@ class FittingSequence(object):
                                    remove_output_dir=remove_output_dir,
                                    use_mpi=False)
         
-        samples, means, logZ, logZ_err, logL = sampler.run(n_live_points=n_live_points, 
-                    evidence_tolerance=evidence_tolerance,
-                    sampling_efficiency=sampling_efficiency, 
-                    const_efficiency_mode=const_efficiency_mode,
-                    multimodal=multimodal,
-                    importance_nested_sampling=importance_nested_sampling)
+        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
 
-    def dypolychord_sampling(self, dynamic_goal=1., ninit=100, nlive_const=500,
-                             sampling_type='uniform', sigma_scale=1, output_basename='', 
-                             remove_output_dir=False):
+    def dypolychord_sampling(self, dynamic_goal=0.5, kwargs_run={},
+                             output_basename='', remove_output_dir=False,
+                             sampling_type='uniform', sigma_scale=1):
         """
         Sample parameter space using DyPolyChord
         """
         output_basename += 'c-'
         output_dir = 'dypolychord_chains'
 
-        mean_start = self._param_class.kwargs2args(self._lens_temp, 
-                                                 self._source_temp, 
-                                                 self._lens_light_temp, 
-                                                 self._ps_temp,
-                                                 self._cosmo_temp)
-        mean_start = np.array(mean_start)
-
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
-            = self._updateManager.sigma_kwargs
-        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
-                                                  lens_light_sigma, ps_sigma, 
-                                                  cosmo_sigma)
-        sigma_start = np.array(sigma_start) * sigma_scale
+        mean_start, sigma_start = self._prepare_sampling(sampling_type)
 
         sampler = DyPolyChordSampler(self.likelihoodModule, 
                                      sampling_type=sampling_type,
@@ -433,41 +414,24 @@ class FittingSequence(object):
                                      remove_output_dir=remove_output_dir, 
                                      use_mpi=False, num_mpi_procs=1)
         
-        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal=dynamic_goal, 
-                                          ninit=ninit, 
-                                          nlive_const=nlive_const)
+        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal, 
+                                                           kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
 
-    def dynesty_sampling(self, dlogz_init=0.05, nlive_init=500, nlive_batch=100,
-                         maxiter_init=10000, maxiter_batch=1000, maxbatch=10,
-                         sampling_type='uniform', sigma_scale=1):
-        mean_start = self._param_class.kwargs2args(self._lens_temp, 
-                                                 self._source_temp, 
-                                                 self._lens_light_temp, 
-                                                 self._ps_temp,
-                                                 self._cosmo_temp)
-        mean_start = np.array(mean_start)
-
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
-            = self._updateManager.sigma_kwargs
-        sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
-                                                  lens_light_sigma, ps_sigma, 
-                                                  cosmo_sigma)
-        sigma_start = np.array(sigma_start) * sigma_scale
+    def dynesty_sampling(self, kwargs_run={}, sampling_type='uniform', sigma_scale=1):
+        """
+        Sample parameter space using Dynesty
+        """
+        mean_start, sigma_start = self._prepare_sampling(sampling_type)
 
         sampler = DynestySampler(self.likelihoodModule, 
                                  sampling_type=sampling_type,
                                  gaussian_means=mean_start, 
                                  gaussian_sigmas=sigma_start)
 
-        samples, means, logZ, logZ_err, logL = sampler.run(dlogz_init=dlogz_init, 
-                                       nlive_init=nlive_init, 
-                                       nlive_batch=nlive_batch,
-                                       maxiter_init=maxiter_init, 
-                                       maxiter_batch=maxiter_batch, 
-                                       maxbatch=maxbatch)
+        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 

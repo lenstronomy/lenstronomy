@@ -61,7 +61,7 @@ class TestDyPolyChordSampler(object):
 
         data_class.update_data(image_sim)
         kwargs_data['image_data'] = image_sim
-        kwargs_data_joint = {'multi_band_list': [kwargs_data, kwargs_psf, kwargs_numerics], 'multi_band_type': 'single-band'}
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band'}
         self.data_class = data_class
         self.psf_class = psf_class
 
@@ -86,13 +86,15 @@ class TestDyPolyChordSampler(object):
         self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
-        self.sampler  = DyPolyChordSampler(self.Likelihood, remove_output_dir=True)
+        self.sampler  = DyPolyChordSampler(self.Likelihood, output_dir='out1', 
+                                           remove_output_dir=True)
 
         prior_means  = np.zeros_like(self.sampler.lowers)
         prior_sigmas = np.ones_like(self.sampler.lowers)
         self.sampler_gauss = DyPolyChordSampler(self.Likelihood, prior_type='gaussian',
                                                 prior_means=prior_means, 
                                                 prior_sigmas=prior_sigmas,
+                                                output_dir='out2',
                                                 remove_output_dir=True)
 
     def test_sampler(self):
@@ -100,9 +102,10 @@ class TestDyPolyChordSampler(object):
             'ninit': 10, 
             'nlive_const': 20,
         }
-        samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
+        dynamic_goal = 0.8
+        samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
         assert len(samples) == 16
-        samples, means, logZ, logZ_err, logL = self.sampler_gauss.run(kwargs_run)
+        samples, means, logZ, logZ_err, logL = self.sampler_gauss.run(dynamic_goal, kwargs_run)
         assert len(samples) == 16
 
 

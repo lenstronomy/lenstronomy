@@ -61,7 +61,7 @@ class TestMultiNestSampler(object):
 
         data_class.update_data(image_sim)
         kwargs_data['image_data'] = image_sim
-        kwargs_data_joint = {'multi_band_list': [kwargs_data, kwargs_psf, kwargs_numerics], 'multi_band_type': 'single-band'}
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band'}
         self.data_class = data_class
         self.psf_class = psf_class
 
@@ -86,13 +86,15 @@ class TestMultiNestSampler(object):
         self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
-        self.sampler  = MultiNestSampler(self.Likelihood, remove_output_dir=True)
+        self.sampler  = MultiNestSampler(self.Likelihood, output_dir='out1',
+                                         remove_output_dir=True)
 
         prior_means  = np.zeros_like(self.sampler.lowers)
         prior_sigmas = np.ones_like(self.sampler.lowers)
         self.sampler_gauss = MultiNestSampler(self.Likelihood, prior_type='gaussian',
                                               prior_means=prior_means, 
                                               prior_sigmas=prior_sigmas,
+                                              output_dir='out2',
                                               remove_output_dir=True)
 
     def test_sampler(self):

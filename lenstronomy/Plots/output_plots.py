@@ -988,6 +988,10 @@ def plot_chain_list(chain_list, index=0):
         samples, param = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
         axes = plot_mcmc_behaviour(ax, samples, param, num_average=100)
+    elif chain_type in ['MULTINEST', 'DYPOLYCHORD', 'DYNESTY']:
+        samples, param, dist = chain_i[1:4]
+        f, ax = plt.subplots(1, 1, figsize=(6, 6))
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
     else:
         raise ValueError('chain_type %s not supported for plotting' % chain_type)
     return f, axes

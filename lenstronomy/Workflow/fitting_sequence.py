@@ -90,21 +90,24 @@ class FittingSequence(object):
 
             elif fitting_type == 'MultiNest':
                 output = self.multinest(**kwargs)
-                result = output[1]
-                self._update_state(result)
-                chain_list.append(output)
+                samples, means, logL, logZ, logZ_err, names = output
+                self._update_state(means)
+                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
+                chain_list.append(chain)
 
             elif fitting_type == 'DyPolyChord':
                 output = self.dypolychord(**kwargs)
-                result = output[1]
-                self._update_state(result)
-                chain_list.append(output)
+                samples, means, logL, logZ, logZ_err, names = output
+                self._update_state(means)
+                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
+                chain_list.append(chain)
 
             elif fitting_type == 'Dynesty':
                 output = self.dynesty(**kwargs)
-                result = output[1]
-                self._update_state(result)
-                chain_list.append(output)
+                samples, means, logL, logZ, logZ_err, names = output
+                self._update_state(means)
+                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
+                chain_list.append(chain)
 
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
@@ -360,6 +363,9 @@ class FittingSequence(object):
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         self._updateManager.fix_not_computed(compute_bands=compute_bands)
 
+    # TODO(?) : group nested sampling algorithms under of method (like self.mcmc() above)
+    # def nested_sampling(self, sampler_type=?)
+
     def multinest(self, kwargs_run={}, 
                   output_basename='', remove_output_dir=False,
                   prior_type='uniform', sigma_scale=1):
@@ -435,17 +441,14 @@ class FittingSequence(object):
                                                  self._ps_temp,
                                                  self._cosmo_temp)
             mean_start = np.array(mean_start)
-
             lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
                 = self._updateManager.sigma_kwargs
             sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
                                                       lens_light_sigma, ps_sigma, 
                                                       cosmo_sigma)
             sigma_start = np.array(sigma_start) * sigma_scale
-
         else:
             mean_start, sigma_start = None, None
-
         return mean_start, sigma_start
 
     def _update_state(self, result):

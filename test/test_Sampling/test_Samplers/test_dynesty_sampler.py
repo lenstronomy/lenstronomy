@@ -86,24 +86,23 @@ class TestDynestySampler(object):
         self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
-        self.sampler  = DynestySampler(self.Likelihood)
 
-        prior_means  = np.zeros_like(self.sampler.lowers)
-        prior_sigmas = np.ones_like(self.sampler.lowers)
-        self.sampler_gauss = DynestySampler(self.Likelihood, prior_type='gaussian',
-                                            prior_means=prior_means, 
-                                            prior_sigmas=prior_sigmas)
+        prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                   kwargs_lens_light=self.kwargs_lens_light)
+        prior_sigmas = np.ones_like(prior_means) * 0.1
+        self.sampler = DynestySampler(self.Likelihood, prior_type='gaussian',
+                                      prior_means=prior_means, 
+                                      prior_sigmas=prior_sigmas)
 
     def test_sampler(self):
         kwargs_run = {
             'dlogz_init': 0.05,
-            'nlive_init': 10,
-            'nlive_batch': 20,
+            'nlive_init': 40,
+            'nlive_batch': 50,
+            'maxbatch': 3,
         }
         samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
-        assert len(samples) == 16
-        samples, means, logZ, logZ_err, logL = self.sampler_gauss.run(kwargs_run)
-        assert len(samples) == 16
+        assert len(means) == 16
 
 
 if __name__ == '__main__':

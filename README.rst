@@ -53,7 +53,8 @@ Additional python libraries:
 * ``CosmoHammer`` (through PyPi)
 * ``astropy``
 * ``dynesty``
-* ``astropy``
+* ``pymultinest``
+* ``pypolychord``
 * standard python libraries (``numpy``, ``scipy``)
 
 

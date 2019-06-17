@@ -14,7 +14,8 @@ from nestcheck import estimators
 
 class DyPolyChordSampler(object):
     """
-    Wrapper for dynamical nested sampling algorithm DyPolyChord by E. Higson
+    Wrapper for dynamical nested sampling algorithm DyPolyChord
+    by E. Higson, M. Hobson, W. Handley, A. Lasenby
 
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io

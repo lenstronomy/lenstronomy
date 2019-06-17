@@ -86,16 +86,15 @@ class TestDyPolyChordSampler(object):
         self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
-        self.sampler  = DyPolyChordSampler(self.Likelihood, output_dir='out1', 
-                                           remove_output_dir=True)
 
-        prior_means  = np.zeros_like(self.sampler.lowers)
-        prior_sigmas = np.ones_like(self.sampler.lowers)
-        self.sampler_gauss = DyPolyChordSampler(self.Likelihood, prior_type='gaussian',
-                                                prior_means=prior_means, 
-                                                prior_sigmas=prior_sigmas,
-                                                output_dir='out2',
-                                                remove_output_dir=True)
+        prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                  kwargs_lens_light=self.kwargs_lens_light)
+        prior_sigmas = np.ones_like(prior_means) * 0.1
+        self.sampler = DyPolyChordSampler(self.Likelihood, prior_type='gaussian',
+                                          prior_means=prior_means, 
+                                          prior_sigmas=prior_sigmas,
+                                          output_dir='test_nested_out',
+                                          remove_output_dir=True)
 
     def test_sampler(self):
         kwargs_run = {
@@ -104,9 +103,7 @@ class TestDyPolyChordSampler(object):
         }
         dynamic_goal = 0.8
         samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
-        assert len(samples) == 16
-        samples, means, logZ, logZ_err, logL = self.sampler_gauss.run(dynamic_goal, kwargs_run)
-        assert len(samples) == 16
+        assert len(means) == 16
 
 
 if __name__ == '__main__':

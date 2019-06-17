@@ -13,7 +13,7 @@ from pymultinest.analyse import Analyzer
 
 class MultiNestSampler(object):
     """
-    Wrapper for nested sampling algorithm MultInest by F. Feroz
+    Wrapper for nested sampling algorithm MultInest by F. Feroz & M. Hobson
     papers : arXiv:0704.3704, arXiv:0809.3437, arXiv:1306.2144
     pymultinest doc : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html
     """

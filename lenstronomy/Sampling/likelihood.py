@@ -1,5 +1,7 @@
 __author__ = 'sibirrer'
 
+import numpy as np
+
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
@@ -129,8 +131,9 @@ class LikelihoodModule(object):
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)
+
         if not np.isfinite(logL):
-            print("WARNING : logL returns NaN or Inf, changed to a -10**15 penalty")
+            print("WARNING : logL returns non-finite number, changed to -10**15 penalty")
             logL = -10**15
         return logL, None
 

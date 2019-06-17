@@ -3,11 +3,13 @@ from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.update_manager import UpdateManager
-from lenstronomy.Sampling.sampler import Sampler
 from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
+from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
+from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 
-from TDLMCpipeline.Pipeline.fitting_sampling import multinest_sampling
 
 
 class FittingSequence(object):
@@ -32,7 +34,9 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
-        self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
+        if update_manager_class is None:
+            update_manager_class = UpdateManager
+        self._updateManager = update_manager_class(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
         self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
@@ -56,19 +60,25 @@ class FittingSequence(object):
         for i, fitting in enumerate(fitting_list):
             fitting_type = fitting[0]
             kwargs = fitting[1]
+
             if fitting_type == 'restart':
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+            
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
+
             elif fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
+
             elif fitting_type == 'align_images':
                 self.align_images(**kwargs)
+
             elif fitting_type == 'PSO':
                 lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
                 self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
                 chain_list.append(chain)
                 param_list.append(param)
+
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -76,11 +86,31 @@ class FittingSequence(object):
                     kwargs['init_samples'] = self._mcmc_init_samples
                 samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
                 self._mcmc_init_samples = samples_mcmc
+
             elif fitting_type == 'MultiNest':
-                samples, _, logZ, logZ_err, param_names = self.multinest_sampling(**kwargs)
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.multinest(**kwargs)
+                self._update_temp(result)
                 samples_mcmc = samples
                 param_mcmc   = param_names
-                dist_mcmc    = logZ  # TODO : really  ???
+                dist_mcmc    = logL
+
+            elif fitting_type == 'DyPolyChord':
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.dypolychord(**kwargs)
+                self._update_temp(result)
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logL
+
+            elif fitting_type == 'Dynesty':
+                samples, result, logL, logZ, logZ_err, param_names \
+                    = self.dynesty(**kwargs)
+                self._update_temp(result)
+                samples_mcmc = samples
+                param_mcmc   = param_names
+                dist_mcmc    = logL
+
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
@@ -149,7 +179,6 @@ class FittingSequence(object):
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
         :return: MCMC samples, parameter names, logL distances of all samples
         """
-
         param_class = self._param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
@@ -320,3 +349,106 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+
+    def multinest(self, kwargs_run={}, 
+                  output_basename='', remove_output_dir=False,
+                  prior_type='uniform', sigma_scale=1):
+        """
+        Sample parameter space using (py)MultiNest
+        """
+        output_basename += 'c-'
+        output_dir = 'multinest_chains'
+
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
+
+        sampler = MultiNestSampler(self.likelihoodModule, 
+                                   prior_type=prior_type,
+                                   prior_means=mean_start, 
+                                   prior_sigmas=sigma_start, 
+                                   output_dir=output_dir,
+                                   output_basename=output_basename,
+                                   remove_output_dir=remove_output_dir,
+                                   use_mpi=False)
+        
+        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def dypolychord(self, dynamic_goal=0.5, kwargs_run={},
+                    output_basename='', remove_output_dir=False,
+                    prior_type='uniform', sigma_scale=1):
+        """
+        Sample parameter space using DyPolyChord
+        """
+        output_basename += 'c-'
+        output_dir = 'dypolychord_chains'
+
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
+
+        sampler = DyPolyChordSampler(self.likelihoodModule, 
+                                     prior_type=prior_type,
+                                     prior_means=mean_start, 
+                                     prior_sigmas=sigma_start, 
+                                     output_dir=output_dir,
+                                     output_basename=output_basename,
+                                     remove_output_dir=remove_output_dir)
+        
+        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal, 
+                                                           kwargs_run)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def dynesty(self, kwargs_run={}, prior_type='uniform', 
+                dynesty_bound='multi', dynesty_sample='auto', 
+                sigma_scale=1):
+        """
+        Sample parameter space using Dynesty
+        """
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
+
+        sampler = DynestySampler(self.likelihoodModule, 
+                                 prior_type=prior_type,
+                                 prior_means=mean_start, 
+                                 prior_sigmas=sigma_start,
+                                 bound=dynesty_bound, 
+                                 sample=dynesty_sample)
+
+        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+
+        return samples, means, logL, logZ, logZ_err, sampler.param_names
+
+
+    def _prepare_sampling(self, prior_type, sigma_scale):
+        if prior_type == 'gaussian':
+            mean_start = self._param_class.kwargs2args(self._lens_temp, 
+                                                 self._source_temp, 
+                                                 self._lens_light_temp, 
+                                                 self._ps_temp,
+                                                 self._cosmo_temp)
+            mean_start = np.array(mean_start)
+
+            lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
+                = self._updateManager.sigma_kwargs
+            sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
+                                                      lens_light_sigma, ps_sigma, 
+                                                      cosmo_sigma)
+            sigma_start = np.array(sigma_start) * sigma_scale
+
+        else:
+            mean_start, sigma_start = None, None
+
+        return mean_start, sigma_start
+
+
+    def _update_temp(self, result):
+        lens_result, source_result, lens_light_result, ps_result, cosmo_result \
+            = self._param_class.args2kwargs(result, bijective=True)
+
+        self._lens_temp, self._source_temp, self._lens_light_temp, \
+            self._ps_temp, self._cosmo_temp = \
+            lens_result, source_result, lens_light_result, \
+            ps_result, cosmo_result
+

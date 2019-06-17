@@ -371,19 +371,19 @@ class FittingSequence(object):
 
     def multinest_sampling(self, kwargs_run={},
                            output_basename='', remove_output_dir=False,
-                           sampling_type='uniform', sigma_scale=1):
+                           prior_type='uniform', sigma_scale=1):
         """
         Sample parameter space using PyMultiNest
         """
         output_basename += 'c-'
         output_dir = 'multinest_chains'
 
-        mean_start, sigma_start = self._prepare_sampling(sampling_type)
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
         sampler = MultiNestSampler(self.likelihoodModule, 
-                                   sampling_type=sampling_type,
-                                   gaussian_means=mean_start, 
-                                   gaussian_sigmas=sigma_start, 
+                                   prior_type=prior_type,
+                                   prior_means=mean_start, 
+                                   prior_sigmas=sigma_start, 
                                    output_dir=output_dir,
                                    output_basename=output_basename,
                                    remove_output_dir=remove_output_dir,
@@ -396,19 +396,19 @@ class FittingSequence(object):
 
     def dypolychord_sampling(self, dynamic_goal=0.5, kwargs_run={},
                              output_basename='', remove_output_dir=False,
-                             sampling_type='uniform', sigma_scale=1):
+                             prior_type='uniform', sigma_scale=1):
         """
         Sample parameter space using DyPolyChord
         """
         output_basename += 'c-'
         output_dir = 'dypolychord_chains'
 
-        mean_start, sigma_start = self._prepare_sampling(sampling_type)
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
         sampler = DyPolyChordSampler(self.likelihoodModule, 
-                                     sampling_type=sampling_type,
-                                     gaussian_means=mean_start, 
-                                     gaussian_sigmas=sigma_start, 
+                                     prior_type=prior_type,
+                                     prior_means=mean_start, 
+                                     prior_sigmas=sigma_start, 
                                      output_dir=output_dir,
                                      output_basename=output_basename,
                                      remove_output_dir=remove_output_dir, 
@@ -420,24 +420,28 @@ class FittingSequence(object):
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
 
-    def dynesty_sampling(self, kwargs_run={}, sampling_type='uniform', sigma_scale=1):
+    def dynesty_sampling(self, kwargs_run={}, prior_type='uniform', 
+                         dynesty_bound='multi', dynesty_sample='auto', 
+                         sigma_scale=1):
         """
         Sample parameter space using Dynesty
         """
-        mean_start, sigma_start = self._prepare_sampling(sampling_type)
+        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
         sampler = DynestySampler(self.likelihoodModule, 
-                                 sampling_type=sampling_type,
-                                 gaussian_means=mean_start, 
-                                 gaussian_sigmas=sigma_start)
+                                 prior_type=prior_type,
+                                 prior_means=mean_start, 
+                                 prior_sigmas=sigma_start,
+                                 bound=dynesty_bound, 
+                                 sample=dynesty_sample)
 
         samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
 
-    def _prepare_sampling(self, sampling_type):
-        if sampling_type == 'gaussian':
+    def _prepare_sampling(self, prior_type, sigma_scale):
+        if prior_type == 'gaussian':
             mean_start = self._param_class.kwargs2args(self._lens_temp, 
                                                  self._source_temp, 
                                                  self._lens_light_temp, 

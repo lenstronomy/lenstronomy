@@ -153,16 +153,16 @@ class LensCosmo(object):
         D_dt = self.D_dt * const.Mpc
         return dt * const.c * const.day_s / D_dt / const.arcsec ** 2
 
-    def nfw_angle2physical(self, Rs_angle, theta_Rs):
+    def nfw_angle2physical(self, Rs_angle, alpha_Rs):
         """
         converts the angular parameters into the physical ones for an NFW profile
 
-        :param theta_Rs: observed bending angle at the scale radius in units of arcsec
+        :param alpha_Rs: observed bending angle at the scale radius in units of arcsec
         :param Rs: scale radius in units of arcsec
         :return: M200, r200, Rs_physical, c
         """
         Rs = Rs_angle * const.arcsec * self.D_d
-        theta_scaled = theta_Rs * self.epsilon_crit * self.D_d * const.arcsec
+        theta_scaled = alpha_Rs * self.epsilon_crit * self.D_d * const.arcsec
         rho0 = theta_scaled / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
         rho0_com = rho0 / self.h**2 * self.a_z(self.z_lens)**3
         c = self.nfw_param.c_rho0(rho0_com)
@@ -176,12 +176,12 @@ class LensCosmo(object):
 
         :param M: mass enclosed 200 rho_crit in units of M_sun
         :param c: NFW concentration parameter (r200/r_s)
-        :return: theta_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
+        :return: alpha_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.D_d / const.arcsec  # Rs in arcsec
-        theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return Rs_angle,  theta_Rs / self.epsilon_crit / self.D_d / const.arcsec
+        alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        return Rs_angle,  alpha_Rs / self.epsilon_crit / self.D_d / const.arcsec
 
     def nfwParam_physical(self, M, c):
         """

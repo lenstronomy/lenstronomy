@@ -39,7 +39,7 @@ class TestLensEquationSolver(object):
         min_distance = 0.05
         search_window = 10
         Rs = 4.
-        kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs, 'e1': 0.2, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
+        kwargs_lens = [{'alpha_Rs': 1., 'Rs': Rs, 'e1': 0.2, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                      min_distance=min_distance,

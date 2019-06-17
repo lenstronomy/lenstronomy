@@ -1,7 +1,7 @@
 __author__ = 'dgilman'
 
 
-from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
+from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
 
 import numpy as np
 import numpy.testing as npt
@@ -13,7 +13,7 @@ class TestcBurk(object):
     """
     def setup(self):
 
-        self.cb = coreBurkert()
+        self.cb = CoreBurkert()
 
     def _kappa_integrand(self, x, y, Rs, m0, r_core):
 
@@ -63,12 +63,12 @@ class TestcBurk(object):
         rho0 = float(1)
         r_core = float(7)
 
-        theta_Rs = self.cb._rho2alpha(rho0, Rs, r_core)
-        theta_rs_2 = self.cb.coreBurkAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
+        alpha_Rs = self.cb._rho2alpha(rho0, Rs, r_core)
+        alpha_Rs_2 = self.cb.coreBurkAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
 
-        npt.assert_almost_equal(theta_Rs*theta_rs_2**-1,1)
+        npt.assert_almost_equal(alpha_Rs*alpha_Rs_2**-1,1)
 
-        rho0_2 = self.cb._alpha2rho0(theta_Rs, Rs, r_core)
+        rho0_2 = self.cb._alpha2rho0(alpha_Rs, Rs, r_core)
         npt.assert_almost_equal(rho0, rho0_2)
 
 if __name__ == '__main__':

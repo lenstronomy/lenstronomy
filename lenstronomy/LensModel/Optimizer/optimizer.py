@@ -27,7 +27,7 @@ class Optimizer(object):
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
                  simplex_n_iterations=400, compute_mags_postpso = False, chi2_mode = 'source',
-                 optimizer_kwargs = {}):
+                 optimizer_kwargs = {}, observed_convention_index=False):
 
         """
         :param x_pos: observed position in arcsec
@@ -77,6 +77,8 @@ class Optimizer(object):
         :param optimizer_kwargs: optional keyword arguments for the mutliplane optimizer
         :param compute_mags_postpso: flag to automatically compute magnifications when perfomring downhill simplex
         optimization.
+        :param observed_convention_index: either False, or a list of indiices of lens models where the position
+        convention is the observed (lensed) position, not the physical position
 
         Note: if running with particle_swarm = False, the re_optimize variable does nothing
         """
@@ -105,7 +107,8 @@ class Optimizer(object):
         self._lensModel = LensModel(lens_model_list=lens_model_list, lens_redshift_list=redshift_list,
                                     z_source=z_source,
                                     cosmo=astropy_instance, multi_plane=multiplane,
-                                    numerical_alpha_class = numerical_alpha_class)
+                                    numerical_alpha_class = numerical_alpha_class,
+                                    observed_convention_index=observed_convention_index)
 
         # initiate a params class that, based on the optimization routine, determines which parameters/lens models to optimize
         self._params = Params(zlist=self._lensModel.redshift_list, lens_list=self._lensModel.lens_model_list, arg_list=kwargs_lens,
@@ -130,7 +133,7 @@ class Optimizer(object):
         else:
             lensing_class = MultiPlaneLensing(self._lensModel, x_pos, y_pos, kwargs_lens, z_source, z_main,
                                                     astropy_instance, self._params.tovary_indicies, optimizer_kwargs,
-                                              numerical_alpha_class)
+                                              numerical_alpha_class, observed_convention_index)
 
             self.solver = LensEquationSolver(lensing_class)
 

@@ -30,7 +30,7 @@ class TestLensModel(object):
         lens_model_list = ['NFW']
         lensModel = LensModel(lens_model_list)
         x,y = 0.2,1
-        kwargs = [{'theta_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
+        kwargs = [{'alpha_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
         value = lensModel.potential(x,y,kwargs)
         nfw_interp = NFW(interpol=True, lookup=True)
         value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])

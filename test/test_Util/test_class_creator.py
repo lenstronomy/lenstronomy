@@ -25,6 +25,8 @@ class TestClassCreator(object):
                              'index_lens_model_list': [[0]], 'index_source_light_model_list': [[0]],
                              'index_lens_light_model_list': [[0]], 'index_point_source_model_list': [[0]],
                              }
+        self.kwargs_model_4 = {'lens_model_list': ['SIS', 'SIS'], 'lens_redshift_list': [0.3, 0.4], 'multi_plane': True,
+                               'observed_convention_index': [0], 'index_lens_model_list': [[0]], 'z_source': 1}
 
 
         self.kwargs_psf = {'psf_type': 'NONE'}
@@ -41,6 +43,11 @@ class TestClassCreator(object):
         lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
             **self.kwargs_model_3)
         assert lens_model_class.lens_model_list[0] == 'SIS'
+
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
+            **self.kwargs_model_4)
+        assert lens_model_class.lens_model_list[0] == 'SIS'
+        assert lens_model_class.lens_model._inds[0] == 0
 
     def test_create_image_model(self):
         imageModel = class_creator.create_image_model(self.kwargs_data, self.kwargs_psf, kwargs_numerics={}, kwargs_model=self.kwargs_model)

@@ -267,6 +267,9 @@ class SinglePlane(object):
         elif lens_type == 'DOUBLE_CHAMELEON':
             from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
             return DoubleChameleon()
+        elif lens_type == 'TRIPLE_CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
+            return TripleChameleon()
         elif lens_type == 'SPEP':
             from lenstronomy.LensModel.Profiles.spep import SPEP
             return SPEP()
@@ -298,12 +301,9 @@ class SinglePlane(object):
             from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
             return SersicEllipseKappa()
         elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
-            from lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec \
+            from lenstronomy.LensModel.Profiles.gauss_decomposition \
                 import SersicEllipseGaussDec
             return SersicEllipseGaussDec()
-        elif lens_type == 'COMPOSITE_DISK':
-            from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
-            return CompDisk()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
             return PJaffe()
@@ -355,8 +355,8 @@ class SinglePlane(object):
             self._foreground_shear_idex = i
             return Shear()
         elif lens_type == 'coreBURKERT':
-            from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
-            return coreBurkert()
+            from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
+            return CoreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

@@ -81,6 +81,9 @@ class LightModel(object):
             elif profile_type == 'DOUBLE_CHAMELEON':
                 from lenstronomy.LightModel.Profiles.chameleon import DoubleChameleon
                 self.func_list.append(DoubleChameleon())
+            elif profile_type == 'TRIPLE_CHAMELEON':
+                from lenstronomy.LightModel.Profiles.chameleon import TripleChameleon
+                self.func_list.append(TripleChameleon())
             elif profile_type == 'INTERPOL':
                 from lenstronomy.LightModel.Profiles.interpolation import Interpol
                 self.func_list.append(Interpol())

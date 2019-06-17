@@ -35,7 +35,7 @@ class TestFittingSequence(object):
         psf_gaussian = PSF(**kwargs_psf_gaussian)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
         psf_class = PSF(**self.kwargs_psf)
-        # 'EXERNAL_SHEAR': external shear
+        # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
@@ -74,6 +74,7 @@ class TestFittingSequence(object):
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
+                             'index_lens_model_list': [[0, 1]],
                              }
         self.kwargs_numerics = kwargs_numerics
 
@@ -147,7 +148,6 @@ class TestFittingSequence(object):
         n_i = 2
         fitting_list = []
 
-
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
@@ -161,17 +161,50 @@ class TestFittingSequence(object):
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])
+        fitting_list.append(['fix_not_computed', {'compute_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
                          'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
             , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
+        kwargs_dynesty = {
+            'kwargs_run': {
+                'dlogz_init': 0.05,
+                'nlive_init': 10,
+                'nlive_batch': 20,
+            },
+            'dynesty_bound': 'multi',
+            'dynesty_sample': 'auto',
+            'prior_type': 'uniform',
+        }
+        fitting_list.append(['Dynesty', kwargs_dynesty])
+        kwargs_multinest = {
+            'kwargs_run': {
+                'n_live_points': 10,
+                'evidence_tolerance': 0.5,
+                'sampling_efficiency': 0.8,  # 1 for posterior-only, 0 for evidence-only
+                'importance_nested_sampling': False,
+                'multimodal': True,
+                'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
+            },
+            'remove_output_dir': True,
+        }
+        fitting_list.append(['MultiNest', kwargs_multinest])
+        kwargs_dypolychord = {
+            'kwargs_run': {
+                'ninit': 10, 
+                'nlive_const': 20,
+            },
+            'dynamic_goal': 0.8, 
+            'remove_output_dir': True,
+        }
+        fitting_list.append(['DyPolyChord', kwargs_dypolychord])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
         #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
-        chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_list)
+        chain_list = fittingSequence.fit_sequence(fitting_list)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)

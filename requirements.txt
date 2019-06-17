@@ -8,4 +8,5 @@ matplotlib
 corner
 sklearn
 numba>=0.43.1
+future
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

@@ -99,7 +99,7 @@ class MultiNestSampler(object):
         logL, _ = self._ll(args_py)
         if not np.isfinite(logL):
             print("WARNING : logL is not finite : return very low value instead")
-            return -1e15
+            logL = -1e15
         return float(logL)
 
 

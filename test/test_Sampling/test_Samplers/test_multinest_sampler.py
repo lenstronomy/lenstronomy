@@ -90,7 +90,7 @@ class TestMultiNestSampler(object):
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                                   kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
-        self.sampler = MultiNestSampler(self.Likelihood, prior_type='gaussian',
+        self.sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
                                         prior_means=prior_means, 
                                         prior_sigmas=prior_sigmas,
                                         output_dir='test_nested_out',

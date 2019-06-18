@@ -132,9 +132,9 @@ class LikelihoodModule(object):
         logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)
 
-        if not np.isfinite(logL):
-            print("WARNING : logL returns non-finite number, changed to -10**15 penalty")
-            logL = -10**15
+        # if not np.isfinite(logL):
+        #     print("WARNING : logL returns non-finite number, changed to -1e15 penalty")
+        #     logL = -1e15
         return logL, None
 
     @staticmethod

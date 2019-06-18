@@ -74,7 +74,7 @@ class DynestySampler(object):
         logL, _ = self._ll(x)
         if not np.isfinite(logL):
             print("WARNING : logL is not finite : return very low value instead")
-            return -1e15
+            logL = -1e15
         return float(logL)
 
 

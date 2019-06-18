@@ -435,17 +435,9 @@ class FittingSequence(object):
 
     def _prepare_sampling(self, prior_type, sigma_scale):
         if prior_type == 'gaussian':
-            mean_start = self._param_class.kwargs2args(self._lens_temp, 
-                                                 self._source_temp, 
-                                                 self._lens_light_temp, 
-                                                 self._ps_temp,
-                                                 self._cosmo_temp)
-            mean_start = np.array(mean_start)
-            lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma \
-                = self._updateManager.sigma_kwargs
-            sigma_start = self._param_class.kwargs2args(lens_sigma, source_sigma, 
-                                                      lens_light_sigma, ps_sigma, 
-                                                      cosmo_sigma)
+            mean_start = self._param_class.kwargs2args(*self._updateManager.parameter_state)
+            sigma_start = self._param_class.kwargs2args(*self._updateManager.sigma_kwargs)
+            mean_start  = np.array(mean_start)
             sigma_start = np.array(sigma_start) * sigma_scale
         else:
             mean_start, sigma_start = None, None
@@ -456,8 +448,3 @@ class FittingSequence(object):
             = self._param_class.args2kwargs(result, bijective=True)
 
         self._updateManager.update_param_state(lens_result, source_result, lens_light_result, ps_result, cosmo_result)
-
-        # self._lens_temp, self._source_temp, self._lens_light_temp, \
-        #     self._ps_temp, self._cosmo_temp = \
-        #     lens_result, source_result, lens_light_result, \
-        #     ps_result, cosmo_result

@@ -4,29 +4,51 @@ import numpy as np
 from scipy import special
 
 
-# transform the unit hypercube to pysical parameters for sampling
+# transform the unit hypercube to pysical parameters for (nested) sampling
 
 
 SQRT2 = np.sqrt(2)
 
 
 def unit2gaussian(x, mu, sigma):
-    """from Handley+15 (PolyChord paper)"""
+    """
+    mapping from uniform distribution on unit hypercube
+    to truncated gaussian distribution on parameter space, 
+    with mean 'mu' and std dev 'sigma'
+
+    from Handley+15, eq. (A9)
+    """
     return mu + SQRT2 * sigma * special.erfinv(2*x - 1)
 
 
 def unit2uniform(x, vmin, vmax):
-    """from Handley+15 (PolyChord paper)"""
+    """
+    mapping from uniform distribution on parameter space 
+    to uniform distribution on unit hypercube
+    """
     return vmin + (vmax - vmin) * x
 
 
 def uniform2unit(theta, vmin, vmax):
-    """from Handley+15 (PolyChord paper)"""
+    """
+    mapping from uniform distribution on unit hypercube
+    to uniform distribution on parameter space
+    """
     return (theta - vmin) / (vmax - vmin)
 
 
 def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
-    """copy = False leads to altering the cube 'in-place'"""
+    """
+    mapping from uniform distribution on unit hypercube 'cube'
+    to uniform distribution on parameter space
+
+    :param cube: list or 1D-array of parameters on unit hypercube
+    :param lowers: lower bounds for each parameter
+    :param uppers: upper bounds for each parameter
+    :param num_dims: parameter space dimension (= number of parameters)
+    :param copy: If False, this function modifies 'cube' in-place. Default to False.
+    :param return: hypercube mapped to parameters space
+    """
     if copy:
         cube_ = cube
         cube = np.zeros_like(cube_)
@@ -38,7 +60,20 @@ def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
 
 
 def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False):
-    """copy = False leads to altering the cube 'in-place'"""
+    """
+    mapping from uniform distribution on unit hypercube 'cube'
+    to truncated gaussian distribution on parameter space, 
+    with mean 'mu' and std dev 'sigma'
+
+    :param cube: list or 1D-array of parameters on unit hypercube
+    :param lowers: lower bounds for each parameter
+    :param uppers: upper bounds for each parameter
+    :param means: gaussian mean for each parameter
+    :param sigmas: gaussian std deviation for each parameter
+    :param num_dims: parameter space dimension (= number of parameters)
+    :param copy: If False, this function modifies 'cube' in-place. Default to False.
+    :param return: hypercube mapped to parameters space
+    """
     if copy:
         cube_ = cube
         cube = np.zeros_like(cube_)

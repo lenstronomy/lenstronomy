@@ -87,9 +87,10 @@ class FittingSequence(object):
         :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
-        param_class = self._updateManager.param_class
+
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         if bijective is False:
+            param_class = self._updateManager.param_class
             lens_temp = param_class.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
             source_temp = param_class.image2source_plane(source_temp, lens_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp
@@ -102,14 +103,14 @@ class FittingSequence(object):
         :return: log likelihood, float
         """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
-        param_class = self._param_class
+        param_class = self.param_class
         likelihoodModule = self.likelihoodModule
         logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                 kwargs_ps, kwargs_cosmo))
         return logL
 
     @property
-    def _param_class(self):
+    def param_class(self):
         """
 
         :return: Param() class instance reflecting the current state of Fittingsequence
@@ -124,7 +125,7 @@ class FittingSequence(object):
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._param_class
+        param_class = self.param_class
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
         return likelihoodModule
 
@@ -145,7 +146,7 @@ class FittingSequence(object):
         by the specific sampler used
         """
 
-        param_class = self._param_class
+        param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
@@ -192,7 +193,7 @@ class FittingSequence(object):
         :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
         """
 
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
@@ -228,7 +229,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
         source_updated = param_class.image2source_plane(source_temp, lens_updated)
@@ -267,7 +268,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
         source_updated = param_class.image2source_plane(source_temp, lens_updated)
@@ -328,5 +329,5 @@ class FittingSequence(object):
         if False: set fixed lens model
         :return:
         """
-        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        #kwargs_likelihood = self._updateManager.kwargs_likelihood
         self._updateManager.fix_not_computed(compute_bands=compute_bands)

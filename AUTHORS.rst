@@ -14,6 +14,7 @@ Contributors (alphabetic)
 * Adam Amara
 * Xuheng Ding
 * Kevin Fusshoeller
+* Aymeric Galan
 * Daniel Gilman
 * Felix A. Kuhn
 * Felix Mayor
@@ -23,5 +24,3 @@ Contributors (alphabetic)
 * Cyril Welschen
 * Lilan Yang
 
-SB acknowledges the support by Tommaso Treu (UCLA) and Alexandre Refregier (ETHZ) which made the development and release
-of this software possible.

@@ -19,7 +19,7 @@ class FittingSequence(object):
     The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
-                 verbose=True):
+                 verbose=True, update_manager_class=None):
         """
 
         :param kwargs_data_joint:
@@ -34,8 +34,10 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
-        self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
-                                                     num_bands=len(self.multi_band_list))
+        if update_manager_class is None:
+            update_manager_class = MultiBandUpdateManager
+        self._updateManager = update_manager_class(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
+                                                   num_bands=len(self.multi_band_list))
         #self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 

@@ -2,6 +2,7 @@ from lenstronomy.ImSim.Numerics.grid import RegularGrid, AdaptiveGrid
 from lenstronomy.ImSim.Numerics.convolution import SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution
 from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
 from lenstronomy.Util import util
+from lenstronomy.Util import kernel_util
 import numpy as np
 
 
@@ -12,7 +13,7 @@ class Numerics(PointSourceRendering):
     """
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
-                 compute_indexes=None, point_source_supersampling_factor=1):
+                 compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -33,6 +34,8 @@ class Numerics(PointSourceRendering):
         convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
         consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing
+        :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of
+        point_source_kernel
 
         """
         # if no super sampling, turn the supersampling convolution off
@@ -55,6 +58,7 @@ class Numerics(PointSourceRendering):
             if compute_mode == 'adaptive' and supersampling_convolution is True:
                 from lenstronomy.ImSim.Numerics.adaptive_numerics import AdaptiveConvolution
                 kernel_super = psf.kernel_point_source_supersampled(supersampling_factor)
+                kernel_super = self._supersampling_cut_kernel(kernel_super, convolution_kernel_size, supersampling_factor)
                 self._conv = AdaptiveConvolution(kernel_super, supersampling_factor,
                                                  conv_supersample_pixels=supersampled_indexes,
                                                  supersampling_kernel_size=supersampling_kernel_size,
@@ -62,11 +66,17 @@ class Numerics(PointSourceRendering):
 
             elif compute_mode == 'regular' and supersampling_convolution is True:
                 kernel_super = psf.kernel_point_source_supersampled(supersampling_factor)
+                if convolution_kernel_size is not None:
+                    kernel_super = psf.kernel_point_source_supersampled(supersampling_factor)
+                    kernel_super = self._supersampling_cut_kernel(kernel_super, convolution_kernel_size,
+                                                                  supersampling_factor)
                 self._conv = SubgridKernelConvolution(kernel_super, supersampling_factor,
                                                       supersampling_kernel_size=supersampling_kernel_size,
                                                       convolution_type='fft')
             else:
                 kernel = psf.kernel_point_source
+                kernel = self._supersampling_cut_kernel(kernel, convolution_kernel_size,
+                                                              supersampling_factor=1)
                 self._conv = PixelKernelConvolution(kernel, convolution_type='fft')
 
         elif self._psf_type == 'GAUSSIAN':
@@ -107,3 +117,20 @@ class Numerics(PointSourceRendering):
         :return: 1d array of all coordinates being evaluated to perform the image computation
         """
         return self._grid.coordinates_evaluate
+
+    def _supersampling_cut_kernel(self, kernel_super, convolution_kernel_size, supersampling_factor):
+        """
+
+        :param kernel_super: supersampled kernel
+        :param convolution_kernel_size: size of convolution kernel in units of regular pixels (odd)
+        :param supersampling_factor: super-sampling factor of convolution kernel
+        :return: cut out kernel in supersampling size
+        """
+        if convolution_kernel_size is not None:
+            size = convolution_kernel_size * supersampling_factor
+            if size % 2 == 0:
+                size += 1
+            kernel_cut = kernel_util.cut_psf(kernel_super, size)
+            return kernel_cut
+        else:
+            return kernel_super

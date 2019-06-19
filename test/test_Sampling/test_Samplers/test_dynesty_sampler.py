@@ -2,6 +2,7 @@ __author__ = 'aymgal'
 
 import pytest
 import numpy as np
+import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -119,6 +120,29 @@ class TestDynestySampler(object):
         }
         samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
         assert len(means) == 1
+
+    def test_prior(self):
+        n_dims = self.sampler.n_dims
+        cube_low = np.zeros(n_dims)
+        cube_upp = np.ones(n_dims)
+
+        self.prior_type = 'uniform'
+        cube_low = self.sampler.prior(cube_low)
+        npt.assert_equal(cube_low, self.sampler.lowers)
+        cube_upp = self.sampler.prior(cube_upp)
+        npt.assert_equal(cube_upp, self.sampler.uppers)
+
+        cube_mid = 0.5 * np.ones(n_dims)
+        self.prior_type = 'gaussian'
+        self.sampler.prior(cube_mid)
+        cube_gauss = np.array([0.5])
+        npt.assert_equal(cube_mid, cube_gauss)
+
+    def test_log_likelihood(self):
+        n_dims = self.sampler.n_dims
+        args = np.nan * np.ones(n_dims)
+        logL = self.sampler.log_likelihood(args)
+        assert logL == -1e15
 
 
 if __name__ == '__main__':

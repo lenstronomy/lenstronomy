@@ -2,6 +2,7 @@ __author__ = 'aymgal'
 
 import pytest
 import numpy as np
+import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -97,7 +98,7 @@ class TestMultiNestSampler(object):
                                            param_class=self.param_class, **kwargs_likelihood)
 
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                                  kwargs_lens_light=self.kwargs_lens_light)
+                                                   kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
         self.sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
                                         prior_means=prior_means, 
@@ -120,6 +121,29 @@ class TestMultiNestSampler(object):
             # trivial test when pymultinest is not installed properly
             assert np.count_nonzero(samples) == 0
 
+    def test_prior(self):
+        n_dims = self.sampler.n_dims
+        cube_low = np.zeros(n_dims)
+        cube_upp = np.ones(n_dims)
+
+        self.prior_type = 'uniform'
+        self.sampler.prior(cube_low, n_dims, n_dims)
+        npt.assert_equal(cube_low, self.sampler.lowers)
+        self.sampler.prior(cube_upp, n_dims, n_dims)
+        npt.assert_equal(cube_upp, self.sampler.uppers)
+
+        cube_mid = 0.5 * np.ones(n_dims)
+        self.prior_type = 'gaussian'
+        self.sampler.prior(cube_mid, n_dims, n_dims)
+        cube_gauss = np.array([50., 50., 0., 0., 0., 0., 50., 4.25, 
+                                0., 0., 0., 0., 50., 4.25, 0., 0.])
+        npt.assert_equal(cube_mid, cube_gauss)
+
+    def test_log_likelihood(self):
+        n_dims = self.sampler.n_dims
+        args = np.nan * np.ones(n_dims)
+        logL = self.sampler.log_likelihood(args, n_dims, n_dims)
+        assert logL == -1e15
 
 if __name__ == '__main__':
     pytest.main()

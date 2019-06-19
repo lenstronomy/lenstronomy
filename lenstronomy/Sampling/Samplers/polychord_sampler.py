@@ -129,28 +129,33 @@ class DyPolyChordSampler(object):
             stats   = self._process_stats(self.settings['file_root'], 
                                           self.settings['base_dir'])
 
-            samples = results['theta']
-            logL    = results['logl']
-            logZ     = stats['logZ']
-            logZ_err = stats['logZerr']
-            means    = stats['param_means']
-
-            # ALTERNATIVE WAY :
-            # logZ = self._estim.logz(results)
-            # means = np.array([self._estim.param_mean(results, param_ind=i) for i in range(self.n_dims)])
-            # TODO : check if it is equal to the other way above
-            print('The log evidence estimate using the first run is {}'
-                  .format(logZ))
-            print('The estimated mean of the first parameter is {}'
-                  .format(means[0]))
-        
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
-            samples = np.zeros((1, self.n_dims))
-            means = np.zeros(self.n_dims)
-            logL = np.zeros(self.n_dims)
-            logZ = np.zeros(self.n_dims)
-            logZ_err = np.zeros(self.n_dims)
+            results = {
+                'theta': np.zeros((1, self.n_dims)),
+                'logl': np.zeros(self.n_dims)
+            }
+            stats = {
+                'logZ': np.zeros(self.n_dims),
+                'logZ_err': np.zeros(self.n_dims),
+                'param_means': np.zeros(self.n_dims)
+            }
+
+        samples = results['theta']
+        logL    = results['logl']
+        logZ     = stats['logZ']
+        logZ_err = stats['logZerr']
+        means    = stats['param_means']
+
+        # ALTERNATIVE WAY :
+        # logZ = self._estim.logz(results)
+        # means = np.array([self._estim.param_mean(results, param_ind=i) for i in range(self.n_dims)])
+        # TODO : check if it is equal to the other way above
+        
+        print('The log evidence estimate using the first run is {}'
+              .format(logZ))
+        print('The estimated mean of the first parameter is {}'
+              .format(means[0]))
 
         if self._rm_output:
             shutil.rmtree(self._output_dir, ignore_errors=True)
@@ -175,7 +180,7 @@ You can get it from : https://github.com/ejhigson/dyPolyChord")
             from nestcheck import data_processing
             from nestcheck import estimators
         except:
-            print("Warning : nestcheck not properly installed. \
+            print("Warning : nestcheck not properly installed (results might be unexpected). \
 You can get it from : https://github.com/ejhigson/nestcheck")
             nestcheck_installed = False
         else:

@@ -370,7 +370,14 @@ class FittingSequence(object):
                   output_basename='', remove_output_dir=False,
                   prior_type='uniform', sigma_scale=1):
         """
-        Sample parameter space using (py)MultiNest
+        Nested sampling with MultiNest
+
+        :param kwargs_run: keyword args passed to the pymultinest sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param output_basename: name of the folder in which the core PolyChord code will save output files
+        :param remove_output_dir: True for removing the above folder after completion
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         output_basename += 'c-'
         output_dir = 'multinest_chains'
@@ -394,7 +401,15 @@ class FittingSequence(object):
                     output_basename='', remove_output_dir=False,
                     prior_type='uniform', sigma_scale=1):
         """
-        Sample parameter space using DyPolyChord
+        Dynamical nested sampling with DyPolyChord
+
+        :param dynamic_goal: trade-off between evidence (0) and posterior (1) computation
+        :param kwargs_run: keyword args passed to the DyPolyChord sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param output_basename: name of the folder in which the core PolyChord code will save output files
+        :param remove_output_dir: True for removing the above folder after completion
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         output_basename += 'c-'
         output_dir = 'dypolychord_chains'
@@ -418,7 +433,14 @@ class FittingSequence(object):
                 dynesty_bound='multi', dynesty_sample='auto', 
                 sigma_scale=1):
         """
-        Sample parameter space using Dynesty
+        Dynamical nested sampling with Dynesty
+
+        :param kwargs_run: keyword args passed to the Dynesty sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param dynesty_bound: specific to Dynesty, see https://dynesty.readthedocs.io
+        :param dynesty_sample: specific to Dynesty, see https://dynesty.readthedocs.io
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 

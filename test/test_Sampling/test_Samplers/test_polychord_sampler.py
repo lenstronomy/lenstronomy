@@ -105,32 +105,19 @@ class TestDyPolyChordSampler(object):
                                   }
         # reduce number of param to sample (for runtime)
         kwargs_fixed_lens = [{'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
-        kwargs_fixed_source = [{'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
-        kwargs_fixed_lens_light = [{'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
-        kwargs_lower_lens = [{'theta_E': 0.001}]
-        kwargs_lower_source = [{'R_sersic': 0.001}]
-        kwargs_lower_lens_light = [{'R_sersic': 0.001}]
-        kwargs_upper_lens = [{'theta_E': 3.}]
-        kwargs_upper_source = [{'R_sersic': 3.}]
-        kwargs_upper_lens_light = [{'R_sersic': 3.}]
+        kwargs_lower_lens = [{'theta_E': 0.8}]
+        kwargs_upper_lens = [{'theta_E': 1.2}]
+        kwargs_fixed_source = [{'R_sersic': 0.6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
+        kwargs_fixed_lens_light = [{'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
 
         self.param_class = Param(kwargs_model,
                                  kwargs_fixed_lens=kwargs_fixed_lens,
                                  kwargs_fixed_source=kwargs_fixed_source,
                                  kwargs_fixed_lens_light=kwargs_fixed_lens_light,
                                  kwargs_lower_lens=kwargs_lower_lens,
-                                 kwargs_lower_source=kwargs_lower_source,
-                                 kwargs_lower_lens_light=kwargs_lower_lens_light,
                                  kwargs_upper_lens=kwargs_upper_lens,
-                                 kwargs_upper_source=kwargs_upper_source,
-                                 kwargs_upper_lens_light=kwargs_upper_lens_light,
                                  **kwargs_constraints)
 
-        self.param_class = Param(kwargs_model,
-                                 kwargs_fixed_lens=kwargs_fixed_lens,
-                                 kwargs_fixed_source=kwargs_fixed_source,
-                                 kwargs_fixed_lens_light=kwargs_fixed_lens_light,
-                                 **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
 
@@ -145,12 +132,12 @@ class TestDyPolyChordSampler(object):
 
     def test_sampler(self):
         kwargs_run = {
-            'ninit': 8, 
-            'nlive_const': 10,
+            'ninit': 2, 
+            'nlive_const': 3,
         }
         dynamic_goal = 0.8
         samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
-        assert len(means) == 3
+        assert len(means) == 1
         if not all_installed:
             # trivial test when dypolychord is not installed properly
             assert np.count_nonzero(samples) == 0

@@ -137,7 +137,7 @@ class DyPolyChordSampler(object):
             }
             stats = {
                 'logZ': np.zeros(self.n_dims),
-                'logZ_err': np.zeros(self.n_dims),
+                'logZerr': np.zeros(self.n_dims),
                 'param_means': np.zeros(self.n_dims)
             }
 

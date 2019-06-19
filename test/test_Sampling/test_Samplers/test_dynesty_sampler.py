@@ -121,6 +121,18 @@ class TestDynestySampler(object):
         samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
         assert len(means) == 1
 
+    def test_sampler_init(self):
+        try:
+            sampler = DynestySampler(self.Likelihood, prior_type='gaussian',
+                                       prior_means=None, # will raise an Error 
+                                       prior_sigmas=None) # will raise an Error
+        except Exception as e:
+            assert isinstance(e, ValueError)
+        try:
+            sampler = DynestySampler(self.Likelihood, prior_type='some_type')
+        except Exception as e:
+            assert isinstance(e, ValueError)
+
     def test_prior(self):
         n_dims = self.sampler.n_dims
         cube_low = np.zeros(n_dims)

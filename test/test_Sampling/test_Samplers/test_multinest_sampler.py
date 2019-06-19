@@ -1,6 +1,8 @@
 __author__ = 'aymgal'
 
 import pytest
+import os
+import shutil
 import numpy as np
 import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
@@ -100,10 +102,11 @@ class TestMultiNestSampler(object):
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                                    kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
+        self.output_dir = 'test_nested_out'
         self.sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
                                         prior_means=prior_means, 
                                         prior_sigmas=prior_sigmas,
-                                        output_dir='test_nested_out',
+                                        output_dir=self.output_dir,
                                         remove_output_dir=True)
 
     def test_sampler(self):
@@ -120,6 +123,27 @@ class TestMultiNestSampler(object):
         if not pymultinest_installed:
             # trivial test when pymultinest is not installed properly
             assert np.count_nonzero(samples) == 0
+        if os.path.exists(self.output_dir):
+            shutil.rmtree(self.output_dir, ignore_errors=True)
+
+    def test_sampler_init(self):
+        test_dir = 'some_dir'
+        os.mkdir(test_dir)
+        sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
+                                   output_dir=test_dir)
+        shutil.rmtree(test_dir, ignore_errors=True)
+        try:
+            sampler = MultiNestSampler(self.Likelihood, prior_type='gaussian',
+                                       prior_means=None, # will raise an Error 
+                                       prior_sigmas=None, # will raise an Error
+                                       output_dir=None,
+                                       remove_output_dir=True)
+        except Exception as e:
+            assert isinstance(e, ValueError)
+        try:
+            sampler = MultiNestSampler(self.Likelihood, prior_type='some_type')
+        except Exception as e:
+            assert isinstance(e, ValueError)
 
     def test_prior(self):
         n_dims = self.sampler.n_dims

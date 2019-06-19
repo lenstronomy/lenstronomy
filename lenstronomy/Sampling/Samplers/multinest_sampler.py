@@ -56,7 +56,7 @@ class MultiNestSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
         os.mkdir(self._output_dir)
 
-        self.files_basename = os.path.join(output_dir, output_basename)
+        self.files_basename = os.path.join(self._output_dir, output_basename)
 
         # required for analysis : save parameter names in json file
         with open(self.files_basename + 'params.json', 'w') as file:

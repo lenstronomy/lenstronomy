@@ -164,9 +164,9 @@ class MultiNestSampler(object):
         except:
             print("Warning : MultiNest/pymultinest not properly installed. \
 You can get it from : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html")
-            self._pymultinest_installed =  False
+            self._pymultinest_installed = False
         else:
-            self._pymultinest_installed =  True
+            self._pymultinest_installed = True
             self._pymultinest = pymultinest
             self._Analyzer = Analyzer
 

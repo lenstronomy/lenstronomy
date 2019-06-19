@@ -13,6 +13,26 @@ from lenstronomy.Data.psf import PSF
 
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 
+try:
+    import dyPolyChord
+except:
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
+    dypolychord_installed = False
+else:
+    dypolychord_installed = True
+
+try:
+    import nestcheck
+except:
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
+    nestcheck_installed = False
+else:
+    nestcheck_installed = True
+ 
+all_installed = dypolychord_installed and nestcheck_installed
+
 
 class TestDyPolyChordSampler(object):
     """
@@ -131,6 +151,9 @@ class TestDyPolyChordSampler(object):
         dynamic_goal = 0.8
         samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
         assert len(means) == 3
+        if not all_installed:
+            # trivial test when dypolychord is not installed properly
+            assert np.count_nonzero(samples) == 0
 
 
 if __name__ == '__main__':

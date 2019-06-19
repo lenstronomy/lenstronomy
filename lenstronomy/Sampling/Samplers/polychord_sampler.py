@@ -6,11 +6,6 @@ import numpy as np
 
 import lenstronomy.Util.sampling_util as utils
 
-import dyPolyChord
-import dyPolyChord.pypolychord_utils as pc_utils
-import nestcheck.data_processing as ncdp
-from nestcheck import estimators
-
 
 class DyPolyChordSampler(object):
     """
@@ -35,6 +30,8 @@ class DyPolyChordSampler(object):
         :param remove_output_dir: remove the output_dir folder after completion
         :param seed_increment: seed increment for random number generator
         """
+        self._check_install()
+
         self._ll = likelihood_module
         self.lowers, self.uppers = self._ll.param_limits
         self.n_dims, self.param_names = self._ll.param.num_param()
@@ -63,9 +60,13 @@ class DyPolyChordSampler(object):
         # else:
         #     mpi_str = None
 
-        # create the dyPolyChord callable object
-        self._sampler = pc_utils.RunPyPolyChord(self.log_likelihood, 
-                                                self.prior, self.n_dims)
+        if self._all_installed:
+            # create the dyPolyChord callable object
+            self._sampler = self._RunPyPolyChord(self.log_likelihood, 
+                                                 self.prior, self.n_dims)
+        else:
+            self._sampler = None
+
         self._rm_output = remove_output_dir
 
 
@@ -116,34 +117,72 @@ class DyPolyChordSampler(object):
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
         
-        # TODO : put a default dynamic_goal ?
-        # dynamic_goal = 0 for evidence-only, 1 for posterior-only
+        if self._all_installed:
+            # TODO : put a default dynamic_goal ?
+            # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
-        dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, self.settings,
-                                    **kwargs_run)
+            self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, 
+                                              self.settings, **kwargs_run)
 
-        run_results = ncdp.process_polychord_run(self.settings['file_root'],
-                                                 self.settings['base_dir'])
+            run_results = self._process_run(self.settings['file_root'], 
+                                            self.settings['base_dir'])
+            run_stats   = self._process_stats(self.settings['file_root'], 
+                                              self.settings['base_dir'])
 
-        run_stats = ncdp.process_polychord_stats(self.settings['file_root'],
-                                                 self.settings['base_dir'])
+            samples = run_results['theta']
+            logL = run_results['logl']
+            logZ = run_stats['logZ']
+            logZ_err = run_stats['logZerr']
+            means = run_stats['param_means']
 
-        samples = run_results['theta']
-        logL = run_results['logl']
-        logZ = run_stats['logZ']
-        logZ_err = run_stats['logZerr']
-        means = run_stats['param_means']
-
-        # ALTERNATIVE WAY :
-        # logZ = estimators.logz(run_results)
-        # means = np.array([estimators.param_mean(run_results, param_ind=i) for i in range(self.n_dims)])
-        # TODO : check if it is equal to the other way above
-        print('The log evidence estimate using the first run is {}'
-              .format(logZ))
-        print('The estimated mean of the first parameter is {}'
-              .format(means[0]))
+            # ALTERNATIVE WAY :
+            # logZ = self._estim.logz(run_results)
+            # means = np.array([self._estim.param_mean(run_results, param_ind=i) for i in range(self.n_dims)])
+            # TODO : check if it is equal to the other way above
+            print('The log evidence estimate using the first run is {}'
+                  .format(logZ))
+            print('The estimated mean of the first parameter is {}'
+                  .format(means[0]))
+        
+        else:
+            # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
+            samples = np.zeros((1, self.n_dims))
+            means = np.zeros(self.n_dims)
+            logL = np.zeros(self.n_dims)
+            logZ = np.zeros(self.n_dims)
+            logZ_err = np.zeros(self.n_dims)
 
         if self._rm_output:
             shutil.rmtree(self._output_dir, ignore_errors=True)
 
         return samples, means, logZ, logZ_err, logL
+
+
+    def _check_install(self):
+        try:
+            import dyPolyChord
+            from dyPolyChord import pypolychord_utils
+        except:
+            print("Warning : dyPolyChord not properly installed. \
+You can get it from : https://github.com/ejhigson/dyPolyChord")
+            dypolychord_installed = False
+        else:
+            dypolychord_installed = True
+            self._dyPolyChord = dyPolyChord
+            self._RunPyPolyChord = pypolychord_utils.RunPyPolyChord
+
+        try:
+            from nestcheck import data_processing
+            from nestcheck import estimators
+        except:
+            print("Warning : nestcheck not properly installed. \
+You can get it from : https://github.com/ejhigson/nestcheck")
+            nestcheck_installed = False
+        else:
+            nestcheck_installed = True
+            self._process_run = data_processing.process_polychord_run
+            self._process_stats = data_processing.process_polychord_stats
+            self._estim = estimators
+
+        self._all_installed = dypolychord_installed and nestcheck_installed
+

@@ -124,20 +124,20 @@ class DyPolyChordSampler(object):
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, 
                                               self.settings, **kwargs_run)
 
-            run_results = self._process_run(self.settings['file_root'], 
-                                            self.settings['base_dir'])
-            run_stats   = self._process_stats(self.settings['file_root'], 
-                                              self.settings['base_dir'])
+            results = self._process_run(self.settings['file_root'], 
+                                        self.settings['base_dir'])
+            stats   = self._process_stats(self.settings['file_root'], 
+                                          self.settings['base_dir'])
 
-            samples = run_results['theta']
-            logL = run_results['logl']
-            logZ = run_stats['logZ']
-            logZ_err = run_stats['logZerr']
-            means = run_stats['param_means']
+            samples = results['theta']
+            logL    = results['logl']
+            logZ     = stats['logZ']
+            logZ_err = stats['logZerr']
+            means    = stats['param_means']
 
             # ALTERNATIVE WAY :
-            # logZ = self._estim.logz(run_results)
-            # means = np.array([self._estim.param_mean(run_results, param_ind=i) for i in range(self.n_dims)])
+            # logZ = self._estim.logz(results)
+            # means = np.array([self._estim.param_mean(results, param_ind=i) for i in range(self.n_dims)])
             # TODO : check if it is equal to the other way above
             print('The log evidence estimate using the first run is {}'
                   .format(logZ))

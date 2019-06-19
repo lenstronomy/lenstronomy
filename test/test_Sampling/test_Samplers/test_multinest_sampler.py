@@ -13,6 +13,15 @@ from lenstronomy.Data.psf import PSF
 
 from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 
+try:
+    import pymultinest
+    from pymultinest.analyse import Analyzer
+except:
+    print("Warning : MultiNest/pymultinest not installed compiled, but tests will be trivially fulfilled")
+    pymultinest_installed =  False
+else:
+    pymultinest_installed =  True
+
 
 class TestMultiNestSampler(object):
     """
@@ -107,6 +116,9 @@ class TestMultiNestSampler(object):
         }
         samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
         assert len(means) == 16
+        if not pymultinest_installed:
+            # trivial test when pymultinest is not installed properly
+            assert np.count_nonzero(samples) == 0
 
 
 if __name__ == '__main__':

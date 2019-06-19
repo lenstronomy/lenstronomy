@@ -12,7 +12,7 @@ class NumericsSubFrame(PointSourceRendering):
     """
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
-                 compute_indexes=None, point_source_supersampling_factor=1):
+                 compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -33,6 +33,8 @@ class NumericsSubFrame(PointSourceRendering):
         convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
         consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing
+        :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of
+        point_source_kernel
 
         """
         # if no super sampling, turn the supersampling convolution off
@@ -47,7 +49,8 @@ class NumericsSubFrame(PointSourceRendering):
                                            flux_evaluate_indexes=self._cut_frame(flux_evaluate_indexes),
                                            supersampled_indexes=self._cut_frame(supersampled_indexes),
                                            compute_indexes=self._cut_frame(compute_indexes),
-                                           point_source_supersampling_factor=point_source_supersampling_factor)
+                                           point_source_supersampling_factor=point_source_supersampling_factor,
+                                           convolution_kernel_size=convolution_kernel_size)
         super(NumericsSubFrame, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_supersampling_factor,
                                        psf=psf)
 

@@ -127,11 +127,13 @@ class ConvergenceIntegrals(object):
         """
         x_mean = np.mean(x_grid)
         y_mean = np.mean(y_grid)
-        r2 = (x_grid - x_mean)**2 + (y_grid - y_mean)**2
+        x_shift = x_grid - x_mean
+        y_shift = y_grid - y_mean
+        r2 = x_shift**2 + y_shift**2
         l0 = np.where(r2 == 0)
 
-        kernel_x = util.array2image(x_grid / r2)
-        kernel_y = util.array2image(y_grid / r2)
+        kernel_x = util.array2image(x_shift / r2)
+        kernel_y = util.array2image(y_shift / r2)
         kernel_x[l0] = 0
         kernel_y[l0] = 0
         return kernel_x, kernel_y

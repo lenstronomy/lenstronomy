@@ -167,6 +167,38 @@ class TestFittingSequence(object):
                          'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
             , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
+        kwargs_dynesty = {
+            'kwargs_run': {
+                'dlogz_init': 0.05,
+                'nlive_init': 10,
+                'nlive_batch': 20,
+            },
+            'dynesty_bound': 'multi',
+            'dynesty_sample': 'auto',
+            'prior_type': 'uniform',
+        }
+        fitting_list.append(['Dynesty', kwargs_dynesty])
+        kwargs_multinest = {
+            'kwargs_run': {
+                'n_live_points': 10,
+                'evidence_tolerance': 0.5,
+                'sampling_efficiency': 0.8,  # 1 for posterior-only, 0 for evidence-only
+                'importance_nested_sampling': False,
+                'multimodal': True,
+                'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
+            },
+            'remove_output_dir': True,
+        }
+        fitting_list.append(['MultiNest', kwargs_multinest])
+        kwargs_dypolychord = {
+            'kwargs_run': {
+                'ninit': 10, 
+                'nlive_const': 20,
+            },
+            'dynamic_goal': 0.8, 
+            'remove_output_dir': True,
+        }
+        fitting_list.append(['DyPolyChord', kwargs_dypolychord])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
         #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],

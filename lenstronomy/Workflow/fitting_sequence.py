@@ -93,21 +93,21 @@ class FittingSequence(object):
             elif fitting_type == 'MultiNest':
                 output = self.multinest(**kwargs)
                 samples, means, logL, logZ, logZ_err, names = output
-                self._update_state(means)
+                self._update_state_from_result(means)
                 chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
                 chain_list.append(chain)
 
             elif fitting_type == 'DyPolyChord':
                 output = self.dypolychord(**kwargs)
                 samples, means, logL, logZ, logZ_err, names = output
-                self._update_state(means)
+                self._update_state_from_result(means)
                 chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
                 chain_list.append(chain)
 
             elif fitting_type == 'Dynesty':
                 output = self.dynesty(**kwargs)
                 samples, means, logL, logZ, logZ_err, names = output
-                self._update_state(means)
+                self._update_state_from_result(means)
                 chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
                 chain_list.append(chain)
 
@@ -470,7 +470,7 @@ class FittingSequence(object):
             mean_start, sigma_start = None, None
         return mean_start, sigma_start
 
-    def _update_state(self, result):
+    def _update_state_from_result(self, result):
         lens_result, source_result, lens_light_result, ps_result, cosmo_result \
             = self.param_class.args2kwargs(result, bijective=True)
 

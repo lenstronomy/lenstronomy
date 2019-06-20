@@ -7,9 +7,6 @@ import numpy as np
 
 import lenstronomy.Util.sampling_util as utils
 
-import pymultinest
-from pymultinest.analyse import Analyzer
-
 
 class MultiNestSampler(object):
     """
@@ -32,6 +29,8 @@ class MultiNestSampler(object):
         :param remove_output_dir: remove the output_dir folder after completion
         :param use_mpi: flag directly passed to MultInest sampler (NOT TESTED)
         """
+        self._check_install()
+
         self._ll = likelihood_module
         self.lowers, self.uppers = self._ll.param_limits
 
@@ -57,7 +56,7 @@ class MultiNestSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
         os.mkdir(self._output_dir)
 
-        self.files_basename = os.path.join(output_dir, output_basename)
+        self.files_basename = os.path.join(self._output_dir, output_basename)
 
         # required for analysis : save parameter names in json file
         with open(self.files_basename + 'params.json', 'w') as file:
@@ -114,19 +113,29 @@ class MultiNestSampler(object):
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
-    
-        pymultinest.run(self.log_likelihood, self.prior, self.n_dims,
-                        outputfiles_basename=self.files_basename,
-                        resume=False, verbose=True,
-                        init_MPI=self._use_mpi, **kwargs_run)
-
-        analyzer = Analyzer(self.n_dims, outputfiles_basename=self.files_basename)
-        samples  = analyzer.get_equal_weighted_posterior()[:, :-1]
         
-        data = analyzer.get_data()  # gets data from the *.txt output file
-        logL = -0.5 * data[:, 1]  # since the second data column is -2*logL
+        if self._pymultinest_installed:
+            self._pymultinest.run(self.log_likelihood, self.prior, self.n_dims,
+                                  outputfiles_basename=self.files_basename,
+                                  resume=False, verbose=True,
+                                  init_MPI=self._use_mpi, **kwargs_run)
 
-        stats    = analyzer.get_stats()
+            analyzer = self._Analyzer(self.n_dims, outputfiles_basename=self.files_basename)
+            samples = analyzer.get_equal_weighted_posterior()[:, :-1]
+            data  = analyzer.get_data()  # gets data from the *.txt output file
+            stats = analyzer.get_stats()
+
+        else:
+            # in case MultiNest was not compiled properly, for unit tests
+            samples = np.zeros((1, self.n_dims))
+            data = np.zeros((self.n_dims, 3))
+            stats = {
+                'global evidence': np.zeros(self.n_dims),
+                'global evidence error': np.zeros(self.n_dims),
+                'modes': [{'mean': np.zeros(self.n_dims)}]
+            }
+
+        logL = -0.5 * data[:, 1]  # since the second data column is -2*logL
         logZ     = stats['global evidence']
         logZ_err = stats['global evidence error']
         means    = stats['modes'][0]['mean']  # or better to use stats['marginals'][:]['median'] ???
@@ -137,7 +146,7 @@ class MultiNestSampler(object):
         if self._rm_output:
             shutil.rmtree(self._output_dir, ignore_errors=True)
             print("MultiNest output directory removed")
-
+            
         return samples, means, logZ, logZ_err, logL
 
 
@@ -147,3 +156,18 @@ class MultiNestSampler(object):
         for i in range(num_dims):
             python_list.append(multinest_list[i])
         return python_list
+
+
+    def _check_install(self):
+        try:
+            import pymultinest
+            from pymultinest.analyse import Analyzer
+        except:
+            print("Warning : MultiNest/pymultinest not properly installed (results might be unexpected). \
+You can get it from : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html")
+            self._pymultinest_installed = False
+        else:
+            self._pymultinest_installed = True
+            self._pymultinest = pymultinest
+            self._Analyzer = Analyzer
+

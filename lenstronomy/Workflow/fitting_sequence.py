@@ -122,9 +122,10 @@ class FittingSequence(object):
         :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
-        param_class = self._updateManager.param_class
+
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         if bijective is False:
+            param_class = self._updateManager.param_class
             lens_temp = param_class.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
             source_temp = param_class.image2source_plane(source_temp, lens_temp)
         return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp
@@ -137,14 +138,14 @@ class FittingSequence(object):
         :return: log likelihood, float
         """
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
-        param_class = self._param_class
+        param_class = self.param_class
         likelihoodModule = self.likelihoodModule
         logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light,
                                                                 kwargs_ps, kwargs_cosmo))
         return logL
 
     @property
-    def _param_class(self):
+    def param_class(self):
         """
 
         :return: Param() class instance reflecting the current state of Fittingsequence
@@ -159,7 +160,7 @@ class FittingSequence(object):
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._param_class
+        param_class = self.param_class
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
         return likelihoodModule
 
@@ -179,7 +180,9 @@ class FittingSequence(object):
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
         by the specific sampler used
         """
-        param_class = self._param_class
+        
+        param_class = self.param_class
+
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
@@ -226,7 +229,7 @@ class FittingSequence(object):
         :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
         """
 
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
@@ -262,7 +265,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
         source_updated = param_class.image2source_plane(source_temp, lens_updated)
@@ -301,7 +304,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._param_class
+        param_class = self.param_class
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
         lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
         source_updated = param_class.image2source_plane(source_temp, lens_updated)
@@ -362,7 +365,7 @@ class FittingSequence(object):
         if False: set fixed lens model
         :return:
         """
-        kwargs_likelihood = self._updateManager.kwargs_likelihood
+        #kwargs_likelihood = self._updateManager.kwargs_likelihood
         self._updateManager.fix_not_computed(compute_bands=compute_bands)
 
     # TODO(?) : group nested sampling algorithms under of method (like self.mcmc() above)
@@ -372,7 +375,14 @@ class FittingSequence(object):
                   output_basename='', remove_output_dir=False,
                   prior_type='uniform', sigma_scale=1):
         """
-        Sample parameter space using (py)MultiNest
+        Nested sampling with MultiNest
+
+        :param kwargs_run: keyword args passed to the pymultinest sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param output_basename: name of the folder in which the core PolyChord code will save output files
+        :param remove_output_dir: True for removing the above folder after completion
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         output_basename += 'c-'
         output_dir = 'multinest_chains'
@@ -396,7 +406,15 @@ class FittingSequence(object):
                     output_basename='', remove_output_dir=False,
                     prior_type='uniform', sigma_scale=1):
         """
-        Sample parameter space using DyPolyChord
+        Dynamical nested sampling with DyPolyChord
+
+        :param dynamic_goal: trade-off between evidence (0) and posterior (1) computation
+        :param kwargs_run: keyword args passed to the DyPolyChord sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param output_basename: name of the folder in which the core PolyChord code will save output files
+        :param remove_output_dir: True for removing the above folder after completion
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         output_basename += 'c-'
         output_dir = 'dypolychord_chains'
@@ -420,7 +438,14 @@ class FittingSequence(object):
                 dynesty_bound='multi', dynesty_sample='auto', 
                 sigma_scale=1):
         """
-        Sample parameter space using Dynesty
+        Dynamical nested sampling with Dynesty
+
+        :param kwargs_run: keyword args passed to the Dynesty sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param dynesty_bound: specific to Dynesty, see https://dynesty.readthedocs.io
+        :param dynesty_sample: specific to Dynesty, see https://dynesty.readthedocs.io
+        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
@@ -437,8 +462,8 @@ class FittingSequence(object):
 
     def _prepare_sampling(self, prior_type, sigma_scale):
         if prior_type == 'gaussian':
-            mean_start = self._param_class.kwargs2args(*self._updateManager.parameter_state)
-            sigma_start = self._param_class.kwargs2args(*self._updateManager.sigma_kwargs)
+            mean_start = self.param_class.kwargs2args(*self._updateManager.parameter_state)
+            sigma_start = self.param_class.kwargs2args(*self._updateManager.sigma_kwargs)
             mean_start  = np.array(mean_start)
             sigma_start = np.array(sigma_start) * sigma_scale
         else:
@@ -447,6 +472,6 @@ class FittingSequence(object):
 
     def _update_state(self, result):
         lens_result, source_result, lens_light_result, ps_result, cosmo_result \
-            = self._param_class.args2kwargs(result, bijective=True)
+            = self.param_class.args2kwargs(result, bijective=True)
 
         self._updateManager.update_param_state(lens_result, source_result, lens_light_result, ps_result, cosmo_result)

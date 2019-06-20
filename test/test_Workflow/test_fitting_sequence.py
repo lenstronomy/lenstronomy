@@ -164,20 +164,36 @@ class TestFittingSequence(object):
         fitting_list.append(['fix_not_computed', {'compute_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
-            , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
+                         'lens_light_remove_fixed': [[0, ['center_x']]], 
+                         'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]], 
+                         'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
-        kwargs_dynesty = {
-            'kwargs_run': {
-                'dlogz_init': 0.05,
-                'nlive_init': 10,
-                'nlive_batch': 20,
-            },
-            'dynesty_bound': 'multi',
-            'dynesty_sample': 'auto',
-            'prior_type': 'uniform',
+
+        #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
+        #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
+        #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
+
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+        kwargs_fixed = fittingSequence.kwargs_fixed()
+        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
+        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
+        npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
+        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
+
+        # Nested sampler tests
+        # further decrease the parameter space for nested samplers to run faster
+        fitting_list2 = []
+        kwargs_update2 = {'ps_add_fixed': [[0, ['ra_source', 'dec_source'], [0, 0]]],
+                          'lens_light_add_fixed': [[0, ['R_sersic', 'center_x', 'center_y'], [.1, 0, 0]]],
+                          'source_add_fixed': [[0, ['R_sersic', 'e1', 'e2', 'center_x', 'center_y'], [.6, .1, .1, 0, 0]]],
+                          'lens_add_fixed': [[0, ['gamma', 'theta_E', 'e1', 'e2', 'center_x', 'center_y'], [1.8, 1., .1, .1, 0, 0]],
+                                             [1, ['e1', 'e2'], [0.01, 0.01]]],
+                          'change_source_lower_limit': [[0, ['n_sersic'], [2.9]]], 
+                          'change_source_upper_limit': [[0, ['n_sersic'], [3.1]]]
         }
-        fitting_list.append(['Dynesty', kwargs_dynesty])
+        fitting_list2.append(['update_settings', kwargs_update2])
         kwargs_multinest = {
             'kwargs_run': {
                 'n_live_points': 10,
@@ -189,30 +205,31 @@ class TestFittingSequence(object):
             },
             'remove_output_dir': True,
         }
-        fitting_list.append(['MultiNest', kwargs_multinest])
+        fitting_list2.append(['MultiNest', kwargs_multinest])
+        kwargs_dynesty = {
+            'kwargs_run': {
+                'dlogz_init': 0.01,
+                'nlive_init': 3,
+                'nlive_batch': 3,
+                'maxbatch': 1,
+            },
+        }
+        fitting_list2.append(['Dynesty', kwargs_dynesty])
         kwargs_dypolychord = {
             'kwargs_run': {
-                'ninit': 10, 
-                'nlive_const': 20,
+                'ninit': 2, 
+                'nlive_const': 3,
             },
             'dynamic_goal': 0.8, 
             'remove_output_dir': True,
         }
-        fitting_list.append(['DyPolyChord', kwargs_dypolychord])
+        fitting_list2.append(['DyPolyChord', kwargs_dypolychord])
 
-        #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
-        #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
-        #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
-
-        chain_list = fittingSequence.fit_sequence(fitting_list)
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
-        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
-        npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
-
+        chain_list2 = fittingSequence.fit_sequence(fitting_list2)
         kwargs_fixed = fittingSequence.kwargs_fixed()
-        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
-        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
-        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
+        npt.assert_almost_equal(kwargs_fixed[0][1]['e1'], 0.01, decimal=2)
+        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 2.9
+        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 3.1
 
 
 if __name__ == '__main__':

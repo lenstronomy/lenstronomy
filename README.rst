@@ -55,6 +55,7 @@ Additional python libraries:
 * ``dynesty``
 * ``pymultinest``
 * ``pypolychord``
+* ``nestcheck``
 * standard python libraries (``numpy``, ``scipy``)
 
 

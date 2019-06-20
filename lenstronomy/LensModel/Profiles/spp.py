@@ -7,7 +7,7 @@ import scipy.special as special
 
 class SPP(object):
     """
-    class for Softened power-law elliptical potential (SPEP)
+    class for circular power-law mass distribution
     """
     param_names = ['theta_E', 'gamma', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'center_x': -100, 'center_y': -100}

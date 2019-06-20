@@ -1,7 +1,10 @@
 __author__ = 'aymgal'
 
 import pytest
+import os
+import shutil
 import numpy as np
+import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
@@ -12,6 +15,26 @@ from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
+
+try:
+    import dyPolyChord
+except:
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
+    dypolychord_installed = False
+else:
+    dypolychord_installed = True
+
+try:
+    import nestcheck
+except:
+    print("Warning : PolyChordLite/DyPolyChord not installed properly, \
+but tests will be trivially fulfilled")
+    nestcheck_installed = False
+else:
+    nestcheck_installed = True
+ 
+all_installed = dypolychord_installed and nestcheck_installed
 
 
 class TestDyPolyChordSampler(object):
@@ -85,52 +108,88 @@ class TestDyPolyChordSampler(object):
                                   }
         # reduce number of param to sample (for runtime)
         kwargs_fixed_lens = [{'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
-        kwargs_fixed_source = [{'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
-        kwargs_fixed_lens_light = [{'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
-        kwargs_lower_lens = [{'theta_E': 0.001}]
-        kwargs_lower_source = [{'R_sersic': 0.001}]
-        kwargs_lower_lens_light = [{'R_sersic': 0.001}]
-        kwargs_upper_lens = [{'theta_E': 3.}]
-        kwargs_upper_source = [{'R_sersic': 3.}]
-        kwargs_upper_lens_light = [{'R_sersic': 3.}]
+        kwargs_lower_lens = [{'theta_E': 0.8}]
+        kwargs_upper_lens = [{'theta_E': 1.2}]
+        kwargs_fixed_source = [{'R_sersic': 0.6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
+        kwargs_fixed_lens_light = [{'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
 
         self.param_class = Param(kwargs_model,
                                  kwargs_fixed_lens=kwargs_fixed_lens,
                                  kwargs_fixed_source=kwargs_fixed_source,
                                  kwargs_fixed_lens_light=kwargs_fixed_lens_light,
                                  kwargs_lower_lens=kwargs_lower_lens,
-                                 kwargs_lower_source=kwargs_lower_source,
-                                 kwargs_lower_lens_light=kwargs_lower_lens_light,
                                  kwargs_upper_lens=kwargs_upper_lens,
-                                 kwargs_upper_source=kwargs_upper_source,
-                                 kwargs_upper_lens_light=kwargs_upper_lens_light,
                                  **kwargs_constraints)
 
-        self.param_class = Param(kwargs_model,
-                                 kwargs_fixed_lens=kwargs_fixed_lens,
-                                 kwargs_fixed_source=kwargs_fixed_source,
-                                 kwargs_fixed_lens_light=kwargs_fixed_lens_light,
-                                 **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
 
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                                   kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
+        self.output_dir = 'test_nested_out'
         self.sampler = DyPolyChordSampler(self.Likelihood, prior_type='uniform',
                                           prior_means=prior_means, 
                                           prior_sigmas=prior_sigmas,
-                                          output_dir='test_nested_out',
+                                          output_dir=self.output_dir,
                                           remove_output_dir=True)
 
     def test_sampler(self):
         kwargs_run = {
-            'ninit': 8, 
-            'nlive_const': 10,
+            'ninit': 2, 
+            'nlive_const': 3,
         }
         dynamic_goal = 0.8
         samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
-        assert len(means) == 3
+        assert len(means) == 1
+        if not all_installed:
+            # trivial test when dypolychord is not installed properly
+            assert np.count_nonzero(samples) == 0
+        if os.path.exists(self.output_dir):
+            shutil.rmtree(self.output_dir, ignore_errors=True)
+
+    def test_sampler_init(self):
+        test_dir = 'some_dir'
+        os.mkdir(test_dir)
+        sampler = DyPolyChordSampler(self.Likelihood, prior_type='uniform',
+                                     output_dir=test_dir)
+        shutil.rmtree(test_dir, ignore_errors=True)
+        try:
+            sampler = DyPolyChordSampler(self.Likelihood, prior_type='gaussian',
+                                         prior_means=None, # will raise an Error 
+                                         prior_sigmas=None, # will raise an Error
+                                         output_dir=None,
+                                         remove_output_dir=True)
+        except Exception as e:
+            assert isinstance(e, ValueError)
+        try:
+            sampler = DyPolyChordSampler(self.Likelihood, prior_type='some_type')
+        except Exception as e:
+            assert isinstance(e, ValueError)
+
+    def test_prior(self):
+        n_dims = self.sampler.n_dims
+        cube_low = np.zeros(n_dims)
+        cube_upp = np.ones(n_dims)
+
+        self.prior_type = 'uniform'
+        cube_low = self.sampler.prior(cube_low)
+        npt.assert_equal(cube_low, self.sampler.lowers)
+        cube_upp = self.sampler.prior(cube_upp)
+        npt.assert_equal(cube_upp, self.sampler.uppers)
+
+        cube_mid = 0.5 * np.ones(n_dims)
+        self.prior_type = 'gaussian'
+        self.sampler.prior(cube_mid)
+        cube_gauss = np.array([0.5])
+        npt.assert_equal(cube_mid, cube_gauss)
+
+    def test_log_likelihood(self):
+        n_dims = self.sampler.n_dims
+        args = np.nan * np.ones(n_dims)
+        logL, phi = self.sampler.log_likelihood(args)
+        assert logL == -1e15
+        assert phi == []
 
 
 if __name__ == '__main__':

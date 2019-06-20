@@ -76,11 +76,10 @@ class MultiNestSampler(object):
         """
         cube_py = self._multinest2python(cube, ndim)
         if self.prior_type == 'gaussian':
-            _ = utils.cube2args_gaussian(cube_py, self.lowers, self.uppers, 
-                                         self.means, self.sigmas, self.n_dims)
+            utils.cube2args_gaussian(cube_py, self.lowers, self.uppers, 
+                                     self.means, self.sigmas, self.n_dims)
         elif self.prior_type == 'uniform':
-            _ = utils.cube2args_uniform(cube_py, self.lowers, self.uppers, 
-                                        self.n_dims)
+            utils.cube2args_uniform(cube_py, self.lowers, self.uppers, self.n_dims)
         for i in range(self.n_dims):
             cube[i] = cube_py[i]
 

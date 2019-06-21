@@ -966,13 +966,14 @@ class ModelBandPlot(object):
         return f, axes
 
 
-def plot_chain_list(chain_list, index=0):
+def plot_chain_list(chain_list, index=0, num_average=100):
     """
     plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
     This routine is an example and more tests might be appropriate to analyse a specific chain.
 
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index of chain to be plotted
+    :param num_average: in chains, number of steps to average over in plotting diagnostics
     :return: plotting instance
     """
     chain_i = chain_list[index]
@@ -983,15 +984,15 @@ def plot_chain_list(chain_list, index=0):
     elif chain_type == 'COSMOHAMMER':
         samples, param, dist = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)
     elif chain_type == 'EMCEE':
         samples, param = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, num_average=num_average)
     elif chain_type in ['MULTINEST', 'DYPOLYCHORD', 'DYNESTY']:
         samples, param, dist = chain_i[1:4]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)
     else:
         raise ValueError('chain_type %s not supported for plotting' % chain_type)
     return f, axes

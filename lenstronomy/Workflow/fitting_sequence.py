@@ -466,6 +466,11 @@ class FittingSequence(object):
         return mean_start, sigma_start
 
     def _update_state(self, result):
+        """
+
+        :param result: array of parameters being sampled (e.g. result of MCMC chain)
+        :return: None, updates the parameter state of the class instance
+        """
         lens_result, source_result, lens_light_result, ps_result, cosmo_result \
             = self.param_class.args2kwargs(result, bijective=True)
 

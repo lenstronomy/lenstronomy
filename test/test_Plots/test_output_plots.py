@@ -109,6 +109,10 @@ class TestOutputPlots(object):
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.subtract_from_data_plot(ax=ax)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=0)
         plt.close()
 
@@ -179,10 +183,6 @@ class TestOutputPlots(object):
         plt.close()
         output_plots.plot_chain_list(chain_list, index=3, num_average=10)
         plt.close()
-
-
-
-
 
     def test_scale_bar(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -263,7 +263,6 @@ class TestOutputPlots(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = lensPlot.decomposition_plot(ax=ax)
         plt.close()
-
 
 
 class TestRaise(unittest.TestCase):

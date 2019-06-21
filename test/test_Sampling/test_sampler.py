@@ -9,7 +9,7 @@ from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Sampling.sampler import Sampler
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
@@ -30,14 +30,11 @@ class TestFittingSequence(object):
         # PSF specification
 
         kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-                                              truncate=3,
-                                              kernel=None)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=11, deltaPix=deltaPix,
-                                              truncate=6,
-                                              kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(kwargs_psf)
+        data_class = ImageData(**kwargs_data)
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix}
+        psf = PSF(**kwargs_psf_gaussian)
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf.kernel_point_source}
+        psf_class = PSF(**kwargs_psf)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         lens_model_list = ['SPEP']
@@ -55,13 +52,15 @@ class TestFittingSequence(object):
         self.kwargs_source = [kwargs_sersic_ellipse]
         source_model_class = LightModel(light_model_list=source_model_list)
 
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'regular'}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light)
 
         data_class.update_data(image_sim)
+        kwargs_data['image_data'] = image_sim
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band'}
         self.data_class = data_class
         self.psf_class = psf_class
 
@@ -74,11 +73,7 @@ class TestFittingSequence(object):
             'subgrid_res': 1,
             'psf_subgrid': False}
 
-        num_source_model = len(source_model_list)
-
-        kwargs_constraints = {
-                                   'image_plane_source_list': [False] * num_source_model,
-                                   }
+        kwargs_constraints = {'image_plane_source_list': [False] * len(source_model_list)}
 
         kwargs_likelihood = {
                                   'source_marg': True,
@@ -88,7 +83,8 @@ class TestFittingSequence(object):
                                   'solver_tolerance': 0.001,
                                   }
         self.param_class = Param(kwargs_model, **kwargs_constraints)
-        self.Likelihood = LikelihoodModule(imSim_class=imageModel, param_class=self.param_class, **kwargs_likelihood)
+        self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
+                                           param_class=self.param_class, **kwargs_likelihood)
         self.sampler = Sampler(likelihoodModule=self.Likelihood)
 
     def test_pso(self):

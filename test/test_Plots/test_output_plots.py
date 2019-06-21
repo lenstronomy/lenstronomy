@@ -7,15 +7,16 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Plots.output_plots import LensModelPlot
+from lenstronomy.Plots.output_plots import ModelPlot
 import lenstronomy.Plots.output_plots as output_plots
-from lenstronomy.Data.imaging_data import Data
+from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import numpy as np
+import unittest
 
 
 class TestOutputPlots(object):
@@ -34,14 +35,11 @@ class TestOutputPlots(object):
         # PSF specification
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
-        data_class = Data(self.kwargs_data)
-        kwargs_psf = sim_util.psf_configure_simple(psf_type='GAUSSIAN', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
-                                               truncate=3,
-                                               kernel=None)
-        self.kwargs_psf = sim_util.psf_configure_simple(psf_type='PIXEL', fwhm=fwhm, kernelsize=5, deltaPix=deltaPix,
-                                                    truncate=6,
-                                                    kernel=kwargs_psf['kernel_point_source'])
-        psf_class = PSF(kwargs_psf)
+        data_class = ImageData(**self.kwargs_data)
+        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        psf_gaussian = PSF(**kwargs_psf_gaussian)
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -71,7 +69,7 @@ class TestOutputPlots(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_list = ['SOURCE_POSITION']
         point_source_class = PointSource(point_source_type_list=point_source_list, fixed_magnification_list=[True])
-        kwargs_numerics = {'subgrid_res': 1, 'psf_subgrid': False}
+        kwargs_numerics = {'supersampling_factor': 1}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
@@ -87,60 +85,37 @@ class TestOutputPlots(object):
                                'fixed_magnification_list': [False],
                              }
         self.kwargs_numerics = kwargs_numerics
-        self.data_class = Data(self.kwargs_data)
+        self.data_class = ImageData(**self.kwargs_data)
 
     def test_lensModelPlot(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
 
-        lensPlot = LensModelPlot(self.kwargs_data, self.kwargs_psf, self.kwargs_numerics, self.kwargs_model,
-                                     self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps,
-                                     arrow_size=0.02, cmap_string="gist_heat")
-
-        lensPlot.plot_main(image_names=True, with_caustics=True)
+        lensPlot.plot_main(with_caustics=True)
         plt.close()
+        cmap = plt.get_cmap('gist_heat')
 
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string=cmap)
 
-        #lensPlot.data_plot(ax=axes[0, 0])
-        #lensPlot.model_plot(ax=axes[0, 1])
-        #lensPlot.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
-        #lensPlot.source_plot(ax=axes[1, 0], convolution=False, deltaPix_source=0.01, numPix=100)
-        #lensPlot.convergence_plot(ax=axes[1, 1], v_max=1)
-        #lensPlot.magnification_plot(ax=axes[1, 2])
-        #plt.close()
 
         lensPlot.plot_separate()
         plt.close()
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        #lensPlot.decomposition_plot(ax=axes[0, 0], text='Lens light', lens_light_add=True, unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 0], text='Lens light convolved', lens_light_add=True)
-        #lensPlot.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
-        #lensPlot.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
-        #                                unconvolved=True)
-        #lensPlot.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
-        #                                lens_light_add=True, point_source_add=True)
-        #plt.close()
         lensPlot.plot_subtract_from_data_all()
         plt.close()
-        #f, axes = plt.subplots(2, 3, figsize=(16, 8))
-
-        #lensPlot.subtract_from_data_plot(ax=axes[0,0], text='Data')
-        #lensPlot.subtract_from_data_plot(ax=axes[0,1], text='Data - Point Source', point_source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[0,2], text='Data - Lens Light', lens_light_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,0], text='Data - Source Light', source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,1], text='Data - Source Light - Point Source', source_add=True, point_source_add=True)
-        #lensPlot.subtract_from_data_plot(ax=axes[1,2], text='Data - Lens Light - Point Source', lens_light_add=True, point_source_add=True)
-        #plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
+        plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.deflection_plot(ax=ax, with_caustics=True)
+        lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=0)
         plt.close()
 
         numPix = 100
         deltaPix_source = 0.01
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensPlot.error_map_source_plot(ax, numPix, deltaPix_source, with_caustics=True)
+        lensPlot.error_map_source_plot(ax=ax, numPix=numPix, deltaPix_source=deltaPix_source, with_caustics=True)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -156,8 +131,10 @@ class TestOutputPlots(object):
         plt.close()
 
     def test_external_shear_direction(self):
-        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=self.LensModel, kwargs_lens=self.kwargs_lens,
-                        strength_multiply=10)
+        lensModel = LensModel(lens_model_list=['SHEAR', 'FOREGROUND_SHEAR'])
+        kwargs_lens = [{'e1': 0.1, 'e2': -0.1}, {'e1': 0.1, 'e2': -0.1}]
+        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=lensModel,
+                                                 kwargs_lens=kwargs_lens, strength_multiply=10)
         plt.close()
 
     def test_plot_chain(self):
@@ -197,9 +174,96 @@ class TestOutputPlots(object):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensModel = LensModel(lens_model_list=['SIS'])
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
-                                     point_source=True, with_caustics=True)
+        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
+                                          sourcePos_y=0, point_source=True, with_caustics=True,
+                                          image_color_list=['k', 'k', 'k', 'r'])
         plt.close()
+        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
+                                          sourcePos_y=0, point_source=True, with_caustics=False,
+                                          image_color_list=None)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
+        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
+                                          sourcePos_y=0,
+                                          point_source=False, with_caustics=False)
+        plt.close()
+
+    def test_source_plot(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.source_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None, with_caustics=False,
+                             caustic_color='yellow',
+                    fsize=15, plot_scale='linear')
+        plt.close()
+
+    def test_joint_linear(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics], [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat",
+                             multi_band_type='joint-linear', bands_compute=[True, False])
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.data_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None, with_caustics=False,
+                             caustic_color='yellow',
+                    fsize=15, plot_scale='linear')
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.model_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None, with_caustics=False,
+                                caustic_color='yellow',
+                                fsize=15, plot_scale='linear')
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.convergence_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None, with_caustics=False,
+                                 caustic_color='yellow',
+                                 fsize=15, plot_scale='linear')
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.normalized_residual_plot(ax=ax)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.magnification_plot(ax=ax)
+        plt.close()
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = lensPlot.decomposition_plot(ax=ax)
+        plt.close()
+
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, sigma_bkg=1)
+            #kwargs_data['image_data'] = np.zeros((10, 10))
+            kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+            lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                 kwargs_model=kwargs_model, kwargs_lens=[],
+                                 kwargs_source=[{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}], kwargs_lens_light=[],
+                                 kwargs_ps = [],
+                                 arrow_size=0.02, cmap_string="gist_heat")
+            f, ax = plt.subplots(1, 1, figsize=(4, 4))
+            ax = lensPlot.source_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None, with_caustics=False,
+                                      caustic_color='yellow',
+                                      fsize=15, plot_scale='bad')
+            plt.close()
+        with self.assertRaises(ValueError):
+            kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, sigma_bkg=1)
+            # kwargs_data['image_data'] = np.zeros((10, 10))
+            kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+            lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                 kwargs_model=kwargs_model, kwargs_lens=[],
+                                 kwargs_source=[{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}],
+                                 kwargs_lens_light=[], bands_compute=[False],
+                                 kwargs_ps=[],
+                                 arrow_size=0.02, cmap_string="gist_heat")
+            lensPlot._select_band(band_index=0)
 
 
 if __name__ == '__main__':

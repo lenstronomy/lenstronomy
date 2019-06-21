@@ -2,6 +2,7 @@ import lenstronomy.Util.util as util
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 from lenstronomy.LightModel.Profiles.shapelets import Shapelets, ShapeletSet
 
 
@@ -37,6 +38,12 @@ class TestShapeletSet(object):
         amp = [1, 0, 0, 0, 0, 0]
         output = self.shapeletSet.function(np.array(1), np.array(1), amp, n_max, beta, center_x=0, center_y=0)
         assert output == 0
+
+        beta = 1.
+        amp = 1
+        shapelets = Shapelets(precalc=False, stable_cut=False)
+        output = shapelets.function(np.array(1), np.array(1), amp, beta, 0, 0, center_x=0, center_y=0)
+        npt.assert_almost_equal(0.2075537487102974 , output, decimal=8)
 
     def test_shapelet_basis(self):
         num_order = 5
@@ -103,6 +110,14 @@ class TestShapeletSet(object):
         shape_true = out_true * np.exp(-x**2/2.)
         shape_approx = out_approx * np.exp(-x ** 2 / 2.)
         npt.assert_almost_equal(shape_approx, shape_true, decimal=6)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            shapelets = Shapelets()
+            shapelets.pre_calc(1, 1, beta=1, n_order=200, center_x=0, center_y=0)
 
 
 if __name__ == '__main__':

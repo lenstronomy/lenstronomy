@@ -59,6 +59,9 @@ class TestPointSourceVariability(object):
         image_g = ps_var.image_time(time=time)
         npt.assert_almost_equal(np.sum(image_g), 8, decimal=1)
 
+        t_days = ps_var.delays
+        assert len(t_days) == 4
+
 
 if __name__ == '__main__':
     pytest.main()

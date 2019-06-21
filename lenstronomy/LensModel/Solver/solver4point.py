@@ -123,8 +123,8 @@ class Solver4Point(object):
             kwargs_list[0]['center_x'] = center_x
             kwargs_list[0]['center_y'] = center_y
         elif lens_model in ['NFW_ELLIPSE']:
-            [theta_Rs, e1, e2, center_x, center_y, no_sens_param] = x
-            kwargs_list[0]['theta_Rs'] = theta_Rs
+            [alpha_Rs, e1, e2, center_x, center_y, no_sens_param] = x
+            kwargs_list[0]['alpha_Rs'] = alpha_Rs
             kwargs_list[0]['e1'] = e1
             kwargs_list[0]['e2'] = e2
             kwargs_list[0]['center_x'] = center_x
@@ -163,8 +163,8 @@ class Solver4Point(object):
             e2 = kwargs_list[0]['e2']
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
-            theta_Rs = kwargs_list[0]['theta_Rs']
-            x = [theta_Rs, e1, e2, center_x, center_y, phi_ext]
+            alpha_Rs = kwargs_list[0]['alpha_Rs']
+            x = [alpha_Rs, e1, e2, center_x, center_y, phi_ext]
         elif lens_model in ['SHAPELETS_CART']:
             coeffs = list(kwargs_list[0]['coeffs'])
             [c10, c01, c20, c11, c02] = coeffs[1: 6]
@@ -194,7 +194,7 @@ class Solver4Point(object):
             kwargs_fixed['center_x'] = kwargs_lens['center_x']
             kwargs_fixed['center_y'] = kwargs_lens['center_y']
         elif lens_model in ['NFW_ELLIPSE']:
-            kwargs_fixed['theta_Rs'] = kwargs_lens['theta_Rs']
+            kwargs_fixed['alpha_Rs'] = kwargs_lens['alpha_Rs']
             kwargs_fixed['e1'] = kwargs_lens['e1']
             kwargs_fixed['e2'] = kwargs_lens['e2']
             kwargs_fixed['center_x'] = kwargs_lens['center_x']
@@ -205,6 +205,3 @@ class Solver4Point(object):
             raise ValueError(
                 "%s is not a valid option. Choose from 'PROFILE', 'PROFILE_SHEAR', 'SHAPELETS'" % self._solver_type)
         return kwargs_fixed_lens_list
-
-
-

@@ -2,7 +2,10 @@ import lenstronomy.Util.util as Util
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.util as util
+from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+gaussian = Gaussian()
 import pytest
+import unittest
 import numpy as np
 import numpy.testing as npt
 import scipy.ndimage.interpolation as interp
@@ -11,8 +14,7 @@ import scipy.ndimage.interpolation as interp
 def test_fwhm_kernel():
     x_grid, y_gird = Util.make_grid(101, 1)
     sigma = 20
-    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-    gaussian = Gaussian()
+
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
     kernel = Util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
@@ -24,8 +26,6 @@ def test_fwhm_kernel():
 def test_center_kernel():
     x_grid, y_gird = Util.make_grid(31, 1)
     sigma = 2
-    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-    gaussian = Gaussian()
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
     kernel = Util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
@@ -163,20 +163,6 @@ def test_deshift_subgrid():
     kernel_shifted_subgrid = interp.shift(kernel_subgrid, [-shift_y_subgrid, -shift_x_subgird], order=1)
     kernel_shifted = util.averaging(kernel_shifted_subgrid, kernel_subgrid_size, kernel_size)
     kernel_shifted_highres = kernel_util.subgrid_kernel(kernel_shifted, subgrid_res=subgrid, num_iter=1)
-    """
-
-
-    import matplotlib.pyplot as plt
-    plt.matshow(kernel_subgrid)
-    plt.show()
-    plt.matshow(kernel_shifted_subgrid)
-    plt.show()
-    plt.matshow(kernel_shifted)
-    plt.show()
-    plt.matshow(kernel_shifted_highres)
-    plt.show()
-
-    """
     #npt.assert_almost_equal(kernel_shifted_highres[7, 7], kernel_shifted_subgrid[7, 7], decimal=10)
 
 
@@ -216,11 +202,21 @@ def test_split_kernel():
     subgrid_res = 3
     subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=subgrid_res, odd=True)
     subsampling_size = 3
-    kernel_hole, kernel_cutout = kernel_util.split_kernel(kernel, subgrid_kernel, subsampling_size=subsampling_size,
-                                                          subgrid_res=subgrid_res)
+    kernel_hole, kernel_cutout = kernel_util.split_kernel(subgrid_kernel, supersampling_kernel_size=subsampling_size,
+                                                          supersampling_factor=subgrid_res)
 
     assert kernel_hole[4, 4] == 0
     assert len(kernel_cutout) == subgrid_res*subsampling_size
+    npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), 1, decimal=4)
+
+    subgrid_res = 2
+    subgrid_kernel = kernel_util.subgrid_kernel(kernel, subgrid_res=subgrid_res, odd=True)
+    subsampling_size = 3
+    kernel_hole, kernel_cutout = kernel_util.split_kernel(subgrid_kernel, supersampling_kernel_size=subsampling_size,
+                                                          supersampling_factor=subgrid_res)
+
+    assert kernel_hole[4, 4] == 0
+    assert len(kernel_cutout) == subgrid_res * subsampling_size + 1
     npt.assert_almost_equal(np.sum(kernel_hole) + np.sum(kernel_cutout), 1, decimal=4)
 
 
@@ -253,8 +249,6 @@ def test_subgrid_rebin():
     subgrid_res = 3
 
     sigma = 1
-    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-    gaussian = Gaussian()
     x_grid, y_gird = Util.make_grid(kernel_size, 1./subgrid_res, subgrid_res)
     flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
     kernel = Util.array2image(flux)
@@ -266,6 +260,100 @@ def test_subgrid_rebin():
     kernel_pixel = util.averaging(subgrid_kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size)
     kernel_pixel = kernel_util.kernel_norm(kernel_pixel)
     assert np.sum((kernel_pixel - kernel)**2) < 0.1
+
+
+def test_mge_kernel():
+    from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
+    mg = MultiGaussian()
+    fraction_list = [0.2, 0.7, 0.1]
+    sigmas_scaled = [5, 10, 15]
+    x, y = util.make_grid(numPix=101, deltapix=1)
+    kernel = mg.function(x, y, amp=fraction_list, sigma=sigmas_scaled)
+    kernel = util.array2image(kernel)
+
+    amps, sigmas, norm = kernel_util.mge_kernel(kernel, order=10)
+    print(amps, sigmas, norm)
+    kernel_new = mg.function(x, y, amp=amps, sigma=sigmas)
+    kernel_new = util.array2image(kernel_new)
+    #npt.assert_almost_equal(sigmas_scaled, sigmas)
+    #npt.assert_almost_equal(amps, fraction_list)
+    npt.assert_almost_equal(kernel_new, kernel, decimal=3)
+
+
+def test_kernel_average_pixel():
+    gaussian = Gaussian()
+    subgrid_res = 3
+    x_grid, y_gird = Util.make_grid(9, 1., subgrid_res)
+    sigma = 2
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel_super = Util.array2image(flux)
+    kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=subgrid_res)
+    npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
+
+    kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=2)
+    npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
+
+
+def test_averaging_even_kernel():
+
+    subgrid_res = 4
+
+    x_grid, y_gird = Util.make_grid(19, 1., 1)
+    sigma = 1.5
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel_super = Util.array2image(flux)
+
+    kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
+    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    assert len(kernel_pixel) == 5
+
+    x_grid, y_gird = Util.make_grid(17, 1., 1)
+    sigma = 1.5
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel_super = Util.array2image(flux)
+
+    kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
+    npt.assert_almost_equal(np.sum(kernel_pixel), 1, decimal=5)
+    assert len(kernel_pixel) == 5
+
+
+def test_degrade_kernel():
+    subgrid_res = 2
+
+    x_grid, y_gird = Util.make_grid(19, 1., 1)
+    sigma = 1.5
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    kernel_super = Util.array2image(flux)/np.sum(flux)
+
+    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=subgrid_res)
+    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+
+    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=3)
+    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+
+    kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=1)
+    npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kernel = np.zeros((2, 2))
+            kernel_util.center_kernel(kernel, iterations=1)
+
+        with self.assertRaises(ValueError):
+            kernel_super = np.ones((9, 9))
+            kernel_util.split_kernel(kernel_super, supersampling_kernel_size=2, supersampling_factor=3)
+        with self.assertRaises(ValueError):
+            kernel_util.split_kernel(kernel_super, supersampling_kernel_size=3, supersampling_factor=0)
+        with self.assertRaises(ValueError):
+            image = np.ones((10, 10))
+            kernel_util.cutout_source(x_pos=3, y_pos=2, image=image, kernelsize=2)
+        with self.assertRaises(ValueError):
+            kernel_util.fwhm_kernel(kernel=np.ones((4, 4)))
+        with self.assertRaises(ValueError):
+            kernel_util.fwhm_kernel(kernel=np.ones((5, 5)))
 
 
 if __name__ == '__main__':

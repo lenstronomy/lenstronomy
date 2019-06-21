@@ -1,7 +1,7 @@
 from lenstronomy.SimulationAPI.observation_api import SingleBand
-from lenstronomy.Data.imaging_data import Data
-from lenstronomy.Data.psf import PSF
+from lenstronomy.Data.imaging_data import ImageData
 import lenstronomy.Util.util as util
+import numpy as np
 
 
 class DataAPI(SingleBand):
@@ -30,31 +30,9 @@ class DataAPI(SingleBand):
         """
         x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
             numPix=self.numpix, deltapix=self.pixel_scale, subgrid_res=1, left_lower=False, inverse=False)
-        kwargs_data = {'numPix': self.numpix, 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
+        kwargs_data = {'image_data': np.zeros((self.numpix, self.numpix)), 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': Mpix2coord,
                        'background_rms': self.background_noise,
-                       'exp_time': self.scaled_exposure_time}
-        data_class = Data(kwargs_data)
+                       'exposure_time': self.scaled_exposure_time}
+        data_class = ImageData(**kwargs_data)
         return data_class
-
-    @property
-    def psf_class(self):
-        """
-        creates instance of PSF() class based on knowledge of the observations
-        For the full possibility of how to create such an instance, see the PSF() class documentation
-
-        :return: instance of PSF() class
-        """
-        if self._psf_type == 'GAUSSIAN':
-            psf_type = "GAUSSIAN"
-            fwhm = self._seeing
-            kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
-        elif self._psf_type == 'PIXEL':
-            if self._psf_model is not None:
-                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._psf_model}
-            else:
-                raise ValueError("You need to create the class instance with a psf_model!")
-        else:
-            raise ValueError("psf_type %s not supported!" % self._psf_type)
-        psf_class = PSF(kwargs_psf)
-        return psf_class

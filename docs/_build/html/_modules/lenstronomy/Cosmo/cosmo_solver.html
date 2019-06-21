@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo.cosmo_solver &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Cosmo.cosmo_solver &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -104,14 +104,17 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">,</span> <span class="n">H0_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="n">omega_m_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">95</span><span class="p">)):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">InvertCosmo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">z_d</span><span class="o">=</span><span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="o">=</span><span class="n">z_s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_H0_range</span> <span class="o">=</span> <span class="n">H0_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_omega_m_range</span> <span class="o">=</span> <span class="n">omega_m_range</span>
+
     <span class="k">def</span> <span class="nf">_make_interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        creates an interpolation grid in H_0, omega_m and computes quantities in Dd and Ds_Dds</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">H0_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
-        <span class="n">omega_m_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">95</span><span class="p">)</span>
-        <span class="n">grid2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">H0_range</span><span class="p">,</span> <span class="n">omega_m_range</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">grid2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H0_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_omega_m_range</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">H0_grid</span> <span class="o">=</span> <span class="n">grid2d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">omega_m_grid</span> <span class="o">=</span> <span class="n">grid2d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">Dd_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">)</span>
@@ -122,7 +125,7 @@
             <span class="n">Ds_Dds_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ds_Dds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_H0</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp2d</span><span class="p">(</span><span class="n">Dd_grid</span><span class="p">,</span> <span class="n">Ds_Dds_grid</span><span class="p">,</span> <span class="n">H0_grid</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;H0 interpolation done&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_f_omega_m</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp2d</span><span class="p">(</span><span class="n">Dd_grid</span><span class="p">,</span> <span class="n">Ds_Dds_grid</span><span class="p">,</span> <span class="n">omega_m_grid</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_f_omega_m</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp2d</span><span class="p">(</span><span class="n">Dd_grid</span><span class="p">,</span> <span class="n">Ds_Dds_grid</span><span class="p">,</span> <span class="n">omega_m_grid</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;omega_m interpolation done&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InvertCosmo.get_cosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.InvertCosmo.get_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">get_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">):</span>
@@ -139,7 +142,7 @@
         <span class="n">omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_omega_m</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">)</span>
         <span class="n">Dd_new</span><span class="p">,</span> <span class="n">Ds_Dds_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo2Dd_Ds_Dds</span><span class="p">(</span><span class="n">H0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_m</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Dd</span> <span class="o">-</span> <span class="n">Dd_new</span><span class="p">)</span><span class="o">/</span><span class="n">Dd</span> <span class="o">&gt;</span> <span class="mf">0.01</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Ds_Dds</span> <span class="o">-</span> <span class="n">Ds_Dds_new</span><span class="p">)</span><span class="o">/</span><span class="n">Ds_Dds</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">H0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div></div>
 </pre></div>
@@ -174,7 +177,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

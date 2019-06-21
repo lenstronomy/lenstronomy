@@ -84,3 +84,24 @@ History
 +++++++++++++++++
 * Simulation API module for mock generations
 * Multi-source plane modelling
+
+0.7.0 (2019-4-13)
++++++++++++++++++
+* New design of Likelihood module
+* Updated design of FittingSequence
+* Exponential Shapelets implemented
+
+0.8.0 (2019-5-23)
++++++++++++++++++
+* New design of Numerics module
+* New design of PSF and Data module
+* New design of multi-band fitting module
+
+0.8.1 (2019-5-23)
++++++++++++++++++
+* PSF numerics improved and redundancies removed.
+
+0.8.2 (2019-5-27)
++++++++++++++++++
+* psf_construction simplified
+* parameter handling for catalogue modelling improved

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data.psf &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Data.psf &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -39,96 +39,60 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.Data.psf</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">ndimage</span>
-<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">signal</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
-<span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 
 <div class="viewcode-block" id="PSF"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF">[docs]</a><span class="k">class</span> <span class="nc">PSF</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Point Spread Function convolution</span>
-
-<span class="sd">    supported psy_types:</span>
-
-<span class="sd">    - &#39;GAUSSIAN&#39;: Gaussian convolution kernel</span>
-<span class="sd">            kwargs:</span>
-<span class="sd">                &#39;fwhm&#39;: full width at half maximum of Gaussian kernel (arcsec)</span>
-<span class="sd">            required for point sources:</span>
-<span class="sd">                &#39;pixel_size&#39;: width of kernel in units of pixels</span>
-<span class="sd">            optional:</span>
-<span class="sd">                &#39;truncation&#39;: truncation of the Gaussian convolution, default: 5*fwhm</span>
-<span class="sd">                the kernel size will be set to cover everything within the truncation. In units of angle.</span>
-
-
-<span class="sd">    - &#39;PIXEL&#39;: pixelized convolution kernel with odd pixel numbers</span>
-<span class="sd">            kwargs:</span>
-<span class="sd">                &#39;kernel_point_source&#39;: the pixelized kernel from a point source in its center</span>
-
-<span class="sd">            optional:</span>
-<span class="sd">                &#39;kernel_point_source_subsampled&#39;: subsampled point source PSF, this keyword replaces</span>
-<span class="sd">                    the &#39;kernel_point_source&#39; with the lower resolution of the subsampled PSF model.</span>
-
-<span class="sd">                &#39;point_source_subsampling_factor&#39;: int() factor of higher resolution subsampling psf for point source</span>
-
-<span class="sd">                &#39;psf_error_map&#39;: uncertainty in the PSF model. Same shape as &#39;kernel_point_source&#39;.</span>
-<span class="sd">                    This error will be added to the pixel error around the position of point sources as follows:</span>
-<span class="sd">                     \sigma^2_i += &#39;psf_error_map&#39;_j * (point_source_flux_i)**2</span>
-
-<span class="sd">                &#39;kernel_pixel&#39;: PSF of an extended pixel, can be different size (odd axis number) for faster numerical</span>
-<span class="sd">                    convolution. If not specified, it will take the full point source kernel and numerically convolve it</span>
-<span class="sd">                    over the size of a pixel</span>
-
-<span class="sd">                &#39;kernel_pixel_subsampled&#39;: subsampled PSF kernel, this keyword replaces</span>
-<span class="sd">                    the &#39;kernel_pixel&#39; with the lower resolution of the subsampled PSF model.</span>
-
-<span class="sd">                &#39;pixel_subsampling_factor&#39;: int() factor of higher resolution subsampling psf for the convolution kernel</span>
-
-<span class="sd">    - &#39;NONE&#39;: default option, results in no convolution, point sources will not be displayed</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_point_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">psf_error_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel_point_source_init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param psf_type: string, type of PSF: options are &#39;NONE&#39;, &#39;PIXEL&#39;, &#39;GAUSSIAN&#39;</span>
+<span class="sd">        :param fwhm: float, full width at half maximum, only required for &#39;GAUSSIAN&#39; model</span>
+<span class="sd">        :param truncation: float, Gaussian truncation (in units of sigma), only required for &#39;GAUSSIAN&#39; model</span>
+<span class="sd">        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)</span>
+<span class="sd">        :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source</span>
+<span class="sd">        :param psf_error_map: uncertainty in the PSF model. Same shape as point source kernel.</span>
+<span class="sd">        This error will be added to the pixel error around the position of point sources as follows:</span>
+<span class="sd">        sigma^2_i += &#39;psf_error_map&#39;_j * (point_source_flux_i)**2</span>
+<span class="sd">        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source</span>
+<span class="sd">        :param kernel_point_source_init: memory of an initial point source kernel that gets passed through the psf iteration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">=</span> <span class="n">psf_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">=</span> <span class="n">pixel_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source_init</span> <span class="o">=</span> <span class="n">kernel_point_source_init</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;fwhm&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">fwhm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;fwhm must be set for GAUSSIAN psf type!&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">=</span> <span class="n">fwhm</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_gaussian</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">fwhm2sigma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;truncation&#39;</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s1">&#39;pixel_size&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;pixel_size&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_source_subsampling_factor&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">=</span> <span class="n">truncation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_supersampling_factor</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;kernel_point_source_subsampled&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_point_source_subsampled&#39;</span><span class="p">]</span>
-                <span class="n">n_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;point_source_subsampling_factor&#39;</span><span class="p">]</span>
-                <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_high</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">averaging_even_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">n_high</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">numPix</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s1">&#39;kernel_pixel_subsampled&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel_subsampled</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_pixel_subsampled&#39;</span><span class="p">]</span>
-                <span class="n">n_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_subsampling_factor</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;pixel_subsampling_factor&#39;</span><span class="p">]</span>
-                <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_high</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_subsampling_factor</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel_subsampled</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">n_high</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">numPix</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s1">&#39;kernel_pixel&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_pixel&#39;</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">pixel_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kernel_point_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;kernel_point_source needs to be specified for PIXEL PSF type!&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_point_source</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;kernel needs to have odd axis number, not &#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel_point_source</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">point_source_supersampling_factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_supersampled</span> <span class="o">=</span> <span class="n">kernel_point_source</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_supersampling_factor</span> <span class="o">=</span> <span class="n">point_source_supersampling_factor</span>
+                <span class="n">kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">degrade_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_supersampled</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_supersampling_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_point_source</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kernel_point_source</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psf_type </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">psf_error_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">psf_error_map</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;psf_error_map must have same size as kernel_point_source!&#39;</span><span class="p">)</span>
@@ -137,12 +101,10 @@
     <span class="k">def</span> <span class="nf">kernel_point_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-                <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span>
+                <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span>
                 <span class="k">if</span> <span class="n">kernel_numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">kernel_numPix</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kernel_point_source could not be created. Please follow the guidelines of the PSF class!&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span>
 
     <span class="nd">@property</span>
@@ -153,56 +115,43 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_pixel&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kernel_pixel could not be created. Please follow the guidelines of the PSF class!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">pixel_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span>
 
-<div class="viewcode-block" id="PSF.subgrid_pixel_kernel"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.subgrid_pixel_kernel">[docs]</a>    <span class="k">def</span> <span class="nf">subgrid_pixel_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+<div class="viewcode-block" id="PSF.kernel_point_source_supersampled"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.kernel_point_source_supersampled">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_point_source_supersampled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">updata_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_pixel_subsampled&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_subsampling_factor</span> <span class="o">==</span> <span class="n">subgrid_res</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source_subsampled&#39;</span><span class="p">):</span>
-            <span class="c1"># if the subsampling scale matches the one from the point source - take it!</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">==</span> <span class="n">subgrid_res</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel_subsampled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_subsampling_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">subgrid_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_pixel</span><span class="p">)</span>
-            <span class="n">n_new</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">subgrid_res</span>
-            <span class="k">if</span> <span class="n">n_new</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">n_new</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel_subsampled</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">n_new</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_subsampling_factor</span> <span class="o">=</span> <span class="n">subgrid_res</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel_subsampled</span></div>
-
-<div class="viewcode-block" id="PSF.subgrid_point_source_kernel"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.subgrid_point_source_kernel">[docs]</a>    <span class="k">def</span> <span class="nf">subgrid_point_source_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source_subsampled&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">==</span> <span class="n">subgrid_res</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source_supersampled&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_supersampling_factor</span> <span class="o">==</span> <span class="n">supersampling_factor</span><span class="p">:</span>
+            <span class="n">kernel_point_source_supersampled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_supersampled</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-                <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">*</span> <span class="n">subgrid_res</span>
+                <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">*</span> <span class="n">supersampling_factor</span>
                 <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">kernel_numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">kernel_numPix</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="o">/</span><span class="n">subgrid_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
+                <span class="n">kernel_point_source_supersampled</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">/</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
+
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">subgrid_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+                <span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">subgrid_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">)</span>
-                <span class="n">n_new</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">subgrid_res</span>
+                <span class="n">n_new</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">supersampling_factor</span>
                 <span class="k">if</span> <span class="n">n_new</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">n_new</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source_subsampled&#39;</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: subsampled point source kernel overwritten due to different subsampling size requested.&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">n_new</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_subsampling_factor</span> <span class="o">=</span> <span class="n">subgrid_res</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_subsampled</span></div>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source_supersampled&#39;</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Super-sampled point source kernel over-written due to different subsampling&quot;</span>
+                                  <span class="s2">&quot; size requested.&quot;</span><span class="p">,</span> <span class="ne">Warning</span><span class="p">)</span>
+                <span class="n">kernel_point_source_supersampled</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">n_new</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
+                <span class="n">kernel_point_source_supersampled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;psf_type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">updata_cache</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_supersampled</span> <span class="o">=</span> <span class="n">kernel_point_source_supersampled</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
+        <span class="k">return</span> <span class="n">kernel_point_source_supersampled</span></div>
 
 <div class="viewcode-block" id="PSF.set_pixel_size"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.set_pixel_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_pixel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -224,102 +173,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span>
 
-<div class="viewcode-block" id="PSF.psf_convolution"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.psf_convolution">[docs]</a>    <span class="k">def</span> <span class="nf">psf_convolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">grid_scale</span><span class="p">,</span> <span class="n">psf_subgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        convolves a given pixel grid with a PSF</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">psf_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span>
-        <span class="k">if</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">grid</span>
-        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_gaussian</span><span class="o">/</span><span class="n">grid_scale</span>
-            <span class="n">img_conv</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">img_conv</span>
-        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">psf_subgrid</span><span class="p">:</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subgrid_pixel_kernel</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span>
-            <span class="n">img_conv1</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">img_conv1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSF type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">psf_type</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="PSF.psf_convolution_new"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.psf_convolution_new">[docs]</a>    <span class="k">def</span> <span class="nf">psf_convolution_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unconvolved_image</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subsampling_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">psf_subgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">subgrid_conv_type</span><span class="o">=</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="n">conv_type</span><span class="o">=</span><span class="s1">&#39;fft&#39;</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fwhm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param unconvolved_image: 2d image with subsampled pixels with subgrid_res</span>
-<span class="sd">        :param subgrid_res: subsampling resolution</span>
-<span class="sd">        :param subsampling_size: size of the subsampling convolution in units of image pixels</span>
-<span class="sd">        :param psf_subgrid: bool, if False, the convolution is performed on the pixel size of the data</span>
-<span class="sd">        :param subgrid_conv_type: &#39;grid&#39; or &#39;fft&#39;, using either scipy.convolve2d or scipy.signal.fftconvolve for</span>
-<span class="sd">         convolution of subsampled kernel</span>
-<span class="sd">        :param conv_type: &#39;grid&#39; or &#39;fft&#39;, using either scipy.convolve2d or scipy.signal.fftconvolve for</span>
-<span class="sd">         convolution of regular kernel</span>
-<span class="sd">        :return: convolved 2d image in units of the pixels</span>
+<span class="sd">        :return: full width at half maximum of kernel (in units of pixel)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">unconvolved_image_resized</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">unconvolved_image</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
-            <span class="n">image_conv_resized</span> <span class="o">=</span> <span class="n">unconvolved_image_resized</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">psf_subgrid</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">grid_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
-                <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_gaussian</span><span class="o">/</span><span class="n">grid_scale</span>
-                <span class="n">image_conv</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">unconvolved_image</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span>
-                <span class="n">image_conv_resized</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image_conv</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_gaussian</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span>
-                <span class="n">image_conv_resized</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">unconvolved_image_resized</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
-                                                             <span class="n">truncate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-            <span class="n">kernel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_pixel</span>
-            <span class="k">if</span> <span class="n">subgrid_res</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">psf_subgrid</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subgrid_pixel_kernel</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
-                <span class="n">kernel</span><span class="p">,</span> <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">split_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">subsampling_size</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">subgrid_conv_type</span> <span class="o">==</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span>
-                    <span class="n">image_conv_subgrid</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">unconvolved_image</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">subgrid_conv_type</span> <span class="o">==</span> <span class="s1">&#39;grid&#39;</span><span class="p">:</span>
-                    <span class="n">image_conv_subgrid</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">unconvolved_image</span><span class="p">,</span> <span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;subgrid_conv_type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">subgrid_conv_type</span><span class="p">)</span>
-                <span class="n">image_conv_resized_1</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image_conv_subgrid</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">conv_type</span> <span class="o">==</span> <span class="s1">&#39;fft&#39;</span><span class="p">:</span>
-                    <span class="n">image_conv_resized_2</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">unconvolved_image_resized</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">conv_type</span> <span class="o">==</span> <span class="s1">&#39;grid&#39;</span><span class="p">:</span>
-                    <span class="n">image_conv_resized_2</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">unconvolved_image_resized</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;conv_type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">conv_type</span><span class="p">)</span>
-                <span class="n">image_conv_resized</span> <span class="o">=</span> <span class="n">image_conv_resized_1</span> <span class="o">+</span> <span class="n">image_conv_resized_2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">image_conv_resized</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">unconvolved_image_resized</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSF type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image_conv_resized</span></div>
-
-<div class="viewcode-block" id="PSF.psf_fwhm"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.psf.PSF.psf_fwhm">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">psf_fwhm</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param kwargs: keyword arguments of the PSF() class</span>
-<span class="sd">        :param deltaPix: pixel size (in the case of subsampled PSF, this is the subsampled pixel size)</span>
-<span class="sd">        :return: psf fwhm in units of the deltaPix argument</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">psf_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_type&#39;</span><span class="p">,</span> <span class="s1">&#39;NONE&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;NONE&#39;</span><span class="p">:</span>
-            <span class="n">fwhm</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="n">fwhm</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fwhm&#39;</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;kernel_point_source_subsampled&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_point_source_subsampled&#39;</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">kernel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span>
-            <span class="n">fwhm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">fwhm_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltaPix</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSF type </span><span class="si">%s</span><span class="s1"> not valid!&#39;</span> <span class="o">%</span> <span class="n">psf_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fwhm</span></div></div>
+            <span class="k">return</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">fwhm_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span></div>
 </pre></div>
 
           </div>
@@ -352,7 +215,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

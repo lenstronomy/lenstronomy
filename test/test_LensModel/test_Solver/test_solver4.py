@@ -103,14 +103,14 @@ class TestSolver4Point(object):
         Rs = 4.
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
+        kwargs_lens = [{'alpha_Rs': 1., 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         phi_G, q = 1.5, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens_init = [{'theta_Rs': 0.5, 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
+        kwargs_lens_init = [{'alpha_Rs': 0.5, 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
-        npt.assert_almost_equal(kwargs_lens_new[0]['theta_Rs'], kwargs_lens[0]['theta_Rs'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['alpha_Rs'], kwargs_lens[0]['alpha_Rs'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e1'], kwargs_lens[0]['e1'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e2'], kwargs_lens[0]['e2'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)

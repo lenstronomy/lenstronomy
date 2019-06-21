@@ -21,34 +21,40 @@ class TestMultiPlaneOptimizer(object):
         self.kwargs_lens_simple = [
             {'theta_E': 0.7, 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
              'e2': 0.08890716633399057}, {'e1': 0.00418890660015825, 'e2': -0.02908846518073248}]
+        #self.kwargs_lens_simple = [
+        #    {'theta_E': 0., 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
+        #     'e2': 0.08890716633399057}, {'e1': 0, 'e2': 0}]
 
-        front_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'NFW', 'NFW']
+        front_halos = ['NFW', 'SIS', 'NFW', 'NFW', 'NFW', 'NFW']
         front_redshifts = [0.4, 0.4, 0.4, 0.44, 0.44, 0.44]
-        self.front_args = [{'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 1.2, 'Rs': 0.13},
-                           {'theta_Rs': 0.002, 'center_y': -0.2, 'center_x': 1, 'Rs': 0.11},
-                           {'theta_Rs': 0.004, 'center_y': 0.12, 'center_x': -1.2, 'Rs': 0.13},
-                           {'theta_Rs': 0.0001, 'center_y': 0.32, 'center_x': -0.2, 'Rs': 0.13},
-                           {'theta_Rs': 0.003, 'center_y': 0.82, 'center_x': 0.78, 'Rs': 0.13},
-                           {'theta_Rs': 0.008, 'center_y': 1, 'center_x': 0.75, 'Rs': 0.16}]
+        self.front_args = [{'alpha_Rs': 0.001, 'center_y': 0.2, 'center_x': 1.2, 'Rs': 0.13},
+                           {'theta_E': 0.4, 'center_y': -0.2, 'center_x': 0.7},
+                           {'alpha_Rs': 0.004, 'center_y': 0.12, 'center_x': -1.2, 'Rs': 0.13},
+                           {'alpha_Rs': 0.0001, 'center_y': 0.32, 'center_x': -0.2, 'Rs': 0.13},
+                           {'alpha_Rs': 0.003, 'center_y': 0.82, 'center_x': 0.78, 'Rs': 0.13},
+                           {'alpha_Rs': 0.008, 'center_y': 1, 'center_x': 0.75, 'Rs': 0.16}]
 
-        main_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'NFW', 'NFW']
+        main_halos = ['NFW', 'NFW', 'NFW', 'SIS', 'NFW', 'NFW']
         main_redshifts = [0.5] * 6
-        self.main_args = [{'theta_Rs': 0.001, 'center_y': 1.2, 'center_x': 0.2, 'Rs': 0.13},
-                          {'theta_Rs': 0.002, 'center_y': -0.1, 'center_x': 0.91, 'Rs': 0.11},
-                          {'theta_Rs': 0.009, 'center_y': 0.18, 'center_x': -0.42, 'Rs': 0.13},
-                          {'theta_Rs': 0.0001, 'center_y': 0.42, 'center_x': -0.92, 'Rs': 0.13},
-                          {'theta_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
-                          {'theta_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16}]
+        self.main_args = [{'alpha_Rs': 0.001, 'center_y': 1.2, 'center_x': 0.2, 'Rs': 0.13},
+                          {'alpha_Rs': 0.002, 'center_y': -0.1, 'center_x': 0.91, 'Rs': 0.11},
+                          {'alpha_Rs': 0.009, 'center_y': 0.18, 'center_x': -0.42, 'Rs': 0.13},
+                          {'theta_E': 0.3, 'center_y': 0.42, 'center_x': -0.92},
+                          {'alpha_Rs': 0.005, 'center_y': 0.9, 'center_x': 0.48, 'Rs': 0.13},
+                          {'alpha_Rs': 0.008, 'center_y': -1, 'center_x': 0.95, 'Rs': 0.16}]
 
 
-        back_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'NFW', 'NFW']
+        back_halos = ['NFW', 'NFW', 'NFW', 'NFW', 'SIS', 'NFW']
         back_redshifts = [0.55, 0.6, 0.6, 0.74, 0.74, 0.8]
-        self.back_args = [{'theta_Rs': 0.004, 'center_y': 0.1, 'center_x': 1, 'Rs': 0.13},
-                          {'theta_Rs': 0.001, 'center_y': 0.2, 'center_x': 0.7, 'Rs': 0.11},
-                          {'theta_Rs': 0.003, 'center_y': -0.1, 'center_x': -1, 'Rs': 0.13},
-                          {'theta_Rs': 0.0008, 'center_y': 0.42, 'center_x': 0.1, 'Rs': 0.13},
-                          {'theta_Rs': 0.0014, 'center_y': 0.42, 'center_x': 1.08, 'Rs': 0.13},
-                          {'theta_Rs': 0.006, 'center_y': 0.5, 'center_x': 0.75, 'Rs': 0.16}]
+        self.back_args = [{'alpha_Rs': 0.004, 'center_y': 0.1, 'center_x': 1, 'Rs': 0.13},
+                          {'alpha_Rs': 0.001, 'center_y': 0.2, 'center_x': 0.7, 'Rs': 0.11},
+                          {'alpha_Rs': 0.003, 'center_y': -0.1, 'center_x': -1, 'Rs': 0.13},
+                          {'alpha_Rs': 0.0008, 'center_y': 0.42, 'center_x': 0.1, 'Rs': 0.13},
+                          {'theta_E': 0.3, 'center_y': 0.7, 'center_x': 1.08},
+                          {'alpha_Rs': 0.006, 'center_y': 0.5, 'center_x': 0.75, 'Rs': 0.16}]
+
+        self.convention_idx = [14,18]
+        #self.convention_idx = False
 
         lens_model_list_full = lens_model_list_simple + front_halos + main_halos + back_halos
         redshift_list_full = redshift_list_simple + front_redshifts + main_redshifts + back_redshifts
@@ -57,6 +63,9 @@ class TestMultiPlaneOptimizer(object):
         self.lens_model_full = LensModel(lens_model_list_full, z_source=1.5, lens_redshift_list=redshift_list_full,
                                          cosmo=self.cosmo,
                                          multi_plane=True)
+        self.lens_model_full_convention = LensModel(lens_model_list_full, z_source=1.5, lens_redshift_list=redshift_list_full,
+                                         cosmo=self.cosmo,
+                                         multi_plane=True, observed_convention_index=self.convention_idx)
 
         self.lens_model_front = LensModel(front_halos + main_halos, lens_redshift_list=front_redshifts + main_redshifts,
                                           z_source=1.5,
@@ -69,22 +78,29 @@ class TestMultiPlaneOptimizer(object):
 
         self.optimizer_simple = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                           magnification_target=self.magnification_simple,
-                                          redshift_list=redshift_list_simple,
+                                          redshift_list=redshift_list_simple, simplex_n_iterations=2,
                                           lens_model_list=lens_model_list_simple, kwargs_lens=self.kwargs_lens_simple,
                                           multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
-                                          astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear')
-
+                                          astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear',
+                                          tol_simplex_func=1e+9, pso_convergence_mean=1e+9,)
 
         self.optimizer_subs = Optimizer(self.x_pos_simple, self.y_pos_simple,
-                                        magnification_target=self.magnification_simple,
-                                        redshift_list=redshift_list_full,
+                                        magnification_target=self.magnification_simple, pso_convergence_mean=1e+9,
+                                        redshift_list=redshift_list_full, simplex_n_iterations=2,tol_simplex_func=1e+9,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear')
 
+        self.optimizer_subs_convention = Optimizer(self.x_pos_simple, self.y_pos_simple,
+                                        magnification_target=self.magnification_simple, pso_convergence_mean=1e+9,
+                                        redshift_list=redshift_list_full, simplex_n_iterations=2, tol_simplex_func=1e+9,
+                                        lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
+                                        multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
+                                        astropy_instance=self.cosmo, optimizer_routine='fixed_powerlaw_shear', observed_convention_index=self.convention_idx)
+
         self.optimizer_params = Optimizer(self.x_pos_simple, self.y_pos_simple,
-                                        magnification_target=self.magnification_simple,
-                                        redshift_list=redshift_list_full,
+                                        magnification_target=self.magnification_simple, tol_simplex_func=1e+9, pso_convergence_mean=1e+9,
+                                        redshift_list=redshift_list_full, simplex_n_iterations=2,
                                         lens_model_list=lens_model_list_full, kwargs_lens=self.kwargs_lens_full,
                                         multiplane=True, verbose=True, z_source=1.5, z_main=0.5,
                                         astropy_instance=self.cosmo,optimizer_routine='fixed_powerlaw_shear',
@@ -119,17 +135,27 @@ class TestMultiPlaneOptimizer(object):
 
     def test_fixed_routines(self):
 
-        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                  constrain_params={'shear':[0.06, 0.01]})
 
-        assert np.absolute(sie._theta_E_start - 0.7) < 0.2
-        for i,group in enumerate(sie.param_names):
-            for name in group:
-                assert name in self.kwargs_lens_simple[i]
+        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                          constrain_params={'shear': [0.06, 0.01]})
 
-        low,high = sie.get_param_ranges()
-        assert len(low) == len(high)
+        models = [sie, powerlaw]
 
-        spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple)
+        for model in models:
+
+            assert np.absolute(model._theta_E_start - 0.7) < 0.2
+
+            for i,group in enumerate(model.param_names):
+                for name in group:
+                    assert name in self.kwargs_lens_simple[i]
+
+            low,high = model.get_param_ranges()
+            assert len(low) == len(high)
+
+        spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                   constrain_params={'shear': [0.06, 0.01]})
         assert np.absolute(spep._theta_E_start - 0.7) < 0.2
         for i, group in enumerate(sie.param_names):
             for name in group:
@@ -143,22 +169,18 @@ class TestMultiPlaneOptimizer(object):
         split = MultiPlaneLensing(self.lens_model_full,self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full,
                                   1.5,0.5,self.cosmo,[0,1], {}, None)
 
-        macromodel_lensmodel, macro_args, halos_lensmodel, halos_args, _, _, _ = \
-            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, 0.5, [0, 1], None)
+        macromodel_lensmodel, macro_args, halos_lensmodel, halos_args = \
+            split._split_lensmodel(self.lens_model_full, self.kwargs_lens_full, [0, 1], None, self.convention_idx)
 
         assert macro_args == self.kwargs_lens_simple
 
         assert halos_args == self.front_args+self.main_args+self.back_args
 
         fore = split._foreground
-        main = split._model_to_vary
-        back = split._background
 
-        _ = fore.ray_shooting(split._halo_args, offset_index=0, force_compute=False)
+        _ = fore.ray_shooting(split._halo_args, macro_args, offset_index=0, force_compute=False)
 
         assert fore._z_to_vary == 0.5
-        assert back._z_source == 1.5
-        assert main._z_to_vary == 0.5
 
         output = fore._rays[0]['x'],fore._rays[0]['y'],fore._rays[0]['alphax'],fore._rays[0]['alphay']
         output_true = self.lens_model_front.lens_model.ray_shooting_partial(np.zeros_like(self.x_pos_simple),
@@ -183,8 +205,9 @@ class TestMultiPlaneOptimizer(object):
         betax_true, betay_true = model.ray_shooting(xpos, ypos, kwargs)
 
         args = self.kwargs_lens_full[0:2]
-        betax, betay = split._ray_shooting_fast(macromodel_args=args, thetax=xpos, thetay=ypos, force_compute=True)
-        betax_fast, betay_fast = split._ray_shooting_fast(split._macro_args)
+
+        betax, betay = split._ray_shooting_fast(macromodel_args=args,
+                                                thetax=xpos, thetay=ypos, force_compute=True)
 
         betax_func, betay_func = split.ray_shooting(0, 0.5, self.kwargs_lens_full)
         betax_true_2, betay_true_2 = self.lens_model_full.ray_shooting(0, 0.5, self.kwargs_lens_full)
@@ -192,11 +215,10 @@ class TestMultiPlaneOptimizer(object):
         npt.assert_almost_equal(betax_func,betax_true_2)
         npt.assert_almost_equal(betay_func,betay_true_2)
 
-        npt.assert_almost_equal(betax, betax_fast)
         npt.assert_almost_equal(betax_true, betax)
         npt.assert_almost_equal(betay_true, betay)
-        npt.assert_almost_equal(betax_true, betax_fast)
-        npt.assert_almost_equal(betay_true, betay_fast)
+        npt.assert_almost_equal(betax_true, betax)
+        npt.assert_almost_equal(betay_true, betay)
 
     def test_split_multiplane_hessian(self):
 
@@ -205,7 +227,7 @@ class TestMultiPlaneOptimizer(object):
 
         _ = split._ray_shooting_fast(self.kwargs_lens_full[0:2])
 
-        f1,f2,f3,f4 = split._hessian_fast(split._macro_args)
+        f1,f2,f3,f4 = split._hessian_fast(self.kwargs_lens_simple)
         t1,t2,t3,t4 = self.lens_model_full.hessian(self.x_pos_simple,self.y_pos_simple,self.kwargs_lens_full)
 
         npt.assert_almost_equal(f1,t1, decimal=6)
@@ -238,16 +260,16 @@ class TestMultiPlaneOptimizer(object):
         mag_true = self.lens_model_full.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
         mag_true_split = split.magnification(np.array([0,0.2]),np.array([0.4,0.6]),self.kwargs_lens_full)
 
-        npt.assert_almost_equal(mag_true,mag_true_split)
+        npt.assert_almost_equal(mag_true, mag_true_split, decimal=4)
 
     def test_multi_plane_simple(self):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_simple.optimize(n_particles=2, n_iterations=2, restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         self.optimizer_simple._tol_src_penalty = 1e-30
 
-        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=10, n_iterations=10,
+        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=2, n_iterations=2,
                                                                                  restart=2)
         _ = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
@@ -257,36 +279,53 @@ class TestMultiPlaneOptimizer(object):
         redshift_list_reoptimize = self.lens_model_full.redshift_list
         scale = [0.5, 1]
 
-        for i, val in enumerate([False,True]):
-            reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
-                                    magnification_target=self.magnification_simple,
-                                    redshift_list=redshift_list_reoptimize,
-                                    lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
-                                    verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
-                                    optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=val,
-                                    optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val})
+        routine = ['fixed_powerlaw_shear','variable_powerlaw_shear', 'fixed_powerlaw_shear', 'variable_powerlaw_shear',
+                   'fixedshearpowerlaw']
+        constrainparams = [None, None, {'shear': [0.06, 1]}, {'shear': [0.06, 1]}, {'shear': 0.06}]
 
-            kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20, n_iterations=10, restart=2)
+        for ri, rout in enumerate(routine):
+            for i, val in enumerate([False,True]):
+                reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
+                                        magnification_target=self.magnification_simple,
+                                        redshift_list=redshift_list_reoptimize,
+                                        lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
+                                        verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo, tol_simplex_func=1e+9,
+                                        pso_convergence_mean=1e+9, optimizer_routine=rout, re_optimize=True, particle_swarm=val, simplex_n_iterations=2,
+                                        optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val}, constrain_params=constrainparams[ri])
 
-            _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
+                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=2, n_iterations=2, restart=2)
+
+                _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
         optimized_kwargs = {'precomputed_rays': reoptimizer.lensModel._foreground._rays, 'optimization_algorithm': 'powell'}
         reoptimizer = Optimizer(self.x_pos_simple, self.y_pos_simple,
                                 magnification_target=self.magnification_simple,
                                 redshift_list=redshift_list_reoptimize,
                                 lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full,
-                                multiplane=True,
+                                multiplane=True, simplex_n_iterations=2, tol_simplex_func=1e+9,
                                 verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                 optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=False,
-                                optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True)
+                                optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True, tol_mag=None)
 
-        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=20,
-                                                                                         n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=2,n_iterations=2, restart=2)
 
     def test_multi_plane_subs(self,tol=0.004):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=20, n_iterations=10, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=2, n_iterations=2, restart=2)
         # this should just finish with no errors raised
 
+    def test_convention(self):
+
+        lensModel_opt = self.optimizer_subs_convention._optimizer.lensing
+
+        lensModel_observed = self.lens_model_full_convention
+
+        betaxtrue, betaytrue = lensModel_observed.ray_shooting(self.x_pos_simple[0], self.y_pos_simple[0], self.kwargs_lens_full)
+
+        betax, betay = lensModel_opt._ray_shooting_fast(self.kwargs_lens_full[0:2], offset_index=0,
+                                                        thetax=self.x_pos_simple[0], thetay=self.y_pos_simple[0], force_compute=True)
+
+        npt.assert_almost_equal(betax, betaxtrue, 5)
+        npt.assert_almost_equal(betay, betaytrue, 5)
 if __name__ == '__main__':
     pytest.main()

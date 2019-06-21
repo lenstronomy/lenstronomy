@@ -12,9 +12,9 @@ class NFW(object):
 
     relation are: R_200 = c * Rs
     """
-    param_names = ['Rs', 'theta_Rs', 'center_x', 'center_y']
-    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'center_x': 100, 'center_y': 100}
+    param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'alpha_Rs': 10, 'center_x': 100, 'center_y': 100}
 
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10, lookup=False):
         """
@@ -33,18 +33,18 @@ class NFW(object):
         self._max_interp_X = max_interp_X
         self._num_interp_X = num_interp_X
 
-    def function(self, x, y, Rs, theta_Rs, center_x=0, center_y=0):
+    def function(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
         
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point 
-        :param theta_Rs: deflection at Rs
+        :param alpha_Rs: deflection at Rs
         :param center_x: center of halo
         :param center_y: center of halo
         :return: 
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -53,11 +53,11 @@ class NFW(object):
         f_ = self.nfwPot(R, Rs, rho0_input)
         return f_
 
-    def derivatives(self, x, y, Rs, theta_Rs, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
         returns df/dx and df/dy of the function (integral of NFW)
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -66,11 +66,11 @@ class NFW(object):
         f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, x_, y_)
         return f_x, f_y
 
-    def hessian(self, x, y, Rs, theta_Rs, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -130,7 +130,7 @@ class NFW(object):
         m_3d = 4. * np.pi * rho0 * Rs**3 *(np.log((Rs + R)/Rs) - R/(Rs + R))
         return m_3d
 
-    def mass_3d_lens(self, R, Rs, theta_Rs):
+    def mass_3d_lens(self, R, Rs, alpha_Rs):
         """
         mass enclosed a 3d sphere or radius r
         :param r:
@@ -138,7 +138,7 @@ class NFW(object):
         :param Rs:
         :return:
         """
-        rho0 = self._alpha2rho0(theta_Rs, Rs)
+        rho0 = self._alpha2rho0(alpha_Rs, Rs)
         m_3d = self.mass_3d(R, Rs, rho0)
         return m_3d
 
@@ -380,16 +380,18 @@ class NFW(object):
             a[X >= 1] = np.log(x/2.)**2 + np.arccos(1./x)**2
         return a
 
-    def _alpha2rho0(self, theta_Rs, Rs):
+    @staticmethod
+    def _alpha2rho0(alpha_Rs, Rs):
 
         """
         convert angle at Rs into rho0
         """
 
-        rho0 = theta_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
+        rho0 = alpha_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
         return rho0
 
-    def _rho02alpha(self, rho0, Rs):
+    @staticmethod
+    def _rho02alpha(rho0, Rs):
 
         """
         convert rho0 to angle at Rs
@@ -399,5 +401,5 @@ class NFW(object):
         :return:
         """
 
-        theta_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return theta_Rs
+        alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
+        return alpha_Rs

@@ -32,6 +32,13 @@ class TestMGE(object):
             #print(rs[i])
             npt.assert_almost_equal((ss_mge[i]-ss[i])/ss[i], 0, decimal=1)
 
+        amplitudes, sigmas, norm = mge.mge_1d(rs, np.zeros_like(rs), N=n_comp)
+        assert amplitudes[0] == 0
+
+        amplitudes, sigmas, norm = mge.mge_1d(rs, np.zeros_like(rs), N=0)
+        assert amplitudes[0] == 0
+
+
     def test_mge_sersic_radius(self):
         n_comp = 30
         r_sersic = .5
@@ -180,7 +187,7 @@ class TestMGE(object):
         amplitudes, sigmas, norm = mge.mge_1d(rs, kappa, N=n_comp)
 
     def test_nfw_sersic(self):
-        kwargs_lens_nfw = {'theta_Rs': 1.4129647849966354, 'Rs': 7.0991113634274736}
+        kwargs_lens_nfw = {'alpha_Rs': 1.4129647849966354, 'Rs': 7.0991113634274736}
         kwargs_lens_sersic = {'k_eff': 0.24100561407593576, 'n_sersic': 1.8058507329346063, 'R_sersic': 1.0371803141813705}
         from lenstronomy.LensModel.Profiles.nfw import NFW
         from lenstronomy.LensModel.Profiles.sersic import Sersic

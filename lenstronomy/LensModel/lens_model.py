@@ -11,7 +11,7 @@ class LensModel(object):
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
-                 multi_plane=False, numerical_alpha_class = None):
+                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=False):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -25,6 +25,8 @@ class LensModel(object):
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
+        :param observed_convention_index: a list of lens indexes that correspond to observed positions on the sky, not
+        physical positions
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
@@ -33,8 +35,11 @@ class LensModel(object):
         self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
+            if z_source is None:
+                raise ValueError('z_source needs to be set for multi-plane lens modelling.')
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
-                                         numerical_alpha_class = numerical_alpha_class)
+                                         numerical_alpha_class = numerical_alpha_class,
+                                         observed_convention_index=observed_convention_index)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         if z_lens is not None and z_source is not None:

@@ -3,30 +3,30 @@ __author__ = 'dgilman'
 import numpy as np
 
 
-class coreBurkert(object):
+class CoreBurkert(object):
     """
     lensing properties of a modified Burkert profile with variable core size
     normalized by rho0, the central core density
 
     """
 
-    param_names = ['Rs', 'rho0', 'r_core', 'center_x', 'center_y']
-    lower_limit_default = {'Rs': 1, 'rho0': 1e+5, 'r_core': 0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'Rs': 100, 'rho0': 1e+10, 'r_core': 50, 'center_x': 100, 'center_y': 100}
+    param_names = ['Rs', 'alpha_Rs', 'r_core', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 1, 'alpha_Rs': 0, 'r_core': 0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'alpha_Rs': 100, 'r_core': 50, 'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def function(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         """
 
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param theta_Rs: deflection angle at Rs
+        :param alpha_Rs: deflection angle at Rs
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
         """
 
-        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
         if Rs < 0.0000001:
             Rs = 0.0000001
@@ -36,7 +36,7 @@ class coreBurkert(object):
         f_ = self.cBurkPot(R, Rs, rho0, r_core)
         return f_
 
-    def derivatives(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         """
         deflection angles
         :param x: x coordinate
@@ -49,7 +49,7 @@ class coreBurkert(object):
         :return:
         """
 
-        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
         if Rs < 0.0000001:
             Rs = 0.0000001
@@ -61,7 +61,7 @@ class coreBurkert(object):
 
         return dx, dy
 
-    def hessian(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
 
         """
         :param x: x coordinate
@@ -80,7 +80,7 @@ class coreBurkert(object):
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
 
-        rho0 = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
 
         kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
 
@@ -407,13 +407,13 @@ class coreBurkert(object):
 
         return func * prefactor
 
-    def _alpha2rho0(self, theta_Rs=None, Rs=None, r_core=None):
+    def _alpha2rho0(self, alpha_Rs=None, Rs=None, r_core=None):
 
         p = Rs * r_core ** -1
 
         gx = self._G(1, p)
 
-        rho0 = theta_Rs / (2 * Rs ** 2 * gx)
+        rho0 = alpha_Rs / (2 * Rs ** 2 * gx)
 
         return rho0
 
@@ -424,5 +424,3 @@ class coreBurkert(object):
         alpha = 2 * Rs ** 2 * gx * rho0
 
         return alpha
-
-

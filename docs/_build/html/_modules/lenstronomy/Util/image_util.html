@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.image_util &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Util.image_util &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -112,8 +112,6 @@
 <span class="sd">    :param sigma_bkd: background noise (sigma)</span>
 <span class="sd">    :return: a realisation of Gaussian noise of the same size as image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sigma_bkd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sigma background is smaller than zero! Please use positive values.&quot;</span><span class="p">)</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_bkd</span>
     <span class="k">return</span> <span class="n">background</span></div>
@@ -129,12 +127,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds a poison (or Gaussian) distributed noise with mean given by surface brightness</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp_time</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exp_time</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">exp_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">exp_time</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">mean_exp_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">exp_time</span><span class="p">)</span>
-        <span class="n">exp_time</span><span class="p">[</span><span class="n">exp_time</span> <span class="o">&lt;</span> <span class="n">mean_exp_time</span><span class="o">/</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_exp_time</span><span class="o">/</span><span class="mi">10</span>
+
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">/</span><span class="n">exp_time</span><span class="p">)</span> <span class="c1"># Gaussian approximation for Poisson distribution, normalized to exposure time</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">poisson</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span>
@@ -225,7 +218,7 @@
 
 <div class="viewcode-block" id="re_size"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size">[docs]</a><span class="k">def</span> <span class="nf">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    resizes image with nx x ny to nx/factor x ny/factor</span>
+<span class="sd">    re-sizes image with nx x ny to nx/factor x ny/factor</span>
 <span class="sd">    :param image: 2d image with shape (nx,ny)</span>
 <span class="sd">    :param factor: integer &gt;=1</span>
 <span class="sd">    :return:</span>
@@ -315,21 +308,37 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span> <span class="n">numPix</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">numPix</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: image can not be resized, in routine cut_edges.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image</span>
-    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1">#pass</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: image or cutout side are even number. This routine only works for odd numbers </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span>
-                         <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">numPix</span><span class="p">))</span>
-    <span class="n">cx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">cy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">numPix</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">cx</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">cy</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">resized</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">cx</span><span class="o">-</span><span class="n">d</span><span class="p">:</span><span class="n">cx</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">cy</span><span class="o">-</span><span class="n">d</span><span class="p">:</span><span class="n">cy</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;image can not be resized, in routine cut_edges with image shape (</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">) &#39;</span>
+                         <span class="s1">&#39;and desired new shape (</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ny</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;image with odd and even axis (</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">) not supported for re-sizeing&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;image can only be re-sized from even to even or odd to odd number.&#39;</span><span class="p">)</span>
+
+    <span class="n">x_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">nx</span> <span class="o">-</span> <span class="n">numPix</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">y_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">ny</span> <span class="o">-</span> <span class="n">numPix</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">-</span> <span class="n">x_min</span>
+    <span class="n">y_max</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">y_min</span>
+    <span class="n">resized</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">resized</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="radial_profile"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.radial_profile">[docs]</a><span class="k">def</span> <span class="nf">radial_profile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    computes radial profile</span>
+
+<span class="sd">    :param data: 2d numpy array</span>
+<span class="sd">    :param center: center [x, y] from where to compute the radial profile</span>
+<span class="sd">    :return: radial profile (in units pixel)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">tbin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+    <span class="n">nr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+    <span class="n">radialprofile</span> <span class="o">=</span> <span class="n">tbin</span> <span class="o">/</span> <span class="n">nr</span>
+    <span class="k">return</span> <span class="n">radialprofile</span></div>
 </pre></div>
 
           </div>
@@ -362,7 +371,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

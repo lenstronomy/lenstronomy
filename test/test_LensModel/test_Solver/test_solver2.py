@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -69,18 +70,18 @@ class TestSolver(object):
         gamma = 1.9
         Rs = 0.1
         nfw = NFW()
-        theta_Rs = nfw._rho02alpha(1., Rs)
+        alpha_Rs = nfw._rho02alpha(1., Rs)
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = image_position_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
         print(len(x_pos), 'number of images')
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
 
         kwargs_init = [{'theta_E': 1, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         kwargs_out_center, precision = solver_nfw_center.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
         x_pos_new, y_pos_new = image_position_nfw.findBrightImage(source_x, source_y, kwargs_out_center, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
@@ -93,7 +94,7 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out_center[0]['center_y'], -0.1, decimal=2)
 
         kwargs_init = [{'theta_E': 1., 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0.1, 'center_y': -0.1},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         kwargs_out_ellipse, precision = solver_nfw_ellipse.constraint_lensmodel(x_pos, y_pos, kwargs_init)
 
         npt.assert_almost_equal(kwargs_out_ellipse[0]['e1'], kwargs_lens[0]['e1'], decimal=2)
@@ -197,6 +198,84 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
         npt.assert_almost_equal(kwargs_out[1]['e1'], kwargs_lens[1]['e1'], decimal=2)
         npt.assert_almost_equal(kwargs_out[1]['e2'], kwargs_lens[1]['e2'], decimal=2)
+
+    def test_theta_E_ellipse(self):
+        lensModel = LensModel(['SPEP', 'SHEAR'])
+        solver = Solver2Point(lensModel, solver_type='THETA_E_ELLIPSE')
+
+        image_position = LensEquationSolver(lensModel)
+        sourcePos_x = 0.1
+        sourcePos_y = 0.03
+        deltapix = 0.05
+        numPix = 100
+        gamma = 1.9
+        kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
+                       {'e1': 0.03, 'e2': 0.0}]
+        x_pos, y_pos = image_position.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2,
+                                                      min_distance=deltapix, search_window=numPix * deltapix,
+                                                      precision_limit=10 ** (-15))
+        print(len(x_pos), 'number of images')
+        x_pos = x_pos[:2]
+        y_pos = y_pos[:2]
+
+        kwargs_init = [{'theta_E': 1.9, 'gamma': gamma, 'e1': -0.03, 'e2': 0.1, 'center_x': 0.1, 'center_y': -0.1},
+                       {'e1': 0.03, 'e2': 0.0}]
+        kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
+        print(kwargs_out, 'output')
+        source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
+        x_pos_new, y_pos_new = image_position.findBrightImage(source_x, source_y, kwargs_out, numImages=2,
+                                                              min_distance=deltapix, search_window=numPix * deltapix)
+        npt.assert_almost_equal(x_pos_new[0], x_pos[0], decimal=3)
+        npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
+
+        npt.assert_almost_equal(kwargs_out[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
+        npt.assert_almost_equal(kwargs_out[0]['e1'], kwargs_lens[0]['e1'], decimal=2)
+        npt.assert_almost_equal(kwargs_out[0]['e2'], kwargs_lens[0]['e2'], decimal=2)
+
+    def test_add_fixed_lens(self):
+        lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+        kwargs_lens_init = [{'theta_E': 1, 'e2': 0}, {'e2': 0}]
+        solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert kwargs_fixed_added[1]['e2'] == 0
+
+        solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_ELLIPSE', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert kwargs_fixed_added[0]['e2'] == 0
+
+        lensModel = LensModel(lens_model_list=['SHAPELETS_CART'])
+        solver = Solver2Point(lensModel=lensModel, solver_type='SHAPELETS', decoupling=True)
+        kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
+        assert len(kwargs_fixed_added) == len(kwargs_lens_init)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP'])
+            Solver2Point(lensModel=lensModel, solver_type='WRONG', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP'])
+            Solver2Point(lensModel=lensModel, solver_type='SHAPELETS', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SIS'])
+            Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver._update_kwargs(x=None, kwargs_list=None)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver._extract_array(kwargs_list=None)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
+            solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
+            solver._solver_type = 'WRONG'
+            solver.add_fixed_lens(kwargs_fixed_lens_list=[None], kwargs_lens_init=[None])
 
 
 if __name__ == '__main__':

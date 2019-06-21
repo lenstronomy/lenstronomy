@@ -58,10 +58,14 @@ class TestParam(object):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
     def test_param_name_list(self):
-        lens_model_list = ['SHIFT', 'FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE',
+        lens_model_list = ['SHIFT', 'FLEXION', 'SIS_TRUNCATED', 'SERSIC',
+                           'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
-                           'SHAPELETS_POLAR', 'DIPOLE', 'GAUSSIAN_KAPPA_ELLIPSE', 'MULTI_GAUSSIAN_KAPPA'
-            , 'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
+                           'SHAPELETS_POLAR', 'DIPOLE',
+                           'GAUSSIAN_ELLIPSE_KAPPA',
+                           'GAUSSIAN_ELLIPSE_POTENTIAL',
+                           'MULTI_GAUSSIAN_KAPPA',
+                           'MULTI_GAUSSIAN_KAPPA_ELLIPSE']
         lensParam = LensParam(lens_model_list, kwargs_fixed=None)
         param_name_list = lensParam._param_name_list
         assert len(lens_model_list) == len(param_name_list)

@@ -46,7 +46,7 @@ class Shapelets(object):
         :return: see numpy.polynomial.hermite.hermval
         """
         if not self._stable_cut:
-            return hermite.hermval(x, n_array)
+            return hermite.hermval(x, n_array, tensor=tensor)
         else:
             n_max = len(n_array)
             x_cut = np.sqrt(n_max + 1) * self._cut_scale

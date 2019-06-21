@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Cosmo package &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Cluster.html" title="lenstronomy.Cluster package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -141,7 +141,7 @@
 <span id="lenstronomy-cosmo-cosmo-param-module"></span><h2>lenstronomy.Cosmo.cosmo_param module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmo_param" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Cosmo.cosmo_param.CosmoParam">
-<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_param.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>cosmo_type=None</em>, <em>mass_scaling=False</em>, <em>kwargs_fixed={}</em>, <em>num_scale_factor=1</em>, <em>kwargs_lower=None</em>, <em>kwargs_upper=None</em>, <em>point_source_offset=False</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_param.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>Ddt_sampling=False</em>, <em>mass_scaling=False</em>, <em>num_scale_factor=1</em>, <em>kwargs_fixed={}</em>, <em>kwargs_lower=None</em>, <em>kwargs_upper=None</em>, <em>point_source_offset=False</em>, <em>source_size=False</em>, <em>num_images=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_param.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_param.CosmoParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class that handles the cosmology relevant parameters</p>
 <dl class="method">
@@ -199,7 +199,7 @@
 <span id="lenstronomy-cosmo-cosmo-solver-module"></span><h2>lenstronomy.Cosmo.cosmo_solver module<a class="headerlink" href="#module-lenstronomy.Cosmo.cosmo_solver" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Cosmo.cosmo_solver.InvertCosmo">
-<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_solver.</code><code class="descname">InvertCosmo</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#InvertCosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.InvertCosmo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.cosmo_solver.</code><code class="descname">InvertCosmo</code><span class="sig-paren">(</span><em>z_d</em>, <em>z_s</em>, <em>H0_range=array([ 10.</em>, <em>11.01123596</em>, <em>12.02247191</em>, <em>13.03370787</em>, <em>14.04494382</em>, <em>15.05617978</em>, <em>16.06741573</em>, <em>17.07865169</em>, <em>18.08988764</em>, <em>19.1011236</em>, <em>20.11235955</em>, <em>21.12359551</em>, <em>22.13483146</em>, <em>23.14606742</em>, <em>24.15730337</em>, <em>25.16853933</em>, <em>26.17977528</em>, <em>27.19101124</em>, <em>28.20224719</em>, <em>29.21348315</em>, <em>30.2247191</em>, <em>31.23595506</em>, <em>32.24719101</em>, <em>33.25842697</em>, <em>34.26966292</em>, <em>35.28089888</em>, <em>36.29213483</em>, <em>37.30337079</em>, <em>38.31460674</em>, <em>39.3258427</em>, <em>40.33707865</em>, <em>41.34831461</em>, <em>42.35955056</em>, <em>43.37078652</em>, <em>44.38202247</em>, <em>45.39325843</em>, <em>46.40449438</em>, <em>47.41573034</em>, <em>48.42696629</em>, <em>49.43820225</em>, <em>50.4494382</em>, <em>51.46067416</em>, <em>52.47191011</em>, <em>53.48314607</em>, <em>54.49438202</em>, <em>55.50561798</em>, <em>56.51685393</em>, <em>57.52808989</em>, <em>58.53932584</em>, <em>59.5505618</em>, <em>60.56179775</em>, <em>61.57303371</em>, <em>62.58426966</em>, <em>63.59550562</em>, <em>64.60674157</em>, <em>65.61797753</em>, <em>66.62921348</em>, <em>67.64044944</em>, <em>68.65168539</em>, <em>69.66292135</em>, <em>70.6741573</em>, <em>71.68539326</em>, <em>72.69662921</em>, <em>73.70786517</em>, <em>74.71910112</em>, <em>75.73033708</em>, <em>76.74157303</em>, <em>77.75280899</em>, <em>78.76404494</em>, <em>79.7752809</em>, <em>80.78651685</em>, <em>81.79775281</em>, <em>82.80898876</em>, <em>83.82022472</em>, <em>84.83146067</em>, <em>85.84269663</em>, <em>86.85393258</em>, <em>87.86516854</em>, <em>88.87640449</em>, <em>89.88764045</em>, <em>90.8988764</em>, <em>91.91011236</em>, <em>92.92134831</em>, <em>93.93258427</em>, <em>94.94382022</em>, <em>95.95505618</em>, <em>96.96629213</em>, <em>97.97752809</em>, <em>98.98876404</em>, <em>100.        ])</em>, <em>omega_m_range=array([0.05</em>, <em>0.06010638</em>, <em>0.07021277</em>, <em>0.08031915</em>, <em>0.09042553</em>, <em>0.10053191</em>, <em>0.1106383</em>, <em>0.12074468</em>, <em>0.13085106</em>, <em>0.14095745</em>, <em>0.15106383</em>, <em>0.16117021</em>, <em>0.1712766</em>, <em>0.18138298</em>, <em>0.19148936</em>, <em>0.20159574</em>, <em>0.21170213</em>, <em>0.22180851</em>, <em>0.23191489</em>, <em>0.24202128</em>, <em>0.25212766</em>, <em>0.26223404</em>, <em>0.27234043</em>, <em>0.28244681</em>, <em>0.29255319</em>, <em>0.30265957</em>, <em>0.31276596</em>, <em>0.32287234</em>, <em>0.33297872</em>, <em>0.34308511</em>, <em>0.35319149</em>, <em>0.36329787</em>, <em>0.37340426</em>, <em>0.38351064</em>, <em>0.39361702</em>, <em>0.4037234</em>, <em>0.41382979</em>, <em>0.42393617</em>, <em>0.43404255</em>, <em>0.44414894</em>, <em>0.45425532</em>, <em>0.4643617</em>, <em>0.47446809</em>, <em>0.48457447</em>, <em>0.49468085</em>, <em>0.50478723</em>, <em>0.51489362</em>, <em>0.525</em>, <em>0.53510638</em>, <em>0.54521277</em>, <em>0.55531915</em>, <em>0.56542553</em>, <em>0.57553191</em>, <em>0.5856383</em>, <em>0.59574468</em>, <em>0.60585106</em>, <em>0.61595745</em>, <em>0.62606383</em>, <em>0.63617021</em>, <em>0.6462766</em>, <em>0.65638298</em>, <em>0.66648936</em>, <em>0.67659574</em>, <em>0.68670213</em>, <em>0.69680851</em>, <em>0.70691489</em>, <em>0.71702128</em>, <em>0.72712766</em>, <em>0.73723404</em>, <em>0.74734043</em>, <em>0.75744681</em>, <em>0.76755319</em>, <em>0.77765957</em>, <em>0.78776596</em>, <em>0.79787234</em>, <em>0.80797872</em>, <em>0.81808511</em>, <em>0.82819149</em>, <em>0.83829787</em>, <em>0.84840426</em>, <em>0.85851064</em>, <em>0.86861702</em>, <em>0.8787234</em>, <em>0.88882979</em>, <em>0.89893617</em>, <em>0.90904255</em>, <em>0.91914894</em>, <em>0.92925532</em>, <em>0.9393617</em>, <em>0.94946809</em>, <em>0.95957447</em>, <em>0.96968085</em>, <em>0.97978723</em>, <em>0.98989362</em>, <em>1.        ])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmo_solver.html#InvertCosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmo_solver.InvertCosmo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.Cosmo.cosmo_solver.SolverUtil" title="lenstronomy.Cosmo.cosmo_solver.SolverUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Cosmo.cosmo_solver.SolverUtil</span></code></a></p>
 <p>class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m</p>
 <dl class="method">
@@ -342,15 +342,15 @@ the angular diameter distance relations</p>
 <code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0">
-<code class="descname">prior_H0</code><span class="sig-paren">(</span><em>H0</em>, <em>H0_min=0</em>, <em>H0_max=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_H0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">prior_H0</code><span class="sig-paren">(</span><em>H0</em>, <em>H0_min=0</em>, <em>H0_max=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_H0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_H0" title="Permalink to this definition">¶</a></dt>
 <dd><p>checks whether the parameter vector has left its bound, if so, adds a big number</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m">
-<code class="descname">prior_omega_m</code><span class="sig-paren">(</span><em>omega_m</em>, <em>omega_m_min=0</em>, <em>omega_m_max=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_omega_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">prior_omega_m</code><span class="sig-paren">(</span><em>omega_m</em>, <em>omega_m_min=0</em>, <em>omega_m_max=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/cosmography.html#CosmoLikelihood.prior_omega_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.cosmography.CosmoLikelihood.prior_omega_m" title="Permalink to this definition">¶</a></dt>
 <dd><p>checks whether the parameter omega_m is within the given bounds
 :param omega_m:
 :param omega_m_min:
@@ -616,7 +616,7 @@ returns the chain</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> – mass enclosed 200 rho_crit</li>
+<li><strong>M</strong> – mass enclosed 200 rho_crit in units of M_sun</li>
 <li><strong>c</strong> – NFW concentration parameter (r200/r_s)</li>
 </ul>
 </td>
@@ -759,7 +759,7 @@ returns the chain</p>
         <li class="right" >
           <a href="lenstronomy.Cluster.html" title="lenstronomy.Cluster package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

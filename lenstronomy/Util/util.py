@@ -41,7 +41,6 @@ def approx_theta_E(ximg,yimg):
 
     return 0.5*(dr_greatest*dr_second)**0.5
 
-
 def sort_image_index(ximg,yimg,xref,yref):
 
     """
@@ -151,7 +150,6 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         shift = -1. / 2 + 1. / (2 * subgrid_res)
     else:
         shift = np.sum(x_grid) / numPix_eff**2
-
     return x_grid - shift, y_grid - shift
 
 
@@ -204,19 +202,21 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, left_lower=Fa
     return x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
 
 
-def grid_from_coordinate_transform(numPix, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
+def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     """
     return a grid in x and y coordinates that satisfy the coordinate system
 
 
-    :param numPix:
-    :param Mpix2coord:
-    :param ra_at_xy_0:
-    :param dec_at_xy_0:
-    :return:
+    :param nx: number of pixels in x-axis
+    :param ny: number of pixels in y-axis
+    :param Mpix2coord: transformation matrix (2x2) of pixels into coordinate displacements
+    :param ra_at_xy_0: RA coordinate at (x,y) = (0,0)
+    :param dec_at_xy_0: DEC coordinate at (x,y) = (0,0)
+    :return: RA coordinate grid, DEC coordinate grid
     """
-    a = np.arange(numPix)
-    matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
+    a = np.arange(nx)
+    b = np.arange(ny)
+    matrix = np.dstack(np.meshgrid(a, b)).reshape(-1, 2)
     x_grid = matrix[:, 0]
     y_grid = matrix[:, 1]
     ra_grid = x_grid * Mpix2coord[0, 0] + y_grid * Mpix2coord[0, 1] + ra_at_xy_0

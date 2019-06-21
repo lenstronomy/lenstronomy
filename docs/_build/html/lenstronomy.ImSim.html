@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim package &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.ImSim package &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,11 +54,23 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html">lenstronomy.ImSim.MultiBand package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.joint_linear">lenstronomy.ImSim.MultiBand.joint_linear module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.multi_data_base">lenstronomy.ImSim.MultiBand.multi_data_base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.multi_exposures">lenstronomy.ImSim.MultiBand.multi_exposures module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.multi_frame">lenstronomy.ImSim.MultiBand.multi_frame module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.multiband">lenstronomy.ImSim.MultiBand.multiband module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.multi_linear">lenstronomy.ImSim.MultiBand.multi_linear module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand.single_band_multi_model">lenstronomy.ImSim.MultiBand.single_band_multi_model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.MultiBand.html#module-lenstronomy.ImSim.MultiBand">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html">lenstronomy.ImSim.Numerics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.adaptive_numerics">lenstronomy.ImSim.Numerics.adaptive_numerics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.convolution">lenstronomy.ImSim.Numerics.convolution module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.grid">lenstronomy.ImSim.Numerics.grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.numba_convolution">lenstronomy.ImSim.Numerics.numba_convolution module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.numerics">lenstronomy.ImSim.Numerics.numerics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.partial_image">lenstronomy.ImSim.Numerics.partial_image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics.point_source_rendering">lenstronomy.ImSim.Numerics.point_source_rendering module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.ImSim.Numerics.html#module-lenstronomy.ImSim.Numerics">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -89,16 +101,120 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.ImSim.image_model">
-<span id="lenstronomy-imsim-image-model-module"></span><h2>lenstronomy.ImSim.image_model module<a class="headerlink" href="#module-lenstronomy.ImSim.image_model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.ImSim.image2source_mapping">
+<span id="lenstronomy-imsim-image2source-mapping-module"></span><h2>lenstronomy.ImSim.image2source_mapping module<a class="headerlink" href="#module-lenstronomy.ImSim.image2source_mapping" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.ImSim.image_model.ImageModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_model.</code><code class="descname">ImageModel</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class=None</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>kwargs_numerics={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.image2source_mapping.Image2SourceMapping">
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image2source_mapping.</code><code class="descname">Image2SourceMapping</code><span class="sig-paren">(</span><em>lensModel</em>, <em>sourceModel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image2source_mapping.html#Image2SourceMapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image2source_mapping.Image2SourceMapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>this class uses functions of lens_model and source_model to make a lensed image</p>
+<p>this class handles multiple source planes and performs the computation of predicted surface brightness at given
+image positions.
+The class is enable to deal with an arbitrary number of different source planes. There are two different settings:</p>
+<p>Single lens plane modelling:
+In case of a single deflector, lenstronomy models the reduced deflection angles
+(matched to the source plane in single source plane mode). Each source light model can be added a number
+(scale_factor) that rescales the reduced deflection angle to the specific source plane.</p>
+<p>Multiple lens plane modelling:
+The multi-plane lens modelling requires the assumption of a cosmology and the redshifts of the multiple lens and
+source planes. The backwards ray-tracing is performed and stopped at the different source plane redshift to compute
+the mapping between source to image plane.</p>
+<dl class="method">
+<dt id="lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image2source">
+<code class="descname">image2source</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>idex_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image2source_mapping.html#Image2SourceMapping.image2source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image2source" title="Permalink to this definition">¶</a></dt>
+<dd><p>mapping of image plane to source plane coordinates
+WARNING: for multi lens plane computations and multi source planes, this computation can be slow and should be
+used as rarely as possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – image plane coordinate</li>
+<li><strong>y</strong> – image plane coordinate</li>
+<li><strong>kwargs_lens</strong> – lens model kwargs list</li>
+<li><strong>idex_source</strong> – int, index of source model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">source plane coordinate corresponding to the source model of index idex_source</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image_flux_joint">
+<code class="descname">image_flux_joint</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image2source_mapping.html#Image2SourceMapping.image_flux_joint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image_flux_joint" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – coordinate in image plane</li>
+<li><strong>y</strong> – coordinate in image plane</li>
+<li><strong>kwargs_lens</strong> – lens model kwargs list</li>
+<li><strong>kwargs_source</strong> – source model kwargs list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">surface brightness of all joint light components at image position (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image_flux_split">
+<code class="descname">image_flux_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>kwargs_source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image2source_mapping.html#Image2SourceMapping.image_flux_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image_flux_split" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – coordinate in image plane</li>
+<li><strong>y</strong> – coordinate in image plane</li>
+<li><strong>kwargs_lens</strong> – lens model kwargs list</li>
+<li><strong>kwargs_source</strong> – source model kwargs list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of responses of every single basis component with default amplitude amp=1, in the same order as the light_model_list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.ImSim.image_linear_solve">
+<span id="lenstronomy-imsim-image-linear-solve-module"></span><h2>lenstronomy.ImSim.image_linear_solve module<a class="headerlink" href="#module-lenstronomy.ImSim.image_linear_solve" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit">
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_linear_solve.</code><code class="descname">ImageLinearFit</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class=None</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>kwargs_numerics={}</em>, <em>likelihood_mask=None</em>, <em>psf_error_map_bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.ImSim.image_model.ImageModel" title="lenstronomy.ImSim.image_model.ImageModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.ImSim.image_model.ImageModel</span></code></a></p>
+<p>linear version class, inherits ImageModel</p>
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.array_masked2image">
+<code class="descname">array_masked2image</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.array_masked2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.array_masked2image" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> – 1d array of values not masked out (part of linear fitting)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">2d array of full image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.data_response">
-<code class="descname">data_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.data_response" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.data_response">
+<code class="descname">data_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.data_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the 1d array of the data element that is fitted for (including masking)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -111,28 +227,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.error_map">
-<code class="descname">error_map</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.error_map" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_ps</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.error_response">
-<code class="descname">error_response</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.error_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.error_response" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.error_response">
+<code class="descname">error_response</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.error_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.error_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the 1d array of the error estimate corresponding to the data response</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -145,25 +241,154 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.fermat_potential">
-<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.fermat_potential" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image2array_masked">
+<code class="descname">image2array_masked</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.image2array_masked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image2array_masked" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 1d array of values in image that are not masked out for the likelihood computation/linear minimization
+:param image: 2d numpy array of full image
+:return: 1d array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_linear_solve">
+<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_linear_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the image (lens and source surface brightness with a given lens model).
+The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
-<li><strong>kwargs_else</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_ps</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>inv_bool</strong> – if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">time delay in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.likelihood_data_given_model">
+<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the likelihood of the data given a model
+This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_ps</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood (natural logarithm)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.linear_response_matrix">
+<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_ps</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.num_data_evaluate">
+<code class="descname">num_data_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.num_data_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of data points to be used in the linear solver
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.num_param_linear">
+<code class="descname">num_param_linear</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of linear coefficients to be solved for in the linear inversion</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_chi2">
+<code class="descname">reduced_chi2</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.reduced_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_chi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns reduced chi2
+:param model:
+:param error_map:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_residuals">
+<code class="descname">reduced_residuals</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.reduced_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_residuals" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.update_data">
+<code class="descname">update_data</code><span class="sig-paren">(</span><em>data_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.update_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_class</strong> – instance of Data() class</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.ImSim.image_model">
+<span id="lenstronomy-imsim-image-model-module"></span><h2>lenstronomy.ImSim.image_model module<a class="headerlink" href="#module-lenstronomy.ImSim.image_model" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.ImSim.image_model.ImageModel">
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_model.</code><code class="descname">ImageModel</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class=None</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>kwargs_numerics={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class uses functions of lens_model and source_model to make a lensed image</p>
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.image">
 <code class="descname">image</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>unconvolved=False</em>, <em>source_add=True</em>, <em>lens_light_add=True</em>, <em>point_source_add=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image" title="Permalink to this definition">¶</a></dt>
@@ -192,54 +417,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.image_linear_solve">
-<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_linear_solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the image (lens and source surface brightness with a given lens model).
-The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
-<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
-<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
-<li><strong>kwargs_ps</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
-<li><strong>inv_bool</strong> – if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.image_positions">
-<code class="descname">image_positions</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.image_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.image_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>lens equation solver for image positions given lens model and source position (only for image positions within
-the data frame).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – keyword arguments of lens models (as list)</li>
-<li><strong>sourcePos_x</strong> – source position in relative arc sec</li>
-<li><strong>sourcePos_y</strong> – source position in relative arc sec</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x_coords, y_coords of image positions</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.lens_surface_brightness">
 <code class="descname">lens_surface_brightness</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>unconvolved=False</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.lens_surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.lens_surface_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the lens surface brightness distribution</p>
@@ -258,60 +435,6 @@ the data frame).</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model">
-<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>source_marg=False</em>, <em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the likelihood of the data given a model
-This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
-<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
-<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
-<li><strong>kwargs_ps</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood (natural logarithm)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.linear_response_matrix">
-<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>kwargs_lens_light</strong> – </li>
-<li><strong>kwargs_ps</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.numData_evaluate">
-<code class="descname">numData_evaluate</code><span class="sig-paren">(</span><em>compute_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.numData_evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.numData_evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of data points to be used in the linear solver
-:return:</p>
 </dd></dl>
 
 <dl class="method">
@@ -336,45 +459,6 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.point_sources_list">
-<code class="descname">point_sources_list</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.point_sources_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.point_sources_list" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of images containing only single point sources</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.reduced_chi2">
-<code class="descname">reduced_chi2</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.reduced_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.reduced_chi2" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns reduced chi2
-:param model:
-:param error_map:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.reduced_residuals">
-<code class="descname">reduced_residuals</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.reduced_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.reduced_residuals" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.reset_point_source_cache">
 <code class="descname">reset_point_source_cache</code><span class="sig-paren">(</span><em>bool=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.reset_point_source_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>deletes all the cache in the point source class and saves it from then on</p>
@@ -382,7 +466,9 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bool</strong> – boolean, if True, saves the next occuring point source positions in the cache</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
@@ -412,21 +498,6 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.ImSim.image_model.ImageModel.update_data">
-<code class="descname">update_data</code><span class="sig-paren">(</span><em>data_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.update_data" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_class</strong> – instance of Data() class</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.update_psf">
 <code class="descname">update_psf</code><span class="sig-paren">(</span><em>psf_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.update_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.update_psf" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the instance of the class with a new instance of PSF() with a potentially different point spread function</p>
@@ -437,161 +508,6 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>psf_class</strong> – </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">no return. Class is updated.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-lenstronomy.ImSim.image_numerics">
-<span id="lenstronomy-imsim-image-numerics-module"></span><h2>lenstronomy.ImSim.image_numerics module<a class="headerlink" href="#module-lenstronomy.ImSim.image_numerics" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics">
-<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_numerics.</code><code class="descname">ImageNumerics</code><span class="sig-paren">(</span><em>data</em>, <em>psf</em>, <em>subgrid_res=1</em>, <em>psf_subgrid=False</em>, <em>fix_psf_error_map=False</em>, <em>idex_mask=None</em>, <em>mask=None</em>, <em>point_source_subgrid=3</em>, <em>subsampling_size=5</em>, <em>conv_type='fft'</em>, <em>subgrid_conv_type='fft'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class to compute all the numerical task corresponding to an image, such as convolution and re-binning, masking</p>
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.C_D_response">
-<code class="descname">C_D_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.C_D_response" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">covariance matrix of pixels within index_mask as a 1d array</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.array2image">
-<code class="descname">array2image</code><span class="sig-paren">(</span><em>array</em>, <em>subgrid_res=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.array2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.array2image" title="Permalink to this definition">¶</a></dt>
-<dd><p>maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
-:param array: 1d array
-:param idex_mask: 1d array of length nx*ny
-:param nx: x-axis of 2d grid
-:param ny: y-axis of 2d grid
-:return:</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.dec_grid_ray_shooting">
-<code class="descname">dec_grid_ray_shooting</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.dec_grid_ray_shooting" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.exposure_map_array">
-<code class="descname">exposure_map_array</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.exposure_map_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.image2array">
-<code class="descname">image2array</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.image2array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.image2array" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns 1d array of values in image in idex_mask
-:param image:
-:param idex_mask:
-:return:</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.kernel_point_source_subgrid">
-<code class="descname">kernel_point_source_subgrid</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.kernel_point_source_subgrid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.mask">
-<code class="descname">mask</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.noise_map_array">
-<code class="descname">noise_map_array</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.noise_map_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.numData_evaluate">
-<code class="descname">numData_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.numData_evaluate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.num_response">
-<code class="descname">num_response</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.num_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of pixels as part of the response array
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering">
-<code class="descname">point_source_rendering</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.point_source_rendering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra_pos</strong> – </li>
-<li><strong>dec_pos</strong> – </li>
-<li><strong>amp</strong> – </li>
-<li><strong>subgrid</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering_old">
-<code class="descname">point_source_rendering_old</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.point_source_rendering_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.point_source_rendering_old" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n_points</strong> – </li>
-<li><strong>x_pos</strong> – </li>
-<li><strong>y_pos</strong> – </li>
-<li><strong>psf_large</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">response matrix of point sources</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.psf_error_map">
-<code class="descname">psf_error_map</code><span class="sig-paren">(</span><em>ra_pos</em>, <em>dec_pos</em>, <em>amp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.psf_error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.psf_error_map" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.ra_grid_ray_shooting">
-<code class="descname">ra_grid_ray_shooting</code><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.ra_grid_ray_shooting" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.ImSim.image_numerics.ImageNumerics.re_size_convolve">
-<code class="descname">re_size_convolve</code><span class="sig-paren">(</span><em>array</em>, <em>unconvolved=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_numerics.html#ImageNumerics.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_numerics.ImageNumerics.re_size_convolve" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>array</strong> – 1d data vector (can also be higher resolution binned)</li>
-<li><strong>kwargs_psf</strong> – kwargs of psf modelling</li>
-<li><strong>unconvolved</strong> – bool, if True, no convlolution performed, only re-binning</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array with convolved and re-binned data/model</p>
-</td>
 </tr>
 </tbody>
 </table>
@@ -617,8 +533,9 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim.de_lens">lenstronomy.ImSim.de_lens module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.ImSim.image2source_mapping">lenstronomy.ImSim.image2source_mapping module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.ImSim.image_linear_solve">lenstronomy.ImSim.image_linear_solve module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim.image_model">lenstronomy.ImSim.image_model module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.ImSim.image_numerics">lenstronomy.ImSim.image_numerics module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.ImSim">Module contents</a></li>
 </ul>
 </li>
@@ -668,7 +585,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

@@ -12,10 +12,10 @@ lenstronomy.LensModel.Optimizer.fixed\_routines module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Optimizer.multi\_plane module
----------------------------------------------------
+lenstronomy.LensModel.Optimizer.multi\_plane\_optimizer module
+--------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Optimizer.multi_plane
+.. automodule:: lenstronomy.LensModel.Optimizer.multi_plane_optimizer
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,10 +28,10 @@ lenstronomy.LensModel.Optimizer.optimizer module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Optimizer.params module
----------------------------------------------
+lenstronomy.LensModel.Optimizer.optimizer\_params module
+--------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Optimizer.params
+.. automodule:: lenstronomy.LensModel.Optimizer.optimizer_params
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,10 +52,10 @@ lenstronomy.LensModel.Optimizer.penalties module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Optimizer.single\_plane module
-----------------------------------------------------
+lenstronomy.LensModel.Optimizer.single\_plane\_optimizer module
+---------------------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Optimizer.single_plane
+.. automodule:: lenstronomy.LensModel.Optimizer.single_plane_optimizer
     :members:
     :undoc-members:
     :show-inheritance:

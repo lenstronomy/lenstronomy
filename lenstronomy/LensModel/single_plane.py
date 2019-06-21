@@ -70,6 +70,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
@@ -95,6 +97,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
@@ -121,6 +125,9 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
+            return f_xx, f_xy, f_xy, f_yy
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
@@ -230,6 +237,9 @@ class SinglePlane(object):
         elif lens_type == 'FLEXION':
             from lenstronomy.LensModel.Profiles.flexion import Flexion
             return Flexion()
+        elif lens_type == 'FLEXIONFG':
+            from lenstronomy.LensModel.Profiles.flexionfg import Flexionfg
+            return Flexionfg()
         elif lens_type == 'POINT_MASS':
             from lenstronomy.LensModel.Profiles.point_mass import PointMass
             return PointMass()
@@ -257,6 +267,9 @@ class SinglePlane(object):
         elif lens_type == 'DOUBLE_CHAMELEON':
             from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
             return DoubleChameleon()
+        elif lens_type == 'TRIPLE_CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
+            return TripleChameleon()
         elif lens_type == 'SPEP':
             from lenstronomy.LensModel.Profiles.spep import SPEP
             return SPEP()
@@ -281,9 +294,16 @@ class SinglePlane(object):
         elif lens_type == 'SERSIC':
             from lenstronomy.LensModel.Profiles.sersic import Sersic
             return Sersic()
-        elif lens_type == 'SERSIC_ELLIPSE':
-            from lenstronomy.LensModel.Profiles.sersic_ellipse import SersicEllipse
+        elif lens_type == 'SERSIC_ELLIPSE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_potential import SersicEllipse
             return SersicEllipse()
+        elif lens_type == 'SERSIC_ELLIPSE_KAPPA':
+            from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
+            return SersicEllipseKappa()
+        elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition \
+                import SersicEllipseGaussDec
+            return SersicEllipseGaussDec()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
             return PJaffe()
@@ -302,9 +322,12 @@ class SinglePlane(object):
         elif lens_type == 'GAUSSIAN_KAPPA':
             from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
             return GaussianKappa()
-        elif lens_type == 'GAUSSIAN_KAPPA_ELLIPSE':
-            from lenstronomy.LensModel.Profiles.gaussian_kappa_ellipse import GaussianKappaEllipse
-            return GaussianKappaEllipse()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_KAPPA':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
+            return GaussianEllipseKappa()
+        elif lens_type == 'GAUSSIAN_ELLIPSE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
+            return GaussianEllipsePotential()
         elif lens_type == 'MULTI_GAUSSIAN_KAPPA':
             from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
             return MultiGaussianKappa()
@@ -332,8 +355,8 @@ class SinglePlane(object):
             self._foreground_shear_idex = i
             return Shear()
         elif lens_type == 'coreBURKERT':
-            from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
-            return coreBurkert()
+            from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
+            return CoreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

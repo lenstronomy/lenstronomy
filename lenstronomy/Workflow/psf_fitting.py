@@ -43,7 +43,7 @@ class PsfFitting(object):
         self._image_model_class = image_model_class
 
     def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, stacking_method='median',
-                 psf_symmetry=1, psf_iter_factor=1, block_center_neighbour=0):
+                 psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
         """
 
         :param kwargs_data:
@@ -55,7 +55,7 @@ class PsfFitting(object):
         :param kwargs_ps:
         :return:
         """
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
         kernel_old = psf_class.kernel_point_source
@@ -65,7 +65,7 @@ class PsfFitting(object):
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
         if 'psf_error_map' in kwargs_psf_copy:
             kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
-        self._image_model_class.update_psf(PSF(kwargs_psf_new))
+        self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
@@ -78,16 +78,17 @@ class PsfFitting(object):
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
+        kwargs_psf_new['point_source_supersampling_factor'] = 1
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
-        self._image_model_class.update_psf(PSF(kwargs_psf_new))
+        self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                kwargs_lens_light, kwargs_ps)
         return kwargs_psf_new, logL_after, error_map
 
     def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, num_iter=10,
                          no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
-                 psf_symmetry=1, psf_iter_factor=1, verbose=True):
+                 psf_symmetry=1, psf_iter_factor=0.2, verbose=True):
         """
 
         :param kwargs_data:
@@ -112,7 +113,7 @@ class PsfFitting(object):
         else:
             error_map_final = np.zeros_like(kernel_point_source_init)
         error_map_init = copy.deepcopy(error_map_final)
-        psf_class = PSF(kwargs_psf)
+        psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
         logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                           kwargs_lens_light, kwargs_ps)
@@ -122,7 +123,9 @@ class PsfFitting(object):
             kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source,
                                                                     kwargs_lens_light, kwargs_ps,
                                                                     stacking_method=stacking_method,
-                 psf_symmetry=psf_symmetry, psf_iter_factor=psf_iter_factor, block_center_neighbour=block_center_neighbour)
+                                                                    psf_symmetry=psf_symmetry,
+                                                                    psf_iter_factor=psf_iter_factor,
+                                                                    block_center_neighbour=block_center_neighbour)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -159,14 +162,27 @@ class PsfFitting(object):
                                                                               kwargs_lens_light, kwargs_ps)
         #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
-        mask = image_model_class.ImageNumerics.mask
-        point_source_list = image_model_class.point_sources_list(kwargs_ps, kwargs_lens)
+        mask = image_model_class.likelihood_mask
+        point_source_list = self._point_sources_list(image_model_class, kwargs_ps, kwargs_lens)
         n = len(point_source_list)
         model_single_source_list = []
         for i in range(n):
             model_single_source = (data - model + point_source_list[i]) * mask
             model_single_source_list.append(model_single_source)
         return model_single_source_list
+
+    def _point_sources_list(self, image_model_class, kwargs_ps, kwargs_lens, k=None):
+        """
+
+        :param kwargs_ps:
+        :return: list of images containing only single point sources
+        """
+        point_list = []
+        ra_array, dec_array, amp_array = image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens, k=k)
+        for i in range(len(ra_array)):
+            point_source = image_model_class.ImageNumerics.point_source_rendering([ra_array[i]], [dec_array[i]], [amp_array[i]])
+            point_list.append(point_source)
+        return point_list
 
     def cutout_psf(self, ra_image, dec_image, x, y, image_list, kernelsize, kernel_init, block_center_neighbour=0):
         """
@@ -177,8 +193,8 @@ class PsfFitting(object):
         :param kernelsize:
         :return:
         """
-        mask = self._image_model_class.ImageNumerics.mask
-        ra_grid, dec_grid = self._image_model_class.Data.coordinates
+        mask = self._image_model_class.likelihood_mask
+        ra_grid, dec_grid = self._image_model_class.Data.pixel_coordinates
         ra_grid = util.image2array(ra_grid)
         dec_grid = util.image2array(dec_grid)
         radius = block_center_neighbour
@@ -232,7 +248,7 @@ class PsfFitting(object):
         return kernel_deshifted
 
     @staticmethod
-    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1, stacking_option='median', symmetry=1):
+    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1., stacking_option='median', symmetry=1):
         """
         updates psf estimate based on old kernel and several new estimates
         :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image

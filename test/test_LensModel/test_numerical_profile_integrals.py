@@ -69,10 +69,10 @@ class TestNumerics(object):
 
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
         lensModel = Model()
-        theta_Rs = 1.
+        alpha_Rs = 1.
         Rs = 2.
-        rho0 = lensModel._alpha2rho0(theta_Rs, Rs)
-        kwargs_lens = {'theta_Rs': theta_Rs, 'Rs': Rs}
+        rho0 = lensModel._alpha2rho0(alpha_Rs, Rs)
+        kwargs_lens = {'alpha_Rs': alpha_Rs, 'Rs': Rs}
         kwargs_density = {'rho0': rho0, 'Rs': Rs}
         r = 1.
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
@@ -157,7 +157,7 @@ class TestNumerics(object):
 
     def test_coreBurk(self):
 
-        from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert as Model
+        from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert as Model
         kwargs = {'rho0': 1., 'Rs': 10, 'r_core': 5}
         self.assert_integrals(Model, kwargs)
 

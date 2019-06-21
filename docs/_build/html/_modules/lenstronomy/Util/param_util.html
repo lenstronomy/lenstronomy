@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.param_util &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Util.param_util &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -102,9 +102,9 @@
 <div class="viewcode-block" id="phi_q2_ellipticity"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.phi_q2_ellipticity">[docs]</a><span class="k">def</span> <span class="nf">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">    :param phi:</span>
-<span class="sd">    :param q:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :param phi: angle of orientation (in radian)</span>
+<span class="sd">    :param q: axis ratio minor axis / major axis</span>
+<span class="sd">    :return: excentricities e1 and e2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">e1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span>
     <span class="n">e2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span>
@@ -143,26 +143,6 @@
         <span class="n">c</span> <span class="o">=</span> <span class="mf">0.999</span>
     <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">q</span></div>
-
-
-<div class="viewcode-block" id="phi_q2_ellipticity_bounds"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.phi_q2_ellipticity_bounds">[docs]</a><span class="k">def</span> <span class="nf">phi_q2_ellipticity_bounds</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    :param phi:</span>
-<span class="sd">    :param q:</span>
-<span class="sd">    :param bounds:</span>
-<span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">]:</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e2</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">bounds</span> <span class="o">==</span> <span class="s1">&#39;lower&#39;</span><span class="p">:</span>
-            <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="o">-</span><span class="n">e</span><span class="p">,</span> <span class="o">-</span><span class="n">e</span>
-        <span class="k">elif</span> <span class="n">bounds</span> <span class="o">==</span> <span class="s1">&#39;upper&#39;</span><span class="p">:</span>
-            <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">e</span><span class="p">,</span> <span class="n">e</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bounds </span><span class="si">%s</span><span class="s2"> keyword not valid&quot;</span> <span class="o">%</span><span class="n">bounds</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span></div>
 </pre></div>
 
           </div>
@@ -195,7 +175,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

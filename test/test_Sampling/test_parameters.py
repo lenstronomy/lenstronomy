@@ -75,7 +75,7 @@ class TestParam(object):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
                         }
-        kwargs_param = {'cosmo_type': 'D_dt'}
+        kwargs_param = {'Ddt_sampling': True}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
@@ -96,19 +96,19 @@ class TestParam(object):
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                        kwargs_cosmo={'D_dt': 1000})
-        assert param_class.cosmoParams._Ddt_sampling is True
+        assert param_class.cosmoParams._D_dt_sampling is True
 
     def test_mass_scaling(self):
         kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW', 'SIS', 'SERSIC', 'HERNQUIST']}
         kwargs_constraints = {'mass_scaling_list': [False, 1, 1, 1, 1, 1]}
-        kwargs_fixed_lens = [{}, {'theta_Rs': 0.1}, {'theta_Rs': 0.3}, {'theta_E': 0.1},
+        kwargs_fixed_lens = [{}, {'alpha_Rs': 0.1}, {'alpha_Rs': 0.3}, {'theta_E': 0.1},
                              {'k_eff': 0.3}, {'sigma0': 1}]
         kwargs_fixed_cosmo = {}
         param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_cosmo=kwargs_fixed_cosmo
                             , **kwargs_constraints)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 1., 'center_y': 0},
-                       {'theta_Rs': 0.1, 'Rs': 5, 'center_x': 0, 'center_y': 1.},
+                       {'alpha_Rs': 0.1, 'Rs': 5, 'center_x': 1., 'center_y': 0},
+                       {'alpha_Rs': 0.1, 'Rs': 5, 'center_x': 0, 'center_y': 1.},
                        {'theta_E': 0.1, 'center_x': 3, 'center_y': 1.},
                        {'k_eff': 0.3, 'R_sersic': 1, 'n_sersic': 2, 'center_x': 3, 'center_y': 1.},
                        {'sigma0': 1, 'Rs': 1, 'center_x': 3, 'center_y': 1.}]
@@ -124,22 +124,22 @@ class TestParam(object):
         kwargs_lens, _, _, _, _ = param_class.args2kwargs(args)
         print(kwargs_lens, 'test')
         assert kwargs_lens[0]['theta_E'] == 1
-        assert kwargs_lens[1]['theta_Rs'] == 0.1 * mass_scale
-        assert kwargs_lens[2]['theta_Rs'] == 0.3 * mass_scale
+        assert kwargs_lens[1]['alpha_Rs'] == 0.1 * mass_scale
+        assert kwargs_lens[2]['alpha_Rs'] == 0.3 * mass_scale
         assert kwargs_lens[3]['theta_E'] == 0.1 * mass_scale
         assert kwargs_lens[4]['k_eff'] == 0.3 * mass_scale
         assert kwargs_lens[5]['sigma0'] == 1 * mass_scale
 
         kwargs_lens, _, _, _, _ = param_class.args2kwargs(args, bijective=True)
         assert kwargs_lens[0]['theta_E'] == 1
-        assert kwargs_lens[1]['theta_Rs'] == 0.1
-        assert kwargs_lens[2]['theta_Rs'] == 0.3
+        assert kwargs_lens[1]['alpha_Rs'] == 0.1
+        assert kwargs_lens[2]['alpha_Rs'] == 0.3
 
     def test_joint_lens_with_light(self):
         kwargs_model = {'lens_model_list': ['CHAMELEON'], 'lens_light_model_list': ['CHAMELEON']}
         i_light, k_lens = 0, 0
         kwargs_constraints = {'joint_lens_with_light': [[i_light, k_lens, ['w_t', 'w_c', 'center_x', 'center_y', 'e1', 'e2']]]}
-        kwargs_lens = [{'theta_E': 10}]
+        kwargs_lens = [{'alpha_1': 10}]
         kwargs_lens_light = [{'amp': 1, 'w_t': 0.5, 'w_c': 0.1, 'center_x': 0, 'center_y': 0.3, 'e1': 0.1, 'e2': -0.2}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)

@@ -11,9 +11,9 @@ class CNFW(object):
     rho = rho0 * (r + r_core)^-1 * (r + rs)^-2
 
     """
-    param_names = ['Rs', 'theta_Rs', 'r_core', 'center_x', 'center_y']
-    lower_limit_default = {'Rs': 0, 'theta_Rs': 0, 'r_core': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'Rs': 100, 'theta_Rs': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
+    param_names = ['Rs', 'alpha_Rs', 'r_core', 'center_x', 'center_y']
+    lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'r_core': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'Rs': 100, 'alpha_Rs': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         """
@@ -22,13 +22,13 @@ class CNFW(object):
         """
         self._nfw = NFW()
 
-    def function(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def function(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         """
 
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param theta_Rs: deflection at Rs
+        :param alpha_Rs: deflection at Rs
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
@@ -37,7 +37,7 @@ class CNFW(object):
                       'Using the expression for the NFW '
                       'potential instead.')
 
-        pot = self._nfw.function(x, y, Rs, theta_Rs, center_x=center_x, center_y=center_y)
+        pot = self._nfw.function(x, y, Rs, alpha_Rs, center_x=center_x, center_y=center_y)
 
         return pot
 
@@ -156,9 +156,9 @@ class CNFW(object):
 
             return 0.5 * output
 
-    def derivatives(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
 
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0000001:
             Rs = 0.0000001
         x_ = x - center_x
@@ -167,14 +167,14 @@ class CNFW(object):
         f_x, f_y = self.cnfwAlpha(R, Rs, rho0_input, r_core, x_, y_)
         return f_x, f_y
 
-    def hessian(self, x, y, Rs, theta_Rs, r_core, center_x=0, center_y=0):
+    def hessian(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
 
         #raise Exception('Hessian for truncated nfw profile not yet implemented.')
 
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        rho0_input = self._alpha2rho0(theta_Rs=theta_Rs, Rs=Rs, r_core=r_core)
+        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
@@ -324,13 +324,13 @@ class CNFW(object):
 
         return m_2d
 
-    def _alpha2rho0(self, theta_Rs, Rs, r_core):
+    def _alpha2rho0(self, alpha_Rs, Rs, r_core):
 
         b = r_core * Rs ** -1
 
         gx = self._G(1., b)
 
-        rho0 = theta_Rs * (4 * Rs ** 2 * gx) ** -1
+        rho0 = alpha_Rs * (4 * Rs ** 2 * gx) ** -1
 
         return rho0
 
@@ -339,6 +339,4 @@ class CNFW(object):
         b = r_core * Rs ** -1
         gx = self._G(1., b)
         alpha = 4*Rs ** 2*gx*rho0
-
         return alpha
-

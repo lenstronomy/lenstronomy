@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.prob_density &#8212; lenstronomy 0.6.0 documentation</title>
+    <title>lenstronomy.Util.prob_density &#8212; lenstronomy 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,7 +63,7 @@
         <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">e</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span>
         <span class="k">return</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">w</span> <span class="o">*</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SkewGaussian.pdf_new"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.SkewGaussian.pdf_new">[docs]</a>    <span class="k">def</span> <span class="nf">pdf_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">skw</span><span class="p">):</span>
+<div class="viewcode-block" id="SkewGaussian.pdf_skew"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.prob_density.SkewGaussian.pdf_skew">[docs]</a>    <span class="k">def</span> <span class="nf">pdf_skew</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">skw</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        function with different parameterisation</span>
 <span class="sd">        :param x:</span>
@@ -72,9 +72,8 @@
 <span class="sd">        :param skw: skewness</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">skw</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">skw</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skewness </span><span class="si">%s</span><span class="s2"> out of range&quot;</span> <span class="o">%</span> <span class="n">skw</span><span class="p">)</span>
-            <span class="n">skw</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="k">if</span> <span class="n">skw</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">skw</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;skewness </span><span class="si">%s</span><span class="s2"> out of range&quot;</span> <span class="o">%</span> <span class="n">skw</span><span class="p">)</span>
         <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_mu_sigma_skw</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">skw</span><span class="p">)</span>
         <span class="n">pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pdf</span></div>
@@ -240,7 +239,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

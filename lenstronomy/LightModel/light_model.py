@@ -81,11 +81,9 @@ class LightModel(object):
             elif profile_type == 'DOUBLE_CHAMELEON':
                 from lenstronomy.LightModel.Profiles.chameleon import DoubleChameleon
                 self.func_list.append(DoubleChameleon())
-            elif profile_type == 'FROM_FILE':
-                if file_path is None or data_class is None:
-                    raise ValueError('Warning! You must provide the path to the FITS file and pixel size for profile of type', profile_type)
-                from lenstronomy.LightModel.Profiles.fromfile import FromFile
-                self.func_list.append(FromFile(file_path, data_class))
+            elif profile_type == 'TRIPLE_CHAMELEON':
+                from lenstronomy.LightModel.Profiles.chameleon import TripleChameleon
+                self.func_list.append(TripleChameleon())
             elif profile_type == 'INTERPOL':
                 from lenstronomy.LightModel.Profiles.interpolation import Interpol
                 self.func_list.append(Interpol())
@@ -181,6 +179,31 @@ class LightModel(object):
                     raise ValueError('model type %s not valid!' % model)
         return response, n
 
+    def num_param_linear(self, kwargs_list=None):
+        """
+
+        :return: number of linear basis set coefficients
+        """
+        n = 0
+        for i, model in enumerate(self.profile_type_list):
+            if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
+                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                n += 1
+            elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
+                num = len(kwargs_list[i]['sigma'])
+                n += num
+            elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
+                n_max = kwargs_list[i]['n_max']
+                if model in ['SHAPELETS_POLAR_EXP']:
+                    num_param = int((n_max+1)**2)
+                else:
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
+                n += num_param
+            else:
+                raise ValueError('model type %s not valid!' % model)
+        return n
+
     def update_linear(self, param, i, kwargs_list):
         """
 
@@ -201,7 +224,10 @@ class LightModel(object):
                 i += num_param
             elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
                 n_max = kwargs_list[k]['n_max']
-                num_param = int((n_max + 1) * (n_max + 2) / 2)
+                if model in ['SHAPELETS_POLAR_EXP']:
+                    num_param = int((n_max+1)**2)
+                else:
+                    num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
             else:

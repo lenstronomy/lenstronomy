@@ -92,7 +92,7 @@ class TestOutputPlots(object):
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
                              self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
 
-        lensPlot.plot_main(image_names=True, with_caustics=True)
+        lensPlot.plot_main(with_caustics=True)
         plt.close()
         cmap = plt.get_cmap('gist_heat')
 

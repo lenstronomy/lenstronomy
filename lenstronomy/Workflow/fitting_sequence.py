@@ -320,14 +320,13 @@ class FittingSequence(object):
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
 
-    def fix_not_computed(self, compute_bands):
+    def fix_not_computed(self, free_bands):
         """
         fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
         lens models to the initial kwargs_fixed options
 
-        :param compute_bands: bool list of length of imaging bands in order of imaging bands,
+        :param free_bands: bool list of length of imaging bands in order of imaging bands,
         if False: set fixed lens model
         :return:
         """
-        #kwargs_likelihood = self._updateManager.kwargs_likelihood
-        self._updateManager.fix_not_computed(compute_bands=compute_bands)
+        self._updateManager.fix_not_computed(free_bands=free_bands)

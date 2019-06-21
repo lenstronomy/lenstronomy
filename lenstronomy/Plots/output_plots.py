@@ -907,7 +907,7 @@ class ModelBandPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def plot_main(self, with_caustics=False, image_names=False):
+    def plot_main(self, with_caustics=False):
         """
         print the main plots together in a joint frame
 

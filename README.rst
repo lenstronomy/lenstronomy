@@ -52,6 +52,10 @@ Additional python libraries:
 
 * ``CosmoHammer`` (through PyPi)
 * ``astropy``
+* ``dynesty``
+* ``pymultinest``
+* ``pypolychord``
+* ``nestcheck``
 * standard python libraries (``numpy``, ``scipy``)
 
 
@@ -71,6 +75,7 @@ Modelling Features
 * Pre-defined plotting and illustration routines
 * Particle swarm optimization for parameter fitting
 * MCMC (emcee from CosmoHammer) for parameter inferences
+* Nested Sampling (MultiNest, DyPolyChord, or Dynesty) for evidence computation and parameter inferences
 * Kinematic modelling
 * Cosmographic inference tools
 

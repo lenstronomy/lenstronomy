@@ -101,7 +101,6 @@ class TestDyPolyChordSampler(object):
 
         kwargs_likelihood = {
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,

@@ -79,7 +79,7 @@ class TestLikelihoodModule(object):
 
         kwargs_likelihood = {'force_no_add_image': True,
                              'source_marg': True,
-                             'point_source_likelihood': True,
+                             'astrometric_likelihood': True,
                              'position_uncertainty': 0.004,
                              'check_solver': True,
                              'solver_tolerance': 0.001,
@@ -124,7 +124,7 @@ class TestLikelihoodModule(object):
 
         kwargs_likelihood = {
                              'source_marg': True,
-                             'point_source_likelihood': True,
+                             'astrometric_likelihood': True,
                              'position_uncertainty': 0.004,
                              'check_solver': True,
                              'solver_tolerance': 0.001,

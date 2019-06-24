@@ -88,7 +88,6 @@ class TestFittingSequence(object):
 
         self.kwargs_likelihood = {'force_no_add_image': True,
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -161,7 +160,7 @@ class TestFittingSequence(object):
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])
-        fitting_list.append(['fix_not_computed', {'compute_bands': [True]}])
+        fitting_list.append(['fix_not_computed', {'free_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
                          'lens_light_remove_fixed': [[0, ['center_x']]], 

@@ -11,7 +11,6 @@ from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 
 
-
 class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
@@ -180,9 +179,8 @@ class FittingSequence(object):
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
         by the specific sampler used
         """
-        
-        param_class = self.param_class
 
+        param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
         lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
@@ -356,22 +354,21 @@ class FittingSequence(object):
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
 
-    def fix_not_computed(self, compute_bands):
+    def fix_not_computed(self, free_bands):
         """
         fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
         lens models to the initial kwargs_fixed options
 
-        :param compute_bands: bool list of length of imaging bands in order of imaging bands,
+        :param free_bands: bool list of length of imaging bands in order of imaging bands,
         if False: set fixed lens model
         :return:
         """
-        #kwargs_likelihood = self._updateManager.kwargs_likelihood
-        self._updateManager.fix_not_computed(compute_bands=compute_bands)
+        self._updateManager.fix_not_computed(free_bands=free_bands)
 
     # TODO(?) : group nested sampling algorithms under of method (like self.mcmc() above)
     # def nested_sampling(self, sampler_type=?)
 
-    def multinest(self, kwargs_run={}, 
+    def multinest(self, kwargs_run={},
                   output_basename='', remove_output_dir=False,
                   prior_type='uniform', sigma_scale=1):
         """
@@ -389,15 +386,15 @@ class FittingSequence(object):
 
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
-        sampler = MultiNestSampler(self.likelihoodModule, 
+        sampler = MultiNestSampler(self.likelihoodModule,
                                    prior_type=prior_type,
-                                   prior_means=mean_start, 
-                                   prior_sigmas=sigma_start, 
+                                   prior_means=mean_start,
+                                   prior_sigmas=sigma_start,
                                    output_dir=output_dir,
                                    output_basename=output_basename,
                                    remove_output_dir=remove_output_dir,
                                    use_mpi=False)
-        
+
         samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
@@ -421,21 +418,21 @@ class FittingSequence(object):
 
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
-        sampler = DyPolyChordSampler(self.likelihoodModule, 
+        sampler = DyPolyChordSampler(self.likelihoodModule,
                                      prior_type=prior_type,
-                                     prior_means=mean_start, 
-                                     prior_sigmas=sigma_start, 
+                                     prior_means=mean_start,
+                                     prior_sigmas=sigma_start,
                                      output_dir=output_dir,
                                      output_basename=output_basename,
                                      remove_output_dir=remove_output_dir)
-        
-        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal, 
+
+        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal,
                                                            kwargs_run)
 
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
-    def dynesty(self, kwargs_run={}, prior_type='uniform', 
-                dynesty_bound='multi', dynesty_sample='auto', 
+    def dynesty(self, kwargs_run={}, prior_type='uniform',
+                dynesty_bound='multi', dynesty_sample='auto',
                 sigma_scale=1):
         """
         Dynamical nested sampling with Dynesty
@@ -449,11 +446,11 @@ class FittingSequence(object):
         """
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
-        sampler = DynestySampler(self.likelihoodModule, 
+        sampler = DynestySampler(self.likelihoodModule,
                                  prior_type=prior_type,
-                                 prior_means=mean_start, 
+                                 prior_means=mean_start,
                                  prior_sigmas=sigma_start,
-                                 bound=dynesty_bound, 
+                                 bound=dynesty_bound,
                                  sample=dynesty_sample)
 
         samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
@@ -470,7 +467,12 @@ class FittingSequence(object):
             mean_start, sigma_start = None, None
         return mean_start, sigma_start
 
-    def _update_state_from_result(self, result):
+    def _update_state(self, result):
+        """
+
+        :param result: array of parameters being sampled (e.g. result of MCMC chain)
+        :return: None, updates the parameter state of the class instance
+        """
         lens_result, source_result, lens_light_result, ps_result, cosmo_result \
             = self.param_class.args2kwargs(result, bijective=True)
 

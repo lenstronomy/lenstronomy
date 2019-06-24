@@ -255,7 +255,8 @@ class ModelPlot(object):
         if multi_band_type == 'single-band':
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                       bands_compute=bands_compute, likelihood_mask_list=None,
+                                                       bands_compute=bands_compute,
+                                                       likelihood_mask_list=likelihood_mask_list,
                                                        band_index=0)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
@@ -907,7 +908,7 @@ class ModelBandPlot(object):
         cb.set_label(r'log$_{10}$ flux', fontsize=15)
         return ax
 
-    def plot_main(self, with_caustics=False, image_names=False):
+    def plot_main(self, with_caustics=False):
         """
         print the main plots together in a joint frame
 
@@ -966,13 +967,14 @@ class ModelBandPlot(object):
         return f, axes
 
 
-def plot_chain_list(chain_list, index=0):
+def plot_chain_list(chain_list, index=0, num_average=100):
     """
     plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
     This routine is an example and more tests might be appropriate to analyse a specific chain.
 
     :param chain_list: list of chains with arguments [type string, samples etc...]
     :param index of chain to be plotted
+    :param num_average: in chains, number of steps to average over in plotting diagnostics
     :return: plotting instance
     """
     chain_i = chain_list[index]
@@ -983,15 +985,15 @@ def plot_chain_list(chain_list, index=0):
     elif chain_type == 'COSMOHAMMER':
         samples, param, dist = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)
     elif chain_type == 'EMCEE':
         samples, param = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, num_average=num_average)
     elif chain_type in ['MULTINEST', 'DYPOLYCHORD', 'DYNESTY']:
         samples, param, dist = chain_i[1:4]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
-        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=100)
+        axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)
     else:
         raise ValueError('chain_type %s not supported for plotting' % chain_type)
     return f, axes

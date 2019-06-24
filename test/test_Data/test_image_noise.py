@@ -33,6 +33,9 @@ class TestData(object):
         noise_map_out = noise.C_D_model(model=np.ones((self.numPix, self.numPix)))
         npt.assert_almost_equal(noise_map_out, noise_map, decimal=8)
 
+        bkg = noise.background_rms
+        npt.assert_almost_equal(bkg, np.median(noise_map))
+
     def test_exposure_time(self):
         kwargs_noise = {'image_data': np.zeros((self.numPix, self.numPix)), 'exposure_time': 0., 'background_rms': 1,
                         'noise_map': None, 'verbose': True}

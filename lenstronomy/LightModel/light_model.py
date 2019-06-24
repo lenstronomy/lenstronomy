@@ -149,7 +149,7 @@ class LightModel(object):
             if k is None or k == i:
                 if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                     new = {'amp': 1}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)
@@ -187,7 +187,7 @@ class LightModel(object):
         for i, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                 n += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
@@ -214,7 +214,7 @@ class LightModel(object):
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                 kwargs_list[k]['amp'] = param[i]
                 i += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
@@ -276,5 +276,6 @@ class LightModel(object):
                 else:
                     raise ValueError("profile %s does not support flux normlization." % model)
                 #  TODO implement total flux for e.g. 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                    # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM'
+                    # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON' ,
+                # 'TRIPLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list

@@ -85,13 +85,16 @@ class TripleChameleon(object):
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
     """
-    param_names = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'w_c3', 'w_t3', 'e13',
+    param_names = ['amp', 'ratio12', 'ratio13', 'w_c1', 'w_t1', 'e11', 'e21',
+                   'w_c2', 'w_t2', 'e12', 'e22', 'w_c3', 'w_t3', 'e13',
                    'e23', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
+    lower_limit_default = {'amp': 0, 'ratio12': 0, 'ratio13': 0.,
+                           'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
                            'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
                            'w_c3': 0, 'w_t3': 0, 'e13': -0.8, 'e23': -0.8,
                            'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'ratio': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
+    upper_limit_default = {'amp': 100, 'ratio12': 100, 'ratio13': 100,
+                           'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
                            'w_c2': 100, 'w_t2': 100, 'e12': 0.8, 'e22': 0.8,
                            'w_c3': 100, 'w_t3': 100, 'e13': 0.8, 'e23': 0.8,
                            'center_x': 100, 'center_y': 100}

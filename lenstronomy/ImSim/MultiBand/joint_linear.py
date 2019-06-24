@@ -37,7 +37,7 @@ class JointLinear(MultiLinear):
         C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        _, _, _, _ = self._imageModel_list[0].update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        #_, _, _, _ = self._imageModel_list[0].update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         wls_list = self._array2image_list(wls_model)
         return wls_list, model_error_list, cov_param, param
 

@@ -255,7 +255,8 @@ class ModelPlot(object):
         if multi_band_type == 'single-band':
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                       bands_compute=bands_compute, likelihood_mask_list=None,
+                                                       bands_compute=bands_compute,
+                                                       likelihood_mask_list=likelihood_mask_list,
                                                        band_index=0)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,

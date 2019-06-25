@@ -2,14 +2,13 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import copy
-from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Cosmo.cosmo_param import CosmoParam
+from lenstronomy.Util import class_creator
 
 
 class Param(object):
@@ -71,13 +70,9 @@ class Param(object):
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
-        lensModel = LensModel(lens_model_list=self._lens_model_list, z_source=kwargs_model.get('z_source', None),
-                              lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-                              multi_plane=kwargs_model.get('multi_plane', False))
-        sourceModel = LightModel(light_model_list=self._source_light_model_list,
-                                 deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
-                                 source_redshift_list=kwargs_model.get('source_redshift_list', None))
-        self._image2SourceMapping = Image2SourceMapping(lensModel=lensModel, sourceModel=sourceModel)
+
+        lens_model_class, source_model_class, _, _ = class_creator.create_class_instances(**kwargs_model)
+        self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
@@ -130,7 +125,7 @@ class Param(object):
             self._solver = False
         else:
             self._solver = True
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=lensModel,
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=lens_model_class,
                                          num_images=self._num_images)
 
         # fix parameters joint within the same model types

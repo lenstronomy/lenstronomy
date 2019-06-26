@@ -38,7 +38,7 @@ class LensModel(object):
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
-                                         numerical_alpha_class = numerical_alpha_class,
+                                         numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)

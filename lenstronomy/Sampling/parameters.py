@@ -75,14 +75,14 @@ class Param(object):
         #lens_model_class, source_model_class, _, _ = class_creator.create_class_instances(**kwargs_model)
         source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []),
                                         deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
-                                        source_redshift_list=kwargs_model.get('source_redshift_list', []))
+                                        source_redshift_list=kwargs_model.get('source_redshift_list', None))
         lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                      z_lens=kwargs_model.get('z_lens', None),
                                      z_source=kwargs_model.get('z_source', None),
-                                 lens_redshift_list=kwargs_model.get('lens_redshift_list', []),
+                                 lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
                                  multi_plane=kwargs_model.get('multi_plane', False),
                                      cosmo=kwargs_model.get('cosmo', None),
-                                 observed_convention_index=kwargs_model.get('observed_convention_index', []))
+                                 observed_convention_index=kwargs_model.get('observed_convention_index', None))
         self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:

@@ -35,7 +35,6 @@ class FittingSequence(object):
         self._mpi = mpi
         self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
                                                      num_bands=len(self.multi_band_list))
-        #self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
         self._mcmc_init_samples = None
 
     def kwargs_fixed(self):
@@ -157,8 +156,7 @@ class FittingSequence(object):
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self.param_class
-        likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
+        likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood)
         return likelihoodModule
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,

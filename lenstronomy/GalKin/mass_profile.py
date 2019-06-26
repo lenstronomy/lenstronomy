@@ -32,7 +32,7 @@ class MassProfile(object):
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate), self._interp_grid_num)
             mass_3d_array = self.model.mass_3d(r_array, kwargs)
             mass_3d_array[mass_3d_array < 10. ** (-10)] = 10. ** (-10)
-            mass_dim_array = mass_3d_array * const.arcsec ** 3 * self.cosmo.D_d ** 2 * self.cosmo.D_s \
+            mass_dim_array = mass_3d_array * const.arcsec ** 2 * self.cosmo.D_d * self.cosmo.D_s \
                        / self.cosmo.D_ds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
             f = interp1d(np.log(r_array), np.log(mass_dim_array/r_array), fill_value="extrapolate")
             self._log_mass_3d = f
@@ -46,6 +46,7 @@ class MassProfile(object):
         :return: mass enclosed physical radius in kg
         """
         mass_dimless = self.model.mass_3d(r, kwargs)
-        mass_dim = mass_dimless * const.arcsec ** 3 * self.cosmo.D_d ** 2 * self.cosmo.D_s \
+        mass_dim = mass_dimless * const.arcsec ** 2 * self.cosmo.D_d * self.cosmo.D_s \
                        / self.cosmo.D_ds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
         return mass_dim
+    # * const.arcsec * self.cosmo.D_d

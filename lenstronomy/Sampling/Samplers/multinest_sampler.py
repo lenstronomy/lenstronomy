@@ -64,6 +64,7 @@ class MultiNestSampler(object):
 
         self._rm_output = remove_output_dir
         self._use_mpi = use_mpi
+        self._has_warned = False
 
 
     def prior(self, cube, ndim, nparams):
@@ -96,8 +97,10 @@ class MultiNestSampler(object):
         args_py = self._multinest2python(args, ndim)
         logL, _ = self._ll(args_py)
         if not np.isfinite(logL):
-            print("WARNING : logL is not finite : return very low value instead")
+            if not self._has_warned:
+                print("WARNING : logL is not finite : return very low value instead")
             logL = -1e15
+            self._has_warned = True
         return float(logL)
 
 

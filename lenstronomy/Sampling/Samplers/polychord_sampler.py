@@ -68,6 +68,7 @@ class DyPolyChordSampler(object):
             self._sampler = None
 
         self._rm_output = remove_output_dir
+        self._has_warned = False
 
 
     def prior(self, cube):
@@ -99,8 +100,10 @@ class DyPolyChordSampler(object):
         phi = []
         logL, _ = self._ll.likelihood(args)
         if not np.isfinite(logL):
-            print("WARNING : logL is not finite : return very low value instead")
+            if not self._has_warned:
+                print("WARNING : logL is not finite : return very low value instead")
             logL = -1e15
+            self._has_warned = True
         return float(logL), phi
 
 

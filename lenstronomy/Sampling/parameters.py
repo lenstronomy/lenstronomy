@@ -8,7 +8,8 @@ from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Cosmo.cosmo_param import CosmoParam
-from lenstronomy.Util import class_creator
+from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.LensModel.lens_model import LensModel
 
 
 class Param(object):
@@ -71,7 +72,17 @@ class Param(object):
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
 
-        lens_model_class, source_model_class, _, _ = class_creator.create_class_instances(**kwargs_model)
+        #lens_model_class, source_model_class, _, _ = class_creator.create_class_instances(**kwargs_model)
+        source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []),
+                                        deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
+                                        source_redshift_list=kwargs_model.get('source_redshift_list', []))
+        lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
+                                     z_lens=kwargs_model.get('z_lens', None),
+                                     z_source=kwargs_model.get('z_source', None),
+                                 lens_redshift_list=kwargs_model.get('lens_redshift_list', []),
+                                 multi_plane=kwargs_model.get('multi_plane', False),
+                                     cosmo=kwargs_model.get('cosmo', None),
+                                 observed_convention_index=kwargs_model.get('observed_convention_index', []))
         self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:

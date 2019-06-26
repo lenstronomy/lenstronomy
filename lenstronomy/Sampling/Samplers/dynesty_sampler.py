@@ -45,6 +45,7 @@ class DynestySampler(object):
         self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood, 
                                                      self.prior, self.n_dims,
                                                      bound=bound, sample=sample)
+        self._has_warned = False
 
 
     def prior(self, u):
@@ -73,8 +74,10 @@ class DynestySampler(object):
         """
         logL, _ = self._ll(x)
         if not np.isfinite(logL):
-            print("WARNING : logL is not finite : return very low value instead")
+            if not self._has_warned:
+                print("WARNING : logL is not finite : return very low value instead")
             logL = -1e15
+            self._has_warned = True
         return float(logL)
 
 

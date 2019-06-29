@@ -102,9 +102,10 @@ class FittingSequence(object):
 
             elif fitting_type == 'Dynesty':
                 output = self.dynesty(**kwargs)
-                samples, means, logL, logZ, logZ_err, names = output
+                samples, means, logL, logZ, logZ_err, names, results = output
                 self._update_state(means)
-                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
+                chain = [fitting_type.upper(), samples, names, logL, logZ,
+                         logZ_err, results]
                 chain_list.append(chain)
 
             else:
@@ -449,9 +450,9 @@ class FittingSequence(object):
                                  bound=dynesty_bound,
                                  sample=dynesty_sample)
 
-        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+        samples, means, logZ, logZ_err, logL, results = sampler.run(kwargs_run)
 
-        return samples, means, logL, logZ, logZ_err, sampler.param_names
+        return samples, means, logL, logZ, logZ_err, sampler.param_names, results
 
     def _prepare_sampling(self, prior_type, sigma_scale):
         if prior_type == 'gaussian':

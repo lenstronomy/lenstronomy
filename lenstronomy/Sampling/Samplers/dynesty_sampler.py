@@ -114,4 +114,4 @@ class DynestySampler(object):
         # Generate a new set of results with statistical+sampling uncertainties.
         # results_sim = dyfunc.simulate_run(results)
 
-        return samples, means, logZ, logZ_err, logL  # TODO : return a 'results' instance
+        return samples, means, logZ, logZ_err, logL, results

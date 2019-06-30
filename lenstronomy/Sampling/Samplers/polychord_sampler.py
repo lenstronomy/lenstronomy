@@ -19,7 +19,7 @@ class DyPolyChordSampler(object):
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None,
                  output_dir=None, output_basename='-', seed_increment=1,
-                 remove_output_dir=False): #, use_mpi=False, num_mpi_procs=1):
+                 remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -60,9 +60,11 @@ class DyPolyChordSampler(object):
         # else:
         #     mpi_str = None
 
+        self._use_mpi = use_mpi
+
         if self._all_installed:
             # create the dyPolyChord callable object
-            self._sampler = self._RunPyPolyChord(self.log_likelihood, 
+            self._sampler = self._RunPyPolyChord(self.log_likelihood,
                                                  self.prior, self.n_dims)
         else:
             self._sampler = None
@@ -124,8 +126,16 @@ class DyPolyChordSampler(object):
             # TODO : put a default dynamic_goal ?
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
-            self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, 
-                                              self.settings, **kwargs_run)
+            if self._use_mpi:
+                from mpi4py import MPI
+                comm = MPI.COMM_WORLD
+
+                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
+                                                  self.settings,
+                                                  comm=comm, **kwargs_run)
+            else:
+                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
+                                                  self.settings, **kwargs_run)
 
             results = self._process_run(self.settings['file_root'], 
                                         self.settings['base_dir'])

@@ -117,7 +117,7 @@ class TestDynestySampler(object):
             'maxbatch': 1,
             'wt_kwargs': {'pfrac': 0.8},
         }
-        samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
+        samples, means, logZ, logZ_err, logL, results = self.sampler.run(kwargs_run)
         assert len(means) == 1
 
     def test_sampler_init(self):

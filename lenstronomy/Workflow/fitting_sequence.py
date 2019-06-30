@@ -421,7 +421,8 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      output_dir=output_dir,
                                      output_basename=output_basename,
-                                     remove_output_dir=remove_output_dir)
+                                     remove_output_dir=remove_output_dir,
+                                     use_mpi=self._mpi)
 
         samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal,
                                                            kwargs_run)

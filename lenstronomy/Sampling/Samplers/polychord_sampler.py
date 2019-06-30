@@ -15,11 +15,10 @@ class DyPolyChordSampler(object):
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io
     """
-
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None,
                  output_dir=None, output_basename='-', seed_increment=1,
-                 remove_output_dir=False): #, use_mpi=False, num_mpi_procs=1):
+                 remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -60,16 +59,17 @@ class DyPolyChordSampler(object):
         # else:
         #     mpi_str = None
 
+        self._use_mpi = use_mpi
+
         if self._all_installed:
             # create the dyPolyChord callable object
-            self._sampler = self._RunPyPolyChord(self.log_likelihood, 
+            self._sampler = self._RunPyPolyChord(self.log_likelihood,
                                                  self.prior, self.n_dims)
         else:
             self._sampler = None
 
         self._rm_output = remove_output_dir
         self._has_warned = False
-
 
     def prior(self, cube):
         """
@@ -89,7 +89,6 @@ class DyPolyChordSampler(object):
                                         self.n_dims, copy=True)
         return p
 
-
     def log_likelihood(self, args):
         """
         compute the log-likelihood given list of parameters
@@ -105,7 +104,6 @@ class DyPolyChordSampler(object):
             logL = -1e15
             self._has_warned = True
         return float(logL), phi
-
 
     def run(self, dynamic_goal, kwargs_run):
         """
@@ -124,8 +122,16 @@ class DyPolyChordSampler(object):
             # TODO : put a default dynamic_goal ?
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
-            self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, 
-                                              self.settings, **kwargs_run)
+            if self._use_mpi:
+                from mpi4py import MPI
+                comm = MPI.COMM_WORLD
+
+                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
+                                                  self.settings,
+                                                  comm=comm, **kwargs_run)
+            else:
+                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
+                                                  self.settings, **kwargs_run)
 
             results = self._process_run(self.settings['file_root'], 
                                         self.settings['base_dir'])
@@ -164,7 +170,6 @@ class DyPolyChordSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
 
         return samples, means, logZ, logZ_err, logL
-
 
     def _check_install(self):
         try:

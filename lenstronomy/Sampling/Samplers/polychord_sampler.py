@@ -44,9 +44,13 @@ class DyPolyChordSampler(object):
         self.prior_type = prior_type
 
         self._output_dir= output_dir
-        if os.path.exists(self._output_dir):
-            shutil.rmtree(self._output_dir, ignore_errors=True)
-        os.mkdir(self._output_dir)
+        if self._use_mpi:
+            if not os.path.exists(self._output_dir):
+                os.mkdir(self._output_dir)
+        else:
+            if os.path.exists(self._output_dir):
+                shutil.rmtree(self._output_dir, ignore_errors=True)
+            os.mkdir(self._output_dir)
 
         self.settings = {
             'file_root': output_basename,

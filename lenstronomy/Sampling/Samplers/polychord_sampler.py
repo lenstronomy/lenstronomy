@@ -125,13 +125,12 @@ class DyPolyChordSampler(object):
             if self._use_mpi:
                 from mpi4py import MPI
                 comm = MPI.COMM_WORLD
-
-                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
-                                                  self.settings,
-                                                  comm=comm, **kwargs_run)
             else:
-                self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
-                                                  self.settings, **kwargs_run)
+                comm = None
+
+            self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
+                                              self.settings,
+                                              comm=comm, **kwargs_run)
 
             results = self._process_run(self.settings['file_root'], 
                                         self.settings['base_dir'])

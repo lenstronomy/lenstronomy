@@ -397,7 +397,8 @@ class FittingSequence(object):
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
     def dypolychord(self, dynamic_goal=0.5, kwargs_run={},
-                    output_basename='', remove_output_dir=False,
+                    output_dir = 'dypolychord_chains',
+                    output_basename='dpc', remove_output_dir=False,
                     prior_type='uniform', sigma_scale=1):
         """
         Dynamical nested sampling with DyPolyChord
@@ -410,8 +411,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
         :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
-        output_basename += 'c-'
-        output_dir = 'dypolychord_chains'
+        #output_basename += 'c-'
+        #output_dir = 'dypolychord_chains'
 
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 

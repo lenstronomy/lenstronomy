@@ -43,11 +43,26 @@ class DyPolyChordSampler(object):
             raise ValueError("Sampling type {} not supported".format(prior_type))
         self.prior_type = prior_type
 
+        # if use_mpi:
+        #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
+        # else:
+        #     mpi_str = None
+
+        self._use_mpi = use_mpi
+
         self._output_dir= output_dir
+
         if self._use_mpi:
-            if not os.path.exists(self._output_dir):
+            from mpi4py import MPI
+            self._comm = MPI.COMM_WORLD
+
+            if self._comm.Get_rank() == 0:
+                if os.path.exists(self._output_dir):
+                    shutil.rmtree(self._output_dir, ignore_errors=True)
                 os.mkdir(self._output_dir)
         else:
+            self._comm = None
+
             if os.path.exists(self._output_dir):
                 shutil.rmtree(self._output_dir, ignore_errors=True)
             os.mkdir(self._output_dir)
@@ -57,13 +72,6 @@ class DyPolyChordSampler(object):
             'base_dir': self._output_dir,
             'seed': seed_increment,
         }
-
-        # if use_mpi:
-        #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
-        # else:
-        #     mpi_str = None
-
-        self._use_mpi = use_mpi
 
         if self._all_installed:
             # create the dyPolyChord callable object
@@ -126,15 +134,9 @@ class DyPolyChordSampler(object):
             # TODO : put a default dynamic_goal ?
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
-            if self._use_mpi:
-                from mpi4py import MPI
-                comm = MPI.COMM_WORLD
-            else:
-                comm = None
-
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
                                               self.settings,
-                                              comm=comm, **kwargs_run)
+                                              comm=self._comm, **kwargs_run)
 
             results = self._process_run(self.settings['file_root'], 
                                         self.settings['base_dir'])

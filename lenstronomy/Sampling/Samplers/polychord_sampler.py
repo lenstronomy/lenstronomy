@@ -43,6 +43,13 @@ class DyPolyChordSampler(object):
             raise ValueError("Sampling type {} not supported".format(prior_type))
         self.prior_type = prior_type
 
+        # if use_mpi:
+        #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
+        # else:
+        #     mpi_str = None
+
+        self._use_mpi = use_mpi
+        
         self._output_dir= output_dir
         if self._use_mpi:
             if not os.path.exists(self._output_dir):
@@ -57,13 +64,6 @@ class DyPolyChordSampler(object):
             'base_dir': self._output_dir,
             'seed': seed_increment,
         }
-
-        # if use_mpi:
-        #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
-        # else:
-        #     mpi_str = None
-
-        self._use_mpi = use_mpi
 
         if self._all_installed:
             # create the dyPolyChord callable object

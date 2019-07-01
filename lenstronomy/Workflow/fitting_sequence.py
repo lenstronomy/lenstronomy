@@ -225,7 +225,7 @@ class FittingSequence(object):
 
     def nested_sampling(self, sampler_type='MultiNest', kwargs_run={}, 
                         prior_type='uniform', sigma_scale=1, 
-                        output_basename='c-', remove_output_dir=True, 
+                        output_basename='chain', remove_output_dir=True, 
                         dypolychord_dynamic_goal=0.8, 
                         dynesty_bound='multi', dynesty_sample='auto'):
         """

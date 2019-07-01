@@ -9,7 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-
+import sys
 
 class FittingSequence(object):
     """
@@ -432,7 +432,7 @@ class FittingSequence(object):
 
     def dynesty(self, kwargs_run={}, prior_type='uniform',
                 dynesty_bound='multi', dynesty_sample='auto',
-                sigma_scale=1):
+                sigma_scale=1, use_pool={}):
         """
         Dynamical nested sampling with Dynesty
 
@@ -450,7 +450,9 @@ class FittingSequence(object):
                                  prior_means=mean_start,
                                  prior_sigmas=sigma_start,
                                  bound=dynesty_bound,
-                                 sample=dynesty_sample)
+                                 sample=dynesty_sample,
+                                 use_mpi=self._mpi,
+                                 use_pool=use_pool)
 
         samples, means, logZ, logZ_err, logL, results = sampler.run(kwargs_run)
 

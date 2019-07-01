@@ -19,7 +19,7 @@ class DynestySampler(object):
 
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None,
-                 bound='multi', sample='auto'):
+                 bound='multi', sample='auto', use_mpi=False, use_pool={}):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -41,9 +41,27 @@ class DynestySampler(object):
         self.prior_type = prior_type
 
         # create the Dynesty sampler
-        self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood, 
-                                                     self.prior, self.n_dims,
-                                                     bound=bound, sample=sample)
+        if use_mpi:
+            from schwimmbad import MPIPool
+            import sys
+
+            with MPIPool() as pool:
+                if not pool.is_master():
+                    pool.wait()
+                    sys.exit(0)
+
+                self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
+                                                             self.prior, self.n_dims,
+                                                             bound=bound,
+                                                             sample=sample,
+                                                             pool=pool,
+                                                             use_pool=use_pool)
+        else:
+            self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
+                                                         self.prior,
+                                                         self.n_dims,
+                                                         bound=bound,
+                                                         sample=sample)
         self._has_warned = False
 
 

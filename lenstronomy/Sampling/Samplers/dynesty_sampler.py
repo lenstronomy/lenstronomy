@@ -96,7 +96,7 @@ class DynestySampler(object):
         self._sampler.run_nested(**kwargs_run)
 
         results = self._sampler.results
-        samples = results.samples  # TODO : check if it's 'equal weight' or not
+        samples_w = results.samples
         logL = results.logl
         logZ = results.logz
         logZ_err = results.logzerr
@@ -106,10 +106,10 @@ class DynestySampler(object):
 
         # Compute weighted mean and covariance.
         weights = np.exp(results.logwt - logZ[-1])  # normalized weights
-        means, covs = dyfunc.mean_and_cov(samples, weights)
+        means, covs = dyfunc.mean_and_cov(samples_w, weights)
 
         # Resample weighted samples.
-        # samples_equal = dyfunc.resample_equal(samples, weights)
+        samples = dyfunc.resample_equal(samples_w, weights)
 
         # Generate a new set of results with statistical+sampling uncertainties.
         # results_sim = dyfunc.simulate_run(results)

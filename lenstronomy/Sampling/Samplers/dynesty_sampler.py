@@ -45,7 +45,7 @@ class DynestySampler(object):
             from schwimmbad import MPIPool
             import sys
 
-            with MPIPool() as pool:
+            with MPIPool(use_dill=True) as pool:
                 if not pool.is_master():
                     pool.wait()
                     sys.exit(0)

@@ -77,6 +77,12 @@ class TestLikelihoodModule(object):
                                    'Ddt_sampling': True
                                    }
 
+        def condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+            logL = 0
+            if kwargs_lens_light[0]['R_sersic'] > kwargs_source[0]['R_sersic']:
+                logL -= 10**15
+            return logL
+
         kwargs_likelihood = {'force_no_add_image': True,
                              'source_marg': True,
                              'astrometric_likelihood': True,
@@ -85,7 +91,8 @@ class TestLikelihoodModule(object):
                              'solver_tolerance': 0.001,
                              'check_positive_flux': True,
                              'flux_ratio_likelihood': True,
-                             'prior_lens': [[0, 'theta_E', 1, 0.1]]
+                             'prior_lens': [[0, 'theta_E', 1, 0.1]],
+                             'condition_definition': condition_definition
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
                             'time_delays_measured': np.ones(4),

@@ -49,8 +49,9 @@ class DyPolyChordSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
         os.mkdir(self._output_dir)
 
+        self._output_basename = output_basename
         self.settings = {
-            'file_root': output_basename,
+            'file_root': self._output_basename,
             'base_dir': self._output_dir,
             'seed': seed_increment,
         }
@@ -127,34 +128,32 @@ class DyPolyChordSampler(object):
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal, 
                                               self.settings, **kwargs_run)
 
-            results = self._process_run(self.settings['file_root'], 
-                                        self.settings['base_dir'])
-            stats   = self._process_stats(self.settings['file_root'], 
-                                          self.settings['base_dir'])
+            results = self._ns_process_run(self.settings['file_root'], 
+                                           self.settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
             results = {
                 'theta': np.zeros((1, self.n_dims)),
-                'logl': np.zeros(self.n_dims)
+                'logl': np.zeros(self.n_dims),
+                'output': {
+                    'logZ': np.zeros(self.n_dims),
+                    'logZerr': np.zeros(self.n_dims),
+                    'param_means': np.zeros(self.n_dims)
+                }
             }
-            stats = {
-                'logZ': np.zeros(self.n_dims),
-                'logZerr': np.zeros(self.n_dims),
-                'param_means': np.zeros(self.n_dims)
-            }
+            self._write_equal_weights(results['theta'], results['logl'])
 
-        samples = results['theta']
-        logL    = results['logl']
-        logZ     = stats['logZ']
-        logZ_err = stats['logZerr']
-        means    = stats['param_means']
+        print("WEESH")
+        assert False
 
-        # ALTERNATIVE WAY :
-        # logZ = self._estim.logz(results)
-        # means = np.array([self._estim.param_mean(results, param_ind=i) for i in range(self.n_dims)])
-        # TODO : check if it is equal to the other way above
-        
+        samples, logL = self._get_equal_weight_samples()
+        # logL     = results['logl']
+        # samples_w = results['theta']
+        logZ     = results['output']['logZ']
+        logZ_err = results['output']['logZerr']
+        means    = results['output']['param_means']
+
         print('The log evidence estimate using the first run is {}'
               .format(logZ))
         print('The estimated mean of the first parameter is {}'
@@ -164,6 +163,32 @@ class DyPolyChordSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
 
         return samples, means, logZ, logZ_err, logL
+
+
+    def _get_equal_weight_samples(self):
+        """
+        Inspired by pymultinest's Analyzer,
+        because DyPolyChord has more or less the same output conventions as MultiNest
+        """
+        file_name = '{}_equal_weights.txt'.format(self._output_basename)
+        file_path = os.path.join(self._output_dir, file_name)
+        try:
+            data = np.loadtxt(file_path, ndmin=2)
+        except:
+            data = np.loadtxt(file_path)
+        logL = -0.5 * data[:, 0]
+        samples = data[:, 1:]
+        return samples, logL
+
+
+    def _write_equal_weights(self, samples, logL):
+        # write fake output file for unit tests
+        file_name = '{}_equal_weights.txt'.format(self._output_basename)
+        file_path = os.path.join(self._output_dir, file_name)
+        data = np.zeros((samples.shape[0], 1+samples[1]))
+        data[:, 0]  = -2. * logL
+        data[:, 1:] = samples
+        np.savetxt(file_path, data, fmt='% .14E')
 
 
     def _check_install(self):
@@ -180,17 +205,14 @@ You can get it from : https://github.com/ejhigson/dyPolyChord")
             self._RunPyPolyChord = pypolychord_utils.RunPyPolyChord
 
         try:
-            from nestcheck import data_processing
-            from nestcheck import estimators
+            import nestcheck
         except:
             print("Warning : nestcheck not properly installed (results might be unexpected). \
 You can get it from : https://github.com/ejhigson/nestcheck")
             nestcheck_installed = False
         else:
             nestcheck_installed = True
-            self._process_run = data_processing.process_polychord_run
-            self._process_stats = data_processing.process_polychord_stats
-            self._estim = estimators
+            self._ns_process_run = nestcheck.data_processing.process_polychord_run
+            self._ns_utils = nestcheck.ns_run_utils
 
         self._all_installed = dypolychord_installed and nestcheck_installed
-

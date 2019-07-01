@@ -96,22 +96,23 @@ class DynestySampler(object):
         self._sampler.run_nested(**kwargs_run)
 
         results = self._sampler.results
-        samples_w = results.samples
+        samples_w = results.samples  # weighted samples
         logL = results.logl
         logZ = results.logz
         logZ_err = results.logzerr
 
-        # Compute 5%-95% quantiles.
-        # quantiles = dyfunc.quantile(samples, [0.05, 0.95], weights=weights)
-
         # Compute weighted mean and covariance.
         weights = np.exp(results.logwt - logZ[-1])  # normalized weights
+        if np.sum(weights) != 1.:
+            # TODO : clearly this is not optimal...
+            # weights should by definition be normalized, but it appears that for very small 
+            # number of live points (typically in test routines), 
+            # it is not *quite* the case (up to 6 decimals)
+            weights = weights / np.sum(weights)
+
         means, covs = dyfunc.mean_and_cov(samples_w, weights)
 
-        # Resample weighted samples.
+        # Resample weighted samples to get equally weighted (aka unweighted) samples
         samples = dyfunc.resample_equal(samples_w, weights)
-
-        # Generate a new set of results with statistical+sampling uncertainties.
-        # results_sim = dyfunc.simulate_run(results)
 
         return samples, means, logZ, logZ_err, logL  # TODO : return a 'results' instance

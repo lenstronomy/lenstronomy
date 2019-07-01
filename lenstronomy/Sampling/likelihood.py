@@ -24,7 +24,8 @@ class LikelihoodModule(object):
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
-                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
+                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
+                 prior_lens_light=[], prior_ps=[], prior_cosmo=[], condition_definition=None):
         """
         initializing class
 
@@ -54,6 +55,8 @@ class LikelihoodModule(object):
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions have positive flux
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
+        :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+        and returns a logL (punishing) value.
         """
         multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         if len(multi_band_list) == 0:
@@ -93,6 +96,7 @@ class LikelihoodModule(object):
                                                              **self._kwargs_flux_compute)
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
+        self._condition_definition = condition_definition
 
     def _reset_point_source_cache(self, bool=True):
         self.PointSource.delete_lens_model_cache()
@@ -129,6 +133,8 @@ class LikelihoodModule(object):
             logL += self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_cosmo)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
         logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+        if self._condition_definition is not None:
+            logL += self._condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         self._reset_point_source_cache(bool=False)
 
         return logL, None

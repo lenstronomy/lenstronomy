@@ -9,7 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-
+import sys
 
 class FittingSequence(object):
     """
@@ -102,9 +102,10 @@ class FittingSequence(object):
 
             elif fitting_type == 'Dynesty':
                 output = self.dynesty(**kwargs)
-                samples, means, logL, logZ, logZ_err, names = output
+                samples, means, logL, logZ, logZ_err, names, results = output
                 self._update_state(means)
-                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
+                chain = [fitting_type.upper(), samples, names, logL, logZ,
+                         logZ_err, results]
                 chain_list.append(chain)
 
             else:
@@ -396,7 +397,8 @@ class FittingSequence(object):
         return samples, means, logL, logZ, logZ_err, sampler.param_names
 
     def dypolychord(self, dynamic_goal=0.5, kwargs_run={},
-                    output_basename='', remove_output_dir=False,
+                    output_dir = 'dypolychord_chains',
+                    output_basename='dpc', remove_output_dir=False,
                     prior_type='uniform', sigma_scale=1):
         """
         Dynamical nested sampling with DyPolyChord
@@ -409,8 +411,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
         :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
-        output_basename += 'c-'
-        output_dir = 'dypolychord_chains'
+        #output_basename += 'c-'
+        #output_dir = 'dypolychord_chains'
 
         mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
 
@@ -420,7 +422,8 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      output_dir=output_dir,
                                      output_basename=output_basename,
-                                     remove_output_dir=remove_output_dir)
+                                     remove_output_dir=remove_output_dir,
+                                     use_mpi=self._mpi)
 
         samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal,
                                                            kwargs_run)
@@ -429,7 +432,7 @@ class FittingSequence(object):
 
     def dynesty(self, kwargs_run={}, prior_type='uniform',
                 dynesty_bound='multi', dynesty_sample='auto',
-                sigma_scale=1):
+                sigma_scale=1, use_pool={}):
         """
         Dynamical nested sampling with Dynesty
 
@@ -447,11 +450,13 @@ class FittingSequence(object):
                                  prior_means=mean_start,
                                  prior_sigmas=sigma_start,
                                  bound=dynesty_bound,
-                                 sample=dynesty_sample)
+                                 sample=dynesty_sample,
+                                 use_mpi=self._mpi,
+                                 use_pool=use_pool)
 
-        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+        samples, means, logZ, logZ_err, logL, results = sampler.run(kwargs_run)
 
-        return samples, means, logL, logZ, logZ_err, sampler.param_names
+        return samples, means, logL, logZ, logZ_err, sampler.param_names, results
 
     def _prepare_sampling(self, prior_type, sigma_scale):
         if prior_type == 'gaussian':

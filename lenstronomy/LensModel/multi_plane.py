@@ -101,11 +101,11 @@ class MultiPlane(object):
         beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
-    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, keep_range=False,
-                             include_z_start=False, check_convention=True):
+    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                             include_z_start=False, check_convention=True, T_ij_start=None, T_ij_end=None):
         """
-        ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshfit z_stop
+        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
+        and then backwards to redshift z_stop
 
         :param x: co-moving position [Mpc]
         :param y: co-moving position [Mpc]
@@ -114,8 +114,11 @@ class MultiPlane(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
-        :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
         :param check_convention: flag to check the image position convention (leave this alone)
+        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
+        If not set, will compute the distance each time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
+        If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
         z_lens_last = z_start
@@ -130,12 +133,10 @@ class MultiPlane(object):
             if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
             #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
-                    if keep_range is True:
-                        if not hasattr(self, '_cosmo_bkg_T_start'):
-                            self._cosmo_bkg_T_start = self._cosmo_bkg.T_xy(z_start, z_lens)
-                        delta_T = self._cosmo_bkg_T_start
-                    else:
+                    if T_ij_start is None:
                         delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
+                    else:
+                        delta_T = T_ij_start
                     first_deflector = False
                 else:
                     delta_T = self._T_ij_list[i]
@@ -143,12 +144,10 @@ class MultiPlane(object):
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
 
                 z_lens_last = z_lens
-        if keep_range is True:
-            if not hasattr(self, '_cosmo_bkg_T_stop'):
-                self._cosmo_bkg_T_stop = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
-            delta_T = self._cosmo_bkg_T_stop
-        else:
+        if T_ij_end is None:
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+        else:
+            delta_T = T_ij_end
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 

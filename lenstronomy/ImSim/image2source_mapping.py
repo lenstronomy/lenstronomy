@@ -66,8 +66,8 @@ class Image2SourceMapping(object):
         WARNING: for multi lens plane computations and multi source planes, this computation can be slow and should be
         used as rarely as possible.
 
-        :param x: image plane coordinate
-        :param y: image plane coordinate
+        :param x: image plane coordinate (angle)
+        :param y: image plane coordinate (angle)
         :param kwargs_lens: lens model kwargs list
         :param index_source: int, index of source model
         :return: source plane coordinate corresponding to the source model of index idex_source
@@ -85,7 +85,6 @@ class Image2SourceMapping(object):
                 x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(0, 0, x, y,
                                                                                                      0, z_stop,
                                                                                                      kwargs_lens,
-                                                                                                     keep_range=False,
                                                                                                      include_z_start=False)
 
                 T_z = self._T0z_list[index_source]
@@ -124,11 +123,11 @@ class Image2SourceMapping(object):
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                    kwargs_lens, keep_range=False, include_z_start=False)
+                                                                    kwargs_lens, include_z_start=False)
 
                     T_z = self._T0z_list[index_source]
-                    x_source = x_comov/T_z
-                    y_source = y_comov/T_z
+                    x_source = x_comov / T_z
+                    y_source = y_comov / T_z
                     if k is None or k == i:
                         flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
                     z_start = z_stop
@@ -168,7 +167,7 @@ class Image2SourceMapping(object):
                     z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
                                                             y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                            keep_range=False, include_z_start=False)
+                                                            include_z_start=False)
                     T_z = self._T0z_list[index_source]
                     x_source = x_comov / T_z
                     y_source = y_comov / T_z

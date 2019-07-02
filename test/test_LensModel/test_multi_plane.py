@@ -263,9 +263,12 @@ class TestMultiPlane(object):
         beta_x_true, beta_y_true = lensModel.ray_shooting(theta_x, theta_y, kwargs_lens)
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+
+        T_ij_start = lensModel._cosmo_bkg.T_xy(z_observer=0, z_source=0.1)
+        T_ij_end = lensModel._cosmo_bkg.T_xy(z_observer=0.7, z_source=1.5)
         x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
                                             alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens,
-                                                                                keep_range=True)
+                                                                                T_ij_start=T_ij_start, T_ij_end=T_ij_end)
         beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
         npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)

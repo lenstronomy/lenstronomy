@@ -25,8 +25,8 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         alpha_x_simple, alpha_y_simple = lensModel.alpha(1, 0, kwargs_lens)
         alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(1, 0, kwargs_lens)
-        assert alpha_x_simple == alpha_x_multi
-        assert alpha_y_simple == alpha_y_multi
+        npt.assert_almost_equal(alpha_x_simple, alpha_x_multi, decimal=8)
+        npt.assert_almost_equal(alpha_y_simple, alpha_y_multi, decimal=8)
         sum_partial = np.sum(lensModelMutli._T_ij_list)
         T_z_true = lensModelMutli._T_z_source
         npt.assert_almost_equal(sum_partial, T_z_true, decimal=5)

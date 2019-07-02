@@ -156,7 +156,7 @@ class MultiPlane(object):
                              include_z_start=False, check_convention=True):
         """
         ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshfit z_stop.
+        and then backwards to redshift z_stop.
 
         This function differs from 'ray_shooting_partial' in that it returns the angular position of the ray
         at each lens plane.

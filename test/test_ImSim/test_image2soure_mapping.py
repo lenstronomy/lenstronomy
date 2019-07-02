@@ -7,6 +7,7 @@ from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 import pytest
+import unittest
 
 
 class TestMultiSourcePlane(object):
@@ -124,14 +125,45 @@ class TestMultiSourcePlane(object):
 
     def test_image2source(self):
         x, y = 1, 1
-        beta_x, beta_y = self.multi_multi.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        beta_x, beta_y = self.multi_multi.image2source(x, y, kwargs_lens=self.kwargs_lens, index_source=0)
         npt.assert_almost_equal(beta_x, 0.7433428403740511, decimal=2)
 
-        beta_x0, beta_y0 = self.singlePlane_singlePlane.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
-        beta_x, beta_y = self.singlePlane_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        beta_x0, beta_y0 = self.singlePlane_singlePlane.image2source(x, y, kwargs_lens=self.kwargs_lens, index_source=0)
+        beta_x, beta_y = self.singlePlane_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, index_source=0)
         npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
-        beta_x, beta_y = self.pseudoMulti_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, idex_source=0)
+        beta_x, beta_y = self.pseudoMulti_pseudoMulti.image2source(x, y, kwargs_lens=self.kwargs_lens, index_source=0)
         npt.assert_almost_equal(beta_x0, beta_x, decimal=10)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=3, lens_redshift_list=[0.2],
+                                   cosmo=None)
+            lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=[1.],
+                                    source_redshift_list=None)
+            class_instance = Image2SourceMapping(lensModel, lightModel)
+
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=3, lens_redshift_list=[0.2],
+                                   cosmo=None)
+            lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=None,
+                                    source_redshift_list=[0, 1, 2])
+            class_instance = Image2SourceMapping(lensModel, lightModel)
+
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=0.5, lens_redshift_list=[0.2],
+                                  cosmo=None)
+            lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=None,
+                                    source_redshift_list=[1])
+            class_instance = Image2SourceMapping(lensModel, lightModel)
+
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=False, z_source=0.5,
+                                  cosmo=None)
+            lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=[1, 1])
+            class_instance = Image2SourceMapping(lensModel, lightModel)
 
 
 if __name__ == '__main__':

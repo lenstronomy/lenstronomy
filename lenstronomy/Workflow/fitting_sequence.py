@@ -242,13 +242,12 @@ class FittingSequence(object):
         :param dynesty_sample: see https://dynesty.readthedocs.io for details
         :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
-        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
-
         if sampler_type == 'MULTINEST':
             sampler = MultiNestSampler(self.likelihoodModule,
                                        prior_type=prior_type,
                                        prior_means=mean_start,
                                        prior_sigmas=sigma_start,
+                                       sigma_scale=sigma_scale,
                                        output_dir='multinest_chains',
                                        output_basename=output_basename,
                                        remove_output_dir=remove_output_dir,
@@ -260,6 +259,7 @@ class FittingSequence(object):
                                          prior_type=prior_type,
                                          prior_means=mean_start,
                                          prior_sigmas=sigma_start,
+                                         sigma_scale=sigma_scale,
                                          output_dir='dypolychord_chains',
                                          output_basename=output_basename,
                                          remove_output_dir=remove_output_dir)
@@ -271,6 +271,7 @@ class FittingSequence(object):
                                      prior_type=prior_type,
                                      prior_means=mean_start,
                                      prior_sigmas=sigma_start,
+                                     sigma_scale=sigma_scale,
                                      bound=dynesty_bound, 
                                      sample=dynesty_sample)
             samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)

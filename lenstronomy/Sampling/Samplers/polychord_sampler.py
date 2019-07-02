@@ -16,7 +16,7 @@ class DyPolyChordSampler(object):
     doc : https://dypolychord.readthedocs.io
     """
     def __init__(self, likelihood_module, prior_type='uniform', 
-                 prior_means=None, prior_sigmas=None,
+                 prior_means=None, prior_sigmas=None, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
@@ -24,6 +24,8 @@ class DyPolyChordSampler(object):
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
         :param prior_means: if prior_type is 'gaussian', mean for each param
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor ;
+        if prior_type is 'uniform', scale the widths of the parameter space by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
         :param remove_output_dir: remove the output_dir folder after completion
@@ -33,14 +35,19 @@ class DyPolyChordSampler(object):
         self._check_install()
 
         self._ll = likelihood_module
-        self.lowers, self.uppers = self._ll.param_limits
         self.n_dims, self.param_names = self._ll.param.num_param()
 
+        lowers, uppers = self._ll.param_limits
         if prior_type == 'gaussian':
             if prior_means is None or prior_sigmas is None:
                 raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas = prior_means, prior_sigmas
-        elif prior_type != 'uniform':
+            self.means, self.sigmas  = prior_means, prior_sigmas * sigma_scale
+            self.lowers, self.uppers = lowers, uppers
+        elif prior_type == 'uniform':
+            self.lowers, self.uppers = utils.scale_limits(np.asarray(lowers), 
+                                                          np.asarray(uppers), 
+                                                          sigma_scale)
+        else:
             raise ValueError("Sampling type {} not supported".format(prior_type))
         self.prior_type = prior_type
 

@@ -65,6 +65,14 @@ def test_cube2args_gaussian():
     # here they should
     npt.assert_equal(cube, truth)
 
+def test_scale_limits():
+    lowers, uppers = np.array([0, -1, 5]), np.array([10, 9, 15])
+    widths = uppers - lowers
+    scale_factor = 0.5
+    lowers_s, uppers_s = sampling_util.scale_limits(lowers, uppers, scale_factor)
+    npt.assert_equal(lowers_s, np.array([2.5, 1.5, 7.5]))
+    npt.assert_equal(uppers_s, np.array([7.5, 6.5, 12.5]))
+    npt.assert_equal(widths*scale_factor, (uppers_s - lowers_s))
 
 if __name__ == '__main__':
     pytest.main()

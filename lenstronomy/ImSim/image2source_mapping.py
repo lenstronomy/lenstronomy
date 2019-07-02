@@ -121,16 +121,16 @@ class Image2SourceMapping(object):
                 alpha_x = x
                 alpha_y = y
                 z_start = 0
-                for i, idex in enumerate(self._sorted_source_redshift_index):
-                    z_stop = self._source_redshift_list[idex]
+                for i, index_source in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
                                                                     kwargs_lens, keep_range=False, include_z_start=False)
 
-                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                    T_z = self._T0z_list[index_source]
                     x_source = x_comov/T_z
                     y_source = y_comov/T_z
                     if k is None or k == i:
-                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=idex)
+                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
                     z_start = z_stop
             return flux
 
@@ -164,16 +164,15 @@ class Image2SourceMapping(object):
                 alpha_x = x
                 alpha_y = y
                 z_start = 0
-                for i, idex in enumerate(self._sorted_source_redshift_index):
-                    z_stop = self._source_redshift_list[idex]
+                for i, index_source in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
                                                             y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                                             keep_range=False, include_z_start=False)
-
-                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                    T_z = self._T0z_list[index_source]
                     x_source = x_comov / T_z
                     y_source = y_comov / T_z
-                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=idex)
+                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
                     response += response_i
                     n += n_i
                     z_start = z_stop

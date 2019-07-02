@@ -153,10 +153,16 @@ class TestRaise(unittest.TestCase):
             class_instance = Image2SourceMapping(lensModel, lightModel)
 
         with self.assertRaises(ValueError):
-            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=0, lens_redshift_list=[0.2],
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=0.5, lens_redshift_list=[0.2],
                                   cosmo=None)
             lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=None,
                                     source_redshift_list=[1])
+            class_instance = Image2SourceMapping(lensModel, lightModel)
+
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=False, z_source=0.5,
+                                  cosmo=None)
+            lightModel = LightModel(light_model_list=['UNIFORM'], deflection_scaling_list=[1, 1])
             class_instance = Image2SourceMapping(lensModel, lightModel)
 
 

@@ -28,6 +28,7 @@ class DyPolyChordSampler(object):
         :param output_basename: prefix for output files
         :param remove_output_dir: remove the output_dir folder after completion
         :param seed_increment: seed increment for random number generator
+        :param use_mpi: Use MPI computing if `True`
         """
         self._check_install()
 

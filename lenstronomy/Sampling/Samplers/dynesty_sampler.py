@@ -27,6 +27,8 @@ class DynestySampler(object):
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
         :param bound: specific to Dynesty, see https://dynesty.readthedocs.io
         :param sample: specific to Dynesty, see https://dynesty.readthedocs.io
+        :param use_mpi: Use MPI computing if `True`
+        :param use_pool: specific to Dynesty, see https://dynesty.readthedocs.io
         """
         self._ll = likelihood_module
         self.lowers, self.uppers = self._ll.param_limits

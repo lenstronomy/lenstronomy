@@ -286,7 +286,7 @@ class Param(object):
             if self._image_plane_source_list[i] is True and not image_plane:
                 if 'center_x' in kwargs:
                     x_mapped, y_mapped = self._image2SourceMapping.image2source(kwargs['center_x'], kwargs['center_y'],
-                                                                                kwargs_lens, idex_source=i)
+                                                                                kwargs_lens, index_source=i)
                     kwargs['center_x'] = x_mapped
                     kwargs['center_y'] = y_mapped
         return kwargs_source_copy
@@ -303,7 +303,7 @@ class Param(object):
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
                 x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
-                                                                            idex_source=k_source)
+                                                                            index_source=k_source)
             for param_name in param_list:
                 if param_name == 'center_x':
                     kwargs_source_list[k_source][param_name] = np.mean(x_mapped)

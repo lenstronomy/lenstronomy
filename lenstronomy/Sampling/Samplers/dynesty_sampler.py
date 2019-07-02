@@ -45,17 +45,17 @@ class DynestySampler(object):
             from schwimmbad import MPIPool
             import sys
 
-            with MPIPool(use_dill=True) as pool:
-                if not pool.is_master():
-                    pool.wait()
-                    sys.exit(0)
+            pool =  MPIPool(use_dill=True)
+            if not pool.is_master():
+                pool.wait()
+                sys.exit(0)
 
-                self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
-                                                             self.prior, self.n_dims,
-                                                             bound=bound,
-                                                             sample=sample,
-                                                             pool=pool,
-                                                             use_pool=use_pool)
+            self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
+                                                         self.prior, self.n_dims,
+                                                         bound=bound,
+                                                         sample=sample,
+                                                         pool=pool,
+                                                         use_pool=use_pool)
         else:
             self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
                                                          self.prior,

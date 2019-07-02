@@ -13,5 +13,4 @@ dynesty
 pymultinest
 pypolychord
 nestcheck
--e git://github.com/adrn/schwimmbad.git#egg=schwimmbad
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

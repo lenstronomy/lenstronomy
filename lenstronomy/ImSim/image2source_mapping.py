@@ -37,31 +37,39 @@ class Image2SourceMapping(object):
         self._deflection_scaling_list = sourceModel.deflection_scaling_list
         self._multi_source_plane = True
         if self._multi_lens_plane is True:
+            if self._deflection_scaling_list is not None:
+                raise ValueError('deflection scaling for different source planes not possible in combination of '
+                                 'multi-lens plane modeling. You have to specify the redshifts of the sources instead.')
             self._bkg_cosmo = Background(lensModel.cosmo)
             if self._source_redshift_list is None:
                 self._multi_source_plane = False
             elif len(self._source_redshift_list) != len(light_model_list):
                 raise ValueError("length of redshift_list must correspond to length of light_model_list")
             elif np.max(self._source_redshift_list) > self._lensModel.z_source:
-                raise ValueError("redshift of source_redshift_list have to be smaler or equal to the one specified in the lens model.")
+                raise ValueError("redshift of source_redshift_list have to be smaler or equal to the one specified in "
+                                 "the lens model.")
             else:
                 self._sorted_source_redshift_index = self._index_ordering(self._source_redshift_list)
+                self._T0z_list = []
+                for z_stop in self._source_redshift_list:
+                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                    self._T0z_list.append(T_z)
         else:
             if self._deflection_scaling_list is None:
                 self._multi_source_plane = False
             elif len(self._deflection_scaling_list) != len(light_model_list):
                 raise ValueError('length of scale_factor_list must correspond to length of light_model_list!')
 
-    def image2source(self, x, y, kwargs_lens, idex_source):
+    def image2source(self, x, y, kwargs_lens, index_source):
         """
         mapping of image plane to source plane coordinates
         WARNING: for multi lens plane computations and multi source planes, this computation can be slow and should be
         used as rarely as possible.
 
-        :param x: image plane coordinate
-        :param y: image plane coordinate
+        :param x: image plane coordinate (angle)
+        :param y: image plane coordinate (angle)
         :param kwargs_lens: lens model kwargs list
-        :param idex_source: int, index of source model
+        :param index_source: int, index of source model
         :return: source plane coordinate corresponding to the source model of index idex_source
         """
         if self._multi_source_plane is False:
@@ -69,18 +77,17 @@ class Image2SourceMapping(object):
         else:
             if self._multi_lens_plane is False:
                 x_alpha, y_alpha = self._lensModel.alpha(x, y, kwargs_lens)
-                scale_factor = self._deflection_scaling_list[idex_source]
+                scale_factor = self._deflection_scaling_list[index_source]
                 x_source = x - x_alpha * scale_factor
                 y_source = y - y_alpha * scale_factor
             else:
-                z_stop = self._source_redshift_list[idex_source]
+                z_stop = self._source_redshift_list[index_source]
                 x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(0, 0, x, y,
                                                                                                      0, z_stop,
                                                                                                      kwargs_lens,
-                                                                                                     keep_range=False,
                                                                                                      include_z_start=False)
 
-                T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                T_z = self._T0z_list[index_source]
                 x_source = x_comov / T_z
                 y_source = y_comov / T_z
         return x_source, y_source
@@ -113,16 +120,16 @@ class Image2SourceMapping(object):
                 alpha_x = x
                 alpha_y = y
                 z_start = 0
-                for i, idex in enumerate(self._sorted_source_redshift_index):
-                    z_stop = self._source_redshift_list[idex]
+                for i, index_source in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                    kwargs_lens, keep_range=False, include_z_start=False)
+                                                                    kwargs_lens, include_z_start=False)
 
-                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
-                    x_source = x_comov/T_z
-                    y_source = y_comov/T_z
+                    T_z = self._T0z_list[index_source]
+                    x_source = x_comov / T_z
+                    y_source = y_comov / T_z
                     if k is None or k == i:
-                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=idex)
+                        flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
                     z_start = z_stop
             return flux
 
@@ -156,16 +163,15 @@ class Image2SourceMapping(object):
                 alpha_x = x
                 alpha_y = y
                 z_start = 0
-                for i, idex in enumerate(self._sorted_source_redshift_index):
-                    z_stop = self._source_redshift_list[idex]
+                for i, index_source in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index_source]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
                                                             y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                            keep_range=False, include_z_start=False)
-
-                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
+                                                            include_z_start=False)
+                    T_z = self._T0z_list[index_source]
                     x_source = x_comov / T_z
                     y_source = y_comov / T_z
-                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=idex)
+                    response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
                     response += response_i
                     n += n_i
                     z_start = z_stop

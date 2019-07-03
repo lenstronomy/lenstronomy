@@ -191,4 +191,3 @@ class LikelihoodModule(object):
 
     def setup(self):
         pass
-

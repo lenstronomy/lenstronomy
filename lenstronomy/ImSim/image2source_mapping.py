@@ -52,8 +52,16 @@ class Image2SourceMapping(object):
                 self._sorted_source_redshift_index = self._index_ordering(self._source_redshift_list)
                 self._T0z_list = []
                 for z_stop in self._source_redshift_list:
-                    T_z = self._bkg_cosmo.T_xy(0, z_stop)
-                    self._T0z_list.append(T_z)
+                    self._T0z_list.append(self._bkg_cosmo.T_xy(0, z_stop))
+                z_start = 0
+                self._T_ij_start_list = []
+                self._T_ij_end_list = []
+                for i, index_source in enumerate(self._sorted_source_redshift_index):
+                    z_stop = self._source_redshift_list[index_source]
+                    T_ij_start, T_ij_end = self._lensModel.lens_model.transverse_distance_start_stop(z_start, z_stop, include_z_start=False)
+                    self._T_ij_start_list.append(T_ij_start)
+                    self._T_ij_end_list.append(T_ij_end)
+                    z_start = z_stop
         else:
             if self._deflection_scaling_list is None:
                 self._multi_source_plane = False
@@ -122,8 +130,11 @@ class Image2SourceMapping(object):
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
+                    T_ij_start = self._T_ij_start_list[i]
+                    T_ij_end = self._T_ij_end_list[i]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                    kwargs_lens, include_z_start=False)
+                                                                    kwargs_lens, include_z_start=False,
+                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
 
                     T_z = self._T0z_list[index_source]
                     x_source = x_comov / T_z
@@ -165,9 +176,12 @@ class Image2SourceMapping(object):
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
+                    T_ij_start = self._T_ij_start_list[i]
+                    T_ij_end = self._T_ij_end_list[i]
                     x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
                                                             y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                            include_z_start=False)
+                                                            include_z_start=False, T_ij_start=T_ij_start,
+                                                            T_ij_end=T_ij_end)
                     T_z = self._T0z_list[index_source]
                     x_source = x_comov / T_z
                     y_source = y_comov / T_z

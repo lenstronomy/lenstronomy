@@ -41,6 +41,7 @@ class MultiPlane(object):
             self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
         self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         z_before = 0
+        T_z = 0
         self._T_ij_list = []
         self._T_z_list = []
         self._reduced2physical_factor = []
@@ -49,9 +50,9 @@ class MultiPlane(object):
             if z_before == z_lens:
                 delta_T = 0
             else:
+                T_z = self._cosmo_bkg.T_xy(0, z_lens)
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
-            T_z = self._cosmo_bkg.T_xy(0, z_lens)
             self._T_z_list.append(T_z)
             factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
             self._reduced2physical_factor.append(factor)
@@ -114,6 +115,9 @@ class MultiPlane(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
+        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
+        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed!
+        This can lead to duplications in the computation of deflection angles.
         :param check_convention: flag to check the image position convention (leave this alone)
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
         If not set, will compute the distance each time this function gets executed.
@@ -131,7 +135,6 @@ class MultiPlane(object):
             z_lens = self._redshift_list[idex]
 
             if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
-            #if z_lens > z_start and z_lens <= z_stop:
                 if first_deflector is True:
                     if T_ij_start is None:
                         delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
@@ -150,6 +153,28 @@ class MultiPlane(object):
             delta_T = T_ij_end
         x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
+
+    def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
+        """
+        computes the transverse distance (T_ij) that is required by the ray-tracing between the starting redshift and
+        the first deflector afterwards and the last deflector before the end of the ray-tracing.
+
+        :param z_start: redshift of the start of the ray-tracing
+        :param z_stop: stop of ray-tracing
+        :return: T_ij_start, T_ij_end
+        """
+        z_lens_last = z_start
+        first_deflector = True
+        T_ij_start = None
+        for i, idex in enumerate(self._sorted_redshift_index):
+            z_lens = self._redshift_list[idex]
+            if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
+                if first_deflector is True:
+                    T_ij_start = self._cosmo_bkg.T_xy(z_start, z_lens)
+                    first_deflector = False
+                z_lens_last = z_lens
+        T_ij_end = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+        return T_ij_start, T_ij_end
 
     def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=False, check_convention=True):
@@ -330,7 +355,7 @@ class MultiPlane(object):
         redshift_list = np.array(redshift_list)
         sort_index = np.argsort(redshift_list[redshift_list < self._z_source])
         if len(sort_index) < 1:
-            raise ValueError("There is no lens object between observer at z=0 and source at z=%s" % self._z_source)
+            Warning("There is no lens object between observer at z=0 and source at z=%s" % self._z_source)
         return sort_index
 
     def _reduced2physical_deflection(self, alpha_reduced, index_lens):

@@ -36,9 +36,7 @@ class Background(object):
         :param z_source: source
         :return: angular diamter distance in units of Mpc
         """
-        #a_S = self.a_z(z_source)
         D_xy = self.cosmo.angular_diameter_distance_z1z2(z_observer, z_source)
-        #D_xy = (self.cosmo.comoving_transverse_distance(z_source) - self.cosmo.comoving_transverse_distance(z_observer))*a_S
         return D_xy.value
 
     def D_dt(self, z_lens, z_source):
@@ -59,9 +57,7 @@ class Background(object):
         :return: transverse comoving distance in units of Mpc
         """
         D_xy = self.D_xy(z_observer, z_source)
-        #a_S = self.a_z(z_source)
         T_xy = D_xy * (1 + z_source)
-        #T_xy = self.cosmo.comoving_transverse_distance(z_source) - self.cosmo.comoving_transverse_distance(z_observer)
         return T_xy
 
     @property

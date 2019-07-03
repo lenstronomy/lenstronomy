@@ -35,25 +35,31 @@ class PositionLikelihood(object):
             max_num_images = self._param.num_point_source_images
         self._max_num_images = max_num_images
 
-    def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
+    def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo, verbose=False):
 
         logL = 0
         if self._astrometric_likelihood is True:
-            logL += self.astrometric_likelihood(kwargs_ps, kwargs_cosmo, self._position_sigma)
-
+            logL_astrometry = self.astrometric_likelihood(kwargs_ps, kwargs_cosmo, self._position_sigma)
+            logL += logL_astrometry
+            if verbose is True:
+                print('Astrometric likelihood = %s' % logL_astrometry)
         if self._check_solver is True:
-            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, kwargs_cosmo, self._solver_tolerance)
+            logL -= self.solver_penalty(kwargs_lens, kwargs_ps, kwargs_cosmo, self._solver_tolerance, verbose=verbose)
         if self._force_no_add_image:
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool is True:
                 logL -= 10**10
+                if verbose is True:
+                    print('force no additional image penalty as additional images are found!')
         if self._restrict_number_images is True:
             ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
             if len(ra_image_list[0]) > self._max_num_images:
                 logL -= 10**10
+                if verbose is True:
+                    print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
         return logL
 
-    def solver_penalty(self, kwargs_lens, kwargs_ps, kwargs_cosmo, tolerance):
+    def solver_penalty(self, kwargs_lens, kwargs_ps, kwargs_cosmo, tolerance, verbose=False):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
@@ -62,6 +68,9 @@ class PositionLikelihood(object):
         """
         dist = self._param.check_solver(kwargs_lens, kwargs_ps, kwargs_cosmo)
         if dist > tolerance:
+            if verbose is True:
+                print('Image positions do not match to the same source position to the required precision. '
+                      'Achieved: %s, Required: %s.' % (dist, tolerance))
             return dist * 10**10
         return 0
 

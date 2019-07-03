@@ -40,7 +40,7 @@ class LikelihoodModule(object):
         :param flaot, position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
         (only used if point_source_likelihood=True)
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
-        :param solver_tolerance: float, punishment of check_solver occures when image positions are predicted further
+        :param solver_tolerance: float, punishment of check_solver occurs when image positions are predicted further
         away than this number
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
@@ -104,7 +104,7 @@ class LikelihoodModule(object):
         if self._image_likelihood is True:
             self.image_likelihood.reset_point_source_cache(bool)
 
-    def logL(self, args):
+    def logL(self, args, verbose=False):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chain
         """
@@ -114,33 +114,49 @@ class LikelihoodModule(object):
         self._reset_point_source_cache(bool=True)
         logL = 0
         if self._check_bounds is True:
-            penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit)
+            penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
             logL -= penalty
             if bound_hit:
                 return logL, None
         if self._image_likelihood is True:
-            logL += self.image_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            logL_image = self.image_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            logL += logL_image
+            if verbose is True:
+                print('image logL = %s' % logL_image)
         if self._time_delay_likelihood is True:
-            logL += self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
+            logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
+            logL += logL_time_delay
+            if verbose is True:
+                print('time-delay logL = %s' % logL_time_delay)
         if self._check_positive_flux is True:
             bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
                 logL -= 10**10
+                if verbose is True:
+                    print('non-positive surface brightness parameters detected!')
         if self._flux_ratio_likelihood is True:
             ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
                                                                             kwargs_lens=kwargs_lens)
             x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
-            logL += self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_cosmo)
-        logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
-        logL += self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+            logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_cosmo)
+            logL += logL_flux_ratios
+            if verbose is True:
+                print('time-delay logL = %s' % logL_flux_ratios)
+        logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo, verbose=verbose)
+        logL_prior = self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+        logL += logL_prior
+        if verbose is True:
+            print('Prior likelihood = %s' % logL_prior)
         if self._condition_definition is not None:
-            logL += self._condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+            logL_cond = self._condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+            logL += logL_cond
+            if verbose is True:
+                print('Condition definition logL = %s' % logL_cond)
         self._reset_point_source_cache(bool=False)
-
         return logL, None
 
     @staticmethod
-    def check_bounds(args, lowerLimit, upperLimit):
+    def check_bounds(args, lowerLimit, upperLimit, verbose=False):
         """
         checks whether the parameter vector has left its bound, if so, adds a big number
         """
@@ -150,6 +166,8 @@ class LikelihoodModule(object):
             if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
                 penalty = 10**15
                 bound_hit = True
+                if verbose is True:
+                    print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i], upperLimit[i]))
         return penalty, bound_hit
 
     @property

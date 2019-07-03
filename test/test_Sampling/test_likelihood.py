@@ -110,7 +110,7 @@ class TestLikelihoodModule(object):
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
-        logL, _ = self.Likelihood.logL(args)
+        logL, _ = self.Likelihood.logL(args, verbose=True)
         num_data_evaluate = self.Likelihood.num_data
         npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
 
@@ -121,23 +121,23 @@ class TestLikelihoodModule(object):
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
 
-        logL, _ = likelihood.logL(args)
+        logL, _ = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -3080.29, decimal=-1)
 
-    def test_solver(self):
+    #def test_solver(self):
         # make simulation with point source positions in image plane
-        x_pos, y_pos = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
-        kwargs_ps = [{'ra_image': x_pos[0], 'dec_image': y_pos[0]}]
+    #    x_pos, y_pos = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
+    #    kwargs_ps = [{'ra_image': x_pos[0], 'dec_image': y_pos[0]}]
 
-        kwargs_likelihood = {
-                             'source_marg': True,
-                             'astrometric_likelihood': True,
-                             'position_uncertainty': 0.004,
-                             'check_solver': True,
-                             'solver_tolerance': 0.001,
-                             'check_positive_flux': True,
-                             'solver': True
-                             }
+    #    kwargs_likelihood = {
+    #                         'source_marg': True,
+    #                         'astrometric_likelihood': True,
+    #                         'position_uncertainty': 0.004,
+    #                         'check_solver': True,
+    #                         'solver_tolerance': 0.001,
+    #                         'check_positive_flux': True,
+    #                         'solver': True
+    #                         }
 
         #imageModel = ImageModel(self.data_class, self.psf_class, self.lens_model_class, self.source_model_class,
         #                        self.lens_light_model_class,
@@ -167,7 +167,7 @@ class TestLikelihoodModule(object):
         kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, {}]]}
         likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model, param_class=param_class, **kwargs_likelihood)
 
-        logL, _ = likelihood.logL(args=param_class.kwargs2args(kwargs_source=kwargs_source))
+        logL, _ = likelihood.logL(args=param_class.kwargs2args(kwargs_source=kwargs_source), verbose=True)
         assert logL <= -10**10
 
 

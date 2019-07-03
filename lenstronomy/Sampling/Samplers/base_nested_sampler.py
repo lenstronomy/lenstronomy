@@ -1,13 +1,7 @@
 __author__ = 'aymgal'
 
-import os
-import shutil
-import numpy as np
-
 import lenstronomy.Util.sampling_util as utils
 
-import dynesty
-import dynesty.utils as dyfunc
 
 class NestedSampler(object):
     """

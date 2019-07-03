@@ -147,12 +147,12 @@ class DyPolyChordSampler(object):
                                               self.settings,
                                               comm=self._comm, **kwargs_run)
 
-            results = self._ns_process_run(self.settings['file_root'], 
+            ns_run = self._ns_process_run(self.settings['file_root'], 
                                            self.settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
-            results = {
+            ns_run = {
                 'theta': np.zeros((1, self.n_dims)),
                 'logl': np.zeros(self.n_dims),
                 'output': {
@@ -161,14 +161,14 @@ class DyPolyChordSampler(object):
                     'param_means': np.zeros(self.n_dims)
                 }
             }
-            self._write_equal_weights(results['theta'], results['logl'])
+            self._write_equal_weights(ns_run['theta'], ns_run['logl'])
 
         samples, logL = self._get_equal_weight_samples()
-        # logL     = results['logl']
-        # samples_w = results['theta']
-        logZ     = results['output']['logZ']
-        logZ_err = results['output']['logZerr']
-        means    = results['output']['param_means']
+        # logL     = ns_run['logl']
+        # samples_w = ns_run['theta']
+        logZ     = ns_run['output']['logZ']
+        logZ_err = ns_run['output']['logZerr']
+        means    = ns_run['output']['param_means']
 
         print('The log evidence estimate using the first run is {}'
               .format(logZ))
@@ -178,7 +178,7 @@ class DyPolyChordSampler(object):
         if self._rm_output:
             shutil.rmtree(self._output_dir, ignore_errors=True)
 
-        return samples, means, logZ, logZ_err, logL
+        return samples, means, logZ, logZ_err, logL, ns_run
 
     def _get_equal_weight_samples(self):
         """

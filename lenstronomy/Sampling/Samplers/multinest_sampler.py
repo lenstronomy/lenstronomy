@@ -155,7 +155,7 @@ class MultiNestSampler(object):
             shutil.rmtree(self._output_dir, ignore_errors=True)
             print("MultiNest output directory removed")
             
-        return samples, means, logZ, logZ_err, logL
+        return samples, means, logZ, logZ_err, logL, stats
 
 
     def _multinest2python(self, multinest_list, num_dims):

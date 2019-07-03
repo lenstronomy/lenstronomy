@@ -251,8 +251,8 @@ class FittingSequence(object):
                                        output_dir='multinest_chains',
                                        output_basename=output_basename,
                                        remove_output_dir=remove_output_dir,
-                                       use_mpi=False)
-            samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+                                       use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
         elif sampler_type == 'DYPOLYCHORD':
             sampler = DyPolyChordSampler(self.likelihoodModule,
@@ -262,8 +262,9 @@ class FittingSequence(object):
                                          sigma_scale=sigma_scale,
                                          output_dir='dypolychord_chains',
                                          output_basename=output_basename,
-                                         remove_output_dir=remove_output_dir)
-            samples, means, logZ, logZ_err, logL \
+                                         remove_output_dir=remove_output_dir,
+                                         use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object \
                 = sampler.run(dypolychord_dynamic_goal, kwargs_run)
 
         elif sampler_type == 'DYNESTY':
@@ -273,13 +274,15 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      sigma_scale=sigma_scale,
                                      bound=dynesty_bound, 
-                                     sample=dynesty_sample)
-            samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
+                                     sample=dynesty_sample,
+                                     use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
         # update current best fit values
         self._update_state(means)
 
-        output = [sampler_type, samples, sampler.param_names, logL, logZ, logZ_err]
+        output = [sampler_type, samples, sampler.param_names, logL, 
+                  logZ, logZ_err, results_object]
         return output
 
 

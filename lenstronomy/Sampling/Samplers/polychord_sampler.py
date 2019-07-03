@@ -4,10 +4,11 @@ import os
 import shutil
 import numpy as np
 
+from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
 
 
-class DyPolyChordSampler(object):
+class DyPolyChordSampler(NestedSampler):
     """
     Wrapper for dynamical nested sampling algorithm DyPolyChord
     by E. Higson, M. Hobson, W. Handley, A. Lasenby
@@ -15,8 +16,9 @@ class DyPolyChordSampler(object):
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io
     """
+    
     def __init__(self, likelihood_module, prior_type='uniform', 
-                 prior_means=None, prior_sigmas=None, sigma_scale=1,
+                 prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
@@ -24,8 +26,8 @@ class DyPolyChordSampler(object):
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
         :param prior_means: if prior_type is 'gaussian', mean for each param
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor ;
-        if prior_type is 'uniform', scale the widths of the parameter space by this factor
+        :param width_scale: scale the widths of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
         :param remove_output_dir: remove the output_dir folder after completion
@@ -33,23 +35,9 @@ class DyPolyChordSampler(object):
         :param use_mpi: Use MPI computing if `True`
         """
         self._check_install()
-
-        self._ll = likelihood_module
-        self.n_dims, self.param_names = self._ll.param.num_param()
-
-        lowers, uppers = self._ll.param_limits
-        if prior_type == 'gaussian':
-            if prior_means is None or prior_sigmas is None:
-                raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas  = prior_means, prior_sigmas * sigma_scale
-            self.lowers, self.uppers = lowers, uppers
-        elif prior_type == 'uniform':
-            self.lowers, self.uppers = utils.scale_limits(np.asarray(lowers), 
-                                                          np.asarray(uppers), 
-                                                          sigma_scale)
-        else:
-            raise ValueError("Sampling type {} not supported".format(prior_type))
-        self.prior_type = prior_type
+        super(DyPolyChordSampler, self).__init__(likelihood_module, prior_type, 
+                                                 prior_means, prior_sigmas,
+                                                 width_scale, sigma_scale)
 
         # if use_mpi:
         #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
@@ -134,7 +122,7 @@ class DyPolyChordSampler(object):
 
         :param dynamic_goal: 0 for evidence computation, 1 for posterior computation
         :param kwargs_run: kwargs directly passed to dyPolyChord.run_dypolychord
-        :return: samples, means, logZ, logZ_err, logL
+        :return: samples, means, logZ, logZ_err, logL, ns_run
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)

@@ -5,10 +5,11 @@ import json
 import shutil
 import numpy as np
 
+from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
 
 
-class MultiNestSampler(object):
+class MultiNestSampler(NestedSampler):
     """
     Wrapper for nested sampling algorithm MultInest by F. Feroz & M. Hobson
     papers : arXiv:0704.3704, arXiv:0809.3437, arXiv:1306.2144
@@ -16,7 +17,7 @@ class MultiNestSampler(object):
     """
 
     def __init__(self, likelihood_module, prior_type='uniform', 
-                 prior_means=None, prior_sigmas=None, sigma_scale=1,
+                 prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-',
                  remove_output_dir=False, use_mpi=False):
         """
@@ -24,34 +25,20 @@ class MultiNestSampler(object):
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
         :param prior_means: if prior_type is 'gaussian', mean for each param
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
-        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor ;
-        if prior_type is 'uniform', scale the widths of the parameter space by this factor
+        :param width_scale: scale the widths of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
         :param remove_output_dir: remove the output_dir folder after completion
         :param use_mpi: flag directly passed to MultInest sampler (NOT TESTED)
         """
         self._check_install()
-
-        self._ll = likelihood_module
-        num_params, self.param_names = self._ll.param.num_param()
-        
-        lowers, uppers = self._ll.param_limits
-        if prior_type == 'gaussian':
-            if prior_means is None or prior_sigmas is None:
-                raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas  = prior_means, prior_sigmas * sigma_scale
-            self.lowers, self.uppers = lowers, uppers
-        elif prior_type == 'uniform':
-            self.lowers, self.uppers = utils.scale_limits(np.asarray(lowers), 
-                                                          np.asarray(uppers), 
-                                                          sigma_scale)
-        else:
-            raise ValueError("Sampling type {} not supported".format(prior_type))
-        self.prior_type = prior_type
+        super(MultiNestSampler, self).__init__(likelihood_module, prior_type, 
+                                               prior_means, prior_sigmas,
+                                               width_scale, sigma_scale)
 
         # here we assume number of dimensons = number of parameters
-        self.n_dims = self.n_params = num_params
+        self.n_params = self.n_dims
 
         if output_dir is None:
             self._output_dir = 'multinest_out_default'
@@ -117,7 +104,7 @@ class MultiNestSampler(object):
         see https://johannesbuchner.github.io/PyMultiNest/pymultinest.html for content of kwargs_run
 
         :param kwargs_run: kwargs directly passed to pymultinest.run
-        :return: samples, means, logZ, logZ_err, logL
+        :return: samples, means, logZ, logZ_err, logL, stats
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)

@@ -1,8 +1,6 @@
 __author__ = 'aymgal'
 
 import pytest
-import os
-import shutil
 import numpy as np
 import numpy.testing as npt
 import lenstronomy.Util.simulation_util as sim_util
@@ -14,19 +12,10 @@ from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
-from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
-
-try:
-    import pymultinest
-except:
-    print("Warning : MultiNest/pymultinest not installed properly, \
-but tests will be trivially fulfilled")
-    pymultinest_installed =  False
-else:
-    pymultinest_installed =  True
+from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 
 
-class TestMultiNestSampler(object):
+class TestNestedSampler(object):
     """
     test the fitting sequences
     """
@@ -94,79 +83,65 @@ class TestMultiNestSampler(object):
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
                                   }
-        self.param_class = Param(kwargs_model, **kwargs_constraints)
+
+        # reduce number of param to sample (for runtime)
+        kwargs_fixed_lens = [{'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
+        kwargs_lower_lens = [{'theta_E': 0.8}]
+        kwargs_upper_lens = [{'theta_E': 1.2}]
+        kwargs_fixed_source = [{'R_sersic': 0.6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]
+        kwargs_fixed_lens_light = [{'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}]
+
+        self.param_class = Param(kwargs_model,
+                                 kwargs_fixed_lens=kwargs_fixed_lens,
+                                 kwargs_fixed_source=kwargs_fixed_source,
+                                 kwargs_fixed_lens_light=kwargs_fixed_lens_light,
+                                 kwargs_lower_lens=kwargs_lower_lens,
+                                 kwargs_upper_lens=kwargs_upper_lens,
+                                 **kwargs_constraints)
+
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
 
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                                    kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
-        self.output_dir = 'test_nested_out'
-        self.sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
-                                        prior_means=prior_means, 
-                                        prior_sigmas=prior_sigmas,
-                                        output_dir=self.output_dir,
-                                        remove_output_dir=True)
+        self.sampler = NestedSampler(self.Likelihood, 'gaussian',
+                                     prior_means, prior_sigmas, 0.5, 0.5)
 
     def test_sampler(self):
-        kwargs_run = {
-            'n_live_points': 10,
-            'evidence_tolerance': 0.5,
-            'sampling_efficiency': 0.8,  # 1 for posterior-only, 0 for evidence-only
-            'importance_nested_sampling': False,
-            'multimodal': True,
-            'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
-        }
-        samples, means, logZ, logZ_err, logL, results = self.sampler.run(kwargs_run)
-        assert len(means) == 16
-        if not pymultinest_installed:
-            # trivial test when pymultinest is not installed properly
-            assert np.count_nonzero(samples) == 0
-        if os.path.exists(self.output_dir):
-            shutil.rmtree(self.output_dir, ignore_errors=True)
+        kwargs_run = {}
+        try:
+            self.sampler.run(kwargs_run)
+        except Exception as e:
+            assert isinstance(e, NotImplementedError)
 
     def test_sampler_init(self):
-        test_dir = 'some_dir'
-        os.mkdir(test_dir)
-        sampler = MultiNestSampler(self.Likelihood, prior_type='uniform',
-                                   output_dir=test_dir)
-        shutil.rmtree(test_dir, ignore_errors=True)
+        sampler = NestedSampler(self.Likelihood, 'uniform', None, None, 1, 1)
         try:
-            sampler = MultiNestSampler(self.Likelihood, prior_type='gaussian',
-                                       prior_means=None, # will raise an Error 
-                                       prior_sigmas=None, # will raise an Error
-                                       output_dir=None,
-                                       remove_output_dir=True)
+            sampler = NestedSampler(self.Likelihood, 'gaussian', None, None, 1, 1) # will raise an Error 
         except Exception as e:
             assert isinstance(e, ValueError)
         try:
-            sampler = MultiNestSampler(self.Likelihood, prior_type='some_type')
+            sampler = NestedSampler(self.Likelihood, 'some_type', None, None, 1, 1) # will raise an Error 
         except Exception as e:
             assert isinstance(e, ValueError)
 
     def test_prior(self):
         n_dims = self.sampler.n_dims
-        cube_low = np.zeros(n_dims)
-        cube_upp = np.ones(n_dims)
-
-        self.prior_type = 'uniform'
-        self.sampler.prior(cube_low, n_dims, n_dims)
-        npt.assert_equal(cube_low, self.sampler.lowers)
-        self.sampler.prior(cube_upp, n_dims, n_dims)
-        npt.assert_equal(cube_upp, self.sampler.uppers)
-
-        cube_mid = 0.5 * np.ones(n_dims)
-        self.prior_type = 'gaussian'
-        self.sampler.prior(cube_mid, n_dims, n_dims)
-        cube_gauss = np.array([50., 50., 0., 0., 0., 0., 50., 4.25, 
-                                0., 0., 0., 0., 50., 4.25, 0., 0.])
-        npt.assert_equal(cube_mid, cube_gauss)
+        cube = np.zeros(n_dims)
+        try:
+            self.sampler.prior(cube)
+        except Exception as e:
+            assert isinstance(e, NotImplementedError)
 
     def test_log_likelihood(self):
         n_dims = self.sampler.n_dims
         args = np.nan * np.ones(n_dims)
-        logL = self.sampler.log_likelihood(args, n_dims, n_dims)
-        assert logL == -1e15
+        try:
+            self.sampler.log_likelihood(args)
+        except Exception as e:
+            assert isinstance(e, NotImplementedError)
+
 
 if __name__ == '__main__':
     pytest.main()

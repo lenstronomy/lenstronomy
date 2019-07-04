@@ -1,5 +1,4 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
-import lenstronomy.Util.param_util as param_util
 
 
 class LensParam(object):

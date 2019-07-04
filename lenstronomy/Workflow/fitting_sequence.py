@@ -9,7 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-
+import sys
 
 class FittingSequence(object):
     """
@@ -86,26 +86,9 @@ class FittingSequence(object):
                 mcmc_output = self.mcmc(**kwargs)
                 chain_list.append(mcmc_output)
 
-            elif fitting_type == 'MultiNest':
-                output = self.multinest(**kwargs)
-                samples, means, logL, logZ, logZ_err, names = output
-                self._update_state_from_result(means)
-                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
-                chain_list.append(chain)
-
-            elif fitting_type == 'DyPolyChord':
-                output = self.dypolychord(**kwargs)
-                samples, means, logL, logZ, logZ_err, names = output
-                self._update_state_from_result(means)
-                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
-                chain_list.append(chain)
-
-            elif fitting_type == 'Dynesty':
-                output = self.dynesty(**kwargs)
-                samples, means, logL, logZ, logZ_err, names = output
-                self._update_state_from_result(means)
-                chain = [fitting_type.upper(), samples, names, logL, logZ, logZ_err]
-                chain_list.append(chain)
+            elif fitting_type == 'nested_sampling':
+                ns_output = self.nested_sampling(**kwargs)
+                chain_list.append(ns_output)
 
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
@@ -240,6 +223,75 @@ class FittingSequence(object):
                                                                                                          bijective=True)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
+    def nested_sampling(self, sampler_type='MultiNest', kwargs_run={}, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1, 
+                        output_basename='chain', remove_output_dir=True, 
+                        dypolychord_dynamic_goal=0.8, 
+                        dynesty_bound='multi', dynesty_sample='auto'):
+        """
+        Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
+
+        :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
+        :param kwargs_run: keywords passed to the core sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param width_scale: scale the width (lower/upper limits) of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
+        :param output_basename: name of the folder in which the core MultiNest/PolyChord code will save output files
+        :param remove_output_dir: if True, the above folder is removed after completion
+        :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)
+        :param dynesty_bound: see https://dynesty.readthedocs.io for details
+        :param dynesty_sample: see https://dynesty.readthedocs.io for details
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
+        """
+        mean_start, sigma_start = self._prepare_sampling(prior_type)
+
+        if sampler_type == 'MULTINEST':
+            sampler = MultiNestSampler(self.likelihoodModule,
+                                       prior_type=prior_type,
+                                       prior_means=mean_start,
+                                       prior_sigmas=sigma_start,
+                                       width_scale=width_scale,
+                                       sigma_scale=sigma_scale,
+                                       output_dir='multinest_chains',
+                                       output_basename=output_basename,
+                                       remove_output_dir=remove_output_dir,
+                                       use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+
+        elif sampler_type == 'DYPOLYCHORD':
+            sampler = DyPolyChordSampler(self.likelihoodModule,
+                                         prior_type=prior_type,
+                                         prior_means=mean_start,
+                                         prior_sigmas=sigma_start,
+                                         width_scale=width_scale,
+                                         sigma_scale=sigma_scale,
+                                         output_dir='dypolychord_chains',
+                                         output_basename=output_basename,
+                                         remove_output_dir=remove_output_dir,
+                                         use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object \
+                = sampler.run(dypolychord_dynamic_goal, kwargs_run)
+
+        elif sampler_type == 'DYNESTY':
+            sampler = DynestySampler(self.likelihoodModule,
+                                     prior_type=prior_type,
+                                     prior_means=mean_start,
+                                     prior_sigmas=sigma_start,
+                                     width_scale=width_scale,
+                                     sigma_scale=sigma_scale,
+                                     bound=dynesty_bound, 
+                                     sample=dynesty_sample,
+                                     use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+
+        # update current best fit values
+        self._update_state(means)
+
+        output = [sampler_type, samples, sampler.param_names, logL, 
+                  logZ, logZ_err, results_object]
+        return output
+
+
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
                       keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
         """
@@ -361,104 +413,12 @@ class FittingSequence(object):
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
 
-    # TODO(?) : group nested sampling algorithms under of method (like self.mcmc() above)
-    # def nested_sampling(self, sampler_type=?)
-
-    def multinest(self, kwargs_run={},
-                  output_basename='', remove_output_dir=False,
-                  prior_type='uniform', sigma_scale=1):
-        """
-        Nested sampling with MultiNest
-
-        :param kwargs_run: keyword args passed to the pymultinest sampling method
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param output_basename: name of the folder in which the core PolyChord code will save output files
-        :param remove_output_dir: True for removing the above folder after completion
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
-        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
-        """
-        output_basename += 'c-'
-        output_dir = 'multinest_chains'
-
-        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
-
-        sampler = MultiNestSampler(self.likelihoodModule,
-                                   prior_type=prior_type,
-                                   prior_means=mean_start,
-                                   prior_sigmas=sigma_start,
-                                   output_dir=output_dir,
-                                   output_basename=output_basename,
-                                   remove_output_dir=remove_output_dir,
-                                   use_mpi=False)
-
-        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
-
-        return samples, means, logL, logZ, logZ_err, sampler.param_names
-
-    def dypolychord(self, dynamic_goal=0.5, kwargs_run={},
-                    output_basename='', remove_output_dir=False,
-                    prior_type='uniform', sigma_scale=1):
-        """
-        Dynamical nested sampling with DyPolyChord
-
-        :param dynamic_goal: trade-off between evidence (0) and posterior (1) computation
-        :param kwargs_run: keyword args passed to the DyPolyChord sampling method
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param output_basename: name of the folder in which the core PolyChord code will save output files
-        :param remove_output_dir: True for removing the above folder after completion
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
-        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
-        """
-        output_basename += 'c-'
-        output_dir = 'dypolychord_chains'
-
-        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
-
-        sampler = DyPolyChordSampler(self.likelihoodModule,
-                                     prior_type=prior_type,
-                                     prior_means=mean_start,
-                                     prior_sigmas=sigma_start,
-                                     output_dir=output_dir,
-                                     output_basename=output_basename,
-                                     remove_output_dir=remove_output_dir)
-
-        samples, means, logZ, logZ_err, logL = sampler.run(dynamic_goal,
-                                                           kwargs_run)
-
-        return samples, means, logL, logZ, logZ_err, sampler.param_names
-
-    def dynesty(self, kwargs_run={}, prior_type='uniform',
-                dynesty_bound='multi', dynesty_sample='auto',
-                sigma_scale=1):
-        """
-        Dynamical nested sampling with Dynesty
-
-        :param kwargs_run: keyword args passed to the Dynesty sampling method
-        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param dynesty_bound: specific to Dynesty, see https://dynesty.readthedocs.io
-        :param dynesty_sample: specific to Dynesty, see https://dynesty.readthedocs.io
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
-        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
-        """
-        mean_start, sigma_start = self._prepare_sampling(prior_type, sigma_scale)
-
-        sampler = DynestySampler(self.likelihoodModule,
-                                 prior_type=prior_type,
-                                 prior_means=mean_start,
-                                 prior_sigmas=sigma_start,
-                                 bound=dynesty_bound,
-                                 sample=dynesty_sample)
-
-        samples, means, logZ, logZ_err, logL = sampler.run(kwargs_run)
-
-        return samples, means, logL, logZ, logZ_err, sampler.param_names
-
-    def _prepare_sampling(self, prior_type, sigma_scale):
+    def _prepare_sampling(self, prior_type):
         if prior_type == 'gaussian':
             mean_start = self.param_class.kwargs2args(*self._updateManager.parameter_state)
             sigma_start = self.param_class.kwargs2args(*self._updateManager.sigma_kwargs)
             mean_start  = np.array(mean_start)
-            sigma_start = np.array(sigma_start) * sigma_scale
+            sigma_start = np.array(sigma_start)
         else:
             mean_start, sigma_start = None, None
         return mean_start, sigma_start

@@ -16,7 +16,7 @@ class DyPolyChordSampler(NestedSampler):
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io
     """
-    
+
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
@@ -206,14 +206,13 @@ You can get it from : https://github.com/ejhigson/dyPolyChord")
             self._RunPyPolyChord = pypolychord_utils.RunPyPolyChord
 
         try:
-            import nestcheck
+            from nestcheck import data_processing
         except:
             print("Warning : nestcheck not properly installed (results might be unexpected). \
 You can get it from : https://github.com/ejhigson/nestcheck")
             nestcheck_installed = False
         else:
             nestcheck_installed = True
-            self._ns_process_run = nestcheck.data_processing.process_polychord_run
-            self._ns_utils = nestcheck.ns_run_utils
+            self._ns_process_run = data_processing.process_polychord_run
 
         self._all_installed = dypolychord_installed and nestcheck_installed

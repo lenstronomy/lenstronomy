@@ -85,3 +85,14 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
         elif val >= upp: cube[i] = upp
         else: cube[i] = val
     return cube
+
+
+def scale_limits(lowers, uppers, scale):
+    if not isinstance(lowers, np.ndarray):
+        lowers = np.asarray(lowers)
+        uppers = np.asarray(uppers)
+    mid_points = (lowers + uppers) / 2.
+    widths_scaled = (uppers - lowers) * scale
+    lowers_scaled = mid_points - widths_scaled / 2.
+    uppers_scaled = mid_points + widths_scaled / 2.
+    return lowers_scaled, uppers_scaled

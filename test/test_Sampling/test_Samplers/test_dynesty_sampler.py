@@ -107,7 +107,8 @@ class TestDynestySampler(object):
         prior_sigmas = np.ones_like(prior_means) * 0.1
         self.sampler = DynestySampler(self.Likelihood, prior_type='uniform',
                                       prior_means=prior_means, 
-                                      prior_sigmas=prior_sigmas)
+                                      prior_sigmas=prior_sigmas,
+                                      sigma_scale=0.5)
 
     def test_sampler(self):
         kwargs_run = {

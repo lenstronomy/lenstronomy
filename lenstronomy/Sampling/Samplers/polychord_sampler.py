@@ -4,10 +4,11 @@ import os
 import shutil
 import numpy as np
 
+from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
 
 
-class DyPolyChordSampler(object):
+class DyPolyChordSampler(NestedSampler):
     """
     Wrapper for dynamical nested sampling algorithm DyPolyChord
     by E. Higson, M. Hobson, W. Handley, A. Lasenby
@@ -15,8 +16,9 @@ class DyPolyChordSampler(object):
     papers : arXiv:1704.03459, arXiv:1804.06406
     doc : https://dypolychord.readthedocs.io
     """
+
     def __init__(self, likelihood_module, prior_type='uniform', 
-                 prior_means=None, prior_sigmas=None,
+                 prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
@@ -24,6 +26,8 @@ class DyPolyChordSampler(object):
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
         :param prior_means: if prior_type is 'gaussian', mean for each param
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
+        :param width_scale: scale the widths of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
         :param remove_output_dir: remove the output_dir folder after completion
@@ -31,18 +35,9 @@ class DyPolyChordSampler(object):
         :param use_mpi: Use MPI computing if `True`
         """
         self._check_install()
-
-        self._ll = likelihood_module
-        self.lowers, self.uppers = self._ll.param_limits
-        self.n_dims, self.param_names = self._ll.param.num_param()
-
-        if prior_type == 'gaussian':
-            if prior_means is None or prior_sigmas is None:
-                raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas = prior_means, prior_sigmas
-        elif prior_type != 'uniform':
-            raise ValueError("Sampling type {} not supported".format(prior_type))
-        self.prior_type = prior_type
+        super(DyPolyChordSampler, self).__init__(likelihood_module, prior_type, 
+                                                 prior_means, prior_sigmas,
+                                                 width_scale, sigma_scale)
 
         # if use_mpi:
         #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
@@ -68,8 +63,9 @@ class DyPolyChordSampler(object):
                 shutil.rmtree(self._output_dir, ignore_errors=True)
             os.mkdir(self._output_dir)
 
+        self._output_basename = output_basename
         self.settings = {
-            'file_root': output_basename,
+            'file_root': self._output_basename,
             'base_dir': self._output_dir,
             'seed': seed_increment,
         }
@@ -126,7 +122,7 @@ class DyPolyChordSampler(object):
 
         :param dynamic_goal: 0 for evidence computation, 1 for posterior computation
         :param kwargs_run: kwargs directly passed to dyPolyChord.run_dypolychord
-        :return: samples, means, logZ, logZ_err, logL
+        :return: samples, means, logZ, logZ_err, logL, ns_run
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -139,34 +135,29 @@ class DyPolyChordSampler(object):
                                               self.settings,
                                               comm=self._comm, **kwargs_run)
 
-            results = self._process_run(self.settings['file_root'], 
-                                        self.settings['base_dir'])
-            stats   = self._process_stats(self.settings['file_root'], 
-                                          self.settings['base_dir'])
+            ns_run = self._ns_process_run(self.settings['file_root'], 
+                                           self.settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
-            results = {
+            ns_run = {
                 'theta': np.zeros((1, self.n_dims)),
-                'logl': np.zeros(self.n_dims)
+                'logl': np.zeros(self.n_dims),
+                'output': {
+                    'logZ': np.zeros(self.n_dims),
+                    'logZerr': np.zeros(self.n_dims),
+                    'param_means': np.zeros(self.n_dims)
+                }
             }
-            stats = {
-                'logZ': np.zeros(self.n_dims),
-                'logZerr': np.zeros(self.n_dims),
-                'param_means': np.zeros(self.n_dims)
-            }
+            self._write_equal_weights(ns_run['theta'], ns_run['logl'])
 
-        samples = results['theta']
-        logL    = results['logl']
-        logZ     = stats['logZ']
-        logZ_err = stats['logZerr']
-        means    = stats['param_means']
+        samples, logL = self._get_equal_weight_samples()
+        # logL     = ns_run['logl']
+        # samples_w = ns_run['theta']
+        logZ     = ns_run['output']['logZ']
+        logZ_err = ns_run['output']['logZerr']
+        means    = ns_run['output']['param_means']
 
-        # ALTERNATIVE WAY :
-        # logZ = self._estim.logz(results)
-        # means = np.array([self._estim.param_mean(results, param_ind=i) for i in range(self.n_dims)])
-        # TODO : check if it is equal to the other way above
-        
         print('The log evidence estimate using the first run is {}'
               .format(logZ))
         print('The estimated mean of the first parameter is {}'
@@ -175,7 +166,28 @@ class DyPolyChordSampler(object):
         if self._rm_output:
             shutil.rmtree(self._output_dir, ignore_errors=True)
 
-        return samples, means, logZ, logZ_err, logL
+        return samples, means, logZ, logZ_err, logL, ns_run
+
+    def _get_equal_weight_samples(self):
+        """
+        Inspired by pymultinest's Analyzer,
+        because DyPolyChord has more or less the same output conventions as MultiNest
+        """
+        file_name = '{}_equal_weights.txt'.format(self._output_basename)
+        file_path = os.path.join(self._output_dir, file_name)
+        data = np.loadtxt(file_path, ndmin=2)
+        logL = -0.5 * data[:, 0]
+        samples = data[:, 1:]
+        return samples, logL
+
+    def _write_equal_weights(self, samples, logL):
+        # write fake output file for unit tests
+        file_name = '{}_equal_weights.txt'.format(self._output_basename)
+        file_path = os.path.join(self._output_dir, file_name)
+        data = np.zeros((samples.shape[0], 1+samples.shape[1]))
+        data[:, 0]  = -2. * logL
+        data[:, 1:] = samples
+        np.savetxt(file_path, data, fmt='% .14E')
 
     def _check_install(self):
         try:
@@ -192,16 +204,12 @@ You can get it from : https://github.com/ejhigson/dyPolyChord")
 
         try:
             from nestcheck import data_processing
-            from nestcheck import estimators
         except:
             print("Warning : nestcheck not properly installed (results might be unexpected). \
 You can get it from : https://github.com/ejhigson/nestcheck")
             nestcheck_installed = False
         else:
             nestcheck_installed = True
-            self._process_run = data_processing.process_polychord_run
-            self._process_stats = data_processing.process_polychord_stats
-            self._estim = estimators
+            self._ns_process_run = data_processing.process_polychord_run
 
         self._all_installed = dypolychord_installed and nestcheck_installed
-

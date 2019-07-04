@@ -4,12 +4,13 @@ import os
 import shutil
 import numpy as np
 
+from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
 
 import dynesty
 import dynesty.utils as dyfunc
 
-class DynestySampler(object):
+class DynestySampler(NestedSampler):
     """
     Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle
     
@@ -18,29 +19,23 @@ class DynestySampler(object):
     """
 
     def __init__(self, likelihood_module, prior_type='uniform', 
-                 prior_means=None, prior_sigmas=None,
+                 prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  bound='multi', sample='auto', use_mpi=False, use_pool={}):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
         :param prior_means: if prior_type is 'gaussian', mean for each param
         :param prior_sigmas: if prior_type is 'gaussian', std dev for each param
+        :param width_scale: scale the widths of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param bound: specific to Dynesty, see https://dynesty.readthedocs.io
         :param sample: specific to Dynesty, see https://dynesty.readthedocs.io
         :param use_mpi: Use MPI computing if `True`
         :param use_pool: specific to Dynesty, see https://dynesty.readthedocs.io
         """
-        self._ll = likelihood_module
-        self.lowers, self.uppers = self._ll.param_limits
-        self.n_dims, self.param_names = self._ll.param.num_param()
-
-        if prior_type == 'gaussian':
-            if prior_means is None or prior_sigmas is None:
-                raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas = prior_means, prior_sigmas
-        elif prior_type != 'uniform':
-            raise ValueError("Sampling type {} not supported".format(prior_type))
-        self.prior_type = prior_type
+        super(DynestySampler, self).__init__(likelihood_module, prior_type, 
+                                             prior_means, prior_sigmas,
+                                             width_scale, sigma_scale)
 
         # create the Dynesty sampler
         if use_mpi:
@@ -107,7 +102,7 @@ class DynestySampler(object):
         see https://dynesty.readthedocs.io for content of kwargs_run
 
         :param kwargs_run: kwargs directly passed to DynamicNestedSampler.run_nested
-        :return: samples, means, logZ, logZ_err, logL
+        :return: samples, means, logZ, logZ_err, logL, results
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
@@ -115,22 +110,23 @@ class DynestySampler(object):
         self._sampler.run_nested(**kwargs_run)
 
         results = self._sampler.results
-        samples = results.samples  # TODO : check if it's 'equal weight' or not
+        samples_w = results.samples  # weighted samples
         logL = results.logl
         logZ = results.logz
         logZ_err = results.logzerr
 
-        # Compute 5%-95% quantiles.
-        # quantiles = dyfunc.quantile(samples, [0.05, 0.95], weights=weights)
-
         # Compute weighted mean and covariance.
         weights = np.exp(results.logwt - logZ[-1])  # normalized weights
-        means, covs = dyfunc.mean_and_cov(samples, weights)
+        if np.sum(weights) != 1.:
+            # TODO : clearly this is not optimal...
+            # weights should by definition be normalized, but it appears that for very small 
+            # number of live points (typically in test routines), 
+            # it is not *quite* the case (up to 6 decimals)
+            weights = weights / np.sum(weights)
 
-        # Resample weighted samples.
-        # samples_equal = dyfunc.resample_equal(samples, weights)
+        means, covs = dyfunc.mean_and_cov(samples_w, weights)
 
-        # Generate a new set of results with statistical+sampling uncertainties.
-        # results_sim = dyfunc.simulate_run(results)
+        # Resample weighted samples to get equally weighted (aka unweighted) samples
+        samples = dyfunc.resample_equal(samples_w, weights)
 
         return samples, means, logZ, logZ_err, logL, results

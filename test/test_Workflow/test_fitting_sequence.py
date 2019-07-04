@@ -214,6 +214,7 @@ class TestFittingSequence(object):
                 'nlive_batch': 3,
                 'maxbatch': 1,
             },
+            'prior_type': 'gaussian', # simply for the unit test
         }
         fitting_list2.append(['nested_sampling', kwargs_dynesty])
         kwargs_dypolychord = {

@@ -175,10 +175,7 @@ class DyPolyChordSampler(NestedSampler):
         """
         file_name = '{}_equal_weights.txt'.format(self._output_basename)
         file_path = os.path.join(self._output_dir, file_name)
-        try:
-            data = np.loadtxt(file_path, ndmin=2)
-        except:
-            data = np.loadtxt(file_path)
+        data = np.loadtxt(file_path, ndmin=2)
         logL = -0.5 * data[:, 0]
         samples = data[:, 1:]
         return samples, logL

@@ -105,7 +105,7 @@ class TestNestedSampler(object):
         prior_means = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
                                                    kwargs_lens_light=self.kwargs_lens_light)
         prior_sigmas = np.ones_like(prior_means) * 0.1
-        self.sampler = NestedSampler(self.Likelihood, 'uniform',
+        self.sampler = NestedSampler(self.Likelihood, 'gaussian',
                                      prior_means, prior_sigmas, 0.5, 0.5)
 
     def test_sampler(self):
@@ -116,12 +116,13 @@ class TestNestedSampler(object):
             assert isinstance(e, NotImplementedError)
 
     def test_sampler_init(self):
+        sampler = NestedSampler(self.Likelihood, 'uniform', None, None, 1, 1)
         try:
             sampler = NestedSampler(self.Likelihood, 'gaussian', None, None, 1, 1) # will raise an Error 
         except Exception as e:
             assert isinstance(e, ValueError)
         try:
-            sampler = NestedSampler(self.Likelihood, 'some_type', None, None, 1, 1)
+            sampler = NestedSampler(self.Likelihood, 'some_type', None, None, 1, 1) # will raise an Error 
         except Exception as e:
             assert isinstance(e, ValueError)
 

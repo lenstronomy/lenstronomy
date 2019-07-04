@@ -224,7 +224,7 @@ class FittingSequence(object):
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MultiNest', kwargs_run={}, 
-                        prior_type='uniform', sigma_scale=1, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1, 
                         output_basename='chain', remove_output_dir=True, 
                         dypolychord_dynamic_goal=0.8, 
                         dynesty_bound='multi', dynesty_sample='auto'):
@@ -234,7 +234,8 @@ class FittingSequence(object):
         :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
         :param kwargs_run: keywords passed to the core sampling method
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
-        :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings (only when prior_type is 'gaussian')
+        :param width_scale: scale the width (lower/upper limits) of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_basename: name of the folder in which the core MultiNest/PolyChord code will save output files
         :param remove_output_dir: if True, the above folder is removed after completion
         :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)
@@ -242,11 +243,14 @@ class FittingSequence(object):
         :param dynesty_sample: see https://dynesty.readthedocs.io for details
         :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
         """
+        mean_start, sigma_start = self._prepare_sampling(prior_type)
+
         if sampler_type == 'MULTINEST':
             sampler = MultiNestSampler(self.likelihoodModule,
                                        prior_type=prior_type,
                                        prior_means=mean_start,
                                        prior_sigmas=sigma_start,
+                                       width_scale=width_scale,
                                        sigma_scale=sigma_scale,
                                        output_dir='multinest_chains',
                                        output_basename=output_basename,
@@ -259,6 +263,7 @@ class FittingSequence(object):
                                          prior_type=prior_type,
                                          prior_means=mean_start,
                                          prior_sigmas=sigma_start,
+                                         width_scale=width_scale,
                                          sigma_scale=sigma_scale,
                                          output_dir='dypolychord_chains',
                                          output_basename=output_basename,
@@ -272,6 +277,7 @@ class FittingSequence(object):
                                      prior_type=prior_type,
                                      prior_means=mean_start,
                                      prior_sigmas=sigma_start,
+                                     width_scale=width_scale,
                                      sigma_scale=sigma_scale,
                                      bound=dynesty_bound, 
                                      sample=dynesty_sample,
@@ -407,12 +413,12 @@ class FittingSequence(object):
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
 
-    def _prepare_sampling(self, prior_type, sigma_scale):
+    def _prepare_sampling(self, prior_type):
         if prior_type == 'gaussian':
             mean_start = self.param_class.kwargs2args(*self._updateManager.parameter_state)
             sigma_start = self.param_class.kwargs2args(*self._updateManager.sigma_kwargs)
             mean_start  = np.array(mean_start)
-            sigma_start = np.array(sigma_start) * sigma_scale
+            sigma_start = np.array(sigma_start)
         else:
             mean_start, sigma_start = None, None
         return mean_start, sigma_start

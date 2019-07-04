@@ -187,7 +187,7 @@ class DyPolyChordSampler(NestedSampler):
         # write fake output file for unit tests
         file_name = '{}_equal_weights.txt'.format(self._output_basename)
         file_path = os.path.join(self._output_dir, file_name)
-        data = np.zeros((samples.shape[0], 1+samples[1]))
+        data = np.zeros((samples.shape[0], 1+samples.shape[1]))
         data[:, 0]  = -2. * logL
         data[:, 1:] = samples
         np.savetxt(file_path, data, fmt='% .14E')

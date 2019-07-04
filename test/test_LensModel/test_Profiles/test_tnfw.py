@@ -126,5 +126,6 @@ class TestTNFW(object):
         for (approx,true) in zip(numerical,actual):
             npt.assert_almost_equal(approx,true)
 
+
 if __name__ == '__main__':
     pytest.main()

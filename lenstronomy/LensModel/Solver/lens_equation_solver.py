@@ -19,9 +19,30 @@ class LensEquationSolver(object):
         """
         self.lensModel = lensModel
 
+    def _static_lens_settings(self, kwargs_lens):
+        """
+
+        :param kwargs_lens: lens model keyword argument list
+        :return: LensModel() instance without observed lensed positions, kwargs_lens with transformed positions into
+        physical space
+        """
+        if self.lensModel.multi_plane is True:
+            kwargs_lens = self.lensModel.lens_model.observed2physical_convention(kwargs_lens)
+            self.lensModel.lens_model.ignore_observed_positions = True
+        return kwargs_lens
+
+    def _make_dynamic(self):
+        """
+        undo ignored observational position settings
+
+        :return:
+        """
+        if self.lensModel.multi_plane is True:
+            self.lensModel.lens_model.ignore_observed_positions = False
+
     def image_position_stochastic(self, source_x, source_y, kwargs_lens, search_window=10,
                                   precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
-                                  y_center=0, num_random=1000, verbose=False):
+                                  y_center=0, num_random=1000):
         """
         Solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
         the backwards ray-shooted proposed image position and the source position.
@@ -39,6 +60,8 @@ class LensEquationSolver(object):
         :param verbose: bool, if True, prints performance information
         :return: x_image, y_image
         """
+        kwargs_lens = self._static_lens_settings(kwargs_lens)
+
         x_solve, y_solve = [], []
         for i in range(num_random):
             x_init = np.random.uniform(-search_window / 2., search_window / 2) + x_center
@@ -52,6 +75,7 @@ class LensEquationSolver(object):
         x_mins, y_mins = image_util.findOverlap(x_solve, y_solve, precision_limit)
         if arrival_time_sort is True:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+        self._make_dynamic()
         return x_mins, y_mins
 
     def _root(self, x, kwargs_lens, source_x, source_y):
@@ -88,6 +112,7 @@ class LensEquationSolver(object):
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
+        kwargs_lens = self._static_lens_settings(kwargs_lens)
 
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
@@ -126,7 +151,7 @@ class LensEquationSolver(object):
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
         if arrival_time_sort is True:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
-        #x_mins, y_mins = lenstronomy_util.coordInImage(x_mins, y_mins, numPix, deltapix)
+        self._make_dynamic()
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),

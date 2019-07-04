@@ -124,7 +124,6 @@ class TestLensEquationSolver(object):
                                                                                 precision_limit=10 ** (-10),
                                                                                 arrival_time_sort=True, x_center=0,
                                                                                 y_center=0, num_random=100,
-                                                                                verbose=False
                                                                                 )
         assert len(x_pos) == 4
         assert len(x_pos_stoch) == 4

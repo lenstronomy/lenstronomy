@@ -291,6 +291,9 @@ class SinglePlane(object):
         elif lens_type == 'CNFW':
             from lenstronomy.LensModel.Profiles.cnfw import CNFW
             return CNFW()
+        elif lens_type == 'CTNFW_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
+            return CTNFWGaussDec()
         elif lens_type == 'SERSIC':
             from lenstronomy.LensModel.Profiles.sersic import Sersic
             return Sersic()

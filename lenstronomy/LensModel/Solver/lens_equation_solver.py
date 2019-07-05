@@ -176,8 +176,8 @@ class LensEquationSolver(object):
     def _solve_single_proposal(self, x_guess, y_guess, source_x, source_y, kwargs_lens, precision_limit, num_iter_max,
                                max_step, non_linear=False):
         l = 0
-        #if non_linear is True:
-        if self.lensModel.multi_plane is True:
+        if non_linear is True:
+        #if self.lensModel.multi_plane is True:
             xinitial = np.array([x_guess, y_guess])
             result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2,
                               method='Nelder-Mead')

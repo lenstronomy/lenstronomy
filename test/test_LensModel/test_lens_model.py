@@ -86,9 +86,9 @@ class TestLensModel(object):
     def test_arrival_time(self):
         z_lens = 0.5
         z_source = 1.5
-        x_image, y_image = 1., 0
+        x_image, y_image = 1., 0.
         lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, lens_redshift_list=[z_lens], z_source=z_source)
-        kwargs = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
         arrival_time_mp = lensModel.arrival_time(x_image, y_image, kwargs)
         lensModel_sp = LensModel(lens_model_list=['SIS'], z_source=z_source, z_lens=z_lens)
         arrival_time_sp = lensModel_sp.arrival_time(x_image, y_image, kwargs)

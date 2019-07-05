@@ -66,19 +66,19 @@ class MultiPlaneBase(object):
         :return: angles in the source plane
         """
 
-        x = np.zeros_like(theta_x)
-        y = np.zeros_like(theta_y)
-        alpha_x = theta_x
-        alpha_y = theta_y
+        x = np.zeros_like(theta_x, dtype=float)
+        y = np.zeros_like(theta_y, dtype=float)
+        alpha_x = np.array(theta_x)
+        alpha_y = np.array(theta_y)
         i = -1
 
         for i, idex in enumerate(self._sorted_redshift_index):
             delta_T = self._T_ij_list[i]
             if delta_T > 0:
-                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
             alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
         delta_T = self._T_ij_list[i + 1]
-        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
         beta_x, beta_y = self._co_moving2angle_source(x, y)
         return beta_x, beta_y
 
@@ -104,6 +104,8 @@ class MultiPlaneBase(object):
         If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
+        x = np.array(x, dtype=float)
+        y = np.array(y, dtype=float)
         z_lens_last = z_start
         first_deflector = True
 
@@ -119,7 +121,7 @@ class MultiPlaneBase(object):
                     first_deflector = False
                 else:
                     delta_T = self._T_ij_list[i]
-                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
 
                 z_lens_last = z_lens
@@ -127,7 +129,7 @@ class MultiPlaneBase(object):
             delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         else:
             delta_T = T_ij_end
-        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
@@ -202,7 +204,7 @@ class MultiPlaneBase(object):
                     first_deflector = False
                 else:
                     delta_T = self._T_ij_list[i]
-                x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
                 z_lens_last = z_lens
 
@@ -215,7 +217,7 @@ class MultiPlaneBase(object):
 
         delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
 
-        x, y = self._ray_step(x, y, alpha_x, alpha_y, delta_T)
+        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
 
         pos_x.append(x)
         pos_y.append(y)
@@ -234,12 +236,14 @@ class MultiPlaneBase(object):
         :param kwargs_lens:
         :return: travel time in unit of days
         """
+        #theta_x = np.array(theta_x, dtype=float)
+        #theta_x = np.array(theta_x, dtype=float)
         dt_grav = np.zeros_like(theta_x)
         dt_geo = np.zeros_like(theta_x)
         x = np.zeros_like(theta_x)
         y = np.zeros_like(theta_y)
-        alpha_x = theta_x
-        alpha_y = theta_y
+        alpha_x = np.array(theta_x)
+        alpha_y = np.array(theta_y)
         i = 0
 
         for i, index in enumerate(self._sorted_redshift_index):
@@ -425,6 +429,22 @@ class MultiPlaneBase(object):
         y_ = y + alpha_y * delta_T
         return x_, y_
 
+    @staticmethod
+    def _ray_step_add(x, y, alpha_x, alpha_y, delta_T):
+        """
+        ray propagation with small angle approximation
+
+        :param x: co-moving x-position
+        :param y: co-moving y-position
+        :param alpha_x: deflection angle in x-direction at (x, y)
+        :param alpha_y: deflection angle in y-direction at (x, y)
+        :param delta_T: transverse angular diameter distance to the next step
+        :return: co-moving position at the next step (backwards)
+        """
+        x += alpha_x * delta_T
+        y += alpha_y * delta_T
+        return x, y
+
     def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, index):
         """
         adds the physical deflection angle of a single lens plane to the deflection field
@@ -442,9 +462,7 @@ class MultiPlaneBase(object):
         alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[index])
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, index)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, index)
-        alpha_x_new = alpha_x - alpha_x_phys
-        alpha_y_new = alpha_y - alpha_y_phys
-        return alpha_x_new, alpha_y_new
+        return alpha_x - alpha_x_phys, alpha_y - alpha_y_phys
 
     @staticmethod
     def _start_condition(inclusive, z_lens, z_start):

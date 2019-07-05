@@ -97,7 +97,6 @@ class LensModelExtensions(object):
         image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
         return util.array2image(image)
 
-
     def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
         """
 

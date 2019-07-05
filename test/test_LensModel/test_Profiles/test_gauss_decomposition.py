@@ -239,7 +239,7 @@ class TestCTNFWGaussDec(object):
     def setup(self):
         self.ctnfw_gauss = CTNFWGaussDec(n_sigma=15)
 
-    def test_gauss_decompose_nfw(self):
+    def test_gauss_decompose_ctnfw(self):
         """
         Test the Gaussian decomposition of core-truncated NFW profile.
         :return:

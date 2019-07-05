@@ -11,6 +11,7 @@ from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from copy import deepcopy
 
+
 class Optimizer(object):
 
     """
@@ -26,8 +27,8 @@ class Optimizer(object):
                  astropy_instance=None, verbose=False, re_optimize=False, particle_swarm=True,
                  pso_convergence_standardDEV=0.01, pso_convergence_mean=10000, pso_compute_magnification=500,
                  tol_simplex_params=1e-3,tol_simplex_func = 1e-3,tol_src_penalty=0.1,constrain_params=None,
-                 simplex_n_iterations=400, compute_mags_postpso = False, chi2_mode = 'source',
-                 optimizer_kwargs = {}, observed_convention_index=False):
+                 simplex_n_iterations=400, compute_mags_postpso = False, chi2_mode='source',
+                 optimizer_kwargs = {}, observed_convention_index=None):
 
         """
         :param x_pos: observed position in arcsec
@@ -268,6 +269,3 @@ class Optimizer(object):
             assert z_source is not None
             assert z_main is not None
             assert astropy_instance is not None
-
-
-

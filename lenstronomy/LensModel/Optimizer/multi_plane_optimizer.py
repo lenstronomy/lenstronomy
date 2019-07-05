@@ -1,13 +1,14 @@
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
+
 class MultiPlaneLensing(object):
 
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
                  z_macro, astropy_instance, macro_indicies, optimizer_kwargs, numerical_alpha_class,
-                 observed_convention_index=False):
+                 observed_convention_index=None):
 
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
@@ -31,7 +32,7 @@ class MultiPlaneLensing(object):
 
         self._full_lensmodel, self._lensmodel_params = full_lensmodel, lensmodel_params
 
-        self._T_z_source = full_lensmodel.lens_model._T_z_source
+        self._T_z_source = full_lensmodel.lens_model._multi_plane_base._T_z_source
 
         self._observed_convention_index = observed_convention_index
 
@@ -49,8 +50,11 @@ class MultiPlaneLensing(object):
         self._halo_args = halo_args
 
         self._halo_lensmodel = halo_lensmodel
+        self.multi_plane = False
+        # this flag needs to be set as False to be compatible with the latest LensEquationSolver feature to make the
+        # computation faster
 
-    def ray_shooting(self, x, y, kwargs_lens, check_convention = True):
+    def ray_shooting(self, x, y, kwargs_lens, check_convention=True):
 
         if check_convention:
             kwargs_lens = self._set_kwargs(kwargs_lens)
@@ -174,10 +178,10 @@ class MultiPlaneLensing(object):
 
     def _set_kwargs(self, kwargs_lens_full):
 
-        if self._observed_convention_index is False:
+        if self._observed_convention_index is None:
             return kwargs_lens_full
 
-        kwargs_physical = self._full_lensmodel.lens_model._convention(kwargs_lens_full)
+        kwargs_physical = self._full_lensmodel.lens_model.observed2physical_convention(kwargs_lens_full)
 
         return kwargs_physical
 
@@ -197,10 +201,10 @@ class MultiPlaneLensing(object):
 
         halo_names, halo_redshifts, halo_args = [], [], []
 
-        if observed_convention_inds is not False:
+        if observed_convention_inds is not None:
             convention_inds = []
         else:
-            convention_inds = False
+            convention_inds = None
 
         count = 0
 
@@ -213,7 +217,7 @@ class MultiPlaneLensing(object):
                 halo_names.append(lensmodel.lens_model_list[i])
                 halo_redshifts.append(z)
                 halo_args.append(lensmodel_args[i])
-                if observed_convention_inds is not False:
+                if observed_convention_inds is not None:
                     if i in observed_convention_inds: convention_inds.append(count)
                 count += 1
 
@@ -233,6 +237,7 @@ class MultiPlaneLensing(object):
 
         return macromodel, macro_args, halo_lensmodel, halo_args
 
+
 class Foreground(object):
 
     def __init__(self, foreground_lensmodel, macromodel_lensmodel, z_to_vary, x_pos, y_pos, precompupted_rays = None):
@@ -242,14 +247,14 @@ class Foreground(object):
         self._z_to_vary = z_to_vary
         self._x_pos, self._y_pos = x_pos, y_pos
 
-        dis = self._halos_lensmodel.lens_model._cosmo_bkg.T_xy
+        dis = self._halos_lensmodel.lens_model._multi_plane_base._cosmo_bkg.T_xy
         if precompupted_rays is None:
             self._rays = [None] * 3
         else:
             self._rays = precompupted_rays
 
         self._Txy_main = dis(0, z_to_vary)
-        z_source = self._halos_lensmodel.lens_model._z_source
+        z_source = self._halos_lensmodel.lens_model._multi_plane_base._z_source
         self._factor = dis(0, z_source) / dis(z_to_vary, z_source)
 
     def ray_shooting(self, args, macro_args, offset_index=None, thetax=None, thetay=None, force_compute=True):

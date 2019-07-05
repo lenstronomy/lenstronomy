@@ -11,7 +11,7 @@ class LensModel(object):
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
-                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=False):
+                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None):
         """
 
         :param lens_model_list: list of strings with lens model names

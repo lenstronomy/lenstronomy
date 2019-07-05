@@ -17,8 +17,8 @@ class TestLensModel(object):
 
     def test_init(self):
         lens_model_list = ['FLEXION', 'SIS_TRUNCATED', 'SERSIC', 'SERSIC_ELLIPSE_KAPPA',
-                           'SERSIC_ELLIPSE_GAUSS_DEC',
-                           'SERSIC_ELLIPSE_POTENTIAL',
+                           'SERSIC_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_GAUSS_DEC',
+                           'SERSIC_ELLIPSE_POTENTIAL', 'CTNFW_GAUSS_DEC',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
                            'SHAPELETS_POLAR', 'DIPOLE',
                            'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL',

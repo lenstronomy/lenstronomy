@@ -119,6 +119,13 @@ class TestLensEquationSolver(object):
                                                                      search_window=search_window,
                                                                      precision_limit=10 ** (-10), num_iter_max=10,
                                                                      arrival_time_sort=True)
+
+        x_pos_non_linear, y_pos_non_linear = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                     min_distance=min_distance,
+                                                                     search_window=search_window,
+                                                                     precision_limit=10 ** (-10), num_iter_max=10,
+                                                                     arrival_time_sort=True, non_linear=True)
+
         x_pos_stoch, y_pos_stoch = lensEquationSolver.image_position_stochastic(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                                 search_window=search_window,
                                                                                 precision_limit=10 ** (-10),
@@ -127,7 +134,9 @@ class TestLensEquationSolver(object):
                                                                                 )
         assert len(x_pos) == 4
         assert len(x_pos_stoch) == 4
+        assert len(x_pos_non_linear) == 4
         npt.assert_almost_equal(x_pos, x_pos_stoch, decimal=5)
+        npt.assert_almost_equal(x_pos, x_pos_non_linear, decimal=5)
 
 
 if __name__ == '__main__':

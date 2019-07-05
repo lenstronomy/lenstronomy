@@ -1,9 +1,11 @@
 __author__ = 'aymgal'
 
+import abc
+from future.utils import with_metaclass
 import lenstronomy.Util.sampling_util as utils
 
 
-class NestedSampler(object):
+class NestedSampler(with_metaclass(abc.ABCMeta)):
     """
     Base class for nested samplers
     """
@@ -37,7 +39,7 @@ class NestedSampler(object):
         self.prior_type = prior_type
         self._has_warned = False
 
-
+    @abc.abstractmethod
     def prior(self, u):
         """
         compute the mapping between the unit cube and parameter cube
@@ -45,9 +47,8 @@ class NestedSampler(object):
         :param u: unit hypercube, sampled by the algorithm
         :return: hypercube in parameter space
         """
-        raise NotImplementedError("Method not be implemented in base class")
 
-
+    @abc.abstractmethod
     def log_likelihood(self, x):
         """
         compute the log-likelihood given list of parameters
@@ -55,9 +56,7 @@ class NestedSampler(object):
         :param x: parameter values
         :return: log-likelihood (from the likelihood module)
         """
-        raise NotImplementedError("Method not be implemented in base class")
 
-
+    @abc.abstractmethod
     def run(self, kwargs_run):
         """run the nested sampling algorithm"""
-        raise NotImplementedError("Method not be implemented in base class")

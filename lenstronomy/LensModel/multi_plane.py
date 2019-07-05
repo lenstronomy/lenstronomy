@@ -103,32 +103,6 @@ class MultiPlane(object):
         """
         return self._multi_plane_base.transverse_distance_start_stop(z_start, z_stop, include_z_start)
 
-    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                   include_z_start=False, check_convention=True):
-        """
-        ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop.
-
-        This function differs from 'ray_shooting_partial' in that it returns the angular position of the ray
-        at each lens plane.
-
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
-        :param alpha_x: ray angle at z_start [arcsec]
-        :param alpha_y: ray angle at z_start [arcsec]
-        :param z_start: redshift of start of computation
-        :param z_stop: redshift where output is computed
-        :param kwargs_lens: lens model keyword argument list
-        :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
-        :param check_convention: flag to check the image position convention (leave this alone)
-        :return: co-moving position and angles at redshift z_stop
-        """
-
-        if check_convention and not self.ignore_observed_positions:
-            kwargs_lens = self._convention(kwargs_lens)
-        return self._multi_plane_base.ray_shooting_partial_steps(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                   include_z_start=include_z_start)
-
     def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
         """
         light travel time relative to a straight path through the coordinate (0,0)

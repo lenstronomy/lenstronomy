@@ -53,9 +53,7 @@ class DyPolyChordSampler(NestedSampler):
             from mpi4py import MPI
             self._comm = MPI.COMM_WORLD
 
-            if self._comm.Get_rank() == 0:
-                pass
-            else:
+            if self._comm.Get_rank() != 0:
                 self._is_master = False
         else:
             self._comm = None

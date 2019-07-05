@@ -178,7 +178,7 @@ class MultiPlaneLensing(object):
 
     def _set_kwargs(self, kwargs_lens_full):
 
-        if self._observed_convention_index is False:
+        if self._observed_convention_index is None:
             return kwargs_lens_full
 
         kwargs_physical = self._full_lensmodel.lens_model.observed2physical_convention(kwargs_lens_full)
@@ -201,10 +201,10 @@ class MultiPlaneLensing(object):
 
         halo_names, halo_redshifts, halo_args = [], [], []
 
-        if observed_convention_inds is not False:
+        if observed_convention_inds is not None:
             convention_inds = []
         else:
-            convention_inds = False
+            convention_inds = None
 
         count = 0
 

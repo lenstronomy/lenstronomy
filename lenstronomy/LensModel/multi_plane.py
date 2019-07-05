@@ -59,7 +59,7 @@ class MultiPlane(object):
         :return: angles in the source plane
         """
 
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.ray_shooting(theta_x, theta_y, kwargs_lens)
 
@@ -87,7 +87,7 @@ class MultiPlane(object):
         :return: co-moving position and angles at redshift z_stop
         """
 
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=include_z_start, T_ij_start=T_ij_start, T_ij_end=T_ij_end)
@@ -124,7 +124,7 @@ class MultiPlane(object):
         :return: co-moving position and angles at redshift z_stop
         """
 
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.ray_shooting_partial_steps(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                    include_z_start=include_z_start)
@@ -139,7 +139,7 @@ class MultiPlane(object):
         :param kwargs_lens:
         :return: travel time in unit of days
         """
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.arrival_time(theta_x, theta_y, kwargs_lens)
 
@@ -153,7 +153,7 @@ class MultiPlane(object):
         :param check_convention: flag to check the image position convention (leave this alone)
         :return:
         """
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.alpha(theta_x, theta_y, kwargs_lens)
 
@@ -169,7 +169,7 @@ class MultiPlane(object):
         :param diff: numerical differential step (float)
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        if check_convention:
+        if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.hessian(theta_x, theta_y, kwargs_lens, diff=diff)
 

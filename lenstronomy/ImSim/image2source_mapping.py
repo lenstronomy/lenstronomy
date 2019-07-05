@@ -125,20 +125,21 @@ class Image2SourceMapping(object):
             else:
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
-                alpha_x = x
-                alpha_y = y
+                alpha_x, alpha_y = x, y
+                x_source, y_source = alpha_x, alpha_y
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start = self._T_ij_start_list[i]
-                    T_ij_end = self._T_ij_end_list[i]
-                    x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                    kwargs_lens, include_z_start=False,
-                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+                    if z_stop > z_start:
+                        T_ij_start = self._T_ij_start_list[i]
+                        T_ij_end = self._T_ij_end_list[i]
+                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
+                                                                        kwargs_lens, include_z_start=False,
+                                                                        T_ij_start=T_ij_start, T_ij_end=T_ij_end)
 
-                    T_z = self._T0z_list[index_source]
-                    x_source = x_comov / T_z
-                    y_source = y_comov / T_z
+                        T_z = self._T0z_list[index_source]
+                        x_source = x_comov / T_z
+                        y_source = y_comov / T_z
                     if k is None or k == i:
                         flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
                     z_start = z_stop
@@ -171,20 +172,21 @@ class Image2SourceMapping(object):
             else:
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
-                alpha_x = x
-                alpha_y = y
+                alpha_x, alpha_y = x, y
+                x_source, y_source = alpha_x, alpha_y
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start = self._T_ij_start_list[i]
-                    T_ij_end = self._T_ij_end_list[i]
-                    x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
-                                                            y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                            include_z_start=False, T_ij_start=T_ij_start,
-                                                            T_ij_end=T_ij_end)
-                    T_z = self._T0z_list[index_source]
-                    x_source = x_comov / T_z
-                    y_source = y_comov / T_z
+                    if z_stop > z_start:
+                        T_ij_start = self._T_ij_start_list[i]
+                        T_ij_end = self._T_ij_end_list[i]
+                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
+                                                                y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                                                                include_z_start=False, T_ij_start=T_ij_start,
+                                                                T_ij_end=T_ij_end)
+                        T_z = self._T0z_list[index_source]
+                        x_source = x_comov / T_z
+                        y_source = y_comov / T_z
                     response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
                     response += response_i
                     n += n_i

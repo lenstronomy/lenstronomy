@@ -93,7 +93,8 @@ class LensEquationSolver(object):
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0):
+                                   initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
+                                   non_linear=False):
         """
         finds image position source position and lense model
 
@@ -109,6 +110,7 @@ class LensEquationSolver(object):
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources
+        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -143,7 +145,7 @@ class LensEquationSolver(object):
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
                                                                precision_limit, num_iter_max, verbose=verbose,
-                                                               min_distance=min_distance)
+                                                               min_distance=min_distance, non_linear=non_linear)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -155,14 +157,15 @@ class LensEquationSolver(object):
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
-                       num_iter_max=100, verbose=False, min_distance=0.01):
+                       num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):
         num_candidates = len(x_min)
         x_mins = np.zeros(num_candidates)
         y_mins = np.zeros(num_candidates)
         solver_precision = np.zeros(num_candidates)
         for i in range(len(x_min)):
             x_guess, y_guess, delta, l = self._solve_single_proposal(x_min[i], y_min[i], sourcePos_x, sourcePos_y,
-                                                                  kwargs_lens, precision_limit, num_iter_max, min_distance)
+                                                                  kwargs_lens, precision_limit, num_iter_max,
+                                                                     min_distance, non_linear=non_linear)
             if verbose is True:
                 print("Solution found for region %s with required precision at iteration %s" % (i, l))
             x_mins[i] = x_guess
@@ -171,25 +174,33 @@ class LensEquationSolver(object):
         return x_mins, y_mins, solver_precision
 
     def _solve_single_proposal(self, x_guess, y_guess, source_x, source_y, kwargs_lens, precision_limit, num_iter_max,
-                               max_step):
+                               max_step, non_linear=False):
         l = 0
-        x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
-        delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
+        #if non_linear is True:
+        if self.lensModel.multi_plane is True:
+            xinitial = np.array([x_guess, y_guess])
+            result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2,
+                              method='Nelder-Mead')
+            delta = self._root(result.x, kwargs_lens, source_x, source_y)
+            x_guess, y_guess = result.x[0], result.x[1]
 
-        while (delta > precision_limit and l < num_iter_max):
+        else:
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
             delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
-            f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_guess, y_guess, kwargs_lens)
-            DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
-            det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
-            deltaVec = np.array([x_mapped - source_x, y_mapped - source_y])
-            image_plane_vector = DistMatrix.dot(deltaVec) / det
-            dist = np.sqrt(image_plane_vector[0]**2 + image_plane_vector[1]**2)
-            if dist > max_step:
-                image_plane_vector *= max_step/dist
-            x_guess, y_guess, delta, l = self._do_step(x_guess, y_guess, source_x, source_y, delta,
-                                                              image_plane_vector, kwargs_lens, l, num_iter_max)
 
+            while (delta > precision_limit and l < num_iter_max):
+                x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
+                delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
+                f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_guess, y_guess, kwargs_lens)
+                DistMatrix = np.array([[1 - f_yy, f_yx], [f_xy, 1 - f_xx]])
+                det = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
+                deltaVec = np.array([x_mapped - source_x, y_mapped - source_y])
+                image_plane_vector = DistMatrix.dot(deltaVec) / det
+                dist = np.sqrt(image_plane_vector[0]**2 + image_plane_vector[1]**2)
+                if dist > max_step:
+                    image_plane_vector *= max_step/dist
+                x_guess, y_guess, delta, l = self._do_step(x_guess, y_guess, source_x, source_y, delta,
+                                                                  image_plane_vector, kwargs_lens, l, num_iter_max)
         return x_guess, y_guess, delta, l
 
     def _do_step(self, x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num,

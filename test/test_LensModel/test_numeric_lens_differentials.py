@@ -152,6 +152,11 @@ class TestNumericsProfile(object):
         lens_model = ['NFW_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_ctnfw_gauss_dec(self):
+        kwargs = {'rho_s': 5, 'r_s': 5., 'r_trunc': 10., 'r_core': 0.3, 'a': 2}
+        lens_model = ['CTNFW_GAUSS_DEC']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_point_mass(self):
         kwargs = {'theta_E': 1.}
         lens_model = ['POINT_MASS']

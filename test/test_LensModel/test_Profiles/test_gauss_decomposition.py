@@ -1,7 +1,7 @@
 __author__ = 'ajshajib'
 
 from lenstronomy.LensModel.Profiles.gauss_decomposition import SersicEllipseGaussDec
-from lenstronomy.LensModel.Profiles.gauss_decomposition import CoredTruncatedNFWGaussDec
+from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
 from lenstronomy.LensModel.Profiles.sersic import Sersic
 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
 
@@ -231,13 +231,13 @@ class TestSersicEllipseGaussDec(object):
         assert np.all(np.abs(sersic-back_sersic)/np.sqrt(sersic)*100. < 1.)
 
 
-class TestCoredTruncatedNFWGaussDec(object):
+class TestCTNFWGaussDec(object):
     """
     This class tests the methods for Gauss-decomposed spherical
     cored-truncated NFW profile.
     """
     def setup(self):
-        self.ctnfw_gauss = CoredTruncatedNFWGaussDec(n_sigma=15)
+        self.ctnfw_gauss = CTNFWGaussDec(n_sigma=15)
 
     def test_gauss_decompose_nfw(self):
         """
@@ -247,8 +247,8 @@ class TestCoredTruncatedNFWGaussDec(object):
         """
         rho_s = 5.
         r_s = 5.
-        r_core = 0.1
-        r_trunc = 30
+        r_core = 0.3
+        r_trunc = 10.
         a = 2
 
         r = np.linspace(1, 2, 100)

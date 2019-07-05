@@ -542,7 +542,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         :return: projected NFW profile at y
         :rtype: ``type(y)``
         """
-        R_s = kwargs['R_s']
+        R_s = kwargs['Rs']
         alpha_Rs = kwargs['alpha_Rs']
 
         kappa_s = alpha_Rs / (4 * R_s * (1 -  0.30102999566))
@@ -585,7 +585,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         :return: NFW scale radius
         :rtype: ``float``
         """
-        return kwargs['R_s']
+        return kwargs['Rs']
 
 
 class GaussDecompositionAbstract3D(GaussDecompositionAbstract):

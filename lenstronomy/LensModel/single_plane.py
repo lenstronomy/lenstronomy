@@ -285,6 +285,9 @@ class SinglePlane(object):
         elif lens_type == 'NFW_ELLIPSE':
             from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
             return NFW_ELLIPSE()
+        elif lens_type == 'NFW_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import NFWEllipseGaussDec
+            return NFWEllipseGaussDec()
         elif lens_type == 'TNFW':
             from lenstronomy.LensModel.Profiles.tnfw import TNFW
             return TNFW()

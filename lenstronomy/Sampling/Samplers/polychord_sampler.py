@@ -135,7 +135,7 @@ class DyPolyChordSampler(NestedSampler):
                                               self.settings,
                                               comm=self._comm, **kwargs_run)
 
-            if True:
+            if self._is_master:
                 ns_run = self._ns_process_run(self.settings['file_root'],
                                            self.settings['base_dir'])
 

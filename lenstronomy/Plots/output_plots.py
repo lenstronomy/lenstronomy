@@ -971,7 +971,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     This routine is an example and more tests might be appropriate to analyse a specific chain.
 
     :param chain_list: list of chains with arguments [type string, samples etc...]
-    :param index of chain to be plotted
+    :param index: index of chain to be plotted
     :param num_average: in chains, number of steps to average over in plotting diagnostics
     :return: plotting instance
     """

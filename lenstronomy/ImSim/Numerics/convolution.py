@@ -10,8 +10,6 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 
 
-
-
 def _centered(arr, newshape):
     # Return the center newshape portion of the array.
     newshape = np.asarray(newshape)

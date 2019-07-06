@@ -17,8 +17,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
 
     :param lens_model_list: list of strings indicating the type of lens models
     :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
-    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source).
-    In regard to this redshift the reduced deflection angles are defined in the lens model.
+    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param lens_redshift_list:
     :param multi_plane:
     :param observed_convention_index:

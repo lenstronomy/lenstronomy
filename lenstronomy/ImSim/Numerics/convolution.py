@@ -1,13 +1,15 @@
 from scipy import fftpack, ndimage, signal
 import numpy as np
 import threading
+from scipy._lib._version import NumpyVersion
+_rfft_mt_safe = (NumpyVersion(np.__version__) >= '1.9.0.dev-e24486e')
+_rfft_lock = threading.Lock()
 
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 
-_rfft_mt_safe = True  # valid for (NumpyVersion(np.__version__) >= '1.9.0.dev-e24486e')
-_rfft_lock = threading.Lock()
+
 
 
 def _centered(arr, newshape):

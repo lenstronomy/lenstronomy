@@ -72,12 +72,12 @@ class Numerics(PointSourceRendering):
                                                                   supersampling_factor)
                 self._conv = SubgridKernelConvolution(kernel_super, supersampling_factor,
                                                       supersampling_kernel_size=supersampling_kernel_size,
-                                                      convolution_type='fft')
+                                                      convolution_type='fft_static')
             else:
                 kernel = psf.kernel_point_source
                 kernel = self._supersampling_cut_kernel(kernel, convolution_kernel_size,
                                                               supersampling_factor=1)
-                self._conv = PixelKernelConvolution(kernel, convolution_type='fft')
+                self._conv = PixelKernelConvolution(kernel, convolution_type='fft_static')
 
         elif self._psf_type == 'GAUSSIAN':
             pixel_scale = pixel_grid.pixel_width

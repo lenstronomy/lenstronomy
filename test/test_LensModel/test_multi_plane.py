@@ -231,47 +231,54 @@ class TestMultiPlane(object):
         redshift_list = [z1, z2, z3]
         kwargs_lens = [sis1, sis2, sis3]
         lensModel = MultiPlaneBase(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
+        lensModel_2 = LensModel(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list, multi_plane=True)
+        multiplane_2 = lensModel_2.lens_model
         intermediate_index = 1
         theta_x, theta_y = 1., 1.
 
+        Tzsrc = lensModel._cosmo_bkg.T_xy(0, z_source)
+
         z_intermediate = lensModel._lens_redshift_list[intermediate_index]
 
-        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
-                                            alpha_y=theta_y, z_start=0, z_stop=z_intermediate, kwargs_lens=kwargs_lens)
-        x_out_full_0 = x_out
-        y_out_full_0 = y_out
-
-        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=x_out, y=y_out, alpha_x=alpha_x_out,
-                                                                            alpha_y=alpha_y_out, z_start=z_intermediate,
-                                                                                z_stop=z_source,
-                                                                                kwargs_lens=kwargs_lens)
-        x_out_full_0 = np.append(x_out_full_0, x_out)
-        y_out_full_0 = np.append(y_out_full_0, y_out)
-
-        x_out_full, y_out_full, redshifts, tzlist = lensModel.ray_shooting_partial_steps(x=0, y=0, alpha_x=theta_x,
-                                            alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens)
+        for lensmodel_class in [lensModel, multiplane_2]:
+            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
+                                                alpha_y=theta_y, z_start=0, z_stop=z_intermediate, kwargs_lens=kwargs_lens)
 
 
-        npt.assert_almost_equal(x_out_full_0[0], x_out_full[intermediate_index+1])
-        npt.assert_almost_equal(x_out_full_0[-1], x_out_full[-1])
-        npt.assert_almost_equal(y_out_full_0[0], y_out_full[intermediate_index+1])
-        npt.assert_almost_equal(y_out_full_0[-1], y_out_full[-1])
-        npt.assert_almost_equal(redshifts[intermediate_index+1], lensModel._lens_redshift_list[intermediate_index])
-        npt.assert_almost_equal(tzlist[0], lensModel._cosmo_bkg.T_xy(0, redshifts[0]))
+            x_out_full_0 = x_out
+            y_out_full_0 = y_out
 
-        beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
-        beta_x_true, beta_y_true = lensModel.ray_shooting(theta_x, theta_y, kwargs_lens)
-        npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
-        npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial(x=x_out, y=y_out, alpha_x=alpha_x_out,
+                                                                                alpha_y=alpha_y_out, z_start=z_intermediate,
+                                                                                    z_stop=z_source,
+                                                                                    kwargs_lens=kwargs_lens)
+            x_out_full_0 = np.append(x_out_full_0, x_out)
+            y_out_full_0 = np.append(y_out_full_0, y_out)
 
-        T_ij_start = lensModel._cosmo_bkg.T_xy(z_observer=0, z_source=0.1)
-        T_ij_end = lensModel._cosmo_bkg.T_xy(z_observer=0.7, z_source=1.5)
-        x_out, y_out, alpha_x_out, alpha_y_out = lensModel.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
-                                            alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens,
-                                                                                T_ij_start=T_ij_start, T_ij_end=T_ij_end)
-        beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
-        npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
-        npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+            x_out_full, y_out_full, redshifts, tzlist = lensmodel_class.ray_shooting_partial_steps(x=0, y=0, alpha_x=theta_x,
+                                                alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens)
+
+
+            npt.assert_almost_equal(x_out_full_0[0], x_out_full[intermediate_index+1])
+            npt.assert_almost_equal(x_out_full_0[-1], x_out_full[-1])
+            npt.assert_almost_equal(y_out_full_0[0], y_out_full[intermediate_index+1])
+            npt.assert_almost_equal(y_out_full_0[-1], y_out_full[-1])
+            npt.assert_almost_equal(tzlist[0], lensModel._cosmo_bkg.T_xy(0, redshifts[0]))
+
+            beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
+            beta_x_true, beta_y_true = lensmodel_class.ray_shooting(theta_x, theta_y, kwargs_lens)
+            npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
+            npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
+
+            T_ij_start = lensModel._cosmo_bkg.T_xy(z_observer=0, z_source=0.1)
+            T_ij_end = lensModel._cosmo_bkg.T_xy(z_observer=0.7, z_source=1.5)
+            x_out, y_out, alpha_x_out, alpha_y_out = lensmodel_class.ray_shooting_partial(x=0, y=0, alpha_x=theta_x,
+                                                alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens,
+                                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+
+            beta_x, beta_y = x_out/Tzsrc, y_out/Tzsrc
+            npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
+            npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
 
     def test_pseudo_multiplane(self):
         z_source = 1.5

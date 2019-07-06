@@ -156,8 +156,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
-        by the specific sampler used
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
         """
 
         param_class = self.param_class
@@ -286,13 +285,14 @@ class FittingSequence(object):
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
+        else:
+            raise ValueError('Sampler type %s not supported.' % sampler_type)
         # update current best fit values
         self._update_state(means)
 
         output = [sampler_type, samples, sampler.param_names, logL, 
                   logZ, logZ_err, results_object]
         return output
-
 
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
                       keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
@@ -409,9 +409,8 @@ class FittingSequence(object):
         fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
         lens models to the initial kwargs_fixed options
 
-        :param free_bands: bool list of length of imaging bands in order of imaging bands,
-        if False: set fixed lens model
-        :return:
+        :param free_bands: bool list of length of imaging bands in order of imaging bands, if False: set fixed lens model
+        :return: None
         """
         self._updateManager.fix_not_computed(free_bands=free_bands)
 

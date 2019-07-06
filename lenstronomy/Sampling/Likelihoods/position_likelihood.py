@@ -94,8 +94,7 @@ class PositionLikelihood(object):
         :param kwargs_ps: point source model kwargs list
         :param kwargs_cosmo: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
         :param sigma: 1-sigma Gaussian uncertainty in the astrometry
-        :return: log likelihood of the astrometirc correction between predicted image positions and model placement
-        of the point sources
+        :return: log likelihood of the astrometirc correction between predicted image positions and model placement of the point sources
         """
         if 'ra_image' not in kwargs_ps[0]:
             return 0

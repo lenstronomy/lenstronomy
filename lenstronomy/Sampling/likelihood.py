@@ -96,12 +96,12 @@ class LikelihoodModule(object):
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None):
         """
 
-        :param multi_band_list:
-        :param multi_band_type:
-        :param time_delays_measured:
-        :param time_delays_uncertainties:
-        :param flux_ratios:
-        :param flux_ratio_errors:
+        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
+        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
+        :param time_delays_measured: measured time delays (units of days)
+        :param time_delays_uncertainties: uncertainties in time-delay measurement
+        :param flux_ratios: flux ratios of point sources
+        :param flux_ratio_errors: error in flux ratio measurement
         :return:
         """
         return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors

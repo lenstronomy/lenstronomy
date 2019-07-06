@@ -68,8 +68,8 @@ class TestLikelihoodModule(object):
 
         self.kwargs_model = kwargs_model
         self.kwargs_numerics = {
-            'subgrid_res': 1,
-            'psf_subgrid': False}
+            'supersampling_factor': 1,
+            'supersampling_convolution': False}
 
         kwargs_constraints = {
                                    'num_point_source_list': [4],
@@ -164,7 +164,7 @@ class TestLikelihoodModule(object):
         image_sim = sim_util.simulate_simple(imageModel, [], kwargs_source)
 
         kwargs_data['image_data'] = image_sim
-        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, {}]]}
+        kwargs_data_joint = {'multi_band_list': [[kwargs_data, kwargs_psf, {}]], 'multi_band_type': 'single-band'}
         likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model, param_class=param_class, **kwargs_likelihood)
 
         logL, _ = likelihood.logL(args=param_class.kwargs2args(kwargs_source=kwargs_source), verbose=True)

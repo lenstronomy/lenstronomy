@@ -90,7 +90,9 @@ class Image2SourceMapping(object):
                 y_source = y - y_alpha * scale_factor
             else:
                 z_stop = self._source_redshift_list[index_source]
-                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(0, 0, x, y,
+                x_ = np.zeros_like(x)
+                y_ = np.zeros_like(y)
+                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_, y_, x, y,
                                                                                                      0, z_stop,
                                                                                                      kwargs_lens,
                                                                                                      include_z_start=False)

@@ -618,10 +618,8 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
-    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, font_size=15,
-                                 text="Normalized Residuals",
-                                 colorbar_label=r'(f${}_{\rm model}$ - f${'
-                                                r'}_{\rm data}$)/$\sigma$',
+    def normalized_residual_plot(self, ax, v_min=-6, v_max=6, font_size=15, text="Normalized Residuals",
+                                 colorbar_label=r'(f${}_{\rm model}$ - f${r}_{\rm data}$)/$\sigma$',
                                  no_arrow=False, **kwargs):
         """
 

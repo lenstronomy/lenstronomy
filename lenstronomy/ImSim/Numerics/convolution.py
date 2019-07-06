@@ -26,7 +26,7 @@ class PixelKernelConvolution(object):
     """
     class to compute convolutions for a given pixelized kernel (fft, grid)
     """
-    def __init__(self, kernel, convolution_type='fft'):
+    def __init__(self, kernel, convolution_type='fft_static'):
         """
 
         :param kernel: 2d array, convolution kernel
@@ -162,7 +162,7 @@ class SubgridKernelConvolution(object):
     """
     class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid
     """
-    def __init__(self, kernel_supersampled, supersampling_factor, supersampling_kernel_size=None, convolution_type='fft'):
+    def __init__(self, kernel_supersampled, supersampling_factor, supersampling_kernel_size=None, convolution_type='fft_static'):
         """
 
         :param kernel_supersampled: kernel in supersampled pixels

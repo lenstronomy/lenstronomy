@@ -8,7 +8,7 @@ class NestedSampler(object):
     Base class for nested samplers
     """
 
-    def __init__(self, likelihood_module, prior_type, 
+    def __init__(self, likelihood_module, prior_type,
                  prior_means, prior_sigmas, width_scale, sigma_scale):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)

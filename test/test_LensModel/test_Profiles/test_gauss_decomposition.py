@@ -251,7 +251,7 @@ class TestCTNFWGaussDec(object):
         r_trunc = 10.
         a = 2
 
-        r = np.linspace(1, 2, 100)
+        r = np.logspace(-1, 1, 1000) * r_s
 
         beta = r_core / r_s
         tau = r_trunc / r_s

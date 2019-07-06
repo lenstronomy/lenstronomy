@@ -11,6 +11,7 @@ from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 import sys
 
+
 class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
@@ -223,10 +224,11 @@ class FittingSequence(object):
                                                                                                          bijective=True)
         return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
 
-    def nested_sampling(self, sampler_type='MultiNest', kwargs_run={}, 
+    def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
                         prior_type='uniform', width_scale=1, sigma_scale=1, 
                         output_basename='chain', remove_output_dir=True, 
-                        dypolychord_dynamic_goal=0.8, 
+                        dypolychord_dynamic_goal=0.8,
+                        output_dir="nested_sampling_chains",
                         dynesty_bound='multi', dynesty_sample='auto'):
         """
         Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
@@ -252,7 +254,7 @@ class FittingSequence(object):
                                        prior_sigmas=sigma_start,
                                        width_scale=width_scale,
                                        sigma_scale=sigma_scale,
-                                       output_dir='multinest_chains',
+                                       output_dir=output_dir,
                                        output_basename=output_basename,
                                        remove_output_dir=remove_output_dir,
                                        use_mpi=self._mpi)
@@ -265,7 +267,7 @@ class FittingSequence(object):
                                          prior_sigmas=sigma_start,
                                          width_scale=width_scale,
                                          sigma_scale=sigma_scale,
-                                         output_dir='dypolychord_chains',
+                                         output_dir=output_dir,
                                          output_basename=output_basename,
                                          remove_output_dir=remove_output_dir,
                                          use_mpi=self._mpi)

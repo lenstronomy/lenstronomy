@@ -106,6 +106,8 @@ class MultiPlaneBase(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        alpha_x = np.array(alpha_x)
+        alpha_y = np.array(alpha_y)
         z_lens_last = z_start
         first_deflector = True
 

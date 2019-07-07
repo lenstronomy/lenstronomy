@@ -73,4 +73,3 @@ class ModelAPI(object):
         :return: instance of lenstronomy PointSource class describing the point sources (lensed and unlensed)
         """
         return self._point_source_model_class
-

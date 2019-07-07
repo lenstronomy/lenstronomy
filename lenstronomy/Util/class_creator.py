@@ -88,7 +88,6 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
         lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
     lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i)
 
-
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list
     additional_images_list_i = additional_images_list

@@ -13,7 +13,8 @@ class MultiLinear(MultiDataBase):
         self.type = 'multi-linear'
         imageModel_list = []
         for band_index in range(len(multi_band_list)):
-            imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list, band_index=band_index)
+            imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+                                              band_index=band_index)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 

@@ -209,7 +209,11 @@ class LikelihoodModule(object):
         return self.logL(a)
 
     def likelihood(self, a):
-        return self.logL(a)
+        try:
+            return self.logL(a)
+        except (KeyboardInterrupt, ValueError) as err:
+            print(err)
+            raise ValueError('The parameter array during error: {}'.format(a))
 
     def computeLikelihood(self, ctx):
         logL, _ = self.logL(ctx.getParams())

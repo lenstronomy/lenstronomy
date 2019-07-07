@@ -28,6 +28,7 @@ class PixelKernelConvolution(object):
         """
 
         :param kernel: 2d array, convolution kernel
+        :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
         """
         self._kernel = kernel
         if convolution_type not in ['fft', 'grid', 'fft_static']:

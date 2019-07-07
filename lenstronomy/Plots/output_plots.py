@@ -241,8 +241,7 @@ class ModelPlot(object):
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source,
                  kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
-                 bands_compute=None,
-                 multi_band_type='single-band'):
+                 bands_compute=None, multi_band_type='multi-linear', band_index=0):
         """
 
         :param kwargs_options:
@@ -257,7 +256,7 @@ class ModelPlot(object):
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                        bands_compute=bands_compute,
                                                        likelihood_mask_list=likelihood_mask_list,
-                                                       band_index=0)
+                                                       band_index=band_index)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
                                                                                  kwargs_lens_light, kwargs_ps,
@@ -288,7 +287,6 @@ class ModelPlot(object):
                 index += 1
             else:
                 self._index_list.append(-1)
-
 
     def _select_band(self, band_index):
         """

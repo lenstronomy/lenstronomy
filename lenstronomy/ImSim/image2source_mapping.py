@@ -172,6 +172,7 @@ class Image2SourceMapping(object):
                     response += response_i
                     n += n_i
             else:
+                n_i_list = []
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
                 alpha_x, alpha_y = x, y
@@ -190,10 +191,13 @@ class Image2SourceMapping(object):
                         x_source = x_comov / T_z
                         y_source = y_comov / T_z
                     response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
+                    n_i_list.append(n_i)
                     response += response_i
                     n += n_i
                     z_start = z_stop
-                response = self._re_order_split(response)
+                n_list = self._lightModel.num_param_linear_list(kwargs_source)
+                response = self._re_order_split(response, n_list)
+
             return response, n
 
     @staticmethod
@@ -201,19 +205,31 @@ class Image2SourceMapping(object):
         """
 
         :param redshift_list: list of redshifts
-        :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
+        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
         sort_index = np.argsort(redshift_list)
         return sort_index
 
-    def _re_order_split(self, response):
+    def _re_order_split(self, response, n_list):
         """
 
         :param response: splitted functions in order of redshifts
+        :param n_list: list of number of response vectors per model in order of the model list (not redshift ordered)
         :return: reshuffled array in order of the function definition
         """
+        counter_regular = 0
+        n_sum_list_regular = []
+
+        for i in range(len(self._source_redshift_list)):
+            n_sum_list_regular += [counter_regular]
+            counter_regular += n_list[i]
+
         reshuffled = np.zeros_like(response)
-        for i, idex in enumerate(self._sorted_source_redshift_index):
-            reshuffled[idex] = response[i]
+        n_sum_sorted = 0
+        for i, index in enumerate(self._sorted_source_redshift_index):
+            n_i = n_list[index]
+            n_sum = n_sum_list_regular[index]
+            reshuffled[n_sum:n_sum + n_i] = response[n_sum_sorted:n_sum_sorted + n_i]
+            n_sum_sorted += n_i
         return reshuffled

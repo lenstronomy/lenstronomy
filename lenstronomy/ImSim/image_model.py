@@ -13,7 +13,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
@@ -40,10 +40,7 @@ class ImageModel(object):
             x_center, y_center = self.Data.center
             self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center,
                                                   y_center=y_center, min_distance=self.Data.pixel_width)
-            if self.PSF.psf_error_map is not None:
-                self._psf_error_map = True
-            else:
-                self._psf_error_map = False
+            self._psf_error_map = self.PSF.psf_error_map_bool
         else:
             self._psf_error_map = False
         if source_model_class is None:

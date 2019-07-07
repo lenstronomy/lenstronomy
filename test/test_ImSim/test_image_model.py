@@ -14,6 +14,7 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Util import util
 
 
@@ -215,6 +216,12 @@ class TestImageModel(object):
         x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
         error_map = imageModel.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
         assert error_map[0] == 2
+
+    def test_creat_empty(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        imageModel_empty = ImageModel(data_class, PSF())
+        assert imageModel_empty._psf_error_map == False
 
 
 if __name__ == '__main__':

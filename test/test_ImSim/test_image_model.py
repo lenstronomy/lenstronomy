@@ -149,7 +149,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL'}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.zeros_like(kernel)}
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])

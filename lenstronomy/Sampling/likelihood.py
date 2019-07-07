@@ -211,9 +211,13 @@ class LikelihoodModule(object):
     def likelihood(self, a):
         try:
             return self.logL(a)
-        except (KeyboardInterrupt, ValueError) as err:
-            print(err)
-            raise ValueError('The parameter array during error: {}'.format(a))
+        except:
+            print('The parameter array during error: {}'.format(a))
+            from mpi4py import MPI
+            print('Worker: {}'.format(MPI.COMM_WORLD.Get_rank()))
+            logL = self.logL(a)
+            print('log-likelihood:'.format(logL))
+            return logL
 
     def computeLikelihood(self, ctx):
         logL, _ = self.logL(ctx.getParams())

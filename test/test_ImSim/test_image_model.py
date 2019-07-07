@@ -76,6 +76,10 @@ class TestImageModel(object):
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
+        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens,
+                                                                 unconvolved=False, de_lensed=True)
+        assert len(source_model) == 100
+
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
         npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05 ** 2, decimal=4)
@@ -217,11 +221,14 @@ class TestImageModel(object):
         error_map = imageModel.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
         assert error_map[0] == 2
 
-    def test_creat_empty(self):
+    def test_create_empty(self):
         kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
         data_class = ImageData(**kwargs_data)
         imageModel_empty = ImageModel(data_class, PSF())
         assert imageModel_empty._psf_error_map == False
+
+        flux = imageModel_empty.lens_surface_brightness(kwargs_lens_light=None)
+        assert flux.all() == 0
 
 
 if __name__ == '__main__':

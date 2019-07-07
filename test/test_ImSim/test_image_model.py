@@ -124,6 +124,17 @@ class TestImageModel(object):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000
 
+    def test_num_param_linear(self):
+        num_param_linear = self.imageModel.num_param_linear(self.kwargs_lens, self.kwargs_source,
+                                         self.kwargs_lens_light, self.kwargs_ps)
+        assert num_param_linear == 3
+
+    def test_update_data(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1, inverse=True)
+        data_class = ImageData(**kwargs_data)
+        self.imageModel.update_data(data_class)
+        assert self.imageModel.Data.num_pixel == 100
+
     def test_point_source_rendering(self):
         # initialize data
 

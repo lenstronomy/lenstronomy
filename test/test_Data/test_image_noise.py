@@ -33,6 +33,9 @@ class TestData(object):
         noise_map_out = noise.C_D_model(model=np.ones((self.numPix, self.numPix)))
         npt.assert_almost_equal(noise_map_out, noise_map, decimal=8)
 
+        kwargs_noise = {'image_data': np.zeros((self.numPix, self.numPix)), 'exposure_time': 1,
+                        'noise_map': noise_map, 'verbose': True}
+        noise = ImageNoise(**kwargs_noise)
         bkg = noise.background_rms
         npt.assert_almost_equal(bkg, np.median(noise_map))
 
@@ -41,7 +44,7 @@ class TestData(object):
                         'noise_map': None, 'verbose': True}
         noise = ImageNoise(**kwargs_noise)
         exp_map = noise.exposure_map
-        assert  exp_map > 0
+        assert exp_map > 0
 
 
 class TestRaise(unittest.TestCase):

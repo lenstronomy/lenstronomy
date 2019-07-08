@@ -13,28 +13,37 @@ class MultiPlaneBase(object):
     sourde redshift of the class instance.
     """
 
-    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None):
+    def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None, numerical_alpha_class=None):
         """
 
-        :param z_source: source redshift, this scale is used to translate the input reduced deflection units into
-        physical units
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
+        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
+        models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
+
         """
         self._cosmo_bkg = Background(cosmo)
-        self._z_source = z_source
+        self._z_source_convention = z_source_convention
+        if len(lens_redshift_list) > 0:
+            z_lens_max = np.max(lens_redshift_list)
+            if z_lens_max >= z_source_convention:
+                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the reduced lens'
+                                 ' model quantities not allowed (leads to negative reduced deflection angles!'
+                                 % (z_lens_max, z_source_convention))
         if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
+
         self._lens_model_list = lens_model_list
         self._lens_redshift_list = lens_redshift_list
+        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
         else:
             self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
-        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         z_before = 0
         T_z = 0
         self._T_ij_list = []
@@ -49,38 +58,9 @@ class MultiPlaneBase(object):
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
-            factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
+            factor = self._cosmo_bkg.D_xy(0, z_source_convention) / self._cosmo_bkg.D_xy(z_lens, z_source_convention)
             self._reduced2physical_factor.append(factor)
             z_before = z_lens
-        delta_T = self._cosmo_bkg.T_xy(z_before, z_source)
-        self._T_ij_list.append(delta_T)
-        self._T_z_source = self._cosmo_bkg.T_xy(0, z_source)
-
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None):
-        """
-        ray-tracing (backwards light cone)
-
-        :param theta_x: angle in x-direction on the image
-        :param theta_y: angle in y-direction on the image
-        :param kwargs_lens:
-        :return: angles in the source plane
-        """
-
-        x = np.zeros_like(theta_x, dtype=float)
-        y = np.zeros_like(theta_y, dtype=float)
-        alpha_x = np.array(theta_x)
-        alpha_y = np.array(theta_y)
-        i = -1
-
-        for i, idex in enumerate(self._sorted_redshift_index):
-            delta_T = self._T_ij_list[i]
-            if delta_T > 0:
-                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-        delta_T = self._T_ij_list[i + 1]
-        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-        beta_x, beta_y = self._co_moving2angle_source(x, y)
-        return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=False, T_ij_start=None, T_ij_end=None):
@@ -96,7 +76,7 @@ class MultiPlaneBase(object):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed!
+        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
         This can lead to duplications in the computation of deflection angles.
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
         If not set, will compute the distance each time this function gets executed.
@@ -117,7 +97,10 @@ class MultiPlaneBase(object):
             if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
                 if first_deflector is True:
                     if T_ij_start is None:
-                        delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
+                        if z_start == 0:
+                            delta_T = self._T_ij_list[0]
+                        else:
+                            delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
                     else:
                         delta_T = T_ij_start
                     first_deflector = False
@@ -128,7 +111,10 @@ class MultiPlaneBase(object):
 
                 z_lens_last = z_lens
         if T_ij_end is None:
-            delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+            if z_lens_last == z_stop:
+                delta_T = 0
+            else:
+                delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         else:
             delta_T = T_ij_end
         x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
@@ -223,12 +209,13 @@ class MultiPlaneBase(object):
 
         pos_x.append(x)
         pos_y.append(y)
-        redshifts.append(self._z_source)
-        Tz_list.append(self._T_z_source)
+        redshifts.append(z_stop)
+        T_z_source = self._cosmo_bkg.T_xy(0, z_stop)
+        Tz_list.append(T_z_source)
 
         return pos_x, pos_y, redshifts, Tz_list
 
-    def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None):
+    def arrival_time(self, theta_x, theta_y, kwargs_lens, z_stop, T_z_stop=None, T_ij_end=None):
         """
         light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time
@@ -238,8 +225,6 @@ class MultiPlaneBase(object):
         :param kwargs_lens:
         :return: travel time in unit of days
         """
-        #theta_x = np.array(theta_x, dtype=float)
-        #theta_x = np.array(theta_x, dtype=float)
         dt_grav = np.zeros_like(theta_x)
         dt_geo = np.zeros_like(theta_x)
         x = np.zeros_like(theta_x)
@@ -247,28 +232,34 @@ class MultiPlaneBase(object):
         alpha_x = np.array(theta_x)
         alpha_y = np.array(theta_y)
         i = 0
-
+        z_lens_last = 0
         for i, index in enumerate(self._sorted_redshift_index):
             z_lens = self._lens_redshift_list[index]
-            T_ij = self._T_ij_list[i]
-            x_new, y_new = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
-            if i == 0:
-                pass
-            elif T_ij > 0:
-                T_j = self._T_z_list[i]
-                T_i = self._T_z_list[i-1]
-                beta_i_x, beta_i_y = x / T_i, y / T_i
-                beta_j_x, beta_j_y = x_new / T_j, y_new / T_j
-                dt_geo_new = self._geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij)
-                dt_geo += dt_geo_new
-            x, y = x_new, y_new
-            dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, i, z_lens)
-            alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
+            if z_lens <= z_stop:
+                T_ij = self._T_ij_list[i]
+                x_new, y_new = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
+                if i == 0:
+                    pass
+                elif T_ij > 0:
+                    T_j = self._T_z_list[i]
+                    T_i = self._T_z_list[i-1]
+                    beta_i_x, beta_i_y = x / T_i, y / T_i
+                    beta_j_x, beta_j_y = x_new / T_j, y_new / T_j
+                    dt_geo_new = self._geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij)
+                    dt_geo += dt_geo_new
+                x, y = x_new, y_new
+                dt_grav_new = self._gravitational_delay(x, y, kwargs_lens, i, z_lens)
+                alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
 
-            dt_grav += dt_grav_new
-        T_ij = self._T_ij_list[i + 1]
+                dt_grav += dt_grav_new
+                z_lens_last = z_lens
+        if T_ij_end is None:
+            T_ij_end = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
+        T_ij = T_ij_end
         x_new, y_new = self._ray_step(x, y, alpha_x, alpha_y, T_ij)
-        T_j = self._T_z_source
+        if T_z_stop is None:
+            T_z_stop = self._cosmo_bkg.T_xy(0, z_stop)
+        T_j = T_z_stop
         T_i = self._T_z_list[i]
         beta_i_x, beta_i_y = x / T_i, y / T_i
         beta_j_x, beta_j_y = x_new / T_j, y_new / T_j
@@ -276,59 +267,18 @@ class MultiPlaneBase(object):
         dt_geo += dt_geo_new
         return dt_grav + dt_geo
 
-    def alpha(self, theta_x, theta_y, kwargs_lens, k=None):
-        """
-        reduced deflection angle
-
-        :param theta_x: angle in x-direction
-        :param theta_y: angle in y-direction
-        :param kwargs_lens: lens model kwargs
-        :return:
-        """
-        beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens)
-        alpha_x = theta_x - beta_x
-        alpha_y = theta_y - beta_y
-        return alpha_x, alpha_y
-
-    def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.00000001):
-        """
-        computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
-
-        :param theta_x: x-position (preferentially arcsec)
-        :type theta_x: numpy array
-        :param theta_y: y-position (preferentially arcsec)
-        :type theta_y: numpy array
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :param diff: numerical differential step (float)
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
-
-        alpha_ra, alpha_dec = self.alpha(theta_x, theta_y, kwargs_lens)
-
-        alpha_ra_dx, alpha_dec_dx = self.alpha(theta_x + diff, theta_y, kwargs_lens)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(theta_x, theta_y + diff, kwargs_lens)
-
-        dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
-        dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
-        dalpha_decra = (alpha_dec_dx - alpha_dec)/diff
-        dalpha_decdec = (alpha_dec_dy - alpha_dec)/diff
-
-        f_xx = dalpha_rara
-        f_yy = dalpha_decdec
-        f_xy = dalpha_radec
-        f_yx = dalpha_decra
-        return f_xx, f_xy, f_yx, f_yy
-
-    def _index_ordering(self, redshift_list):
+    @staticmethod
+    def _index_ordering(redshift_list):
         """
 
         :param redshift_list: list of redshifts
         :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
-        sort_index = np.argsort(redshift_list[redshift_list < self._z_source])
-        if len(sort_index) < 1:
-            Warning("There is no lens object between observer at z=0 and source at z=%s" % self._z_source)
+        #sort_index = np.argsort(redshift_list[redshift_list < z_source])
+        sort_index = np.argsort(redshift_list)
+        #if len(sort_index) < 1:
+        #    Warning("There is no lens object between observer at z=0 and source at z=%s" % z_source)
         return sort_index
 
     def _reduced2physical_deflection(self, alpha_reduced, index_lens):
@@ -355,10 +305,11 @@ class MultiPlaneBase(object):
         """
         theta_x, theta_y = self._co_moving2angle(x, y, idex)
         potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[idex])
-        delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source)
+        delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source_convention)
         return -delay_days
 
-    def _geometrical_delay(self, beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij):
+    @staticmethod
+    def _geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij):
         """
 
         :param beta_i_x: angle on the sky at plane i
@@ -398,19 +349,6 @@ class MultiPlaneBase(object):
         :return: angles on the sky
         """
         T_z = self._T_z_list[index]
-        theta_x = x / T_z
-        theta_y = y / T_z
-        return theta_x, theta_y
-
-    def _co_moving2angle_source(self, x, y):
-        """
-        special case of the co_moving2angle definition at the source redshift
-
-        :param x: co-moving distance
-        :param y: co-moving distance
-        :return: angles on the sky at the nominal source plane
-        """
-        T_z = self._T_z_source
         theta_x = x / T_z
         theta_y = y / T_z
         return theta_x, theta_y

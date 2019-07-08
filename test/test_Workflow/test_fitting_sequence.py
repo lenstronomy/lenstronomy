@@ -33,7 +33,7 @@ class TestFittingSequence(object):
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
         psf_gaussian = PSF(**kwargs_psf_gaussian)
-        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
         psf_class = PSF(**self.kwargs_psf)
         # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)

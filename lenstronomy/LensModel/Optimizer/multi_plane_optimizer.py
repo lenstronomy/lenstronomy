@@ -32,7 +32,7 @@ class MultiPlaneLensing(object):
 
         self._full_lensmodel, self._lensmodel_params = full_lensmodel, lensmodel_params
 
-        self._T_z_source = full_lensmodel.lens_model._multi_plane_base._T_z_source
+        self._T_z_source = full_lensmodel.lens_model._T_z_source
 
         self._observed_convention_index = observed_convention_index
 
@@ -181,7 +181,7 @@ class MultiPlaneLensing(object):
         if self._observed_convention_index is None:
             return kwargs_lens_full
 
-        kwargs_physical = self._full_lensmodel.lens_model.observed2physical_convention(kwargs_lens_full)
+        kwargs_physical = self._full_lensmodel.lens_model.observed2flat_convention(kwargs_lens_full)
 
         return kwargs_physical
 
@@ -254,7 +254,7 @@ class Foreground(object):
             self._rays = precompupted_rays
 
         self._Txy_main = dis(0, z_to_vary)
-        z_source = self._halos_lensmodel.lens_model._multi_plane_base._z_source
+        z_source = self._halos_lensmodel.lens_model._z_source
         self._factor = dis(0, z_source) / dis(z_to_vary, z_source)
 
     def ray_shooting(self, args, macro_args, offset_index=None, thetax=None, thetay=None, force_compute=True):

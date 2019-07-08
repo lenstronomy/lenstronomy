@@ -14,6 +14,7 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Util import util
 
 
@@ -75,6 +76,10 @@ class TestImageModel(object):
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
+        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens,
+                                                                 unconvolved=False, de_lensed=True)
+        assert len(source_model) == 100
+
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
         npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05 ** 2, decimal=4)
@@ -124,6 +129,17 @@ class TestImageModel(object):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000
 
+    def test_num_param_linear(self):
+        num_param_linear = self.imageModel.num_param_linear(self.kwargs_lens, self.kwargs_source,
+                                         self.kwargs_lens_light, self.kwargs_ps)
+        assert num_param_linear == 3
+
+    def test_update_data(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1, inverse=True)
+        data_class = ImageData(**kwargs_data)
+        self.imageModel.update_data(data_class)
+        assert self.imageModel.Data.num_pixel == 100
+
     def test_point_source_rendering(self):
         # initialize data
 
@@ -133,7 +149,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL'}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.zeros_like(kernel)}
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
@@ -204,6 +220,15 @@ class TestImageModel(object):
         x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
         error_map = imageModel.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
         assert error_map[0] == 2
+
+    def test_create_empty(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        imageModel_empty = ImageModel(data_class, PSF())
+        assert imageModel_empty._psf_error_map == False
+
+        flux = imageModel_empty.lens_surface_brightness(kwargs_lens_light=None)
+        assert flux.all() == 0
 
 
 if __name__ == '__main__':

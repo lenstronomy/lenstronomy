@@ -29,7 +29,7 @@ class MultiPlane(object):
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
         """
-        self._z_source = z_source
+
         if z_source_convention is None:
             z_source_convention = z_source
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
@@ -37,9 +37,7 @@ class MultiPlane(object):
                                                 numerical_alpha_class=numerical_alpha_class,
                                                 z_source_convention=z_source_convention)
 
-        self._T_ij_start, self._T_ij_stop = self._multi_plane_base.transverse_distance_start_stop(z_start=0, z_stop=z_source, include_z_start=False)
-        self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
-
+        self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
         if observed_convention_index is None:
             self._convention = PhysicalLocation()
@@ -47,6 +45,31 @@ class MultiPlane(object):
             assert isinstance(observed_convention_index, list)
             self._convention = LensedLocation(self._multi_plane_base, observed_convention_index)
         self.ignore_observed_positions = ignore_observed_positions
+
+    def update_source_redshift(self, z_source):
+        """
+        update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift
+
+        :param z_source: float; source redshift
+        :return: self variables update to new redshift
+        """
+        if z_source == self._z_source:
+            pass
+        else:
+            self._set_source_distances(z_source)
+
+    def _set_source_distances(self, z_source):
+        """
+        compute the relevant angular diameter distances to a specific source redshift
+
+        :param z_source: float, source redshift
+        :return: self variables
+        """
+        self._z_source = z_source
+        self._T_ij_start, self._T_ij_stop = self._multi_plane_base.transverse_distance_start_stop(z_start=0,
+                                                                                                  z_stop=z_source,
+                                                                                                  include_z_start=False)
+        self._T_z_source = self._multi_plane_base._cosmo_bkg.T_xy(0, z_source)
 
     def observed2flat_convention(self, kwargs_lens):
         """

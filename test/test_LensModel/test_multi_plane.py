@@ -18,6 +18,26 @@ class TestMultiPlane(object):
     def setup(self):
         pass
 
+    def test_update_source_redshift(self):
+        z_source = 1.5
+        lens_model_list = ['SIS']
+        kwargs_lens = [{'theta_E': 1}]
+        redshift_list = [0.5]
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list,
+                                    lens_redshift_list=redshift_list)
+        alpha_x, alpha_y = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
+        lensModelMutli.update_source_redshift(z_source=z_source)
+        alpha_x_new, alpha_y_new = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
+        npt.assert_almost_equal(alpha_x/alpha_x_new, 1., decimal=8)
+
+        lensModelMutli.update_source_redshift(z_source=1.)
+        alpha_x_new, alpha_y_new = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
+        assert alpha_x / alpha_x_new > 1
+
+        lensModelMutli.update_source_redshift(z_source=2.)
+        alpha_x_new, alpha_y_new = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
+        assert alpha_x / alpha_x_new < 1
+
     def test_sis_alpha(self):
         z_source = 1.5
         lens_model_list = ['SIS']

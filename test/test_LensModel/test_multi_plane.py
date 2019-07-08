@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy.testing as npt
 import numpy as np
 import pytest
+import unittest
 from lenstronomy.LensModel.multi_plane_base import MultiPlaneBase
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.multi_plane import LensedLocation, PhysicalLocation
@@ -401,6 +402,17 @@ class TestForegroundShear(object):
         dt_simple = t_simple[0] - t_simple[1]
         print(t_simple, t_multi)
         npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            MultiPlaneBase(z_source=0, z_source_convention=1, lens_model_list=['SIS'], lens_redshift_list=[2])
+
+        with self.assertRaises(ValueError):
+            MultiPlaneBase(z_source=1, z_source_convention=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5])
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

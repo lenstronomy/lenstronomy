@@ -13,28 +13,42 @@ class MultiPlaneBase(object):
     sourde redshift of the class instance.
     """
 
-    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None):
+    def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
+                 z_source_convention=None):
         """
 
-        :param z_source: source redshift, this scale is used to translate the input reduced deflection units into
-        physical units
+        :param z_source: source redshift for the default lensing quantities (such as ray_shooting, deflection angles and
+        higher order derivatives,
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
+        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
+        models. If None, 'z_source' is used.
         """
         self._cosmo_bkg = Background(cosmo)
         self._z_source = z_source
+        if z_source_convention is None:
+            z_source_convention = z_source
+        self._z_source_convention = z_source_convention
+        if len(lens_redshift_list) > 0:
+            z_lens_max = np.max(lens_redshift_list)
+            if z_lens_max >= z_source_convention:
+                raise ValueError('deflector redshifts higher or equal the source redshift convention (%s >= %s for the reduced lens'
+                                 ' model quantities not allowed (leads to negative reduced deflection angles!'
+                                 % (z_lens_max, z_source_convention))
         if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
+
         self._lens_model_list = lens_model_list
         self._lens_redshift_list = lens_redshift_list
+        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
         else:
-            self._sorted_redshift_index = self._index_ordering(lens_redshift_list)
-        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+            self._sorted_redshift_index = self._index_ordering(lens_redshift_list, z_source)
         z_before = 0
         T_z = 0
         self._T_ij_list = []
@@ -49,7 +63,7 @@ class MultiPlaneBase(object):
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
-            factor = self._cosmo_bkg.D_xy(0, z_source) / self._cosmo_bkg.D_xy(z_lens, z_source)
+            factor = self._cosmo_bkg.D_xy(0, z_source_convention) / self._cosmo_bkg.D_xy(z_lens, z_source_convention)
             self._reduced2physical_factor.append(factor)
             z_before = z_lens
         delta_T = self._cosmo_bkg.T_xy(z_before, z_source)
@@ -319,16 +333,17 @@ class MultiPlaneBase(object):
         f_yx = dalpha_decra
         return f_xx, f_xy, f_yx, f_yy
 
-    def _index_ordering(self, redshift_list):
+    @staticmethod
+    def _index_ordering(redshift_list, z_source):
         """
 
         :param redshift_list: list of redshifts
         :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
-        sort_index = np.argsort(redshift_list[redshift_list < self._z_source])
+        sort_index = np.argsort(redshift_list[redshift_list < z_source])
         if len(sort_index) < 1:
-            Warning("There is no lens object between observer at z=0 and source at z=%s" % self._z_source)
+            Warning("There is no lens object between observer at z=0 and source at z=%s" % z_source)
         return sort_index
 
     def _reduced2physical_deflection(self, alpha_reduced, index_lens):

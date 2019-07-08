@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+from astropy.cosmology import default_cosmology
 
 
 class LensModel(object):
@@ -32,6 +33,9 @@ class LensModel(object):
         self.z_lens = z_lens
         self.z_source = z_source
         self.redshift_list = lens_redshift_list
+
+        if cosmo is None:
+            cosmo = default_cosmology.get()
         self.cosmo = cosmo
         self.multi_plane = multi_plane
         if multi_plane is True:
@@ -43,7 +47,7 @@ class LensModel(object):
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         if z_lens is not None and z_source is not None:
-            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=self.cosmo)
+            self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """
@@ -81,11 +85,11 @@ class LensModel(object):
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
-        :return:
+        :return: arrival time of image positions in units of days
         """
-        if hasattr(self.lens_model, 'arrival_time'):
+        try:
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
-        else:
+        except:
             x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
             fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
             if not hasattr(self, '_lensCosmo'):

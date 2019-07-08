@@ -141,7 +141,7 @@ def compute_lower_upper_errors(sample, num_sigma=1):
     :return: median, lower_sigma, upper_sigma
     """
     if num_sigma > 3:
-        raise ValueError("Number of sigma-constraints restircted to three. %s not valid" % num_sigma)
+        raise ValueError("Number of sigma-constraints restricted to three. %s not valid" % num_sigma)
     num = len(sample)
     num_threshold1 = int(round((num-1)*0.833))
     num_threshold2 = int(round((num-1)*0.977249868))

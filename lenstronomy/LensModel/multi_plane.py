@@ -48,15 +48,15 @@ class MultiPlane(object):
             self._convention = LensedLocation(self._multi_plane_base, observed_convention_index)
         self.ignore_observed_positions = ignore_observed_positions
 
-    def observed2physical_convention(self, kwargs_lens):
+    def observed2flat_convention(self, kwargs_lens):
         """
 
         :param kwargs_lens: keyword argument list of lens model parameters in the observed convention
-        :return: kwargs_lens in physical convention
+        :return: kwargs_lens positions mapped into angular position without lensing along its LOS
         """
         return self._convention(kwargs_lens)
 
-    def ray_shooting(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
+    def ray_shooting(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """
         ray-tracing (backwards light cone)
 
@@ -143,7 +143,7 @@ class MultiPlane(object):
         """
         return self._multi_plane_base.transverse_distance_start_stop(z_start, z_stop, include_z_start)
 
-    def arrival_time(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
+    def arrival_time(self, theta_x, theta_y, kwargs_lens, check_convention=True):
         """
         light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time
@@ -158,7 +158,7 @@ class MultiPlane(object):
         return self._multi_plane_base.arrival_time(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
                                                    T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
-    def alpha(self, theta_x, theta_y, kwargs_lens, k=None, check_convention=True):
+    def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """
         reduced deflection angle
 

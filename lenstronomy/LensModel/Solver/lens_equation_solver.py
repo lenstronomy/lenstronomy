@@ -27,7 +27,7 @@ class LensEquationSolver(object):
         physical space
         """
         if self.lensModel.multi_plane is True:
-            kwargs_lens = self.lensModel.lens_model.observed2physical_convention(kwargs_lens)
+            kwargs_lens = self.lensModel.lens_model.observed2flat_convention(kwargs_lens)
             self.lensModel.lens_model.ignore_observed_positions = True
         return kwargs_lens
 

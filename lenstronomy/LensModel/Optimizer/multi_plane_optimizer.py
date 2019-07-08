@@ -181,7 +181,7 @@ class MultiPlaneLensing(object):
         if self._observed_convention_index is None:
             return kwargs_lens_full
 
-        kwargs_physical = self._full_lensmodel.lens_model.observed2physical_convention(kwargs_lens_full)
+        kwargs_physical = self._full_lensmodel.lens_model.observed2flat_convention(kwargs_lens_full)
 
         return kwargs_physical
 

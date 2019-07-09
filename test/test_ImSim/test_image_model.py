@@ -115,6 +115,7 @@ class TestImageModel(object):
         logLmarg = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
                                                                self.kwargs_ps, source_marg=True)
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
+        assert logLmarg < logL
 
     def test_reduced_residuals(self):
         model = sim_util.simulate_simple(self.imageModel, self.kwargs_lens, self.kwargs_source,

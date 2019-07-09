@@ -12,7 +12,7 @@ class LensModel(object):
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
-                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None):
+                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None, z_source_convention=None):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -28,10 +28,15 @@ class LensModel(object):
         (see documentation in Profiles/numerical_alpha)
         :param observed_convention_index: a list of lens indexes that correspond to observed positions on the sky, not
         physical positions
+        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
+        models. If None, 'z_source' is used.
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
+        if z_source_convention is None:
+            z_source_convention = z_source
         self.z_source = z_source
+        self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
         if cosmo is None:
@@ -41,9 +46,11 @@ class LensModel(object):
         if multi_plane is True:
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
+
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
-                                         observed_convention_index=observed_convention_index)
+                                         observed_convention_index=observed_convention_index,
+                                         z_source_convention=z_source_convention)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
         if z_lens is not None and z_source is not None:

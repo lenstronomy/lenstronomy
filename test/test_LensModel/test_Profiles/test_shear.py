@@ -1,14 +1,16 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.shear import Shear
+from lenstronomy.LensModel.Profiles.shear import Shear, ShearGammaPsi
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.Util import param_util
 
 import numpy as np
 import numpy.testing as npt
 import pytest
 
-class TestExternalShear(object):
+
+class TestShear(object):
     """
     tests the Gaussian methods
     """
@@ -69,6 +71,40 @@ class TestExternalShear(object):
         gamma1, gamma2 = lensModel.gamma(x, y, [kwargs])
         npt.assert_almost_equal(gamma1, e1, decimal=9)
         npt.assert_almost_equal(gamma2, e2, decimal=9)
+
+
+class TestShearGammaPsi(object):
+
+    def setup(self):
+        self.shear_e1e2 = Shear()
+        self.shear = ShearGammaPsi()
+
+    def test_function(self):
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        gamma, psi = 0.1, 0.5
+        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        values = self.shear.function(x, y, gamma, psi)
+        values_e1e2 = self.shear_e1e2.function(x, y, e1, e2)
+        npt.assert_almost_equal(values, values_e1e2, decimal=5)
+
+    def test_derivatives(self):
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        gamma, psi = 0.1, 0.5
+        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        values = self.shear.derivatives(x, y, gamma, psi)
+        values_e1e2 = self.shear_e1e2.derivatives(x, y, e1, e2)
+        npt.assert_almost_equal(values, values_e1e2, decimal=5)
+
+    def test_hessian(self):
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        gamma, psi = 0.1, 0.5
+        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        values = self.shear.hessian(x, y, gamma, psi)
+        values_e1e2 = self.shear_e1e2.hessian(x, y, e1, e2)
+        npt.assert_almost_equal(values, values_e1e2, decimal=5)
 
 
 if __name__ == '__main__':

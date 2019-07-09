@@ -99,6 +99,7 @@ class Chameleon(object):
         :param w_t: see Suyu+2014
         :return:
         """
+        #TODO remove this switch
         if not w_t > w_c:
             w_t, w_c = w_c, w_t
         s_scale_1 = w_c

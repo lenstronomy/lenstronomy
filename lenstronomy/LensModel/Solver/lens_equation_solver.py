@@ -131,6 +131,8 @@ class LensEquationSolver(object):
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
         #mag = np.abs(mag)
         #print(x_mins, y_mins, 'before requirement of min_distance')
+        if len(x_mins) < 1:
+            return x_mins, y_mins
         if initial_guess_cut is True:
             mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
             mag[mag < 1] = 1

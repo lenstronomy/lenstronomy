@@ -28,7 +28,7 @@ class ImageLinearFit(ImageModel):
             likelihood_mask = np.ones_like(data_class.data)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
         self._mask1d = util.image2array(self.likelihood_mask)
-        kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
+        #kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,

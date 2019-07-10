@@ -62,7 +62,7 @@ class SPEMD_SMOOTH(object):
         sin_phi = np.sin(phi_G)
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if self._fastell4py_bool:
+        if self._fastell4py_bool and len(x1) != 0 and len(x2) != 0:
             potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
             n = len(np.atleast_1d(x))
             if n <= 1:
@@ -86,7 +86,8 @@ class SPEMD_SMOOTH(object):
 
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if self._fastell4py_bool:
+
+        if self._fastell4py_bool and len(x1) != 0 and len(x2) != 0:
             f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
             f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
@@ -112,7 +113,7 @@ class SPEMD_SMOOTH(object):
 
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
-        if self._fastell4py_bool:
+        if self._fastell4py_bool and len(x1) != 0 and len(x2) != 0:
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam,
                                                                                              arat=q, s2=s_scale)
             n = len(np.atleast_1d(x))

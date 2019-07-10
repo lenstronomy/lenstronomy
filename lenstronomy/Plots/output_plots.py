@@ -734,7 +734,7 @@ class ModelBandPlot(object):
         text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
         source_position_plot(ax, coords_source, self._kwargs_source_partial)
-        return ax, source
+        return ax
 
     def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,

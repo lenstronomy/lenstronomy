@@ -46,6 +46,8 @@ class ImageLikelihood(object):
             bool = self._check_minimum_source_flux(kwargs_lens, kwargs_source)
             if bool is True:
                 logL -= 10 ** 10
+        if np.isnan(logL) is True:
+            return -10 ** 15
         return logL
 
     def _check_minimum_source_flux(self, kwargs_lens, kwargs_source):

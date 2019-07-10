@@ -20,8 +20,10 @@ class Solver4Point(object):
             raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
                              % solver_type)
         if solver_type in ['PROFILE_SHEAR']:
-            if not lensModel.lens_model_list[1] == 'SHEAR':
-                raise ValueError("second lens model must be SHEAR to enable solver type %s!" % solver_type)
+            if not lensModel.lens_model_list[1] == 'SHEAR_GAMMA_PSI':
+                raise ValueError("second lens model must be SHEAR_GAMMA_PSI to enable solver type %s! 'SHEAR' is not "
+                                 "valid anymore and you need to change your model to a shear parameterization with "
+                                 "shear strength and angle." % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
         if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list:
@@ -83,7 +85,8 @@ class Solver4Point(object):
         y[5] = beta_y[0] - beta_y[3]
         return y - a
 
-    def _subtract_constraint(self, x_sub, y_sub):
+    @staticmethod
+    def _subtract_constraint(x_sub, y_sub):
         """
 
         :param x_pos:
@@ -110,10 +113,10 @@ class Solver4Point(object):
         """
         if self._solver_type == 'PROFILE_SHEAR':
             phi_G = x[5]
-            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
-            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
-            kwargs_list[1]['e1'] = e1
-            kwargs_list[1]['e2'] = e2
+            #phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
+            #e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            #kwargs_list[1]['e1'] = e1
+            kwargs_list[1]['psi_ext'] = phi_G
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
@@ -145,9 +148,10 @@ class Solver4Point(object):
         :return:
         """
         if self._solver_type == 'PROFILE_SHEAR':
-            e1 = kwargs_list[1]['e1']
-            e2 = kwargs_list[1]['e2']
-            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            phi_ext = kwargs_list[1]['psi_ext']
+            #e1 = kwargs_list[1]['e1']
+            #e2 = kwargs_list[1]['e2']
+            #phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
         else:
             phi_ext = 0
         lens_model = self._lens_mode_list[0]
@@ -185,8 +189,8 @@ class Solver4Point(object):
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
         if self._solver_type == 'PROFILE_SHEAR':
-            pass
-            #kwargs_fixed_lens_list[1]['e2'] = 0
+            #pass
+            kwargs_fixed_lens_list[1]['psi_ext'] = kwargs_lens_init[1]['psi_ext']
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']

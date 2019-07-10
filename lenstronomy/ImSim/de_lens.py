@@ -45,6 +45,8 @@ def marginalisation_const(M_inv):
     :return: float
     """
     sign, log_det = np.linalg.slogdet(M_inv)
-    return log_det/2
+    if sign == 0:
+        return -10**15
+    return sign * log_det/2
 
 

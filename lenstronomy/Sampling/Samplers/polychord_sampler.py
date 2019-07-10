@@ -3,6 +3,7 @@ __author__ = 'aymgal'
 import os
 import shutil
 import numpy as np
+import sys
 
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
@@ -170,6 +171,7 @@ class DyPolyChordSampler(NestedSampler):
 
             return samples, means, logZ, logZ_err, logL, ns_run
         else:
+            sys.exit(0)
             return None
 
     def _get_equal_weight_samples(self):
